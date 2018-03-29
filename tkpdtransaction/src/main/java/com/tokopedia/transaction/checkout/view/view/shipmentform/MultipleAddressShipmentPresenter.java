@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.DataCheckoutRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.DropshipDataCheckoutRequest;
@@ -15,7 +16,7 @@ import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.GroupShop;
@@ -25,10 +26,8 @@ import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCart
 import com.tokopedia.transaction.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -52,7 +51,8 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
 
     @Override
     public CheckoutRequest generateCheckoutRequest(List<MultipleAddressShipmentAdapterData> shipmentData,
-                                                   MultipleAddressPriceSummaryData priceData) {
+                                                   MultipleAddressPriceSummaryData priceData,
+                                                   String promoCode) {
         CheckoutRequest.Builder checkoutRequest = new CheckoutRequest.Builder();
         List<DataCheckoutRequest> dataCheckoutRequests = new ArrayList<>();
         for (int i = 0; i < shipmentData.size(); i++) {
@@ -81,10 +81,10 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
 
             shopCheckoutBuilder
                     .fcancelPartial(
-                            switchValue(currentShipmentAdapterData.isProductFcancelPartial())
+                            switchValue(currentShipmentDetailData.getUsePartialOrder())
                     );
             shopCheckoutBuilder
-                    .finsurance(switchValue(currentShipmentAdapterData.isProductFinsurance()));
+                    .finsurance(switchValue(currentShipmentDetailData.getUseInsurance()));
             shopCheckoutBuilder
                     .isPreorder(switchValue(currentShipmentAdapterData.isProductIsPreorder()));
             shopCheckoutBuilder
@@ -99,7 +99,10 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     .shopProducts(shopCheckoutRequests).build();
             dataCheckoutRequests.add(checkoutData.build());
         }
-        return checkoutRequest.data(dataCheckoutRequests).build();
+        checkoutRequest.isDonation(0)
+                .promoCode(promoCode)
+                .data(dataCheckoutRequests);
+        return checkoutRequest.build();
     }
 
     private DropshipDataCheckoutRequest setDropshipDataCheckoutRequest(ShipmentDetailData data) {
@@ -111,7 +114,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
     private ShippingInfoCheckoutRequest setShippingInfoRequest(ShipmentDetailData data) {
         return new ShippingInfoCheckoutRequest.Builder()
                 .shippingId(data.getSelectedCourier().getShipperId())
-                .spId(data.getSelectedShipment().getServiceId())
+                .spId(data.getSelectedCourier().getShipperProductId())
                 .build();
     }
 
@@ -144,7 +147,8 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     adapterData.setShopId(currentGroupShop.getShop().getShopId());
                     adapterData.setProductName(currentProduct.getProductName());
                     adapterData.setProductPriceNumber(currentProduct.getProductPrice());
-                    adapterData.setProductPrice(formatRupiah(currentProduct.getProductPrice()));
+                    adapterData.setProductPrice(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            currentProduct.getProductPrice(), true));
                     adapterData.setProductImageUrl(currentProduct.getProductImageSrc200Square());
                     adapterData.setSenderName(currentGroupShop.getShop().getShopName());
                     MultipleAddressItemData addressItemData = new MultipleAddressItemData();
@@ -231,8 +235,8 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
 
             shopProduct.productData(productDatas)
                     .shopId(shipmentData.get(i).getShopId())
-                    .fcancelPartial(switchValue(shipmentData.get(i).isProductFcancelPartial()))
-                    .finsurance(switchValue(shipmentData.get(i).isProductFinsurance()))
+                    .fcancelPartial(switchValue(shipmentData.get(i).getSelectedShipmentDetailData().getUsePartialOrder()))
+                    .finsurance(switchValue(shipmentData.get(i).getSelectedShipmentDetailData().getUseInsurance()))
                     .isPreorder(switchValue(shipmentData.get(i).isProductIsPreorder()))
                     .shippingInfo(shipmentInfo.build());
 
@@ -335,12 +339,6 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
     private int switchValue(boolean isTrue) {
         if (isTrue) return 1;
         else return 0;
-    }
-
-    private String formatRupiah(long rupiahAmount) {
-        Locale locale = new Locale("in", "ID");
-        NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
-        return rupiahCurrencyFormat.format(rupiahAmount);
     }
 
     @Override

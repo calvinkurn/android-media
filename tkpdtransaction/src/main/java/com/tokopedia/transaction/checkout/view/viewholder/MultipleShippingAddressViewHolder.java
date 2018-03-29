@@ -4,21 +4,18 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
-
-import java.text.NumberFormat;
-import java.util.Locale;
 
 /**
  * Created by kris on 3/7/18. Tokopedia
@@ -92,9 +89,13 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
     private TextView insurancePrice;
 
-    private LinearLayout errorContainer;
+    private FrameLayout layoutError;
+
     private TextView tvError;
-    private TextView tvErrorDetail;
+
+    private FrameLayout layoutWarning;
+
+    private TextView tvWarning;
 
     public MultipleShippingAddressViewHolder(View itemView) {
         super(itemView);
@@ -156,9 +157,13 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
         ivChevronShipmentOption = itemView.findViewById(R.id.iv_chevron_shipment_option);
 
-        this.errorContainer = itemView.findViewById(R.id.ll_warning_container);
-        this.tvError = itemView.findViewById(R.id.tv_warning);
-        this.tvErrorDetail = itemView.findViewById(R.id.tv_warning_detail);
+        layoutError = itemView.findViewById(R.id.layout_error);
+
+        tvError = itemView.findViewById(R.id.tv_error);
+
+        layoutWarning = itemView.findViewById(R.id.layout_warning);
+
+        tvWarning = itemView.findViewById(R.id.tv_warning);
 
         detailPriceLayout = itemView.findViewById(R.id.detail_price_layout);
 
@@ -210,12 +215,17 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
                 );
 
         if (isShipmentDataInitiated(data)) {
-            itemPrice.setText(formatPrice(data.getProductPriceNumber()));
+            itemPrice.setText(formatPrice(data.getProductPriceNumber() *
+                    Integer.parseInt(data.getItemData().getProductQty())));
             deliveryPrice.setText(formatPrice(
-                    getGeneratedShipmentCartData(data).getDeliveryPriceTotal()));
-            insurancePrice.setText(formatPrice(
-                    getGeneratedShipmentCartData(data).getInsurancePrice()
-            ));
+                    data.getSelectedShipmentDetailData().getSelectedCourier().getDeliveryPrice() +
+                            data.getSelectedShipmentDetailData().getSelectedCourier().getAdditionalPrice()));
+            if (data.getSelectedShipmentDetailData().getUseInsurance()) {
+                insurancePrice.setText(formatPrice(data.getSelectedShipmentDetailData()
+                        .getSelectedCourier().getInsurancePrice()));
+            } else {
+                insurancePrice.setText("-");
+            }
         } else {
             itemPrice.setText("-");
             deliveryPrice.setText("-");
@@ -247,28 +257,19 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
 
         if (data.isError()) {
-            errorContainer.setBackgroundResource(R.color.bg_cart_item_error);
-            tvError.setTextColor(context.getResources().getColor(R.color.text_cart_item_error_red));
-            tvError.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_red,
-                    0, 0, 0);
-            errorContainer.setVisibility(View.VISIBLE);
-            tvError.setVisibility(View.VISIBLE);
-            tvErrorDetail.setVisibility(View.GONE);
             tvError.setText(data.getErrorMessage());
-        } else if (data.isWarning()) {
-            errorContainer.setBackgroundResource(R.color.bg_cart_item_warning);
-            tvError.setTextColor(context.getResources().getColor(R.color.black_54));
-            tvError.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_grey,
-                    0, 0, 0);
-            errorContainer.setVisibility(View.VISIBLE);
-            tvError.setVisibility(View.VISIBLE);
-            tvErrorDetail.setVisibility(View.GONE);
-            tvError.setText(data.getWarningMessage());
+            layoutError.setVisibility(View.VISIBLE);
         } else {
-            errorContainer.setVisibility(View.GONE);
-            tvError.setVisibility(View.GONE);
-            tvErrorDetail.setVisibility(View.GONE);
+            layoutError.setVisibility(View.GONE);
         }
+
+        if (data.isWarning()) {
+            tvWarning.setText(data.getWarningMessage());
+            layoutWarning.setVisibility(View.VISIBLE);
+        } else {
+            layoutWarning.setVisibility(View.GONE);
+        }
+
         //TODO Release Later
 //        renderPickupPoint(itemViewHolder, data);
     }
@@ -347,10 +348,17 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
 
     private long calculateSubTotal(MultipleAddressShipmentAdapterData data) {
-        if (isShipmentDataInitiated(data))
-            return data.getProductPriceNumber()
-                    + getGeneratedShipmentCartData(data).getDeliveryPriceTotal();
-        else return 0;
+        int subtotal = 0;
+        if (isShipmentDataInitiated(data)) {
+            subtotal += (data.getProductPriceNumber() * Integer.parseInt(data.getItemData().getProductQty())) +
+                    data.getSelectedShipmentDetailData().getSelectedCourier().getAdditionalPrice() +
+                    data.getSelectedShipmentDetailData().getSelectedCourier().getDeliveryPrice();
+            if (data.getSelectedShipmentDetailData().getUseInsurance()) {
+                subtotal += data.getSelectedShipmentDetailData().getSelectedCourier().getInsurancePrice();
+            }
+
+        }
+        return subtotal;
     }
 
     private boolean isShipmentDataInitiated(MultipleAddressShipmentAdapterData data) {
@@ -359,17 +367,11 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
                 data.getSelectedShipmentDetailData().getShipmentCartData() != null;
     }
 
-    private ShipmentCartData getGeneratedShipmentCartData(MultipleAddressShipmentAdapterData data) {
-        return data.getSelectedShipmentDetailData().getShipmentCartData();
-    }
-
     private String formatPrice(long unformattedPrice) {
         if (unformattedPrice == 0) {
             return "-";
         } else {
-            Locale locale = new Locale("in", "ID");
-            NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
-            return rupiahCurrencyFormat.format(unformattedPrice);
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat((int) unformattedPrice, true);
         }
     }
 }

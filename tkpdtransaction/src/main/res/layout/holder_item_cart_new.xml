@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include layout="@layout/layout_item_warning" />
+        <include layout="@layout/layout_item_warning_and_error" />
 
         <RelativeLayout
             android:layout_width="match_parent"

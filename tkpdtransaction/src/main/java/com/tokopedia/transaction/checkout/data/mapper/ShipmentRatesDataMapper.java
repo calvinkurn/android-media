@@ -5,11 +5,11 @@ import android.text.TextUtils;
 import com.tokopedia.transaction.checkout.data.entity.response.rates.Attribute;
 import com.tokopedia.transaction.checkout.data.entity.response.rates.Product;
 import com.tokopedia.transaction.checkout.data.entity.response.rates.RatesResponse;
-import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.GroupShop;
@@ -60,8 +60,9 @@ public class ShipmentRatesDataMapper {
                                                 MultipleAddressShipmentAdapterData adapterData) {
         ShipmentCartData shipmentCartData = new ShipmentCartData();
         initializeShipmentCartData(cartShipmentAddressFormData, userAddress, groupShop, shipmentCartData);
-        shipmentCartData.setOrderValue((int) adapterData.getProductPriceNumber());
-        shipmentCartData.setWeight(adapterData.getItemData().getProductRawWeight());
+        int productQuantity = Integer.parseInt(adapterData.getItemData().getProductQty());
+        shipmentCartData.setOrderValue((int) adapterData.getProductPriceNumber() * productQuantity);
+        shipmentCartData.setWeight(adapterData.getItemData().getProductRawWeight() * productQuantity);
 
         return shipmentCartData;
     }
@@ -71,7 +72,7 @@ public class ShipmentRatesDataMapper {
                                                 CartSellerItemModel cartSellerItemModel) {
         ShipmentCartData shipmentCartData = new ShipmentCartData();
         initializeShipmentCartData(cartShipmentAddressFormData, userAddress, groupShop, shipmentCartData);
-        shipmentCartData.setOrderValue(((Double) cartSellerItemModel.getTotalPrice()).intValue());
+        shipmentCartData.setOrderValue((int) cartSellerItemModel.getTotalItemPrice());
         shipmentCartData.setWeight(cartSellerItemModel.getTotalWeight());
 
         return shipmentCartData;
@@ -196,115 +197,10 @@ public class ShipmentRatesDataMapper {
         shipmentItemData.setServiceId(attribute.getServiceId());
         shipmentItemData.setCourierItemData(getCourierItemDataList(attribute.getProducts()));
         shipmentItemData.setServiceId(attribute.getServiceId());
-        shipmentItemData.setType(WordUtils.capitalize(attribute.getShipperName()));
-        getPriceRange(shipmentItemData, attribute);
-        getEstimatedDeliveryTimeRange(shipmentItemData);
-
+        shipmentItemData.setType(WordUtils.capitalize(attribute.getServiceName()));
+        shipmentItemData.setMultiplePriceRange(attribute.getServiceRangePrice());
+        shipmentItemData.setDeliveryTimeRange(attribute.getServiceEtd());
         return shipmentItemData;
-    }
-
-    private void getPriceRange(ShipmentItemData shipmentItemData, Attribute attribute) {
-        if (attribute.getProducts().size() > 0) {
-            if (attribute.getProducts().size() > 1) {
-                int maxPrice = 0;
-                Product maxPriceProduct = attribute.getProducts().get(0);
-                int minPrice = 0;
-                Product minPriceProduct = attribute.getProducts().get(0);
-
-                for (Product product : attribute.getProducts()) {
-                    if (product.getPrice() > maxPrice) {
-                        maxPrice = product.getPrice();
-                        maxPriceProduct = product;
-                    }
-
-                    if (minPrice == 0) {
-                        minPrice = product.getPrice();
-                        minPriceProduct = product;
-                    } else if (minPrice > product.getPrice()) {
-                        minPrice = product.getPrice();
-                        minPriceProduct = product;
-                    }
-                }
-
-                if (minPrice != maxPrice) {
-                    shipmentItemData.setMultiplePriceRange(minPriceProduct.getFormattedPrice() + " - " +
-                            maxPriceProduct.getFormattedPrice());
-                } else {
-                    shipmentItemData.setSinglePriceRange(minPriceProduct.getFormattedPrice());
-                }
-            } else {
-                shipmentItemData.setSinglePriceRange(attribute.getProducts().get(0).getFormattedPrice());
-            }
-        }
-    }
-
-    private void getEstimatedDeliveryTimeRange(ShipmentItemData shipmentItemData) {
-        int minEtd;
-        int maxEtd;
-        if (shipmentItemData.getCourierItemData().size() > 0) {
-            minEtd = shipmentItemData.getCourierItemData().get(0).getMinEtd();
-            maxEtd = shipmentItemData.getCourierItemData().get(0).getMaxEtd();
-            if (shipmentItemData.getCourierItemData().size() > 1) {
-                for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
-                    if (courierItemData.getMinEtd() != 0) {
-                        minEtd = courierItemData.getMinEtd();
-                        break;
-                    }
-                }
-                if (minEtd == 0) {
-                    shipmentItemData.setDeliveryTimeRange(
-                            shipmentItemData.getCourierItemData().get(0).getDefaultEtd());
-                } else {
-                    for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
-                        if (courierItemData.getMinEtd() != 0 && courierItemData.getMaxEtd() != 0) {
-                            if (courierItemData.getMinEtd() < minEtd) {
-                                minEtd = courierItemData.getMinEtd();
-                            }
-                        }
-                        if (courierItemData.getMinEtd() != 0 && courierItemData.getMaxEtd() != 0) {
-                            if (courierItemData.getMaxEtd() > maxEtd) {
-                                maxEtd = courierItemData.getMaxEtd();
-                            }
-                        }
-                    }
-                    shipmentItemData.setDeliveryTimeRange(formatEtd(shipmentItemData, null, minEtd, maxEtd));
-                }
-            } else {
-                if (minEtd == 0) {
-                    shipmentItemData.setDeliveryTimeRange(
-                            shipmentItemData.getCourierItemData().get(0).getDefaultEtd());
-                } else {
-                    shipmentItemData.setDeliveryTimeRange(formatEtd(shipmentItemData, null, minEtd, maxEtd));
-                }
-            }
-        }
-    }
-
-    private String formatEtd(@Nullable ShipmentItemData shipmentItemData, @Nullable Product product,
-                             int minEtd, int maxEtd) {
-        String deliveryTimeRange = "";
-        if (minEtd != 0 && maxEtd != 0) {
-            if (minEtd != maxEtd) {
-                if (minEtd >= DAY_IN_SECONDS) {
-                    deliveryTimeRange = minEtd / DAY_IN_SECONDS + "-" + maxEtd / DAY_IN_SECONDS;
-                    if (shipmentItemData != null) {
-                        shipmentItemData.setLessThanADayDelivery(false);
-                    }
-                } else {
-                    deliveryTimeRange = String.valueOf(maxEtd / HOUR_IN_SECONDS);
-                    if (shipmentItemData != null) {
-                        shipmentItemData.setLessThanADayDelivery(true);
-                    }
-                }
-            } else {
-                if (minEtd >= DAY_IN_SECONDS) {
-                    deliveryTimeRange = String.valueOf(minEtd / DAY_IN_SECONDS);
-                } else {
-                    deliveryTimeRange = String.valueOf(minEtd / HOUR_IN_SECONDS);
-                }
-            }
-        }
-        return deliveryTimeRange;
     }
 
     private List<CourierItemData> getCourierItemDataList(List<Product> products) {
@@ -327,36 +223,10 @@ public class ShipmentRatesDataMapper {
         courierItemData.setInsuranceUsedDefault(product.getInsuranceUsedDefault());
         courierItemData.setCourierInfo(product.getShipperProductDesc());
         courierItemData.setInsuranceUsedType(product.getInsuranceUsedType());
-        courierItemData.setDeliveryPrice(product.getPrice());
-        courierItemData.setDefaultEtd(product.getEtd());
+        courierItemData.setDeliveryPrice(product.getShipperPrice());
+        courierItemData.setEstimatedTimeDelivery(product.getShipperEtd());
         courierItemData.setMinEtd(product.getMinEtd());
         courierItemData.setMaxEtd(product.getMaxEtd());
-        if (product.getMaxHoursId() != null && product.getMaxHoursId().length() > 0) {
-            String formattedEtd = formatEtd(null, product, courierItemData.getMinEtd(),
-                    courierItemData.getMaxEtd());
-            if (courierItemData.getMaxEtd() < DAY_IN_SECONDS) {
-                if (!TextUtils.isEmpty(formattedEtd)) {
-                    courierItemData.setEstimatedHourDelivery(formattedEtd);
-                } else {
-                    courierItemData.setEstimatedHourDelivery(product.getMaxHoursId());
-                }
-            } else {
-                courierItemData.setEstimatedDayDelivery(formattedEtd);
-            }
-        } else {
-            String formattedEtd = formatEtd(null, product, courierItemData.getMinEtd(),
-                    courierItemData.getMaxEtd());
-            if (!TextUtils.isEmpty(formattedEtd)) {
-                courierItemData.setEstimatedDayDelivery(formattedEtd);
-            } else {
-                courierItemData.setEstimatedDayDelivery(product.getEtd());
-            }
-        }
-        courierItemData.setSelected(false);
-
-        // No Data
-//        courierItemData.setDeliverySchedule();
-//        courierItemData.setCourierInfo();
 
         return courierItemData;
     }

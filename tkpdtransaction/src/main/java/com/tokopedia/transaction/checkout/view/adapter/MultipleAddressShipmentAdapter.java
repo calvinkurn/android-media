@@ -6,11 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressTotalPriceHolderData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.transaction.checkout.view.viewholder.CartPromoSuggestionViewHolder;
@@ -20,10 +21,8 @@ import com.tokopedia.transaction.checkout.view.viewholder.MultipleAddressShipmen
 import com.tokopedia.transaction.checkout.view.viewholder.MultipleShippingAddressViewHolder;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by kris on 1/23/18. Tokopedia
@@ -94,11 +93,14 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     private void calculateTemporarySubTotalForFloatingIndicator(int position, ShipmentDetailData shipmentDetailData) {
-        this.addressDataList.get(position).setSubTotal(shipmentDetailData
-                .getShipmentCartData()
-                .getDeliveryPriceTotal()
-                + addressDataList.get(position).getProductPriceNumber()
-        );
+        long subtotal = (addressDataList.get(position).getProductPriceNumber() *
+                Integer.parseInt(addressDataList.get(position).getItemData().getProductQty())) +
+                shipmentDetailData.getSelectedCourier().getDeliveryPrice() +
+                shipmentDetailData.getSelectedCourier().getAdditionalPrice();
+        if (shipmentDetailData.getUseInsurance()) {
+            subtotal += shipmentDetailData.getSelectedCourier().getInsurancePrice();
+        }
+        this.addressDataList.get(position).setSubTotal(subtotal);
     }
 
     @Override
@@ -200,9 +202,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         if (unformattedPrice == 0) {
             return "-";
         } else {
-            Locale locale = new Locale("in", "ID");
-            NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
-            return rupiahCurrencyFormat.format(unformattedPrice);
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat((int) unformattedPrice, true);
         }
     }
 
@@ -252,6 +252,17 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     public CartItemPromoHolderData getAppliedPromo() {
         return cartItemPromoHolderData;
+    }
+
+    public String getAppliedPromoCode() {
+        if (cartItemPromoHolderData != null) {
+            if (cartItemPromoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
+                return cartItemPromoHolderData.getVoucherCode();
+            } else if (cartItemPromoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
+                return cartItemPromoHolderData.getCouponCode();
+            }
+        }
+        return "";
     }
 
     private long calculateTotalPayment() {

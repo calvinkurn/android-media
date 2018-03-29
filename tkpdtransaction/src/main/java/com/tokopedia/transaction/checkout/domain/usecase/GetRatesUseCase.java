@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.data.repository.RatesRepository;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

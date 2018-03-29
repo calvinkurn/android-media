@@ -20,7 +20,7 @@ import rx.Subscriber;
 public interface IMultipleAddressShipmentPresenter {
 
     CheckoutRequest generateCheckoutRequest(List<MultipleAddressShipmentAdapterData> shipmentData,
-                                            MultipleAddressPriceSummaryData priceData);
+                                            MultipleAddressPriceSummaryData priceData, String promoCode);
 
     List<MultipleAddressShipmentAdapterData> initiateAdapterData(
             CartShipmentAddressFormData dataFromWebService

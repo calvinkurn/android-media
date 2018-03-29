@@ -20,6 +20,7 @@ public class ConsumerAppBaseUrl {
     public static final String BASE_INBOX_DOMAIN = "https://inbox.tokopedia.com";
     public static final String BASE_JS_DOMAIN = "https://js.tokopedia.com/";
     public static final String BASE_KERO_DOMAIN = "https://kero.tokopedia.com/";
+    public static final String BASE_KERO_RATES_DOMAIN = "https://gw.tokopedia.com/";
     public static final String BASE_JAHE_DOMAIN = "https://jahe.tokopedia.com";
     public static final String BASE_PULSA_WEB_DOMAIN = "https://pulsa.tokopedia.com";
     public static final String BASE_GOLD_MERCHANT_DOMAIN = "https://goldmerchant.tokopedia.com";

@@ -33,7 +33,7 @@ import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartS
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
@@ -484,7 +484,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     public void renderCheckShipmentPrepareCheckoutSuccess() {
         cartShipmentActivity.checkoutCart(
                 presenter.generateCheckoutRequest(shipmentAdapter.getAddressDataList(),
-                        shipmentAdapter.getPriceSummaryData())
+                        shipmentAdapter.getPriceSummaryData(), shipmentAdapter.getAppliedPromoCode())
         );
     }
 
@@ -593,14 +593,13 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     public void onCartDataEnableToCheckout() {
         confirmButton.setBackgroundResource(R.drawable.bg_button_orange_enabled);
         confirmButton.setTextColor(getResources().getColor(R.color.white));
-        confirmButton.setOnClickListener(onConfirmedButtonClicked());
+        confirmButton.setClickable(true);
     }
 
     @Override
     public void onCartDataDisableToCheckout() {
         confirmButton.setBackgroundResource(R.drawable.bg_button_disabled);
         confirmButton.setTextColor(getResources().getColor(R.color.grey_500));
-        confirmButton.setOnClickListener(null);
-
+        confirmButton.setClickable(false);
     }
 }

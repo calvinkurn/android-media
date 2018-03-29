@@ -15,12 +15,10 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
-
-import java.text.NumberFormat;
-import java.util.Locale;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -28,8 +26,6 @@ import java.util.Locale;
 
 public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
 
-    private static final Locale LOCALE_ID = new Locale("in", "ID");
-    private static final NumberFormat CURRENCY_IDR = NumberFormat.getCurrencyInstance(LOCALE_ID);
     private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
 
     private static final int GRAM = 0;
@@ -126,7 +122,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     }
 
     private String getPriceFormat(double price) {
-        return price == 0 ? "-" : CURRENCY_IDR.format(price).replace("Rp", "Rp ");
+        return price == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat((int) price, true);
     }
 
     private void togglePromoText() {

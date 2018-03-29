@@ -234,6 +234,8 @@
     <string name="label_main_address">Utama</string>
 
     <string name="show_case_finish">Mengerti</string>
+    <string name="show_case_prev">Sebelumnya</string>
+
     <string name="title_promo_code">Kode Promo</string>
     <string name="title_coupon_code">Kode Kupon</string>
     <string name="label_delivery_hour">\u0020jam perjalanan</string>
@@ -269,6 +271,16 @@
     <string name="label_oops">Oopppsss..</string>
     <string name="message_address_not_found">Kami tidak dapat menemukan alamat yang anda cari.</string>
     <string name="label_button_change_search">Ganti Pencarian</string>
+    <string name="label_add_new_shipment">Tambah Pengiriman Baru</string>
+    <string name="hint_no_note">Tidak ada catatan</string>
+    <string name="label_note_for_seller_optional">Catatan untuk penjual (optional)</string>
+    <string name="default_quantity">1</string>
+    <string name="label_shipment_counter">Pengiriman #</string>
+    <string name="label_item_count">Jumlah</string>
+    <string name="label_error_choose_address">Pilih alamat pengiriman</string>
+    <string name="label_choose_address">Pilih Alamat</string>
+    <string name="label_shipment">Pengiriman</string>
+    <string name="label_error_note_too_long">Catatan terlalu panjang, maksimum 144 karakter</string>
 
     <string-array name="pickup_point">
         <item>Alfamart</item>

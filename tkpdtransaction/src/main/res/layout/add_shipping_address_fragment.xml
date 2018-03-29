@@ -92,7 +92,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
                     android:gravity="center_vertical">
 
                     <TextView
@@ -100,7 +99,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Jumlah" />
+                        android:text="@string/label_item_count" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -138,7 +137,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_vs"
-                    android:layout_marginTop="@dimen/margin_small"
                     android:visibility="gone"
                     tools:visibility="visible">
 
@@ -155,6 +153,7 @@
                     android:id="@+id/empty_notes_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
                     android:visibility="gone"
                     tools:visibility="visible">
 
@@ -163,7 +162,7 @@
                         style="@style/TextSmallNormalBlack38"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Catatan untuk penjual (opsional)" />
+                        android:text="@string/label_note_for_seller" />
 
                     <TextView
                         android:id="@+id/insert_notes_button"
@@ -174,7 +173,7 @@
                         android:layout_marginStart="@dimen/margin_small"
                         android:layout_toEndOf="@id/label_notes_for_seller"
                         android:layout_toRightOf="@id/label_notes_for_seller"
-                        android:text="Tulis Catatan"
+                        android:text="@string/label_button_add_note"
                         android:textColor="@color/tkpd_main_green" />
 
                     <View
@@ -192,21 +191,34 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                     <TextView
                         style="@style/TextSmallNormalBlack38"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Catatan untuk penjual (opsional)" />
+                        android:text="@string/label_note_for_seller" />
 
                     <EditText
+                        android:includeFontPadding="false"
+                        tools:text="Tolong segera dikirim ya gan. Saya tunggu, soalnya ini barang sangat penting dan mahal"
                         android:id="@+id/notes_edit_text"
                         style="@style/TextSmallNormalBlack70"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/note_error_warning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_error_note_too_long"
+                    android:textColor="@color/red_500"
+                    android:textSize="11sp"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
                 <LinearLayout
                     android:id="@+id/address_layout"
@@ -282,7 +294,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Pengiriman" />
+                            android:text="@string/label_shipment" />
 
                         <TextView
                             style="@style/TextSmallMedium"
@@ -290,7 +302,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
-                            android:text="Pilih Alamat"
+                            android:text="@string/label_choose_address"
                             android:textColor="@color/tkpd_main_green" />
 
                         <ImageView
@@ -307,7 +319,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_vs"
-                        android:text="Pilih alamat pengiriman"
+                        android:text="@string/label_error_choose_address"
                         android:textColor="@color/red_500"
                         android:textSize="11sp"
                         android:visibility="gone"
@@ -330,7 +342,7 @@
         android:background="@color/grey_400"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
-        android:text="Simpan Perubahan"
+        android:text="@string/title_save"
         android:textColor="@color/grey_600"
         android:textSize="13sp" />
 
@@ -343,7 +355,7 @@
         android:background="@drawable/green_button_rounded_unify"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
-        android:text="Simpan"
+        android:text="@string/title_save"
         android:textColor="@color/white"
         android:textSize="13sp" />
 

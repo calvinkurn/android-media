@@ -3,7 +3,7 @@ package com.tokopedia.transaction.checkout.data.repository;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.data.entity.response.rates.RatesResponse;
 import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 
 import javax.inject.Inject;
 

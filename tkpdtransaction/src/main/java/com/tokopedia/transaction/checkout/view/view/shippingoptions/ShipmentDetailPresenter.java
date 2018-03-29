@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.transaction.checkout.domain.usecase.GetRatesUseCase;
 
 import java.net.ConnectException;

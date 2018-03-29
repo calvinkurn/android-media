@@ -57,6 +57,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     private ViewGroup chooseAddressButton;
     private ViewGroup quantityErrorLayout;
     private TextView quantityErrorTextView;
+    private TextView notesErrorWarningTextView;
 
     @Inject
     IAddShipmentAddressPresenter presenter;
@@ -109,12 +110,15 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
                 (MultipleAddressItemData) getIntent().getExtras()
                         .getParcelable(ADDRESS_DATA_EXTRAS));
         TextView senderName = findViewById(R.id.sender_name);
+        addAddressErrorTextView = findViewById(R.id.add_address_error_warning);
+        notesErrorWarningTextView = findViewById(R.id.note_error_warning);
+        quantityErrorLayout = findViewById(R.id.quantity_error_layout);
+        quantityErrorTextView = findViewById(R.id.quantity_error_text_view);
+        saveChangesButton = findViewById(R.id.save_changes_button);
         setProductView(presenter.getMultipleAddressAdapterData(), senderName);
         setProductQuantityView(presenter.getMultipleItemData());
         setNotesView(presenter.getMultipleItemData());
         setAddressView(presenter.getMultipleItemData());
-        addAddressErrorTextView = findViewById(R.id.add_address_error_warning);
-        saveChangesButton = findViewById(R.id.save_changes_button);
         saveChangesButton.setOnClickListener(onSaveChangesClickedListener());
         if (formMode == ADD_MODE) showChooseAddressButton();
     }
@@ -143,7 +147,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     private void showAddressLayout() {
         addressLayout.setVisibility(View.VISIBLE);
         chooseAddressButton.setVisibility(View.GONE);
-        saveChangesButton.setVisibility(View.VISIBLE);
+        setEditButtonVisibility(quantityField.getText(), presenter.getMultipleItemData());
     }
 
     private void setAddressView(MultipleAddressItemData itemData) {
@@ -189,8 +193,6 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     }
 
     private void setProductQuantityView(MultipleAddressItemData itemData) {
-        quantityErrorLayout = findViewById(R.id.quantity_error_layout);
-        quantityErrorTextView = findViewById(R.id.quantity_error_text_view);
         quantityField = findViewById(R.id.quantity_field);
         ImageView decreaseButton = findViewById(R.id.decrease_quantity);
         ImageView increaseButton = findViewById(R.id.increase_quantity);
@@ -303,11 +305,16 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
                 quantityErrorLayout.setVisibility(View.VISIBLE);
                 quantityErrorTextView.setText(data.getErrorProductMinQuantity()
                         .replace("{{value}}", String.valueOf(data.getMaxQuantity())));
-            } else if (!addressLayout.isShown()) {
-                saveChangesButton.setVisibility(View.GONE);
             } else {
                 quantityErrorLayout.setVisibility(View.GONE);
-                if (!addAddressErrorTextView.isShown()) {
+            }
+
+            if (addressLayout.getVisibility() != View.VISIBLE) {
+                saveChangesButton.setVisibility(View.GONE);
+            } else {
+                if (addAddressErrorTextView.getVisibility() != View.VISIBLE &&
+                        notesErrorWarningTextView.getVisibility() != View.VISIBLE &&
+                        quantityErrorLayout.getVisibility() != View.VISIBLE) {
                     saveChangesButton.setVisibility(View.VISIBLE);
                 }
             }
@@ -319,13 +326,14 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
             MultipleAddressItemData data
     ) {
         if (notes.length() > data.getMaxRemark()) {
-            addAddressErrorTextView.setVisibility(View.VISIBLE);
-            addAddressErrorTextView.setText(data.getErrorFieldMaxChar()
+            notesErrorWarningTextView.setVisibility(View.VISIBLE);
+            notesErrorWarningTextView.setText(data.getErrorFieldMaxChar()
                     .replace("{{value}}", String.valueOf(data.getMaxRemark())));
             saveChangesButton.setVisibility(View.GONE);
         } else {
-            addAddressErrorTextView.setVisibility(View.GONE);
-            if (!quantityErrorLayout.isShown()) {
+            notesErrorWarningTextView.setVisibility(View.GONE);
+            if (quantityErrorLayout.getVisibility() != View.VISIBLE &&
+                    addAddressErrorTextView.getVisibility() != View.VISIBLE) {
                 saveChangesButton.setVisibility(View.VISIBLE);
             }
         }
@@ -351,7 +359,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
             @Override
             public void onClick(View view) {
                 //TODO ALTER DATA HERE, ALSO MAKE SOME VIEWS GLOBAL VARIABLE
-                if (addressLayout.isShown()) {
+                if (addressLayout.getVisibility() == View.VISIBLE) {
                     addAddressErrorTextView.setVisibility(View.GONE);
                     if (formMode == ADD_MODE) {
                         addNewAddressItem();
@@ -370,7 +378,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
         Intent intent = new Intent();
         MultipleAddressItemData newItemData = presenter.confirmAddData(
                 quantityField.getText().toString(),
-                checkNotesAvailability(notesLayout.isShown(), notesEditText)
+                checkNotesAvailability(notesLayout.getVisibility() == View.VISIBLE, notesEditText)
         );
         intent.putExtra(ADDRESS_DATA_RESULT, newItemData);
         setResult(Activity.RESULT_OK, intent);
@@ -381,7 +389,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
         Intent intent = new Intent();
         MultipleAddressItemData editedItemData = presenter.confirmEditData(
                 quantityField.getText().toString(),
-                checkNotesAvailability(notesLayout.isShown(), notesEditText)
+                checkNotesAvailability(notesLayout.getVisibility() == View.VISIBLE, notesEditText)
         );
         intent.putExtra(ADDRESS_DATA_RESULT, editedItemData);
         setResult(Activity.RESULT_OK, intent);

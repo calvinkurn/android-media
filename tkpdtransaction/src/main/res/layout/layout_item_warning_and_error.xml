@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/layout_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_cart_item_error">
+
+        <TextView
+            android:id="@+id/tv_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/ic_warning_red"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_warning_red"
+            android:fontFamily="sans-serif"
+            android:maxLines="2"
+            android:paddingBottom="@dimen/padding_ms"
+            android:paddingLeft="@dimen/padding_med"
+            android:paddingRight="@dimen/padding_med"
+            android:paddingTop="@dimen/padding_ms"
+            android:textColor="#d30b16"
+            android:textSize="11sp"
+            android:textStyle="normal"
+            tools:ignore="SmallSp"
+            tools:text="Toko sedang tutup semdaksd laslknlaksndfa" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/layout_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_cart_item_warning">
+
+        <TextView
+            android:id="@+id/tv_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/ic_warning_grey"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_warning_grey"
+            android:fontFamily="sans-serif"
+            android:maxLines="2"
+            android:paddingBottom="@dimen/padding_ms"
+            android:paddingLeft="@dimen/padding_med"
+            android:paddingRight="@dimen/padding_med"
+            android:paddingTop="@dimen/padding_ms"
+            android:textColor="@color/black_54"
+            android:textSize="11sp"
+            android:textStyle="normal"
+            tools:ignore="SmallSp"
+            tools:text="Toko sedang alsnfd;slkndf ljkasdaksd laslknlaksndfa" />
+
+    </FrameLayout>
+
+</LinearLayout>

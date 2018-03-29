@@ -4,15 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by kris on 3/7/18. Tokopedia
@@ -63,7 +62,7 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
                 .toString()
                 .replace("#", priceSummaryData.getQuantityText()));
         totalProductPrice.setText(
-                formatPrice(priceSummaryData.getTotalProductPrice())
+                formatPrice((int) priceSummaryData.getTotalProductPrice())
         );
         totalShippingPrice.setText(priceChecker(
                 priceSummaryData.getTotalShippingPrice(),
@@ -92,17 +91,16 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
         else return 0;
     }
 
-    private String formatPrice(long unformattedPrice) {
-        Locale locale = new Locale("in", "ID");
-        NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
-        return rupiahCurrencyFormat.format(unformattedPrice);
+    private String formatPrice(int unformattedPrice) {
+        return CurrencyFormatUtil.convertPriceValueToIdrFormat(unformattedPrice, true);
     }
 
     private long calculateTotalProductCost(List<MultipleAddressShipmentAdapterData> addressDataList) {
         long totalProductPrice = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(addressDataList.get(i)))
-                totalProductPrice = totalProductPrice + addressDataList.get(i).getProductPriceNumber();
+                totalProductPrice += (addressDataList.get(i).getProductPriceNumber() *
+                        Integer.parseInt(addressDataList.get(i).getItemData().getProductQty()));
         }
         return totalProductPrice;
     }
@@ -121,11 +119,8 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
         long totalShipmentPrice = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(addressDataList.get(i))) {
-                totalShipmentPrice = totalShipmentPrice
-                        + getGeneratedShipmentCartData(addressDataList.get(i))
-                        .getDeliveryPriceTotal()
-                        - getGeneratedShipmentCartData(addressDataList.get(i)).getInsurancePrice()
-                        - getGeneratedShipmentCartData(addressDataList.get(i)).getAdditionalFee();
+                totalShipmentPrice += addressDataList.get(i).getSelectedShipmentDetailData().
+                        getSelectedCourier().getDeliveryPrice();
             }
         }
         return totalShipmentPrice;
@@ -135,8 +130,11 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
         long totalInsuranceCost = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(addressDataList.get(i))) {
-                totalInsuranceCost = totalInsuranceCost +
-                        getGeneratedShipmentCartData(addressDataList.get(i)).getInsurancePrice();
+                if (addressDataList.get(i).getSelectedShipmentDetailData().getUseInsurance()) {
+                    totalInsuranceCost = totalInsuranceCost +
+                            addressDataList.get(i).getSelectedShipmentDetailData()
+                                    .getSelectedCourier().getInsurancePrice();
+                }
             }
         }
         return totalInsuranceCost;
@@ -147,7 +145,8 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(addressDataList.get(i))) {
                 totalAdditionalFee = totalAdditionalFee +
-                        getGeneratedShipmentCartData(addressDataList.get(i)).getAdditionalFee();
+                        addressDataList.get(i).getSelectedShipmentDetailData()
+                                .getSelectedCourier().getAdditionalPrice();
             }
         }
         return totalAdditionalFee;
@@ -168,7 +167,7 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
     }
 
     private String priceChecker(long price, long shipmentPrice) {
-        if (shipmentPrice > 0) return formatPrice(price);
+        if (shipmentPrice > 0) return formatPrice((int) price);
         else return "-";
     }
 

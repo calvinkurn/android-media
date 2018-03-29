@@ -1,9 +1,9 @@
 package com.tokopedia.transaction.checkout.view.di.module;
 
-import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.data.repository.RatesDataStore;
 import com.tokopedia.transaction.checkout.data.repository.RatesRepository;
+import com.tokopedia.transaction.checkout.data.service.RatesService;
 import com.tokopedia.transaction.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.transaction.checkout.view.adapter.CourierChoiceAdapter;
 import com.tokopedia.transaction.checkout.view.di.scope.ShipmentDetailScope;
@@ -23,14 +23,14 @@ public class ShipmentDetailModule {
 
     @Provides
     @ShipmentDetailScope
-    KeroAuthService provideKeroAuthService() {
-        return new KeroAuthService(RETRY_COUNT);
+    RatesService provideRatesService() {
+        return new RatesService();
     }
 
     @Provides
     @ShipmentDetailScope
-    RatesDataStore provideRatesDataStore(KeroAuthService keroAuthService) {
-        return new RatesDataStore(keroAuthService);
+    RatesDataStore provideRatesDataStore(RatesService service) {
+        return new RatesDataStore(service);
     }
 
     @Provides

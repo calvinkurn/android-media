@@ -36,6 +36,7 @@ public class TkpdBaseURL {
     public static String JS_STAGING_DOMAIN = "https://js-staging.tokopedia.com/";
     public static String JS_ALPHA_DOMAIN = "https://ajax-alpha.tokopedia.com/js/";
     public static String KERO_DOMAIN = "https://kero.tokopedia.com/";
+    public static String KERO_RATES_DOMAIN = "https://gw.tokopedia.com/";
     public static String JAHE_DOMAIN = "https://jahe.tokopedia.com";
     public static String PULSA_WEB_DOMAIN = "https://pulsa.tokopedia.com";
     public static String PULSA_WEB_STAGING_DOMAIN = "https://pulsa-staging.tokopedia.com";
@@ -558,6 +559,7 @@ public class TkpdBaseURL {
 
     public static class Shipment {
         public static final String PATH_RATES = "rates/v1";
+        public static final String PATH_RATES_V2 = "v2/rates";
         public static final String PATH_DISTRICT_RECOMMENDATION = "/v2/district-recommendation";
         public static final String PATH_PICKUP_STORE = "/v2/store-location";
     }

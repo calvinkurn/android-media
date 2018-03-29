@@ -6,6 +6,7 @@ import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.checkout.data.entity.request.RemoveCartRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.UpdateCartRequest;
 import com.tokopedia.transaction.checkout.data.exception.ResponseCartApiErrorException;
@@ -390,9 +391,6 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void reCalculateSubTotal(List<CartItemHolderData> dataList) {
-        Locale LOCALE_ID = new Locale("in", "ID");
-        NumberFormat CURRENCY_IDR = NumberFormat.getCurrencyInstance(LOCALE_ID);
-
         double subtotalPrice = 0;
         int qty = 0;
         for (CartItemHolderData data : dataList) {
@@ -402,8 +400,8 @@ public class CartListPresenter implements ICartListPresenter {
                     * data.getCartItemData().getOriginData().getPricePlan());
         }
 
-        view.renderDetailInfoSubTotal(String.valueOf(qty), CURRENCY_IDR.format(((int) subtotalPrice))
-                .replace("Rp", "Rp "));
+        view.renderDetailInfoSubTotal(String.valueOf(qty),
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(((int) subtotalPrice), true));
     }
 
     @Override

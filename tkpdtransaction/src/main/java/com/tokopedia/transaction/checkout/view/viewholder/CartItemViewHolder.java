@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 
@@ -20,9 +21,6 @@ import java.util.Locale;
  */
 
 public class CartItemViewHolder extends RecyclerView.ViewHolder {
-
-    private static final Locale LOCALE_ID = new Locale("in", "ID");
-    private static final NumberFormat CURRENCY_RUPIAH = NumberFormat.getCurrencyInstance(LOCALE_ID);
 
     private ImageView mIvProductImage;
     private TextView mTvProductName;
@@ -51,7 +49,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         mLlOptionalNoteToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
         mTvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
 
-        mRlProductPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
+        mRlProductPoliciesLayout = itemView.findViewById(R.id.layout_policy);
         mIvFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
         mTvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
         mTvPreOrder = itemView.findViewById(R.id.tv_pre_order);
@@ -61,7 +59,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     public void bindViewHolder(CartItemModel cartItem) {
         ImageHandler.LoadImage(mIvProductImage, cartItem.getImageUrl());
         mTvProductName.setText(cartItem.getName());
-        mTvProductPrice.setText(CURRENCY_RUPIAH.format(cartItem.getPrice()));
+        mTvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                (int) cartItem.getPrice(), true));
         mTvProductWeight.setText(cartItem.getWeightFmt());
         mTvProductTotalItem.setText(String.valueOf(cartItem.getQuantity()));
 
