@@ -20,16 +20,6 @@ import java.util.List;
 
 /**
  * @author okasurya on 2/13/18.
- *
- * How to use?
- *
- * Menus menus = new Menus(context);
- * menus.setItemMenuList(string array / String[] / List<ItemMenus>);
- * menus.setActionText("Button Action");
- * menus.setOnActionClickListener(View.OnClickListener);
- * menus.setOnItemMenuClickListener(Menus.OnItemMenuClickListener);
- * menus.show();
- * menus.dismiss();
  */
 
 public class Menus extends BaseBottomSheetView {
