@@ -175,7 +175,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     protected void prepareView(View view) {
         UserAuthenticationAnalytics.setActiveRegister();
-        registerPhoneNumberButton.setVisibility(View.GONE);
+        registerPhoneNumberButton.setVisibility(View.VISIBLE);
 
         registerButton.setColor(Color.WHITE);
         registerButton.setBorderColor(R.color.black);
