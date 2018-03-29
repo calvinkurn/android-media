@@ -56,6 +56,7 @@ import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.attachinvoice.view.activity.AttachInvoiceActivity;
+import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.inbox.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.inbox.attachproduct.view.activity.AttachProductActivity;
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
@@ -77,6 +78,8 @@ import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoiceAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentProductProfile;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
@@ -87,6 +90,8 @@ import com.tokopedia.inbox.inboxchat.uploadimage.ImageUpload;
 import com.tokopedia.inbox.inboxchat.util.Events;
 import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
 import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSingleViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
@@ -405,7 +410,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void startAttachProductActivity(String shopId, String shopName, boolean isSeller) {
 //        Intent intent = AttachProductActivity.createInstance(getActivity(),shopId,shopName,isSeller);
 //        startActivityForResult(intent,AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE);
-        Intent intent = AttachInvoiceActivity.createInstance(getActivity(),"");
+
+        String msgId = getArguments().getString(PARAM_MESSAGE_ID);
+        Intent intent = AttachInvoiceActivity.createInstance(getActivity(),
+                getArguments().getString(ChatRoomActivity.PARAM_USER_ID),
+                Integer.parseInt(msgId));
         startActivityForResult(intent,AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE);
     }
 
@@ -957,7 +966,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             }
                         }
                     });
-
                 }
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
@@ -1121,9 +1129,62 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 ArrayList<ResultProduct> resultProducts = data.getParcelableArrayListExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY);
                 attachProductRetrieved(resultProducts);
                 break;
+            case AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE:
+                if(data == null)
+                    break;
+                if(!data.hasExtra(AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY))
+                    break;
+                SelectedInvoice selectedInvoice = data.getParcelableExtra(AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY);
+                attachInvoiceRetrieved(selectedInvoice);
+                break;
             default:
                 break;
         }
+    }
+
+    private void attachInvoiceRetrieved(SelectedInvoice selectedInvoice){
+        String msgId = getArguments().getString(PARAM_MESSAGE_ID);
+        try {
+            addInvoiceChatBalloonToChatList(selectedInvoice);
+            presenter.sendInvoiceAttachment(msgId,selectedInvoice);
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+
+    private void addInvoiceChatBalloonToChatList(SelectedInvoice selectedInvoice){
+        AttachInvoiceSentViewModel invoiceToSend = new AttachInvoiceSentViewModel();
+        Attachment attachment = new Attachment();
+        attachment.setType(AttachmentChatHelper.INVOICE_ATTACHED);
+        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
+        AttachmentInvoiceAttributes attachmentInvoiceAttributes = new AttachmentInvoiceAttributes(
+                selectedInvoice.getInvoiceNo(),
+                selectedInvoice.getDate(),
+                selectedInvoice.getDescription(),
+                selectedInvoice.getInvoiceUrl(),
+                selectedInvoice.getInvoiceId(),
+                selectedInvoice.getTopProductImage(),
+                selectedInvoice.getStatus(),
+                selectedInvoice.getStatusId(),
+                selectedInvoice.getTopProductName(),
+                selectedInvoice.getAmount()
+                );
+        AttachmentInvoice attachmentInvoice = new AttachmentInvoice();
+        attachmentInvoice.setType(selectedInvoice.getInvoiceType());
+        attachmentInvoice.setTypeString(selectedInvoice.getInvoiceTypeStr());
+        attachmentInvoice.setAttributes(attachmentInvoiceAttributes);
+        attachmentAttributes.setInvoiceLink(attachmentInvoice);
+        attachment.setAttributes(attachmentAttributes);
+
+        invoiceToSend.setAttachment(attachment);
+        invoiceToSend.setReplyTime(MyChatViewModel.SENDING_TEXT);
+        invoiceToSend.setDummy(true);
+        invoiceToSend.setMsg("");
+        invoiceToSend.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+        adapter.addReply(invoiceToSend);
+        recyclerView.scrollToPosition(adapter.getList().size()-1);
     }
 
     public void attachProductRetrieved(ArrayList<ResultProduct> resultProducts){
@@ -1305,5 +1366,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     AttachProductAnalytics.getEventClickChatAttachedProductImage().getEvent()
             );
         }
+    }
+
+    @Override
+    public void onInvoiceSelected(SelectedInvoice selectedInvoice) {
+        attachInvoiceRetrieved(selectedInvoice);
     }
 }

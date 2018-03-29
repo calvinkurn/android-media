@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 public class AttachInvoiceListAdapter extends BaseListAdapter<InvoiceViewModel,AttachInvoiceListAdapterTypeFactory> {
-    public AttachInvoiceListAdapter(AttachInvoiceListAdapterTypeFactory adapterTypeFactory) {
-        super(adapterTypeFactory);
+    public AttachInvoiceListAdapter(AttachInvoiceListAdapterTypeFactory baseListAdapterTypeFactory, OnAdapterInteractionListener<InvoiceViewModel> onAdapterInteractionListener) {
+        super(baseListAdapterTypeFactory, onAdapterInteractionListener);
     }
 }

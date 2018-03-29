@@ -28,7 +28,7 @@ public class GetTxInvoicesService extends AuthService<GetTxInvoicesApi>{
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.Transaction.URL_TX_ORDER;
+        return "http://10.0.11.130";
     }
 
     @Override

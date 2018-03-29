@@ -34,6 +34,8 @@ public class InvoiceViewHolder extends AbstractViewHolder<InvoiceViewModel> {
         productImage = itemView.findViewById(R.id.attach_invoice_item_product_image);
     }
 
+
+
     @Override
     public void bind(InvoiceViewModel element) {
         invoiceNo.setText(element.getInvoiceNumber());

@@ -18,13 +18,15 @@ import java.util.ArrayList;
  */
 
 public class AttachInvoiceActivity extends BaseSimpleActivity implements AttachInvoiceContract.Activity {
-    public static String TOKOPEDIA_ATTACH_INVOICE_USER_ID_KEY = "";
+    public static String TOKOPEDIA_ATTACH_INVOICE_USER_ID_KEY = "ATTACH_INVOICE_USER_ID";
+    public static String TOKOPEDIA_ATTACH_INVOICE_MSG_ID_KEY = "ATTACH_INVOICE_MSG_ID";
     public static final int TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114;
     public static final int TOKOPEDIA_ATTACH_INVOICE_RESULT_CODE_OK = 325;
-
-    public static Intent createInstance(Context context, String userId) {
+    public static String TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY = "SELECTED_INVOICE";
+    public static Intent createInstance(Context context, String userId, int messageId) {
         Intent intent = new Intent(context, AttachInvoiceActivity.class);
         intent.putExtra(TOKOPEDIA_ATTACH_INVOICE_USER_ID_KEY,userId);
+        intent.putExtra(TOKOPEDIA_ATTACH_INVOICE_MSG_ID_KEY,messageId);
         return intent;
     }
 
@@ -41,11 +43,22 @@ public class AttachInvoiceActivity extends BaseSimpleActivity implements AttachI
 
     @Override
     public String getUserId() {
+        String userId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_INVOICE_USER_ID_KEY);
         return "7977933";
     }
 
     @Override
     public void finishActivityWithResult(ArrayList<ResultProduct> products) {
 
+    }
+
+    @Override
+    public int getMessageId() {
+        int msgId = 0;
+        if(getIntent().hasExtra(TOKOPEDIA_ATTACH_INVOICE_MSG_ID_KEY))
+        {
+            msgId = getIntent().getIntExtra(TOKOPEDIA_ATTACH_INVOICE_MSG_ID_KEY,0);
+        }
+        return msgId;
     }
 }

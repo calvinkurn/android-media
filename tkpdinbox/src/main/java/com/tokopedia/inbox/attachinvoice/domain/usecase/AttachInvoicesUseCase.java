@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.attachinvoice.domain.usecase;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.inbox.attachinvoice.data.repository.AttachInvoicesRepository;
@@ -22,9 +23,11 @@ import rx.functions.Func1;
  */
 
 public class AttachInvoicesUseCase extends UseCase<List<InvoiceViewModel>>{
-    private static final String KEYWORD_KEY = "keyword";
-    private static final String USER_ID_KEY = "user_id";
-    private static final String PAGE_KEY = "page";
+    public static final String KEYWORD_KEY = "keyword";
+    public static final String USER_ID_KEY = "user_id";
+    public static final String PAGE_KEY = "page";
+    public static final String MESSAGE_ID_KEY = "message_id";
+    public static int DEFAULT_LIMIT = 10;
     AttachInvoicesRepository repository;
 
     public AttachInvoicesUseCase(AttachInvoicesRepository repository) {
@@ -36,21 +39,22 @@ public class AttachInvoicesUseCase extends UseCase<List<InvoiceViewModel>>{
         return repository.getUserInvoices(requestParams.getParamsAllValueInString()).map(new InvoiceToInvoiceViewModelMapper());
     }
 
-    public static RequestParams createRequestParam(String query,String userId, int page, Context context){
+
+
+    public static RequestParams createRequestParam(String query,String userId, int page, int messageId ,Context context){
         if(page == 0) page = 1;
         RequestParams param = RequestParams.create();
-//        param.putString(KEYWORD_KEY,query);
+        if(!TextUtils.isEmpty(query)) param.putString(KEYWORD_KEY,query);
         param.putString(USER_ID_KEY,userId);
         param.putString(PAGE_KEY,String.valueOf(page));
-        param.putString("start","1/1/2018");
+//        param.putString("start","1/1/2018");
+        param.putString(MESSAGE_ID_KEY,String.valueOf(messageId));
+//        param.putString("end","12/12/2018");
 
-        param.putString("end","12/12/2018");
-
-//        param.putAll((Map<String,String>)AuthUtil.generateParams(context));
-        Map<String,String> authParam = AuthUtil.generateParams(context);
-        for(String key:authParam.keySet()){
-            param.putString(key,authParam.get(key));
-        }
+//        Map<String,String> authParam = AuthUtil.generateParams(context);
+//        for(String key:authParam.keySet()){
+//            param.putString(key,authParam.get(key));
+//        }
         return param;
     }
 }

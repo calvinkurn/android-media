@@ -10,22 +10,39 @@ import javax.annotation.Nullable;
  */
 
 public class Invoice {
+    int statusInt;
     String number;
     String type;
     String url;
-    List<Product> products;
+    String title;
+    String desc;
     String date;
     String status;
     String total;
-
-    public Invoice(String number, String type, String url, @Nullable List<Product> products, String date, String status, String total) {
+    String imageUrl;
+    int invoiceTypeInt;
+    int invoiceId;
+    public Invoice(int statusInt, String number, String type, String url, String title, String desc, String date, String status, String total, String imageUrl, int invoiceTypeInt, int invoiceId) {
+        this.statusInt = statusInt;
         this.number = number;
         this.type = type;
         this.url = url;
-        this.products = products;
+        this.title = title;
+        this.desc = desc;
         this.date = date;
         this.status = status;
         this.total = total;
+        this.imageUrl = imageUrl;
+        this.invoiceTypeInt = invoiceTypeInt;
+        this.invoiceId = invoiceId;
+    }
+
+    public int getStatusInt() {
+        return statusInt;
+    }
+
+    public void setStatusInt(int statusInt) {
+        this.statusInt = statusInt;
     }
 
     public String getNumber() {
@@ -52,12 +69,20 @@ public class Invoice {
         this.url = url;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public String getTitle() {
+        return title;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     public String getDate() {
@@ -82,5 +107,29 @@ public class Invoice {
 
     public void setTotal(String total) {
         this.total = total;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public int getInvoiceTypeInt() {
+        return invoiceTypeInt;
+    }
+
+    public void setInvoiceTypeInt(int invoiceTypeInt) {
+        this.invoiceTypeInt = invoiceTypeInt;
+    }
+
+    public int getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(int invoiceId) {
+        this.invoiceId = invoiceId;
     }
 }

@@ -18,6 +18,7 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
@@ -35,6 +36,8 @@ import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetReplySubscriber;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
 import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
@@ -42,6 +45,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -270,23 +274,26 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
                 item.setAttachment(response.getData().getAttachment());
                 if (response.getData().getAttachment() != null &&
-                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
-                                .PRODUCT_ATTACHED)) {
+                        response.getData().getAttachment().getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)) {
                     AttachProductViewModel productItem = new AttachProductViewModel(item);
-                    Integer productId = response.getData().getAttachment().getAttributes()
-                            .getProductId();
+                    Integer productId = response.getData().getAttachment().getAttributes().getProductId();
                     getView().getAdapter().removeLastProductWithId(productId);
                     getView().getAdapter().addReply(productItem);
-                } else {
-
+                }
+                else if(response.getData().getAttachment() != null &&
+                        response.getData().getAttachment().getType().equals(AttachmentChatHelper.INVOICE_ATTACHED)){
+                    AttachInvoiceSentViewModel invoiceSentViewModel = new AttachInvoiceSentViewModel(item);
+                    getView().getAdapter().removeLast();
+                    getView().getAdapter().addReply(invoiceSentViewModel);
+                }
+                else {
                     getView().getAdapter().removeLast();
                     getView().getAdapter().addReply(item);
                 }
                 getView().finishLoading();
                 getView().resetReplyColumn();
                 getView().scrollToBottom();
-            } else if (getView() != null && getView().isCurrentThread(response.getData().getMsgId
-                    ())) {
+            } else if (getView() != null && getView().isCurrentThread(response.getData().getMsgId())) {
                 OppositeChatViewModel item = new OppositeChatViewModel();
                 item.setReplyId(response.getData().getMsgId());
                 item.setMsgId(response.getData().getMsgId());
@@ -298,12 +305,17 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                     getView().getAdapter().removeTyping();
                 }
                 if (response.getData().getAttachment() != null &&
-                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
-                                .PRODUCT_ATTACHED)) {
+                        response.getData().getAttachment().getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)) {
                     AttachProductViewModel productItem = new AttachProductViewModel(item);
                     getView().getAdapter().addReply(productItem);
-                } else
+                } else if(response.getData().getAttachment() != null &&
+                        response.getData().getAttachment().getType().equals(AttachmentChatHelper.INVOICE_ATTACHED)) {
+                    AttachInvoiceSelectionViewModel invoices = AttachInvoiceMapper.attachmentToAttachInvoiceSelectionModel(response.getData().getAttachment());
+                    getView().getAdapter().addReply(invoices);
+                }
+                else {
                     getView().getAdapter().addReply(item);
+                }
                 getView().finishLoading();
                 getView().scrollToBottomWithCheck();
                 try {
@@ -511,8 +523,42 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
-    public void sendProductAttachment(String messageId,
-                                      ResultProduct product) throws JSONException {
+    public void sendInvoiceAttachment(String messageId, SelectedInvoice invoice) throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("code",ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
+
+        JSONObject data = new JSONObject();
+        data.put("message_id",messageId);
+        data.put("message",invoice.getInvoiceNo());
+        SimpleDateFormat date = new SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+        data.put("start_time",date.format(Calendar.getInstance().getTime()));
+        data.put("attachment_type",7);
+
+        JSONObject payload = new JSONObject();
+        payload.put("type_id",invoice.getInvoiceType());
+        payload.put("type",invoice.getInvoiceTypeStr());
+
+        JSONObject payloadAttributes = new JSONObject();
+        payloadAttributes.put("id",invoice.getInvoiceId());
+        payloadAttributes.put("code",invoice.getInvoiceNo());
+        payloadAttributes.put("title",invoice.getTopProductName());
+        payloadAttributes.put("description",invoice.getDescription());
+        payloadAttributes.put("create_time",invoice.getDate());
+        payloadAttributes.put("image_url",invoice.getTopProductImage());
+        payloadAttributes.put("href_url",invoice.getInvoiceUrl());
+        payloadAttributes.put("status_id",invoice.getStatusId());
+        payloadAttributes.put("status",invoice.getStatus());
+        payloadAttributes.put("total_amount",invoice.getAmount());
+
+        payload.put("attributes",payloadAttributes);
+        data.put("payload",payload);
+        json.put("data",data);
+
+        ws.send(json.toString());
+    }
+
+    public void sendProductAttachment(String messageId, ResultProduct product) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
         JSONObject data = new JSONObject();

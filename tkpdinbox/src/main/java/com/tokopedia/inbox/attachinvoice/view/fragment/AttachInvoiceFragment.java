@@ -1,25 +1,31 @@
 package com.tokopedia.inbox.attachinvoice.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.attachinvoice.data.mapper.TkpdResponseToInvoicesDataModelMapper;
 import com.tokopedia.inbox.attachinvoice.data.repository.AttachInvoicesRepositoryImpl;
 import com.tokopedia.inbox.attachinvoice.data.source.service.GetTxInvoicesService;
 import com.tokopedia.inbox.attachinvoice.domain.usecase.AttachInvoicesUseCase;
 import com.tokopedia.inbox.attachinvoice.view.AttachInvoiceContract;
+import com.tokopedia.inbox.attachinvoice.view.activity.AttachInvoiceActivity;
 import com.tokopedia.inbox.attachinvoice.view.adapter.AttachInvoiceListAdapter;
 import com.tokopedia.inbox.attachinvoice.view.adapter.AttachInvoiceListAdapterTypeFactory;
 import com.tokopedia.inbox.attachinvoice.view.model.InvoiceViewModel;
 import com.tokopedia.inbox.attachinvoice.view.presenter.AttachInvoicePresenter;
+import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.inbox.attachproduct.view.fragment.AttachProductFragment;
 import com.tokopedia.inbox.attachproduct.view.presenter.AttachProductContract;
 
@@ -29,10 +35,9 @@ import java.util.List;
  * Created by Hendri on 22/03/18.
  */
 
-public class AttachInvoiceFragment extends BaseSearchListFragment<InvoiceViewModel,AttachInvoiceListAdapterTypeFactory> implements AttachInvoiceContract.View {
+public class AttachInvoiceFragment extends BaseListFragment<InvoiceViewModel,AttachInvoiceListAdapterTypeFactory> implements AttachInvoiceContract.View {
     AttachInvoiceContract.Presenter presenter;
     AttachInvoiceContract.Activity activity;
-    String userId;
     private SwipeRefreshLayout swipeRefreshLayout;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,11 @@ public class AttachInvoiceFragment extends BaseSearchListFragment<InvoiceViewMod
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        RecyclerView recyclerView = super.getRecyclerView(view);
+        if(recyclerView instanceof VerticalRecyclerView){
+            VerticalRecyclerView verticalRecyclerView = (VerticalRecyclerView)recyclerView;
+            verticalRecyclerView.clearItemDecoration();
+        }
         return view;
     }
 
@@ -73,23 +83,17 @@ public class AttachInvoiceFragment extends BaseSearchListFragment<InvoiceViewMod
     }
 
     @Override
-    public void onSearchSubmitted(String text) {
-        presenter.loadInvoiceData(text,activity.getUserId(),0,getContext());
-    }
-
-    @Override
-    public void onSearchTextChanged(String text) {
-
-    }
-
-    @Override
     public void onItemClicked(InvoiceViewModel invoiceViewModel) {
-
+        Intent data = new Intent();
+        data.putExtra(AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY,new SelectedInvoice(invoiceViewModel));
+        getActivity().setResult(AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_RESULT_CODE_OK,data);
+        getActivity().finish();
     }
 
     @Override
     public void loadData(int page) {
-        presenter.loadInvoiceData(searchInputView.getSearchText(),activity.getUserId(),page,getContext());
+        //Query search are disabled for this release therefore sending empty string
+        presenter.loadInvoiceData("",activity.getUserId(),page,activity.getMessageId(),getContext());
     }
 
     @Override
@@ -100,7 +104,7 @@ public class AttachInvoiceFragment extends BaseSearchListFragment<InvoiceViewMod
     @NonNull
     @Override
     protected BaseListAdapter<InvoiceViewModel, AttachInvoiceListAdapterTypeFactory> createAdapterInstance() {
-        return new AttachInvoiceListAdapter(getAdapterTypeFactory());
+        return new AttachInvoiceListAdapter(getAdapterTypeFactory(),this);
     }
 
     @Override
@@ -118,11 +122,6 @@ public class AttachInvoiceFragment extends BaseSearchListFragment<InvoiceViewMod
     public void showErrorMessage(Throwable throwable) {
         throwable.printStackTrace();
         hideAllLoadingIndicator();
-    }
-
-    @Override
-    public void updateButtonBasedOnChecked(int checkedCount) {
-
     }
 
     @Nullable

@@ -19,23 +19,29 @@ public class InvoiceToInvoiceViewModelMapper implements Func1<List<Invoice>, Lis
         ArrayList<InvoiceViewModel> invoiceViewModels = new ArrayList<>();
         for(Invoice invoice:invoices){
             String invoiceNumber = invoice.getNumber();
-            String productTopName = "";
-            String productTopImage = "";
+            String productTopName = invoice.getTitle();
+            String productTopImage = invoice.getImageUrl();
             String status = invoice.getStatus();
             String date = invoice.getDate();
             String total = invoice.getTotal();
-            String productCountDisplay = "";
-            String invoiceType = "";
-            String description = "";
+            String productCountDisplay = invoice.getDesc();
+            String invoiceType = invoice.getType();
+            String description = invoice.getDesc();
 
-            if(invoice.getProducts().size() > 0){
-                productTopImage = invoice.getProducts().get(0).getThumbnailUrl();
-                productTopName = invoice.getProducts().get(0).getName();
-                if(invoice.getProducts().size() > 1){
-                    description = "+"+String.valueOf(invoice.getProducts().size() - 1)+" barang lainnya";
-                }
-            }
-            invoiceViewModels.add(new InvoiceViewModel(invoiceNumber,productTopName,productTopImage,status,date,total,productCountDisplay,invoiceType,description));
+            invoiceViewModels.add(new InvoiceViewModel(
+                    invoice.getInvoiceId(),
+                    invoice.getInvoiceTypeInt(),
+                    invoice.getStatusInt(),
+                    invoiceNumber,
+                    productTopName,
+                    productTopImage,
+                    status,
+                    date,
+                    total,
+                    invoiceType,
+                    description,
+                    invoice.getUrl()
+            ));
         }
         return invoiceViewModels;
     }

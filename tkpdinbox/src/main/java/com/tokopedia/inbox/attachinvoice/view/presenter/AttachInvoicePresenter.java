@@ -28,8 +28,8 @@ public class AttachInvoicePresenter implements AttachInvoiceContract.Presenter {
     }
 
     @Override
-    public void loadInvoiceData(String query, String userId, int page, Context context) {
-        useCase.execute(AttachInvoicesUseCase.createRequestParam(query,userId,page,context),new AttachInvoicesLoadInvoiceDataSubscriber(view));
+    public void loadInvoiceData(String query, String userId, int page, int messageId ,Context context) {
+        useCase.execute(AttachInvoicesUseCase.createRequestParam(query,userId,page,messageId,context),new AttachInvoicesLoadInvoiceDataSubscriber(view));
     }
 //
 //    @Override

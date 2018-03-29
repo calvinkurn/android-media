@@ -27,6 +27,7 @@ public class AttachmentChatHelper {
     private static final String DEFAULT = "1";
     public static final String IMAGE_ATTACHED = "2";
     public static final String PRODUCT_ATTACHED = "3";
+    public static final String INVOICE_ATTACHED = "7";
 
     public void parse(MyChatViewModel myChatViewModel,
                       ImageView view,

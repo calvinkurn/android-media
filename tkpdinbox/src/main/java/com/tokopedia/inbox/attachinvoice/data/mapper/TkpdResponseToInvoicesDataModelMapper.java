@@ -4,6 +4,9 @@ import com.tokopedia.core.network.entity.replacement.opportunitydata.Opportunity
 import com.tokopedia.core.network.entity.replacement.opportunitydata.OpportunityList;
 import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderProduct;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.inbox.attachinvoice.data.model.GetInvoicesPayloadWrapper;
+import com.tokopedia.inbox.attachinvoice.data.model.GetInvoicesResponseWrapper;
+import com.tokopedia.inbox.attachinvoice.data.model.InvoiceAttributesDataModel;
 import com.tokopedia.inbox.attachinvoice.data.model.InvoicesDataModel;
 import com.tokopedia.inbox.attachinvoice.domain.model.Invoice;
 import com.tokopedia.inbox.attachinvoice.domain.model.Product;
@@ -23,27 +26,56 @@ import rx.functions.Func1;
  * Created by Hendri on 21/03/18.
  */
 
-public class TkpdResponseToInvoicesDataModelMapper implements Func1<Response<TkpdResponse>, List<Invoice>> {
-    @Override
-    public List<Invoice> call(Response<TkpdResponse> tkpdResponseResponse) {
-        List<Invoice> domainModel = new ArrayList<>();
-        TkpdResponse tkpdResponse = tkpdResponseResponse.body();
-        OpportunityData attachProductAPIResponseWrapper = tkpdResponse.convertDataObj(OpportunityData.class);
-        List<OpportunityList> opportunityList = attachProductAPIResponseWrapper.getOpportunityList();
-        for(OpportunityList opportunity:opportunityList){
-            List<Product> products = new ArrayList<>();
-            for(OrderProduct orderProduct:opportunity.getOrderProducts()){
-                products.add(new Product(orderProduct.getProductName(),orderProduct.getProductPrice(),orderProduct.getProductPicture()));
-            }
-            domainModel.add(new Invoice(opportunity.getOrderDetail().getDetailInvoice(),
-                    "market",
-                    opportunity.getOrderDetail().getDetailPdfUri(),
-                    products,
-                    opportunity.getOrderDetail().getDetailOrderDate(),
-                    opportunity.getOrderLast().getLastBuyerStatus(),
-                    opportunity.getOrderDetail().getDetailOpenAmountIdr()));
-        }
+public class TkpdResponseToInvoicesDataModelMapper implements Func1<Response<GetInvoicesResponseWrapper>, List<Invoice>> {
+//    @Override
+//    public List<Invoice> call(Response<TkpdResponse> tkpdResponseResponse) {
+//        List<Invoice> domainModel = new ArrayList<>();
+//        TkpdResponse tkpdResponse = tkpdResponseResponse.body();
+//        OpportunityData attachProductAPIResponseWrapper = tkpdResponse.convertDataObj(OpportunityData.class);
+//        List<OpportunityList> opportunityList = attachProductAPIResponseWrapper.getOpportunityList();
+//        for(OpportunityList opportunity:opportunityList){
+//            List<Product> products = new ArrayList<>();
+//            for(OrderProduct orderProduct:opportunity.getOrderProducts()){
+//                products.add(new Product(orderProduct.getProductName(),orderProduct.getProductPrice(),orderProduct.getProductPicture()));
+//            }
+//            long createdDateMilis = 1522000000000L;
+//            domainModel.add(new Invoice(Integer.parseInt(opportunity.getOrderLast().getLastOrderStatus()),
+//                    opportunity.getOrderDetail().getDetailInvoice(),
+//                    "market",
+//                    opportunity.getOrderDetail().getDetailPdfUri(),
+//                    products,
+//                    opportunity.getOrderDetail().getDetailOrderDate(),
+//                    opportunity.getOrderLast().getLastBuyerStatus(),
+//                    opportunity.getOrderDetail().getDetailOpenAmountIdr(),
+//                    createdDateMilis));
+//        }
+//        return domainModel;
+//    }
 
+    @Override
+    public List<Invoice> call(Response<GetInvoicesResponseWrapper> getInvoicesResponseWrapperResponse) {
+        GetInvoicesResponseWrapper responseWrapper = getInvoicesResponseWrapperResponse.body();
+        List<Invoice> domainModel = new ArrayList<>();
+        if(responseWrapper.getDataWrapper() != null && responseWrapper.getDataWrapper().getPayloadWrapper() != null){
+            GetInvoicesPayloadWrapper payloadWrapper = responseWrapper.getDataWrapper().getPayloadWrapper();
+            if(payloadWrapper.getInvoices() != null) {
+                for (InvoicesDataModel invoicesDataModel : payloadWrapper.getInvoices()) {
+                    InvoiceAttributesDataModel invoiceAttributesDataModel = invoicesDataModel.getAttribute();
+                    domainModel.add(new Invoice(invoiceAttributesDataModel.getStatusId(),
+                            invoiceAttributesDataModel.getInvoiceNo(),
+                            invoicesDataModel.getType(),
+                            invoiceAttributesDataModel.getUrl(),
+                            invoiceAttributesDataModel.getTitle(),
+                            invoiceAttributesDataModel.getDescription(),
+                            invoiceAttributesDataModel.getInvoiceDate(),
+                            invoiceAttributesDataModel.getStatus(),
+                            invoiceAttributesDataModel.getAmount(),
+                            invoiceAttributesDataModel.getImageUrl(),
+                            invoicesDataModel.getTypeId(),
+                            invoiceAttributesDataModel.getInvoiceId()));
+                }
+            }
+        }
         return domainModel;
     }
 }

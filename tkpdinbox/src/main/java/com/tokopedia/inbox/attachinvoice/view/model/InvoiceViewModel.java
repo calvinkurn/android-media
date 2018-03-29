@@ -9,26 +9,57 @@ import com.tokopedia.inbox.attachinvoice.view.viewholder.InvoiceViewHolder;
  */
 
 public class InvoiceViewModel implements Visitable<AttachInvoiceListAdapterTypeFactory> {
+
+    int invoiceId;
+    int invoiceType;
+    int statusId;
     String invoiceNumber;
     String productTopName;
     String productTopImage;
     String status;
     String date;
     String total;
-    String productCountDisplay;
-    String invoiceType;
+    String invoiceTypeStr;
     String description;
+    String invoiceUrl;
 
-    public InvoiceViewModel(String invoiceNumber, String productTopName, String productTopImage, String status, String date, String total, String productCountDisplay, String invoiceType, String description) {
+    public InvoiceViewModel(int invoiceId, int invoiceType, int statusId, String invoiceNumber, String productTopName, String productTopImage, String status, String date, String total, String invoiceTypeStr, String description, String invoiceUrl) {
+        this.invoiceId = invoiceId;
+        this.invoiceType = invoiceType;
+        this.statusId = statusId;
         this.invoiceNumber = invoiceNumber;
         this.productTopName = productTopName;
         this.productTopImage = productTopImage;
         this.status = status;
         this.date = date;
         this.total = total;
-        this.productCountDisplay = productCountDisplay;
-        this.invoiceType = invoiceType;
+        this.invoiceTypeStr = invoiceTypeStr;
         this.description = description;
+        this.invoiceUrl = invoiceUrl;
+    }
+
+    public int getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(int invoiceId) {
+        this.invoiceId = invoiceId;
+    }
+
+    public int getInvoiceType() {
+        return invoiceType;
+    }
+
+    public void setInvoiceType(int invoiceType) {
+        this.invoiceType = invoiceType;
+    }
+
+    public int getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(int statusId) {
+        this.statusId = statusId;
     }
 
     public String getInvoiceNumber() {
@@ -79,20 +110,12 @@ public class InvoiceViewModel implements Visitable<AttachInvoiceListAdapterTypeF
         this.total = total;
     }
 
-    public String getProductCountDisplay() {
-        return productCountDisplay;
+    public String getInvoiceTypeStr() {
+        return invoiceTypeStr;
     }
 
-    public void setProductCountDisplay(String productCountDisplay) {
-        this.productCountDisplay = productCountDisplay;
-    }
-
-    public String getInvoiceType() {
-        return invoiceType;
-    }
-
-    public void setInvoiceType(String invoiceType) {
-        this.invoiceType = invoiceType;
+    public void setInvoiceTypeStr(String invoiceTypeStr) {
+        this.invoiceTypeStr = invoiceTypeStr;
     }
 
     public String getDescription() {
@@ -101,6 +124,14 @@ public class InvoiceViewModel implements Visitable<AttachInvoiceListAdapterTypeF
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getInvoiceUrl() {
+        return invoiceUrl;
+    }
+
+    public void setInvoiceUrl(String invoiceUrl) {
+        this.invoiceUrl = invoiceUrl;
     }
 
     @Override

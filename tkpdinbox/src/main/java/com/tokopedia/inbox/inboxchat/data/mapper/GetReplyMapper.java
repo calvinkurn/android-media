@@ -15,11 +15,13 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.Contact;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ReplyData;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ThumbnailChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +97,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                     temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
                 }
                 temp.setAttachment(item.getAttachment());
-                list.add(checkAndConvertItemModelToAttachProductModel(temp,temp.getAttachment()));
+                list.add(checkAndConvertItemModelToAttachmentType(temp,temp.getAttachment()));
             }else {
                 if (!item.isOpposite()) {
                     MyChatViewModel temp = new MyChatViewModel();
@@ -118,7 +120,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                     temp.setAttachment(item.getAttachment());
                     temp.setReadStatus(item.isMessageIsRead());
 
-                    list.add(checkAndConvertItemModelToAttachProductModel(temp,temp.getAttachment()));
+                    list.add(checkAndConvertItemModelToAttachmentType(temp,temp.getAttachment()));
                 } else {
                     OppositeChatViewModel temp = new OppositeChatViewModel();
                     temp.setReplyId(item.getReplyId());
@@ -140,7 +142,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                         temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
                     }
                     temp.setAttachment(item.getAttachment());
-                    list.add(checkAndConvertItemModelToAttachProductModel(temp,temp.getAttachment()));
+                    list.add(checkAndConvertItemModelToAttachmentType(temp,temp.getAttachment()));
                 }
             }
         }
@@ -170,20 +172,31 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
         }
     }
 
-    private Visitable checkAndConvertItemModelToAttachProductModel(Visitable input, Attachment attachment){
-        if(attachment == null)
-            return input;
-        if(!attachment.getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED))
-            return input;
+    private Visitable checkAndConvertItemModelToAttachmentType(Visitable input, Attachment attachment){
+        if(attachment == null) return input;
 
-        if((input instanceof MyChatViewModel)){
-            return new AttachProductViewModel((MyChatViewModel)input);
+        if(attachment.getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)) {
+            if ((input instanceof MyChatViewModel)) {
+                return new AttachProductViewModel((MyChatViewModel) input);
+            } else if (input instanceof OppositeChatViewModel) {
+                return new AttachProductViewModel((OppositeChatViewModel) input);
+            } else if (input instanceof ThumbnailChatViewModel) {
+                return new AttachProductViewModel((ThumbnailChatViewModel) input);
+            }
         }
-        else if(input instanceof OppositeChatViewModel){
-            return new AttachProductViewModel((OppositeChatViewModel)input);
-        }
-        else if(input instanceof ThumbnailChatViewModel){
-            return new AttachProductViewModel((ThumbnailChatViewModel) input);
+        else if(attachment.getType().equals(AttachmentChatHelper.INVOICE_ATTACHED)) {
+            if(attachment.getAttributes().getInvoices() == null){
+                if ((input instanceof MyChatViewModel)) {
+                    return new AttachInvoiceSentViewModel((MyChatViewModel) input);
+                } else if (input instanceof OppositeChatViewModel) {
+                    return new AttachInvoiceSentViewModel((OppositeChatViewModel) input);
+                } else if (input instanceof ThumbnailChatViewModel) {
+                    return new AttachInvoiceSentViewModel((ThumbnailChatViewModel) input);
+                }
+            }
+            else {
+                return AttachInvoiceMapper.attachmentToAttachInvoiceSelectionModel(attachment);
+            }
         }
         return input;
     }
