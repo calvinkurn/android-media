@@ -188,8 +188,6 @@ public class PromoDetailFragment extends BaseDaggerFragment {
                 ClipData clip = ClipData.newPlainText("CLIP_DATA_LABEL_VOUCHER_PROMO", promoCode);
 
                 if (clipboard != null) clipboard.setPrimaryClip(clip);
-
-                promoDetailAdapter.notifyItemChanged(2);
             }
 
             @Override
