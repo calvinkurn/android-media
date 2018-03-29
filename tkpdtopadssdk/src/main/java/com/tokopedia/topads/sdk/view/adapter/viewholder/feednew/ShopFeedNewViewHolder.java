@@ -57,6 +57,7 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         this.imageLoader = imageLoader;
         this.itemClickListener = clickListener;
         View header = itemView.findViewById(R.id.header);
+        shopImage = itemView.findViewById(R.id.shop_image);
         shopTitle = itemView.findViewById(R.id.shop_title);
         shopSubtitle = itemView.findViewById(R.id.shop_subtitle);
         favoriteButton = itemView.findViewById(R.id.favorite_button);
