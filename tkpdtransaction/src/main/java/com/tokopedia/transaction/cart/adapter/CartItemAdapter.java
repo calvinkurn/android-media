@@ -676,11 +676,11 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void renderAcceptPartial(ViewHolder viewHolder) {
         if (enableCancelPartial) {
-            viewHolder.labelPartialOrder.setVisibility(View.GONE);
-            viewHolder.spShipmentOptionChoosen.setVisibility(View.GONE);
-        } else {
             viewHolder.labelPartialOrder.setVisibility(View.VISIBLE);
             viewHolder.spShipmentOptionChoosen.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.labelPartialOrder.setVisibility(View.GONE);
+            viewHolder.spShipmentOptionChoosen.setVisibility(View.GONE);
         }
     }
 
