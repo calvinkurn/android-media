@@ -101,7 +101,7 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
 
     @Override
     public int getItemCount() {
-        if (data.size() > 4) return 4;
+        if (data.size() > 3) return 3;
         else return data.size();
     }
 
