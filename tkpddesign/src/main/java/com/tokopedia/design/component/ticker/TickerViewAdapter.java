@@ -1,4 +1,4 @@
-package com.tokopedia.design.ticker;
+package com.tokopedia.design.component.ticker;
 
 import android.app.Activity;
 import android.support.v4.view.PagerAdapter;

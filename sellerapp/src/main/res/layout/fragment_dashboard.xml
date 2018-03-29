@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.tokopedia.design.ticker.TickerView
+            <com.tokopedia.design.component.ticker.TickerView
                 android:id="@+id/ticker_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
