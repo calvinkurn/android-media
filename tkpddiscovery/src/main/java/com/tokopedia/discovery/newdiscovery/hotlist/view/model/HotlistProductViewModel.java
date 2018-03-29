@@ -182,7 +182,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
                 "variant", "none / other",
                 "list", getTrackerName(),
                 "position", getTrackerPosition(),
-                "home_attribution", getHomeAttribution()
+                "attribution", getHomeAttribution()
         );
     }
 
@@ -220,7 +220,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
                 "category", "none / other",
                 "variant", "none / other",
                 "position", getTrackerPosition(),
-                "home_attribution", getHomeAttribution()
+                "attribution", getHomeAttribution()
         );
     }
 

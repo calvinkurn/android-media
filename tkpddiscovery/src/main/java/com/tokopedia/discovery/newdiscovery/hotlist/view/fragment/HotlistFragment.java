@@ -648,10 +648,9 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     private void trackingClickEnhance(HotlistProductViewModel product) {
-        Log.d("gav4", " hangnadi trackingClickEnhance: click product list");
         Map<String, Object> map = DataLayer.mapOf("event", "productClick",
                 "eventCategory", "hotlist page",
-                "eventAction", "click product list",
+                "eventAction", "click product curation",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
                         "currencyCode", "IDR",
