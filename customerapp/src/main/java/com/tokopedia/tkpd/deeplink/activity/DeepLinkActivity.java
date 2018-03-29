@@ -175,6 +175,24 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
+    public void goToPage(Intent destination) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+
+        if (getApplicationContext() instanceof TkpdCoreRouter) {
+            taskStackBuilder.addNextIntent(
+                    ((TkpdCoreRouter) getApplicationContext()).getHomeIntent(this)
+            );
+        }
+
+        taskStackBuilder.addNextIntent(
+                destination
+        );
+
+        taskStackBuilder.startActivities();
+        finish();
+    }
+
+    @Override
     public void networkError(final Uri uriData) {
         NetworkErrorHelper.showEmptyState(this, mainView, new NetworkErrorHelper.RetryClickedListener() {
             @Override

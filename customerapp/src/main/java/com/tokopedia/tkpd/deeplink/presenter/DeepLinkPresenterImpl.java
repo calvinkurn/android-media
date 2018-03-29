@@ -53,6 +53,7 @@ import com.tokopedia.tkpd.deeplink.domain.GetShopInfoUseCase;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
+import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
@@ -500,15 +501,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openDetailProduct(List<String> linkSegment, Uri uriData) {
         CommonUtils.dumper("wvlogin opened product");
-        Fragment fragment = ProductDetailRouter.instanceDeeplink(
-                context,
-                ProductPass.Builder.aProductPass()
-                        .setProductKey(linkSegment.get(1))
-                        .setShopDomain(linkSegment.get(0))
-                        .setProductUri(uriData.toString())
-                        .build());
-        viewListener.inflateFragment(fragment, "DETAIL_PRODUCT");
-        viewListener.hideActionBar();
+        Intent productInfoIntent = ProductInfoActivity.createInstance(context, ProductPass.Builder.aProductPass()
+                .setProductKey(linkSegment.get(1))
+                .setShopDomain(linkSegment.get(0))
+                .setProductUri(uriData.toString())
+                .build());
+        viewListener.goToPage(productInfoIntent);
     }
 
     private void openCatalogDetail(List<String> linkSegment, Uri uriData) {
