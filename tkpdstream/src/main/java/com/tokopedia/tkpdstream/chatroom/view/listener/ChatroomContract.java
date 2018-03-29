@@ -67,6 +67,10 @@ public interface ChatroomContract {
         interface SprintSaleViewHolderListener {
             void onSprintSaleClicked(String url, String campaignName);
         }
+
+        interface GroupChatPointsViewHolderListener{
+            void onRedirectUrl(String url);
+        }
     }
 
     interface Presenter extends CustomerPresenter<View> {

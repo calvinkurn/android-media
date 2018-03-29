@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.AdminAnnouncementViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.ChatViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.GroupChatPointsViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.SprintSaleViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.ImageAnnouncementViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.PendingChatViewHolder;
@@ -77,7 +78,7 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
 
     @Override
     public int type(GroupChatPointsViewModel groupChatPointsViewModel) {
-        return 0;
+        return GroupChatPointsViewHolder.LAYOUT;
     }
 
     @Override

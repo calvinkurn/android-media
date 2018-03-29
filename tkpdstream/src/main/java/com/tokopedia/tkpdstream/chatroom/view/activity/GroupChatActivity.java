@@ -49,6 +49,7 @@ import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
+import com.tokopedia.tkpdstream.chatroom.GroupChatNotifInterface;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
@@ -96,7 +97,7 @@ import javax.inject.Inject;
 public class GroupChatActivity extends BaseSimpleActivity
         implements GroupChatTabAdapter.TabListener, GroupChatContract.View,
         LoginGroupChatUseCase.LoginGroupChatListener, ChannelHandlerUseCase.ChannelHandlerListener
-        , ToolTipUtils.ToolTipListener {
+        , ToolTipUtils.ToolTipListener, GroupChatNotifInterface {
 
     private static final long VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1);
     private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
@@ -900,17 +901,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
-    public void onPushNotifReceived() {
-        GroupChatPointsViewModel model = new GroupChatPointsViewModel(
-                "Selamat! Anda mendapatkan 20 poin dari channel ini. Cek sekarang!"
-                , "Cek sekarang!"
-                , "www.tokopedia.com"
-        );
-        if (currentFragmentIsChat()) {
-            showPushNotif(model);
-        } else {
-            viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(model);
-        }
+    @Override
+    public void removeGroupChatPoints() {
+        viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(null);
     }
 
     private void showPushNotif(GroupChatPointsViewModel model) {
@@ -1320,5 +1313,18 @@ public class GroupChatActivity extends BaseSimpleActivity
                                               String channelName) {
         return "tracker_attribution=" + StreamAnalytics.generateTrackerAttribution
                 (attributeBanner, channelUrl, channelName);
+    }
+
+    @Override
+    public void onGetNotif(Bundle data) {
+        GroupChatPointsViewModel model = new GroupChatPointsViewModel(
+                "Selamat! Anda mendapatkan 20 poin dari channel ini. Cek sekarang!"
+                , "www.tokopedia.com"
+        );
+        if (currentFragmentIsChat()) {
+            showPushNotif(model);
+        } else {
+            viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(model);
+        }
     }
 }
