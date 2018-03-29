@@ -17,11 +17,11 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
-import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.ChannelPartnerAdapter;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
@@ -42,7 +42,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
 
     public static final String ARGS_CI_VIEW_MODEL = "CI_VIEW_MODEL";
 
-    private ChannelViewModel channelViewModel;
+    private ChannelInfoViewModel channelInfoViewModel;
 
     private View rootView;
     private ImageView profile;
@@ -62,7 +62,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            channelViewModel = savedInstanceState.getParcelable(ARGS_CI_VIEW_MODEL);
+            channelInfoViewModel = savedInstanceState.getParcelable(ARGS_CI_VIEW_MODEL);
         }
     }
 
@@ -85,7 +85,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(ARGS_CI_VIEW_MODEL, channelViewModel);
+        outState.putParcelable(ARGS_CI_VIEW_MODEL, channelInfoViewModel);
     }
 
     @Override
@@ -110,8 +110,8 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void renderData(ChannelViewModel channelViewModel) {
-        this.channelViewModel = channelViewModel;
+    public void renderData(ChannelInfoViewModel channelInfoViewModel) {
+        this.channelInfoViewModel = channelInfoViewModel;
         populateData();
     }
 
@@ -139,22 +139,22 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     }
 
     private void populateData() {
-        if (rootView == null || channelViewModel == null) {
+        if (rootView == null || channelInfoViewModel == null) {
             return;
         }
 
-        totalView.setText(TextFormatter.format(String.valueOf(channelViewModel.getTotalView())));
-        name.setText(channelViewModel.getAdminName());
-        title.setText(channelViewModel.getTitle());
-        subtitle.setText(channelViewModel.getDescription());
+        totalView.setText(TextFormatter.format(String.valueOf(channelInfoViewModel.getTotalView())));
+        name.setText(channelInfoViewModel.getAdminName());
+        title.setText(channelInfoViewModel.getTitle());
+        subtitle.setText(channelInfoViewModel.getDescription());
 
         ImageHandler.loadImageCircle2(profile.getContext(),
                 profile,
-                channelViewModel.getAdminPicture(),
+                channelInfoViewModel.getAdminPicture(),
                 R.drawable.loading_page);
 
-        if (channelViewModel.getChannelPartnerViewModels() != null
-                && !channelViewModel.getChannelPartnerViewModels().isEmpty()) {
+        if (channelInfoViewModel.getChannelPartnerViewModels() != null
+                && !channelInfoViewModel.getChannelPartnerViewModels().isEmpty()) {
             channelPartners.setNestedScrollingEnabled(false);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                     LinearLayoutManager.VERTICAL,
@@ -163,7 +163,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
 
             ChannelPartnerAdapter channelPartnerAdapter =
                     ChannelPartnerAdapter.createInstance(this);
-            channelPartnerAdapter.setList(channelViewModel.getChannelPartnerViewModels());
+            channelPartnerAdapter.setList(channelInfoViewModel.getChannelPartnerViewModels());
             channelPartners.setAdapter(channelPartnerAdapter);
         }
     }

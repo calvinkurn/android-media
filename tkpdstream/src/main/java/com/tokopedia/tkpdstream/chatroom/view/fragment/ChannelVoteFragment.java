@@ -303,10 +303,11 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
             if (getActivity() != null
                     && getActivity() instanceof GroupChatContract.View
-                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null
-                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getChannelViewModel() != null) {
-                analytics.eventClickVote(element.getType(), ((GroupChatContract.View) getActivity
-                        ()).getChannelInfoViewModel().getChannelViewModel().getChannelUrl());
+                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null) {
+                analytics.eventClickVote(
+                        element.getType(),
+                        ((GroupChatContract.View) getActivity()).
+                                getChannelInfoViewModel().getChannelUrl());
             }
         }
     }

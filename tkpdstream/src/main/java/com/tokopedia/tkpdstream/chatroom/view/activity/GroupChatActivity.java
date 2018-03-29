@@ -475,21 +475,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void showChannelInfoFragment() {
-
-        Bundle bundle = new Bundle();
-        if (getIntent().getExtras() != null) {
-            bundle.putAll(getIntent().getExtras());
-        }
-
-        Fragment fragment = getSupportFragmentManager().
-                findFragmentByTag(ChannelInfoFragment.class.getSimpleName());
+        Fragment fragment = populateChannelInfoFragment();
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (fragment == null) {
-            fragment = ChannelInfoFragment.createInstance(bundle);
-        }
-        ((ChannelInfoFragmentListener.View) fragment).renderData(
-                viewModel.getChannelInfoViewModel().getChannelViewModel());
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -716,7 +704,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         channelInfoDialog.setContentView(
                 createBottomSheetView(
                         checkPollValid(),
-                        viewModel.getChannelInfoViewModel().getChannelViewModel()));
+                        viewModel.getChannelInfoViewModel()));
 
         if (getIntent() != null
                 && getIntent().getExtras() != null
@@ -777,7 +765,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
-    private View createBottomSheetView(boolean hasValidPoll, ChannelViewModel channelViewModel) {
+    private View createBottomSheetView(boolean hasValidPoll,
+                                       ChannelInfoViewModel channelInfoViewModel) {
         View view = getLayoutInflater().inflate(R.layout.channel_info_bottom_sheet_dialog, null);
 
         TextView actionButton = view.findViewById(R.id.action_button);
@@ -800,14 +789,16 @@ public class GroupChatActivity extends BaseSimpleActivity
         else
             actionButton.setText(R.string.lets_chat);
 
-        participant.setText(TextFormatter.format(String.valueOf(channelViewModel.getTotalView())));
-        name.setText(channelViewModel.getAdminName());
-        title.setText(channelViewModel.getTitle());
-        subtitle.setText(channelViewModel.getDescription());
+        participant.setText(TextFormatter.format(String.valueOf(channelInfoViewModel.getTotalView())));
+        name.setText(channelInfoViewModel.getAdminName());
+        title.setText(channelInfoViewModel.getTitle());
+        subtitle.setText(channelInfoViewModel.getDescription());
 
-        ImageHandler.loadImage2(image, channelViewModel.getImage(), R.drawable.loading_page);
-        ImageHandler.loadImageCircle2(profile.getContext(), profile, channelViewModel.getAdminPicture(), R
-                .drawable.loading_page);
+        ImageHandler.loadImage2(image, channelInfoViewModel.getImage(), R.drawable.loading_page);
+        ImageHandler.loadImageCircle2(profile.getContext(),
+                profile,
+                channelInfoViewModel.getAdminPicture(),
+                R.drawable.loading_page);
 
         return view;
     }
@@ -897,6 +888,8 @@ public class GroupChatActivity extends BaseSimpleActivity
             refreshChat();
         } else if (currentFragmentIsVote()) {
             refreshVote(channelInfoViewModel.getVoteInfoViewModel());
+        } else if (currentFragmentIsInfo()) {
+            populateChannelInfoFragment();
         }
     }
 
@@ -926,6 +919,25 @@ public class GroupChatActivity extends BaseSimpleActivity
     private void refreshVote(VoteInfoViewModel voteInfoViewModel) {
         ((ChannelVoteFragment) getSupportFragmentManager().findFragmentByTag
                 (ChannelVoteFragment.class.getSimpleName())).refreshVote(voteInfoViewModel);
+    }
+
+    private Fragment populateChannelInfoFragment() {
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(
+                ChannelInfoFragment.class.getSimpleName());
+
+        if (fragment == null) {
+            fragment = ChannelInfoFragment.createInstance(bundle);
+        }
+
+        ((ChannelInfoFragmentListener.View) fragment).renderData(
+                viewModel.getChannelInfoViewModel());
+
+        return fragment;
     }
 
     @Override
