@@ -18,12 +18,12 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
 
-import com.example.gamification.R;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetCrackResult;
 import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetRemainingToken;
 import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetTokenView;
-import com.tokopedia.gamification.cracktoken.presentation.model.RewardTextStyle;
+import com.tokopedia.gamification.cracktoken.presentation.model.CrackBenefit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,16 +148,16 @@ public class CrackTokenFragment extends BaseDaggerFragment {
     }
 
     private void showSuccessCrackResult() {
-        List<RewardTextStyle> rewardTexts = new ArrayList<>();
-        rewardTexts.add(new RewardTextStyle("#ffdc00", "+50 Points", 34));
+        List<CrackBenefit> rewardTexts = new ArrayList<>();
+        rewardTexts.add(new CrackBenefit("+50 Points","#ffdc00", 34));
 
         String rewardCouponUrl = "https://ecs7.tokopedia.net/assets/images/gamification/benefit/rewards-coupon.png";
         widgetCrackResult.showCrackResult(rewardCouponUrl, "Selamat anda mendapatkan", rewardTexts, "Cek dan Gunakan Hadiah Anda", "");
     }
 
     private void showErrorCrackResult() {
-        List<RewardTextStyle> rewardTexts = new ArrayList<>();
-        rewardTexts.add(new RewardTextStyle("#ffffff", "Terjadi Kesalahan Teknis", 40));
+        List<CrackBenefit> rewardTexts = new ArrayList<>();
+        rewardTexts.add(new CrackBenefit("Terjadi Kesalahan Teknis", "#ffffff", 40));
 
         String rewardCouponUrl = "https://ecs7.tokopedia.net/assets/images/gamification/benefit/rewards-coupon.png";
         widgetCrackResult.showCrackResult(rewardCouponUrl, "Maaf, sayang sekali sepertinya", rewardTexts, "Coba Lagi", "");

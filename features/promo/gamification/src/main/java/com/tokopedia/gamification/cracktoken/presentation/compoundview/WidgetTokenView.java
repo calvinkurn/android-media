@@ -19,7 +19,7 @@ import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.presentation.customview.MaskedHeightImageView;
 
 /**
- * Created by Rizky on 28/03/18.
+ * @author Rizky on 28/03/18.
  */
 
 public class WidgetTokenView extends FrameLayout {

@@ -9,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.gamification.R;
+import com.tokopedia.gamification.R;
 
 /**
- * Created by Rizky on 29/03/18.
+ * @author Rizky on 29/03/18.
  */
 
 public class WidgetRemainingToken extends LinearLayout {

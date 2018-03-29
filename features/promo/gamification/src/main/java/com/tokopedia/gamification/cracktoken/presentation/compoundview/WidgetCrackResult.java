@@ -16,14 +16,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.gamification.R;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.gamification.cracktoken.presentation.model.RewardTextStyle;
+import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.cracktoken.presentation.model.CrackBenefit;
 
 import java.util.List;
 
 /**
- * Created by Rizky on 29/03/18.
+ * @author Rizky on 29/03/18.
  */
 
 public class WidgetCrackResult extends RelativeLayout {
@@ -69,7 +69,7 @@ public class WidgetCrackResult extends RelativeLayout {
         textCrackResultLabel = view.findViewById(R.id.text_crack_result_label);
     }
 
-    public void showCrackResult(String urlImageCrackResult, String labelCrackResult, List<RewardTextStyle> listRewardText, String textCtaButton, String applink) {
+    public void showCrackResult(String urlImageCrackResult, String labelCrackResult, List<CrackBenefit> listRewardText, String textCtaButton, String applink) {
         showRewardImageAnimation(urlImageCrackResult);
         showRewardBackgroundAnimation();
         showListRewardText(listRewardText, labelCrackResult);
@@ -104,9 +104,9 @@ public class WidgetCrackResult extends RelativeLayout {
         backgroundViewReward.setVisibility(View.VISIBLE);
     }
 
-    public void showListRewardText(List<RewardTextStyle> rewardTexts, String labelCrackResult) {
+    public void showListRewardText(List<CrackBenefit> rewardTexts, String labelCrackResult) {
         textCrackResultLabel.setText(labelCrackResult);
-        for (RewardTextStyle rewardText : rewardTexts) {
+        for (CrackBenefit rewardText : rewardTexts) {
             TextView textView = new TextView(getContext());
             textView.setGravity(Gravity.CENTER);
             textView.setText(rewardText.getText());

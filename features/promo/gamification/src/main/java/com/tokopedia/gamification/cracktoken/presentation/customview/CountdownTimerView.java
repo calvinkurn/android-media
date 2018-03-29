@@ -9,10 +9,10 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.example.gamification.R;
+import com.tokopedia.gamification.R;
 
 /**
- * Created by Rizky on 28/03/18.
+ * @author Rizky on 28/03/18.
  */
 
 public class CountdownTimerView extends View {
