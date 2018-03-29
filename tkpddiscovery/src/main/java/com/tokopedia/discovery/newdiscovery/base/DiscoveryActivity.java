@@ -30,7 +30,10 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.manage.people.profile.customdialog.UploadImageDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
@@ -155,6 +158,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         searchView.setOnQueryTextListener(this);
         searchView.setOnSearchViewListener(this);
         searchView.setOnImageSearchClickListener(this);
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        searchView.setImageSearch(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
+                false));
     }
 
     protected void setLastQuerySearchView(String lastQuerySearchView) {

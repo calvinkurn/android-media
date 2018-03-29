@@ -252,7 +252,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mTintView.setOnClickListener(mOnClickListener);
         mImageSearchButton.setOnClickListener(mOnClickListener);
         allowVoiceSearch = true;
-        allowImageSearch = true;
 
         showVoice(true);
         showImageSearch(true);
@@ -388,15 +387,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         List<ResolveInfo> activities = pm.queryIntentActivities(
                 new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
         return activities.size() != 0;
-    }
-
-    private boolean isImageAvailable() {
-
-        return true;
-        /*PackageManager pm = getContext().getPackageManager();
-        List<ResolveInfo> activities = pm.queryIntentActivities(
-                new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
-        return activities.size() != 0;*/
     }
 
     public void hideKeyboard(View view) {
@@ -551,7 +541,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     public void showImageSearch(boolean show) {
-        if (show && isImageAvailable() && allowImageSearch) {
+        if (show && allowImageSearch) {
             mImageSearchButton.setVisibility(VISIBLE);
         } else {
             mImageSearchButton.setVisibility(GONE);
