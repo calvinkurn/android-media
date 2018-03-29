@@ -6,13 +6,15 @@ import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.UserMessage;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.GeneratedMessagePojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.imageannouncement.AdminImagePojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.ActivePollPojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.Option;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.StatisticOption;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.sprintsale.Product;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.sprintsale.UpcomingSprintSalePojo;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VibrateViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GeneratedMessageViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
@@ -110,9 +112,28 @@ public class GroupChatMessagesMapper {
                 return mapToSprintSale(message, message.getData());
             case VibrateViewModel.TYPE:
                 return new VibrateViewModel();
+            case GeneratedMessageViewModel.TYPE:
+                return mapToGeneratedMessage(message, message.getData());
             default:
                 return mapToUserChat(message);
         }
+    }
+
+    private Visitable mapToGeneratedMessage(UserMessage message, String json) {
+        Gson gson = new Gson();
+        GeneratedMessagePojo pojo = gson.fromJson(json, GeneratedMessagePojo.class);
+
+        return new GeneratedMessageViewModel(
+                pojo.getMessage(),
+                message.getCreatedAt(),
+                message.getCreatedAt(),
+                String.valueOf(message.getMessageId()),
+                message.getSender().getUserId(),
+                message.getSender().getNickname(),
+                message.getSender().getProfileUrl(),
+                false,
+                true
+        );
     }
 
     private Visitable mapToSprintSale(UserMessage message, String json) {

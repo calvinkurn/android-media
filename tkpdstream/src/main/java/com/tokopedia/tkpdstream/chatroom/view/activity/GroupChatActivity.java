@@ -65,7 +65,7 @@ import com.tokopedia.tkpdstream.chatroom.view.preference.NotificationPreference;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VibrateViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
