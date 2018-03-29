@@ -375,14 +375,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         setVoteHasEnded();
     }
 
-    public void onMessageReceived(Visitable messageItem) {
-        if (messageItem instanceof VoteAnnouncementViewModel) {
-            VoteAnnouncementViewModel announcement = (VoteAnnouncementViewModel) messageItem;
-            VoteInfoViewModel temp = announcement.getVoteInfoViewModel();
-            showVoteLayout(temp);
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

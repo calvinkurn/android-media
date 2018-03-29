@@ -66,7 +66,7 @@ import com.tokopedia.tkpdstream.chatroom.view.preference.NotificationPreference;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.BaseChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
@@ -421,26 +421,30 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void showFragment(int fragmentPosition) {
-
-        this.initialFragment = fragmentPosition;
-        tabAdapter.setActiveFragment(fragmentPosition);
-        tabAdapter.change(fragmentPosition, false);
-        switch (fragmentPosition) {
-            case CHATROOM_FRAGMENT:
-                showChatroomFragment(mChannel);
-                break;
-            case CHANNEL_VOTE_FRAGMENT:
-                if (checkPollValid()) {
-                    showChannelVoteFragment();
-                } else {
+        try {
+            this.initialFragment = fragmentPosition;
+            tabAdapter.setActiveFragment(fragmentPosition);
+            tabAdapter.change(fragmentPosition, false);
+            switch (fragmentPosition) {
+                case CHATROOM_FRAGMENT:
+                    showChatroomFragment(mChannel);
+                    break;
+                case CHANNEL_VOTE_FRAGMENT:
+                    if (checkPollValid()) {
+                        showChannelVoteFragment();
+                    } else {
+                        showChannelInfoFragment();
+                    }
+                    break;
+                case CHANNEL_INFO_FRAGMENT:
                     showChannelInfoFragment();
-                }
-                break;
-            case CHANNEL_INFO_FRAGMENT:
-                showChannelInfoFragment();
-                break;
-            default:
-                break;
+                    break;
+                default:
+                    break;
+            }
+
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
         }
 
     }
@@ -703,7 +707,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void setChannelHandler() {
         if (viewModel != null && !TextUtils.isEmpty(viewModel.getChannelUrl()))
-            presenter.setHandler(viewModel.getChannelUrl(), this);
+            presenter.setHandler(viewModel.getChannelUrl(), getChannelHandlerId(), this);
 
     }
 
@@ -858,16 +862,13 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("NISNIS", "onResume");
-
         if (tooltipHandler != null && runnable != null) {
             tooltipHandler.postDelayed(runnable, TOOLTIP_DELAY);
         }
 
         kickIfIdleForTooLong();
 
-        ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), ConnectionManager
-                .CONNECTION_HANDLER_ID, new
+        ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), getConnectionHandlerId(), new
                 ConnectionManager.ConnectionManagementHandler() {
                     @Override
                     public void onConnected(boolean reconnect) {
@@ -936,8 +937,24 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (viewModel != null) {
             viewModel.setTimeStampBeforePause(System.currentTimeMillis());
         }
-        ConnectionManager.removeConnectionManagementHandler(ConnectionManager.CONNECTION_HANDLER_ID);
-        SendBird.removeChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID);
+        ConnectionManager.removeConnectionManagementHandler(getConnectionHandlerId());
+        SendBird.removeChannelHandler(getChannelHandlerId());
+    }
+
+    private String getChannelHandlerId() {
+        if (viewModel != null && viewModel.getChannelUuid() != null) {
+            return viewModel.getChannelUuid() + ConnectionManager.CHANNEL_HANDLER_ID;
+        } else {
+            return ConnectionManager.CHANNEL_HANDLER_ID;
+        }
+    }
+
+    private String getConnectionHandlerId() {
+        if (viewModel != null && viewModel.getChannelUuid() != null) {
+            return viewModel.getChannelUuid() + ConnectionManager.CONNECTION_HANDLER_ID;
+        } else {
+            return ConnectionManager.CONNECTION_HANDLER_ID;
+        }
     }
 
     @Override
@@ -1075,20 +1092,13 @@ public class GroupChatActivity extends BaseSimpleActivity
             handleVoteAnnouncement(voteAnnouncementViewModel, voteAnnouncementViewModel.getVoteType());
         } else if (map instanceof SprintSaleAnnouncementViewModel) {
             updateSprintSaleData((SprintSaleAnnouncementViewModel) map);
-        }
-
-
-        if (map instanceof BaseChatViewModel
-                && ((BaseChatViewModel) map).isCanVibrate()) {
+        } else if (map instanceof VibrateViewModel) {
             vibratePhone();
         }
 
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName())).onMessageReceived(map);
-        } else if (currentFragmentIsVote()) {
-            ((ChannelVoteFragment) getSupportFragmentManager().findFragmentByTag
-                    (ChannelVoteFragment.class.getSimpleName())).onMessageReceived(map);
         }
     }
 
@@ -1195,12 +1205,18 @@ public class GroupChatActivity extends BaseSimpleActivity
             showFragment(CHATROOM_FRAGMENT);
         }
 
-        if (!currentFragmentIsVote() && voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
+        if (!currentFragmentIsVote() && voteInfoViewModel.getStatusId() !=
+                VoteInfoViewModel.STATUS_CANCELED) {
             tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
             if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE
                     && voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE) {
                 setTooltip();
             }
+        } else if (currentFragmentIsVote() && (voteInfoViewModel.getStatusId() !=
+                VoteInfoViewModel.STATUS_CANCELED)) {
+            ((ChannelVoteFragment) getSupportFragmentManager().findFragmentByTag
+                    (ChannelVoteFragment.class.getSimpleName())).showVoteLayout(viewModel
+                    .getChannelInfoViewModel().getVoteInfoViewModel());
         }
 
     }

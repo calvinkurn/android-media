@@ -2,7 +2,6 @@ package com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.BaseChatViewModel;
 
 /**
  * @author by nisie on 2/7/18.
@@ -14,10 +13,9 @@ public class ChatViewModel extends BaseChatViewModel implements Visitable<GroupC
 
     public ChatViewModel(String message, long createdAt, long updatedAt,
                          String messageId, String senderId, String senderName,
-                         String senderIconUrl, boolean isInfluencer, boolean isAdministrator,
-                         boolean canVibrate) {
+                         String senderIconUrl, boolean isInfluencer, boolean isAdministrator) {
         super(message, createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl,
-                isInfluencer, isAdministrator, canVibrate);
+                isInfluencer, isAdministrator);
     }
 
     @Override

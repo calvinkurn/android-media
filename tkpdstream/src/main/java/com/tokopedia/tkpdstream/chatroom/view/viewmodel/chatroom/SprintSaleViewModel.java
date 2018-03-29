@@ -13,9 +13,9 @@ import java.util.Locale;
 
 public class SprintSaleViewModel implements Parcelable {
 
-    public static final String TYPE_UPCOMING = "upcoming_flashsale";
-    public static final String TYPE_ACTIVE = "sprintsale_active";
-    public static final String TYPE_FINISHED = "sprintsale_finished";
+    public static final String TYPE_UPCOMING = "flashsale_upcoming";
+    public static final String TYPE_ACTIVE = "flashsale_start";
+    public static final String TYPE_FINISHED = "flashsale_end";
 
     private ArrayList<SprintSaleProductViewModel> listProduct;
     private String campaignName;

@@ -41,6 +41,7 @@ import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.ChatroomPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
@@ -293,7 +294,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     @Override
-    public void showSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
+    public void setSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
         if (sprintSaleViewModel != null
                 && isValidSprintSale(sprintSaleViewModel)
                 && sprintSaleViewModel.getSprintSaleType() != null
@@ -344,8 +345,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                             sprintSaleViewModel.getCampaignName(),
                             sprintSaleViewModel.getStartDate(),
                             sprintSaleViewModel.getEndDate(),
-                            SprintSaleViewModel.TYPE_UPCOMING,
-                            true
+                            SprintSaleViewModel.TYPE_UPCOMING
                     );
 
                     if (adapter.getItemAt(adapter.getItemCount() - 1) != null
@@ -427,7 +427,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                         ((GroupChatContract.View) getActivity()).getSprintSaleViewModel(),
                         ((GroupChatContract.View) getActivity()).getChannelInfoViewModel());
 
-                showSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
+                setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
 
             }
             autoAddGroupChatPoints(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getGroupChatPointsViewModel());
@@ -514,7 +514,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                     ((GroupChatContract.View) getActivity()).getSprintSaleViewModel(),
                     ((GroupChatContract.View) getActivity()).getChannelInfoViewModel());
 
-            showSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
+            setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
         }
 
         setSendButtonEnabled(true);
@@ -524,7 +524,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public void onMessageReceived(Visitable messageItem) {
         if (messageItem instanceof VoteAnnouncementViewModel) {
             handleVoteAnnouncement((VoteAnnouncementViewModel) messageItem);
-        } else {
+        } else if (messageItem instanceof SprintSaleAnnouncementViewModel) {
+            setSprintSaleIcon(((GroupChatContract.View)getActivity()).getSprintSaleViewModel());
+            addIncomingMessage(messageItem);
+        } else if (!(messageItem instanceof
+                VibrateViewModel)) {
             addIncomingMessage(messageItem);
         }
 
@@ -541,10 +545,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             case VoteAnnouncementViewModel.POLLING_CANCEL:
                 break;
         }
-    }
-
-    private void handleSprintSaleAnnouncement(SprintSaleAnnouncementViewModel messageItem) {
-        addIncomingMessage(messageItem);
     }
 
     private void addIncomingMessage(Visitable messageItem) {

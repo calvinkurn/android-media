@@ -3,6 +3,7 @@ package com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
@@ -35,4 +36,6 @@ public interface GroupChatTypeFactory {
     int type (SprintSaleAnnouncementViewModel flashSaleViewModel);
 
     int type(GroupChatPointsViewModel groupChatPointsViewModel);
+
+    int type (VibrateViewModel vibrateViewModel);
 }

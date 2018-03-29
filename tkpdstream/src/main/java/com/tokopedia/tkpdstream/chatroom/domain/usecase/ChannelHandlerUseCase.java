@@ -6,7 +6,6 @@ import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
 import com.tokopedia.tkpdstream.chatroom.domain.mapper.GroupChatMessagesMapper;
 import com.tokopedia.tkpdstream.chatroom.domain.mapper.UserActionMapper;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
@@ -47,9 +46,8 @@ public class ChannelHandlerUseCase {
         void onChannelFrozen();
     }
 
-    public void execute(final String mChannelUrl, final ChannelHandlerListener listener) {
-        SendBird.addChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID, new SendBird
-                .ChannelHandler() {
+    public void execute(final String mChannelUrl, String channelHandlerId, final ChannelHandlerListener listener) {
+        SendBird.addChannelHandler(channelHandlerId, new SendBird.ChannelHandler() {
 
             @Override
             public void onChannelFrozen(OpenChannel channel) {
@@ -63,7 +61,7 @@ public class ChannelHandlerUseCase {
                     if (baseChannel.getUrl().equals(mChannelUrl)) {
                         listener.onMessageReceived(mapper.map(baseMessage));
                     }
-                }catch (NullPointerException e){
+                } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
             }

@@ -52,7 +52,7 @@ public interface ChatroomContract {
 
         void setReplyTextHint();
 
-        void showSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel);
+        void setSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel);
 
         void autoAddSprintSaleAnnouncement(SprintSaleViewModel sprintSaleViewModel, ChannelInfoViewModel channelInfoViewModel);
 
