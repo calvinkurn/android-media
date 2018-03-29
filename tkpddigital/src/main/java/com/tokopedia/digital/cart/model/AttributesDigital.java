@@ -37,6 +37,38 @@ public class AttributesDigital implements Parcelable {
 
     private UserInputPriceDigital userInputPrice;
 
+    private CartAutoApplyVoucher autoApplyVoucher;
+
+    protected AttributesDigital(Parcel in) {
+        userId = in.readString();
+        clientNumber = in.readString();
+        icon = in.readString();
+        price = in.readString();
+        categoryName = in.readString();
+        operatorName = in.readString();
+        pricePlain = in.readLong();
+        instantCheckout = in.readByte() != 0;
+        needOtp = in.readByte() != 0;
+        smsState = in.readString();
+        enableVoucher = in.readByte() != 0;
+        voucherAutoCode = in.readString();
+        isCouponActive = in.readInt();
+        userInputPrice = in.readParcelable(UserInputPriceDigital.class.getClassLoader());
+        autoApplyVoucher = in.readParcelable(CartAutoApplyVoucher.class.getClassLoader());
+    }
+
+    public static final Creator<AttributesDigital> CREATOR = new Creator<AttributesDigital>() {
+        @Override
+        public AttributesDigital createFromParcel(Parcel in) {
+            return new AttributesDigital(in);
+        }
+
+        @Override
+        public AttributesDigital[] newArray(int size) {
+            return new AttributesDigital[size];
+        }
+    };
+
     public String getUserId() {
         return userId;
     }
@@ -153,55 +185,35 @@ public class AttributesDigital implements Parcelable {
     }
 
 
+    public CartAutoApplyVoucher getAutoApplyVoucher() {
+        return autoApplyVoucher;
+    }
+
+    public void setAutoApplyVoucher(CartAutoApplyVoucher autoApplyVoucher) {
+        this.autoApplyVoucher = autoApplyVoucher;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.userId);
-        dest.writeString(this.clientNumber);
-        dest.writeString(this.icon);
-        dest.writeString(this.price);
-        dest.writeString(this.categoryName);
-        dest.writeString(this.operatorName);
-        dest.writeLong(this.pricePlain);
-        dest.writeByte(this.instantCheckout ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.needOtp ? (byte) 1 : (byte) 0);
-        dest.writeString(this.smsState);
-        dest.writeByte(this.enableVoucher ? (byte) 1 : (byte) 0);
-        dest.writeString(this.voucherAutoCode);
-        dest.writeInt(this.isCouponActive);
-        dest.writeParcelable(this.userInputPrice, flags);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(userId);
+        parcel.writeString(clientNumber);
+        parcel.writeString(icon);
+        parcel.writeString(price);
+        parcel.writeString(categoryName);
+        parcel.writeString(operatorName);
+        parcel.writeLong(pricePlain);
+        parcel.writeByte((byte) (instantCheckout ? 1 : 0));
+        parcel.writeByte((byte) (needOtp ? 1 : 0));
+        parcel.writeString(smsState);
+        parcel.writeByte((byte) (enableVoucher ? 1 : 0));
+        parcel.writeString(voucherAutoCode);
+        parcel.writeInt(isCouponActive);
+        parcel.writeParcelable(userInputPrice, i);
+        parcel.writeParcelable(autoApplyVoucher, i);
     }
-
-    protected AttributesDigital(Parcel in) {
-        this.userId = in.readString();
-        this.clientNumber = in.readString();
-        this.icon = in.readString();
-        this.price = in.readString();
-        this.categoryName = in.readString();
-        this.operatorName = in.readString();
-        this.pricePlain = in.readLong();
-        this.instantCheckout = in.readByte() != 0;
-        this.needOtp = in.readByte() != 0;
-        this.smsState = in.readString();
-        this.enableVoucher = in.readByte() != 0;
-        this.voucherAutoCode = in.readString();
-        this.isCouponActive = in.readInt();
-        this.userInputPrice = in.readParcelable(UserInputPriceDigital.class.getClassLoader());
-    }
-
-    public static final Creator<AttributesDigital> CREATOR = new Creator<AttributesDigital>() {
-        @Override
-        public AttributesDigital createFromParcel(Parcel source) {
-            return new AttributesDigital(source);
-        }
-
-        @Override
-        public AttributesDigital[] newArray(int size) {
-            return new AttributesDigital[size];
-        }
-    };
 }

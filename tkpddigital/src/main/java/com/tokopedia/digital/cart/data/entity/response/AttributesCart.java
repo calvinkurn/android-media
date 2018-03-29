@@ -62,6 +62,9 @@ public class AttributesCart {
     @SerializedName("voucher_autocode")
     @Expose
     private String voucherAutoCode;
+    @SerializedName("autoapply")
+    @Expose
+    private AutoApplyVoucher autoApply;
 
     public String getClientNumber() {
         return clientNumber;
@@ -129,5 +132,9 @@ public class AttributesCart {
 
     public String getVoucherAutoCode() {
         return voucherAutoCode;
+    }
+
+    public AutoApplyVoucher getAutoApply() {
+        return autoApply;
     }
 }

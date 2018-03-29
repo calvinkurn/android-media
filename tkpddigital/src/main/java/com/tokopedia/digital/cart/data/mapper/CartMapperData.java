@@ -3,6 +3,7 @@ package com.tokopedia.digital.cart.data.mapper;
 import com.tokopedia.core.otp.data.RequestOtpModel;
 import com.tokopedia.core.otp.data.ValidateOtpModel;
 import com.tokopedia.digital.cart.data.entity.response.AdditionalInfo;
+import com.tokopedia.digital.cart.data.entity.response.AutoApplyVoucher;
 import com.tokopedia.digital.cart.data.entity.response.Detail;
 import com.tokopedia.digital.cart.data.entity.response.MainInfo;
 import com.tokopedia.digital.cart.data.entity.response.RelationshipsCart;
@@ -12,6 +13,7 @@ import com.tokopedia.digital.cart.data.entity.response.ResponseInstantCheckoutDa
 import com.tokopedia.digital.cart.data.entity.response.ResponseVoucherData;
 import com.tokopedia.digital.cart.model.AttributesDigital;
 import com.tokopedia.digital.cart.model.CartAdditionalInfo;
+import com.tokopedia.digital.cart.model.CartAutoApplyVoucher;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CartItemDigital;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
@@ -82,6 +84,19 @@ public class CartMapperData implements ICartMapperData {
                 userInputPriceDigital.setMaxPayment(responseCartData.getAttributes()
                         .getUserInputPrice().getMaxPayment());
                 attributesDigital.setUserInputPrice(userInputPriceDigital);
+            }
+
+            if (responseCartData.getAttributes().getAutoApply() != null){
+                AutoApplyVoucher entity = responseCartData.getAttributes().getAutoApply();
+                CartAutoApplyVoucher applyVoucher = new CartAutoApplyVoucher();
+                applyVoucher.setCode(entity.getCode());
+                applyVoucher.setSuccess(entity.isSuccess());
+                applyVoucher.setDiscountAmount(entity.getDiscountAmount());
+                applyVoucher.setIsCoupon(entity.getIsCoupon());
+                applyVoucher.setPromoId(entity.getPromoId());
+                applyVoucher.setTitle(entity.getTitle());
+                applyVoucher.setMessageSuccess(entity.getMessageSuccess());
+                attributesDigital.setAutoApplyVoucher(applyVoucher);
             }
             attributesDigital.setUserId(responseCartData.getAttributes().getUserId());
 

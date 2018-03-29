@@ -47,6 +47,7 @@ import com.tokopedia.digital.cart.domain.CheckoutRepository;
 import com.tokopedia.digital.cart.domain.VoucherDigitalRepository;
 import com.tokopedia.digital.cart.interactor.CartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
+import com.tokopedia.digital.cart.model.CartAutoApplyVoucher;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CheckoutDataParameter;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
@@ -347,8 +348,16 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     cartDigitalInfoDataState.getAttributes().getOperatorName());
 
             if (cartDigitalInfoData.getAttributes().isEnableVoucher() &&
-                    !TextUtils.isEmpty(cartDigitalInfoData.getAttributes().getVoucherAutoCode())) {
-                presenter.processCheckVoucher(cartDigitalInfoData.getAttributes().getVoucherAutoCode(), passData.getCategoryId());
+                    cartDigitalInfoData.getAttributes().getAutoApplyVoucher() != null &&
+                    cartDigitalInfoData.getAttributes().getAutoApplyVoucher().isSuccess()) {
+                CartAutoApplyVoucher cartAutoApplyVoucher = cartDigitalInfoData.getAttributes().getAutoApplyVoucher();
+                VoucherDigital voucherDigital = new VoucherDigital();
+                VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+                voucherAttributeDigital.setVoucherCode(cartAutoApplyVoucher.getCode());
+                voucherAttributeDigital.setDiscountAmountPlain(cartAutoApplyVoucher.getDiscountAmount());
+                voucherAttributeDigital.setMessage(cartAutoApplyVoucher.getMessageSuccess());
+                voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+                renderVoucherInfoData(voucherDigital);
             }
         }
         itemCartHolderView.renderAdditionalInfo(cartDigitalInfoData.getAdditionalInfos());
