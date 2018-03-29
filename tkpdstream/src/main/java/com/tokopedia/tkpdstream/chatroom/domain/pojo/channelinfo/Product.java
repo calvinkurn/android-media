@@ -1,0 +1,69 @@
+package com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+/**
+ * @author by nisie on 3/29/18.
+ */
+
+public class Product {
+
+    @SerializedName("name")
+    @Expose
+    private String name;
+    @SerializedName("url_mobile")
+    @Expose
+    private String urlMobile;
+    @SerializedName("image_url")
+    @Expose
+    private String imageUrl;
+    @SerializedName("discount_percentage")
+    @Expose
+    private int discountPercentage;
+    @SerializedName("discounted_price")
+    @Expose
+    private String discountedPrice;
+    @SerializedName("original_price")
+    @Expose
+    private String originalPrice;
+    @SerializedName("stock_sold_percentage")
+    @Expose
+    private int remainingStockPercentage;
+    @SerializedName("stock_text")
+    @Expose
+    private String stockText;
+
+    public String getName() {
+        return name;
+    }
+
+    public String getUrlMobile() {
+        return urlMobile;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public String getDiscountedPrice() {
+        return discountedPrice;
+    }
+
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public int getRemainingStockPercentage() {
+        return remainingStockPercentage;
+    }
+
+    public String getStockText() {
+        return stockText;
+    }
+
+}

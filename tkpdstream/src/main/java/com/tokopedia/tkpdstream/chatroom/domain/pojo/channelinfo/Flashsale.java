@@ -1,15 +1,19 @@
 
 package com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Flashsale {
 
-    @SerializedName("campaign_id")
+    @SerializedName("status")
     @Expose
-    private String campaignId;
+    private String status;
+    @SerializedName("app_link")
+    @Expose
+    private String appLink;
     @SerializedName("campaign_name")
     @Expose
     private String campaignName;
@@ -24,54 +28,34 @@ public class Flashsale {
     private long endDate;
     @SerializedName("products")
     @Expose
-    private List<Object> products = null;
+    private List<Product> products = null;
 
-    public String getCampaignId() {
-        return campaignId;
+    public String getStatus() {
+        return status;
     }
 
-    public void setCampaignId(String campaignId) {
-        this.campaignId = campaignId;
+    public String getAppLink() {
+        return appLink;
     }
 
     public String getCampaignName() {
         return campaignName;
     }
 
-    public void setCampaignName(String campaignName) {
-        this.campaignName = campaignName;
-    }
-
     public String getCampaignShortName() {
         return campaignShortName;
-    }
-
-    public void setCampaignShortName(String campaignShortName) {
-        this.campaignShortName = campaignShortName;
     }
 
     public long getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(long startDate) {
-        this.startDate = startDate;
-    }
-
     public long getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(long endDate) {
-        this.endDate = endDate;
-    }
-
-    public List<Object> getProducts() {
+    public List<Product> getProducts() {
         return products;
-    }
-
-    public void setProducts(List<Object> products) {
-        this.products = products;
     }
 
 }
