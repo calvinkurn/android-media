@@ -48,19 +48,11 @@ public interface ChatroomContract {
 
         void onSuccessRefreshReconnect(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery);
 
-        void showHasVoted();
-
-        void showSuccessVoted();
-
-        void onSuccessVote(VoteViewModel element, VoteStatisticViewModel voteStatisticViewModel);
-
-        void onErrorVote(String errorMessage);
-
         void refreshChat();
 
         void setReplyTextHint();
 
-        void showSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel);
+        void setSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel);
 
         void autoAddSprintSaleAnnouncement(SprintSaleViewModel sprintSaleViewModel, ChannelInfoViewModel channelInfoViewModel);
 
@@ -84,8 +76,6 @@ public interface ChatroomContract {
         void sendReply(PendingChatViewModel pendingChatViewModel, OpenChannel mChannel);
 
         void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery);
-
-        void sendVote(String pollId, boolean voted, VoteViewModel element);
 
         void refreshDataAfterReconnect(OpenChannel mChannel);
     }

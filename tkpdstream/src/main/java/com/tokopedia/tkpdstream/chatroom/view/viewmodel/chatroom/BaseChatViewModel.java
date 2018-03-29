@@ -26,7 +26,6 @@ public class BaseChatViewModel implements Parcelable {
     private String senderIconUrl;
     private boolean isInfluencer;
     private boolean isAdministrator;
-    private boolean canVibrate;
 
     BaseChatViewModel(String message, long createdAt, long updatedAt, String messageId) {
         this.showHeaderTime = false;
@@ -43,12 +42,11 @@ public class BaseChatViewModel implements Parcelable {
         this.senderIconUrl = "";
         this.isInfluencer = false;
         this.isAdministrator = false;
-        this.canVibrate = false;
     }
 
     BaseChatViewModel(String message, long createdAt, long updatedAt, String messageId,
                       String senderId, String senderName, String senderIconUrl,
-                      boolean isInfluencer, boolean isAdministrator, boolean canVibrate) {
+                      boolean isInfluencer, boolean isAdministrator) {
         this.showHeaderTime = false;
         this.headerTime = 0;
         this.formattedHeaderTime = "tes";
@@ -63,7 +61,6 @@ public class BaseChatViewModel implements Parcelable {
         this.senderIconUrl = senderIconUrl;
         this.isInfluencer = isInfluencer;
         this.isAdministrator = isAdministrator;
-        this.canVibrate = canVibrate;
     }
 
     public boolean isShowHeaderTime() {
@@ -131,10 +128,6 @@ public class BaseChatViewModel implements Parcelable {
         return isAdministrator;
     }
 
-    public boolean isCanVibrate() {
-        return canVibrate;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -156,7 +149,6 @@ public class BaseChatViewModel implements Parcelable {
         dest.writeString(senderIconUrl);
         dest.writeByte((byte) (isInfluencer ? 1 : 0));
         dest.writeByte((byte) (isAdministrator ? 1 : 0));
-        dest.writeByte((byte) (canVibrate ? 1 : 0));
     }
 
     protected BaseChatViewModel(Parcel in) {
@@ -174,7 +166,6 @@ public class BaseChatViewModel implements Parcelable {
         senderIconUrl = in.readString();
         isInfluencer = in.readByte() != 0;
         isAdministrator = in.readByte() != 0;
-        canVibrate = in.readByte() != 0;
     }
 
     public static final Creator<BaseChatViewModel> CREATOR = new Creator<BaseChatViewModel>() {

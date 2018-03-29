@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 
@@ -19,7 +20,6 @@ public class ChannelInfoViewModel implements Parcelable {
     private String channelUrl;
     private String bannerUrl;
     private String blurredBannerUrl;
-    private boolean hasPoll;
     private String adsImageUrl;
     private String adsLink;
     private String bannerName;
@@ -37,11 +37,14 @@ public class ChannelInfoViewModel implements Parcelable {
     @Nullable
     private SprintSaleViewModel sprintSaleViewModel;
 
+    @Nullable
+    private GroupChatPointsViewModel groupChatPointsViewModel;
+
     public ChannelInfoViewModel(String title, String channelUrl, String bannerUrl,
-                                String blurredBannerUrl, boolean hasPoll, String adsImageUrl,
-                                String adsLink, String bannerName, String sendBirdToken,
-                                String adminName, String image, String adminPicture,
-                                String description, String totalView,
+                                String blurredBannerUrl,
+                                String adsImageUrl, String adsLink, String bannerName,
+                                String sendBirdToken, String adminName, String image,
+                                String adminPicture, String description, String totalView,
                                 List<ChannelPartnerViewModel> channelPartnerViewModels,
                                 @Nullable VoteInfoViewModel voteInfoViewModel,
                                 @Nullable SprintSaleViewModel sprintSaleViewModel) {
@@ -49,8 +52,6 @@ public class ChannelInfoViewModel implements Parcelable {
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
         this.blurredBannerUrl = blurredBannerUrl;
-        this.title = title;
-        this.hasPoll = hasPoll;
         this.adsImageUrl = adsImageUrl;
         this.adsLink = adsLink;
         this.bannerName = bannerName;
@@ -65,6 +66,10 @@ public class ChannelInfoViewModel implements Parcelable {
         this.sprintSaleViewModel = sprintSaleViewModel;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     public String getChannelUrl() {
         return channelUrl;
     }
@@ -75,14 +80,6 @@ public class ChannelInfoViewModel implements Parcelable {
 
     public String getBlurredBannerUrl() {
         return blurredBannerUrl;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public boolean isHasPoll() {
-        return hasPoll;
     }
 
     public String getAdsImageUrl() {
@@ -147,6 +144,15 @@ public class ChannelInfoViewModel implements Parcelable {
         this.sprintSaleViewModel = sprintSaleViewModel;
     }
 
+    @Nullable
+    public GroupChatPointsViewModel getGroupChatPointsViewModel() {
+        return groupChatPointsViewModel;
+    }
+
+    public void setGroupChatPointsViewModel(@Nullable GroupChatPointsViewModel groupChatPointsViewModel) {
+        this.groupChatPointsViewModel = groupChatPointsViewModel;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -158,7 +164,6 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeString(this.channelUrl);
         dest.writeString(this.bannerUrl);
         dest.writeString(this.blurredBannerUrl);
-        dest.writeByte(this.hasPoll ? (byte) 1 : (byte) 0);
         dest.writeString(this.adsImageUrl);
         dest.writeString(this.adsLink);
         dest.writeString(this.bannerName);
@@ -171,6 +176,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeTypedList(this.channelPartnerViewModels);
         dest.writeParcelable(this.voteInfoViewModel, flags);
         dest.writeParcelable(this.sprintSaleViewModel, flags);
+        dest.writeParcelable(this.groupChatPointsViewModel, flags);
     }
 
     protected ChannelInfoViewModel(Parcel in) {
@@ -178,7 +184,6 @@ public class ChannelInfoViewModel implements Parcelable {
         this.channelUrl = in.readString();
         this.bannerUrl = in.readString();
         this.blurredBannerUrl = in.readString();
-        this.hasPoll = in.readByte() != 0;
         this.adsImageUrl = in.readString();
         this.adsLink = in.readString();
         this.bannerName = in.readString();
@@ -191,6 +196,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.channelPartnerViewModels = in.createTypedArrayList(ChannelPartnerViewModel.CREATOR);
         this.voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
         this.sprintSaleViewModel = in.readParcelable(SprintSaleViewModel.class.getClassLoader());
+        this.groupChatPointsViewModel = in.readParcelable(GroupChatPointsViewModel.class.getClassLoader());
     }
 
     public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {

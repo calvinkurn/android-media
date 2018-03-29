@@ -13,8 +13,10 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.UserAc
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.VoteAnnouncementViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
@@ -71,6 +73,16 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
     @Override
     public int type(SprintSaleAnnouncementViewModel flashSaleViewModel) {
         return SprintSaleViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(GroupChatPointsViewModel groupChatPointsViewModel) {
+        return 0;
+    }
+
+    @Override
+    public int type(VibrateViewModel vibrateViewModel) {
+        return 0;
     }
 
     @Override

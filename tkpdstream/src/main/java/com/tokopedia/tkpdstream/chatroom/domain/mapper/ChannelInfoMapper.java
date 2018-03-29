@@ -49,7 +49,6 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getChannelUrl(),
                 pojo.getChannel().getCoverUrl(),
                 pojo.getChannel().getBannerBlurredUrl(),
-                hasPoll(pojo.getChannel().getActivePolls()),
                 pojo.getChannel().getAdsImageUrl(),
                 pojo.getChannel().getAdsLink(),
                 pojo.getChannel().getBannerName(),

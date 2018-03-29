@@ -148,37 +148,6 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
     }
 
     @Override
-    public void sendVote(String pollId, boolean voted, final VoteViewModel element) {
-        if (voted) {
-            getView().showHasVoted();
-        } else {
-            sendVoteUseCase.execute(SendVoteUseCase.createParams(pollId,
-                    element.getOptionId()), new Subscriber<VoteStatisticViewModel>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    if (getView() != null) {
-                        getView().onErrorVote(GroupChatErrorHandler.getErrorMessage(getView()
-                                .getContext(), e, true));
-                    }
-                }
-
-                @Override
-                public void onNext(VoteStatisticViewModel voteStatisticViewModel) {
-                    if (getView() != null) {
-                        getView().onSuccessVote(element, voteStatisticViewModel);
-                        getView().showSuccessVoted();
-                    }
-                }
-            });
-        }
-    }
-
-    @Override
     public void detachView() {
         super.detachView();
         sendVoteUseCase.unsubscribe();

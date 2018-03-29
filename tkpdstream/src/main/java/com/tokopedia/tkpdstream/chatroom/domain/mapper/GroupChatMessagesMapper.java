@@ -13,6 +13,7 @@ import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.Option;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.StatisticOption;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.sprintsale.Product;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.sprintsale.UpcomingSprintSalePojo;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
@@ -103,8 +104,8 @@ public class GroupChatMessagesMapper {
                 message.getSender().getProfileUrl(),
                 false,
                 false,
-                "",
-                false);
+                ""
+        );
     }
 
     private Visitable mapToUserMessage(UserMessage message) {
@@ -121,6 +122,8 @@ public class GroupChatMessagesMapper {
                 return mapToAdminImageChat(message, message.getData());
             case SprintSaleAnnouncementViewModel.SPRINT_SALE:
                 return mapToSprintSale(message, message.getData());
+            case VibrateViewModel.TYPE:
+                return new VibrateViewModel();
             default:
                 return mapToUserChat(message);
         }
@@ -145,8 +148,7 @@ public class GroupChatMessagesMapper {
                 pojo.getUpcomingFlashsale().getCampaignName(),
                 pojo.getUpcomingFlashsale().getStartDate(),
                 pojo.getUpcomingFlashsale().getEndDate(),
-                SprintSaleViewModel.TYPE_UPCOMING,
-                true
+                SprintSaleViewModel.TYPE_UPCOMING
 
         );
     }
@@ -180,7 +182,6 @@ public class GroupChatMessagesMapper {
                 message.getSender().getNickname(),
                 message.getSender().getProfileUrl(),
                 false,
-                false,
                 false
         );
     }
@@ -200,8 +201,8 @@ public class GroupChatMessagesMapper {
                 message.getSender().getProfileUrl(),
                 false,
                 true,
-                pojo.getRedirectUrl(),
-                true);
+                pojo.getRedirectUrl()
+        );
     }
 
     private Visitable mapToAdminChat(UserMessage message, String data) {
@@ -215,8 +216,7 @@ public class GroupChatMessagesMapper {
                 message.getSender().getNickname(),
                 message.getSender().getProfileUrl(),
                 false,
-                true,
-                false
+                true
         );
     }
 
@@ -236,8 +236,7 @@ public class GroupChatMessagesMapper {
                 message.getSender().getProfileUrl(),
                 false,
                 true,
-                mappingToVoteInfoViewModel(pojo),
-                true
+                mappingToVoteInfoViewModel(pojo)
         );
     }
 
