@@ -17,6 +17,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.util.TkpdWebViewClient;
@@ -35,6 +36,9 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     private static final String SOLUTION_ID = "solution_id";
     private static final String TAGS = "tags";
     private static final String ORDER_ID = "order_id";
+    private static final String APPLINK_SCHEME = "tokopedia://";
+    private static final String CHATBOT_SCHEME = "tokopedia://topchat";
+
 
     @BindView(R2.id.scroll_view)
     ScrollView mainView;
@@ -206,6 +210,19 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                     CommonUtils.UniversalToast(getActivity(), getString(R.string.finish_contact_us));
                     getActivity().finish();
                     return true;
+                } else if (url.toString().contains(CHATBOT_SCHEME)
+                        && getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(TkpdInboxRouter.IS_CHAT_BOT, true);
+
+                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                            .actionNavigateByApplinksUrl(getActivity(), url.toString(), bundle);
+                    return true;
+                } else if (url.toString().contains(APPLINK_SCHEME)
+                        && getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                            .actionNavigateByApplinksUrl(getActivity(), url.toString(), new Bundle());
+                    return true;
                 } else {
                     return false;
                 }
@@ -213,6 +230,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                 e.printStackTrace();
                 return false;
             }
+
         }
 
     }

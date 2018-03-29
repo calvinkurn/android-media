@@ -59,7 +59,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by nabillasabbaha on 8/21/17.
  */
-
+@Deprecated
 public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHistoryPresenter>
         implements TokoCashHistoryListener {
 
@@ -120,11 +120,11 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     private TokoCashHistoryData tokoCashHistoryData;
     private int oldScrollY = 0;
 
-    @SuppressWarnings("unused")
-    @DeepLink(Constants.Applinks.WALLET_TRANSACTION_HISTORY)
-    public static Intent getcallingIntent(Context context, Bundle extras) {
-        return HistoryTokocashActivity.newInstance(context);
-    }
+//    @SuppressWarnings("unused")
+//    @DeepLink(Constants.Applinks.WALLET_TRANSACTION_HISTORY)
+//    public static Intent getcallingIntent(Context context, Bundle extras) {
+//        return HistoryTokocashActivity.newInstance(context);
+//    }
 
     public static Intent newInstance(Context context) {
         return new Intent(context, HistoryTokocashActivity.class);

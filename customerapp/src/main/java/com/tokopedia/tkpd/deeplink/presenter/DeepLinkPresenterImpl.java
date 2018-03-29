@@ -18,12 +18,13 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
@@ -42,9 +43,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
-import com.tokopedia.session.session.interactor.SignInInteractor;
-import com.tokopedia.session.session.interactor.SignInInteractorImpl;
-import com.tokopedia.session.session.presenter.Login;
+import com.tokopedia.session.domain.interactor.SignInInteractor;
+import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
 import com.tokopedia.tkpd.deeplink.WhitelistItem;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.di.component.DaggerDeeplinkComponent;
@@ -78,6 +78,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String OVERRIDE_URL = "override_url";
+    private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
+
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -126,6 +128,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             case DeepLinkChecker.RECHARGE:
                 return true;
             case DeepLinkChecker.PELUANG:
+                return false;
+            case DeepLinkChecker.REFERRAL:
                 return false;
             default:
                 return true;
@@ -226,7 +230,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openHomepageHot();
                     break;
                 case DeepLinkChecker.CATALOG:
-                    openCatalogProduct(linkSegment, uriData);
+                    openCatalogDetail(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_CATALOG;
                     break;
                 case DeepLinkChecker.DISCOVERY_PAGE:
@@ -274,7 +278,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.PELUANG:
                     screenName = AppScreen.SCREEN_INDEX_HOME;
                     sendCampaignGTM(uriData.toString(), screenName);
-                    openPeluangPage();
+                    openPeluangPage(uriData.getPathSegments(), uriData);
+                    break;
+                case DeepLinkChecker.REFERRAL:
+                    screenName = AppScreen.SCREEN_REFERRAL;
+                    openReferralScreen(uriData);
+                    break;
+                case DeepLinkChecker.GROUPCHAT:
+                    openGroupChat(linkSegment);
+                    screenName = AppScreen.GROUP_CHAT;
                     break;
                 default:
                     prepareOpenWebView(uriData);
@@ -283,6 +295,23 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             }
             sendCampaignGTM(uriData.toString(), screenName);
         }
+    }
+
+    private void openGroupChat(List<String> linkSegment) {
+        int SEGMENT_GROUPCHAT = 2;
+        Intent intent;
+        if (linkSegment.size() == SEGMENT_GROUPCHAT) {
+            intent = ((TkpdCoreRouter) context.getApplication()).getGroupChatIntent(
+                    context, linkSegment.get(1));
+        } else {
+            intent = ((TkpdCoreRouter) context.getApplication()).getInboxChannelsIntent(
+                    context);
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        context.finish();
     }
 
     private void openDigitalPage(String applink) {
@@ -297,8 +326,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
-    private void openPeluangPage() {
-        Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context);
+    private void openPeluangPage(List<String> linkSegment, Uri uriData) {
+        String query = uriData.getQueryParameter("q");
+        Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context, query);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -313,10 +343,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 Log.d(TAG, "onSuccess: ");
                 if (SessionHandler.isMsisdnVerified()) {
                     finishLogin();
-                } else {
+                } else if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
                     Intent intentHome = HomeRouter.getHomeActivity(context);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    Intent intentPhoneVerif = OldSessionRouter.getPhoneVerificationActivationActivityIntent(context);
+                    Intent intentPhoneVerif = ((TkpdCoreRouter) MainApplication.getAppContext())
+                            .getPhoneVerificationActivationIntent(context);
 
                     context.startActivities(new Intent[]
                             {
@@ -357,7 +388,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         data.setEmail(" ");
         data.setPassword(uriData.getPathSegments().get(1));
         data.setAttempt(uriData.getQueryParameter("a"));
-        data.setGrantType(Login.GRANT_PASSWORD);
+        data.setGrantType(SignInInteractor.GRANT_PASSWORD);
         data.setPasswordType(SignInInteractor.ACTIVATION_CODE);
         return data;
     }
@@ -480,9 +511,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         viewListener.hideActionBar();
     }
 
-    private void openCatalogProduct(List<String> linkSegment, Uri uriData) {
+    private void openCatalogDetail(List<String> linkSegment, Uri uriData) {
         viewListener.inflateFragment(DetailProductRouter
-                .getCatalogDetailListFragment(context, linkSegment.get(1)), "CATALOG_PRODUCT");
+                .getCatalogDetailFragment(context, linkSegment.get(1)), TAG_FRAGMENT_CATALOG_DETAIL);
     }
 
     private void openHotProduct(List<String> linkSegment, Uri uriData) {
@@ -509,17 +540,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openDiscoveryPage(String url) {
-      context.startActivity(ReactNativeDiscoveryActivity.createCallingIntent(
-              context,
-              ReactConst.Screen.DISCOVERY_PAGE,
-              "",
-              DeepLinkChecker.getDiscoveryPageId(url))
-      );
+        context.startActivity(ReactNativeDiscoveryActivity.createCallingIntent(
+                context,
+                ReactConst.Screen.DISCOVERY_PAGE,
+                "",
+                DeepLinkChecker.getDiscoveryPageId(url))
+        );
     }
 
     private void openHomepageHot() {
         Intent intent = HomeRouter.getHomeActivityInterfaceRouter(context);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
         context.startActivity(intent);
         context.finish();
@@ -566,6 +597,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             IntermediaryActivity.moveToClear(context, departmentId);
         }
     }
+
+    private void openReferralScreen(Uri uriData) {
+        context.startActivity(ReferralActivity.getCallingIntent(context));
+    }
+
 
     private boolean isHotLink(List<String> linkSegment) {
         return (linkSegment.size() == 2);

@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
@@ -16,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.MainApplication;
@@ -24,18 +24,15 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
-import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageDetailActivity;
+
+import java.util.List;
 
 /**
  * Created by Nisie on 5/19/16.
@@ -119,16 +116,9 @@ public class ChatRoomActivity extends BasePresenterActivity
         Intent detailsIntent;
         Intent parentIntent;
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-            extras.putBoolean(PARAM_WEBSOCKET, true);
-            detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
-            parentIntent = new Intent(context, InboxChatActivity.class);
-        } else {
-            detailsIntent = new Intent(context, InboxMessageDetailActivity.class).putExtras
-                    (extras);
-            parentIntent = new Intent(context, InboxMessageActivity.class);
-        }
+        extras.putBoolean(PARAM_WEBSOCKET, true);
+        detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
+        parentIntent = new Intent(context, InboxChatActivity.class);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
@@ -166,7 +156,7 @@ public class ChatRoomActivity extends BasePresenterActivity
     protected void initView() {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.container, ChatRoomFragment.createInstance(getIntent().getExtras()),
-                        TAG)
+                        ChatRoomFragment.TAG)
                 .commit();
     }
 
@@ -202,8 +192,20 @@ public class ChatRoomActivity extends BasePresenterActivity
 
     @Override
     public void onGetNotif(Bundle data) {
-        ChatRoomFragment something = (ChatRoomFragment) getSupportFragmentManager().findFragmentByTag(TAG);
-        something.restackList(data);
+        ChatRoomFragment chatRoomFragment = (ChatRoomFragment) getSupportFragmentManager().findFragmentByTag(TAG);
+        if(chatRoomFragment != null)
+            chatRoomFragment.restackList(data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        final ChatRoomFragment fragment = (ChatRoomFragment) getSupportFragmentManager().findFragmentByTag(ChatRoomFragment.TAG);
+
+        if (fragment!=null) {
+            fragment.onBackPressed();
+        }else {
+            super.onBackPressed();
+        }
     }
 
     public static Intent getCallingIntent(Context context, String nav, String messageId,
@@ -291,4 +293,7 @@ public class ChatRoomActivity extends BasePresenterActivity
         return intent;
     }
 
+    public void destroy() {
+        super.onBackPressed();
+    }
 }

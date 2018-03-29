@@ -10,4 +10,7 @@ import dagger.Module;
 @Module
 public class FlightSearchModule {
 
+    public FlightSearchModule() {
+    }
+
 }

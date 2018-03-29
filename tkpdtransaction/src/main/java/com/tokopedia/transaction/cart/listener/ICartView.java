@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.cart.listener;
 
 import android.content.Context;
+import android.app.Activity;
 import android.support.annotation.NonNull;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -122,6 +123,10 @@ public interface ICartView extends IBaseView {
     void renderInstantPromo(CartPromo cartPromo);
 
     void renderPromoView(boolean isCouponActive);
+
+    Activity getActivity();
+
+    void setListnerCancelPromoLayoutOnAutoApplyCode();
 
     Context getContext();
 }

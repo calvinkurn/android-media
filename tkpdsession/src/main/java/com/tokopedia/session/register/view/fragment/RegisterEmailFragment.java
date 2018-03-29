@@ -7,8 +7,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -20,8 +20,10 @@ import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.util.Patterns;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -29,38 +31,46 @@ import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R2;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.CustomPhoneNumberUtil;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
+import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
 import com.tokopedia.session.register.view.adapter.AutoCompleteTextAdapter;
 import com.tokopedia.session.register.view.di.RegisterEmailDependencyInjector;
 import com.tokopedia.session.register.view.presenter.RegisterEmailPresenter;
+import com.tokopedia.session.register.view.util.RegisterUtil;
 import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
 import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
-import com.tokopedia.session.session.activity.Login;
-
-import net.hockeyapp.android.Tracking;
+import com.tokopedia.util.CustomPhoneNumberUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import butterknife.BindView;
+import javax.inject.Inject;
+
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -71,116 +81,107 @@ import permissions.dispatcher.RuntimePermissions;
 import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
 import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
+
 /**
  * Created by nisie on 1/27/17.
  */
 
 @RuntimePermissions
-public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPresenter>
+public class RegisterEmailFragment extends BaseDaggerFragment
         implements RegisterEmailViewListener, RegisterConstant {
 
-    @BindView(R2.id.container)
+    private static final int REQUEST_AUTO_LOGIN = 101;
+    private static final int REQUEST_ACTIVATE_ACCOUNT = 102;
+
     View container;
-
-    @BindView(R2.id.redirect_reset_password)
     View redirectView;
-
-    @BindView(R2.id.register_email)
     AutoCompleteTextView email;
-
-    @BindView(R2.id.register_password)
     TextInputEditText registerPassword;
-
-    @BindView(R2.id.register_button)
     TextView registerButton;
-
-    @BindView(R2.id.register_next_phone_number)
     EditText phone;
-
-    @BindView(R2.id.wrapper_name)
-    TextInputLayout wrapperName;
-
-    @BindView(R2.id.wrapper_email)
-    TextInputLayout wrapperEmail;
-
-    @BindView(R2.id.wrapper_password)
-    TextInputLayout wrapperPassword;
-
-    @BindView(R2.id.wrapper_phone)
-    TextInputLayout wrapperPhone;
-
-    @BindView(R2.id.login_button)
-    TextView loginButton;
-
-    @BindView(R2.id.name)
+    TkpdHintTextInputLayout wrapperName;
+    TkpdHintTextInputLayout wrapperEmail;
+    TkpdHintTextInputLayout wrapperPassword;
+    TkpdHintTextInputLayout wrapperPhone;
     EditText name;
-
-    @BindView(R2.id.register_next_detail_t_and_p)
     TextView registerNextTAndC;
 
     TkpdProgressDialog progressDialog;
+    RegisterEmailPresenter presenter;
+
+    @Inject
+    SessionHandler sessionHandler;
 
     public static RegisterEmailFragment createInstance() {
         return new RegisterEmailFragment();
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return true;
+    protected String getScreenName() {
+        return AppScreen.SCREEN_REGISTER;
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
+    public void onStart() {
+        super.onStart();
+        ScreenTracking.screen(getScreenName());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        presenter = RegisterEmailDependencyInjector.getPresenter(this);
+
+    }
+
+    @Override
+    protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
+
+        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
+                DaggerSessionComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
+
+        daggerSessionComponent.inject(this);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
+            savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_register_email, parent, false);
+        container = view.findViewById(R.id.container);
+        redirectView = view.findViewById(R.id.redirect_reset_password);
+        email = view.findViewById(R.id.register_email);
+        registerPassword = view.findViewById(R.id.register_password);
+        registerButton = view.findViewById(R.id.register_button);
+        phone = view.findViewById(R.id.register_next_phone_number);
+        wrapperName = view.findViewById(R.id.wrapper_name);
+        wrapperEmail = view.findViewById(R.id.wrapper_email);
+        wrapperPassword = view.findViewById(R.id.wrapper_password);
+        wrapperPhone = view.findViewById(R.id.wrapper_phone);
+        name = view.findViewById(R.id.name);
+        registerNextTAndC = view.findViewById(R.id.register_next_detail_t_and_p);
+
+        prepareView(view);
+        setViewListener();
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
         startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
     }
 
-    @Override
-    public void onSaveState(Bundle state) {
+    private void prepareView(View view) {
+        String joinString = getString(com.tokopedia.core.R.string.detail_term_and_privacy) +
+                "<br>" + getString(com.tokopedia.core.R.string.link_term_condition) +
+                " serta " + getString(com.tokopedia.core.R.string.link_privacy_policy);
 
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = RegisterEmailDependencyInjector.getPresenter(this);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_register_email;
-    }
-
-    @Override
-    protected void initView(View view) {
-        final Typeface typeface = registerPassword.getTypeface();
-
-        String sourceString = "Sudah punya akun? Masuk";
-
-        Spannable spannable = getSpannable(sourceString, "Masuk");
-
-        loginButton.setText(spannable, TextView.BufferType.SPANNABLE);
-        showTermsAndOptionsTextView();
-
+        registerNextTAndC.setText(MethodChecker.fromHtml(joinString));
+        registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private Spannable getSpannable(String sourceString, String hyperlinkString) {
@@ -205,16 +206,6 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         return spannable;
     }
 
-    private void showTermsAndOptionsTextView() {
-        String joinString = context.getString(com.tokopedia.core.R.string.detail_term_and_privacy) +
-                " " + context.getString(com.tokopedia.core.R.string.link_term_condition) +
-                ", serta " + context.getString(com.tokopedia.core.R.string.link_privacy_policy);
-
-        registerNextTAndC.setText(MethodChecker.fromHtml(joinString));
-        registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
-
-    }
-
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
@@ -230,11 +221,191 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     @Override
     public void onResume() {
         super.onResume();
-        email.addTextChangedListener(watcher(wrapperEmail));
-        registerPassword.addTextChangedListener(watcher(wrapperPassword));
-        name.addTextChangedListener(watcher(wrapperName));
-        phone.addTextChangedListener(watcher(wrapperPhone));
-        phone.addTextChangedListener(watcher(phone));
+        email.addTextChangedListener(emailWatcher(wrapperEmail));
+        registerPassword.addTextChangedListener(passwordWatcher(wrapperPassword));
+        name.addTextChangedListener(nameWatcher(wrapperName));
+        phone.addTextChangedListener(phoneWatcher(wrapperPhone));
+        phone.addTextChangedListener(phoneWatcher(phone));
+
+        if (sessionHandler != null &&
+                sessionHandler.isV4Login()) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        }
+    }
+
+    private TextWatcher nameWatcher(final TkpdHintTextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    setWrapperError(wrapper, getString(R.string.error_field_required));
+                } else if (RegisterUtil.checkRegexNameLocal(name.getText().toString())) {
+                    setWrapperError(wrapper, getString(R.string.error_illegal_character));
+                } else if (RegisterUtil.isExceedMaxCharacter(name.getText().toString())) {
+                    setWrapperError(wrapper, getString(R.string.error_max_35_character));
+
+                }
+
+                checkIsValidForm();
+            }
+        };
+    }
+
+    private TextWatcher passwordWatcher(final TkpdHintTextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    setWrapperError(wrapper, getString(R.string.error_field_required));
+                } else if (registerPassword.getText().toString().length() < PASSWORD_MINIMUM_LENGTH) {
+                    setWrapperError(wrapper, getString(R.string.error_invalid_password));
+                }
+
+                checkIsValidForm();
+            }
+        };
+    }
+
+    private TextWatcher emailWatcher(final TkpdHintTextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    setWrapperError(wrapper, getString(R.string.error_field_required));
+                } else if (!CommonUtils.EmailValidation(email.getText().toString())) {
+                    setWrapperError(wrapper, getString(R.string.error_invalid_email));
+                }
+
+                checkIsValidForm();
+            }
+        };
+    }
+
+    private TextWatcher phoneWatcher(final EditText editText) {
+        return new TextWatcher() {
+
+            private boolean backspacingFlag = false;
+            private int cursorComplement;
+            private int totalSpace, newTotalSpace;
+            private int selectionStart;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                totalSpace = s.length() - s.toString().replace("-", "").length();
+                cursorComplement = s.length() - editText.getSelectionStart();
+
+                String cutString = s.toString().substring(0, editText.getSelectionStart());
+                int totalSpaceWithinCutString = cutString.length() - cutString.replace("-", "")
+                        .length();
+                selectionStart = editText.getSelectionStart() - totalSpaceWithinCutString;
+
+                if (count > after) {
+                    backspacingFlag = true;
+                } else {
+                    backspacingFlag = false;
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String unformattedText = s.toString().replace("-", "");
+                String formattedText = CustomPhoneNumberUtil.transform(unformattedText);
+                newTotalSpace = formattedText.length() - unformattedText.length();
+
+
+                if (s.toString().length() > 4 && cursorComplement == 0) {
+                    formatPhoneNumber(formattedText, formattedText.length());
+                } else if (s.toString().length() > 4 && !backspacingFlag && cursorComplement > 0) {
+                    int cursorPosition = formattedText.length() -
+                            (cursorComplement + newTotalSpace - totalSpace);
+                    if (selectionStart % 4 == 0 && selectionStart != 0) cursorPosition += 1;
+                    formatPhoneNumber(formattedText, cursorPosition);
+                } else if (s.toString().length() > 4 && backspacingFlag && cursorComplement > 0) {
+                    int cursorPosition = s.length() - cursorComplement;
+                    formatPhoneNumber(formattedText, cursorPosition);
+                }
+
+            }
+
+            private void formatPhoneNumber(String formattedText, int cursorPosition) {
+                editText.removeTextChangedListener(this);
+                editText.setText(formattedText);
+                editText.setSelection(cursorPosition);
+                editText.addTextChangedListener(this);
+            }
+        };
+    }
+
+
+    private TextWatcher phoneWatcher(final TkpdHintTextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    setWrapperError(wrapper, getString(R.string.error_field_required));
+                } else if (!RegisterUtil.isValidPhoneNumber(
+                        phone.getText().toString().replace("-", ""))) {
+                    setWrapperError(wrapper, getString(R.string.error_invalid_phone_number));
+
+                }
+
+                checkIsValidForm();
+            }
+        };
     }
 
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
@@ -267,18 +438,15 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         Set<String> listOfAddresses = new LinkedHashSet<>();
         Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
         Account[] accounts = AccountManager.get(getActivity()).getAccountsByType("com.google");
-        if (accounts != null) {
-            for (Account account : accounts) {
-                if (emailPattern.matcher(account.name).matches()) {
-                    listOfAddresses.add(account.name);
-                }
+        for (Account account : accounts) {
+            if (emailPattern.matcher(account.name).matches()) {
+                listOfAddresses.add(account.name);
             }
         }
         return new ArrayList<>(listOfAddresses);
     }
 
-    @Override
-    protected void setViewListener() {
+    private void setViewListener() {
         email.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -309,79 +477,33 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
             }
         });
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToLogin();
-            }
-        });
     }
 
-    private void goToLogin() {
-        getActivity().finish();
-
-        startActivity(Login.getCallingIntent(
-                getActivity())
-        );
+    private void checkIsValidForm() {
+        if (presenter.isCanRegister()) {
+            setRegisterButtonEnabled();
+        } else {
+            setRegisterButtonDisabled();
+        }
     }
 
-    @Override
-    protected void initialVar() {
-
+    private void setRegisterButtonEnabled() {
+        MethodChecker.setBackground(registerButton, MethodChecker.getDrawable(MainApplication
+                .getAppContext(), R.drawable.green_button_rounded_unify));
+        registerButton.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(),
+                R.color.white));
+        registerButton.setEnabled(true);
     }
 
-    @Override
-    protected void setActionVar() {
-
+    private void setRegisterButtonDisabled() {
+        MethodChecker.setBackground(registerButton, MethodChecker.getDrawable(MainApplication
+                .getAppContext(), R.drawable.grey_button_rounded));
+        registerButton.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(),
+                R.color.grey_500));
+        registerButton.setEnabled(false);
     }
 
-    private TextWatcher watcher(final EditText editText) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String phone = CustomPhoneNumberUtil.transform(s.toString());
-                if (s.toString().length() != phone.length()) {
-                    editText.removeTextChangedListener(this);
-                    editText.setText(phone);
-                    editText.setSelection(phone.length());
-                    editText.addTextChangedListener(this);
-                }
-            }
-        };
-    }
-
-    private TextWatcher watcher(final TextInputLayout wrapper) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    setWrapperError(wrapper, null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 0) {
-                    setWrapperError(wrapper, getString(R.string.error_field_required));
-                }
-            }
-        };
-    }
-
-    private void setWrapperError(TextInputLayout wrapper, String s) {
+    private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
         if (s == null) {
             wrapper.setError(s);
             wrapper.setErrorEnabled(false);
@@ -412,34 +534,10 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     }
 
     @Override
-    public void setPhoneError(String errorMessage) {
-        setWrapperError(wrapperPhone, errorMessage);
-        phone.requestFocus();
-    }
-
-    @Override
     public void resetError() {
         setWrapperError(wrapperName, null);
         setWrapperError(wrapperEmail, null);
         setWrapperError(wrapperPassword, null);
-    }
-
-    @Override
-    public void setPasswordError(String messageError) {
-        setWrapperError(wrapperPassword, messageError);
-        registerPassword.requestFocus();
-    }
-
-    @Override
-    public void setEmailError(String messageError) {
-        setWrapperError(wrapperEmail, messageError);
-        email.requestFocus();
-    }
-
-    @Override
-    public void setNameError(String messageError) {
-        setWrapperError(wrapperName, messageError);
-        name.requestFocus();
     }
 
     @Override
@@ -472,14 +570,11 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     @Override
     public void goToActivationPage(RegisterEmailViewModel viewModel) {
-
-        sendGTMRegisterEvent();
-
-        dismissLoadingProgress();
-        startActivity(ActivationActivity.getCallingIntent(getActivity(),
-                email.getText().toString()
-        ));
-        getActivity().finish();
+        Intent intent = ActivationActivity.getCallingIntent(getActivity(),
+                email.getText().toString(),
+                registerPassword.getText().toString()
+        );
+        startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
     }
 
     @Override
@@ -491,14 +586,12 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     @Override
     public void goToAutomaticLogin() {
-        dismissLoadingProgress();
-        getActivity().finish();
-
-        startActivity(Login.getAutomaticLoginIntent(
+        Intent intentLogin = LoginActivity.getAutomaticLogin(
                 getActivity(),
                 email.getText().toString(),
-                registerPassword.getText().toString())
+                registerPassword.getText().toString()
         );
+        startActivityForResult(intentLogin, REQUEST_AUTO_LOGIN);
     }
 
     @Override
@@ -518,6 +611,8 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     @Override
     public void onSuccessRegister(RegisterEmailViewModel registerResult) {
+
+        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterEmail());
         dismissLoadingProgress();
         setActionsEnabled(true);
         presenter.startAction(registerResult);
@@ -532,10 +627,6 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         registerViewModel.setAgreedTermCondition(true);
         registerViewModel.setPassword(registerPassword.getText().toString());
         registerViewModel.setIsAutoVerify(isEmailAddressFromDevice() ? 1 : 0);
-    }
-
-    private void sendGTMRegisterEvent() {
-        UnifyTracking.eventRegisterSuccess(getString(com.tokopedia.core.R.string.title_email));
     }
 
     private boolean isEmailAddressFromDevice() {
@@ -553,7 +644,7 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         return result;
     }
 
-    public void showInfo(){
+    public void showInfo() {
         dismissLoadingProgress();
         TextView view = (TextView) redirectView.findViewById(R.id.body);
         final String emailString = email.getText().toString();
@@ -561,17 +652,22 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         String part = getString(R.string.account_registered_body_part);
         Spannable spannable = getSpannable(text, part);
         spannable.setSpan(new StyleSpan(Typeface.BOLD), text.indexOf(emailString)
-                                                        , text.indexOf(emailString)+emailString.length()
-                                                        , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                , text.indexOf(emailString) + emailString.length()
+                , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         view.setText(spannable, TextView.BufferType.SPANNABLE);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ForgotPasswordActivity.getCallingIntent(context, emailString));
+                startActivity(ForgotPasswordActivity.getCallingIntent(getActivity(), emailString));
             }
         });
         redirectView.setVisibility(View.VISIBLE);
         container.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onForbidden() {
+        ForbiddenActivity.startActivity(getActivity());
     }
 
     @Override
@@ -614,17 +710,37 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RC_SIGN_IN_GOOGLE:
                 if (data != null) {
                     GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
                     email.setText(googleSignInAccount.getEmail());
-                    if(googleSignInAccount.getDisplayName() != null
+                    if (googleSignInAccount.getDisplayName() != null
                             && !googleSignInAccount.getDisplayName().equals(googleSignInAccount.getEmail()))
                         name.setText(googleSignInAccount.getDisplayName());
                 }
                 break;
+            case REQUEST_AUTO_LOGIN:
+                if (resultCode == Activity.RESULT_OK) {
+                    getActivity().setResult(Activity.RESULT_OK);
+                    getActivity().finish();
+                } else {
+                    dismissLoadingProgress();
+                }
+                break;
+
+            case REQUEST_ACTIVATE_ACCOUNT:
+                if (resultCode == Activity.RESULT_OK) {
+                    getActivity().setResult(Activity.RESULT_OK);
+                    getActivity().finish();
+                } else {
+                    dismissLoadingProgress();
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
         }
     }
+
 }

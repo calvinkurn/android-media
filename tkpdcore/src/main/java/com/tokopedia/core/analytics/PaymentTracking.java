@@ -4,11 +4,12 @@ import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
-import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.util.BranchSdkUtils;
 
 import org.json.JSONArray;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,15 +20,18 @@ import java.util.Map;
 public class PaymentTracking extends TrackingUtils {
 
     public static void eventTransactionGTM(Purchase purchase) {
+        BranchSdkUtils.sendCommerceEvent(purchase, BranchSdkUtils.PRODUCTTYPE_MARKETPLACE);
         getGTMEngine().eventTransaction(purchase);
-        getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
+        getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX_OLD);
         getGTMEngine().clearTransactionDataLayer(purchase);
     }
 
     /* new from TopPayActivity revamped*/
-    public static void eventTransactionAF(
-            String paymentId, String grandTotalBeforeFee, JSONArray afJSON, int qty,
-            Map[] productList
+    public static void eventTransactionAF(String paymentId,
+                                          String grandTotalBeforeFee,
+                                          JSONArray afJSON,
+                                          int qty,
+                                          Map[] productList
     ) {
         Map<String, Object> afValue = new HashMap<>();
         afValue.put(AFInAppEventParameterName.REVENUE, grandTotalBeforeFee);
@@ -56,19 +60,18 @@ public class PaymentTracking extends TrackingUtils {
         getAFEngine().sendTrackEvent(AFInAppEventType.INITIATED_CHECKOUT, values);
     }
 
-    public static void eventCartCheckout(Checkout checkout) {
+    public static void eventCartCheckoutStep1(Checkout checkout) {
+        getGTMEngine()
+                .eventCheckout(checkout)
+                .sendScreen(AppScreen.SCREEN_CART_PAGE)
+                .clearCheckoutDataLayer();
+    }
+
+    public static void eventCartCheckoutStep2(Checkout checkout) {
         getGTMEngine()
                 .eventCheckout(checkout)
                 .sendScreen(AppScreen.SCREEN_CART_SUMMARY_CHECKOUT)
                 .clearCheckoutDataLayer();
     }
 
-
-    public static void eventPromoImpression(Promotion promotion) {
-        getGTMEngine().eventBannerImpression(promotion);
-    }
-
-    public static void eventPromoClick(Promotion promotion) {
-        getGTMEngine().eventBannerClick(promotion);
-    }
 }

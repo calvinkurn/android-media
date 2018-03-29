@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">tkpdtransaction</string>
     <string name="title_change_payment">Ubah Pembayaran</string>
+    <string name="title_confirm_shipment">Konfirmasi Pengiriman</string>
+    <string name="title_scan_awb">Scan Barcode</string>
+    <string name="label_insert_awb">Isi Nomor Resi</string>
     <string name="message_failed_pick_image">Gambar gagal diambil</string>
     <string name="default_success_message_request_cancel_order">Berhasil mengajukan pembatalan pesanan</string>
+    <string name="default_success_message_reject_order">Berhasil membatalkan pesanan</string>
     <string name="label_title_dialog_request_cancel_order">Pengajuan Pembatalan Pesanan</string>
     <string name="label_sub_title_dialog_request_cancel_order">Apakah Anda yakin akan meminta penjual untuk membatalkan pesanan ini?</string>
     <string name="title_btn_alert_dialog_adjust">Ajukan</string>
@@ -11,9 +15,14 @@
     <string name="label_error_request_cancel_order_reason_empty">Alasan pembatalan harus diisi</string>
     <string name="label_error_request_cancel_order_reason_to_short">Alasan pembatalan terlalu pendek, minimum 10 karakter</string>
     <string name="title_look">Lihat</string>
+    <string name="title_download">Unduh</string>
+    <string name="title_choose">Pilih</string>
+    <string name="title_courier">Kurir</string>
     <string name="title_save">Simpan</string>
     <string name="title_status">Status</string>
     <string name="toko_cash_info">TokoCash</string>
+    <string name="weight_place_holder">(WEIGHT)</string>
+    <string name="item_place_holder"># item</string>
 
     <string name="label_payment_setting">Pengaturan Pembayaran</string>
     <string name="label_error_reason_must_fill">Alasan harus diisi</string>
@@ -71,6 +80,7 @@
     <string name="label_transaction_date_transaction">Tanggal Transaksi</string>
     <string name="label_transaction_date_purchase">Tanggal Pembelian :</string>
     <string name="label_purchase_of">Pembelian Oleh : </string>
+    <string name="label_seller_shop">Penjual: </string>
     <string name="label_item_quantity">Jumlah Barang</string>
     <string name="label_delivery_price">Ongkos Kirim</string>
     <string name="label_transaction_total_payment">Total Pembayaran</string>
@@ -135,11 +145,13 @@
     <string name="dialog_message_ask_seller"><![CDATA[<br/><br/>Invoice:<br/>XXX]]></string>
 
     <string name="button_order_detail_accept_order">Terima Pesanan</string>
+    <string name="button_order_detail_accept_order_partially">Terima Sebagian</string>
     <string name="button_order_detail_change_courier">Ganti Kurir</string>
     <string name="button_order_detail_request_pickup">Request Pickup</string>
     <string name="button_order_detail_confirm">Konfirmasi</string>
+    <string name="button_order_detail_confirm_request_pickup">Konfirmasi Request Pickup</string>
     <string name="button_order_detail_finish">Selesai</string>
-    <string name="button_order_detail_change_awb">Ganti Awb</string>
+    <string name="button_order_detail_change_awb">Ganti Resi</string>
     <string name="button_order_detail_view_complaint">Lihat Komplain</string>
     <string name="button_order_detail_confirm_shipping">Konfirmasi</string>
     <string name="button_order_detail_confirm_shipping_alternative">Konfirmasi/Ganti Kurir</string>
@@ -147,26 +159,47 @@
     <string name="button_order_detail_ask_seller">Tanya Penjual</string>
     <string name="button_order_detail_ask_buyer">Tanya Pembeli</string>
     <string name="button_order_detail_reject_order">Tolak Pesanan</string>
+    <string name="button_order_detail_reject_shipment">Tolak Pengiriman</string>
     <string name="button_order_detail_request_cancel">Ajukan Pembatalan</string>
     <string name="button_order_detail_complaint">Komplain</string>
     <string name="button_order_detail_cancel_chance">Batalkan Pencarian</string>
     <string name="title_cancellation_notes">Tulis Keterangan Anda di sini</string>
+    <string name="title_cancel_shipment_notes">Tulis alasan pembatalan</string>
+    <string name="sub_title_cancel_shipment_notes">Pembatalan pengiriman akan mendapatkan pengurangan reputasi sebesar 3 poin</string>
+    <string name="label_cancel_shipment_notes">Alasan Pembatalan</string>
     <string name="label_explanation">Keterangan</string>
+    <string name="label_awb_number">Nomor Resi</string>
+    <string name="title_reject_order_weight_price_fragment">Perbarui Harga atau Berat Produk</string>
     <string name="title_replacement_cancellation">Pilih Alasan Pembatalan: </string>
     <string name="title_replacement_reason_1">Saya hanya berbelanja dari toko yang saya percaya</string>
     <string name="title_replacement_reason_2">Pencarian toko pengganti memakan waktu yang lama</string>
     <string name="title_replacement_reason_3">Saya sudah menemukan barang dari toko lain</string>
     <string name="title_replacement_other_reason">Lainnya</string>
     <string name="error_replacement_reason">Mohon Pilih Alasan Pembatalan</string>
+    <string name="error_no_courier_chosen">Mohon Pilih Kurir</string>
+    <string name="error_no_change_price_weight">Mohon Ubah Harga dan Berat Produk</string>
     <string name="success_request_cancel_order">Sukses mengajukan pembatalan</string>
     <string name="success_finish_order_message">Pesanan Anda sudah selesai. Beri Rating dan Review di halaman ulasan.</string>
     <string name="title_dialog_finish_order">Selesaikan Pesanan</string>
     <string name="body_dialog_finish_order">Pilih selesai apabila barang sudah diterima dan tidak bermasalah</string>
     <string name="cancel_search_replacement">Batalkan Pencarian</string>
     <string name="title_detail_transaction">Detil Transaksi</string>
-
+    <string name="title_change_awb_instruction">Mohon ubah nomor resi hanya jika resi Anda Invalid</string>
+    <string name="sub_title_change_awb_instruction">Karena kami tidak akan memproses resi invalid</string>
+    <string name="label_empty_stock">Stock Kosong</string>
     <string name="title_term_and_condition">Syarat dan Ketentuan</string>
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
+    <string name="title_confirm_courier_page">Anda dapat mengganti pengiriman menjadi kurir reguler</string>
+    <string name="subtitle_confirm_courier_page">Dengan persetujuan dari Pembeli</string>
+    <string name="error_no_courier_available">Produk in tidak dapat dikirim menggunakan kurir reguler</string>
+
+    <string name="request_pickup_step_1">Pastikan pesanan sudah siap untuk di pick up</string>
+    <string name="request_pickup_step_2"><![CDATA[Mohon untuk <b>tidak</b> memberikan ongkos kirim pada driver]]></string>
+    <string name="request_pickup_step_3">Perkiraan driver akan datang untuk mengambil barang:\n - Same day maksimal 4 jam \n - Instan maksimal 2 jam</string>
+    <string name="request_pickup_info"><![CDATA[Pelajari informasi lebih lengkap mengenai kurir yang menggunakan layanan pickup <font color = \'#42b549\'>disini</font>]]></string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="delete_credit_card">Hapus kartu kredit?</string>
     <string name="forever_delete_credit_card">Kartu kredit akan terhapus selamanya</string>
     <string name="label_month_year">month/year</string>
@@ -177,6 +210,12 @@
     <string name="label_detail_credit_card">Kartu Kredit</string>
     <string name="tag_delete_credit_card_dialog">delete_credit_card_dialog</string>
     <string name="title_saved_credit_card">Kartu Kredit Tersimpan (%d/4)</string>
+    <string name="label_select_service">Tipe Pesanan</string>
+    <string name="label_select_courier">Kurir Pengiriman</string>
+    <string name="label_change_varian_description">Ubah Keterangan</string>
+    <string name="label_change_weight_price">Ubah harga/berat</string>
+    <string name="title_buyer_cancelled_order">Pembeli mengajukan pembatalan pesanan</string>
+    <string name="sub_title_buyer_cancelled_order">dengan alasan: #</string>
     <string name="apply">Terapkan</string>
     <string name="single_spacing">\u0020</string>
     <string name="title_send_to_pick_up_booth">Gerai Pengambilan di %s</string>
@@ -285,4 +324,5 @@
     <string-array name="pickup_point">
         <item>Alfamart</item>
     </string-array>
+    <string name="title_payment_procedure">Cara Pembayaran</string>
 </resources>

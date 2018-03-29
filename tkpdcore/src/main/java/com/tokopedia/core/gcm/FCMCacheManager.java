@@ -19,6 +19,7 @@ import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -166,50 +167,44 @@ public class FCMCacheManager {
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_PM, true);
             case TkpdState.GCMServiceState.GCM_TALK:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_TALK, true);
+
             case TkpdState.GCMServiceState.GCM_REVIEW:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_REVIEW, true);
             case TkpdState.GCMServiceState.GCM_REVIEW_EDIT:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_REVIEW, true);
             case TkpdState.GCMServiceState.GCM_REVIEW_REPLY:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_REVIEW, true);
+
             case TkpdState.GCMServiceState.GCM_PROMO:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
             case TkpdState.GCMServiceState.GCM_HOT_LIST:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
+
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
             case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
             case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
+
             case TkpdState.GCMServiceState.GCM_NEWORDER:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_SALES, true);
+
             case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
+
             case TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
+
+            case TkpdState.GCMServiceState.GCM_SELLER_INFO:
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_SELLER_INFO, true);
+
             default:
                 return true;
         }
@@ -233,7 +228,7 @@ public class FCMCacheManager {
                 }
             }
         } catch (Exception e) {
-            Crashlytics.log(Log.ERROR, "PUSH NOTIF - IndexOutOfBounds",
+            if(!GlobalConfig.DEBUG) Crashlytics.log(Log.ERROR, "PUSH NOTIF - IndexOutOfBounds",
                     "tkp_code:" + Integer.parseInt(data.getString(NOTIFICATION_CODE)) +
                             " size contentArray " + content.size() +
                             " size codeArray " + code.size() +
@@ -284,16 +279,23 @@ public class FCMCacheManager {
 
     public static void checkAndSyncFcmId(final Context context) {
         if (FCMCacheManager.isFcmExpired(context)) {
-            SessionHandler sessionHandler = new SessionHandler(context);
-            if (sessionHandler.isV4Login()) {
-                IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(context);
-                FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
-                tokenUpdate.setNewToken(FCMCacheManager.getRegistrationId(context));
-                tokenUpdate.setOsType(String.valueOf(1));
-                tokenUpdate.setAccessToken(sessionHandler.getAccessToken(context));
-                tokenUpdate.setUserId(sessionHandler.getLoginID());
-                fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
-            }
+            updateGcmId(context);
+        }
+    }
+
+    /**
+     * Only call this method when you need to update GCM Id.
+     * Do not change this method**/
+    public static void updateGcmId(Context context) {
+        SessionHandler sessionHandler = new SessionHandler(context);
+        if (sessionHandler.isV4Login()) {
+            IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(context);
+            FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
+            tokenUpdate.setNewToken(FCMCacheManager.getRegistrationId(context));
+            tokenUpdate.setOsType(String.valueOf(1));
+            tokenUpdate.setAccessToken(sessionHandler.getAccessToken(context));
+            tokenUpdate.setUserId(sessionHandler.getLoginID());
+            fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
         }
     }
 

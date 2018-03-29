@@ -8,6 +8,8 @@
     <string name="cashbak_info_tokocash">ke Tokocash</string>
     <string name="installment">Cicilan</string>
     <string name="installment_simulation">Simulasi Cicilan</string>
+    <string name="product_variant">Varian Produk</string>
+    <string name="choose_variant">Pilih Warna dan Ukuran</string>
     <string name="installment_bank">Cicilan Kartu Kredit Bunga 0% dari 17 Bank</string>
     <string name="stock_produk_kosong">Stok Produk Kosong</string>
     <string name="deksripsi_produk_kosong">Untuk sementara produk ini tidak dijual. Silahkan hubungi toko yang bersangkutan untuk informasi lebih lanjut</string>
@@ -35,4 +37,10 @@
     <string name="title_copy_promo_code">Salin Kode</string>
     <string name="title_copied">Kode Promo Berhasil Disalin</string>
     <string name="headerview_label_official_store">Produk dari Brand Resmi</string>
+    <string name="per_pcs">/pcs</string>
+    <string name="change_variant">Ubah Varian</string>
+    <string name="error_variant">Terjadi kesalahan dalam memproses permintaan Anda</string>
+    <string name="product_variant_onboarding">Produk ini tersedia dalam beberapa varian (seperti warna dan ukuran)</string>
+
+    <string name="product_updated_on_message_container">Produk telah diperbaharui pada %1$s</string>
 </resources>

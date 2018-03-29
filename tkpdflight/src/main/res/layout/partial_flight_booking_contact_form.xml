@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
@@ -72,9 +73,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_vs"
-        android:layout_marginTop="@dimen/margin_vs"
-        android:paddingLeft="@dimen/padding_vvs"
-        android:paddingStart="@dimen/padding_vvs">
+        android:layout_marginTop="@dimen/margin_vs">
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/contact_phone_number_label"
@@ -93,24 +92,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/selectable_background_tokopedia"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:paddingBottom="7dp">
 
-                <android.support.v7.widget.AppCompatTextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/et_phone_country_code"
                     style="@style/TextView.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
-                    android:drawableEnd="@drawable/ic_arrow_down_grey"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/selectable_background_tokopedia"
+                    app:drawableRightCompat="@drawable/ic_arrow_down_grey"
                     android:drawablePadding="@dimen/padding_small"
-                    android:drawableRight="@drawable/ic_arrow_down_grey"
                     android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:textAlignment="center"
+                    android:textColor="@color/font_black_secondary_54"
                     tools:text="+62" />
 
                 <View
                     android:layout_width="fill_parent"
-                    android:layout_height="2dp"
+                    android:layout_height="1dp"
                     android:background="@color/grey_300" />
             </LinearLayout>
 
@@ -120,17 +124,20 @@
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
                 android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_marginRight="0dp"
                 android:layout_marginStart="@dimen/margin_sm"
-                android:backgroundTint="@color/widget_card_with_action_separator"
                 android:digits="1234567890"
                 android:hint="@string/flight_booking_contact_telp_hint"
                 android:imeActionLabel="@string/label_done"
+                android:includeFontPadding="false"
                 android:inputType="number"
                 android:lines="1"
                 android:singleLine="true"
                 android:textAppearance="@style/TextView.Title"
-                android:textColor="@color/font_black_secondary_54" />
+                android:textColor="@color/font_black_secondary_54"
+                tools:text="1231231" />
 
         </LinearLayout>
     </RelativeLayout>

@@ -486,8 +486,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     @Override
     public void transitionToSolutionPage(ResultViewModel resultViewModel) {
-        Intent intent = new Intent(getActivity(), SolutionListActivity.class);
-        intent.putExtra(RESULT_VIEW_MODEL_DATA, resultViewModel);
+        Intent intent = SolutionListActivity.newCreateInstance(context, resultViewModel);
         startActivityForResult(intent, REQUEST_STEP2);
     }
 

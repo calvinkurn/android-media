@@ -19,4 +19,10 @@ public interface UserSession {
     String getShopId();
 
     boolean hasShop();
+
+    String getName();
+
+    String getProfilePicture();
+
+    boolean isMsisdnVerified();
 }

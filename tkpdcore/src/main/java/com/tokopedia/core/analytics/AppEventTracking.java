@@ -168,6 +168,13 @@ public interface AppEventTracking {
         String EVENT_ONBOARDING = "onBoardingEvent";
         String EVENT_RESOLUTION = "clickResolution";
         String PRODUCT_VIEW = "productView";
+        String LONG_CLICK = "longClick";
+        String CLICK_PDP = "clickPDP";
+        String EVENT_RESOLUTION_CENTER = "resolutionCenter";
+        String EVENT_RESOLUTION_CENTER_VIEW = "resolutionCenterView";
+        String ADD_TO_CART_PDP = "addToCart";
+        String EVENT_CHECKOUT = "checkout";
+        String CLICK_APP_SHARE_WHEN_REFERRAL_OFF = "clickAppShare";
     }
 
     interface Category {
@@ -282,11 +289,17 @@ public interface AppEventTracking {
         String ONBOARDING = "onboarding";
         String RESOLUTION_CENTER = "resolution center";
         String MANAGE_PROFILE = "pengaturan profile";
+        String RESOLUTION_CENTER_CHAT = "resolution chat";
 
         String PROMO_MICROSITE_PROMO_LIST ="promo microsite - promo list";
         String PROMO_MICROSITE_PROMO_TOOLTIP ="promo microsite - promo tooltip";
         String SORT_BY = "sort by";
         String FILTER_PRODUCT = "filter product";
+        String LONG_PRESS = "Long Press";
+
+        String HOME_BOTTOM_NAV = "bottom nav";
+        String ECOMMERCE = "Ecommerce";
+        String APPSHARE = "App share";
     }
 
     interface Action {
@@ -451,6 +464,9 @@ public interface AppEventTracking {
         String CLICK_CREATE_RESO = "click buat komplain";
         String CLICK_CREATE_RESO_ABANDON = "click abandon";
 
+        String CLICK_BACK_INPUT_ADDRESS_PAGE_DETAIL = "click back arrow from masukkan alamat";
+        String CLICK_BACK_EDIT_ADDRESS_PAGE_DETAIL = "click back arrow from ubah alamat";
+
         String CLICK_CHANGE_PHONE_NUMBER = "click on ubah";
         String SUCCESS_CHANGE_PHONE_NUMBER = "success change phone number";
 
@@ -464,6 +480,19 @@ public interface AppEventTracking {
         String CLICK_SHOP = "click - shop";
         String CLICK_WISHLIST = "click - wishlist";
         String SORT_BY = "sort by";
+        String CLICK_REFERRAL = "Click Share";
+        String CLICK_JUAL = "Click Jual";
+        String CLICK_BAYAR = "Click Bayar";
+
+        String CLICK_VARIANTS = "click - variants";
+        String CLICK_BUY_VARIANT_PDP = "click - buy";
+        String CLICK_CART_BUTTON_VARIANT = "click - cart button on sticky header";
+        String SELECT_COLOR_VARIANT = "select color on variants page";
+        String SELECT_SIZE_VARIANT = "select size on variants page";
+        String CLICK_BUY_VARIANT_PAGE = "click - buy on variants page";
+
+        String LOGIN_NOW = "masuk sekarang";
+        String CHECKOUT = "Checkout";
     }
 
     interface ImageEditor{
@@ -478,6 +507,12 @@ public interface AppEventTracking {
         String FAVORITE = "favorite";
         String PRODUCT_FEED = "feed";
         String HOTLIST = "hotlist";
+
+        String TAB = "tab";
+
+        String BEFORE_LOGIN = "before login";
+        String AFTER_LOGIN = "after login";
+
         String VIEW_ALL_WISHLIST = "View All Wishlist";
         String VIEW_ALL_RECENT = "View All Wishlist";
         String ADD_TO_WISHLIST_LABEL = "Add To Wishlist - ";
@@ -814,6 +849,11 @@ public interface AppEventTracking {
         String RESO_CREATE_COMPLAINT_CONFIRM  = "confirm - create complain";
         String RESO_CREATE_COMPLAINT_UNCONFIRM  = "unconfirmed - create complain";
         String RESO_CREATE_ABANDON = "abandon";
+        String LONG_PRESS_SHORTCUT_REFERRAL = "Share";
+        String PRODUCT_SEARCH = "Product Search";
+        String TAKE_TO_SHOP = "Take to Shop";
+        String DIGITAL = "Digital";
+        String REFERRAL ="Referral";
     }
 
     interface SOCIAL_MEDIA {
@@ -1025,5 +1065,26 @@ public interface AppEventTracking {
         String PRODUCT_ID = "productId";
         String SHOP_ID = "shopId";
         String PROMO_ID = "promoId";
+        String SHOP_TYPE = "shopType";
+    }
+
+    interface ShopType {
+        String REGULAR = "regular";
+        String OFFICIAL_STORE = "official_store";
+        String GOLD_MERCHANT = "gold_merchant";
+    }
+
+    interface EventBranch {
+        String EVENT_LOGIN="login";
+        String EVENT_REGISTER="sign_up";
+    }
+
+    interface Branch {
+        String EMAIL="email";
+        String PHONE="phone";
+    }
+
+    interface ResoDimension {
+        String RESOLUTION_ID = "resolutionId";
     }
 }

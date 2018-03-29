@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:background="@color/white">
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_gravity="center"
+       android:gravity="center"
+       android:orientation="vertical"
+       android:padding="@dimen/padding_small">
+       <android.support.v4.widget.Space
+           android:layout_width="match_parent"
+           android:layout_height="@dimen/margin_med" />
+
+       <ImageView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           app:srcCompat="@drawable/ic_icon_toped_announce"/>
+
+       <android.support.v4.widget.Space
+           android:layout_width="match_parent"
+           android:layout_height="@dimen/margin_small" />
+
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:gravity="center"
+           android:text="@string/welcome_text_1"
+           android:textColor="@color/black"
+           android:textStyle="bold"/>
+
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:gravity="center"
+           android:text="@string/welcome_text_2"/>
+
+       <android.support.v4.widget.Space
+           android:layout_width="match_parent"
+           android:layout_height="@dimen/margin_small" />
+
+   </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="@color/grey_300"
+        android:padding="@dimen/padding_small">
+        <TextView
+            android:id="@+id/seller_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mulai Kelola Toko"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:background="@drawable/button_buy_from_cart"
+            android:padding="@dimen/padding_med"/>
+
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_med" />
+
+        <!--<com.tokopedia.tkpd.session.LoginTextView-->
+            <!--android:id="@+id/buyer_button"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="1"-->
+
+            <!--android:layout_marginTop="@dimen/margin_small"-->
+            <!--app:customText="Saya sebagai Pembeli"-->
+            <!--app:textColor="@color/grey_600"-->
+            <!--app:borderColor="@color/grey_600"-->
+            <!--app:imageEnabled="false"-->
+            <!--app:cornerSize="5"-->
+            <!--app:borderSize="2" />-->
+        <TextView
+            android:id="@+id/buyer_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Belanja sebagai Pembeli"/>
+
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_small" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
-    android:paddingLeft="@dimen/padding_vs"
+    android:paddingLeft="@dimen/padding_small"
     android:paddingRight="@dimen/padding_vs"
     android:paddingTop="@dimen/padding_small"
     android:paddingBottom="@dimen/padding_small"
@@ -36,7 +37,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_sold" />
+                app:srcCompat="@drawable/icon_sold" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -65,7 +66,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_view" />
+                app:srcCompat="@drawable/icon_view" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -94,7 +95,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_insurance" />
+                app:srcCompat="@drawable/icon_insurance" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -124,7 +125,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_weight" />
+                app:srcCompat="@drawable/icon_weight" />
 
             <TextView
                 android:layout_width="match_parent"

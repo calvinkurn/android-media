@@ -12,7 +12,6 @@ public class ConsumerAppBaseUrl {
     public static final String BASE_API_DOMAIN = "https://api.tokopedia.com/";
     public static final String BASE_ACE_DOMAIN = "https://ace.tokopedia.com/";
     public static final String BASE_TOME_DOMAIN = "https://tome.tokopedia.com/";
-    public static final String BASE_CLOVER_DOMAIN = "https://points.tokopedia.com/";
     public static final String BASE_TOPADS_DOMAIN = "https://ta.tokopedia.com/";
     public static final String BASE_MOJITO_DOMAIN = "https://mojito.tokopedia.com/";
     public static final String BASE_HADES_DOMAIN = "https://hades.tokopedia.com";
@@ -40,5 +39,10 @@ public class ConsumerAppBaseUrl {
     public static final String CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com";
     public static final String MAPS_DOMAIN = "https://gw.tokopedia.com/";
     public static final String BASE_WALLET = "https://www.tokocash.com/";
+    public static final String EVENT_DOMAIN = "https://booking.tokopedia.com/";
     public static final String TOKOPOINT_API_DOMAIN = "https://gw.tokopedia.com/tokopoints/api/";
+    public static final String TOKO_CAMPAIGN_URL = "https://booking.tokopedia.com/trigger/v1/api/";
+    public static final String HOME_DATA_BASE_URL = "https://gql.tokopedia.com/";
+    public static final String TOPPROFILE_DOMAIN = GRAPHQL_DOMAIN;
+
 }

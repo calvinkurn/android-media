@@ -7,12 +7,12 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Space;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -32,7 +32,7 @@ public class LoginTextView extends LinearLayout {
     int borderSize;
     boolean imageEnabled;
     GradientDrawable shape;
-    private Drawable drawable;
+    private int resourceId;
     int backgroundColor;
     private float myDefaultPadding;
     private int padding;
@@ -91,7 +91,7 @@ public class LoginTextView extends LinearLayout {
             cornerSize = a.getInt(R.styleable.LoginTextView_cornerSize, 3);
             borderSize = a.getInt(R.styleable.LoginTextView_borderSize, 1);
             imageEnabled = a.getBoolean(R.styleable.LoginTextView_imageEnabled, true);
-            drawable = a.getDrawable(R.styleable.LoginTextView_iconButton);
+            resourceId = a.getResourceId(R.styleable.LoginTextView_iconButton, 0);
         } finally {
             a.recycle();
         }
@@ -105,13 +105,13 @@ public class LoginTextView extends LinearLayout {
                 , cornerSize, cornerSize, cornerSize, cornerSize});
 
         shape.setStroke(borderSize, borderColor);
-        if (drawable != null)
-            (findViewById(R.id.provider_image)).setBackgroundDrawable(drawable);
+        if (resourceId != 0) {
+            Drawable drawable = AppCompatResources.getDrawable(context, resourceId);
+            (findViewById(R.id.provider_image)).setBackground(drawable);
+        }
 
-        if (!imageEnabled || drawable == null) {
+        if (!imageEnabled || resourceId == 0) {
             (findViewById(R.id.provider_image)).setVisibility(GONE);
-            Space space = (Space) findViewById(R.id.space);
-            space.setVisibility(GONE);
         }
     }
 
@@ -197,8 +197,6 @@ public class LoginTextView extends LinearLayout {
     public void setTextVisibility(int visibility) {
         TextView textView = (TextView) findViewById(R.id.provider_name);
         textView.setVisibility(visibility);
-        Space space = (Space) findViewById(R.id.space);
-        space.setVisibility(visibility);
     }
 
     public void setImageNextToText() {

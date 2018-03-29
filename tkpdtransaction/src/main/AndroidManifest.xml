@@ -95,10 +95,22 @@
             android:label="@string/title_term_and_condition" />
         <activity
             android:name=".purchase.detail.activity.OrderDetailActivity"
-            android:label="@string/title_activity_people_tx_details" />
+            android:label="@string/title_activity_people_tx_details"android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".purchase.detail.activity.OrderHistoryActivity"
-            android:label="@string/title_activity_people_tx_details" />
+            android:label="@string/title_activity_people_tx_history"/>
+        <activity
+            android:name=".purchase.activity.PaymentProcedureActivity"
+            android:theme="@style/Toolbar.White"
+            android:label="@string/title_payment_procedure"/>
+
+        <activity
+            android:name=".purchase.detail.activity.ConfirmShippingActivity"
+            android:label="@string/title_confirm_shipment"/>
+
+        <activity
+            android:name=".purchase.detail.activity.CustomScannerBarcodeActivity"
+            android:label="@string/title_scan_awb" />
         <activity
             android:name=".checkout.view.view.multipleaddressform.AddShipmentAddressActivity"
             android:label="@string/title_activity_people_tx_details" />
@@ -113,6 +125,7 @@
         <service
             android:name=".purchase.services.TxActionIntentService"
             android:exported="false" />
+
         <service
             android:name=".cart.services.TopPayIntentService"
             android:exported="false" />

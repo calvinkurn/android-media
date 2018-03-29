@@ -3,6 +3,7 @@ package com.tokopedia.flight.detail.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
@@ -10,7 +11,7 @@ import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 import java.util.List;
 
 /**
- * Created by zulfikarrahman on 11/20/17.
+ * @author  by zulfikarrahman on 11/20/17.
  */
 
 public class FlightDetailViewModel implements Parcelable {
@@ -45,6 +46,10 @@ public class FlightDetailViewModel implements Parcelable {
     private int countChild;
     private int countInfant;
     private List<FlightDetailRouteViewModel> routeList;
+    private List<FlightAirlineDB> airlineDataList;
+
+    public FlightDetailViewModel() {
+    }
 
     protected FlightDetailViewModel(Parcel in) {
         id = in.readString();
@@ -65,9 +70,8 @@ public class FlightDetailViewModel implements Parcelable {
         countChild = in.readInt();
         countInfant = in.readInt();
         routeList = in.createTypedArrayList(FlightDetailRouteViewModel.CREATOR);
-    }
-
-    public FlightDetailViewModel() {
+        isRefundable = (RefundableEnum) in.readSerializable();
+        airlineDataList = in.createTypedArrayList(FlightAirlineDB.CREATOR);
     }
 
     public FlightDetailViewModel build(FlightSearchViewModel flightSearchViewModel) {
@@ -90,6 +94,7 @@ public class FlightDetailViewModel implements Parcelable {
             setRouteList(mapper.transform(flightSearchViewModel.getRouteList(), flightSearchViewModel.getAirlineList()));
             setDepartureTime(flightSearchViewModel.getDepartureTime());
             setArrivalTime(flightSearchViewModel.getArrivalTime());
+            setAirlineDataList(flightSearchViewModel.getAirlineList());
             return this;
         } else {
             return null;
@@ -280,5 +285,15 @@ public class FlightDetailViewModel implements Parcelable {
         parcel.writeInt(countChild);
         parcel.writeInt(countInfant);
         parcel.writeTypedList(routeList);
+        parcel.writeSerializable(isRefundable);
+        parcel.writeTypedList(airlineDataList);
+    }
+
+    public List<FlightAirlineDB> getAirlineDataList() {
+        return airlineDataList;
+    }
+
+    public void setAirlineDataList(List<FlightAirlineDB> airlineDataList) {
+        this.airlineDataList = airlineDataList;
     }
 }

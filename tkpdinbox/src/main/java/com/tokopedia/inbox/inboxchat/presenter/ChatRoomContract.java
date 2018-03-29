@@ -1,8 +1,10 @@
 package com.tokopedia.inbox.inboxchat.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
@@ -13,6 +15,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 
 import java.util.List;
 
@@ -62,8 +65,6 @@ public class ChatRoomContract {
 
         void addTimeMachine();
 
-        void addUrlToReply(String url);
-
         String getKeyword();
 
         void setResult(ChatRoomViewModel model);
@@ -90,7 +91,7 @@ public class ChatRoomContract {
 
         void goToSettingTemplate();
 
-        void onGoToGallery(Attachment attachment);
+        void onGoToGallery(Attachment attachment, String fullTime);
 
         void onGoToWebView(String attachment, String id);
 
@@ -100,19 +101,39 @@ public class ChatRoomContract {
 
         void onSuccessInitMessage();
 
-        void addDummyInitialMessage();
+        void addInitialMessageBalloon();
 
         void disableAction();
 
         void onErrorInitMessage(String s);
 
         boolean isAllowedTemplate();
+
+        Fragment getFragment();
+
+        void onErrorUploadImages(String throwable, MyChatViewModel model);
+
+        void onRetrySend(MyChatViewModel attachment);
+
+        void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model);
+
+        void setUploadingMode(boolean b);
+
+        void scrollToBottomWithCheck();
+
+        void setHeaderModel(String nameHeader, String imageHeader);
+
+        void startAttachProductActivity(String shopId, String shopName, boolean isSeller);
+
+        void productClicked(Integer productId, String productName, String productPrice, Long dateTime, String url);
+
+        boolean isChatBot();
     }
 
     interface Presenter extends CustomerPresenter<View>{
         void getReply(int mode);
 
-        void getAttachProductDialog(String shopId, String senderRole);
+        void getAttachProductDialog(String shopId,String shopName, String senderRole);
 
         void onOpenWebSocket();
 
@@ -122,8 +143,14 @@ public class ChatRoomContract {
 
         void sendMessageWithApi();
 
-        void addDummyMessage(WebSocketResponse response);
+        void addMessageChatBalloon(WebSocketResponse response);
 
         void initMessage(String s, String string, String string1, String string2);
+
+        void openCamera();
+
+        void startUpload(List<MyChatViewModel> list, int network);
+
+        String getFileLocFromCamera();
     }
 }

@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/margin_8">
 
-    <include layout="@layout/include_header_detail_flight"
-        android:paddingTop="0dp"  />
+    <include layout="@layout/include_header_detail_flight" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -44,9 +45,9 @@
                 android:layout_height="@dimen/image_width_xxxs"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="6dp"
                 android:layout_marginRight="@dimen/margin_sm"
-                android:src="@drawable/selector_flight_detail" />
+                android:layout_marginTop="6dp"
+                app:srcCompat="@drawable/selector_flight_detail" />
 
             <TextView
                 android:id="@+id/arrival_time"
@@ -70,7 +71,7 @@
                 android:layout_alignLeft="@+id/departure_time_circle"
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:layout_marginRight="@dimen/margin_sm"
-                android:src="@drawable/selector_flight_detail" />
+                app:srcCompat="@drawable/selector_flight_detail" />
 
             <View
                 android:layout_width="1dp"
@@ -137,16 +138,23 @@
 
         <TextView
             android:id="@+id/transit_info"
-            android:padding="@dimen/padding_small"
             style="@style/TextView.Small.BlackSecondary"
             android:layout_width="match_parent"
             android:layout_below="@+id/container_flight_info"
-            android:layout_marginLeft="@dimen/padding_small"
-            android:layout_marginRight="@dimen/padding_small"
+            android:layout_marginLeft="@dimen/margin_16"
+            android:layout_marginRight="@dimen/margin_16"
             android:layout_marginTop="@dimen/margin_sm"
             android:background="@drawable/bg_stroke_dash_green_flight"
+            android:padding="@dimen/padding_small"
             android:visibility="gone"
             tools:text="Transit Selama 5 Jam 40 menit di Muscat (MCT)"
             tools:visibility="visible" />
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/container_pnr"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:background="@color/black_twenty_percent" />
 </LinearLayout>

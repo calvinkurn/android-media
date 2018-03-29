@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">tkpdhome</string>
+    <string name="explore">Explore</string>
+    <string name="beli">Beli</string>
+    <string name="bayar">Bayar</string>
+    <string name="pesan">Pesan</string>
+    <string name="ajukan">Ajukan</string>
+    <string name="jual">Jual</string>
+    <string name="buka_toko">Buka Toko</string>
+    <string name="manage_toko">Atur Toko</string>
+    <string name="empty_shop_wording_subtitle">Nikmati transaksi yang mudah, aman, dan menguntungkan</string>
+    <string name="manage_shop_wording_subtitle">Kelola pengaturan toko Anda untuk meningkatkan penjualan</string>
+    <string name="empty_shop_wording_title">Buka toko sekarang, banyak lebihnya!</string>
+    <string name="top_up_button">Top Up</string>
+    <string name="open_shop_wording_title">Atur Toko, Raih Keuntungan!</string>
+    <string name="lihat_semua">Lihat Semua</string>
+    <string name="kunjungi_sekarang">Kunjungi Sekarang</string>
+    <string name="format_btn_category_more">+%d Kategori Lainnya</string>
+    <string name="kategori_favorit">Kategori Favorit Anda</string>
+
+    <!--tokocash cashback-->
+    <string name="toko_cash_pending_title">Bonus Cashback</string>
+    <string name="toko_cash_pending_proceed_button">Dapatkan Cashback Sekarang</string>
+    <string name="toko_cash_pending_close_button">Tutup</string>
+    <string name="toko_cash_pending_body">Anda mendapatkan cashback TokoCash sebesar %s dari transaksi terakhir</string>
+    <string name="digital_widget_title">Produk Digital</string>
+    <string name="image_product_desc">Produk</string>
+    <string name="ubah">Ubah</string>
+    <string name="sprint_sale_expired_text">Promo Berakhir</string>
+    <string name="official_store">Official Store</string>
+    <string name="gold_merchant">Gold Merchant</string>
+    <string name="home_header_tokopoint_unable_to_load_label">Gagal Memuat</string>
+    <string name="home_header_tokopoint_refresh_label">Coba Lagi</string>
+    <string name="home_header_tokocash_unable_to_load_label">Gagal Memuat</string>
+    <string name="home_header_tokocash_refresh_label">Coba Lagi</string>
+    <string name="home_header_tokopoint_new_label">Baru</string>
+</resources>

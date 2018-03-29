@@ -11,7 +11,6 @@
 
     <color name="black_12">#1e000000</color>
     <color name="grey_hint">#2e000000</color>
-    <color name="transparent_white">#00FFFFFF</color>
 
     <array name="green_indicator">
         <item>@color/green_50</item>
@@ -30,4 +29,10 @@
     <color name="shadow_color_3">#15CCCCCC</color>
     <color name="shadow_color_4">#20CCCCCC</color>
     <color name="shadow_color_5">#25CCCCCC</color>
+
+    <color name="background_yellow_incomplete">#fffcd3</color>
+    <color name="background_green_verified">#d4efd5</color>
+
+    <color name="disabled_text">#42000000</color>
+    <color name="button_border_grey">#e0e0e0</color>
 </resources>

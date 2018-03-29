@@ -3,6 +3,7 @@ package com.tokopedia.flight.orderlist.data.cloud;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
+import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,15 @@ public class FlightOrderDataSource {
             @Override
             public OrderEntity call(Response<DataResponse<OrderEntity>> dataResponseResponse) {
                 return dataResponseResponse.body().getData();
+            }
+        });
+    }
+
+    public Observable<SendEmailEntity> sendEmail(Map<String, Object> maps) {
+        return flightApi.sendEmail(maps).map(new Func1<Response<SendEmailEntity>, SendEmailEntity>() {
+            @Override
+            public SendEmailEntity call(Response<SendEmailEntity> emailResponse) {
+                return emailResponse.body();
             }
         });
     }

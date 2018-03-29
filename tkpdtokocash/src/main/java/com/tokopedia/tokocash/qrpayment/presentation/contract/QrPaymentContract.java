@@ -1,10 +1,10 @@
 package com.tokopedia.tokocash.qrpayment.presentation.contract;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
+import com.tokopedia.usecase.RequestParams;
 
 /**
  * Created by nabillasabbaha on 1/3/18.
@@ -22,7 +22,7 @@ public interface QrPaymentContract {
 
         void renderBalanceTokoCash(BalanceTokoCash balanceTokoCash);
 
-        void showErrorBalanceTokoCash(String message);
+        void showErrorBalanceTokoCash(Throwable throwable);
     }
 
     interface Presenter extends CustomerPresenter<View> {

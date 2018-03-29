@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
@@ -365,14 +364,10 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void onItemPromoClicked(PromoData promoData, int position) {
-        String appLink = promoData.getAppLink();
         String redirectUrl = promoData.getPromoLink();
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
             TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
-//            if (!TextUtils.isEmpty(appLink) && tkpdCoreRouter.isSupportedDelegateDeepLink(appLink))
-//                tkpdCoreRouter.actionApplinkFromActivity(getActivity(), appLink);
-//            else
-                tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
+            tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
         }
         dPresenter.sendClickItemPromoListTrackingData(promoData, position, promoMenuData.getTitle());
     }

@@ -29,6 +29,7 @@ import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
 import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.Attributes;
 import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
+import com.tokopedia.digital.product.domain.interactor.DigitalGetHelpUrlUseCase;
 import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
@@ -62,12 +63,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     private static final String PAKET_DATA_CATEGORY_ID = "2";
     private static final String ROAMING_CATEGORY_ID = "20";
     private static final int MAX_SIM_COUNT = 2;
-
-    private Activity activity;
-    private IProductDigitalView view;
-    private IProductDigitalInteractor productDigitalInteractor;
-    private GetCategoryByIdUseCase getCategoryByIdUseCase;
-
     //private String currentMobileNumber;
     private final static String simSlotName[] = {
             "extra_asus_dial_use_dualsim",
@@ -87,28 +82,32 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             "slotId",
             "slotIdx"
     };
+    private final static String balance = "balance";
+    private final String PARAM_VALUE_SORT = "label";
+    private Activity activity;
+    private IProductDigitalView view;
+    private IProductDigitalInteractor productDigitalInteractor;
+    private GetCategoryByIdUseCase getCategoryByIdUseCase;
+    private DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase;
     private String slotKey = "com.android.phone.force.slot";
     private String accoutHandleKey = "android.telecom.extra.PHONE_ACCOUNT_HANDLE";
     private Handler ussdHandler;
     private int ussdTimeOutTime = 30 * 1000;
     private boolean ussdTimeOut = false;
-
-    private final String PARAM_VALUE_SORT = "label";
-
-    private final static String balance = "balance";
-
     private CategoryData categoryData;
 
     public ProductDigitalPresenter(Activity activity,
                                    LocalCacheHandler localCacheHandler,
                                    IProductDigitalView view,
                                    IProductDigitalInteractor productDigitalInteractor,
-                                   GetCategoryByIdUseCase getCategoryByIdUseCase) {
+                                   GetCategoryByIdUseCase getCategoryByIdUseCase,
+                                   DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase) {
         super(activity, localCacheHandler);
         this.activity = activity;
         this.view = view;
         this.productDigitalInteractor = productDigitalInteractor;
         this.getCategoryByIdUseCase = getCategoryByIdUseCase;
+        this.digitalGetHelpUrlUseCase = digitalGetHelpUrlUseCase;
     }
 
     @Override
@@ -314,7 +313,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (view == null || activity == null) {
+                if (view == null || view.getActivity() == null) {
                     return;
                 }
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
@@ -346,7 +345,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
             @Override
             public void onNext(PulsaBalance pulsaBalance) {
-                if (view != null && activity != null) {
+               if (view != null && view.getActivity() != null) {
                     view.renderPulsaBalance(pulsaBalance, selectedSim);
                 }
             }
@@ -406,7 +405,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         List<Operator> selectedOperatorList = new ArrayList<>();
         String simOperatorName = DeviceUtil.getOperatorName(activity, selectedSim);
         CategoryData categoryData = view.getCategoryDataState();
-        if(categoryData !=null && categoryData.getOperatorList() != null) {
+        if (categoryData != null && categoryData.getOperatorList() != null) {
             for (Operator operator : categoryData.getOperatorList()) {
                 if (DeviceUtil.verifyUssdOperator(simOperatorName, operator.getName())) {
                     selectedOperatorList.add(operator);
@@ -517,7 +516,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 && categoryData != null
                 && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)
                 && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && view.isUserLoggedIn()) {
+                && view.isUserLoggedIn()
+                && view.getActivity() != null) {
             view.removeCheckPulsaCards();
             CategoryData categoryDataState = view.getCategoryDataState();
 
@@ -564,7 +564,37 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         }
     }
 
-    private String getPhoneNumberForSim(int simIndex, Operator operator, List<Validation> validationList){
+    @Override
+    public void processGetHelpUrlData(String categoryId) {
+        digitalGetHelpUrlUseCase.execute(digitalGetHelpUrlUseCase.createRequest(categoryId),
+                new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(String url) {
+                        if (url != null && url.length() > 0) {
+                            view.showHelpMenu(url);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void onHelpMenuClicked() {
+        if (view.getHelpUrl() != null && view.getHelpUrl().length() > 0) {
+            view.navigateToWebview(view.getHelpUrl());
+        }
+    }
+
+    private String getPhoneNumberForSim(int simIndex, Operator operator, List<Validation> validationList) {
         String phoneNumber = getUssdPhoneNumberFromCache(simIndex);
         if (!DeviceUtil.validateNumberAndMatchOperator(validationList, operator, phoneNumber)) {
             phoneNumber = getDeviceMobileNumber(simIndex);
@@ -575,7 +605,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         return phoneNumber;
     }
 
-    private boolean isOperatorListAvailable(CategoryData categoryDataState){
+    private boolean isOperatorListAvailable(CategoryData categoryDataState) {
 
         return (categoryDataState != null &&
                 categoryDataState.getOperatorList() != null &&

@@ -1,13 +1,11 @@
 package com.tokopedia.session.register.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
@@ -24,113 +22,161 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookSdk;
-import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customView.LoginTextView;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.session.model.LoginGoogleModel;
-import com.tokopedia.core.session.model.LoginProviderModel;
-import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
+import com.tokopedia.session.WebViewLoginFragment;
+import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.google.GoogleSignInActivity;
+import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
+import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
-import com.tokopedia.session.session.activity.Login;
-import com.tokopedia.session.session.model.LoginModel;
-import com.tokopedia.session.session.presenter.RegisterInitialPresenter;
-import com.tokopedia.session.session.presenter.RegisterInitialPresenterImpl;
-import com.tokopedia.session.session.presenter.RegisterInitialView;
+import com.tokopedia.session.register.view.presenter.RegisterInitialPresenter;
+import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
+import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
+import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
+import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
 
-import java.util.List;
+import java.util.ArrayList;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
+import javax.inject.Inject;
 
-import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
 import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
 import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
 /**
- * Created by stevenfredian on 10/18/16.
+ * @author by nisie on 10/10/17.
  */
-@RuntimePermissions
-public class RegisterInitialFragment extends Fragment
-        implements RegisterInitialView {
 
-    private static final String ARGS_MESSAGE = "message";
+public class RegisterInitialFragment extends BaseDaggerFragment
+        implements RegisterInitial.View {
 
-    protected RegisterInitialPresenter presenter;
+    private static final int REQUEST_REGISTER_WEBVIEW = 100;
+    private static final int REQUEST_REGISTER_EMAIL = 101;
+    private static final int REQUEST_CREATE_PASSWORD = 102;
+    private static final int REQUEST_SECURITY_QUESTION = 103;
 
-    LinearLayout linearLayout;
+    private static final String FACEBOOK = "facebook";
+    private static final String GPLUS = "gplus";
+    private static final String COLOR_WHITE = "#FFFFFF";
+
+    public static final int TYPE_SQ_PHONE = 1;
+    public static final int TYPE_SQ_EMAIL = 2;
+
+    LinearLayout registerContainer;
     LoginTextView registerButton;
     TextView loginButton;
     ScrollView container;
     RelativeLayout progressBar;
 
-    private List<LoginProviderModel.ProvidersBean> listProvider;
-    private Snackbar snackbar;
-    private CallbackManager callbackManager;
+    @Inject
+    RegisterInitialPresenter presenter;
 
-    public static RegisterInitialFragment newInstance() {
+    @Inject
+    GlobalCacheManager cacheManager;
+
+    @Inject
+    SessionHandler sessionHandler;
+
+    CallbackManager callbackManager;
+
+    public static RegisterInitialFragment createInstance() {
         return new RegisterInitialFragment();
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ScreenTracking.screen(getScreenName());
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_REGISTER;
+    }
+
+    @Override
+    protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
+
+        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
+                DaggerSessionComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
+
+        daggerSessionComponent.inject(this);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initialPresenter();
-        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
+        sessionHandler.clearToken();
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(getFragmentLayout(), container, false);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
+            savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_register_initial, parent, false);
+
+        registerContainer = (LinearLayout) view.findViewById(R.id.register_container);
+        registerButton = (LoginTextView) view.findViewById(R.id.register);
+        loginButton = (TextView) view.findViewById(R.id.login_button);
+        container = (ScrollView) view.findViewById(R.id.container);
+        progressBar = (RelativeLayout) view.findViewById(R.id.progress_bar);
+        prepareView(view);
+        setViewListener();
+        presenter.attachView(this);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initView(view);
-        setViewListener();
+        initData();
     }
 
-    protected void initView(View view) {
-        UserAuthenticationAnalytics.setActiveRegister();
+    private void initData() {
+        presenter.getProvider();
+    }
 
-        linearLayout = (LinearLayout) view.findViewById(R.id.linearLayout);
-        registerButton = (LoginTextView) view.findViewById(R.id.register);
-        loginButton = (TextView) view.findViewById(R.id.login_button);
-        container = (ScrollView) view.findViewById(R.id.container);
-        progressBar = (RelativeLayout) view.findViewById(R.id.progress_bar);
+    protected void prepareView(View view) {
+        UserAuthenticationAnalytics.setActiveRegister();
 
         registerButton.setColor(Color.WHITE);
         registerButton.setBorderColor(R.color.black);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventRegisterChannel(AppEventTracking.GTMCacheValue.EMAIL);
-                UserAuthenticationAnalytics.setActiveAuthenticationMedium(
-                        AppEventTracking.GTMCacheValue.EMAIL);
+                UnifyTracking.eventTracking(LoginAnalytics.getEventClickRegisterEmail());
                 UnifyTracking.eventMoRegistrationStart(AppEventTracking.GTMCacheValue.EMAIL);
-                finishActivity();
-                startActivity(new Intent(getActivity(), RegisterEmailActivity.class));
+                showProgressBar();
+                Intent intent = RegisterEmailActivity.getCallingIntent(getActivity());
+                startActivityForResult(intent, REQUEST_REGISTER_EMAIL);
 
             }
         });
@@ -164,308 +210,314 @@ public class RegisterInitialFragment extends Fragment
             @Override
             public void onClick(View v) {
                 getActivity().finish();
-                getActivity().startActivity(Login.getCallingIntent(getActivity()));
+                Intent intent = LoginActivity.getCallingIntent(getActivity());
+                startActivity(intent);
             }
         });
     }
 
-    public String getScreenName() {
-        return AppScreen.SCREEN_REGISTER;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_REGISTER_WEBVIEW) {
+            handleRegisterWebview(resultCode, data);
+        } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) {
+            String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
+            presenter.registerGoogle(accessToken);
+        } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_CANCELED) {
+            dismissProgressBar();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
+        } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
+            dismissProgressBar();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
+        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
+            dismissProgressBar();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
-    @Override
-    public void onResume() {
-        presenter.initData(getActivity());
-        ScreenTracking.screen(getScreenName());
-        super.onResume();
-    }
-
-    @Override
-    public void addProgressBar() {
-        ProgressBar pb = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyle);
-        int lastPos = linearLayout.getChildCount() - 1;
-        if (!(linearLayout.getChildAt(lastPos) instanceof ProgressBar))
-            linearLayout.addView(pb, linearLayout.getChildCount());
-    }
-
-    @Override
-    public void removeProgressBar() {
-        int lastPos = linearLayout.getChildCount() - 1;
-        if (linearLayout.getChildAt(lastPos) instanceof ProgressBar)
-            linearLayout.removeViewAt(linearLayout.getChildCount() - 1);
-    }
-
-    @Override
-    public void showProgress(boolean isShow) {
-        if (progressBar != null)
-            progressBar.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        if (container != null)
-            container.setVisibility(isShow ? View.GONE : View.VISIBLE);
-        if (loginButton != null)
-            loginButton.setVisibility(isShow ? View.GONE : View.VISIBLE);
-    }
-
-    @Override
-    public void showError(String string) {
-        NetworkErrorHelper.showSnackbar(getActivity(), string);
-    }
-
-    @Override
-    public void onMessageError(int type, String s) {
-        switch (type) {
-            case DownloadService.DISCOVER_LOGIN:
-                removeProgressBar();
-                NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                        getString(R.string.error_download_provider),
-                        new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                presenter.downloadProviderLogin(getActivity());
-
-                            }
-                        }).showRetrySnackbar();
-                loginButton.setEnabled(false);
-                break;
-            default:
-                showError(s);
-                break;
+    private void handleRegisterWebview(int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_CANCELED) {
+            KeyboardHandler.DropKeyboard(getActivity(), getView());
+        } else {
+            presenter.registerWebview(data);
         }
     }
 
     @Override
-    public void finishActivity() {
-        if (getActivity() != null) {
+    public void onResume() {
+        super.onResume();
+        ScreenTracking.screen(getScreenName());
+
+        if (sessionHandler != null &&
+                sessionHandler.isV4Login()) {
+            getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         }
     }
 
     @Override
-    public void moveToFragmentSecurityQuestion(int security1, int security2, int userId) {
-        if (getActivity() != null) {// && !((AppCompatActivity)mContext).isFinishing()
-            ((SessionView) getActivity()).moveToFragmentSecurityQuestion(security1, security2, userId, "");
+    public void showLoadingDiscover() {
+        ProgressBar pb = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyle);
+        int lastPos = registerContainer.getChildCount() - 1;
+        if (!(registerContainer.getChildAt(lastPos) instanceof ProgressBar)) {
+            registerContainer.addView(pb, registerContainer.getChildCount());
         }
     }
 
     @Override
-    public void showProvider(List<LoginProviderModel.ProvidersBean> data) {
-        listProvider = data;
-        loginButton.setEnabled(true);
-        if (listProvider != null && checkHasNoProvider()) {
-            presenter.saveProvider(listProvider);
+    public void onErrorDiscoverRegister(String errorMessage) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getProvider();
+                    }
+                }).showRetrySnackbar();
+        loginButton.setEnabled(false);
+    }
 
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    getResources().getDimensionPixelSize(R.dimen.btn_login_height));
+    @Override
+    public void onSuccessDiscoverRegister(ArrayList<DiscoverItemViewModel> listProvider) {
 
-            layoutParams.setMargins(0, 20, 0, 15);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                getResources().getDimensionPixelSize(R.dimen.btn_login_height));
 
-            for (int i = 0; i < listProvider.size(); i++) {
-                String color = listProvider.get(i).getColor();
-                int colorInt;
-                if (color == null) {
-                    colorInt = Color.parseColor("#FFFFFF");
-                } else {
-                    colorInt = Color.parseColor(color);
-                }
-                LoginTextView tv = new LoginTextView(getActivity(), colorInt);
-                tv.setTextRegister(listProvider.get(i).getName());
-                tv.setImage(listProvider.get(i).getImage());
-                tv.setRoundCorner(10);
-                if (listProvider.get(i).getId().equalsIgnoreCase("facebook")) {
-                    tv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            UnifyTracking.eventRegisterChannel(AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
-                            onFacebookClick();
-                        }
-                    });
-                } else if (listProvider.get(i).getId().equalsIgnoreCase("gplus")) {
-                    tv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            RegisterInitialFragmentPermissionsDispatcher
-                                    .onGoogleClickWithCheck(RegisterInitialFragment.this);
-                            UnifyTracking.eventRegisterChannel(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
-                            onGoogleClickd();
-                        }
-                    });
-                } else {
-                    final int finalI = i;
-                    tv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            loginProvideOnClick(listProvider.get(finalI).getUrl(),
-                                    listProvider.get(finalI).getName());
-                            UnifyTracking.eventRegisterChannel(listProvider.get(finalI).getName());
-                        }
-                    });
-                }
-                if (linearLayout != null) {
-                    linearLayout.addView(tv, linearLayout.getChildCount(), layoutParams);
-                }
+        layoutParams.setMargins(0, 20, 0, 15);
+
+        for (int i = 0; i < listProvider.size(); i++) {
+            String color = listProvider.get(i).getColor();
+            int colorInt;
+            if (color == null) {
+                colorInt = Color.parseColor(COLOR_WHITE);
+            } else {
+                colorInt = Color.parseColor(color);
+            }
+            LoginTextView loginTextView = new LoginTextView(getActivity(), colorInt);
+            loginTextView.setTextRegister(listProvider.get(i).getName());
+            loginTextView.setImage(listProvider.get(i).getImage());
+            loginTextView.setRoundCorner(10);
+
+            setDiscoverOnClickListener(listProvider.get(i), loginTextView);
+
+            if (registerContainer != null) {
+                registerContainer.addView(loginTextView, registerContainer.getChildCount(), layoutParams);
             }
         }
+
     }
 
-    private void loginProvideOnClick(final String url, final String name) {
-        WebViewLoginFragment newFragment = WebViewLoginFragment
-                .createInstance(url);
-        newFragment.setTargetFragment(RegisterInitialFragment.this, 100);
-        newFragment.show(getFragmentManager().beginTransaction(), "dialog");
-        getActivity().getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium(name);
-    }
+    private void setDiscoverOnClickListener(final DiscoverItemViewModel discoverItemViewModel,
+                                            LoginTextView loginTextView) {
 
-
-    public void startLoginWithGoogle(String type, LoginGoogleModel loginGoogleModel) {
-        presenter.startLoginWithGoogle(getActivity(), type, loginGoogleModel);
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium(
-                AppEventTracking.GTMCacheValue.GMAIL);
-        UnifyTracking.eventMoRegistrationStart(
-                AppEventTracking.GTMCacheValue.GMAIL);
-    }
-
-    @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
-    public void onGoogleClick() {
-//        ((GoogleActivity) getActivity()).onSignInClicked();
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium(
-                AppEventTracking.GTMCacheValue.GMAIL);
-    }
-
-    private void onGoogleClickd() {
-        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
-        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
-    }
-
-
-    private void onFacebookClick() {
-        if (AccessToken.getCurrentAccessToken() != null) {
-            LoginManager.getInstance().logOut();
-        }
-        processFacebookLogin();
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium(
-                AppEventTracking.GTMCacheValue.FACEBOOK);
-    }
-
-    private void processFacebookLogin() {
-        presenter.doFacebookLogin(this, callbackManager);
-        UnifyTracking.eventMoRegistrationStart(
-                com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case 100:
-                if (resultCode == Activity.RESULT_CANCELED) {
-                    KeyboardHandler.DropKeyboard(getActivity(), getView());
-                    break;
-                }
-                Bundle bundle = data.getBundleExtra("bundle");
-                if (bundle.getString("path").contains("error")) {
-                    NetworkErrorHelper.showSnackbar(getActivity(), bundle.getString(ARGS_MESSAGE));
-                } else if (bundle.getString("path").contains("code")) {
-                    presenter.loginWebView(getActivity(), bundle);
-                }
+        switch (discoverItemViewModel.getId().toLowerCase()) {
+            case FACEBOOK:
+                loginTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onRegisterFacebookClick();
+                    }
+                });
                 break;
-
-            case RC_SIGN_IN_GOOGLE :
-                if (data != null) {
-                    GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
-                    String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
-
-                    LoginGoogleModel model = new LoginGoogleModel();
-                    model.setFullName(googleSignInAccount.getDisplayName());
-                    model.setGoogleId(googleSignInAccount.getId());
-                    model.setEmail(googleSignInAccount.getEmail());
-                    model.setAccessToken(accessToken);
-                    startLoginWithGoogle(LoginModel.GoogleType, model);
-                }
+            case GPLUS:
+                loginTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onRegisterGooglelick();
+                    }
+                });
                 break;
             default:
+                loginTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onRegisterWebviewClick(discoverItemViewModel);
+                    }
+                });
                 break;
         }
     }
 
+    private void onRegisterFacebookClick() {
+        UnifyTracking.eventTracking(LoginAnalytics.getEventClickRegisterFacebook());
+        UnifyTracking.eventMoRegistrationStart(
+                com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
+
+        presenter.getFacebookCredential(this, callbackManager);
+
+
+    }
+
+    private void onRegisterGooglelick() {
+        UnifyTracking.eventTracking(LoginAnalytics.getEventClickRegisterGoogle());
+        UnifyTracking.eventMoRegistrationStart(
+                AppEventTracking.GTMCacheValue.GMAIL);
+
+        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
+        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
+
+    }
+
+    private void onRegisterWebviewClick(DiscoverItemViewModel discoverItemViewModel) {
+        UnifyTracking.eventTracking(LoginAnalytics.getEventClickRegisterWebview
+                (discoverItemViewModel.getName()));
+        UnifyTracking.eventMoRegistrationStart(
+                AppEventTracking.GTMCacheValue.WEBVIEW);
+
+        WebViewLoginFragment newFragment = WebViewLoginFragment.createInstance(
+                discoverItemViewModel.getUrl(), discoverItemViewModel.getName());
+        newFragment.setTargetFragment(RegisterInitialFragment.this, REQUEST_REGISTER_WEBVIEW);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        newFragment.show(fragmentTransaction, WebViewLoginFragment.class.getSimpleName());
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(discoverItemViewModel
+                .getName());
+
+    }
+
+
     @Override
-    public boolean checkHasNoProvider() {
-        for (int i = 0; i < linearLayout.getChildCount(); i++) {
-            if (linearLayout.getChildAt(i) instanceof LoginTextView) {
-                return false;
+    public void dismissLoadingDiscover() {
+        int lastPos = registerContainer.getChildCount() - 1;
+        if (registerContainer.getChildAt(lastPos) instanceof ProgressBar) {
+            registerContainer.removeViewAt(registerContainer.getChildCount() - 1);
+        }
+    }
+
+    @Override
+    public void showProgressBar() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        if (container != null) {
+            container.setVisibility(View.GONE);
+        }
+        if (loginButton != null) {
+            loginButton.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void dismissProgressBar() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
+        if (container != null) {
+            container.setVisibility(View.VISIBLE);
+        }
+        if (loginButton != null) {
+            loginButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onErrorRegisterSosmed(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessRegisterSosmed(String methodName) {
+        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterSosmed(methodName));
+
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
+    }
+
+    @Override
+    public void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData) {
+        Intent intent = CreatePasswordActivity.getCallingIntent(getActivity(),
+                new CreatePasswordViewModel(
+                        userInfoDomainData.getEmail(),
+                        userInfoDomainData.getFullName(),
+                        userInfoDomainData.getBdayYear(),
+                        userInfoDomainData.getBdayMonth(),
+                        userInfoDomainData.getBdayDay(),
+                        userInfoDomainData.getCreatePasswordList(),
+                        String.valueOf(userInfoDomainData.getUserId())));
+        startActivityForResult(intent, REQUEST_CREATE_PASSWORD);
+    }
+
+    @Override
+    public void clearToken() {
+        presenter.clearToken();
+    }
+
+    @Override
+    public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone) {
+
+        InterruptVerificationViewModel interruptVerificationViewModel;
+        if (securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE) {
+            interruptVerificationViewModel = InterruptVerificationViewModel
+                    .createDefaultSmsInterruptPage(phone);
+        } else {
+            interruptVerificationViewModel = InterruptVerificationViewModel
+                    .createDefaultEmailInterruptPage(email);
+        }
+
+        VerificationPassModel passModel = new VerificationPassModel(phone, email,
+                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
+                interruptVerificationViewModel,
+                securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE);
+        cacheManager.setKey(VerificationActivity.PASS_MODEL);
+        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
+                new TypeToken<VerificationPassModel>() {
+                }.getType()));
+        cacheManager.store();
+
+
+        Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
+                securityDomain.getUserCheckSecurity2());
+        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
+    }
+
+    @Override
+    public void onGoToPhoneVerification() {
+        getActivity().setResult(Activity.RESULT_OK);
+        startActivity(
+                PhoneVerificationActivationActivity.getCallingIntent(getActivity()));
+        getActivity().finish();
+    }
+
+    @Override
+    public GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener() {
+        return new GetFacebookCredentialSubscriber.GetFacebookCredentialListener() {
+            @Override
+            public void onErrorGetFacebookCredential(String errorMessage) {
+                NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
             }
-        }
-        return true;
+
+            @Override
+            public void onSuccessGetFacebookCredential(AccessToken accessToken, String email) {
+                presenter.registerFacebook(accessToken);
+            }
+        };
     }
 
     @Override
-    public int getFragmentId() {
-        return TkpdState.DrawerPosition.REGISTER_INITIAL;
+    public void onForbidden() {
+        ForbiddenActivity.startActivity(getActivity());
     }
 
     @Override
-    public void ariseRetry(int type, @Nullable Object... data) {
-
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
-
-    @Override
-    public void setData(int type, Bundle data) {
-        if (presenter != null)
-            presenter.setData(getActivity(), type, data);
-    }
-
-    @Override
-    public void onNetworkError(int type, Object... data) {
-        onMessageError(type, data);
-    }
-
-    @Override
-    public void onMessageError(int type, Object... data) {
-        showProgress(false);
-        if (data != null) {
-            snackbar = SnackbarManager.make(getActivity(), (String) data[0], Snackbar.LENGTH_LONG);
-            snackbar.show();
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        presenter.unSubscribeFacade();
-        KeyboardHandler.DropKeyboard(getActivity(), getView());
-        if (snackbar != null && snackbar.isShown()) snackbar.dismiss();
-    }
-
-    protected void initialPresenter() {
-        presenter = new RegisterInitialPresenterImpl(this);
-    }
-
-    protected int getFragmentLayout() {
-        return R.layout.fragment_register_initial;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        RegisterInitialFragmentPermissionsDispatcher.onRequestPermissionsResult(RegisterInitialFragment.this, requestCode, grantResults);
-    }
-
-    @OnShowRationale(Manifest.permission.GET_ACCOUNTS)
-    void showRationaleForGetAccounts(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.GET_ACCOUNTS);
-    }
-
-    @OnPermissionDenied(Manifest.permission.GET_ACCOUNTS)
-    void showDeniefForGetAccounts() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.GET_ACCOUNTS);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.GET_ACCOUNTS)
-    void showNeverAskForGetAccounts() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.GET_ACCOUNTS);
-    }
-
-
 }

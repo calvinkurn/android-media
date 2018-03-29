@@ -28,7 +28,7 @@ public class GooglePlacePickerActivity extends BaseActivity implements PlaceAuto
     public static String EXTRA_DESTINATION = "EXTRA_DESTINATION";
     public static String EXTRA_MARKER_ID = "EXTRA_MARKER_ID";
     private RideComponent rideComponent;
-    private PlacePassViewModel  destination;
+    private PlacePassViewModel destination;
 
     public static Intent getCallingIntent(Activity activity, int markerId) {
         Intent intent = new Intent(activity, GooglePlacePickerActivity.class);
@@ -43,17 +43,19 @@ public class GooglePlacePickerActivity extends BaseActivity implements PlaceAuto
 
         boolean showAutoDetectLocation = true;
         boolean selectLocationOnMap = true;
+        boolean showNearbyPlaces = true;
         if (getIntent().getIntExtra(EXTRA_REQUEST_CODE, -1) == RideHomeMapFragment.PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE) {
             showAutoDetectLocation = false;
             selectLocationOnMap = true;
-            destination= getIntent().getParcelableExtra(EXTRA_DESTINATION);
+            showNearbyPlaces = false;
+            destination = getIntent().getParcelableExtra(EXTRA_DESTINATION);
         }
 
-        addFragment(R.id.container, PlaceAutocompleteFragment.newInstance(showAutoDetectLocation, selectLocationOnMap));
+        addFragment(R.id.container, PlaceAutocompleteFragment.newInstance(showAutoDetectLocation, selectLocationOnMap, showNearbyPlaces));
     }
 
     @Override
-    public String  getScreenName() {
+    public String getScreenName() {
         if (getIntent().getIntExtra(EXTRA_REQUEST_CODE, -1) == RideHomeMapFragment.PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE) {
             return AppScreen.SCREEN_RIDE_DEST_CHANGE;
         } else {
@@ -88,17 +90,18 @@ public class GooglePlacePickerActivity extends BaseActivity implements PlaceAuto
     @Override
     public void onSelectLocationOnMapSelected() {
         CommonUtils.hideKeyboard(this, getCurrentFocus());
-        replaceFragment(R.id.container, SelectLocationOnMapFragment.newInstance(destination,getIntent().getIntExtra(EXTRA_MARKER_ID, 0)));
+        replaceFragment(R.id.container, SelectLocationOnMapFragment.newInstance(destination, getIntent().getIntExtra(EXTRA_MARKER_ID, 0)));
     }
 
     @Override
     public void handleSelectDestinationOnMap(PlacePassViewModel destination) {
-        if (getIntent().getIntExtra(EXTRA_REQUEST_CODE, -1) == RideHomeMapFragment.PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE) {
-            RideGATracking.eventClickDoneDestinationMap(getScreenName(), destination.getAddress()); // 15
-        } else {
-            RideGATracking.eventClickDoneSourceMap(getScreenName(), destination.getAddress()); // 12
-        }
         if (destination != null) {
+            if (getIntent().getIntExtra(EXTRA_REQUEST_CODE, -1) == RideHomeMapFragment.PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE) {
+                RideGATracking.eventClickDoneDestinationMap(getScreenName(), destination.getAddress()); // 15
+            } else {
+                RideGATracking.eventClickDoneSourceMap(getScreenName(), destination.getAddress()); // 12
+            }
+
             Intent intent = getIntent();
             intent.putExtra(EXTRA_SELECTED_PLACE, destination);
             setResult(RESULT_OK, intent);
@@ -119,12 +122,14 @@ public class GooglePlacePickerActivity extends BaseActivity implements PlaceAuto
 
             boolean showAutoDetectLocation = true;
             boolean selectLocationOnMap = true;
+            boolean showNearbyPlaces = true;
             if (getIntent().getIntExtra(EXTRA_REQUEST_CODE, -1) == RideHomeMapFragment.PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE) {
                 showAutoDetectLocation = false;
                 selectLocationOnMap = true;
+                showNearbyPlaces = false;
             }
 
-            replaceFragment(R.id.container, PlaceAutocompleteFragment.newInstance(showAutoDetectLocation, selectLocationOnMap));
+            replaceFragment(R.id.container, PlaceAutocompleteFragment.newInstance(showAutoDetectLocation, selectLocationOnMap, showNearbyPlaces));
         } else {
             super.onBackPressed();
         }

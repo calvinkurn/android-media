@@ -13,19 +13,9 @@ import java.util.List;
  */
 
 public class FlightBookingPassengerViewModel implements Parcelable, Visitable<FlightBookingPassengerTypeFactory> {
-    public static final Creator<FlightBookingPassengerViewModel> CREATOR = new Creator<FlightBookingPassengerViewModel>() {
-        @Override
-        public FlightBookingPassengerViewModel createFromParcel(Parcel in) {
-            return new FlightBookingPassengerViewModel(in);
-        }
-
-        @Override
-        public FlightBookingPassengerViewModel[] newArray(int size) {
-            return new FlightBookingPassengerViewModel[size];
-        }
-    };
-    private int passengerId; //passengerLocalNumber
+    private int passengerLocalId; //passengerLocalNumber
     private int type;
+    private String passengerId;
     private String passengerTitle;
     private String headerTitle;
     private String passengerFirstName;
@@ -39,8 +29,9 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
     }
 
     protected FlightBookingPassengerViewModel(Parcel in) {
-        passengerId = in.readInt();
+        passengerLocalId = in.readInt();
         type = in.readInt();
+        passengerId = in.readString();
         passengerTitle = in.readString();
         headerTitle = in.readString();
         passengerFirstName = in.readString();
@@ -50,6 +41,18 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
         flightBookingMealMetaViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         passengerTitleId = in.readInt();
     }
+
+    public static final Creator<FlightBookingPassengerViewModel> CREATOR = new Creator<FlightBookingPassengerViewModel>() {
+        @Override
+        public FlightBookingPassengerViewModel createFromParcel(Parcel in) {
+            return new FlightBookingPassengerViewModel(in);
+        }
+
+        @Override
+        public FlightBookingPassengerViewModel[] newArray(int size) {
+            return new FlightBookingPassengerViewModel[size];
+        }
+    };
 
     public int getType() {
         return type;
@@ -93,23 +96,23 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof FlightBookingPassengerViewModel && ((FlightBookingPassengerViewModel) obj).getPassengerId() == passengerId;
+        return obj instanceof FlightBookingPassengerViewModel && ((FlightBookingPassengerViewModel) obj).getPassengerLocalId() == passengerLocalId;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result *= prime * passengerId * type;
+        result *= prime * passengerLocalId * type;
         return result;
     }
 
-    public int getPassengerId() {
-        return passengerId;
+    public int getPassengerLocalId() {
+        return passengerLocalId;
     }
 
-    public void setPassengerId(int passengerId) {
-        this.passengerId = passengerId;
+    public void setPassengerLocalId(int passengerLocalId) {
+        this.passengerLocalId = passengerLocalId;
     }
 
     public List<FlightBookingAmenityMetaViewModel> getFlightBookingLuggageMetaViewModels() {
@@ -144,6 +147,14 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
         this.passengerLastName = passengerLastName;
     }
 
+    public String getPassengerId() {
+        return passengerId;
+    }
+
+    public void setPassengerId(String passengerId) {
+        this.passengerId = passengerId;
+    }
+
     @Override
     public int type(FlightBookingPassengerTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -155,16 +166,18 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(passengerId);
-        parcel.writeInt(type);
-        parcel.writeString(passengerTitle);
-        parcel.writeString(headerTitle);
-        parcel.writeString(passengerFirstName);
-        parcel.writeString(passengerLastName);
-        parcel.writeString(passengerBirthdate);
-        parcel.writeTypedList(flightBookingLuggageMetaViewModels);
-        parcel.writeTypedList(flightBookingMealMetaViewModels);
-        parcel.writeInt(passengerTitleId);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(passengerLocalId);
+        dest.writeInt(type);
+        dest.writeString(passengerId);
+        dest.writeString(passengerTitle);
+        dest.writeString(headerTitle);
+        dest.writeString(passengerFirstName);
+        dest.writeString(passengerLastName);
+        dest.writeString(passengerBirthdate);
+        dest.writeTypedList(flightBookingLuggageMetaViewModels);
+        dest.writeTypedList(flightBookingMealMetaViewModels);
+        dest.writeInt(passengerTitleId);
     }
+
 }

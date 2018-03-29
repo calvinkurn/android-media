@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
@@ -19,7 +21,7 @@
         android:id="@+id/info_topads"
         android:layout_width="@dimen/feed_info"
         android:layout_height="@dimen/feed_info"
-        android:src="@drawable/icon_info"
+        app:srcCompat="@drawable/icon_info"
         android:layout_gravity="center"
         android:tint="@color/tkpd_dark_gray" />
 

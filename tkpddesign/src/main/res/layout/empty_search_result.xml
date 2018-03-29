@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/white"
     android:paddingTop="@dimen/empty_search_result_padding_top"
@@ -13,7 +14,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="@dimen/empty_search_result_icon_height"
-        android:src="@drawable/ic_empty_search"
+        app:srcCompat="@drawable/ic_empty_search"
         />
 
     <TextView

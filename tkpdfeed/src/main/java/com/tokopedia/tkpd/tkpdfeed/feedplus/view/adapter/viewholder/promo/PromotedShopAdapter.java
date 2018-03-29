@@ -6,14 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 
 import java.util.ArrayList;
 
 /**
- * Created by stevenfredian on 5/17/17.
+ * @author by milhamj on 12/02/18.
  */
 
 public class PromotedShopAdapter extends RecyclerView.Adapter<PromotedShopAdapter.ViewHolder>{
@@ -26,7 +26,7 @@ public class PromotedShopAdapter extends RecyclerView.Adapter<PromotedShopAdapte
     @Override
     public PromotedShopAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.topads_shop_product_image, parent, false);
+                .inflate(R.layout.layout_topads_shop_product_image, parent, false);
         return new PromotedShopAdapter.ViewHolder(view);
     }
 
@@ -51,11 +51,11 @@ public class PromotedShopAdapter extends RecyclerView.Adapter<PromotedShopAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        public SquareImageView imageView;
+        public RoundedCornerImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            imageView = (SquareImageView) itemView.findViewById(R.id.product_image);
+            imageView = itemView.findViewById(R.id.product_image_rounded);
         }
     }
 }

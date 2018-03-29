@@ -1,62 +1,6 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
-apply plugin: 'maven-publish'
-apply plugin: 'maven'
-
-group = rootProject.ext.groupModule
-version = rootProject.ext.tkpdCacheApiVersion
-
-publishing {
-    publications {
-        aar(MavenPublication) {
-            groupId rootProject.ext.groupModule
-            artifactId rootProject.ext.tkpdCacheApiArtifact
-            version rootProject.ext.tkpdCacheApiVersion
-            artifact("$buildDir/outputs/aar/tkpdcacheapi-release.aar")
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-
-                configurations.compile.allDependencies.each {
-                    if (it.group != null && it.name != null) {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
-                    }
-                }
-            }
-        }
-    }
-}
-
-def getTkpdUseCase() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase');
-}
-
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-
-
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
-
+apply plugin: 'com.neenbedankt.android-apt'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apt {
     arguments {
         targetModuleName 'TkpdCacheApi'
@@ -64,7 +8,7 @@ apt {
 }
 
 dependencies {
-    compile getTkpdUseCase()
+    compile project(rootProject.ext.features.useCase)
 
     compile rootProject.ext.networkDependencies.retrofit
 

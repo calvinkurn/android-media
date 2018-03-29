@@ -2,6 +2,7 @@ package com.tokopedia.core.analytics;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -9,10 +10,12 @@ import android.text.TextUtils;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.google.firebase.perf.metrics.Trace;
+import com.google.gson.Gson;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
@@ -20,12 +23,12 @@ import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -51,7 +54,6 @@ public class TrackingUtils extends TrackingConfig {
                 .sendCampaign(temp)
                 .clearCampaign(campaign);
     }
-
 
     public static void activityBasedAFEvent(String tag) {
         Map<String, Object> afValue = new HashMap<>();
@@ -158,6 +160,34 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
+    public static void setMoEUserAttributesLogin(String userId,
+                                                 String fullName,
+                                                 String emailAddress,
+                                                 String phoneNumber,
+                                                 boolean isGoldMerchant,
+                                                 String shopName,
+                                                 String shopId,
+                                                 boolean isSeller,
+                                                 String method) {
+
+        CustomerWrapper wrapper = new CustomerWrapper.Builder()
+                .setCustomerId(userId)
+                .setFullName(fullName)
+                .setEmailAddress(emailAddress)
+                .setPhoneNumber(normalizePhoneNumber(phoneNumber))
+                .setGoldMerchant(isGoldMerchant)
+                .setShopName(shopName)
+                .setShopId(shopId)
+                .setSeller(isSeller)
+                .setFirstName(getFirstName(fullName))
+                .setMethod(method)
+                .build();
+
+        getMoEngine().setUserData(wrapper, "LOGIN");
+        sendMoEngageLoginEvent(wrapper);
+    }
+
+
     public static void eventMoEngageLogoutUser() {
         getMoEngine().logoutEvent();
     }
@@ -226,10 +256,18 @@ public class TrackingUtils extends TrackingConfig {
     public static void sendMoEngageOpenProductEvent(ProductDetailData productData) {
         PayloadBuilder builder = new PayloadBuilder();
         if (productData.getBreadcrumb().size() > 1) {
-            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(1).getDepartmentName());
-            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(1).getDepartmentId());
-            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
-            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
+            builder.putAttrString(
+                    AppEventTracking.MOENGAGE.CATEGORY,
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                            .getDepartmentName()
+            );
+            builder.putAttrString(
+                    AppEventTracking.MOENGAGE.CATEGORY_ID,
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                            .getDepartmentId()
+            );
         } else if (productData.getBreadcrumb().size() == 1) {
             builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
             builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
@@ -282,10 +320,18 @@ public class TrackingUtils extends TrackingConfig {
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, productData.getShopInfo().getShopIsOfficial() == 1);
 
         if (productData.getBreadcrumb().size() > 1) {
-            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(1).getDepartmentName());
-            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(1).getDepartmentId());
-            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
-            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
+            builder.putAttrString(
+                    AppEventTracking.MOENGAGE.CATEGORY,
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                            .getDepartmentName()
+            );
+            builder.putAttrString(
+                    AppEventTracking.MOENGAGE.CATEGORY_ID,
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                            .getDepartmentId()
+            );
         }
 
         if (productData.getBreadcrumb().size() == 1) {
@@ -546,7 +592,8 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void fragmentBasedAFEvent(String tag) {
         Map<String, Object> afValue = new HashMap<>();
-        if (tag.equals(OldSessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(OldSessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
+        if (tag.equals(AppScreen.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT)
+                || tag.equals(AppScreen.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
             afValue.put(AFInAppEventParameterName.REGSITRATION_METHOD, "register_normal");
         } else if (tag.equals(HomeRouter.IDENTIFIER_CATEGORY_FRAGMENT)) {
             afValue.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_HOME_MAIN);

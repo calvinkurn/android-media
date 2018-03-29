@@ -6,10 +6,9 @@ import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.blog.ImageBlogViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.blog.VideoBlogViewHolder;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.emptytopads.EmptyTopAdsProductViewHolder;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.emptytopads.EmptyTopAdsViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.favoritecta.FavoriteCtaViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol.ContentProductViewHolder;
@@ -29,8 +28,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.topads.FeedT
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.toppicks.ToppicksViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
@@ -47,6 +45,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromotedShopVie
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
+import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
 /**
@@ -127,16 +126,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     }
 
     @Override
-    public int type(EmptyTopAdsModel emptyModel) {
-        return EmptyTopAdsViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(EmptyTopAdsProductModel emptyModel) {
-        return EmptyTopAdsProductViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(ToppicksViewModel toppicksViewModel) {
         return ToppicksViewHolder.LAYOUT;
     }
@@ -164,6 +153,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     @Override
     public int type(ContentProductViewModel contentProductViewModel) {
         return ContentProductViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(EmptyFeedBeforeLoginModel emptyFeedBeforeLoginModel) {
+        return EmptyFeedBeforeLoginViewHolder.LAYOUT;
     }
 
     @Override
@@ -202,10 +196,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new PromotedProductViewHolder(view, viewListener);
         else if (type == RecentViewViewHolder.LAYOUT)
             viewHolder = new RecentViewViewHolder(view, viewListener);
-        else if (type == EmptyTopAdsViewHolder.LAYOUT)
-            viewHolder = new EmptyTopAdsViewHolder(view, topAdsItemClickListener);
-        else if (type == EmptyTopAdsProductViewHolder.LAYOUT)
-            viewHolder = new EmptyTopAdsProductViewHolder(view, topAdsItemClickListener);
         else if (type == ToppicksViewHolder.LAYOUT)
             viewHolder = new ToppicksViewHolder(view, toppicksListener);
         else if (type == KolViewHolder.LAYOUT)
@@ -218,6 +208,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new FavoriteCtaViewHolder(view, viewListener);
         else if (type == ContentProductViewHolder.LAYOUT)
             viewHolder = new ContentProductViewHolder(view, viewListener);
+        else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
+            viewHolder = new EmptyFeedBeforeLoginViewHolder(view, viewListener);
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;

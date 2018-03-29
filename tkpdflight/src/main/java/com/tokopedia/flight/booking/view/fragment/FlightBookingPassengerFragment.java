@@ -22,13 +22,14 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity;
+import com.tokopedia.flight.booking.view.activity.FlightBookingListPassengerActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresenter;
@@ -36,7 +37,6 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewM
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,8 +56,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static final String EXTRA_RETURN = "EXTRA_RETURN";
     public static final String EXTRA_AIR_ASIA = "EXTRA_AIR_ASIA";
     public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
+    public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     private static final int REQUEST_CODE_PICK_LUGGAGE = 1;
     private static final int REQUEST_CODE_PICK_MEAL = 2;
+    private static final int REQUEST_CODE_PICK_SAVED_PASSENGER = 3;
     @Inject
     FlightBookingPassengerPresenter presenter;
     private AppCompatTextView tvHeader;
@@ -73,6 +75,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private RecyclerView rvLuggages;
     private LinearLayout mealsContainer;
     private RecyclerView rvMeals;
+    private AppCompatEditText etSavedPassenger;
 
     private AppCompatButton buttonSubmit;
     private FlightBookingPassengerViewModel viewModel;
@@ -83,6 +86,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     private boolean isAirAsiaAirlines = false;
     private String departureDate;
+    private String selectedPassengerId;
+    private String requestId;
 
     public FlightBookingPassengerFragment() {
         // Required empty public constructor
@@ -94,7 +99,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                                                              List<FlightBookingAmenityMetaViewModel> luggageViewModels,
                                                              List<FlightBookingAmenityMetaViewModel> mealViewModels,
                                                              boolean isAirAsiaAirlines,
-                                                             String departureDate) {
+                                                             String departureDate,
+                                                             String requestId) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
@@ -104,17 +110,19 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         bundle.putParcelable(EXTRA_PASSENGER, viewModel);
         bundle.putParcelableArrayList(EXTRA_LUGGAGES, (ArrayList<? extends Parcelable>) luggageViewModels);
         bundle.putParcelableArrayList(EXTRA_MEALS, (ArrayList<? extends Parcelable>) mealViewModels);
+        bundle.putString(EXTRA_REQUEST_ID, requestId);
         fragment.setArguments(bundle);
         return fragment;
     }
 
 
-    public static Fragment newInstance(String departureId,
-                                       FlightBookingPassengerViewModel viewModel,
-                                       List<FlightBookingAmenityMetaViewModel> luggageViewModels,
-                                       List<FlightBookingAmenityMetaViewModel> mealViewModels,
-                                       boolean isAirAsiaAirlines,
-                                       String departureDate) {
+    public static FlightBookingPassengerFragment newInstance(String departureId,
+                                                             FlightBookingPassengerViewModel viewModel,
+                                                             List<FlightBookingAmenityMetaViewModel> luggageViewModels,
+                                                             List<FlightBookingAmenityMetaViewModel> mealViewModels,
+                                                             boolean isAirAsiaAirlines,
+                                                             String departureDate,
+                                                             String requestId) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
@@ -123,6 +131,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         bundle.putParcelable(EXTRA_PASSENGER, viewModel);
         bundle.putParcelableArrayList(EXTRA_LUGGAGES, (ArrayList<? extends Parcelable>) luggageViewModels);
         bundle.putParcelableArrayList(EXTRA_MEALS, (ArrayList<? extends Parcelable>) mealViewModels);
+        bundle.putString(EXTRA_REQUEST_ID, requestId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -135,6 +144,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         mealViewModels = getArguments().getParcelableArrayList(EXTRA_MEALS);
         isAirAsiaAirlines = getArguments().getBoolean(EXTRA_AIR_ASIA);
         departureDate = getArguments().getString(EXTRA_DEPARTURE_DATE);
+        requestId = getArguments().getString(EXTRA_REQUEST_ID);
+        selectedPassengerId = (viewModel.getPassengerId() != null) ? viewModel.getPassengerId() : "";
     }
 
     @Override
@@ -155,6 +166,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         rvLuggages = (RecyclerView) view.findViewById(R.id.rv_luggages);
         mealsContainer = (LinearLayout) view.findViewById(R.id.meals_container);
         rvMeals = (RecyclerView) view.findViewById(R.id.rv_meals);
+        etSavedPassenger = view.findViewById(R.id.et_saved_passenger);
         buttonSubmit = (AppCompatButton) view.findViewById(R.id.button_submit);
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,6 +178,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             @Override
             public void onClick(View v) {
                 presenter.onBirthdateClicked();
+            }
+        });
+        etSavedPassenger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onSavedPassengerClicked();
             }
         });
         return view;
@@ -191,6 +209,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public FlightBookingPassengerViewModel getCurrentPassengerViewModel() {
         return viewModel;
+    }
+
+    @Override
+    public void setCurrentPassengerViewModel(FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
+        viewModel = flightBookingPassengerViewModel;
     }
 
     @Override
@@ -252,7 +275,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                 viewModels.add(viewModel);
             }
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+        adapter.setMarginTopDp(getResources().getDimension(R.dimen.margin_4));
+        adapter.setMarginBottomDp(getResources().getDimension(R.dimen.margin_4));
         adapter.setArrowVisible(true);
+        adapter.setFontSize(getResources().getDimension(R.dimen.font_micro));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
             @Override
             public void onItemClick(int adapterPosition, SimpleViewModel viewModel) {
@@ -295,7 +321,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                 viewModels.add(viewModel);
             }
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+        adapter.setMarginTopDp(getResources().getDimension(R.dimen.margin_4));
+        adapter.setMarginBottomDp(getResources().getDimension(R.dimen.margin_4));
         adapter.setArrowVisible(true);
+        adapter.setFontSize(getResources().getDimension(R.dimen.font_micro));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
             @Override
             public void onItemClick(int adapterPosition, SimpleViewModel viewModel) {
@@ -314,17 +343,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public int getPassengerTitleId() {
-        switch (spTitle.getSpinnerPosition()){
-            case 0:
-                return FlightPassengerTitleType.TUAN;
-            case 1:
-                return FlightPassengerTitleType.NYONYA;
-            case 2:
-                return FlightPassengerTitleType.NONA;
-            default:
-                return 0;
-        }
+    public int getTitleSpinnerPosition() {
+        return spTitle.getSpinnerPosition();
     }
 
     @Override
@@ -389,6 +409,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void showPassengerAdultBirthdateShouldMoreThan12Years(int resID) {
+        showMessageErrorInSnackBar(resID);
+    }
+
+    @Override
     public void showPassengerFirstNameShouldNoMoreThanMaxError(int resId) {
         showMessageErrorInSnackBar(resId);
     }
@@ -430,7 +455,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public boolean isAirAsiaAirline() {
+    public boolean isMandatoryDoB() {
         return isAirAsiaAirlines;
     }
 
@@ -513,6 +538,18 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void renderSelectedList(String passengerName) {
+        etSavedPassenger.setText(passengerName);
+    }
+
+    @Override
+    public void canGoBack() {
+        if (interactionListener != null) {
+            interactionListener.goBack();
+        }
+    }
+
+    @Override
     public void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected) {
         String title = String.format("%s %s", getString(R.string.flight_booking_luggage_toolbar_title), selected.getDescription());
         Intent intent = FlightBookingAmenityActivity.createIntent(getActivity(), title, luggages, selected);
@@ -524,6 +561,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         String title = String.format("%s %s", getString(R.string.flight_booking_meal_toolbar_title), selected.getDescription());
         Intent intent = FlightBookingAmenityActivity.createIntent(getActivity(), title, viewModel, selected);
         startActivityForResult(intent, REQUEST_CODE_PICK_MEAL);
+    }
+
+    @Override
+    public void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected) {
+        Intent intent = FlightBookingListPassengerActivity.createIntent(getActivity(),
+                selected, requestId, departureDate);
+        startActivityForResult(intent, REQUEST_CODE_PICK_SAVED_PASSENGER);
     }
 
     @Override
@@ -543,11 +587,32 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                         presenter.onMealDataChange(flightBookingLuggageMetaViewModel);
                     }
                     break;
+                case REQUEST_CODE_PICK_SAVED_PASSENGER:
+                    if (data != null) {
+                        FlightBookingPassengerViewModel flightBookingPassengerViewModel = data.getParcelableExtra(FlightBookingListPassengerFragment.EXTRA_SELECTED_PASSENGER);
+                        presenter.onChangeFromSavedPassenger(flightBookingPassengerViewModel);
+                    } else {
+                        presenter.onNewPassengerChoosed();
+                    }
+                    break;
             }
+        }
+    }
+
+    public void onBackPressed() {
+        if (selectedPassengerId == null && viewModel.getPassengerId() != null) {
+            presenter.onUnselectPassengerList(viewModel.getPassengerId());
+        } else if (viewModel.getPassengerId() != null &&
+                !viewModel.getPassengerId().equals(selectedPassengerId)) {
+            presenter.onUnselectPassengerList(viewModel.getPassengerId());
+        } else {
+            canGoBack();
         }
     }
 
     public interface OnFragmentInteractionListener {
         void actionSuccessUpdatePassengerData(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
+
+        void goBack();
     }
 }

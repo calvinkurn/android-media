@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.TaskStackBuilder;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.OrderDetailDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.OrderDomain;
@@ -38,9 +39,8 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.Sh
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusInfoViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusTroubleViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -178,13 +178,13 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public TaskStackBuilder getInboxAndDetailResoStackBuilder(Context context, String resolutionId, String shopName) {
-
-        Intent resInboxIntent = InboxResCenterActivity.createIntent(context);
-        resInboxIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
+        Intent resInboxIntent = ResoInboxActivity.newBuyerInstance(context);
         Intent detailResIntent = DetailResChatActivity.newBuyerInstance(context, resolutionId, shopName);
-
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        if (context.getApplicationContext() instanceof TkpdInboxRouter){
+            Intent intent = ((TkpdInboxRouter) context.getApplicationContext()).getHomeIntent(context);
+            taskStackBuilder.addNextIntent(intent);
+        }
         taskStackBuilder.addNextIntent(resInboxIntent);
         taskStackBuilder.addNextIntent(detailResIntent);
         return taskStackBuilder;

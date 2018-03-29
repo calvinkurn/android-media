@@ -22,6 +22,7 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
@@ -156,28 +157,34 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                 onNextButtonClicked();
             }
         });
+      
+        ShopOpenStepperModel stepperModel = stepperListener.getStepperModel();
+        if (stepperModel != null) {
+            ResponseIsReserveDomain responseIsReserveDomain = stepperModel.getResponseIsReserveDomain();
+            if (responseIsReserveDomain!= null){
+                Shipment shipment = responseIsReserveDomain.getShipment();
+                UserData userData = responseIsReserveDomain.getUserData();
+                locationShippingViewHolder.updateLocationData(userData.getLocComplete(), userData.getLocation());
 
-        if (stepperListener.getStepperModel() != null) {
-            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getShipment();
-            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
-            locationShippingViewHolder.updateLocationData(userData.getLocComplete(), userData.getLocation());
+                if (shipment != null) {
+                    locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
+                  
+                  if(shipment.getPostal() != 0)
+                    locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
 
-            if (shipment != null) {
-                locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
-                locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
-
-                GoogleLocationViewModel googleLocationViewModel
-                        = new GoogleLocationViewModel();
-                googleLocationViewModel.setGeneratedAddress(shipment.getAddrStreet());
-                googleLocationViewModel.setManualAddress(shipment.getAddrStreet());
-                googleLocationViewModel.setLongitude(shipment.getLongitude());
-                googleLocationViewModel.setLatitude(shipment.getLatitude());
-                googleLocationViewModel.setCheckSum(shipment.getGeolocationChecksum());
+                    GoogleLocationViewModel googleLocationViewModel
+                            = new GoogleLocationViewModel();
+                    googleLocationViewModel.setGeneratedAddress(shipment.getAddrStreet());
+                    googleLocationViewModel.setManualAddress(shipment.getAddrStreet());
+                    googleLocationViewModel.setLongitude(shipment.getLongitude());
+                    googleLocationViewModel.setLatitude(shipment.getLatitude());
+                    googleLocationViewModel.setCheckSum(shipment.getGeolocationChecksum());
 
 
-                locationMapViewHolder.setFromReserveDomain(true);
+                    locationMapViewHolder.setFromReserveDomain(true);
 
-                locationMapViewHolder.setLocationText(googleLocationViewModel);
+                    locationMapViewHolder.setLocationText(googleLocationViewModel);
+                }
             }
         }
     }
@@ -381,7 +388,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     public void onFailedSaveInfoShop(Throwable t) {
 
         String errorMessage;
-        Crashlytics.logException(t);
+        if(!GlobalConfig.DEBUG) Crashlytics.logException(t);
         if (t instanceof ShopException) {
             errorMessage = t.getMessage();
         } else {

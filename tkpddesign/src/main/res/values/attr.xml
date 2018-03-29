@@ -154,8 +154,32 @@
         <attr name="dbsb_foreground_color" format="color" />
     </declare-styleable>
 
-
     <attr name="bottomSheetBuilderBackgroundColor" format="color" />
     <attr name="bottomSheetBuilderItemTextColor" format="color" />
     <attr name="bottomSheetBuilderTitleTextColor" format="color" />
+
+    <declare-styleable name="FloatingButton">
+        <attr name="text" format="string"/>
+        <attr name="style" format="integer"/>
+        <attr name="buttonTextAllCaps" format="boolean"/>
+        <attr name="shadow" format="boolean"/>
+        <attr name="shadowLeft" format="boolean"/>
+        <attr name="shadowTop" format="boolean"/>
+        <attr name="shadowRight" format="boolean"/>
+        <attr name="shadowBottom" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="Tabs">
+        <attr name="tabType" format="enum">
+            <enum name="main" value="1"/>
+            <enum name="secondary" value="2"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="TextViewCompat">
+        <attr name="drawableLeftCompat" format="reference"/>
+        <attr name="drawableRightCompat" format="reference"/>
+        <attr name="drawableTopCompat" format="reference"/>
+        <attr name="drawableBottomCompat" format="reference"/>
+    </declare-styleable>
 </resources>
