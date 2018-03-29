@@ -62,8 +62,10 @@
     <dimen name="new_margin_big">32dp</dimen>
     <dimen name="new_margin_lilbig">40dp</dimen>
     <dimen name="new_margin_huge">48dp</dimen>
+    <dimen name="new_margin_very_huge">54dp</dimen>
 
     <dimen name="margin_vs">5dp</dimen>
+    <dimen name="margin_vms">6dp</dimen>
     <dimen name="margin_ms">8dp</dimen>
     <dimen name="margin_vvs">3.3dp</dimen>
     <dimen name="margin_vvvs">2dp</dimen>
@@ -159,4 +161,9 @@
 
     <dimen name="widget_bottom_action_radius">20dp</dimen>
     <dimen name="widget_bottom_action_elevation">3dp</dimen>
+
+    <dimen name="default_card_corner_radius">4dp</dimen>
+
+    <!--contactus_dimens-->
+    <dimen name="card_iv_size">60dp</dimen>
 </resources>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/new_margin_sm"
+    android:background="@color/white">
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height_thin"
+        android:layout_marginBottom="@dimen/margin_default"
+        android:background="@color/grey_300"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_default"
+        android:layout_marginStart="@dimen/margin_default"
+        android:layout_marginTop="@dimen/new_margin_sm"
+        android:textColor="@color/black3_text"
+        android:textSize="@dimen/font_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/divider"
+        tools:text="Butuh Bantuan Lain?" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_default"
+        android:layout_marginRight="@dimen/margin_default"
+        android:layout_marginTop="@dimen/margin_ms"
+        android:textColor="@color/grey2_text"
+        android:textSize="@dimen/font_small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView14"
+        app:layout_constraintTop_toBottomOf="@+id/textView14"
+        tools:text="Tim Customer Service kami selalu siap untuk melayani Anda selama 24/7" />
+
+    <TextView
+        android:id="@+id/btn_contact_us"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/searchview_height"
+        android:layout_marginBottom="@dimen/new_margin_sm"
+        android:layout_marginLeft="@dimen/margin_default"
+        android:layout_marginRight="@dimen/margin_default"
+        android:layout_marginTop="22dp"
+        android:background="@drawable/rounded_rectangle_green_solid"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_smaller"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btn_chat"
+        app:layout_constraintTop_toBottomOf="@+id/textView15"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="Hubungi Kami" />
+
+    <TextView
+        android:id="@+id/btn_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/searchview_height"
+        android:layout_marginEnd="@dimen/margin_default"
+        android:layout_marginRight="@dimen/margin_default"
+        android:layout_marginTop="22dp"
+        android:background="@drawable/rounded_rectangle_grey_border"
+        android:gravity="center"
+        android:paddingLeft="22dp"
+        android:paddingRight="22dp"
+        android:visibility="visible"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView15"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="Chat dengan Toped" />
+</android.support.constraint.ConstraintLayout>

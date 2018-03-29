@@ -45,7 +45,6 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -57,17 +56,6 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
-import com.tokopedia.core.util.AccessTokenRefresh;
-import com.tokopedia.core.util.SessionRefresh;
-import com.tokopedia.mitratoppers.MitraToppersRouter;
-import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
-import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
-import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
-import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.profile.view.activity.TopProfileActivity;
-import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
-import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -92,13 +80,9 @@ import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.common.logout.GMLogout;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
-import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
-import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
@@ -108,6 +92,8 @@ import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
+import com.tokopedia.profile.view.activity.TopProfileActivity;
+import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
@@ -181,7 +167,7 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter,
-        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter{
+        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -675,8 +661,8 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
 
-            return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
-                    customSubject, customMessage, source, avatar);
+        return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
+                customSubject, customMessage, source, avatar);
 
     }
 
@@ -1085,10 +1071,10 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
 
-
     @Override
     public void init() {
     }
+
     @Override
     public void registerShake(String screenName) {
     }
@@ -1119,6 +1105,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getTopProfileIntent(Context context, String userId) {
         return TopProfileActivity.newInstance(context, userId);
+    }
 
     @Override
     public Intent getProductDetailIntent(Context context, ProductPass productPass) {
@@ -1130,6 +1117,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public void startAddProduct(Activity activity, String shopId) {
         goToAddProduct(activity);
     }
+
     @Override
     public boolean isEnabledGroupChat() {
         return false;

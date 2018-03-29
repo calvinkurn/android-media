@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    app:cardElevation="3dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:background="@color/grey_300"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="@dimen/lv_min_title_width"
+            android:layout_height="@dimen/layout_bav_width_min"
+            android:layout_marginBottom="@dimen/new_margin_sm"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginStart="@dimen/margin_default"
+            android:layout_marginTop="@dimen/new_margin_sm"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/ic_invoice" />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/font_loading_height_button"
+            android:layout_marginStart="@dimen/font_loading_height_button"
+            android:layout_marginTop="@dimen/new_margin_sm"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_title"
+            app:layout_constraintStart_toEndOf="@+id/imageView5"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Belum Ada Transaksi" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_small"
+            android:textSize="@dimen/font_micro"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textView16"
+            app:layout_constraintTop_toBottomOf="@+id/textView16"
+            tools:text="Segera laporkan jika menemukan kendala seputar transaksi di Tokopedia" />
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

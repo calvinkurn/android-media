@@ -66,6 +66,7 @@
     <string name="jadwal">Jadwal</string>
     <string name="ubah_jadwal">Ubah Jadwal</string>
     <string name="ubah_lokasi">Ubah Lokasi</string>
+    <string name="promocode_minimum_lenght_warning">Masukkan minimal 4 karakter</string>
 
     <!-- need to changed -->
 
