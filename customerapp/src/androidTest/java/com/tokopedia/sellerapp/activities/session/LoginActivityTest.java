@@ -74,6 +74,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.tokopedia.sellerapp.Utils.ExtraAssertions.isVisible;
 import static com.tokopedia.sellerapp.Utils.nthChildOf;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -250,7 +251,9 @@ public class LoginActivityTest {
         // dismiss fragment or press back
         dialog.dismiss();
 
-        onView(withId(R.id.login_status)).check(isVisible());
+        Thread.sleep(1_000);
+
+        assertTrue(mIntentsRule.getActivity().isDestroyed());
     }
 
     @Test
@@ -303,9 +306,9 @@ public class LoginActivityTest {
 
         loginTextView.perform(click());
 
-        onView(withId(R.id.login_status)).check(isVisible());
+        Thread.sleep(1_000);
 
-
+        assertTrue(mIntentsRule.getActivity().isDestroyed());
     }
 
     /**
