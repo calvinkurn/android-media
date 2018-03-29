@@ -9,7 +9,7 @@ import java.util.List;
  * Created by kris on 11/2/17. Tokopedia
  */
 
-public class OrderDetailData implements Parcelable{
+public class OrderDetailData implements Parcelable {
 
     private String orderId;
 
@@ -104,6 +104,8 @@ public class OrderDetailData implements Parcelable{
     private boolean showInsuranceNotification;
 
     private String insuranceNotification;
+
+    private String pickupPinCode;
 
     public OrderDetailData() {
     }
@@ -412,6 +414,14 @@ public class OrderDetailData implements Parcelable{
         this.insurancePrice = insurancePrice;
     }
 
+    public String getPickupPinCode() {
+        return pickupPinCode;
+    }
+
+    public void setPickupPinCode(String pickupPinCode) {
+        this.pickupPinCode = pickupPinCode;
+    }
+
     public String getAdditionalFee() {
         return additionalFee;
     }
@@ -539,6 +549,7 @@ public class OrderDetailData implements Parcelable{
         dest.writeString(this.driverVehicle);
         dest.writeByte(this.showInsuranceNotification ? (byte) 1 : (byte) 0);
         dest.writeString(this.insuranceNotification);
+        dest.writeString(this.pickupPinCode);
     }
 
     protected OrderDetailData(Parcel in) {
@@ -589,6 +600,7 @@ public class OrderDetailData implements Parcelable{
         this.driverVehicle = in.readString();
         this.showInsuranceNotification = in.readByte() != 0;
         this.insuranceNotification = in.readString();
+        this.pickupPinCode = in.readString();
     }
 
     public static final Creator<OrderDetailData> CREATOR = new Creator<OrderDetailData>() {

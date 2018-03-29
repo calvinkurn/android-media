@@ -95,7 +95,8 @@
             android:label="@string/title_term_and_condition" />
         <activity
             android:name=".purchase.detail.activity.OrderDetailActivity"
-            android:label="@string/title_activity_people_tx_details"android:windowSoftInputMode="adjustPan"/>
+            android:label="@string/title_activity_people_tx_details"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".purchase.detail.activity.OrderHistoryActivity"
             android:label="@string/title_activity_people_tx_history"/>
