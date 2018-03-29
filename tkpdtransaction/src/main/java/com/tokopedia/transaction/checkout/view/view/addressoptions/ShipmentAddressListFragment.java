@@ -176,14 +176,15 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
         btChangeSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onSearchReset();
+                mSvAddressSearchBox.getSearchTextView().setText("");
+                mSvAddressSearchBox.getSearchTextView().requestFocus();
             }
         });
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                String keyword = mSvAddressSearchBox.getSearchText();
-                performSearch(!TextUtils.isEmpty(keyword) ? keyword : "");
+                mSvAddressSearchBox.getSearchTextView().setText("");
+                onSearchReset();
             }
         });
     }
@@ -220,6 +221,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
     public void showList(List<RecipientAddressModel> recipientAddressModels) {
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
         mShipmentAddressListAdapter.notifyDataSetChanged();
+        mRvRecipientAddressList.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -236,7 +238,6 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
         rlContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
         llNoResult.setVisibility(View.GONE);
-        swipeToRefreshLayout.setEnabled(true);
         NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -249,7 +250,6 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
 
     @Override
     public void showLoading() {
-        rlContent.setVisibility(View.GONE);
         swipeToRefreshLayout.setRefreshing(true);
     }
 
@@ -259,7 +259,6 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
         llNetworkErrorView.setVisibility(View.GONE);
         llNoResult.setVisibility(View.GONE);
         swipeToRefreshLayout.setRefreshing(false);
-        swipeToRefreshLayout.setEnabled(false);
     }
 
     private void initSearchView() {
