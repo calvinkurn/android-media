@@ -61,6 +61,7 @@
     <string name="success_delete_kol_comment">Sukses menghapus komentar</string>
     <string name="string_follow_empty">Kamu belum \nmengikuti influencer</string>
     <string name="string_follow_empty_button">Explore Influencer</string>
+    <string name="see_other_product">Lihat %s Produk Lainnya</string>
 
     <string name="feed_empty_title">Feed masih kosong</string>
     <string name="feed_empty_msg">Masuk untuk mendapatkan update produk terbaru disini</string>

@@ -40,8 +40,6 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     private View shareButton;
     private View buyButton;
 
-    private final static String ADD_STRING = "tambah";
-    private final static String EDIT_STRING = "ubah";
     private FeedProductAdapter adapter;
     private FeedPlus.View viewListener;
 
