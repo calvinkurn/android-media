@@ -120,7 +120,7 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
         if (data.getBadges() != null) {
             for (BadgeViewModel badge : data.getBadges()) {
                 View view = LayoutInflater.from(
-                        holder.getContext()).inflate(R.layout.badge_layout_small, null);
+                        holder.getContext()).inflate(R.layout.badge_layout_recentview, null);
                 ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
                 holder.badgesContainer.addView(view);
                 LuckyShopImage.loadImage(imageBadge, badge.getImgUrl());

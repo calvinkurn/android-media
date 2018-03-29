@@ -17,6 +17,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="@dimen/padding_small"
+            android:textSize="@dimen/fontvs"
+            android:textColor="@color/font_black_primary_70"
+            android:fontFamily="sans-serif-medium"
             android:text="@string/sub_history_product"
             android:textStyle="bold" />
 
@@ -26,8 +29,9 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:padding="@dimen/padding_small"
+            android:fontFamily="sans-serif-medium"
             android:text="@string/title_see_all"
-            android:textColor="@color/href_link"
+            android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/fontvs" />
 
 
@@ -36,8 +40,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/history_product_recycler_view"
         android:layout_width="match_parent"
-        android:padding="@dimen/padding_small"
-        android:layout_height="@dimen/history_height"
+        android:layout_height="@dimen/recent_view_item_height"
         android:scrollbars="horizontal" />
 
 </LinearLayout>
