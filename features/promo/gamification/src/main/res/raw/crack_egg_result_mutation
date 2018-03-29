@@ -1,0 +1,27 @@
+{
+  crack_result(tokenUserID: %s, campaignID: %s) {
+    imageUrl
+    benefitType
+    benefits {
+      text
+      color
+      size
+    }
+    ctaButton {
+      title
+      url
+      applink
+      type
+    }
+    returnButton {
+      title
+      url
+      applink
+      type
+    }
+    resultStatus {
+      code
+      reason
+    }
+  }
+}
