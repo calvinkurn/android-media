@@ -289,9 +289,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
             PropertyValuesHolder pvhX =
                     PropertyValuesHolder.ofFloat(View.X, xEgg, targetX);
             PropertyValuesHolder pvhScaleX =
-                    PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_ON_DOWN, SCALE_NORMAL);
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_NORMAL, 1/ SCALE_ON_DOWN);
             PropertyValuesHolder pvhScaleY =
-                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_ON_DOWN, SCALE_NORMAL);
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_NORMAL, 1/ SCALE_ON_DOWN);
             ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
             objectAnimator.setDuration(EGG_ANIM_TO_BOUND_DURATION);
@@ -302,9 +302,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
             PropertyValuesHolder pvhX =
                     PropertyValuesHolder.ofFloat(View.X, xEgg, 0);
             PropertyValuesHolder pvhScaleX =
-                    PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_ON_DOWN, SCALE_NORMAL);
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_NORMAL, 1/ SCALE_ON_DOWN);
             PropertyValuesHolder pvhScaleY =
-                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_ON_DOWN, SCALE_NORMAL);
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_NORMAL, 1/ SCALE_ON_DOWN);
             ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
             objectAnimator.setDuration(EGG_ANIM_TO_BOUND_DURATION);
