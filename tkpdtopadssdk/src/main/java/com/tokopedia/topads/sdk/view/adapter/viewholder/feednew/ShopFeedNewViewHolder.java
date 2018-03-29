@@ -8,9 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -111,34 +109,36 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
             Spanned title;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 title = Html.fromHtml(shop.getName(), Html.FROM_HTML_MODE_LEGACY);
-                shopSubtitle.setText(Html.fromHtml(shop.getTagline(), Html.FROM_HTML_MODE_LEGACY));
+                shopSubtitle.setText(Html.fromHtml(shop.getCity(), Html.FROM_HTML_MODE_LEGACY));
             } else {
                 title = Html.fromHtml(shop.getName());
-                shopSubtitle.setText(Html.fromHtml(shop.getTagline()));
+                shopSubtitle.setText(Html.fromHtml(shop.getCity()));
             }
 
+            Drawable img = context.getResources().getDrawable(R.drawable.ic_toa);
+            img.setBounds(0, 0,
+                    context.getResources().getDimensionPixelOffset(R.dimen.feed_new_badge_size),
+                    context.getResources().getDimensionPixelOffset(R.dimen.feed_new_badge_size));
+
             if (shop.isGoldShopBadge()) {
-                shopTitle.setText(spannedBadgeString(title, R.drawable.ic_gold));
+                setShopBadge(title, img, R.drawable.ic_gold);
             } else if (shop.isShop_is_official()) {
-                shopTitle.setText(spannedBadgeString(title, R.drawable.ic_official));
+                setShopBadge(title, img, R.drawable.ic_official);
             } else {
-                shopTitle.setText(title);
+                shopTitle.setCompoundDrawables(null, null, img, null);
             }
+
+            shopTitle.setText(title);
             setFavorite(data.isFavorit());
         }
     }
 
-    private Spanned spannedBadgeString(Spanned text, int drawable) {
-        SpannableString spannableString = new SpannableString("  " + text);
-        Drawable image;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            image = context.getResources().getDrawable(drawable, null);
-        } else {
-            image = context.getResources().getDrawable(drawable);
-        }
-        image.setBounds(0, 0, context.getResources().getDimensionPixelOffset(R.dimen.badge_size), context.getResources().getDimensionPixelOffset(R.dimen.badge_size));
-        spannableString.setSpan(new ImageSpan(image), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return spannableString;
+    private void setShopBadge(Spanned text, Drawable topadsBadge, int drawable) {
+        Drawable shopBadge = context.getResources().getDrawable(drawable);
+        shopBadge.setBounds(0, 0,
+                context.getResources().getDimensionPixelOffset(R.dimen.feed_new_badge_size),
+                context.getResources().getDimensionPixelOffset(R.dimen.feed_new_badge_size));
+        shopTitle.setCompoundDrawables(shopBadge, null, topadsBadge, null);
     }
 
     private void setFavorite(boolean isFavorite) {
@@ -146,12 +146,14 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         if (isFavorite) {
             favoriteButton.setSelected(true);
             text = context.getString(R.string.favorit);
-            favoriteButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_favorite, 0, 0, 0);
+            favoriteButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_favorite,
+                    0, 0, 0);
             favoriteButton.setTextColor(ContextCompat.getColor(context, R.color.label_color));
         } else {
             favoriteButton.setSelected(false);
             text = context.getString(R.string.favoritkan);
-            favoriteButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_white_24px, 0, 0, 0);
+            favoriteButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_white_24px,
+                    0, 0, 0);
             favoriteButton.setTextColor(ContextCompat.getColor(context, R.color.white));
         }
 

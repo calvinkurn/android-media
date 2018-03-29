@@ -29,8 +29,8 @@
 
             <com.tokopedia.topads.sdk.view.RoundedCornerImageView
                 android:id="@+id/shop_image"
-                android:layout_width="@dimen/feed_ava"
-                android:layout_height="@dimen/feed_ava"
+                android:layout_width="@dimen/feed_new_shop_image"
+                android:layout_height="@dimen/feed_new_shop_image"
                 android:padding="0.5dp"
                 tools:src="@tools:sample/avatars" />
 
@@ -45,11 +45,11 @@
             android:gravity="center_vertical"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/favorite_button"
             app:layout_constraintStart_toEndOf="@id/shop_image_layout"
-            app:layout_constraintEnd_toStartOf="@id/favorite_button"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/shop_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,8 +57,9 @@
                 android:fontFamily="sans-serif-medium"
                 android:maxLines="1"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_normal"
-                tools:text="town_fashion town fashion" />
+                android:textSize="@dimen/font_small"
+                android:drawablePadding="@dimen/margin_4"
+                tools:text="town_f town_f town_f town_f town_f" />
 
             <TextView
                 android:id="@+id/shop_subtitle"
@@ -67,7 +68,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/font_very_small"
                 tools:text="kacamata kual kacamata kual kacamata kual " />
         </LinearLayout>
 
@@ -75,21 +76,23 @@
             android:id="@+id/favorite_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/selector_favorite"
-            android:textColor="@color/white"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:paddingBottom="5dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:fontFamily="sans-serif-medium"
-            android:textStyle="normal"
-            android:gravity="center"
+            android:text="@string/favoritkan"
+            android:textColor="@color/white"
             android:textSize="@dimen/font_very_small"
+            android:textStyle="normal"
             app:drawableLeftCompat="@drawable/ic_add_white_24px"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:text="@string/favoritkan" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 

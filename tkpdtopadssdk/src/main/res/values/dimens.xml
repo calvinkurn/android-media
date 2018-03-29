@@ -43,4 +43,7 @@
     <dimen name="review_count_margin_left">4dp</dimen>
     <dimen name="line_spacing_normal">4sp</dimen>
 
+    <dimen name="feed_new_shop_image">32dp</dimen>
+    <dimen name="feed_new_badge_size">12dp</dimen>
+
 </resources>
