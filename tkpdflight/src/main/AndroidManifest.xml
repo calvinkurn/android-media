@@ -97,8 +97,14 @@
             android:label="@string/activity_label_flight_order_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
-        <activity android:name=".cancellation.view.activity.FlightCancellationActivity"
+        <activity
+            android:name=".cancellation.view.activity.FlightCancellationActivity"
             android:label="@string/activity_label_flight_cancellation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".cancellation.view.activity.FlightReviewCancellationActivity"
+            android:label="@string/activity_label_flight_review_cancellation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
 
