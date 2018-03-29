@@ -95,7 +95,10 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         final DynamicHomeChannel.Channels channels = element.getChannel();
         title.setText(channels.getHeader().getName());
         Glide.with(context).load(channels.getHeader().getBackImage()).into(headerBg);
-        container.setBackgroundColor(Color.parseColor(channels.getHeader().getBackColor()));
+        String color = channels.getHeader().getBackColor();
+        if(!color.isEmpty()) {
+            container.setBackgroundColor(Color.parseColor(color));
+        }
         itemAdapter.setList(channels.getGrids());
         itemAdapter.setGridItemClickListener(this);
         Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
