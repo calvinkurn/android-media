@@ -24,8 +24,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.gamification.R;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetTokenView;
 
 /**

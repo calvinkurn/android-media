@@ -16,7 +16,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.example.gamification.R;
+import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.presentation.customview.MaskedHeightImageView;
 
 /**
