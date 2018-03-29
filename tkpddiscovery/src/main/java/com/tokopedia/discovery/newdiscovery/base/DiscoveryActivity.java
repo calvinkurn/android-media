@@ -509,9 +509,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             SearchParameter imageSearchProductParameter = new SearchParameter();
             imageSearchProductParameter.setStartRow(productCount);
             imageSearchProductParameter.setQueryKey(String.valueOf(productIDs));
-
-            // TODO: 3/13/18 need to confirm the value of source
-            imageSearchProductParameter.setSource("toppicks");
+            imageSearchProductParameter.setSource("imagesearch");
             getPresenter().requestImageSearchProduct(imageSearchProductParameter);
 
         } else {
