@@ -8,9 +8,12 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationUploadImageUseCase;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonAndAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -97,7 +100,7 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                         @Override
                         public void onError(Throwable e) {
                             e.printStackTrace();
-                            if (isViewAttached() && !isUnsubscribed()){
+                            if (isViewAttached() && !isUnsubscribed()) {
                                 getView().showFailedToNextStepErrorMessage(ErrorHandler.getErrorMessage(getView().getActivity(), e));
                             }
                         }
@@ -114,7 +117,7 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     private boolean validateFields() {
         boolean isValid = true;
         List<FlightCancellationAttachmentViewModel> attachments = getView().getAttachments();
-        int totalPassenger = getView().getCancellationViewModel().getPassengerViewModelList().size();
+        int totalPassenger = calculateTotalPassenger(getView().getCancellationViewModel());
         if (attachments.size() == 0) {
             isValid = false;
             getView().showRequiredMinimalOneAttachmentErrorMessage(R.string.flight_cancellation_attachment_required_error_message);
@@ -126,5 +129,17 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
             );
         }
         return isValid;
+    }
+
+    private int calculateTotalPassenger(FlightCancellationWrapperViewModel cancellationViewModel) {
+        List<String> uniquePassengers = new ArrayList<>();
+        for (FlightCancellationViewModel viewModel : cancellationViewModel.getViewModels()) {
+            for (FlightCancellationPassengerViewModel passengerViewModel : viewModel.getPassengerViewModelList()) {
+                if (!uniquePassengers.contains(passengerViewModel.getPassengerId())) {
+                    uniquePassengers.add(passengerViewModel.getPassengerId());
+                }
+            }
+        }
+        return uniquePassengers.size();
     }
 }

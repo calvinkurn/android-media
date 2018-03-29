@@ -37,6 +37,7 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttach
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationCameraPassData;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 
 import java.util.List;
@@ -59,7 +60,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     private AppCompatButton btnNext;
 
     private FlightCancellationAttachmentAdapter adapter;
-    private FlightCancellationViewModel flightCancellationViewModel;
+    private FlightCancellationWrapperViewModel flightCancellationViewModel;
     private OnFragmentInteractionListener interactionListener;
     private String fileFromCameraLocTemp;
 
@@ -70,7 +71,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
 
     }
 
-    public static Fragment newInstance(FlightCancellationViewModel flightCancellationViewModel) {
+    public static Fragment newInstance(FlightCancellationWrapperViewModel flightCancellationViewModel) {
         FlightCancellationReasonAndProofFragment fragment = new FlightCancellationReasonAndProofFragment();
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_CANCELLATION_VIEW_MODEL, flightCancellationViewModel);
@@ -186,7 +187,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
-    public FlightCancellationViewModel getCancellationViewModel() {
+    public FlightCancellationWrapperViewModel getCancellationViewModel() {
         return flightCancellationViewModel;
     }
 

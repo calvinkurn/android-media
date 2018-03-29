@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public interface FlightCancellationReasonAndProofContract {
 
         void showRequiredMinimalOneAttachmentErrorMessage(int resId);
 
-        FlightCancellationViewModel getCancellationViewModel();
+        FlightCancellationWrapperViewModel getCancellationViewModel();
 
         String getString(int resId);
 

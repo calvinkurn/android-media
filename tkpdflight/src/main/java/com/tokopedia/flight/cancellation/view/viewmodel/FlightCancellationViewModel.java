@@ -19,7 +19,6 @@ public class FlightCancellationViewModel implements Parcelable,
     private String invoiceId;
     private FlightCancellationJourney flightCancellationJourney;
     private List<FlightCancellationPassengerViewModel> passengerViewModelList;
-    private FlightCancellationReasonAndAttachmentViewModel reasonAndAttachments;
 
     public FlightCancellationViewModel() {
     }
@@ -28,7 +27,6 @@ public class FlightCancellationViewModel implements Parcelable,
         invoiceId = in.readString();
         flightCancellationJourney = in.readParcelable(FlightCancellationJourney.class.getClassLoader());
         passengerViewModelList = in.createTypedArrayList(FlightCancellationPassengerViewModel.CREATOR);
-        reasonAndAttachments = in.readParcelable(FlightCancellationReasonAndAttachmentViewModel.class.getClassLoader());
     }
 
     public static final Creator<FlightCancellationViewModel> CREATOR = new Creator<FlightCancellationViewModel>() {
@@ -83,14 +81,6 @@ public class FlightCancellationViewModel implements Parcelable,
         parcel.writeString(invoiceId);
         parcel.writeParcelable(flightCancellationJourney, i);
         parcel.writeTypedList(passengerViewModelList);
-        parcel.writeParcelable(reasonAndAttachments, i);
     }
 
-    public FlightCancellationReasonAndAttachmentViewModel getReasonAndAttachments() {
-        return reasonAndAttachments;
-    }
-
-    public void setReasonAndAttachments(FlightCancellationReasonAndAttachmentViewModel reasonAndAttachments) {
-        this.reasonAndAttachments = reasonAndAttachments;
-    }
 }
