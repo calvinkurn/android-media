@@ -39,6 +39,9 @@ import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.gallery.GalleryActivity;
+import com.tokopedia.core.gallery.GallerySelectedFragment;
+import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -79,12 +82,10 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.utils.DateLabelUtils;
-import com.tokopedia.di.DaggerSessionComponent;
-import com.tokopedia.di.SessionComponent;
-import com.tokopedia.di.SessionModule;
 import com.tokopedia.digital.DigitalRouter;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
@@ -99,6 +100,7 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationCameraPassData;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.domain.FlightDeleteDashboardCacheUseCase;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
@@ -130,6 +132,8 @@ import com.tokopedia.ride.RideModuleRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
+import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
+import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
@@ -150,6 +154,7 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
@@ -312,13 +317,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .reactNativeModule(new ReactNativeModule(this));
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
 
-        SessionComponent sessionComponent =
-                DaggerSessionComponent.builder()
-                        .appComponent(getApplicationComponent())
-                        .sessionModule(new SessionModule())
-                        .build();
-        daggerFlightBuilder = DaggerFlightConsumerComponent.builder()
-                .sessionComponent(sessionComponent);
+        daggerFlightBuilder = DaggerFlightConsumerComponent.builder().appComponent(getApplicationComponent());
 
         tokoCashComponent = DaggerTokoCashComponent.builder()
                 .baseAppComponent((this).getBaseAppComponent())
@@ -676,6 +675,42 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Interceptor getChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
+    }
+
+    @Override
+    public Intent getGalleryIntent(Activity activity) {
+        return GalleryActivity.createIntent(activity, GalleryType.ofImageOnly(), 1, true);
+    }
+
+    @Override
+    public String getGalleryExtraSelectionPathResultKey() {
+        return GallerySelectedFragment.EXTRA_RESULT_SELECTION_PATH;
+    }
+
+    @Override
+    public FlightCancellationCameraPassData startCaptureWithCamera(FragmentActivity activity) {
+        FlightCancellationCameraPassData passData = new FlightCancellationCameraPassData();
+        ImageUploadHandler imageUploadHandler = ImageUploadHandler.createInstance(activity);
+        passData.setDestinationIntent(imageUploadHandler.getCameraIntent());
+        passData.setImagePathLoc(imageUploadHandler.getCameraFileloc());
+        return passData;
+    }
+
+    @Override
+    public int getCameraRequestCode() {
+        return ImageUploadHandler.REQUEST_CODE;
+    }
+
+    @Override
+    public Observable<String> uploadImage(String destinationFolderPath, String localFilePath) {
+        UploadImageUseCase<UploadShopImageModel> uploadImageUseCase = getFlightConsumerComponent().uploadImageUseCase();
+        uploadImageUseCase.createObservable(uploadImageUseCase.createRequestParams(destinationFolderPath, localFilePath));
+        return uploadImageUseCase.createObservable(uploadImageUseCase.createRequestParams(destinationFolderPath, localFilePath)).map(new Func1<ImageUploadDomainModel<UploadShopImageModel>, String>() {
+            @Override
+            public String call(ImageUploadDomainModel<UploadShopImageModel> uploadShopImageModelImageUploadDomainModel) {
+                return uploadShopImageModelImageUploadDomainModel.getDataResultImageUpload().getResult();
+            }
+        });
     }
 
     @Override
