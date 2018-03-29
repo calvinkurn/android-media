@@ -9,6 +9,8 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewMod
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ProductFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feednew.ProductFeedNewViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feednew.ShopFeedNewViewModel;
 
 import java.util.List;
 
@@ -51,6 +53,18 @@ public class ModelConverter {
 
     public static ProductFeedViewModel convertToProductFeedViewModel(Data data) {
         ProductFeedViewModel viewModel = new ProductFeedViewModel();
+        viewModel.setData(data);
+        return viewModel;
+    }
+
+    public static ShopFeedNewViewModel convertToShopFeedNewViewModel(Data data) {
+        ShopFeedNewViewModel viewModel = new ShopFeedNewViewModel();
+        viewModel.setData(data);
+        return viewModel;
+    }
+
+    public static ProductFeedNewViewModel convertToProductFeedNewViewModel(Data data) {
+        ProductFeedNewViewModel viewModel = new ProductFeedNewViewModel();
         viewModel.setData(data);
         return viewModel;
     }

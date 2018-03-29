@@ -18,11 +18,12 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         implements View.OnClickListener {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ads_shop_feed_plus;
+    public static final int LAYOUT = R.layout.layout_ads_shop_feed_new;
 
     private Context context;
     private ImageLoader imageLoader;
     private LocalAdsClickListener itemClickListener;
+    private int adapterPosition = 0;
 
     public ShopFeedNewViewHolder(View itemView, ImageLoader imageLoader,
                                  LocalAdsClickListener itemClickListener) {
@@ -41,5 +42,9 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
     @Override
     public void bind(ShopFeedNewViewModel element) {
 
+    }
+
+    public void setAdapterPosition(int adapterPosition) {
+        this.adapterPosition = adapterPosition;
     }
 }

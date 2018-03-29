@@ -14,8 +14,7 @@ import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.view.DisplayMode;
-import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
+import com.tokopedia.topads.sdk.view.adapter.FeedNewAdsItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ import java.util.List;
 public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickListener {
 
     private static final String TAG = TopAdsFeedWidgetView.class.getSimpleName();
-    private AdsItemAdapter adapter;
+    private FeedNewAdsItemAdapter adapter;
     private static final int DEFAULT_SPAN_COUNT = 3;
     private TopAdsItemClickListener itemClickListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
@@ -51,7 +50,7 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
         inflate(getContext(), R.layout.layout_ads, this);
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
-        adapter = new AdsItemAdapter(getContext());
+        adapter = new FeedNewAdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
         layoutManager = new GridLayoutManager(getContext(),
                 DEFAULT_SPAN_COUNT,
@@ -70,10 +69,10 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
             Data d = data.get(i);
             if (d.getProduct() != null) {
                 layoutManager.setSpanCount(1);
-                visitables.add(ModelConverter.convertToProductFeedViewModel(d));
+                visitables.add(ModelConverter.convertToProductFeedNewViewModel(d));
             } else if (d.getShop() != null) {
                 layoutManager.setSpanCount(3);
-                visitables.add(ModelConverter.convertToShopFeedViewModel(d, DisplayMode.FEED));
+                visitables.add(ModelConverter.convertToShopFeedNewViewModel(d));
             }
         }
         adapter.setList(visitables);

@@ -15,4 +15,5 @@ dependencies {
     compile rootProject.ext.supportLibDependencies.design
     compile rootProject.ext.supportLibDependencies.cardViewV7
     compile rootProject.ext.networkDependencies.glide
+    compile rootProject.ext.supportLibDependencies.constraintLayout
 }

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shop_topads_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_small"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true">
+
+        <RelativeLayout
+            android:id="@+id/shop_image_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_shop_item"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.topads.sdk.view.RoundedCornerImageView
+                android:id="@+id/shop_image"
+                android:layout_width="@dimen/feed_ava"
+                android:layout_height="@dimen/feed_ava"
+                android:padding="0.5dp"
+                tools:src="@tools:sample/avatars" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/shop_title_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/shop_image_layout"
+            app:layout_constraintEnd_toStartOf="@id/favorite_button"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/shop_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/font_normal"
+                tools:text="town_fashion town fashion" />
+
+            <TextView
+                android:id="@+id/shop_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/black_38"
+                android:textSize="@dimen/font_small"
+                tools:text="kacamata kual kacamata kual kacamata kual " />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/favorite_button"
+            android:layout_width="80dp"
+            android:layout_height="24dp"
+            android:background="@drawable/selector_favorite"
+            android:textColor="@color/white"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/font_very_small"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/favoritkan" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <!--<LinearLayout-->
+    <!--android:id="@+id/header"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_margin="@dimen/margin_small"-->
+    <!--android:background="?attr/selectableItemBackground"-->
+    <!--android:clickable="true"-->
+    <!--android:focusable="true"-->
+    <!--android:orientation="horizontal">-->
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:background="@drawable/bg_shop_item">-->
+
+    <!--<com.tokopedia.topads.sdk.view.RoundedCornerImageView-->
+    <!--android:id="@+id/shop_image"-->
+    <!--android:layout_width="@dimen/feed_ava"-->
+    <!--android:layout_height="@dimen/feed_ava"-->
+    <!--android:padding="0.5dp"-->
+    <!--tools:src="@tools:sample/avatars"/>-->
+
+    <!--</RelativeLayout>-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="@dimen/margin_small"-->
+    <!--android:layout_marginRight="@dimen/margin_small"-->
+    <!--android:layout_gravity="center_vertical"-->
+    <!--android:orientation="vertical">-->
+
+
+    <!--<TextView-->
+    <!--android:id="@+id/shop_title"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:ellipsize="end"-->
+    <!--android:fontFamily="sans-serif-medium"-->
+    <!--android:maxLines="1"-->
+    <!--android:textColor="@color/black_70"-->
+    <!--android:textSize="@dimen/font_normal"-->
+    <!--tools:text="town_fashion" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/shop_subtitle"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:ellipsize="end"-->
+    <!--android:maxLines="1"-->
+    <!--android:textColor="@color/black_38"-->
+    <!--android:textSize="@dimen/font_small"-->
+    <!--tools:text="kacamata kual" />-->
+    <!--</LinearLayout>-->
+    <!---->
+    <!--<TextView-->
+    <!--android:layout_width="80dp"-->
+    <!--android:layout_height="24dp"-->
+    <!--android:background="@color/green_800"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:layout_gravity="end|center_vertical"-->
+    <!--tools:text="hahahahaha"/>-->
+
+    <!--</LinearLayout>-->
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/product_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_vs"
+        android:paddingRight="@dimen/padding_vs" />
+
+</LinearLayout>
