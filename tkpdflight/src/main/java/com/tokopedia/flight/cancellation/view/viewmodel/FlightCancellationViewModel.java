@@ -16,14 +16,19 @@ import java.util.List;
 public class FlightCancellationViewModel implements Parcelable,
         Visitable<FlightCancellationTypeFactory> {
 
+    private String invoiceId;
     private FlightCancellationJourney flightCancellationJourney;
     private List<FlightCancellationPassengerViewModel> passengerViewModelList;
+    private FlightCancellationReasonAndAttachmentViewModel reasonAndAttachments;
 
     public FlightCancellationViewModel() {
     }
 
     protected FlightCancellationViewModel(Parcel in) {
+        invoiceId = in.readString();
         flightCancellationJourney = in.readParcelable(FlightCancellationJourney.class.getClassLoader());
+        passengerViewModelList = in.createTypedArrayList(FlightCancellationPassengerViewModel.CREATOR);
+        reasonAndAttachments = in.readParcelable(FlightCancellationReasonAndAttachmentViewModel.class.getClassLoader());
     }
 
     public static final Creator<FlightCancellationViewModel> CREATOR = new Creator<FlightCancellationViewModel>() {
@@ -44,16 +49,6 @@ public class FlightCancellationViewModel implements Parcelable,
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(flightCancellationJourney, flags);
-    }
-
     public FlightCancellationJourney getFlightCancellationJourney() {
         return flightCancellationJourney;
     }
@@ -68,5 +63,34 @@ public class FlightCancellationViewModel implements Parcelable,
 
     public void setPassengerViewModelList(List<FlightCancellationPassengerViewModel> passengerViewModelList) {
         this.passengerViewModelList = passengerViewModelList;
+    }
+
+    public String getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(String invoiceId) {
+        this.invoiceId = invoiceId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(invoiceId);
+        parcel.writeParcelable(flightCancellationJourney, i);
+        parcel.writeTypedList(passengerViewModelList);
+        parcel.writeParcelable(reasonAndAttachments, i);
+    }
+
+    public FlightCancellationReasonAndAttachmentViewModel getReasonAndAttachments() {
+        return reasonAndAttachments;
+    }
+
+    public void setReasonAndAttachments(FlightCancellationReasonAndAttachmentViewModel reasonAndAttachments) {
+        this.reasonAndAttachments = reasonAndAttachments;
     }
 }
