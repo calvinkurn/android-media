@@ -226,7 +226,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
     public void showListEmpty() {
         mShipmentAddressListAdapter.setAddressList(new ArrayList<RecipientAddressModel>());
         mShipmentAddressListAdapter.notifyDataSetChanged();
-        rlContent.setVisibility(View.GONE);
+        mRvRecipientAddressList.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.GONE);
         llNoResult.setVisibility(View.VISIBLE);
     }
