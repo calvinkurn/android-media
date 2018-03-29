@@ -34,7 +34,7 @@ public class FeedNewShopAdapter extends RecyclerView.Adapter<FeedNewShopAdapter.
     @Override
     public FeedNewShopAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.topads_shop_product_image, parent, false);
+                .inflate(R.layout.feed_new_shop_product_image, parent, false);
         return new FeedNewShopAdapter.ViewHolder(view);
     }
 
