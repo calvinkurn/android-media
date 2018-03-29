@@ -61,9 +61,16 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         shopTitle = itemView.findViewById(R.id.shop_title);
         shopSubtitle = itemView.findViewById(R.id.shop_subtitle);
         favoriteButton = itemView.findViewById(R.id.favorite_button);
-        RecyclerView recyclerView = itemView.findViewById(R.id.product_list);
-        recyclerView.setLayoutManager(new GridLayoutManager(context, SPAN_COUNT));
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(
+                itemView.getContext(),
+                SPAN_COUNT,
+                GridLayoutManager.VERTICAL,
+                false);
         adapter = new FeedNewShopAdapter(this);
+
+        RecyclerView recyclerView = itemView.findViewById(R.id.product_list);
+        recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
 
         itemView.setOnClickListener(onShopItemClicked());
@@ -129,8 +136,7 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         } else {
             image = context.getResources().getDrawable(drawable);
         }
-        image.setBounds(0, 0, context.getResources().getDimensionPixelOffset(R.dimen.badge_size),
-                context.getResources().getDimensionPixelOffset(R.dimen.badge_size));
+        image.setBounds(0, 0, context.getResources().getDimensionPixelOffset(R.dimen.badge_size), context.getResources().getDimensionPixelOffset(R.dimen.badge_size));
         spannableString.setSpan(new ImageSpan(image), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannableString;
     }

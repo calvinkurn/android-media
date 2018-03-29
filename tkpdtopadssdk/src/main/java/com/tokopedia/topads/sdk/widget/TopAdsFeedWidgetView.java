@@ -54,7 +54,7 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
         adapter.setItemClickListener(this);
         layoutManager = new GridLayoutManager(getContext(),
                 DEFAULT_SPAN_COUNT,
-                GridLayoutManager.HORIZONTAL,
+                GridLayoutManager.VERTICAL,
                 false);
         RecyclerView recyclerView = findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
@@ -68,10 +68,10 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
         for (int i = 0; i < data.size(); i++) {
             Data d = data.get(i);
             if (d.getProduct() != null) {
-                layoutManager.setSpanCount(1);
+                layoutManager.setSpanCount(3);
                 visitables.add(ModelConverter.convertToProductFeedNewViewModel(d));
             } else if (d.getShop() != null) {
-                layoutManager.setSpanCount(3);
+                layoutManager.setSpanCount(1);
                 visitables.add(ModelConverter.convertToShopFeedNewViewModel(d));
             }
         }

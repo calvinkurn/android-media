@@ -73,8 +73,8 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/favorite_button"
-            android:layout_width="80dp"
-            android:layout_height="24dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/selector_favorite"
             android:textColor="@color/white"
             android:paddingLeft="10dp"
@@ -83,7 +83,7 @@
             android:paddingBottom="5dp"
             android:fontFamily="sans-serif-medium"
             android:textStyle="normal"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:textSize="@dimen/font_very_small"
             app:drawableLeftCompat="@drawable/ic_add_white_24px"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -96,8 +96,6 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/product_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/padding_vs"
-        android:paddingRight="@dimen/padding_vs" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
