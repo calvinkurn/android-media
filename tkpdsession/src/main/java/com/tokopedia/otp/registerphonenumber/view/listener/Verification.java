@@ -12,7 +12,7 @@ import com.tokopedia.otp.registerphonenumber.view.viewmodel.VerifyOtpViewModel;
 
 public interface Verification {
     interface View extends CustomerView {
-        void onSuccessGetOTP();
+        void onSuccessGetOTP(String messageStatus);
 
         void onSuccessVerifyOTP(VerifyOtpViewModel verifyOtpViewModel);
 

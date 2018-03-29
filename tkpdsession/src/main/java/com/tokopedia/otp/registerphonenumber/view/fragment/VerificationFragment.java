@@ -94,12 +94,38 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Inject
     VerificationPresenter presenter;
 
+    @Inject
+    IncomingSmsReceiver smsReceiver;
+
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new VerificationFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getArguments() != null
+                && getArguments().getInt(VerificationActivity.PARAM_FRAGMENT_TYPE, 0)
+                == VerificationActivity.TYPE_SMS) {
+            smsReceiver.registerSmsReceiver(getActivity());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                showCheckSMSPermission();
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (smsReceiver != null
+                && getArguments() != null
+                && getArguments().getInt(VerificationActivity.PARAM_FRAGMENT_TYPE, 0)
+                == VerificationActivity.TYPE_SMS) {
+            getActivity().unregisterReceiver(smsReceiver);
+        }
+    }
     @Override
     protected void initInjector() {
         AppComponent appComponent = getComponent(AppComponent.class);
@@ -122,8 +148,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         } else {
             getActivity().finish();
         }
-
         cacheHandler = new LocalCacheHandler(getActivity(), CACHE_OTP);
+        smsReceiver.setListener(this);
     }
 
     private VerificationViewModel createViewModel(Bundle bundle) {
@@ -288,14 +314,15 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     private void initData() {
         int imageId = viewModel.getIconResId();
         ImageHandler.loadImageWithId(icon, imageId);
-        message.setText(MethodChecker.fromHtml(viewModel.getMessage()));
+//        message.setText(MethodChecker.fromHtml(viewModel.getMessage()));
         verifyButton.setEnabled(false);
         presenter.requestOTP(viewModel);
     }
 
     @Override
-    public void onSuccessGetOTP() {
+    public void onSuccessGetOTP(String messageStatus) {
         startTimer();
+        message.setText(messageStatus);
     }
 
     @Override
@@ -482,7 +509,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             countDownTimer = null;
         }
         progressDialog = null;
-
         presenter.detachView();
     }
 
