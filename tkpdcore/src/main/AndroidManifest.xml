@@ -43,8 +43,8 @@
     <uses-permission
         android:name="android.permission.RECORD_AUDIO"
         tools:node="remove" />
-    <uses-permission android:name="android.permission.READ_CALL_LOG" />
-
+    <uses-permission
+            android:name="android.permission.READ_CALL_LOG"/>
     <permission
         android:name="${applicationId}.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -90,9 +90,6 @@
             android:name="io.branch.sdk.BranchKey"
             android:value="@string/BRANCH_SDK_KEY" />
 
-        <meta-data
-            android:name="NOTIFICATION_TONE"
-            android:value="@raw/endtune" />
         <!-- <meta-data -->
         <!-- android:name="com.google.android.gms.version" -->
         <!-- android:value="@integer/google_play_services_version" /> -->
@@ -141,7 +138,7 @@
         <activity
             android:name=".ShopStatistic"
             android:label="@string/title_activity_shop_statistic"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ShopLocation"
             android:label="@string/title_activity_shop_location"
@@ -314,8 +311,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name="com.tokopedia.sellerapp.welcome.WelcomeActivity"
+        <activity android:name="com.tokopedia.sellerapp.welcome.WelcomeActivity"
             android:screenOrientation="portrait" />
 
         <activity

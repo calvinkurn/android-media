@@ -64,6 +64,10 @@
             android:value="@drawable/qc_launcher"
             tools:replace="android:value" />
 
+        <meta-data
+            android:name="NOTIFICATION_TONE"
+            android:value="@raw/endtune" />
+
         <activity
             android:name=".ConsumerSplashScreen"
             android:label="@string/app_name"
