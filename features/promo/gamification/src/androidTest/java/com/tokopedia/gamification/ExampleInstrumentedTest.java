@@ -1,4 +1,4 @@
-package com.example.gamification;
+package com.tokopedia.gamification;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
