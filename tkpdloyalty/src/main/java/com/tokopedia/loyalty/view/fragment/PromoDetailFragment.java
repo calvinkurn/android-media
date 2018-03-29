@@ -39,6 +39,8 @@ public class PromoDetailFragment extends BaseDaggerFragment {
 
     private static final String ARG_EXTRA_PROMO_DATA = "promo_data";
 
+    private static final int REQUEST_CODE_PROMO_DETAIL = 118;
+
     private TextView tvPromoDetailAction;
     private RecyclerView rvPromoDetailView;
     private LinearLayout llPromoDetailBottomLayout;
@@ -126,9 +128,19 @@ public class PromoDetailFragment extends BaseDaggerFragment {
                 String uri = TextUtils.isEmpty(promoData.getAppLink()) ? promoData.getPromoLink()
                         : promoData.getAppLink();
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                startActivity(browserIntent);
+
+                startActivityForResult(browserIntent, REQUEST_CODE_PROMO_DETAIL);
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_PROMO_DETAIL) {
+
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
