@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 
@@ -30,12 +31,16 @@ public class ChannelInfoViewModel implements Parcelable {
     @Nullable
     private SprintSaleViewModel sprintSaleViewModel;
 
+    @Nullable
+    private GroupChatPointsViewModel groupChatPointsViewModel;
+
     public ChannelInfoViewModel(String channelUrl, String bannerUrl, String blurredBannerUrl,
                                 String title,
                                 String adsImageUrl, String adsLink, String bannerName,
                                 @Nullable VoteInfoViewModel voteInfoViewModel,
                                 ChannelViewModel channelViewModel,
-                                @Nullable SprintSaleViewModel sprintSaleViewModel, String sendBirdToken) {
+                                @Nullable SprintSaleViewModel sprintSaleViewModel, String sendBirdToken,
+                                @Nullable GroupChatPointsViewModel groupChatPointsViewModel) {
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
         this.blurredBannerUrl = blurredBannerUrl;
@@ -47,20 +52,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.channelViewModel = channelViewModel;
         this.sprintSaleViewModel = sprintSaleViewModel;
         this.sendBirdToken = sendBirdToken;
-    }
-
-    protected ChannelInfoViewModel(Parcel in) {
-        title = in.readString();
-        channelUrl = in.readString();
-        bannerUrl = in.readString();
-        blurredBannerUrl = in.readString();
-        adsImageUrl = in.readString();
-        adsLink = in.readString();
-        bannerName = in.readString();
-        sendBirdToken = in.readString();
-        voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
-        channelViewModel = in.readParcelable(ChannelViewModel.class.getClassLoader());
-        sprintSaleViewModel = in.readParcelable(SprintSaleViewModel.class.getClassLoader());
+        this.groupChatPointsViewModel = groupChatPointsViewModel;
     }
 
     public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
@@ -139,6 +131,7 @@ public class ChannelInfoViewModel implements Parcelable {
         return sendBirdToken;
     }
 
+
     public String getBlurredBannerUrl() {
         return blurredBannerUrl;
     }
@@ -147,6 +140,29 @@ public class ChannelInfoViewModel implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+
+    @Nullable
+    public GroupChatPointsViewModel getGroupChatPointsViewModel() {
+        return groupChatPointsViewModel;
+    }
+
+    public void setGroupChatPointsViewModel(@Nullable GroupChatPointsViewModel groupChatPointsViewModel) {
+        this.groupChatPointsViewModel = groupChatPointsViewModel;
+    }
+
+    protected ChannelInfoViewModel(Parcel in) {
+        title = in.readString();
+        channelUrl = in.readString();
+        bannerUrl = in.readString();
+        adsLink = in.readString();
+        bannerName = in.readString();
+        voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
+        channelViewModel = in.readParcelable(ChannelViewModel.class.getClassLoader());
+        sprintSaleViewModel = in.readParcelable(SprintSaleViewModel.class.getClassLoader());
+        sendBirdToken = in.readString();
+        groupChatPointsViewModel = in.readParcelable(GroupChatPointsViewModel.class.getClassLoader());
     }
 
     @Override
@@ -162,5 +178,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeParcelable(voteInfoViewModel, flags);
         dest.writeParcelable(channelViewModel, flags);
         dest.writeParcelable(sprintSaleViewModel, flags);
+        dest.writeString(sendBirdToken);
+        dest.writeParcelable(groupChatPointsViewModel, flags);
     }
 }
