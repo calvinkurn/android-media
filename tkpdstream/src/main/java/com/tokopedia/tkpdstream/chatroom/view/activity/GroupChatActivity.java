@@ -67,6 +67,7 @@ import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VibrateViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
@@ -117,6 +118,8 @@ public class GroupChatActivity extends BaseSimpleActivity
     public static final String VOTE_TYPE = "vote_type";
     private static final String TOTAL_VIEW = "total_view";
     private String voteType;
+    private Runnable runnable;
+    private Handler tooltipHandler;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -273,6 +276,13 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         sponsorLayout = findViewById(R.id.sponsor_layout);
         sponsorImage = findViewById(R.id.sponsor_image);
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                showTooltip();
+            }
+        };
     }
 
     private void initData() {
@@ -465,21 +475,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void showChannelInfoFragment() {
-
-        Bundle bundle = new Bundle();
-        if (getIntent().getExtras() != null) {
-            bundle.putAll(getIntent().getExtras());
-        }
-
-        Fragment fragment = getSupportFragmentManager().
-                findFragmentByTag(ChannelInfoFragment.class.getSimpleName());
+        Fragment fragment = populateChannelInfoFragment();
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (fragment == null) {
-            fragment = ChannelInfoFragment.createInstance(bundle);
-        }
-        ((ChannelInfoFragmentListener.View) fragment).renderData(
-                viewModel.getChannelInfoViewModel().getChannelViewModel());
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -706,7 +704,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         channelInfoDialog.setContentView(
                 createBottomSheetView(
                         checkPollValid(),
-                        viewModel.getChannelInfoViewModel().getChannelViewModel()));
+                        viewModel.getChannelInfoViewModel()));
 
         if (getIntent() != null
                 && getIntent().getExtras() != null
@@ -735,12 +733,8 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void setTooltip() {
         if (checkPollValid()) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showTooltip();
-                }
-            }, TOOLTIP_DELAY);
+            tooltipHandler = new Handler();
+            tooltipHandler.postDelayed(runnable, TOOLTIP_DELAY);
         }
     }
 
@@ -749,8 +743,11 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && tabAdapter != null
                 && tabAdapter.getItemCount() > 1
                 && tabs.getChildAt(CHANNEL_VOTE_FRAGMENT) != null) {
-            ToolTipUtils.showToolTip(ToolTipUtils.setToolTip(this, R.layout.tooltip, this),
-                    tabs.getChildAt(CHATROOM_FRAGMENT));
+            View view = ToolTipUtils.setToolTip(this, R.layout.tooltip, this);
+            View anchorView = tabs.getChildAt(CHATROOM_FRAGMENT);
+            if (view != null && anchorView != null) {
+                ToolTipUtils.showToolTip(view, anchorView);
+            }
         }
     }
 
@@ -768,7 +765,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
-    private View createBottomSheetView(boolean hasValidPoll, ChannelViewModel channelViewModel) {
+    private View createBottomSheetView(boolean hasValidPoll,
+                                       ChannelInfoViewModel channelInfoViewModel) {
         View view = getLayoutInflater().inflate(R.layout.channel_info_bottom_sheet_dialog, null);
 
         TextView actionButton = view.findViewById(R.id.action_button);
@@ -791,14 +789,16 @@ public class GroupChatActivity extends BaseSimpleActivity
         else
             actionButton.setText(R.string.lets_chat);
 
-        participant.setText(TextFormatter.format(String.valueOf(channelViewModel.getTotalView())));
-        name.setText(channelViewModel.getAdminName());
-        title.setText(channelViewModel.getTitle());
-        subtitle.setText(channelViewModel.getDescription());
+        participant.setText(TextFormatter.format(String.valueOf(channelInfoViewModel.getTotalView())));
+        name.setText(channelInfoViewModel.getAdminName());
+        title.setText(channelInfoViewModel.getTitle());
+        subtitle.setText(channelInfoViewModel.getDescription());
 
-        ImageHandler.loadImage2(image, channelViewModel.getImage(), R.drawable.loading_page);
-        ImageHandler.loadImageCircle2(profile.getContext(), profile, channelViewModel.getAdminPicture(), R
-                .drawable.loading_page);
+        ImageHandler.loadImage2(image, channelInfoViewModel.getImage(), R.drawable.loading_page);
+        ImageHandler.loadImageCircle2(profile.getContext(),
+                profile,
+                channelInfoViewModel.getAdminPicture(),
+                R.drawable.loading_page);
 
         return view;
     }
@@ -853,6 +853,10 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onResume() {
         super.onResume();
+        if (tooltipHandler != null && runnable != null) {
+            tooltipHandler.postDelayed(runnable, TOOLTIP_DELAY);
+        }
+
         kickIfIdleForTooLong();
 
         ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), getConnectionHandlerId(), new
@@ -882,7 +886,29 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         if (currentFragmentIsChat()) {
             refreshChat();
+        } else if (currentFragmentIsVote()) {
+            refreshVote(channelInfoViewModel.getVoteInfoViewModel());
+        } else if (currentFragmentIsInfo()) {
+            populateChannelInfoFragment();
         }
+    }
+
+    public void onPushNotifReceived() {
+        GroupChatPointsViewModel model = new GroupChatPointsViewModel(
+                "Selamat! Anda mendapatkan 20 poin dari channel ini. Cek sekarang!"
+                , "Cek sekarang!"
+                , "www.tokopedia.com"
+        );
+        if (currentFragmentIsChat()) {
+            showPushNotif(model);
+        } else {
+            viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(model);
+        }
+    }
+
+    private void showPushNotif(GroupChatPointsViewModel model) {
+        ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
+                (GroupChatFragment.class.getSimpleName())).onPushNotifReceived(model);
     }
 
     private void refreshChat() {
@@ -890,8 +916,35 @@ public class GroupChatActivity extends BaseSimpleActivity
                 (GroupChatFragment.class.getSimpleName())).refreshChat();
     }
 
+    private void refreshVote(VoteInfoViewModel voteInfoViewModel) {
+        ((ChannelVoteFragment) getSupportFragmentManager().findFragmentByTag
+                (ChannelVoteFragment.class.getSimpleName())).refreshVote(voteInfoViewModel);
+    }
+
+    private Fragment populateChannelInfoFragment() {
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(
+                ChannelInfoFragment.class.getSimpleName());
+
+        if (fragment == null) {
+            fragment = ChannelInfoFragment.createInstance(bundle);
+        }
+
+        ((ChannelInfoFragmentListener.View) fragment).renderData(
+                viewModel.getChannelInfoViewModel());
+
+        return fragment;
+    }
+
     @Override
     protected void onPause() {
+        if(tooltipHandler !=null && runnable != null) {
+            tooltipHandler.removeCallbacks(runnable);
+        }
         super.onPause();
         if (viewModel != null) {
             viewModel.setTimeStampBeforePause(System.currentTimeMillis());
@@ -919,6 +972,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(tooltipHandler !=null && runnable != null) {
+            tooltipHandler.removeCallbacks(runnable);
+        }
         presenter.detachView();
         presenter.logoutChannel(mChannel);
     }

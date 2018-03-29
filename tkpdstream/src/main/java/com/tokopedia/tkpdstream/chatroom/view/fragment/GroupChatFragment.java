@@ -43,6 +43,7 @@ import com.tokopedia.tkpdstream.chatroom.view.presenter.ChatroomPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
@@ -323,8 +324,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && isValidSprintSale(sprintSaleViewModel)
                 && sprintSaleViewModel.getSprintSaleType() != null
                 && !sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_UPCOMING)
-                && channelInfoViewModel != null
-                && channelInfoViewModel.getChannelViewModel() != null) {
+                && channelInfoViewModel != null) {
 
             sprintSaleHandler = new Handler();
             sprintSaleRunnable = new Runnable() {
@@ -335,8 +335,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                             new Date().getTime() / MILIS_TO_SECOND,
                             "0",
                             "0",
-                            channelInfoViewModel.getChannelViewModel().getAdminName(),
-                            channelInfoViewModel.getChannelViewModel().getAdminPicture(),
+                            channelInfoViewModel.getAdminName(),
+                            channelInfoViewModel.getAdminPicture(),
                             false,
                             true,
                             sprintSaleViewModel.getRedirectUrl(),
@@ -357,6 +357,18 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             };
             sprintSaleHandler.postDelayed(sprintSaleRunnable, DELAY_TIME_SPRINT_SALE);
 
+        }
+    }
+
+    public void autoAddGroupChatPoints(@Nullable final GroupChatPointsViewModel
+                                               groupChatPointsViewModel) {
+        if (groupChatPointsViewModel != null) {
+            if (adapter.getItemAt(adapter.getItemCount() - 1) != null
+                    && !(adapter.getItemAt(adapter.getItemCount() - 1) instanceof GroupChatPointsViewModel)
+                    && groupChatPointsViewModel != null) {
+                addIncomingMessage(groupChatPointsViewModel);
+                ((GroupChatContract.View) getActivity()).vibratePhone();
+            }
         }
     }
 
@@ -417,6 +429,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
 
             }
+            autoAddGroupChatPoints(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getGroupChatPointsViewModel());
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -634,5 +647,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
             setForLoginUser(userSession != null && userSession.isLoggedIn());
         }
+    }
+
+    public void onPushNotifReceived(GroupChatPointsViewModel model) {
+        autoAddGroupChatPoints(model);
     }
 }

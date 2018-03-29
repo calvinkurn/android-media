@@ -22,4 +22,8 @@
     <color name="black_dimmed">#66000000</color>
     <color name="channel_info_background">#fafbfc</color>
 
+
+    <color name="orange_group_points">#ffeaaa</color>
+    <color name="orange_group_points_text">#c77d05</color>
+
 </resources>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -33,7 +34,6 @@ import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.ProgressBarWithTimer;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
-import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.ChannelVotePresenter;
@@ -52,6 +52,8 @@ import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity.VOTE;
 
 /**
  * @author by StevenFredian on 20/03/18.
@@ -154,20 +156,46 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        progressBarWithTimer.setListener(this);
+        KeyboardHandler.DropKeyboard(getContext(), getView());
+        Parcelable temp = getArguments().getParcelable(VOTE);
+        showVoteLayout((VoteInfoViewModel) temp);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        KeyboardHandler.DropKeyboard(getActivity(), progressBarWithTimer);
+        if (voteInfoViewModel != null
+                && voteInfoViewModel != null
+                && voteInfoViewModel.getStartTime() != 0
+                && voteInfoViewModel.getEndTime() != 0
+                && voteInfoViewModel.getStartTime()
+                < voteInfoViewModel.getEndTime()
+                && voteInfoViewModel.getEndTime()
+                > System.currentTimeMillis() / 1000L
+                ) {
+            progressBarWithTimer.restart();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        progressBarWithTimer.cancel();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        progressBarWithTimer.cancel();
+        super.onDestroy();
     }
 
     private void prepareView() {
         VoteTypeFactory voteTypeFactory = new VoteTypeFactoryImpl(this);
         voteAdapter = VoteAdapter.createInstance(voteTypeFactory);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        showVoteLayout(voteInfoViewModel);
     }
 
     @Override
@@ -275,10 +303,11 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
             if (getActivity() != null
                     && getActivity() instanceof GroupChatContract.View
-                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null
-                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getChannelViewModel() != null) {
-                analytics.eventClickVote(element.getType(), ((GroupChatContract.View) getActivity
-                        ()).getChannelInfoViewModel().getChannelViewModel().getChannelUrl());
+                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null) {
+                analytics.eventClickVote(
+                        element.getType(),
+                        ((GroupChatContract.View) getActivity()).
+                                getChannelInfoViewModel().getChannelUrl());
             }
         }
     }
@@ -354,5 +383,9 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 && resultCode == Activity.RESULT_OK) {
             userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         }
+    }
+
+    public void refreshVote(VoteInfoViewModel voteInfoViewModel) {
+        showVoteLayout(voteInfoViewModel);
     }
 }

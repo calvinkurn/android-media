@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="@dimen/space_mini">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/space_avg_small"
+        android:paddingBottom="@dimen/space_avg_small"
+        android:paddingLeft="@dimen/space_mini"
+        android:paddingRight="@dimen/space_mini"
+        android:background="@color/orange_group_points">
+
+        <RelativeLayout
+            android:id="@+id/image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            android:paddingRight="@dimen/space_mini"
+            android:paddingEnd="@dimen/space_mini"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:padding="@dimen/space_med"
+                android:background="@drawable/circle_white"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_got_points"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/title_group_chat"/>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintStart_toEndOf="@id/image"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/orange_group_points_text"
+            tools:text="Selamat! Anda mendapatkan 20 poin dari channel ini. Cek sekarang!" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>
