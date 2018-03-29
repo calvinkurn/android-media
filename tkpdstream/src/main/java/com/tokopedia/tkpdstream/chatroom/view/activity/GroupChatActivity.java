@@ -433,6 +433,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 case CHANNEL_VOTE_FRAGMENT:
                     if (checkPollValid()) {
                         showChannelVoteFragment();
+                        setDummy();
                     } else {
                         showChannelInfoFragment();
                     }
@@ -1326,5 +1327,13 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else {
             viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(model);
         }
+    }
+
+    public void setDummy(){
+        GroupChatPointsViewModel model = new GroupChatPointsViewModel(
+                "Selamat! Anda mendapatkan 20 poin dari channel ini. Cek sekarang!"
+                , "www.tokopedia.com"
+        );
+        viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(model);
     }
 }

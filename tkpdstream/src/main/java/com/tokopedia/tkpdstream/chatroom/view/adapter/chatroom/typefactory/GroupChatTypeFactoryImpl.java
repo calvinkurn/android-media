@@ -33,12 +33,14 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
     ChatroomContract.View.ImageAnnouncementViewHolderListener imageListener;
     ChatroomContract.View.VoteAnnouncementViewHolderListener voteAnnouncementViewHolderListener;
     ChatroomContract.View.SprintSaleViewHolderListener sprintSaleViewHolderListener;
+    ChatroomContract.View.GroupChatPointsViewHolderListener groupChatPointsViewHolderListener;
 
 
     public GroupChatTypeFactoryImpl(GroupChatFragment fragment) {
         imageListener = fragment;
         voteAnnouncementViewHolderListener = fragment;
         sprintSaleViewHolderListener = fragment;
+        groupChatPointsViewHolderListener = fragment;
     }
 
     @Override
@@ -104,6 +106,8 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
             viewHolder = new VoteAnnouncementViewHolder(parent, voteAnnouncementViewHolderListener);
         } else if (type == SprintSaleViewHolder.LAYOUT) {
             viewHolder = new SprintSaleViewHolder(parent, sprintSaleViewHolderListener);
+        } else if (type == GroupChatPointsViewHolder.LAYOUT) {
+            viewHolder = new GroupChatPointsViewHolder(parent, groupChatPointsViewHolderListener);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }
