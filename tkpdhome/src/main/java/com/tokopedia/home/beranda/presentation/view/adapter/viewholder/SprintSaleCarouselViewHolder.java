@@ -80,7 +80,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         snapHelper.attachToRecyclerView(recyclerView);
     }
 
-    public static int convertDpToPixel(float dp, Context context){
+    public static int convertDpToPixel(float dp, Context context) {
         Resources r = context.getResources();
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
     }
@@ -94,9 +94,11 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     public void bind(DynamicChannelViewModel element) {
         final DynamicHomeChannel.Channels channels = element.getChannel();
         title.setText(channels.getHeader().getName());
-        Glide.with(context).load(channels.getHeader().getBackImage()).into(headerBg);
+        if (channels.getHeader().getBackColor() != null) {
+            Glide.with(context).load(channels.getHeader().getBackImage()).into(headerBg);
+        }
         String color = channels.getHeader().getBackColor();
-        if(!color.isEmpty()) {
+        if (color != null && !color.isEmpty()) {
             container.setBackgroundColor(Color.parseColor(color));
         }
         itemAdapter.setList(channels.getGrids());
