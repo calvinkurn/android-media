@@ -137,9 +137,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         holder.extraProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToFeedDetail(
-                        activityCardViewModel.getPage(),
-                        activityCardViewModel.getRowNumber(), activityCardViewModel.getFeedId());
+                goToFeedDetail();
             }
         });
 
@@ -147,6 +145,19 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                 holder.productName.getContext().getString(R.string.see_other_product),
                 String.valueOf(extraProduct));
         holder.productName.setText(seeOtherProduct);
+        holder.productName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToFeedDetail();
+            }
+        });
+    }
+
+    private void goToFeedDetail() {
+        viewListener.onGoToFeedDetail(
+            activityCardViewModel.getPage(),
+            activityCardViewModel.getRowNumber(), activityCardViewModel.getFeedId()
+        );
     }
 
     private void goToProductDetail(ArrayList<ProductFeedViewModel> list, int position) {
