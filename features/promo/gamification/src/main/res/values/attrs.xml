@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FloatingEggButtonFragment">
+        <attr name="draggable" format="boolean"/>
+        <attr name="margin_right" format="dimension"/>
+        <attr name="margin_bottom" format="dimension"/>
+    </declare-styleable>
+</resources>
