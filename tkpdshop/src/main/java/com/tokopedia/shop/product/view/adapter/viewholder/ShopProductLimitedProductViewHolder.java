@@ -24,36 +24,29 @@ public class ShopProductLimitedProductViewHolder extends AbstractViewHolder<Shop
     public static final int LAYOUT = R.layout.item_shop_product_limited_product;
     private static final int SPAN_COUNT = 2;
     private RecyclerView recyclerView;
-    private AppCompatButton showMoreProductButton;
-    private LabelView etalaseButton;
 
     private ShopProductClickedListener shopProductClickedListener;
 
 
     public ShopProductLimitedProductViewHolder(View itemView,
-                                               View.OnClickListener showMoreProductOnclickListener,
-                                               View.OnClickListener showMoreEtalaseOnclickListener,
                                                ShopProductClickedListener shopProductClickedListener) {
         super(itemView);
         this.shopProductClickedListener = shopProductClickedListener;
-        findViews(itemView, showMoreProductOnclickListener, showMoreEtalaseOnclickListener);
+        findViews(itemView);
     }
 
-    private void findViews(View view, View.OnClickListener showMoreProductOnclickListener, View.OnClickListener showMoreEtalaseOnclickListener) {
+    private void findViews(View view) {
         recyclerView = view.findViewById(R.id.recycler_view);
-        etalaseButton = view.findViewById(R.id.label_view_etalase);
-        etalaseButton.setOnClickListener(showMoreEtalaseOnclickListener);
-        showMoreProductButton = view.findViewById(R.id.button_show_complete_product);
-        showMoreProductButton.setOnClickListener(showMoreProductOnclickListener);
     }
 
     @Override
     public void bind(ShopProductLimitedProductViewModel shopProductLimitedProductViewModel) {
         ShopProductLimitedProductAdapter adapter = new ShopProductLimitedProductAdapter(shopProductClickedListener);
-        adapter.setList(shopProductLimitedProductViewModel.getShopProductViewModelList());
+        adapter.setList(shopProductLimitedProductViewModel.getShopProductViewModelList().getList());
         LinearLayoutManager layoutManager = new GridLayoutManager(itemView.getContext(), SPAN_COUNT);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        recyclerView.setNestedScrollingEnabled(false);
         adapter.notifyDataSetChanged();
     }
 }

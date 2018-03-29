@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -125,7 +126,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                     shopInfo.getInfo().getShopId(),
                     TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsGold()),
                     TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial()),
-                    officialWebViewUrl);
+                    officialWebViewUrl,
+                    i);
         }
     }
 
@@ -141,13 +143,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                 }
             }
         }, this, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                shopPageTracking.eventClickSeeMoreProduct(getString(R.string.shop_info_title_tab_product), shopInfo.getInfo().getShopId(),
-                        shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
-                startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId()));
-            }
-        }, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (shopInfo != null) {
@@ -283,7 +278,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
             } else if (shopProductBaseViewModel instanceof ShopProductLimitedProductViewModel) {
                 if (shopInfo != null) {
                     shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
-                            ((ShopProductLimitedProductViewModel) shopProductBaseViewModel).getShopProductViewModelList(),
+                            ((ShopProductLimitedProductViewModel) shopProductBaseViewModel).getShopProductViewModelList().getList(),
                             true, shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()),
                             false);
                 }

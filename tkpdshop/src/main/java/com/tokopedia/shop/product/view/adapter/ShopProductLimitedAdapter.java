@@ -30,7 +30,7 @@ public class ShopProductLimitedAdapter extends BaseListAdapter<ShopProductBaseVi
                 }
             }
             if (shopProductViewModel instanceof ShopProductLimitedProductViewModel) {
-                for (ShopProductViewModel shopProductViewModelContent : ((ShopProductLimitedProductViewModel) shopProductViewModel).getShopProductViewModelList()) {
+                for (ShopProductViewModel shopProductViewModelContent : ((ShopProductLimitedProductViewModel) shopProductViewModel).getShopProductViewModelList().getList()) {
                     if (shopProductViewModelContent.getId().equalsIgnoreCase(productId)) {
                         shopProductViewModelContent.setWishList(wishList);
                         notifyItemChanged(i);
