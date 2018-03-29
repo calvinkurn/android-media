@@ -36,7 +36,7 @@ public class RecentViewViewHolder extends AbstractViewHolder<RecentViewViewModel
             }
         });
 
-        final LinearLayoutManager layoutManager = new GridLayoutManager(itemView.getContext(), 4);
+        final LinearLayoutManager layoutManager = new GridLayoutManager(itemView.getContext(), 3);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new HistoryProductRecyclerViewAdapter(viewListener);
         recyclerView.setAdapter(adapter);

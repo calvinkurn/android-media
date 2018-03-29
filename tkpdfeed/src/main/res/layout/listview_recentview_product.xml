@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
+    android:layout_gravity="start|top"
     android:clickable="true"
-    android:gravity="center"
+    android:gravity="start|top"
     android:orientation="vertical"
-    android:padding="@dimen/padding_vs">
+    android:padding="1dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/product_image"
-            android:layout_width="@dimen/img_index_home_small"
-            android:layout_height="@dimen/img_index_home_small"
+            android:layout_width="@dimen/recent_view_image_size"
+            android:layout_height="@dimen/recent_view_image_size"
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
@@ -29,39 +29,31 @@
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/loading_page" />
 
-        <LinearLayout
-            android:id="@+id/badges_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignRight="@id/product_image"
-            android:layout_marginRight="@dimen/margin_vvs"
-            android:orientation="vertical">
-
-        </LinearLayout>
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:weightSum="5"
         android:padding="@dimen/padding_vs">
 
         <TextView
             android:id="@+id/product_name"
-            android:layout_width="@dimen/img_index_home_small"
+            android:layout_width="@dimen/recent_view_product_name"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="left"
+            android:fontFamily="sans-serif"
+            android:gravity="start"
             android:lineSpacingExtra="5sp"
-            android:maxLines="1"
+            android:maxLines="2"
             android:scrollHorizontally="true"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/fontvvs"
-            android:textStyle="normal" />
+            android:textColor="@color/black_54"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            android:layout_weight="4"
+            tools:text="ttestestestestes"/>
 
         <TextView
             android:id="@+id/product_price"
@@ -69,7 +61,8 @@
             android:layout_height="wrap_content"
             android:gravity="left"
             android:textColor="@color/orange_red"
-            android:textSize="@dimen/fontvvs" />
+            android:textSize="@dimen/fontvvs"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/product_shop"
@@ -78,7 +71,23 @@
             android:gravity="left"
             android:maxLines="1"
             android:textColor="@color/label_color"
-            android:textSize="@dimen/fontvvs" />
+            android:textSize="@dimen/fontvvs"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/badges_container"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@id/product_image"
+            android:layout_marginRight="@dimen/margin_vvs"
+            android:gravity="bottom|center_horizontal"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:visibility="visible" >
+
+        </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>
