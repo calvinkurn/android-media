@@ -1,8 +1,8 @@
 package com.tokopedia.loyalty.view.viewholder;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -26,7 +26,7 @@ public class PromoDetailInfoViewHolder extends RecyclerView.ViewHolder {
     private TextView tvPromoDetailTitle;
     private TextView tvPromoDetailPeriod;
     private TextView tvPromoDetailMinTransaction;
-    private ImageButton ibPromoDetailShare;
+    private FloatingActionButton fabPromoDetailShare;
 
     public PromoDetailInfoViewHolder(View itemView, PromoDetailAdapter.OnAdapterActionListener adapterActionListener) {
         super(itemView);
@@ -37,7 +37,7 @@ public class PromoDetailInfoViewHolder extends RecyclerView.ViewHolder {
         this.tvPromoDetailTitle = itemView.findViewById(R.id.tv_promo_detail_title);
         this.tvPromoDetailPeriod = itemView.findViewById(R.id.tv_promo_detail_period);
         this.tvPromoDetailMinTransaction = itemView.findViewById(R.id.tv_promo_detail_min_transaction);
-        this.ibPromoDetailShare = itemView.findViewById(R.id.ib_promo_detail_share);
+        this.fabPromoDetailShare = itemView.findViewById(R.id.fab_promo_detail_share);
     }
 
     public void bind(PromoDetailInfoHolderData holderData) {
@@ -45,7 +45,7 @@ public class PromoDetailInfoViewHolder extends RecyclerView.ViewHolder {
         this.tvPromoDetailTitle.setText(holderData.getTitle());
         this.tvPromoDetailPeriod.setText(holderData.getPromoPeriod());
         this.tvPromoDetailMinTransaction.setText(holderData.getMinTransaction());
-        this.ibPromoDetailShare.setOnClickListener(promoShareListener(holderData.getPromoData()));
+        this.fabPromoDetailShare.setOnClickListener(promoShareListener(holderData.getPromoData()));
     }
 
     private View.OnClickListener promoShareListener(final PromoData promoData) {

@@ -27,8 +27,6 @@ public class PromoDetailSimpleCodeViewHolder extends RecyclerView.ViewHolder {
     private RelativeLayout rlSingleCodeCopyLayout;
     private TextView tvPromoCodeCopy;
 
-    private boolean isCopied;
-
     public PromoDetailSimpleCodeViewHolder(View itemView, OnAdapterActionListener adapterActionListener) {
         super(itemView);
 
@@ -40,8 +38,6 @@ public class PromoDetailSimpleCodeViewHolder extends RecyclerView.ViewHolder {
         this.tvSingleCode = itemView.findViewById(R.id.tv_single_code);
         this.rlSingleCodeCopyLayout = itemView.findViewById(R.id.rl_single_code_copy_layout);
         this.tvPromoCodeCopy = itemView.findViewById(R.id.tv_promo_code_copy);
-
-        this.isCopied = false;
     }
 
     public void bind(final String singleCode) {
@@ -53,7 +49,7 @@ public class PromoDetailSimpleCodeViewHolder extends RecyclerView.ViewHolder {
         this.rlPromoCodeLayout.setVisibility(withoutPromoCode ? View.GONE : View.VISIBLE);
         this.tvSingleCode.setText(singleCode);
         this.rlSingleCodeCopyLayout.setOnClickListener(copyToClipboardListener(singleCode));
-        this.tvPromoCodeCopy.setText(isCopied ? "Tersalin" : "Salin Kode");
+        this.tvPromoCodeCopy.setText("Salin Kode");
     }
 
     private View.OnClickListener tooltipInfoListener() {
@@ -70,7 +66,8 @@ public class PromoDetailSimpleCodeViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 adapterActionListener.onItemPromoCodeCopyClipboardClicked(singleCode);
-                isCopied = true;
+                tvPromoCodeCopy.setText("Tersalin");
+                rlSingleCodeCopyLayout.setBackgroundResource(R.drawable.round_button_right_grey);
             }
         };
     }

@@ -8,8 +8,6 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.loyalty.di.component.DaggerPromoDetailComponent;
