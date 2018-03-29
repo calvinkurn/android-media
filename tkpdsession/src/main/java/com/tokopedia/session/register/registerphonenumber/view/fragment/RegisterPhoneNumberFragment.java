@@ -112,7 +112,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     private void prepareView() {
         errorText.setVisibility(View.VISIBLE);
-
+        phoneNumber.requestFocus();
         phoneNumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
