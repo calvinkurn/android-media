@@ -1,19 +1,24 @@
 package com.tokopedia.gamification.floating.fragment;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,6 +48,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
 
     private float eggMarginRight;
     private float eggMarginBottom;
+    private int rootWidth;
     private boolean isDraggable;
     private int xEgg;
     private int yEgg;
@@ -94,7 +100,23 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initDragBound();
         initEggCoordinate();
+    }
+
+    private void initDragBound(){
+        vgRoot.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                rootWidth = vgRoot.getWidth();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    vgRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    //noinspection deprecation
+                    vgRoot.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
     }
 
     private void initEggCoordinate(){
@@ -122,10 +144,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         return xEgg != -1 && yEgg != -1;
     }
 
-    private void saveCoordPreference() {
+    private void saveCoordPreference(int x, int y) {
         SharedPreferences.Editor editor = getSharedPref().edit();
-        editor.putInt(COORD_X, (int) vgFloatingEgg.getX());
-        editor.putInt(COORD_Y, (int) vgFloatingEgg.getY());
+        editor.putInt(COORD_X, x);
+        editor.putInt(COORD_Y, y);
         editor.apply();
     }
 
@@ -182,12 +204,13 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
                     new OnDragTouchListener.OnDragActionListener() {
                         @Override
                         public void onDragStart(View view) {
-
+                            ivFloatingEgg.setScaleX(0.9f);
+                            ivFloatingEgg.setScaleY(0.9f);
                         }
 
                         @Override
                         public void onDragEnd(View view) {
-                            saveCoordPreference();
+                            animateToLeftOrRightBound();
                         }
                     }));
         } else {
@@ -208,6 +231,45 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         } else {
             // TODO stop the countdown timer if any
         }
+    }
+
+    private void animateToLeftOrRightBound(){
+        xEgg = (int) vgFloatingEgg.getX();
+        yEgg = (int) vgFloatingEgg.getY();
+        if (rootWidth <= 0) {
+            saveCoordPreference(xEgg, yEgg);
+            return;
+        }
+        //if the egg tends to the right, animate to the right
+        if (((xEgg + (vgFloatingEgg.getWidth() / 2))) >= (rootWidth/ 2)){
+            int targetX = rootWidth-vgFloatingEgg.getWidth();
+            PropertyValuesHolder pvhX =
+                    PropertyValuesHolder.ofFloat(View.X, xEgg, targetX);
+            PropertyValuesHolder pvhScaleX =
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, 0.9f, 1f);
+            PropertyValuesHolder pvhScaleY =
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.9f, 1f);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
+            objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
+            objectAnimator.setDuration(300);
+            objectAnimator.start();
+
+            saveCoordPreference(targetX, yEgg);
+        } else {
+            PropertyValuesHolder pvhX =
+                    PropertyValuesHolder.ofFloat(View.X, xEgg, 0);
+            PropertyValuesHolder pvhScaleX =
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, 0.9f, 1f);
+            PropertyValuesHolder pvhScaleY =
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.9f, 1f);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
+            objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
+            objectAnimator.setDuration(300);
+            objectAnimator.start();
+
+            saveCoordPreference(0, yEgg);
+        }
+
     }
 
     @Override
