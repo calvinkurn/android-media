@@ -11,15 +11,15 @@ import com.tokopedia.tkpdstream.chatroom.domain.pojo.imageannouncement.AdminImag
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.ActivePollPojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.Option;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.StatisticOption;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.sprintsale.FlashSalePojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.sprintsale.Product;
-import com.tokopedia.tkpdstream.chatroom.domain.pojo.sprintsale.UpcomingSprintSalePojo;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GeneratedMessageViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GeneratedMessageViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
@@ -69,6 +69,10 @@ public class GroupChatMessagesMapper {
             return true;
         } else if (mappedMessage instanceof VibrateViewModel) {
             return true;
+        } else if (mappedMessage instanceof SprintSaleAnnouncementViewModel
+                && ((SprintSaleAnnouncementViewModel) mappedMessage).getSprintSaleType().equals
+                (SprintSaleAnnouncementViewModel.SPRINT_SALE_UPCOMING)) {
+            return true;
         } else {
             return false;
         }
@@ -108,7 +112,9 @@ public class GroupChatMessagesMapper {
                 return mapToAdminChat(message, message.getData());
             case ImageAnnouncementViewModel.ADMIN_ANNOUNCEMENT:
                 return mapToAdminImageChat(message, message.getData());
-            case SprintSaleAnnouncementViewModel.SPRINT_SALE:
+            case SprintSaleAnnouncementViewModel.SPRINT_SALE_UPCOMING:
+            case SprintSaleAnnouncementViewModel.SPRINT_SALE_START:
+            case SprintSaleAnnouncementViewModel.SPRINT_SALE_END:
                 return mapToSprintSale(message, message.getData());
             case VibrateViewModel.TYPE:
                 return new VibrateViewModel();
@@ -138,7 +144,7 @@ public class GroupChatMessagesMapper {
 
     private Visitable mapToSprintSale(UserMessage message, String json) {
         Gson gson = new Gson();
-        UpcomingSprintSalePojo pojo = gson.fromJson(json, UpcomingSprintSalePojo.class);
+        FlashSalePojo pojo = gson.fromJson(json, FlashSalePojo.class);
 
         return new SprintSaleAnnouncementViewModel(
                 message.getCreatedAt(),
@@ -149,11 +155,11 @@ public class GroupChatMessagesMapper {
                 message.getSender().getProfileUrl(),
                 false,
                 true,
-                pojo.getUpcomingFlashsale().getAppLink(),
-                mapToListFlashSaleProducts(pojo.getUpcomingFlashsale().getProducts()),
-                pojo.getUpcomingFlashsale().getCampaignName(),
-                pojo.getUpcomingFlashsale().getStartDate(),
-                pojo.getUpcomingFlashsale().getEndDate(),
+                pojo.getAppLink(),
+                mapToListFlashSaleProducts(pojo.getProducts()),
+                pojo.getCampaignName(),
+                pojo.getStartDate(),
+                pojo.getEndDate(),
                 message.getCustomType()
         );
     }

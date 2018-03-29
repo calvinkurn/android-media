@@ -71,11 +71,11 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
         if (hasSprintSale()) {
             return new SprintSaleViewModel(
                     mapToListFlashSaleProducts(flashsale.getProducts()),
-                    flashsale.getCampaignName(),
+                    flashsale.getCampaignName() != null ? flashsale.getCampaignName() : "",
                     flashsale.getStartDate(),
                     flashsale.getEndDate(),
-                    flashsale.getAppLink(),
-                    flashsale.getStatus()
+                    flashsale.getAppLink() != null ? flashsale.getAppLink() : "",
+                    flashsale.getStatus() != null ? flashsale.getStatus() : ""
             );
         } else {
             return null;

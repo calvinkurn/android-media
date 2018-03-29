@@ -40,7 +40,6 @@ import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.ChatroomPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
@@ -48,6 +47,7 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnou
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.common.analytics.EEPromotion;
 import com.tokopedia.tkpdstream.common.analytics.StreamAnalytics;
@@ -327,6 +327,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && isValidSprintSale(sprintSaleViewModel)
                 && sprintSaleViewModel.getSprintSaleType() != null
                 && !sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_UPCOMING)
+                && !sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_FINISHED)
                 && channelInfoViewModel != null) {
 
             trackViewSprintSaleComponent(sprintSaleViewModel);
@@ -349,7 +350,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                             sprintSaleViewModel.getCampaignName(),
                             sprintSaleViewModel.getStartDate(),
                             sprintSaleViewModel.getEndDate(),
-                            SprintSaleViewModel.TYPE_UPCOMING
+                            sprintSaleViewModel.getSprintSaleType()
                     );
 
                     if (adapter.getItemAt(adapter.getItemCount() - 1) != null
@@ -549,7 +550,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             handleVoteAnnouncement((VoteAnnouncementViewModel) messageItem);
         } else if (messageItem instanceof SprintSaleAnnouncementViewModel) {
             setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
-            addIncomingMessage(messageItem);
+            if (!((SprintSaleAnnouncementViewModel) messageItem).getSprintSaleType().equals
+                    (SprintSaleAnnouncementViewModel.SPRINT_SALE_UPCOMING)) {
+                addIncomingMessage(messageItem);
+            }
         } else if (!(messageItem instanceof
                 VibrateViewModel)) {
             addIncomingMessage(messageItem);
@@ -704,27 +708,29 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void onSprintSaleIconClicked(SprintSaleViewModel sprintSaleViewModel) {
-        ArrayList<EEPromotion> list = new ArrayList<>();
-        for (SprintSaleProductViewModel productViewModel : sprintSaleViewModel
-                .getListProduct()) {
-            list.add(new EEPromotion(productViewModel.getProductId(),
-                    EEPromotion.NAME_GROUPCHAT,
-                    StreamAnalytics.DEFAULT_EE_POSITION,
-                    productViewModel.getProductName(),
-                    productViewModel.getProductImage(),
-                    ((GroupChatContract.View) getActivity()).getAttributionTracking(StreamAnalytics
-                            .ATTRIBUTE_FLASH_SALE)
-            ));
+        if (!TextUtils.isEmpty(sprintSaleViewModel.getRedirectUrl())) {
+            ArrayList<EEPromotion> list = new ArrayList<>();
+            for (SprintSaleProductViewModel productViewModel : sprintSaleViewModel
+                    .getListProduct()) {
+                list.add(new EEPromotion(productViewModel.getProductId(),
+                        EEPromotion.NAME_GROUPCHAT,
+                        StreamAnalytics.DEFAULT_EE_POSITION,
+                        productViewModel.getProductName(),
+                        productViewModel.getProductImage(),
+                        ((GroupChatContract.View) getActivity()).getAttributionTracking(StreamAnalytics
+                                .ATTRIBUTE_FLASH_SALE)
+                ));
+            }
+
+            ((GroupChatContract.View) getActivity()).eventClickComponentEnhancedEcommerce(StreamAnalytics
+                    .COMPONENT_FLASH_SALE, sprintSaleViewModel.getCampaignName(), StreamAnalytics
+                    .ATTRIBUTE_FLASH_SALE, list);
+
+            ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
+                    , ((GroupChatContract.View) getActivity()).generateAttributeApplink
+                            (sprintSaleViewModel.getRedirectUrl(),
+                                    StreamAnalytics.ATTRIBUTE_FLASH_SALE));
         }
-
-        ((GroupChatContract.View) getActivity()).eventClickComponentEnhancedEcommerce(StreamAnalytics
-                .COMPONENT_FLASH_SALE, sprintSaleViewModel.getCampaignName(), StreamAnalytics
-                .ATTRIBUTE_FLASH_SALE, list);
-
-        ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
-                , ((GroupChatContract.View) getActivity()).generateAttributeApplink
-                        (sprintSaleViewModel.getRedirectUrl(),
-                                StreamAnalytics.ATTRIBUTE_FLASH_SALE));
     }
 
     @Override
