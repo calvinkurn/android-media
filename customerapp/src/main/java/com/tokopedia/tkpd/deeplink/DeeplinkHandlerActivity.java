@@ -137,21 +137,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         finish();
     }
 
-
-    @DeepLink(Constants.Applinks.SellerApp.SELLER_APP_HOME)
-    public static Intent getCallingIntentSellerAppHome(Context context, Bundle extras) {
-        Intent launchIntent = context.getPackageManager()
-                .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-
-        if (launchIntent == null) {
-            launchIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
-            );
-        }
-        return launchIntent;
-    }
-
-    @DeepLink({Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
+    @DeepLink({Constants.Applinks.SellerApp.SELLER_APP_HOME,
+            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
             Constants.Applinks.SellerApp.PRODUCT_ADD,
             Constants.Applinks.SellerApp.SALES,
             Constants.Applinks.SellerApp.TOPADS_CREDIT,
@@ -168,7 +155,10 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         if (launchIntent == null) {
             return RedirectCreateShopActivity.getCallingIntent(context);
         } else {
-            return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
+            launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
+            launchIntent.putExtras(extras);
+            launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+            return launchIntent;
         }
     }
 
