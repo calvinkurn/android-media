@@ -1,0 +1,41 @@
+{
+  tokopointsToken {
+    offFlag
+    sumToken
+    sumTokenStr
+    tokenUnit
+    floating {
+      tokenClass
+      tokenId
+      pageUrl
+      applink
+      timeRemainingSeconds
+      isShowTime
+      unixTimestamp
+      tokenAsset {
+          smallImgUrl
+          imageUrls
+          spriteUrl
+        }
+    }
+    home {
+      buttonApplink
+      buttonURL
+      tokensUser {
+        tokenUserID
+        campaignID
+        title
+        unixTimestampFetch
+        timeRemainingSeconds
+        isShowTime
+        tokenClass
+        backgroundImgUrl
+        tokenAsset {
+          smallImgUrl
+          imageUrls
+          spriteUrl
+        }
+      }
+    }
+  }
+}
