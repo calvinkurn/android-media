@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -184,10 +185,11 @@ SessionModule {
 
     @SessionScope
     @Provides
-    OkHttpClient provideRegisterOkHttpClient(TkpdAuthInterceptor authInterceptor, AccountsAuthInterceptor accountsAuthInterceptor) {
+    OkHttpClient provideRegisterOkHttpClient(TkpdAuthInterceptor authInterceptor, AccountsAuthInterceptor accountsAuthInterceptor, ChuckInterceptor chuckInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(authInterceptor)
                 .addInterceptor(accountsAuthInterceptor)
+                .addInterceptor(chuckInterceptor)
                 .build();
     }
 
