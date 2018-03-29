@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -521,7 +522,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private void addPaddingIfKeyboardIsClosed() {
         if (getSoftButtonsBarSizePort(GroupChatActivity.this) > 0) {
             FrameLayout container = rootView.findViewById(R.id.container);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) container
                     .getLayoutParams();
             params.setMargins(0, 0, 0, getSoftButtonsBarSizePort(GroupChatActivity.this));
             container.setLayoutParams(params);
@@ -531,7 +532,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private void removePaddingIfKeyboardIsShowing() {
         if (getSoftButtonsBarSizePort(GroupChatActivity.this) > 0) {
             FrameLayout container = rootView.findViewById(R.id.container);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) container.getLayoutParams();
             params.setMargins(0, 0, 0, 0);
             container.setLayoutParams(params);
         }
