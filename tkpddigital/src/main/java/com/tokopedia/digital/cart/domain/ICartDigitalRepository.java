@@ -23,4 +23,5 @@ public interface ICartDigitalRepository {
             RequestBodyAtcDigital requestBodyAtcDigital, String idemPotencyKeyHeader
     );
 
+    Observable<String> cancelVoucher();
 }

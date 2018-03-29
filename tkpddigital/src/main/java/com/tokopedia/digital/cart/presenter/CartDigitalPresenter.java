@@ -192,6 +192,26 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         UnifyTracking.eventATCSuccess(gtmCart);
     }
 
+    @Override
+    public void onClearVoucher() {
+        cartDigitalInteractor.cancelVoucher(new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(String s) {
+
+            }
+        });
+    }
+
     @NonNull
     private Subscriber<CheckoutDigitalData> getSubscriberCheckout() {
         return new Subscriber<CheckoutDigitalData>() {

@@ -765,6 +765,7 @@ public class TkpdBaseURL {
         public static final String PATH_ADD_TO_CART = "cart";
         public static final String PATH_CHECKOUT = "checkout";
         public static final String PATH_CHECK_VOUCHER = "voucher/check";
+        public static final String PATH_CANCEL_VOUCHER = "voucher/cancel";
         public static final String PATH_USSD = "ussd/balance";
     }
 

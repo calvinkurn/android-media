@@ -30,4 +30,5 @@ public interface ICartDigitalPresenter {
 
     void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData);
 
+    void onClearVoucher();
 }

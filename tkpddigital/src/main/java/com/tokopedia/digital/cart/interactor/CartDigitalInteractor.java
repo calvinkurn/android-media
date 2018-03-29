@@ -112,4 +112,15 @@ public class CartDigitalInteractor implements ICartDigitalInteractor {
                         .subscribe(subscriber)
         );
     }
+
+    @Override
+    public void cancelVoucher(Subscriber<String> subscriber) {
+        compositeSubscription.add(
+                cartDigitalRepository.cancelVoucher()
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
+    }
 }

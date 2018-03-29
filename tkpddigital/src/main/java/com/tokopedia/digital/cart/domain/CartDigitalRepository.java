@@ -71,6 +71,18 @@ public class CartDigitalRepository implements ICartDigitalRepository {
                 .map(getFuncResponseToCartDigitalInfoData());
     }
 
+    @Override
+    public Observable<String> cancelVoucher() {
+        return digitalEndpointService.getApi()
+                .cancelVoucher()
+                .map(new Func1<Response<TkpdDigitalResponse>, String>() {
+                    @Override
+                    public String call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+                        return tkpdDigitalResponseResponse.body().getMessage();
+                    }
+                });
+    }
+
     @NonNull
     private Func1<Response<TkpdDigitalResponse>, CartDigitalInfoData>
     getFuncResponseToCartDigitalInfoData() {

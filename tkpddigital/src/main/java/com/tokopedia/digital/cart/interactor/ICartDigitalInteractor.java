@@ -41,4 +41,6 @@ public interface ICartDigitalInteractor {
             RequestBodyOtpSuccess requestBodyOtpSuccess, TKPDMapParam<String, String> paramgetCart,
             Subscriber<CartDigitalInfoData> subscriber
     );
+
+    void cancelVoucher(Subscriber<String> subscriber);
 }
