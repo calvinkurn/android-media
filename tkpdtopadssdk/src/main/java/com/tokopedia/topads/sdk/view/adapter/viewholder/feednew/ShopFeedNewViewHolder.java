@@ -143,20 +143,23 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
 
     private void setFavorite(boolean isFavorite) {
         String text;
+        Drawable drawable;
         if (isFavorite) {
             favoriteButton.setSelected(true);
             text = context.getString(R.string.favorit);
-            favoriteButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_favorite,
-                    0, 0, 0);
+            drawable = context.getResources().getDrawable(R.drawable.ic_check_favorite);
             favoriteButton.setTextColor(ContextCompat.getColor(context, R.color.label_color));
         } else {
             favoriteButton.setSelected(false);
             text = context.getString(R.string.favoritkan);
-            favoriteButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_white_24px,
-                    0, 0, 0);
+            drawable = context.getResources().getDrawable(R.drawable.ic_add_white_24px);
             favoriteButton.setTextColor(ContextCompat.getColor(context, R.color.white));
         }
 
+        drawable.setBounds(0, 0,
+                context.getResources().getDimensionPixelOffset(R.dimen.feed_new_fav_icon),
+                context.getResources().getDimensionPixelOffset(R.dimen.feed_new_fav_icon));
+        favoriteButton.setCompoundDrawables(drawable, null, null, null);
         favoriteButton.setText(text);
     }
 

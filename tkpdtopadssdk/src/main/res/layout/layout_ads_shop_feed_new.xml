@@ -89,6 +89,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/font_very_small"
             android:textStyle="normal"
+            android:drawablePadding="@dimen/padding_vs"
             app:drawableLeftCompat="@drawable/ic_add_white_24px"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
