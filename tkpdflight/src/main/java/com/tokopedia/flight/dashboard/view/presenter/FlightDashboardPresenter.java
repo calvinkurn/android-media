@@ -109,9 +109,13 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         if (!flightDashboardCache.getReturnDate().isEmpty()) {
             FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
             Date returnDate = FlightDateUtil.stringToDate(flightDashboardCache.getReturnDate());
-            viewModel.setReturnDate(FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_FORMAT));
-            viewModel.setReturnDateFmt(FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT));
-            getView().setDashBoardViewModel(viewModel);
+            if (returnDate.before(FlightDateUtil.stringToDate(viewModel.getDepartureDate()))){
+                flightDashboardCache.putReturnDate(viewModel.getDepartureDate());
+            } else {
+                viewModel.setReturnDate(FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_FORMAT));
+                viewModel.setReturnDateFmt(FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT));
+                getView().setDashBoardViewModel(viewModel);
+            }
         }
         getView().getCurrentDashboardViewModel().setOneWay(false);
         getView().renderRoundTripView();
@@ -221,7 +225,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     @Override
-    public void onDepartureDateChange(int year, int month, int dayOfMonth) {
+    public void onDepartureDateChange(int year, int month, int dayOfMonth, boolean showError) {
         FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         Calendar now = FlightDateUtil.getCurrentCalendar();
         now.set(Calendar.YEAR, year);
@@ -230,9 +234,13 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         Date newDepartureDate = now.getTime();
         Date twoYears = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
         if (newDepartureDate.after(twoYears)) {
-            getView().showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_two_years_from_today_error);
+            if (showError) {
+                getView().showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_two_years_from_today_error);
+            }
         } else if (newDepartureDate.before(FlightDateUtil.getCurrentDate())) {
-            getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
+            if (showError) {
+                getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
+            }
         } else {
             String newDepartureDateStr = FlightDateUtil.dateToString(newDepartureDate, FlightDateUtil.DEFAULT_FORMAT);
             viewModel.setDepartureDate(newDepartureDateStr);
@@ -267,7 +275,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     @Override
-    public void onReturnDateChange(int year, int month, int dayOfMonth) {
+    public void onReturnDateChange(int year, int month, int dayOfMonth, boolean showError) {
         FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         Calendar now = FlightDateUtil.getCurrentCalendar();
         now.set(Calendar.YEAR, year);
@@ -277,9 +285,13 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         Date twoYears = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
         twoYears = FlightDateUtil.addTimeToSpesificDate(twoYears, Calendar.DATE, 1);
         if (newReturnDate.after(twoYears)) {
-            getView().showReturnDateMaxTwoYears(R.string.flight_dashboard_return_max_two_years_from_today_error);
+            if (showError) {
+                getView().showReturnDateMaxTwoYears(R.string.flight_dashboard_return_max_two_years_from_today_error);
+            }
         } else if (newReturnDate.before(FlightDateUtil.stringToDate(viewModel.getDepartureDate()))) {
-            getView().showReturnDateShouldGreaterOrEqual(R.string.flight_dashboard_return_should_greater_equal_error);
+            if (showError) {
+                getView().showReturnDateShouldGreaterOrEqual(R.string.flight_dashboard_return_should_greater_equal_error);
+            }
         } else {
             String newReturnDateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_FORMAT);
             flightDashboardCache.putReturnDate(newReturnDateStr);
@@ -474,13 +486,13 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         if (flightDashboardPassDataViewModel.getDepartureDate() != null && !flightDashboardPassDataViewModel.getDepartureDate().isEmpty()) {
             Calendar departureCalendar = FlightDateUtil.getCurrentCalendar();
             departureCalendar.setTime(FlightDateUtil.stringToDate(flightDashboardPassDataViewModel.getDepartureDate()));
-            onDepartureDateChange(departureCalendar.get(Calendar.YEAR), departureCalendar.get(Calendar.MONTH), departureCalendar.get(Calendar.DATE));
+            onDepartureDateChange(departureCalendar.get(Calendar.YEAR), departureCalendar.get(Calendar.MONTH), departureCalendar.get(Calendar.DATE), false);
         }
 
         if (!flightDashboardPassDataViewModel.getReturnDate().isEmpty()) {
             Calendar returnDate = FlightDateUtil.getCurrentCalendar();
             returnDate.setTime(FlightDateUtil.stringToDate(flightDashboardPassDataViewModel.getReturnDate()));
-            onReturnDateChange(returnDate.get(Calendar.YEAR), returnDate.get(Calendar.MONTH), returnDate.get(Calendar.DATE));
+            onReturnDateChange(returnDate.get(Calendar.YEAR), returnDate.get(Calendar.MONTH), returnDate.get(Calendar.DATE), false);
         }
 
         if (flightDashboardPassDataViewModel.isRoundTrip()) {
