@@ -18,10 +18,23 @@ android {
 
     buildTypes {
         release {
+//            signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+//            signingConfig signingConfigs.debug
+            minifyEnabled false
+            zipAlignEnabled false
+            proguardFiles  'proguard-rules.txt'
+        }
     }
+
+//    signingConfigs {
+//        debug {
+//            storeFile file("debug.keystore")
+//        }
+//    }
 
 }
 

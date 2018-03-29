@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/vg_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:id="@+id/vg_floating_egg"
+        android:layout_width="@dimen/floating_egg_widget_width"
+        android:layout_height="@dimen/floating_egg_widget_height">
+        <ImageView
+            android:id="@+id/iv_floating_egg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            tools:src="@mipmap/ic_launcher"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/new_margin_small"
+            android:layout_marginRight="@dimen/new_margin_small"/>
+        <TextView
+            android:id="@+id/tv_floating_timer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            tools:text="00:12:12"
+            style="@style/TextView.Title"
+            android:textColor="#FF0000"
+            android:background="#00FF00"/>
+        <TextView
+            android:id="@+id/tv_floating_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="99"
+            android:layout_gravity="top|end"
+            style="@style/TextView.Title.Bold"
+            android:background="#FF0000"
+            android:textColor="@color/white"
+            android:padding="@dimen/new_margin_small"/>
+    </FrameLayout>
+</FrameLayout>
