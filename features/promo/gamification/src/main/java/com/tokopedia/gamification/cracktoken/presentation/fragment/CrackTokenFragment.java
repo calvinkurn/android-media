@@ -151,16 +151,16 @@ public class CrackTokenFragment extends BaseDaggerFragment {
         List<RewardTextStyle> rewardTexts = new ArrayList<>();
         rewardTexts.add(new RewardTextStyle("#ffdc00", "+50 Points", 34));
 
-        Bitmap imageCrackResult = BitmapFactory.decodeResource(getResources(), R.drawable.coupon);
-        widgetCrackResult.showCrackResult(imageCrackResult, rewardTexts, "Cek dan Gunakan Hadiah Anda", "");
+        String rewardCouponUrl = "https://ecs7.tokopedia.net/assets/images/gamification/benefit/rewards-coupon.png";
+        widgetCrackResult.showCrackResult(rewardCouponUrl, "Selamat anda mendapatkan", rewardTexts, "Cek dan Gunakan Hadiah Anda", "");
     }
 
     private void showErrorCrackResult() {
         List<RewardTextStyle> rewardTexts = new ArrayList<>();
         rewardTexts.add(new RewardTextStyle("#ffffff", "Terjadi Kesalahan Teknis", 40));
 
-        Bitmap imageCrackResult = BitmapFactory.decodeResource(getResources(), R.drawable.group);
-        widgetCrackResult.showCrackResult(imageCrackResult, rewardTexts, "Coba Lagi", "");
+        String rewardCouponUrl = "https://ecs7.tokopedia.net/assets/images/gamification/benefit/rewards-coupon.png";
+        widgetCrackResult.showCrackResult(rewardCouponUrl, "Maaf, sayang sekali sepertinya", rewardTexts, "Coba Lagi", "");
     }
 
     private void resetEgg() {

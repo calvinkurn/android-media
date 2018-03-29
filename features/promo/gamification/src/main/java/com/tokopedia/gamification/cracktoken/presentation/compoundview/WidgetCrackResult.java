@@ -1,7 +1,6 @@
 package com.tokopedia.gamification.cracktoken.presentation.compoundview;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -18,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.gamification.R;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.cracktoken.presentation.model.RewardTextStyle;
 
 import java.util.List;
@@ -32,6 +32,7 @@ public class WidgetCrackResult extends RelativeLayout {
     private ImageView imageViewReward;
     private View backgroundViewReward;
     private LinearLayout containerTextReward;
+    private TextView textCrackResultLabel;
 
     private LinearLayout listRewardText;
     private Button buttonCta;
@@ -65,17 +66,18 @@ public class WidgetCrackResult extends RelativeLayout {
         containerTextReward = view.findViewById(R.id.container_text_reward);
         listRewardText = view.findViewById(R.id.view_list_reward_text);
         buttonCta = view.findViewById(R.id.button_cta);
+        textCrackResultLabel = view.findViewById(R.id.text_crack_result_label);
     }
 
-    public void showCrackResult(Bitmap imageCrackResult, List<RewardTextStyle> listRewardText, String textCtaButton, String applink) {
-        showRewardImageAnimation(imageCrackResult);
+    public void showCrackResult(String urlImageCrackResult, String labelCrackResult, List<RewardTextStyle> listRewardText, String textCtaButton, String applink) {
+        showRewardImageAnimation(urlImageCrackResult);
         showRewardBackgroundAnimation();
-        showListRewardText(listRewardText);
+        showListRewardText(listRewardText, labelCrackResult);
         showCtaButton(textCtaButton, applink);
     }
 
-    private void showRewardImageAnimation(Bitmap imageCrackResult) {
-        imageViewReward.setImageBitmap(imageCrackResult);
+    private void showRewardImageAnimation(String urlImageCrackResult) {
+        ImageHandler.LoadImage(imageViewReward, urlImageCrackResult);
 
         Animation animationCoupon = AnimationUtils.loadAnimation(getContext(), R.anim.animation_reward);
         imageViewReward.startAnimation(animationCoupon);
@@ -102,7 +104,8 @@ public class WidgetCrackResult extends RelativeLayout {
         backgroundViewReward.setVisibility(View.VISIBLE);
     }
 
-    public void showListRewardText(List<RewardTextStyle> rewardTexts) {
+    public void showListRewardText(List<RewardTextStyle> rewardTexts, String labelCrackResult) {
+        textCrackResultLabel.setText(labelCrackResult);
         for (RewardTextStyle rewardText : rewardTexts) {
             TextView textView = new TextView(getContext());
             textView.setGravity(Gravity.CENTER);

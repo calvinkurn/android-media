@@ -40,6 +40,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/text_crack_result_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size_reward_label"
