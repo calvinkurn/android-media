@@ -22,7 +22,7 @@ public class ChannelActivity extends BaseSimpleActivity {
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
         }
-        return ChannelFragment.createInstance(bundle);
+        return ChannelFragment.createInstance();
     }
 
 }

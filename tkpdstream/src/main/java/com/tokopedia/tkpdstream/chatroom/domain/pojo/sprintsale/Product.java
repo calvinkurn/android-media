@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Product {
 
+    @SerializedName("product_id")
+    @Expose
+    private String productId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -17,20 +20,26 @@ public class Product {
     private String imageUrl;
     @SerializedName("discount_percentage")
     @Expose
-    private String discountPercentage;
+    private int discountPercentage;
     @SerializedName("discounted_price")
     @Expose
     private String discountedPrice;
     @SerializedName("original_price")
     @Expose
     private String originalPrice;
+    @SerializedName("stock_sold_percentage")
+    @Expose
+    private int remainingStockPercentage;
+    @SerializedName("stock_text")
+    @Expose
+    private String stockText;
+
+    public String getProductId() {
+        return productId;
+    }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getUrlMobile() {
@@ -41,7 +50,7 @@ public class Product {
         return imageUrl;
     }
 
-    public String getDiscountPercentage() {
+    public int getDiscountPercentage() {
         return discountPercentage;
     }
 
@@ -51,6 +60,14 @@ public class Product {
 
     public String getOriginalPrice() {
         return originalPrice;
+    }
+
+    public int getRemainingStockPercentage() {
+        return remainingStockPercentage;
+    }
+
+    public String getStockText() {
+        return stockText;
     }
 
 }

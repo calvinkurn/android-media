@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Product {
 
+    @SerializedName("product_id")
+    @Expose
+    private String productId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -33,6 +36,10 @@ public class Product {
     @SerializedName("stock_text")
     @Expose
     private String stockText;
+
+    public String getProductId() {
+        return productId;
+    }
 
     public String getName() {
         return name;

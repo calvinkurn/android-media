@@ -8,12 +8,14 @@ import android.os.Parcelable;
  */
 
 public class ChannelPartnerChildViewModel implements Parcelable {
+    private String partnerId;
     private String partnerAvatar;
     private String partnerName;
     private String partnerUrl;
 
-    public ChannelPartnerChildViewModel(String partnerAvatar, String partnerName,
+    public ChannelPartnerChildViewModel(String partnerId, String partnerAvatar, String partnerName,
                                         String partnerUrl) {
+        this.partnerId =partnerId;
         this.partnerAvatar = partnerAvatar;
         this.partnerName = partnerName;
         this.partnerUrl = partnerUrl;
@@ -31,6 +33,10 @@ public class ChannelPartnerChildViewModel implements Parcelable {
         return partnerUrl;
     }
 
+    public String getPartnerId() {
+        return partnerId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -38,12 +44,14 @@ public class ChannelPartnerChildViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.partnerId);
         dest.writeString(this.partnerAvatar);
         dest.writeString(this.partnerName);
         dest.writeString(this.partnerUrl);
     }
 
     protected ChannelPartnerChildViewModel(Parcel in) {
+        this.partnerId = in.readString();
         this.partnerAvatar = in.readString();
         this.partnerName = in.readString();
         this.partnerUrl = in.readString();

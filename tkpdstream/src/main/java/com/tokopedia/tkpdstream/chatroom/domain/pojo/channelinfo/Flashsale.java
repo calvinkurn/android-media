@@ -8,6 +8,9 @@ import java.util.List;
 
 public class Flashsale {
 
+    @SerializedName("flashsale_id")
+    @Expose
+    private String id;
     @SerializedName("status")
     @Expose
     private String status;
@@ -29,6 +32,10 @@ public class Flashsale {
     @SerializedName("products")
     @Expose
     private List<Product> products = null;
+
+    public String getId() {
+        return id;
+    }
 
     public String getStatus() {
         return status;

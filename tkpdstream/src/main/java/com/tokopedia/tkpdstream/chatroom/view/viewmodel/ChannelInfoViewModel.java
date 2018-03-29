@@ -22,6 +22,8 @@ public class ChannelInfoViewModel implements Parcelable {
     private String blurredBannerUrl;
     private String adsImageUrl;
     private String adsLink;
+    private String adsId;
+    private String adsName;
     private String bannerName;
     private String sendBirdToken;
     private String adminName;
@@ -210,4 +212,20 @@ public class ChannelInfoViewModel implements Parcelable {
             return new ChannelInfoViewModel[size];
         }
     };
+
+    public String getAdsId() {
+        return adsId;
+    }
+
+    public void setAdsId(String adsId) {
+        this.adsId = adsId;
+    }
+
+    public String getAdsName() {
+        return adsName;
+    }
+
+    public void setAdsName(String adsName) {
+        this.adsName = adsName;
+    }
 }

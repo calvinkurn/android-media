@@ -10,9 +10,9 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
-import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
-import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.List;
 
@@ -65,7 +65,13 @@ public interface ChatroomContract {
         }
 
         interface SprintSaleViewHolderListener {
-            void onSprintSaleClicked(String url, String campaignName);
+            void onSprintSaleProductClicked(SprintSaleProductViewModel sprintSaleViewModel, int
+                    position);
+
+            void onSprintSaleComponentClicked(SprintSaleAnnouncementViewModel sprintSaleAnnouncementViewModel);
+
+            void onSprintSaleIconClicked(SprintSaleViewModel sprintSaleViewModel);
+
         }
     }
 

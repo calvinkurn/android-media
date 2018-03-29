@@ -62,8 +62,7 @@ public class SprintSaleAdapter extends RecyclerView.Adapter<SprintSaleAdapter.Vi
             mainLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onSprintSaleClicked(list.get(getAdapterPosition()).getProductUrl(),
-                            list.get(getAdapterPosition()).getProductName());
+                    listener.onSprintSaleProductClicked(list.get(getAdapterPosition()), getAdapterPosition());
                 }
             });
 

@@ -11,7 +11,10 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
+import com.tokopedia.tkpdstream.common.analytics.EEPromotion;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
+
+import java.util.List;
 
 /**
  * @author by nisie on 3/21/18.
@@ -43,8 +46,11 @@ public interface GroupChatContract {
         @Nullable
         ChannelInfoViewModel getChannelInfoViewModel();
 
-        void eventClickComponent(String componentName, String campaignName, String
-                attributeName);
+        void eventClickComponentEnhancedEcommerce(String componentType, String campaignName, String
+                attributeName, List<EEPromotion> list);
+
+        void eventViewComponentEnhancedEcommerce(String componentType, String campaignName, String
+                attributeName, List<EEPromotion> list);
 
         String generateAttributeApplink(String applink,
                                         String attributeBanner);
@@ -52,6 +58,8 @@ public interface GroupChatContract {
         void vibratePhone();
 
         void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel);
+
+        String getAttributionTracking(String attributePartnerLogo);
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {

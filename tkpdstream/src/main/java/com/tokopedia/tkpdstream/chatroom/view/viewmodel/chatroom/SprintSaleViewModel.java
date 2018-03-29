@@ -41,6 +41,7 @@ public class SprintSaleViewModel implements Parcelable {
         this.sprintSaleType = sprintSaleType;
     }
 
+
     protected SprintSaleViewModel(Parcel in) {
         listProduct = in.createTypedArrayList(SprintSaleProductViewModel.CREATOR);
         campaignName = in.readString();

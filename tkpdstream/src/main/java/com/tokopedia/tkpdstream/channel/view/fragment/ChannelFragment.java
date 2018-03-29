@@ -31,11 +31,10 @@ import com.tokopedia.tkpdstream.channel.view.listener.ChannelContract;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.channel.view.presenter.ChannelPresenter;
-import com.tokopedia.tkpdstream.common.design.SpaceItemDecoration;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
-import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
+import com.tokopedia.tkpdstream.common.analytics.StreamAnalytics;
 
 import javax.inject.Inject;
 
@@ -59,15 +58,19 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     SwipeRefreshLayout swipeRefreshLayout;
 
-    SpaceItemDecoration itemDecoration;
-
-    public static Fragment createInstance(Bundle bundle) {
+    public static Fragment createInstance() {
         return new ChannelFragment();
     }
 
     @Override
     protected String getScreenName() {
         return ChannelAnalytics.Screen.CHANNEL_LIST;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        analytics.sendScreen(getActivity(), getScreenName());
     }
 
     @Override
@@ -260,7 +263,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
         private int space;
 
-        public ItemDecoration(int space) {
+        ItemDecoration(int space) {
             this.space = space;
         }
 

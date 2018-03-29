@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChannelPartnerChildViewModel;
 
 /**
  * @author by milhamj on 20/03/18.
@@ -17,7 +18,7 @@ public interface ChannelInfoFragmentListener {
         void renderData(ChannelInfoViewModel channelInfoViewModel);
 
         interface ChannelPartnerViewHolderListener {
-            void channelPartnerClicked(String url, String partnerName);
+            void channelPartnerClicked(ChannelPartnerChildViewModel channelPartnerChildViewModel, int position);
         }
     }
 }

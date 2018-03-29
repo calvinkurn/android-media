@@ -68,8 +68,8 @@ public class ChannelPartnerChildAdapter
                 String redirectUrl = list.get(holder.getAdapterPosition()).getPartnerUrl();
                 if (!TextUtils.isEmpty(redirectUrl)) {
                     listener.channelPartnerClicked(
-                            list.get(holder.getAdapterPosition()).getPartnerUrl(),
-                            list.get(holder.getAdapterPosition()).getPartnerName());
+                            list.get(holder.getAdapterPosition()),
+                            holder.getAdapterPosition());
                 }
             }
         });

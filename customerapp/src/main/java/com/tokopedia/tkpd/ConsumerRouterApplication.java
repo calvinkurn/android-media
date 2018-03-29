@@ -207,7 +207,7 @@ import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
 import com.tokopedia.tkpdstream.chatroom.data.ChatroomUrl;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
-import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
+import com.tokopedia.tkpdstream.common.analytics.StreamAnalytics;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
@@ -1547,7 +1547,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getChannelFragment(Bundle bundle) {
-        return ChannelFragment.createInstance(bundle);
+        return ChannelFragment.createInstance();
     }
 
     @Override

@@ -1,13 +1,16 @@
 
 package com.tokopedia.tkpdstream.chatroom.domain.pojo.sprintsale;
 
-import java.util.List;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class UpcomingFlashsale {
 
+    @SerializedName("app_link")
+    @Expose
+    private String appLink;
     @SerializedName("campaign_name")
     @Expose
     private String campaignName;
@@ -24,44 +27,28 @@ public class UpcomingFlashsale {
     @Expose
     private List<Product> products = null;
 
-    public String getCampaignName() {
-        return campaignName;
+    public String getAppLink() {
+        return appLink;
     }
 
-    public void setCampaignName(String campaignName) {
-        this.campaignName = campaignName;
+    public String getCampaignName() {
+        return campaignName;
     }
 
     public String getCampaignShortName() {
         return campaignShortName;
     }
 
-    public void setCampaignShortName(String campaignShortName) {
-        this.campaignShortName = campaignShortName;
-    }
-
     public long getStartDate() {
         return startDate;
-    }
-
-    public void setStartDate(long startDate) {
-        this.startDate = startDate;
     }
 
     public long getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(long endDate) {
-        this.endDate = endDate;
-    }
-
     public List<Product> getProducts() {
         return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
     }
 
 }

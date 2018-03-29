@@ -74,8 +74,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                     flashsale.getCampaignName(),
                     flashsale.getStartDate(),
                     flashsale.getEndDate(),
-                    "REDIRECT_URL",
-                    "TIPE"
+                    flashsale.getAppLink(),
+                    flashsale.getStatus()
             );
         } else {
             return null;
@@ -96,6 +96,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
 
     private SprintSaleProductViewModel mapToFlashSaleProduct(Product product) {
         return new SprintSaleProductViewModel(
+                product.getProductId() != null ? product.getProductId() : "",
                 product.getName() != null ? product.getName() : "",
                 product.getImageUrl() != null ? product.getImageUrl() : "",
                 String.format(Locale.getDefault(), FORMAT_DISCOUNT_LABEL, product
@@ -208,6 +209,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
 
         for (ListBrand brand : official.getListBrands()) {
             ChannelPartnerChildViewModel childViewModel = new ChannelPartnerChildViewModel(
+                    brand.getBrandId(),
                     brand.getImageUrl(),
                     brand.getTitle(),
                     brand.getBrandUrl()

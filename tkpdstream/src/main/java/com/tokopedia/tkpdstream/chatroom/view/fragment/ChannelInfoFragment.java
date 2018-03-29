@@ -22,10 +22,15 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.ChannelPartnerAda
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChannelPartnerChildViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
+import com.tokopedia.tkpdstream.common.analytics.EEPromotion;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
-import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
+import com.tokopedia.tkpdstream.common.analytics.StreamAnalytics;
 import com.tokopedia.tkpdstream.common.util.TextFormatter;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -90,7 +95,6 @@ public class ChannelInfoFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        //TODO milhamj screen name
         return null;
     }
 
@@ -116,13 +120,25 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void channelPartnerClicked(String url, String partnerName) {
-        ((GroupChatContract.View) getActivity()).eventClickComponent(StreamAnalytics
-                .COMPONENT_PARTNER, partnerName, StreamAnalytics.ATTRIBUTE_PARTNER_LOGO);
+    public void channelPartnerClicked(ChannelPartnerChildViewModel channelPartnerChildViewModel,
+                                      int position) {
+        ArrayList<EEPromotion> list = new ArrayList<>();
+        list.add(new EEPromotion(channelPartnerChildViewModel.getPartnerId(),
+                EEPromotion.NAME_GROUPCHAT, position,
+                channelPartnerChildViewModel.getPartnerName(),
+                channelPartnerChildViewModel.getPartnerAvatar(),
+                ((GroupChatContract.View) getActivity()).getAttributionTracking(StreamAnalytics
+                        .ATTRIBUTE_PARTNER_LOGO)
+        ));
+
+        ((GroupChatContract.View) getActivity()).eventClickComponentEnhancedEcommerce(StreamAnalytics
+                .COMPONENT_PARTNER, channelPartnerChildViewModel.getPartnerName(), StreamAnalytics
+                .ATTRIBUTE_PARTNER_LOGO, list);
 
         StreamModuleRouter router = ((StreamModuleRouter) getActivity().getApplicationContext());
-        router.openRedirectUrl(getActivity(), ((GroupChatContract.View) getActivity()).generateAttributeApplink(url,
-                StreamAnalytics.ATTRIBUTE_PARTNER_LOGO));
+        router.openRedirectUrl(getActivity(), ((GroupChatContract.View) getActivity())
+                .generateAttributeApplink(channelPartnerChildViewModel.getPartnerUrl(),
+                        StreamAnalytics.ATTRIBUTE_PARTNER_LOGO));
     }
 
     private void initView(View view) {
@@ -142,6 +158,8 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         if (rootView == null || channelInfoViewModel == null) {
             return;
         }
+
+        trackEEViewPartner(channelInfoViewModel);
 
         totalView.setText(TextFormatter.format(String.valueOf(channelInfoViewModel.getTotalView())));
         name.setText(channelInfoViewModel.getAdminName());
@@ -166,5 +184,26 @@ public class ChannelInfoFragment extends BaseDaggerFragment
             channelPartnerAdapter.setList(channelInfoViewModel.getChannelPartnerViewModels());
             channelPartners.setAdapter(channelPartnerAdapter);
         }
+    }
+
+    private void trackEEViewPartner(ChannelInfoViewModel channelInfoViewModel) {
+        ArrayList<EEPromotion> list = new ArrayList<>();
+        for (ChannelPartnerViewModel partnerViewModel : channelInfoViewModel
+                .getChannelPartnerViewModels()) {
+
+            for (ChannelPartnerChildViewModel channelPartnerChildViewModel : partnerViewModel
+                    .getChild()) {
+                list.add(new EEPromotion(channelPartnerChildViewModel.getPartnerId(),
+                        EEPromotion.NAME_GROUPCHAT, list.size() + 1,
+                        channelPartnerChildViewModel.getPartnerName(),
+                        channelPartnerChildViewModel.getPartnerAvatar(),
+                        ((GroupChatContract.View) getActivity()).getAttributionTracking(StreamAnalytics
+                                .ATTRIBUTE_PARTNER_LOGO)
+                ));
+            }
+        }
+
+        ((GroupChatContract.View) getActivity()).eventViewComponentEnhancedEcommerce(StreamAnalytics
+                .COMPONENT_PARTNER, StreamAnalytics.VIEW_LOGO, StreamAnalytics.ATTRIBUTE_PARTNER_LOGO, list);
     }
 }
