@@ -349,9 +349,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     public void onMessageReceived(Visitable messageItem) {
         if (messageItem instanceof VoteAnnouncementViewModel) {
-            VoteAnnouncementViewModel announcement = (VoteAnnouncementViewModel) messageItem;
-            VoteInfoViewModel temp = announcement.getVoteInfoViewModel();
-            showVoteLayout(temp);
+            showVoteLayout(((GroupChatContract.View)getActivity()).getVoteInfoViewModel());
         }
     }
 

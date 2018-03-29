@@ -66,7 +66,7 @@ import com.tokopedia.tkpdstream.chatroom.view.preference.NotificationPreference;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.BaseChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
@@ -411,7 +411,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void showFragment(int fragmentPosition) {
-        if (fragmentPosition < tabAdapter.getItemCount()) {
+        try {
             this.initialFragment = fragmentPosition;
             tabAdapter.setActiveFragment(fragmentPosition);
             tabAdapter.change(fragmentPosition, false);
@@ -432,6 +432,9 @@ public class GroupChatActivity extends BaseSimpleActivity
                 default:
                     break;
             }
+
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
         }
 
     }
@@ -1045,20 +1048,13 @@ public class GroupChatActivity extends BaseSimpleActivity
             handleVoteAnnouncement(voteAnnouncementViewModel, voteAnnouncementViewModel.getVoteType());
         } else if (map instanceof SprintSaleAnnouncementViewModel) {
             updateSprintSaleData((SprintSaleAnnouncementViewModel) map);
-        }
-
-
-        if (map instanceof BaseChatViewModel
-                && ((BaseChatViewModel) map).isCanVibrate()) {
+        } else if (map instanceof VibrateViewModel) {
             vibratePhone();
         }
 
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName())).onMessageReceived(map);
-        } else if (currentFragmentIsVote()) {
-            ((ChannelVoteFragment) getSupportFragmentManager().findFragmentByTag
-                    (ChannelVoteFragment.class.getSimpleName())).onMessageReceived(map);
         }
     }
 
@@ -1165,12 +1161,18 @@ public class GroupChatActivity extends BaseSimpleActivity
             showFragment(CHATROOM_FRAGMENT);
         }
 
-        if (!currentFragmentIsVote() && voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
+        if (!currentFragmentIsVote() && voteInfoViewModel.getStatusId() !=
+                VoteInfoViewModel.STATUS_CANCELED) {
             tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
             if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE
                     && voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE) {
                 setTooltip();
             }
+        } else if (currentFragmentIsVote() && (voteInfoViewModel.getStatusId() !=
+                VoteInfoViewModel.STATUS_CANCELED)) {
+            ((ChannelVoteFragment) getSupportFragmentManager().findFragmentByTag
+                    (ChannelVoteFragment.class.getSimpleName())).showVoteLayout(viewModel
+                    .getChannelInfoViewModel().getVoteInfoViewModel());
         }
 
     }

@@ -24,9 +24,9 @@ public class SprintSaleAnnouncementViewModel extends BaseChatViewModel implement
                                            boolean isInfluencer, boolean isAdministrator, String redirectUrl,
                                            ArrayList<SprintSaleProductViewModel> listProducts,
                                            String campaignName, long startDate, long endDate,
-                                           String sprintSaleType, boolean canVibrate) {
+                                           String sprintSaleType) {
         super("", createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl,
-                isInfluencer, isAdministrator, canVibrate);
+                isInfluencer, isAdministrator);
         this.redirectUrl = redirectUrl;
         this.listProducts = listProducts;
         this.campaignName = campaignName;
