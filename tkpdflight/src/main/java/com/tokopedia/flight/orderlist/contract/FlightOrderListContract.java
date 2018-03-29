@@ -7,9 +7,9 @@ import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
-import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderToCancellationJourneyMapper;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 
 import java.util.List;
 
@@ -34,6 +34,10 @@ public interface FlightOrderListContract {
         void navigateToInputEmailForm(String invoiceId, String userId, String userEmail);
 
         Observable<ProfileInfo> getProfileObservable();
+
+        void goToCancellationPage(FlightOrderSuccessViewModel item);
+
+        void showLessThan6HoursDialog();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -47,5 +51,8 @@ public interface FlightOrderListContract {
         void onGetProfileData();
 
         List<FlightCancellationJourney> transformOrderToCancellation(FlightOrderJourney flightOrderJourney);
+
+        void checkIfFlightCancellable(FlightOrderSuccessViewModel flightOrderSuccessViewModel);
+
     }
 }

@@ -52,7 +52,7 @@ public class FlightCancellationActivity extends BaseFlightActivity implements Ha
 
     @Override
     protected Fragment getNewFragment() {
-        List<FlightCancellationJourney> flightCancellationJourneyList = getIntent().getExtras().getParcelable(EXTRA_CANCEL_JOURNEY);
+        List<FlightCancellationJourney> flightCancellationJourneyList = getIntent().getExtras().getParcelableArrayList(EXTRA_CANCEL_JOURNEY);
         return FlightCancellationFragment.createInstance(
                 getIntent().getExtras().getString(EXTRA_INVOICE_ID),
                 flightCancellationJourneyList

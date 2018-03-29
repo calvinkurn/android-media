@@ -2,13 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/background_apps"
     android:orientation="vertical">
 
-    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+    <TextView
+        style="@style/TextView.Micro.BlackDisabled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_small"
+        android:text="@string/flight_cancellation_choose_to_cancel_hint" />
+
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="0sp"
+        android:layout_height="0dp"
         android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/padding_small">
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/button_submit"
+            style="@style/Button.Submit.Green"
+            android:text="@string/flight_cancellation_next_button" />
+    </LinearLayout>
 
 </LinearLayout>

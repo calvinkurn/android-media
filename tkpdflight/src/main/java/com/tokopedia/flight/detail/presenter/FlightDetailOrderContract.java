@@ -22,7 +22,7 @@ import rx.Observable;
  */
 
 public interface FlightDetailOrderContract {
-    interface View extends CustomerView{
+    interface View extends CustomerView {
         void showProgressDialog();
 
         void hideProgressDialog();
@@ -75,8 +75,10 @@ public interface FlightDetailOrderContract {
         void navigateToInputEmailForm(String userId, String userEmail);
 
         Observable<ProfileInfo> getProfileObservable();
-      
+
         void setTransactionDate(String transactionDate);
+
+        void showLessThan6HoursDialog();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -93,5 +95,6 @@ public interface FlightDetailOrderContract {
         void onGetProfileData();
 
         List<FlightCancellationJourney> transformOrderToCancellation(List<FlightOrderJourney> flightOrderJourneyList);
+
     }
 }

@@ -2,8 +2,8 @@ package com.tokopedia.flight.cancellation.view.contract;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 
 import java.util.List;
 
@@ -19,11 +19,17 @@ public interface FlightCancellationContract {
 
         void setFlightCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList);
 
+        void setSelectedCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList);
+
         String getInvoiceId();
+
+        String getString(int resId);
 
         List<FlightCancellationJourney> getFlightCancellationJourney();
 
         List<FlightCancellationViewModel> getCurrentFlightCancellationViewModel();
+
+        List<FlightCancellationViewModel> getSelectedCancellationViewModel();
 
     }
 
@@ -31,5 +37,6 @@ public interface FlightCancellationContract {
 
         void onViewCreated();
 
+        void uncheckPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position);
     }
 }

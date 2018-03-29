@@ -424,11 +424,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 //                cancelMessage,
 //                getString(R.string.flight_contact_us_cancel_toolbar))
 //                , CANCEL_REQUEST_CODE);
+
         startActivityForResult(
                 FlightCancellationActivity.createIntent(getContext(), flightOrder.getId(),
                         flightDetailOrderPresenter.transformOrderToCancellation(flightOrder.getJourneys())),
                 REQUEST_CODE_CANCELLATION
         );
+
     }
 
     private Intent getCallintIntent(String solutionId,
@@ -531,6 +533,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                     .getProfile();
         }
         return Observable.empty();
+    }
+
+    @Override
+    public void showLessThan6HoursDialog() {
+        Toast.makeText(getContext(), getString(R.string.flight_cancellation_recommendation_to_contact_airlines_description) + "(nanti di ubah ke dialog. Menunggu Unify Component merge to release)", Toast.LENGTH_SHORT).show();
     }
 
     private void showGreenSnackbar(int resId) {

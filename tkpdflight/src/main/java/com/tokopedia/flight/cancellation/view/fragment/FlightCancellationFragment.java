@@ -3,6 +3,7 @@ package com.tokopedia.flight.cancellation.view.fragment;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAdapterTypeFactory;
+import com.tokopedia.flight.cancellation.view.adapter.viewholder.FlightCancellationViewHolder;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 
 import java.util.ArrayList;
@@ -26,16 +29,20 @@ import javax.inject.Inject;
  */
 
 public class FlightCancellationFragment extends BaseListFragment<FlightCancellationViewModel, FlightCancellationAdapterTypeFactory>
-        implements FlightCancellationContract.View {
+        implements FlightCancellationContract.View, FlightCancellationViewHolder.FlightCancellationListener {
 
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
 
     private String invoiceId;
     private List<FlightCancellationViewModel> flightCancellationViewModelList;
+    private List<FlightCancellationViewModel> selectedCancellationViewModelList;
+    List<FlightCancellationJourney> flightCancellationJourneyList;
 
     @Inject
     FlightCancellationPresenter flightCancellationPresenter;
+
+    private AppCompatButton btnSubmit;
 
     public static FlightCancellationFragment createInstance(String invoiceId,
                                                             List<FlightCancellationJourney> flightCancellationJourneyList) {
@@ -50,7 +57,17 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_flight_cancellation, container, false);
+        View view = inflater.inflate(R.layout.fragment_flight_cancellation, container, false);
+        btnSubmit = view.findViewById(R.id.button_submit);
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        return view;
     }
 
     @Override
@@ -58,6 +75,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         super.onViewCreated(view, savedInstanceState);
 
         invoiceId = getArguments().getString(EXTRA_INVOICE_ID);
+        flightCancellationJourneyList = getArguments().getParcelableArrayList(EXTRA_CANCEL_JOURNEY);
 
         flightCancellationPresenter.attachView(this);
         flightCancellationPresenter.onViewCreated();
@@ -85,17 +103,22 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @Override
     protected FlightCancellationAdapterTypeFactory getAdapterTypeFactory() {
-        return new FlightCancellationAdapterTypeFactory();
+        return new FlightCancellationAdapterTypeFactory(this);
     }
 
     @Override
     public void renderCancelableList() {
-        renderList(getCurrentFlightCancellationViewModel());
+        renderList(flightCancellationViewModelList);
     }
 
     @Override
     public void setFlightCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList) {
         this.flightCancellationViewModelList = flightCancellationViewModelList;
+    }
+
+    @Override
+    public void setSelectedCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList) {
+        this.selectedCancellationViewModelList = flightCancellationViewModelList;
     }
 
     @Override
@@ -105,11 +128,27 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @Override
     public List<FlightCancellationJourney> getFlightCancellationJourney() {
-        return getArguments().getParcelable(EXTRA_CANCEL_JOURNEY);
+        return flightCancellationJourneyList;
     }
 
     @Override
     public List<FlightCancellationViewModel> getCurrentFlightCancellationViewModel() {
         return flightCancellationViewModelList;
+    }
+
+    @Override
+    public List<FlightCancellationViewModel> getSelectedCancellationViewModel() {
+        return selectedCancellationViewModelList;
+    }
+
+    @Override
+    public void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
+        selectedCancellationViewModelList.get(position)
+                .getPassengerViewModelList().add(passengerViewModel);
+    }
+
+    @Override
+    public void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
+        flightCancellationPresenter.uncheckPassenger(passengerViewModel, position);
     }
 }
