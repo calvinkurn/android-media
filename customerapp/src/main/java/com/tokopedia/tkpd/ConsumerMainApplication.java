@@ -1,18 +1,20 @@
 package com.tokopedia.tkpd;
 
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.media.AudioAttributes;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatDelegate;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.soloader.SoLoader;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -25,18 +27,16 @@ import com.sendbird.android.SendBird;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.network.SessionUrl;
-import com.tokopedia.profile.data.network.ProfileUrl;
-import com.tokopedia.profile.view.activity.TopProfileActivity;
-import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.network.SessionUrl;
+import com.tokopedia.profile.data.network.ProfileUrl;
+import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -75,6 +75,31 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
 
         initSendbird();
+        createNotificationChannel();
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the NotificationChannel
+            CharSequence name = "CUSTOM_SOUND";
+            String description = "Custom sound for apollo";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel mChannel = new NotificationChannel("CHANNLE_ID", name, importance);
+            mChannel.setDescription(description);
+
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+
+            AudioAttributes att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+
+            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.endtune), att);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(
+                    NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(mChannel);
+        }
     }
 
     private void setVersionCode() {
