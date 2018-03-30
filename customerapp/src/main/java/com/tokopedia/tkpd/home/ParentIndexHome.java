@@ -14,8 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -25,7 +24,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +33,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.moengage.inapp.InAppManager;
+import com.moengage.inapp.InAppMessage;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -65,7 +64,6 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.home.GetUserInfoListener;
-import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.referral.ReferralActivity;
@@ -73,13 +71,11 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.shopinfo.models.productmodel.List;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.design.bottomnavigation.BottomNavigation;
 import com.tokopedia.design.tab.Tabs;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
@@ -93,11 +89,18 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
+import com.tokopedia.tkpd.home.fragment.InappMessageDialogFragment;
+import com.tokopedia.tkpd.home.model.InAppMessageModel;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -110,7 +113,7 @@ import rx.subscriptions.CompositeSubscription;
  * modified by meta on 24/01/2018, implement bottom navigation menu
  */
 public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener,
-        GetUserInfoListener, HasComponent {
+        GetUserInfoListener, HasComponent,InAppManager.InAppMessageListener {
 
     public static final int INIT_STATE_FRAGMENT_HOME = 0;
     public static final int INIT_STATE_FRAGMENT_FEED = 1;
@@ -230,6 +233,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     (getIntent().getIntExtra("fragment", initStateFragment)));
             initStateFragment = viewPagerIndex;
         }
+
+        InAppManager.getInstance().setInAppListener(this);
+
         setView();
 
         if (isFirstTime()) {
@@ -670,6 +676,44 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Cache.applyEditor();
         invalidateOptionsMenu();
         MainApplication.resetCartStatus(false);
+    }
+
+    @Override
+    public boolean showInAppMessage(InAppMessage inAppMessage) {
+        try {
+            JSONObject obj = new JSONObject(inAppMessage.content);
+            JSONArray messages=obj.getJSONArray("body");
+            List<InAppMessageModel> inAppMessageModels=new ArrayList<>();
+            InAppMessageModel inAppMessageModel;
+            for (int i=0; i<messages.length();i++){
+                JSONObject jsonObject=messages.getJSONObject(i);
+                inAppMessageModel=new InAppMessageModel();
+                inAppMessageModel.setImageUrl(jsonObject.getString("image_url"));
+                inAppMessageModel.setDeeplink(jsonObject.getString("deeplink"));
+                inAppMessageModels.add(inAppMessageModel);
+            }
+
+            InappMessageDialogFragment dialog=InappMessageDialogFragment.newInstance(inAppMessageModels);
+           dialog.show(getFragmentManager(),"inpp");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public void onInAppClosed(InAppMessage inAppMessage) {
+
+    }
+
+    @Override
+    public void onInAppShown(InAppMessage inAppMessage) {
+
+    }
+
+    @Override
+    public boolean onInAppClick(@Nullable String s, @Nullable Bundle bundle, @Nullable Uri uri) {
+        return false;
     }
 
     private Boolean isFirstTime() {
