@@ -80,8 +80,8 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 onScanCompleteGetInfoQrCampaign(uri.getPathSegments().get(0));
             } else if(host.contains("tokopedia.link")){
                 onScanBranchIOLink(barcodeData);
-            }else if(host.contains("tokopedia")){
-                openActivity(barcodeData);
+            }else {
+                getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
             }
         } else {
             getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
@@ -137,11 +137,13 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         postBarCodeDataUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
             public void onCompleted() {
+                getView().hideProgressDialog();
                 getView().finish();
             }
 
             @Override
             public void onError(Throwable e) {
+                getView().hideProgressDialog();
                 if (e instanceof CampaignException) {
                     getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
                 } else {
