@@ -90,11 +90,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
 
-            AudioAttributes att = new AudioAttributes.Builder()
+            /*AudioAttributes att = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                     .build();
 
-            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.endtune), att);
+            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.endtune), att);*/
 
             NotificationManager notificationManager = (NotificationManager) getSystemService(
                     NOTIFICATION_SERVICE);
