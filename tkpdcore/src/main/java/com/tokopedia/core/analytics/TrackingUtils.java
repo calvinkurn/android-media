@@ -2,7 +2,6 @@ package com.tokopedia.core.analytics;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -10,21 +9,17 @@ import android.text.TextUtils;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.google.firebase.perf.metrics.Trace;
-import com.google.gson.Gson;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.anals.UserAttribute;
+import com.tokopedia.anals.ConsumerDrawerData;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
@@ -71,17 +66,17 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().setUserProfile(customerWrapper);
     }
 
-    public static void setMoEUserAttributes(ProfileData profileData) {
+    public static void setMoEUserAttributesOld(ConsumerDrawerData.Data profileData) {
         if (profileData != null) {
             CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
-                    .setFullName(profileData.getUserInfo().getUserName())
-                    .setEmailAddress(profileData.getUserInfo().getUserEmail())
-                    .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone() != null ? profileData.getUserInfo().getUserPhone() : ""))
-                    .setCustomerId(profileData.getUserInfo().getUserId())
-                    .setShopId(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopId() : "")
-                    .setSeller(profileData.getShopInfo() != null)
-                    .setShopName(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopName() : "")
-                    .setFirstName(getFirstName(profileData.getUserInfo().getUserName()))
+                    .setFullName(profileData.profile() == null ? "" : profileData.profile().full_name())
+                    .setEmailAddress(profileData.profile() == null ? "" : profileData.profile().email())
+                    .setPhoneNumber(normalizePhoneNumber(profileData.profile() == null || profileData.profile().phone() == null ? "" : profileData.profile().phone()))
+                    .setCustomerId(profileData.profile() == null ? "" : profileData.profile().user_id())
+                    .setShopId(profileData.shopInfoMoengage() != null ? profileData.shopInfoMoengage().info().shop_id() : "")
+                    .setSeller(profileData.shopInfoMoengage().owner().is_seller())
+                    .setShopName(profileData.shopInfoMoengage() != null ? profileData.shopInfoMoengage().info().shop_name() : "")
+                    .setFirstName(profileData.profile().first_name())
                     .build();
 
             getMoEngine().setUserData(customerWrapper, "APP OLD");
@@ -98,7 +93,7 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
-    public static void setMoEUserAttributes(UserAttribute.Data profileData) {
+    public static void setMoEUserAttributes(ConsumerDrawerData.Data profileData) {
         if (profileData != null) {
             try {
                 CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
@@ -109,7 +104,7 @@ public class TrackingUtils extends TrackingConfig {
                         .setTokocashAmt(profileData.wallet() != null ? profileData.wallet().rawBalance() + "" : "")
                         .setSaldoAmt(profileData.saldo() != null ? profileData.saldo().deposit() + "" : "")
                         .setTopAdsAmt(profileData.topadsDeposit() != null ? profileData.topadsDeposit().topads_amount() + "" : "")
-                        .setTopadsUser(profileData.topadsDeposit().is_topads_user() != null ? profileData.topadsDeposit().is_topads_user() : false)
+                        .setTopadsUser(profileData.topadsDeposit() != null ? profileData.topadsDeposit().is_topads_user() : false)
                         .setHasPurchasedMarketplace(profileData.paymentAdminProfile().is_purchased_marketplace() != null ? profileData.paymentAdminProfile().is_purchased_marketplace() : false)
                         .setHasPurchasedDigital(profileData.paymentAdminProfile().is_purchased_digital() != null ? profileData.paymentAdminProfile().is_purchased_digital() : false)
                         .setHasPurchasedTiket(profileData.paymentAdminProfile().is_purchased_ticket() != null ? profileData.paymentAdminProfile().is_purchased_ticket() : false)
@@ -260,12 +255,12 @@ public class TrackingUtils extends TrackingConfig {
             builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
             builder.putAttrString(
                     AppEventTracking.MOENGAGE.CATEGORY,
-                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1)
                             .getDepartmentName()
             );
             builder.putAttrString(
                     AppEventTracking.MOENGAGE.CATEGORY_ID,
-                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1)
                             .getDepartmentId()
             );
         } else if (productData.getBreadcrumb().size() == 1) {
@@ -324,12 +319,12 @@ public class TrackingUtils extends TrackingConfig {
             builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
             builder.putAttrString(
                     AppEventTracking.MOENGAGE.CATEGORY,
-                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1)
                             .getDepartmentName()
             );
             builder.putAttrString(
                     AppEventTracking.MOENGAGE.CATEGORY_ID,
-                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1)
                             .getDepartmentId()
             );
         }
@@ -735,7 +730,6 @@ public class TrackingUtils extends TrackingConfig {
         getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventClickPromoListItem(list, promoName);
     }
-
 
 
     public static void eventCategoryLifestyleImpression(List<Object> list) {

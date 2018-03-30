@@ -161,20 +161,12 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         drawerDataManager = DrawerInjector.getDrawerDataManager(this, this, sessionHandler, drawerCache);
     }
 
-    protected void getDrawerDeposit() {
-        drawerDataManager.getDeposit();
-    }
-
-    protected void getDrawerProfile() {
-        drawerDataManager.getProfile();
-    }
-
     protected void getDrawerUserAttrUseCase(SessionHandler sessionHandler) {
         drawerDataManager.getUserAttributes(sessionHandler);
     }
 
-    protected void getProfileCompletion() {
-        drawerDataManager.getProfileCompletion();
+    protected void getDrawerSellerAttrUseCase(SessionHandler sessionHandler) {
+        drawerDataManager.getSellerUserAttributes(sessionHandler);
     }
 
     @Override
@@ -182,7 +174,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
-
     }
 
     protected abstract int setDrawerPosition();
@@ -213,15 +204,17 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         if (sessionHandler.isV4Login()) {
             setDataDrawer();
 
-            getDrawerProfile();
-            getDrawerDeposit();
+            //getDrawerProfile();
+            //getDrawerDeposit();
             getDrawerNotification();
 
             if (!GlobalConfig.isSellerApp()) {
-                getDrawerTokoCash();
+                //getDrawerTokoCash();
                 getTokoPointData();
-                getProfileCompletion();
+                //getProfileCompletion();
                 getDrawerUserAttrUseCase(sessionHandler);
+            } else {
+                getDrawerSellerAttrUseCase(sessionHandler);
             }
         }
     }
@@ -509,7 +502,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == DrawerHelper.REQUEST_LOGIN && resultCode == Activity.RESULT_OK){
+        if (requestCode == DrawerHelper.REQUEST_LOGIN && resultCode == Activity.RESULT_OK) {
             setDataDrawer();
         }
     }

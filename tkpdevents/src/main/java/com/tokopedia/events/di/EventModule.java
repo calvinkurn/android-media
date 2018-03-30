@@ -3,11 +3,8 @@ package com.tokopedia.events.di;
 import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
@@ -199,12 +196,11 @@ public class EventModule {
 
     @Provides
     @EventScope
-    ProfileSourceFactory providesProfileSourceFactory(Context context,SessionHandler sessionHandler) {
+    ProfileSourceFactory providesProfileSourceFactory(Context context, SessionHandler sessionHandler) {
         return new ProfileSourceFactory(context,
                 new PeopleService(),
                 new ProfileMapper(),
                 new GlobalCacheManager(),
-                new AnalyticsCacheHandler(),
                 sessionHandler);
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.tokocash.qrpayment.data.datasource;
 
-import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
+import com.tokopedia.tokocash.anals.GetTokocashQuery;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 
@@ -10,6 +11,6 @@ import rx.Observable;
 
 public interface BalanceDataSource {
 
-    Observable<BalanceTokoCashEntity> getBalanceTokoCash();
+    Observable<GetTokocashQuery.Data> getBalanceTokoCash(RequestParams requestParams);
 
 }

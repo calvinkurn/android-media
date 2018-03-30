@@ -6,24 +6,20 @@ import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
-import com.tokopedia.anals.type.CustomType;
+
 import java.io.IOException;
-import java.lang.Boolean;
-import java.lang.Integer;
-import java.lang.Object;
-import java.lang.Override;
-import java.lang.String;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
-public final class UserAttribute implements Query<UserAttribute.Data, UserAttribute.Data, UserAttribute.Variables> {
-  public static final String OPERATION_DEFINITION = "query UserAttribute($userID: Int!) {\n"
+public final class SellerDrawerData implements Query<SellerDrawerData.Data, SellerDrawerData.Data, SellerDrawerData.Variables> {
+  public static final String OPERATION_DEFINITION = "query SellerDrawerData($userID: Int!) {\n"
       + "  shopInfoMoengage(userID: $userID) {\n"
       + "    __typename\n"
       + "    info {\n"
@@ -34,6 +30,9 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
       + "      shop_name\n"
       + "      shop_score\n"
       + "      total_active_product\n"
+      + "      shop_avatar\n"
+      + "      shop_cover\n"
+      + "      shop_domain\n"
       + "    }\n"
       + "    owner {\n"
       + "      __typename\n"
@@ -58,6 +57,8 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
       + "    phone\n"
       + "    phone_verified\n"
       + "    register_date\n"
+      + "    profile_picture\n"
+      + "    completion\n"
       + "  }\n"
       + "  address {\n"
       + "    __typename\n"
@@ -67,42 +68,19 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
       + "      province_name\n"
       + "    }\n"
       + "  }\n"
-      + "  wallet {\n"
-      + "    __typename\n"
-      + "    linked\n"
-      + "    balance\n"
-      + "    rawBalance\n"
-      + "    errors {\n"
-      + "      __typename\n"
-      + "      name\n"
-      + "      message\n"
-      + "    }\n"
-      + "  }\n"
       + "  saldo {\n"
       + "    __typename\n"
       + "    deposit_fmt\n"
       + "    deposit\n"
       + "  }\n"
-      + "  paymentAdminProfile {\n"
-      + "    __typename\n"
-      + "    is_purchased_marketplace\n"
-      + "    is_purchased_digital\n"
-      + "    is_purchased_ticket\n"
-      + "    last_purchase_date\n"
-      + "  }\n"
-      + "  topadsDeposit(userID: $userID) {\n"
-      + "    __typename\n"
-      + "    topads_amount\n"
-      + "    is_topads_user\n"
-      + "  }\n"
       + "}";
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
-  private final Variables variables;
+  private final SellerDrawerData.Variables variables;
 
-  public UserAttribute(int userID) {
-    variables = new Variables(userID);
+  public SellerDrawerData(int userID) {
+    variables = new SellerDrawerData.Variables(userID);
   }
 
   @Override
@@ -111,12 +89,12 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
   }
 
   @Override
-  public Data wrapData(Data data) {
+  public SellerDrawerData.Data wrapData(SellerDrawerData.Data data) {
     return data;
   }
 
   @Override
-  public Variables variables() {
+  public SellerDrawerData.Variables variables() {
     return variables;
   }
 
@@ -160,39 +138,29 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
       return this;
     }
 
-    public UserAttribute build() {
-      return new UserAttribute(userID);
+    public SellerDrawerData build() {
+      return new SellerDrawerData(userID);
     }
   }
 
   public static class Data implements Operation.Data {
-    private final @Nullable ShopInfoMoengage shopInfoMoengage;
+    private final @Nonnull ShopInfoMoengage shopInfoMoengage;
 
     private final @Nullable Profile profile;
 
     private final @Nullable Address address;
 
-    private final @Nullable Wallet wallet;
+    private final @Nonnull Saldo saldo;
 
-    private final @Nullable Saldo saldo;
-
-    private final @Nullable PaymentAdminProfile paymentAdminProfile;
-
-    private final @Nullable TopadsDeposit topadsDeposit;
-
-    public Data(@Nullable ShopInfoMoengage shopInfoMoengage, @Nullable Profile profile,
-        @Nullable Address address, @Nullable Wallet wallet, @Nullable Saldo saldo,
-        @Nullable PaymentAdminProfile paymentAdminProfile, @Nullable TopadsDeposit topadsDeposit) {
+    public Data(@Nonnull ShopInfoMoengage shopInfoMoengage, @Nullable Profile profile,
+        @Nullable Address address, @Nonnull Saldo saldo) {
       this.shopInfoMoengage = shopInfoMoengage;
       this.profile = profile;
       this.address = address;
-      this.wallet = wallet;
       this.saldo = saldo;
-      this.paymentAdminProfile = paymentAdminProfile;
-      this.topadsDeposit = topadsDeposit;
     }
 
-    public @Nullable ShopInfoMoengage shopInfoMoengage() {
+    public @Nonnull ShopInfoMoengage shopInfoMoengage() {
       return this.shopInfoMoengage;
     }
 
@@ -204,20 +172,8 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
       return this.address;
     }
 
-    public @Nullable Wallet wallet() {
-      return this.wallet;
-    }
-
-    public @Nullable Saldo saldo() {
+    public @Nonnull Saldo saldo() {
       return this.saldo;
-    }
-
-    public @Nullable PaymentAdminProfile paymentAdminProfile() {
-      return this.paymentAdminProfile;
-    }
-
-    public @Nullable TopadsDeposit topadsDeposit() {
-      return this.topadsDeposit;
     }
 
     @Override
@@ -226,10 +182,7 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
         + "shopInfoMoengage=" + shopInfoMoengage + ", "
         + "profile=" + profile + ", "
         + "address=" + address + ", "
-        + "wallet=" + wallet + ", "
-        + "saldo=" + saldo + ", "
-        + "paymentAdminProfile=" + paymentAdminProfile + ", "
-        + "topadsDeposit=" + topadsDeposit
+        + "saldo=" + saldo
         + "}";
     }
 
@@ -243,10 +196,7 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
         return ((this.shopInfoMoengage == null) ? (that.shopInfoMoengage == null) : this.shopInfoMoengage.equals(that.shopInfoMoengage))
          && ((this.profile == null) ? (that.profile == null) : this.profile.equals(that.profile))
          && ((this.address == null) ? (that.address == null) : this.address.equals(that.address))
-         && ((this.wallet == null) ? (that.wallet == null) : this.wallet.equals(that.wallet))
-         && ((this.saldo == null) ? (that.saldo == null) : this.saldo.equals(that.saldo))
-         && ((this.paymentAdminProfile == null) ? (that.paymentAdminProfile == null) : this.paymentAdminProfile.equals(that.paymentAdminProfile))
-         && ((this.topadsDeposit == null) ? (that.topadsDeposit == null) : this.topadsDeposit.equals(that.topadsDeposit));
+         && ((this.saldo == null) ? (that.saldo == null) : this.saldo.equals(that.saldo));
       }
       return false;
     }
@@ -261,13 +211,7 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
       h *= 1000003;
       h ^= (address == null) ? 0 : address.hashCode();
       h *= 1000003;
-      h ^= (wallet == null) ? 0 : wallet.hashCode();
-      h *= 1000003;
       h ^= (saldo == null) ? 0 : saldo.hashCode();
-      h *= 1000003;
-      h ^= (paymentAdminProfile == null) ? 0 : paymentAdminProfile.hashCode();
-      h *= 1000003;
-      h ^= (topadsDeposit == null) ? 0 : topadsDeposit.hashCode();
       return h;
     }
 
@@ -278,13 +222,7 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
 
       final Address.Mapper addressFieldMapper = new Address.Mapper();
 
-      final Wallet.Mapper walletFieldMapper = new Wallet.Mapper();
-
       final Saldo.Mapper saldoFieldMapper = new Saldo.Mapper();
-
-      final PaymentAdminProfile.Mapper paymentAdminProfileFieldMapper = new PaymentAdminProfile.Mapper();
-
-      final TopadsDeposit.Mapper topadsDepositFieldMapper = new TopadsDeposit.Mapper();
 
       final Field[] fields = {
         Field.forObject("shopInfoMoengage", "shopInfoMoengage", new UnmodifiableMapBuilder<String, Object>(1)
@@ -292,7 +230,7 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
             .put("kind", "Variable")
             .put("variableName", "userID")
           .build())
-        .build(), true, new Field.ObjectReader<ShopInfoMoengage>() {
+        .build(), false, new Field.ObjectReader<ShopInfoMoengage>() {
           @Override public ShopInfoMoengage read(final ResponseReader reader) throws IOException {
             return shopInfoMoengageFieldMapper.map(reader);
           }
@@ -307,29 +245,9 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
             return addressFieldMapper.map(reader);
           }
         }),
-        Field.forObject("wallet", "wallet", null, true, new Field.ObjectReader<Wallet>() {
-          @Override public Wallet read(final ResponseReader reader) throws IOException {
-            return walletFieldMapper.map(reader);
-          }
-        }),
-        Field.forObject("saldo", "saldo", null, true, new Field.ObjectReader<Saldo>() {
+        Field.forObject("saldo", "saldo", null, false, new Field.ObjectReader<Saldo>() {
           @Override public Saldo read(final ResponseReader reader) throws IOException {
             return saldoFieldMapper.map(reader);
-          }
-        }),
-        Field.forObject("paymentAdminProfile", "paymentAdminProfile", null, true, new Field.ObjectReader<PaymentAdminProfile>() {
-          @Override public PaymentAdminProfile read(final ResponseReader reader) throws IOException {
-            return paymentAdminProfileFieldMapper.map(reader);
-          }
-        }),
-        Field.forObject("topadsDeposit", "topadsDeposit", new UnmodifiableMapBuilder<String, Object>(1)
-          .put("userID", new UnmodifiableMapBuilder<String, Object>(2)
-            .put("kind", "Variable")
-            .put("variableName", "userID")
-          .build())
-        .build(), true, new Field.ObjectReader<TopadsDeposit>() {
-          @Override public TopadsDeposit read(final ResponseReader reader) throws IOException {
-            return topadsDepositFieldMapper.map(reader);
           }
         })
       };
@@ -339,11 +257,8 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
         final ShopInfoMoengage shopInfoMoengage = reader.read(fields[0]);
         final Profile profile = reader.read(fields[1]);
         final Address address = reader.read(fields[2]);
-        final Wallet wallet = reader.read(fields[3]);
-        final Saldo saldo = reader.read(fields[4]);
-        final PaymentAdminProfile paymentAdminProfile = reader.read(fields[5]);
-        final TopadsDeposit topadsDeposit = reader.read(fields[6]);
-        return new Data(shopInfoMoengage, profile, address, wallet, saldo, paymentAdminProfile, topadsDeposit);
+        final Saldo saldo = reader.read(fields[3]);
+        return new Data(shopInfoMoengage, profile, address, saldo);
       }
     }
 
@@ -360,15 +275,25 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
 
       private final int total_active_product;
 
+      private final @Nullable String shop_avatar;
+
+      private final @Nullable String shop_cover;
+
+      private final @Nullable String shop_domain;
+
       public Info(@Nonnull String date_shop_created, @Nonnull String shop_id,
           @Nonnull String shop_location, @Nonnull String shop_name, int shop_score,
-          int total_active_product) {
+          int total_active_product, @Nullable String shop_avatar, @Nullable String shop_cover,
+          @Nullable String shop_domain) {
         this.date_shop_created = date_shop_created;
         this.shop_id = shop_id;
         this.shop_location = shop_location;
         this.shop_name = shop_name;
         this.shop_score = shop_score;
         this.total_active_product = total_active_product;
+        this.shop_avatar = shop_avatar;
+        this.shop_cover = shop_cover;
+        this.shop_domain = shop_domain;
       }
 
       public @Nonnull String date_shop_created() {
@@ -395,6 +320,18 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
         return this.total_active_product;
       }
 
+      public @Nullable String shop_avatar() {
+        return this.shop_avatar;
+      }
+
+      public @Nullable String shop_cover() {
+        return this.shop_cover;
+      }
+
+      public @Nullable String shop_domain() {
+        return this.shop_domain;
+      }
+
       @Override
       public String toString() {
         return "Info{"
@@ -403,7 +340,10 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
           + "shop_location=" + shop_location + ", "
           + "shop_name=" + shop_name + ", "
           + "shop_score=" + shop_score + ", "
-          + "total_active_product=" + total_active_product
+          + "total_active_product=" + total_active_product + ", "
+          + "shop_avatar=" + shop_avatar + ", "
+          + "shop_cover=" + shop_cover + ", "
+          + "shop_domain=" + shop_domain
           + "}";
       }
 
@@ -419,7 +359,10 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
            && ((this.shop_location == null) ? (that.shop_location == null) : this.shop_location.equals(that.shop_location))
            && ((this.shop_name == null) ? (that.shop_name == null) : this.shop_name.equals(that.shop_name))
            && this.shop_score == that.shop_score
-           && this.total_active_product == that.total_active_product;
+           && this.total_active_product == that.total_active_product
+           && ((this.shop_avatar == null) ? (that.shop_avatar == null) : this.shop_avatar.equals(that.shop_avatar))
+           && ((this.shop_cover == null) ? (that.shop_cover == null) : this.shop_cover.equals(that.shop_cover))
+           && ((this.shop_domain == null) ? (that.shop_domain == null) : this.shop_domain.equals(that.shop_domain));
         }
         return false;
       }
@@ -439,6 +382,12 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
         h ^= shop_score;
         h *= 1000003;
         h ^= total_active_product;
+        h *= 1000003;
+        h ^= (shop_avatar == null) ? 0 : shop_avatar.hashCode();
+        h *= 1000003;
+        h ^= (shop_cover == null) ? 0 : shop_cover.hashCode();
+        h *= 1000003;
+        h ^= (shop_domain == null) ? 0 : shop_domain.hashCode();
         return h;
       }
 
@@ -449,7 +398,10 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
           Field.forString("shop_location", "shop_location", null, false),
           Field.forString("shop_name", "shop_name", null, false),
           Field.forInt("shop_score", "shop_score", null, false),
-          Field.forInt("total_active_product", "total_active_product", null, false)
+          Field.forInt("total_active_product", "total_active_product", null, false),
+          Field.forString("shop_avatar", "shop_avatar", null, true),
+          Field.forString("shop_cover", "shop_cover", null, true),
+          Field.forString("shop_domain", "shop_domain", null, true)
         };
 
         @Override
@@ -460,7 +412,10 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
           final String shop_name = reader.read(fields[3]);
           final int shop_score = reader.read(fields[4]);
           final int total_active_product = reader.read(fields[5]);
-          return new Info(date_shop_created, shop_id, shop_location, shop_name, shop_score, total_active_product);
+          final String shop_avatar = reader.read(fields[6]);
+          final String shop_cover = reader.read(fields[7]);
+          final String shop_domain = reader.read(fields[8]);
+          return new Info(date_shop_created, shop_id, shop_location, shop_name, shop_score, total_active_product, shop_avatar, shop_cover, shop_domain);
         }
       }
     }
@@ -594,27 +549,27 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
     }
 
     public static class ShopInfoMoengage {
-      private final @Nullable Info info;
+      private final @Nonnull Info info;
 
-      private final @Nullable Owner owner;
+      private final @Nonnull Owner owner;
 
-      private final @Nullable Stats stats;
+      private final @Nonnull Stats stats;
 
-      public ShopInfoMoengage(@Nullable Info info, @Nullable Owner owner, @Nullable Stats stats) {
+      public ShopInfoMoengage(@Nonnull Info info, @Nonnull Owner owner, @Nonnull Stats stats) {
         this.info = info;
         this.owner = owner;
         this.stats = stats;
       }
 
-      public @Nullable Info info() {
+      public @Nonnull Info info() {
         return this.info;
       }
 
-      public @Nullable Owner owner() {
+      public @Nonnull Owner owner() {
         return this.owner;
       }
 
-      public @Nullable Stats stats() {
+      public @Nonnull Stats stats() {
         return this.stats;
       }
 
@@ -661,17 +616,17 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
         final Stats.Mapper statsFieldMapper = new Stats.Mapper();
 
         final Field[] fields = {
-          Field.forObject("info", "info", null, true, new Field.ObjectReader<Info>() {
+          Field.forObject("info", "info", null, false, new Field.ObjectReader<Info>() {
             @Override public Info read(final ResponseReader reader) throws IOException {
               return infoFieldMapper.map(reader);
             }
           }),
-          Field.forObject("owner", "owner", null, true, new Field.ObjectReader<Owner>() {
+          Field.forObject("owner", "owner", null, false, new Field.ObjectReader<Owner>() {
             @Override public Owner read(final ResponseReader reader) throws IOException {
               return ownerFieldMapper.map(reader);
             }
           }),
-          Field.forObject("stats", "stats", null, true, new Field.ObjectReader<Stats>() {
+          Field.forObject("stats", "stats", null, false, new Field.ObjectReader<Stats>() {
             @Override public Stats read(final ResponseReader reader) throws IOException {
               return statsFieldMapper.map(reader);
             }
@@ -689,30 +644,34 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
     }
 
     public static class Profile {
-      private final @Nullable String user_id;
+      private final @Nonnull String user_id;
 
-      private final @Nullable String first_name;
+      private final @Nonnull String first_name;
 
-      private final @Nullable String full_name;
+      private final @Nonnull String full_name;
 
-      private final @Nullable Object email;
+      private final @Nonnull String email;
 
-      private final @Nullable String gender;
+      private final @Nonnull String gender;
 
-      private final @Nullable String bday;
+      private final @Nonnull String bday;
 
-      private final @Nullable String age;
+      private final @Nonnull String age;
 
-      private final @Nullable String phone;
+      private final @Nonnull String phone;
 
-      private final @Nullable Boolean phone_verified;
+      private final boolean phone_verified;
 
-      private final @Nullable String register_date;
+      private final @Nonnull String register_date;
 
-      public Profile(@Nullable String user_id, @Nullable String first_name,
-          @Nullable String full_name, @Nullable Object email, @Nullable String gender,
-          @Nullable String bday, @Nullable String age, @Nullable String phone,
-          @Nullable Boolean phone_verified, @Nullable String register_date) {
+      private final @Nonnull String profile_picture;
+
+      private final int completion;
+
+      public Profile(@Nonnull String user_id, @Nonnull String first_name, @Nonnull String full_name,
+          @Nonnull String email, @Nonnull String gender, @Nonnull String bday, @Nonnull String age,
+          @Nonnull String phone, boolean phone_verified, @Nonnull String register_date,
+          @Nonnull String profile_picture, int completion) {
         this.user_id = user_id;
         this.first_name = first_name;
         this.full_name = full_name;
@@ -723,46 +682,56 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
         this.phone = phone;
         this.phone_verified = phone_verified;
         this.register_date = register_date;
+        this.profile_picture = profile_picture;
+        this.completion = completion;
       }
 
-      public @Nullable String user_id() {
+      public @Nonnull String user_id() {
         return this.user_id;
       }
 
-      public @Nullable String first_name() {
+      public @Nonnull String first_name() {
         return this.first_name;
       }
 
-      public @Nullable String full_name() {
+      public @Nonnull String full_name() {
         return this.full_name;
       }
 
-      public @Nullable Object email() {
+      public @Nonnull String email() {
         return this.email;
       }
 
-      public @Nullable String gender() {
+      public @Nonnull String gender() {
         return this.gender;
       }
 
-      public @Nullable String bday() {
+      public @Nonnull String bday() {
         return this.bday;
       }
 
-      public @Nullable String age() {
+      public @Nonnull String age() {
         return this.age;
       }
 
-      public @Nullable String phone() {
+      public @Nonnull String phone() {
         return this.phone;
       }
 
-      public @Nullable Boolean phone_verified() {
+      public boolean phone_verified() {
         return this.phone_verified;
       }
 
-      public @Nullable String register_date() {
+      public @Nonnull String register_date() {
         return this.register_date;
+      }
+
+      public @Nonnull String profile_picture() {
+        return this.profile_picture;
+      }
+
+      public int completion() {
+        return this.completion;
       }
 
       @Override
@@ -777,7 +746,9 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
           + "age=" + age + ", "
           + "phone=" + phone + ", "
           + "phone_verified=" + phone_verified + ", "
-          + "register_date=" + register_date
+          + "register_date=" + register_date + ", "
+          + "profile_picture=" + profile_picture + ", "
+          + "completion=" + completion
           + "}";
       }
 
@@ -796,8 +767,10 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
            && ((this.bday == null) ? (that.bday == null) : this.bday.equals(that.bday))
            && ((this.age == null) ? (that.age == null) : this.age.equals(that.age))
            && ((this.phone == null) ? (that.phone == null) : this.phone.equals(that.phone))
-           && ((this.phone_verified == null) ? (that.phone_verified == null) : this.phone_verified.equals(that.phone_verified))
-           && ((this.register_date == null) ? (that.register_date == null) : this.register_date.equals(that.register_date));
+           && this.phone_verified == that.phone_verified
+           && ((this.register_date == null) ? (that.register_date == null) : this.register_date.equals(that.register_date))
+           && ((this.profile_picture == null) ? (that.profile_picture == null) : this.profile_picture.equals(that.profile_picture))
+           && this.completion == that.completion;
         }
         return false;
       }
@@ -822,24 +795,30 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
         h *= 1000003;
         h ^= (phone == null) ? 0 : phone.hashCode();
         h *= 1000003;
-        h ^= (phone_verified == null) ? 0 : phone_verified.hashCode();
+        h ^= Boolean.valueOf(phone_verified).hashCode();
         h *= 1000003;
         h ^= (register_date == null) ? 0 : register_date.hashCode();
+        h *= 1000003;
+        h ^= (profile_picture == null) ? 0 : profile_picture.hashCode();
+        h *= 1000003;
+        h ^= completion;
         return h;
       }
 
       public static final class Mapper implements ResponseFieldMapper<Profile> {
         final Field[] fields = {
-          Field.forString("user_id", "user_id", null, true),
-          Field.forString("first_name", "first_name", null, true),
-          Field.forString("full_name", "full_name", null, true),
-          Field.forCustomType("email", "email", null, true, CustomType.EMAIL),
-          Field.forString("gender", "gender", null, true),
-          Field.forString("bday", "bday", null, true),
-          Field.forString("age", "age", null, true),
-          Field.forString("phone", "phone", null, true),
-          Field.forBoolean("phone_verified", "phone_verified", null, true),
-          Field.forString("register_date", "register_date", null, true)
+          Field.forString("user_id", "user_id", null, false),
+          Field.forString("first_name", "first_name", null, false),
+          Field.forString("full_name", "full_name", null, false),
+          Field.forString("email", "email", null, false),
+          Field.forString("gender", "gender", null, false),
+          Field.forString("bday", "bday", null, false),
+          Field.forString("age", "age", null, false),
+          Field.forString("phone", "phone", null, false),
+          Field.forBoolean("phone_verified", "phone_verified", null, false),
+          Field.forString("register_date", "register_date", null, false),
+          Field.forString("profile_picture", "profile_picture", null, false),
+          Field.forInt("completion", "completion", null, false)
         };
 
         @Override
@@ -847,33 +826,35 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
           final String user_id = reader.read(fields[0]);
           final String first_name = reader.read(fields[1]);
           final String full_name = reader.read(fields[2]);
-          final Object email = reader.read(fields[3]);
+          final String email = reader.read(fields[3]);
           final String gender = reader.read(fields[4]);
           final String bday = reader.read(fields[5]);
           final String age = reader.read(fields[6]);
           final String phone = reader.read(fields[7]);
-          final Boolean phone_verified = reader.read(fields[8]);
+          final boolean phone_verified = reader.read(fields[8]);
           final String register_date = reader.read(fields[9]);
-          return new Profile(user_id, first_name, full_name, email, gender, bday, age, phone, phone_verified, register_date);
+          final String profile_picture = reader.read(fields[10]);
+          final int completion = reader.read(fields[11]);
+          return new Profile(user_id, first_name, full_name, email, gender, bday, age, phone, phone_verified, register_date, profile_picture, completion);
         }
       }
     }
 
     public static class Address1 {
-      private final @Nullable String city_name;
+      private final @Nonnull String city_name;
 
-      private final @Nullable String province_name;
+      private final @Nonnull String province_name;
 
-      public Address1(@Nullable String city_name, @Nullable String province_name) {
+      public Address1(@Nonnull String city_name, @Nonnull String province_name) {
         this.city_name = city_name;
         this.province_name = province_name;
       }
 
-      public @Nullable String city_name() {
+      public @Nonnull String city_name() {
         return this.city_name;
       }
 
-      public @Nullable String province_name() {
+      public @Nonnull String province_name() {
         return this.province_name;
       }
 
@@ -910,8 +891,8 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
 
       public static final class Mapper implements ResponseFieldMapper<Address1> {
         final Field[] fields = {
-          Field.forString("city_name", "city_name", null, true),
-          Field.forString("province_name", "province_name", null, true)
+          Field.forString("city_name", "city_name", null, false),
+          Field.forString("province_name", "province_name", null, false)
         };
 
         @Override
@@ -980,167 +961,6 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
       }
     }
 
-    public static class Error {
-      private final @Nullable String name;
-
-      private final @Nullable String message;
-
-      public Error(@Nullable String name, @Nullable String message) {
-        this.name = name;
-        this.message = message;
-      }
-
-      public @Nullable String name() {
-        return this.name;
-      }
-
-      public @Nullable String message() {
-        return this.message;
-      }
-
-      @Override
-      public String toString() {
-        return "Error{"
-          + "name=" + name + ", "
-          + "message=" + message
-          + "}";
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof Error) {
-          Error that = (Error) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-           && ((this.message == null) ? (that.message == null) : this.message.equals(that.message));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        h *= 1000003;
-        h ^= (message == null) ? 0 : message.hashCode();
-        return h;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<Error> {
-        final Field[] fields = {
-          Field.forString("name", "name", null, true),
-          Field.forString("message", "message", null, true)
-        };
-
-        @Override
-        public Error map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          final String message = reader.read(fields[1]);
-          return new Error(name, message);
-        }
-      }
-    }
-
-    public static class Wallet {
-      private final boolean linked;
-
-      private final @Nonnull String balance;
-
-      private final int rawBalance;
-
-      private final @Nullable List<Error> errors;
-
-      public Wallet(boolean linked, @Nonnull String balance, int rawBalance,
-          @Nullable List<Error> errors) {
-        this.linked = linked;
-        this.balance = balance;
-        this.rawBalance = rawBalance;
-        this.errors = errors;
-      }
-
-      public boolean linked() {
-        return this.linked;
-      }
-
-      public @Nonnull String balance() {
-        return this.balance;
-      }
-
-      public int rawBalance() {
-        return this.rawBalance;
-      }
-
-      public @Nullable List<Error> errors() {
-        return this.errors;
-      }
-
-      @Override
-      public String toString() {
-        return "Wallet{"
-          + "linked=" + linked + ", "
-          + "balance=" + balance + ", "
-          + "rawBalance=" + rawBalance + ", "
-          + "errors=" + errors
-          + "}";
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof Wallet) {
-          Wallet that = (Wallet) o;
-          return this.linked == that.linked
-           && ((this.balance == null) ? (that.balance == null) : this.balance.equals(that.balance))
-           && this.rawBalance == that.rawBalance
-           && ((this.errors == null) ? (that.errors == null) : this.errors.equals(that.errors));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= Boolean.valueOf(linked).hashCode();
-        h *= 1000003;
-        h ^= (balance == null) ? 0 : balance.hashCode();
-        h *= 1000003;
-        h ^= rawBalance;
-        h *= 1000003;
-        h ^= (errors == null) ? 0 : errors.hashCode();
-        return h;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<Wallet> {
-        final Error.Mapper errorFieldMapper = new Error.Mapper();
-
-        final Field[] fields = {
-          Field.forBoolean("linked", "linked", null, false),
-          Field.forString("balance", "balance", null, false),
-          Field.forInt("rawBalance", "rawBalance", null, false),
-          Field.forList("errors", "errors", null, true, new Field.ObjectReader<Error>() {
-            @Override public Error read(final ResponseReader reader) throws IOException {
-              return errorFieldMapper.map(reader);
-            }
-          })
-        };
-
-        @Override
-        public Wallet map(ResponseReader reader) throws IOException {
-          final boolean linked = reader.read(fields[0]);
-          final String balance = reader.read(fields[1]);
-          final int rawBalance = reader.read(fields[2]);
-          final List<Error> errors = reader.read(fields[3]);
-          return new Wallet(linked, balance, rawBalance, errors);
-        }
-      }
-    }
-
     public static class Saldo {
       private final @Nonnull String deposit_fmt;
 
@@ -1201,162 +1021,6 @@ public final class UserAttribute implements Query<UserAttribute.Data, UserAttrib
           final String deposit_fmt = reader.read(fields[0]);
           final int deposit = reader.read(fields[1]);
           return new Saldo(deposit_fmt, deposit);
-        }
-      }
-    }
-
-    public static class PaymentAdminProfile {
-      private final @Nullable Boolean is_purchased_marketplace;
-
-      private final @Nullable Boolean is_purchased_digital;
-
-      private final @Nullable Boolean is_purchased_ticket;
-
-      private final @Nullable String last_purchase_date;
-
-      public PaymentAdminProfile(@Nullable Boolean is_purchased_marketplace,
-          @Nullable Boolean is_purchased_digital, @Nullable Boolean is_purchased_ticket,
-          @Nullable String last_purchase_date) {
-        this.is_purchased_marketplace = is_purchased_marketplace;
-        this.is_purchased_digital = is_purchased_digital;
-        this.is_purchased_ticket = is_purchased_ticket;
-        this.last_purchase_date = last_purchase_date;
-      }
-
-      public @Nullable Boolean is_purchased_marketplace() {
-        return this.is_purchased_marketplace;
-      }
-
-      public @Nullable Boolean is_purchased_digital() {
-        return this.is_purchased_digital;
-      }
-
-      public @Nullable Boolean is_purchased_ticket() {
-        return this.is_purchased_ticket;
-      }
-
-      public @Nullable String last_purchase_date() {
-        return this.last_purchase_date;
-      }
-
-      @Override
-      public String toString() {
-        return "PaymentAdminProfile{"
-          + "is_purchased_marketplace=" + is_purchased_marketplace + ", "
-          + "is_purchased_digital=" + is_purchased_digital + ", "
-          + "is_purchased_ticket=" + is_purchased_ticket + ", "
-          + "last_purchase_date=" + last_purchase_date
-          + "}";
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof PaymentAdminProfile) {
-          PaymentAdminProfile that = (PaymentAdminProfile) o;
-          return ((this.is_purchased_marketplace == null) ? (that.is_purchased_marketplace == null) : this.is_purchased_marketplace.equals(that.is_purchased_marketplace))
-           && ((this.is_purchased_digital == null) ? (that.is_purchased_digital == null) : this.is_purchased_digital.equals(that.is_purchased_digital))
-           && ((this.is_purchased_ticket == null) ? (that.is_purchased_ticket == null) : this.is_purchased_ticket.equals(that.is_purchased_ticket))
-           && ((this.last_purchase_date == null) ? (that.last_purchase_date == null) : this.last_purchase_date.equals(that.last_purchase_date));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (is_purchased_marketplace == null) ? 0 : is_purchased_marketplace.hashCode();
-        h *= 1000003;
-        h ^= (is_purchased_digital == null) ? 0 : is_purchased_digital.hashCode();
-        h *= 1000003;
-        h ^= (is_purchased_ticket == null) ? 0 : is_purchased_ticket.hashCode();
-        h *= 1000003;
-        h ^= (last_purchase_date == null) ? 0 : last_purchase_date.hashCode();
-        return h;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<PaymentAdminProfile> {
-        final Field[] fields = {
-          Field.forBoolean("is_purchased_marketplace", "is_purchased_marketplace", null, true),
-          Field.forBoolean("is_purchased_digital", "is_purchased_digital", null, true),
-          Field.forBoolean("is_purchased_ticket", "is_purchased_ticket", null, true),
-          Field.forString("last_purchase_date", "last_purchase_date", null, true)
-        };
-
-        @Override
-        public PaymentAdminProfile map(ResponseReader reader) throws IOException {
-          final Boolean is_purchased_marketplace = reader.read(fields[0]);
-          final Boolean is_purchased_digital = reader.read(fields[1]);
-          final Boolean is_purchased_ticket = reader.read(fields[2]);
-          final String last_purchase_date = reader.read(fields[3]);
-          return new PaymentAdminProfile(is_purchased_marketplace, is_purchased_digital, is_purchased_ticket, last_purchase_date);
-        }
-      }
-    }
-
-    public static class TopadsDeposit {
-      private final @Nullable Integer topads_amount;
-
-      private final @Nullable Boolean is_topads_user;
-
-      public TopadsDeposit(@Nullable Integer topads_amount, @Nullable Boolean is_topads_user) {
-        this.topads_amount = topads_amount;
-        this.is_topads_user = is_topads_user;
-      }
-
-      public @Nullable Integer topads_amount() {
-        return this.topads_amount;
-      }
-
-      public @Nullable Boolean is_topads_user() {
-        return this.is_topads_user;
-      }
-
-      @Override
-      public String toString() {
-        return "TopadsDeposit{"
-          + "topads_amount=" + topads_amount + ", "
-          + "is_topads_user=" + is_topads_user
-          + "}";
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof TopadsDeposit) {
-          TopadsDeposit that = (TopadsDeposit) o;
-          return ((this.topads_amount == null) ? (that.topads_amount == null) : this.topads_amount.equals(that.topads_amount))
-           && ((this.is_topads_user == null) ? (that.is_topads_user == null) : this.is_topads_user.equals(that.is_topads_user));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (topads_amount == null) ? 0 : topads_amount.hashCode();
-        h *= 1000003;
-        h ^= (is_topads_user == null) ? 0 : is_topads_user.hashCode();
-        return h;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<TopadsDeposit> {
-        final Field[] fields = {
-          Field.forInt("topads_amount", "topads_amount", null, true),
-          Field.forBoolean("is_topads_user", "is_topads_user", null, true)
-        };
-
-        @Override
-        public TopadsDeposit map(ResponseReader reader) throws IOException {
-          final Integer topads_amount = reader.read(fields[0]);
-          final Boolean is_topads_user = reader.read(fields[1]);
-          return new TopadsDeposit(topads_amount, is_topads_user);
         }
       }
     }

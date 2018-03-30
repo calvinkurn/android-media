@@ -4,7 +4,8 @@ import com.apollographql.android.rx.RxApollo;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloWatcher;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.anals.UserAttribute;
+import com.tokopedia.anals.ConsumerDrawerData;
+import com.tokopedia.anals.SellerDrawerData;
 import com.tokopedia.core.analytics.domain.usecase.GetUserAttributesUseCase;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -22,33 +23,45 @@ public class CloudAttrDataSource {
     private ApolloClient apolloClient;
     private AnalyticsCacheHandler analyticsCacheHandler;
 
-    public CloudAttrDataSource( ApolloClient aplClient){
+    public CloudAttrDataSource(ApolloClient aplClient) {
         apolloClient = aplClient;
         analyticsCacheHandler = new AnalyticsCacheHandler();
     }
 
-    public Observable<UserAttribute.Data> getUserAttributes(RequestParams requestParams){
+    public Observable<ConsumerDrawerData.Data> getConsumerUserAttributes(RequestParams requestParams) {
 
-        CommonUtils.dumper("rxapollo called userID "+requestParams.getInt(GetUserAttributesUseCase.PARAM_USER_ID, 0));
+        CommonUtils.dumper("rxapollo called userID " + requestParams.getInt(GetUserAttributesUseCase.PARAM_USER_ID, 0));
 
-        ApolloWatcher<UserAttribute.Data> apolloWatcher = apolloClient.newCall(UserAttribute.builder()
+        ApolloWatcher<ConsumerDrawerData.Data> apolloWatcher = apolloClient.newCall(ConsumerDrawerData.builder()
                 .userID(requestParams.getInt(GetUserAttributesUseCase.PARAM_USER_ID, 0))
                 .build()
-                ).watcher();
+        ).watcher();
 
-        return RxApollo.from(apolloWatcher).map(new Func1<UserAttribute.Data, UserAttribute.Data>() {
-            @Override
-            public UserAttribute.Data call(UserAttribute.Data data) {
-                return data;
-            }
-        }).doOnNext(setToCache());
+        return RxApollo.from(apolloWatcher).doOnNext(setToCache());
     }
 
-    private Action1<UserAttribute.Data> setToCache(){
-        return new Action1<UserAttribute.Data>() {
+    public Observable<SellerDrawerData.Data> getSellerUserAttributes(RequestParams requestParams) {
+
+        CommonUtils.dumper("rxapollo called userID " + requestParams.getInt(GetUserAttributesUseCase.PARAM_USER_ID, 0));
+
+        ApolloWatcher<SellerDrawerData.Data> apolloWatcher = apolloClient.newCall(SellerDrawerData.builder()
+                .userID(requestParams.getInt(GetUserAttributesUseCase.PARAM_USER_ID, 0))
+                .build()
+        ).watcher();
+
+        return RxApollo.from(apolloWatcher).map(new Func1<SellerDrawerData.Data, SellerDrawerData.Data>() {
             @Override
-            public void call(UserAttribute.Data data) {
-                if(data != null)
+            public SellerDrawerData.Data call(SellerDrawerData.Data data) {
+                return data;
+            }
+        });//.doOnNext(setToCache());
+    }
+
+    private Action1<ConsumerDrawerData.Data> setToCache() {
+        return new Action1<ConsumerDrawerData.Data>() {
+            @Override
+            public void call(ConsumerDrawerData.Data data) {
+                if (data != null)
                     analyticsCacheHandler.setUserDataGraphQLCache(data);
             }
         };

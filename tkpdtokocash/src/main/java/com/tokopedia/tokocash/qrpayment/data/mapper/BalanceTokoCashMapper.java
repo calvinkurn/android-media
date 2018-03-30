@@ -1,8 +1,11 @@
 package com.tokopedia.tokocash.qrpayment.data.mapper;
 
-import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
+import com.tokopedia.anals.ConsumerDrawerData;
+import com.tokopedia.tokocash.anals.GetTokocashQuery;
 import com.tokopedia.tokocash.qrpayment.presentation.model.ActionBalance;
 import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -12,38 +15,50 @@ import rx.functions.Func1;
  * Created by nabillasabbaha on 1/4/18.
  */
 
-public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, BalanceTokoCash> {
+public class BalanceTokoCashMapper implements Func1<GetTokocashQuery.Data, BalanceTokoCash> {
 
     @Inject
     public BalanceTokoCashMapper() {
     }
 
     @Override
-    public BalanceTokoCash call(BalanceTokoCashEntity balanceTokoCashEntity) {
-        if (balanceTokoCashEntity != null) {
+    public BalanceTokoCash call(GetTokocashQuery.Data balanceTokoCashEntity) {
+        if (balanceTokoCashEntity != null && balanceTokoCashEntity.wallet() != null) {
             BalanceTokoCash balanceTokoCash = new BalanceTokoCash();
 
-            if (balanceTokoCashEntity.getActionBalanceEntity() != null) {
+            GetTokocashQuery.Data.Wallet wallet = balanceTokoCashEntity.wallet();
+
+            if (wallet.action() != null) {
                 ActionBalance actionBalance = new ActionBalance();
-                actionBalance.setApplinks(balanceTokoCashEntity.getActionBalanceEntity().getApplinks());
-                actionBalance.setLabelAction(balanceTokoCashEntity.getActionBalanceEntity().getLabelAction());
-                actionBalance.setRedirectUrl(balanceTokoCashEntity.getActionBalanceEntity().getRedirectUrl());
-                actionBalance.setVisibility(balanceTokoCashEntity.getActionBalanceEntity().getVisibility());
+                actionBalance.setApplinks(wallet.action().applinks());
+                actionBalance.setLabelAction(wallet.action().text());
+                actionBalance.setRedirectUrl(wallet.action().redirect_url());
+                actionBalance.setVisibility(wallet.action().visibility());
                 balanceTokoCash.setActionBalance(actionBalance);
             }
-            balanceTokoCash.setAbTags(balanceTokoCashEntity.getAbTags());
-            balanceTokoCash.setApplinks(balanceTokoCashEntity.getApplinks());
-            balanceTokoCash.setBalance(balanceTokoCashEntity.getBalance());
-            balanceTokoCash.setHoldBalance(balanceTokoCashEntity.getHoldBalance());
-            balanceTokoCash.setLink(balanceTokoCashEntity.getLink());
-            balanceTokoCash.setRawBalance(balanceTokoCashEntity.getRaw_balance());
-            balanceTokoCash.setRawHoldBalance(balanceTokoCashEntity.getRawHoldBalance());
-            balanceTokoCash.setRawThreshold(balanceTokoCashEntity.getRawThreshold());
-            balanceTokoCash.setRawTotalBalance(balanceTokoCashEntity.getRawTotalBalance());
-            balanceTokoCash.setRedirectUrl(balanceTokoCashEntity.getRedirectUrl());
-            balanceTokoCash.setThreshold(balanceTokoCashEntity.getThreshold());
-            balanceTokoCash.setTitleText(balanceTokoCashEntity.getTitleText());
-            balanceTokoCash.setTotalBalance(balanceTokoCashEntity.getTotalBalance());
+
+            balanceTokoCash.setApplinks(wallet.applinks());
+            balanceTokoCash.setBalance(wallet.balance());
+            balanceTokoCash.setHoldBalance(wallet.hold_balance());
+            balanceTokoCash.setLink(wallet.linked() ? 1 : 0);
+            balanceTokoCash.setRawBalance(wallet.rawBalance());
+            balanceTokoCash.setRawHoldBalance(wallet.raw_hold_balance());
+            balanceTokoCash.setRawThreshold(wallet.rawBalance());
+            balanceTokoCash.setRawTotalBalance(wallet.raw_total_balance());
+            balanceTokoCash.setRedirectUrl(wallet.redirect_url());
+            //balanceTokoCash.setThreshold(balanceTokoCashEntity.getThreshold());
+            balanceTokoCash.setTitleText(wallet.text());
+            balanceTokoCash.setTotalBalance(wallet.total_balance());
+
+            ArrayList<String> abTags = new ArrayList<>();
+            if (wallet.ab_tags() != null) {
+                int index = 0;
+                for (GetTokocashQuery.Data.Ab_tag abtag : wallet.ab_tags()) {
+                    abTags.add(abtag.toString());
+                    index++;
+                }
+            }
+            balanceTokoCash.setAbTags(abTags);
 
             return balanceTokoCash;
         }

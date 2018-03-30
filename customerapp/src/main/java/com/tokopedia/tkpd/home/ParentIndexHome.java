@@ -14,8 +14,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -25,7 +23,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,12 +32,11 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.anals.UserAttribute;
+import com.tokopedia.anals.ConsumerDrawerData;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -55,7 +51,6 @@ import com.tokopedia.core.appupdate.ApplicationUpdate;
 import com.tokopedia.core.appupdate.model.DetailUpdate;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -65,7 +60,6 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.home.GetUserInfoListener;
-import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.referral.ReferralActivity;
@@ -73,13 +67,11 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.shopinfo.models.productmodel.List;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.design.bottomnavigation.BottomNavigation;
 import com.tokopedia.design.tab.Tabs;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
@@ -391,10 +383,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         AnalyticsCacheHandler.GetUserDataListener listener
                 = new AnalyticsCacheHandler.GetUserDataListener() {
-            @Override
-            public void onSuccessGetUserData(ProfileData result) {
-                TrackingUtils.setMoEUserAttributes(result);
-            }
 
             @Override
             public void onError(Throwable e) {
@@ -402,13 +390,13 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
 
             @Override
-            public void onSuccessGetUserAttr(UserAttribute.Data data) {
+            public void onSuccessGetUserAttr(ConsumerDrawerData.Data data) {
                 if (data != null)
-                    TrackingUtils.setMoEUserAttributes(data);
+                    TrackingUtils.setMoEUserAttributesOld(data);
+                TrackingUtils.setMoEUserAttributes(data);
             }
         };
 
-        cacheHandler.getUserDataCache(listener);
         cacheHandler.getUserAttrGraphQLCache(listener);
 
     }
@@ -430,11 +418,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                if (tab.getPosition() == INIT_STATE_FRAGMENT_HOME ||tab.getPosition() == INIT_STATE_FRAGMENT_FEED) {
+                if (tab.getPosition() == INIT_STATE_FRAGMENT_HOME || tab.getPosition() == INIT_STATE_FRAGMENT_FEED) {
                     Fragment fragment = adapter.getFragments().get(tab.getPosition()); // scroll to top
                     if (fragment != null) {
                         if (fragment instanceof FeedPlusFragment)

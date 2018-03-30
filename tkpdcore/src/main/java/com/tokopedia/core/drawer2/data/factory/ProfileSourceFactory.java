@@ -22,26 +22,23 @@ public class ProfileSourceFactory {
     private final PeopleService peopleService;
     private final ProfileMapper profileMapper;
     private final GlobalCacheManager peopleCache;
-    private final AnalyticsCacheHandler analyticsCacheHandler;
     private final SessionHandler sessionHandler;
 
     public ProfileSourceFactory(Context context,
                                 PeopleService peopleService,
                                 ProfileMapper profileMapper,
                                 GlobalCacheManager peopleCache,
-                                AnalyticsCacheHandler analyticsCacheHandler,
                                 SessionHandler sessionHandler) {
         this.context = context;
         this.peopleService = peopleService;
         this.profileMapper = profileMapper;
         this.peopleCache = peopleCache;
-        this.analyticsCacheHandler = analyticsCacheHandler;
         this.sessionHandler = sessionHandler;
     }
 
     public CloudProfileSource createCloudPeopleSource() {
         return new CloudProfileSource(context, peopleService,
-                profileMapper, peopleCache, analyticsCacheHandler, sessionHandler);
+                profileMapper, peopleCache, sessionHandler);
     }
 
     public LocalProfileSource createLocalPeopleSource() {

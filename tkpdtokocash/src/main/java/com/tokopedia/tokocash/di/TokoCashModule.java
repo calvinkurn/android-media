@@ -2,9 +2,11 @@ package com.tokopedia.tokocash.di;
 
 import android.content.Context;
 
+import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.accountsetting.data.AccountSettingRepository;
@@ -182,5 +184,13 @@ public class TokoCashModule {
     @TokoCashScope
     PostUnlinkTokoCashUseCase providePostUnlinkTokoCashUseCase(AccountSettingRepository accountSettingRepository) {
         return new PostUnlinkTokoCashUseCase(accountSettingRepository);
+    }
+
+    @Provides
+    ApolloClient provideApolloClient() {
+        return ApolloClient.builder()
+                .okHttpClient(OkHttpFactory.create().buildClientDefaultAuth())
+                .serverUrl(TkpdBaseURL.HOME_DATA_BASE_URL)
+                .build();
     }
 }

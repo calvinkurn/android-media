@@ -8,8 +8,8 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.data.UserAttributesRepository;
 import com.tokopedia.core.analytics.data.UserAttributesRepositoryImpl;
 import com.tokopedia.core.analytics.data.factory.UserAttributesFactory;
+import com.tokopedia.core.analytics.domain.usecase.GetSellerUserAttributesUseCase;
 import com.tokopedia.core.analytics.domain.usecase.GetUserAttributesUseCase;
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -41,7 +41,6 @@ import com.tokopedia.core.drawer2.domain.interactor.TopChatNotificationUseCase;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
-import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -79,7 +78,6 @@ public class DrawerInjector {
                 new PeopleService(),
                 new ProfileMapper(),
                 profileCache,
-                new AnalyticsCacheHandler(),
                 sessionHandler
         );
 
@@ -87,20 +85,15 @@ public class DrawerInjector {
                 new UserAttributesFactory(
                         ApolloClient.builder()
                                 .okHttpClient(OkHttpFactory.create().buildClientDefaultAuth())
-                                .serverUrl(TkpdBaseURL.GRAPHQL_DOMAIN)
+                                .serverUrl(TkpdBaseURL.HOME_DATA_BASE_URL)
                                 .build())
         );
 
         GetUserAttributesUseCase getUserAttributesUseCase = new GetUserAttributesUseCase(jobExecutor,
                 new UIThread(), userAttributesRepository);
 
-        ProfileRepository profileRepository = new ProfileRepositoryImpl(profileSourceFactory);
-
-        ProfileUseCase profileUseCase = new ProfileUseCase(
-                jobExecutor,
-                uiThread,
-                profileRepository
-        );
+        GetSellerUserAttributesUseCase getSellerrAttributesUseCase = new GetSellerUserAttributesUseCase(jobExecutor,
+                new UIThread(), userAttributesRepository);
 
         Observable<TokoCashData> tokoCashModelObservable = ((TkpdCoreRouter) context.getApplicationContext()).getTokoCashBalance();
         TokoCashUseCase tokoCashUseCase = new TokoCashUseCase(
@@ -131,18 +124,6 @@ public class DrawerInjector {
                 notificationRepository
         );
 
-        DepositSourceFactory depositSourceFactory = new DepositSourceFactory(
-                context,
-                new DepositService(),
-                new DepositMapper(),
-                drawerCache);
-
-        DepositRepository depositRepository = new DepositRepositoryImpl(depositSourceFactory);
-        DepositUseCase depositUseCase = new DepositUseCase(
-                jobExecutor,
-                uiThread,
-                depositRepository);
-
         TopChatNotificationUseCase topChatNotificationUseCase = new TopChatNotificationUseCase(
                 jobExecutor,
                 uiThread,
@@ -158,11 +139,10 @@ public class DrawerInjector {
 
         return new DrawerDataManagerImpl(
                 drawerDataListener,
-                profileUseCase,
-                depositUseCase,
                 newNotificationUseCase,
                 tokoCashUseCase,
-                getUserAttributesUseCase);
+                getUserAttributesUseCase,
+                getSellerrAttributesUseCase);
     }
 
 

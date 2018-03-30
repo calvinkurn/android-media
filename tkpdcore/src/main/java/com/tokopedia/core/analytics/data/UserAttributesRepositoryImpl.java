@@ -1,6 +1,7 @@
 package com.tokopedia.core.analytics.data;
 
-import com.tokopedia.anals.UserAttribute;
+import com.tokopedia.anals.ConsumerDrawerData;
+import com.tokopedia.anals.SellerDrawerData;
 import com.tokopedia.core.analytics.data.factory.UserAttributesFactory;
 import com.tokopedia.core.base.domain.RequestParams;
 
@@ -14,12 +15,17 @@ public class UserAttributesRepositoryImpl implements UserAttributesRepository {
 
     private UserAttributesFactory userFactory;
 
-    public UserAttributesRepositoryImpl(UserAttributesFactory userAttributesFactory){
+    public UserAttributesRepositoryImpl(UserAttributesFactory userAttributesFactory) {
         userFactory = userAttributesFactory;
     }
 
     @Override
-    public Observable<UserAttribute.Data> getUserAttributes(RequestParams parameters) {
-        return userFactory.createCloudAttrDataSource().getUserAttributes(parameters);
+    public Observable<ConsumerDrawerData.Data> getConsumerUserAttributes(RequestParams parameters) {
+        return userFactory.createCloudAttrDataSource().getConsumerUserAttributes(parameters);
+    }
+
+    @Override
+    public Observable<SellerDrawerData.Data> getSellerUserAttributes(RequestParams parameters) {
+        return userFactory.createCloudAttrDataSource().getSellerUserAttributes(parameters);
     }
 }

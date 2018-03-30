@@ -8,18 +8,14 @@ import com.tokopedia.core.util.SessionHandler;
 
 public interface DrawerDataManager {
 
-    void getProfile();
-
-    void getDeposit();
-
     void getTokoCash();
 
     void getNotification();
 
     void unsubscribe();
 
-    void getProfileCompletion();
-
     void getUserAttributes(SessionHandler sessionHandler);
+
+    void getSellerUserAttributes(SessionHandler sessionHandler);
 
 }

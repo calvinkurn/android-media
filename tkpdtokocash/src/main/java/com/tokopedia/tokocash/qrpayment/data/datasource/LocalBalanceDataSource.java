@@ -3,7 +3,8 @@ package com.tokopedia.tokocash.qrpayment.data.datasource;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.tokocash.CacheUtil;
-import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
+import com.tokopedia.tokocash.anals.GetTokocashQuery;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -22,19 +23,19 @@ public class LocalBalanceDataSource implements BalanceDataSource {
     }
 
     @Override
-    public Observable<BalanceTokoCashEntity> getBalanceTokoCash() {
-        return Observable.just(true).map(new Func1<Boolean, BalanceTokoCashEntity>() {
+    public Observable<GetTokocashQuery.Data> getBalanceTokoCash(RequestParams requestParams) {
+        return Observable.just(true).map(new Func1<Boolean, GetTokocashQuery.Data>() {
             @Override
-            public BalanceTokoCashEntity call(Boolean aBoolean) {
+            public GetTokocashQuery.Data call(Boolean aBoolean) {
                 if (getCache() != null) {
-                    return (CacheUtil.convertStringToModel(getCache(), new TypeToken<BalanceTokoCashEntity>() {
+                    return (CacheUtil.convertStringToModel(getCache(), new TypeToken<GetTokocashQuery.Data>() {
                     }.getType()));
                 } else
                     throw new RuntimeException("Cache has expired");
             }
-        }).map(new Func1<BalanceTokoCashEntity, BalanceTokoCashEntity>() {
+        }).map(new Func1<GetTokocashQuery.Data, GetTokocashQuery.Data>() {
             @Override
-            public BalanceTokoCashEntity call(BalanceTokoCashEntity balanceTokoCashEntity) {
+            public GetTokocashQuery.Data call(GetTokocashQuery.Data balanceTokoCashEntity) {
                 return balanceTokoCashEntity;
             }
         });
