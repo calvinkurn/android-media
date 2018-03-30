@@ -95,7 +95,6 @@ import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -681,6 +680,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     public boolean showInAppMessage(InAppMessage inAppMessage) {
         try {
+            Log.e("inaap message",inAppMessage.content);
             JSONObject obj = new JSONObject(inAppMessage.content);
             JSONArray messages=obj.getJSONArray("body");
             List<InAppMessageModel> inAppMessageModels=new ArrayList<>();
