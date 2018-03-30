@@ -54,6 +54,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener {
 
+    private final String NOTIFICATION_CHANNEL_NAME = "CUSTOM SOUND";
+    private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
+    private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound."
     @Override
     public void onCreate() {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
@@ -81,11 +84,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private void createCustomSoundNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create the NotificationChannel
-            CharSequence name = "CUSTOM_SOUND";
-            String description = "Custom sound";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel mChannel = new NotificationChannel("custom_sound", name, importance);
-            mChannel.setDescription(description);
+            NotificationChannel mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
+                    NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+            mChannel.setDescription(NOTIFICATION_CHANNEL_DESC);
             AudioAttributes att = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                     .build();
