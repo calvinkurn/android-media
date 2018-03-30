@@ -5,6 +5,7 @@ import android.content.Context;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.facebook.soloader.SoLoader;
@@ -77,5 +78,11 @@ public class PosApplication extends PosRouterApplication {
 
     private void initReact() {
         SoLoader.init(this, false);
+    }
+
+    @Override
+    protected void initializeAnalytics() {
+        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
+        TrackingUtils.enableDebugging(GlobalConfig.isAllowDebuggingTools());
     }
 }

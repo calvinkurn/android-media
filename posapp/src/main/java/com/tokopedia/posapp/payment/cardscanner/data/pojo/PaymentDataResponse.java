@@ -3,7 +3,7 @@ package com.tokopedia.posapp.payment.cardscanner.data.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.posapp.bank.data.pojo.BankItemResponse;
-import com.tokopedia.posapp.base.data.pojo.GeneralResponse;
+import com.tokopedia.posapp.base.data.pojo.PosResponse;
 import com.tokopedia.posapp.cart.data.pojo.CheckoutDataResponse;
 
 /**
@@ -13,7 +13,7 @@ import com.tokopedia.posapp.cart.data.pojo.CheckoutDataResponse;
 public class PaymentDataResponse {
     @SerializedName("checkout_data")
     @Expose
-    private GeneralResponse<CheckoutDataResponse> checkoutDataResponse;
+    private PosResponse<CheckoutDataResponse> checkoutDataResponse;
 
     @SerializedName("selectedBankData")
     @Expose
@@ -39,11 +39,11 @@ public class PaymentDataResponse {
     @Expose
     private int year;
 
-    public GeneralResponse<CheckoutDataResponse> getCheckoutDataResponse() {
+    public PosResponse<CheckoutDataResponse> getCheckoutDataResponse() {
         return checkoutDataResponse;
     }
 
-    public void setCheckoutDataResponse(GeneralResponse<CheckoutDataResponse> checkoutDataResponse) {
+    public void setCheckoutDataResponse(PosResponse<CheckoutDataResponse> checkoutDataResponse) {
         this.checkoutDataResponse = checkoutDataResponse;
     }
 

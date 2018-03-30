@@ -8,7 +8,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.posapp.bank.data.pojo.BankItemResponse;
 import com.tokopedia.posapp.bank.data.pojo.CCBinResponse;
 import com.tokopedia.posapp.bank.data.pojo.InstallmentResponse;
-import com.tokopedia.posapp.base.data.pojo.GeneralResponse;
+import com.tokopedia.posapp.base.data.pojo.PosResponse;
 import com.tokopedia.posapp.base.data.pojo.ListResponse;
 import com.tokopedia.posapp.bank.domain.model.BankDomain;
 import com.tokopedia.posapp.bank.domain.model.InstallmentDomain;
@@ -36,35 +36,35 @@ public class GetBankInstallmentMapper implements Func2<Response<TkpdResponse>, R
                 && bankResponse.isSuccessful()) {
             Log.d("o2o", "bankInstallment: " + bankResponse.body().getStringData());
 
-            GeneralResponse<ListResponse<BankItemResponse>> bankGeneralResponse =
+            PosResponse<ListResponse<BankItemResponse>> bankPosResponse =
                     gson.fromJson(
                             bankResponse.body().getStringData(),
-                            new TypeToken<GeneralResponse<ListResponse<BankItemResponse>>>() {
+                            new TypeToken<PosResponse<ListResponse<BankItemResponse>>>() {
                             }.getType()
                     );
 
-            if(bankGeneralResponse != null
-                    && bankGeneralResponse.getData() != null
-                    && bankGeneralResponse.getData().getList() != null) {
+            if(bankPosResponse != null
+                    && bankPosResponse.getData() != null
+                    && bankPosResponse.getData().getList() != null) {
 
                 List<BankDomain> bankDomains =
-                        getBankList(bankGeneralResponse.getData().getList());
+                        getBankList(bankPosResponse.getData().getList());
 
                 if (binResponse.body() != null
                         && binResponse.isSuccessful()) {
                     Log.d("o2o", "binCC: " + bankResponse.body().getStringData());
 
-                    GeneralResponse<ListResponse<CCBinResponse>> binGeneralResponse = gson.fromJson(
+                    PosResponse<ListResponse<CCBinResponse>> binPosResponse = gson.fromJson(
                             binResponse.body().getStringData(),
-                            new TypeToken<GeneralResponse<ListResponse<CCBinResponse>>>() {
+                            new TypeToken<PosResponse<ListResponse<CCBinResponse>>>() {
                             }.getType()
                     );
 
-                    if(binGeneralResponse != null
-                            && binGeneralResponse.getData() != null
-                            && binGeneralResponse.getData().getList() != null) {
+                    if(binPosResponse != null
+                            && binPosResponse.getData() != null
+                            && binPosResponse.getData().getList() != null) {
 
-                        for (CCBinResponse ccBinResponse : binGeneralResponse.getData().getList()) {
+                        for (CCBinResponse ccBinResponse : binPosResponse.getData().getList()) {
                             for (int i = 0; i < bankDomains.size(); i++) {
                                 if (bankDomains.get(i).getBankId() == ccBinResponse.getBankId()) {
                                     bankDomains.get(i).setBankLogo(ccBinResponse.getBankLogo());

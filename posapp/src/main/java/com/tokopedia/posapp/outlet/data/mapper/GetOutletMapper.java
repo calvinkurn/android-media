@@ -1,7 +1,6 @@
 package com.tokopedia.posapp.outlet.data.mapper;
 
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.posapp.base.data.pojo.GeneralResponse;
+import com.tokopedia.posapp.base.data.pojo.PosResponse;
 import com.tokopedia.posapp.outlet.data.pojo.OutletItemResponse;
 import com.tokopedia.posapp.outlet.data.pojo.OutletResponse;
 import com.tokopedia.posapp.outlet.domain.model.OutletItemDomain;
@@ -18,20 +17,19 @@ import rx.functions.Func1;
  * Created by okasurya on 7/31/17.
  */
 
-public class GetOutletMapper implements Func1<Response<GeneralResponse<OutletResponse>>, OutletDomain> {
+public class GetOutletMapper implements Func1<Response<PosResponse<OutletResponse>>, OutletDomain> {
 
     @Inject
     public GetOutletMapper() {
     }
 
     @Override
-    public OutletDomain call(Response<GeneralResponse<OutletResponse>> response) {
+    public OutletDomain call(Response<PosResponse<OutletResponse>> response) {
         if(response.body() != null && response.isSuccessful()) {
             OutletResponse outletResponse = response.body().getData();
 
             if(outletResponse != null && outletResponse.getList() != null) {
-                OutletDomain outletDomain = getOutletFromResponse(outletResponse);
-                return outletDomain;
+                return getOutletFromResponse(outletResponse);
             }
         }
 

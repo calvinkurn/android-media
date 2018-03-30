@@ -1,6 +1,6 @@
 package com.tokopedia.posapp.outlet.data.source;
 
-import com.tokopedia.posapp.base.data.pojo.GeneralResponse;
+import com.tokopedia.posapp.base.data.pojo.PosResponse;
 import com.tokopedia.posapp.common.PosUrl;
 import com.tokopedia.posapp.outlet.data.pojo.OutletResponse;
 
@@ -17,5 +17,5 @@ import rx.Observable;
 
 public interface OutletApi {
     @GET(PosUrl.Shop.OUTLET_LIST_V1)
-    Observable<Response<GeneralResponse<OutletResponse>>> getAddress(@QueryMap Map<String, String> params);
+    Observable<Response<PosResponse<OutletResponse>>> getOutlet(@QueryMap Map<String, String> params);
 }

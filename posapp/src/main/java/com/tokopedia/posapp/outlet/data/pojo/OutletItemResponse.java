@@ -8,16 +8,16 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class OutletItemResponse {
-    @SerializedName("")
+    @SerializedName("outlet_id")
     @Expose
     private String outletId;
-    @SerializedName("")
+    @SerializedName("shop_id")
     @Expose
     private String shopId;
-    @SerializedName("")
+    @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("")
+    @SerializedName("address")
     @Expose
     private String address;
 

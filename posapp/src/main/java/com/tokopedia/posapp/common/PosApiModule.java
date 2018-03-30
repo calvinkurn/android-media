@@ -2,6 +2,7 @@ package com.tokopedia.posapp.common;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
@@ -16,6 +17,7 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author okasurya on 3/26/18.

@@ -5,7 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.posapp.base.data.pojo.GeneralResponse;
+import com.tokopedia.posapp.base.data.pojo.PosResponse;
 import com.tokopedia.posapp.payment.otp.data.pojo.payment.PaymentAction;
 import com.tokopedia.posapp.payment.otp.domain.model.CreateOrderDomain;
 
@@ -35,9 +35,9 @@ public class CreateOrderMapper implements Func1<Response<TkpdResponse>, CreateOr
                 && response.body() != null
                 && response.body().getStatus().equals("200 Ok")) {
             Log.d("o2o", response.body().getStrResponse());
-            GeneralResponse<PaymentAction> paymentAction = gson.fromJson(
+            PosResponse<PaymentAction> paymentAction = gson.fromJson(
                     response.body().getStringData(),
-                    new TypeToken<GeneralResponse<PaymentAction>>(){}.getType()
+                    new TypeToken<PosResponse<PaymentAction>>(){}.getType()
             );
 
             CreateOrderDomain createOrderDomain = new CreateOrderDomain();

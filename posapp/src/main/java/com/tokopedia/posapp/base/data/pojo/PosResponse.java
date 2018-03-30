@@ -2,12 +2,13 @@ package com.tokopedia.posapp.base.data.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 
 /**
  * Created by okasurya on 9/19/17.
  */
 
-public class GeneralResponse<T> {
+public class PosResponse<T> extends DataResponse<T> {
     @SerializedName("success")
     @Expose
     private String sucess;
@@ -23,10 +24,6 @@ public class GeneralResponse<T> {
     @SerializedName("message")
     @Expose
     private String message;
-
-    @SerializedName("data")
-    @Expose
-    private T data;
 
     public String getSucess() {
         return sucess;
@@ -58,13 +55,5 @@ public class GeneralResponse<T> {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
     }
 }

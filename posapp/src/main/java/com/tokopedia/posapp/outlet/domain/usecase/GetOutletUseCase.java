@@ -1,5 +1,6 @@
 package com.tokopedia.posapp.outlet.domain.usecase;
 
+import com.tokopedia.posapp.outlet.data.repository.OutletCloudRepository;
 import com.tokopedia.posapp.outlet.data.repository.OutletRepository;
 import com.tokopedia.posapp.outlet.domain.model.OutletDomain;
 import com.tokopedia.usecase.RequestParams;
@@ -17,7 +18,7 @@ public class GetOutletUseCase extends UseCase<OutletDomain> {
     private OutletRepository outletRepository;
 
     @Inject
-    public GetOutletUseCase(OutletRepository outletRepository) {
+    public GetOutletUseCase(OutletCloudRepository outletRepository) {
         this.outletRepository = outletRepository;
     }
 

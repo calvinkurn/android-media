@@ -3,7 +3,7 @@ package com.tokopedia.posapp.payment.cardscanner.view.presenter;
 import com.google.gson.Gson;
 import com.tokopedia.posapp.cart.data.pojo.CheckoutDataResponse;
 import com.tokopedia.posapp.payment.cardscanner.data.pojo.PaymentDataResponse;
-import com.tokopedia.posapp.base.data.pojo.GeneralResponse;
+import com.tokopedia.posapp.base.data.pojo.PosResponse;
 import com.tokopedia.posapp.payment.cardscanner.view.CardDetail;
 import com.tokopedia.posapp.payment.cardscanner.view.viewmodel.CreditCardViewModel;
 import com.tokopedia.posapp.payment.cardscanner.view.viewmodel.PaymentViewModel;
@@ -121,8 +121,8 @@ public class CardDetailPresenter implements CardDetail.Presenter {
         return new Gson().toJson(payment);
     }
 
-    private GeneralResponse<CheckoutDataResponse> getCheckoutData(PaymentViewModel paymentViewModel) {
-        GeneralResponse<CheckoutDataResponse> response = new GeneralResponse<>();
+    private PosResponse<CheckoutDataResponse> getCheckoutData(PaymentViewModel paymentViewModel) {
+        PosResponse<CheckoutDataResponse> response = new PosResponse<>();
         response.setCode(200);
         response.setMessage("Success");
 
