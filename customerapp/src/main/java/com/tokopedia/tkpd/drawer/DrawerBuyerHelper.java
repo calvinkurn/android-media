@@ -456,7 +456,6 @@ public class DrawerBuyerHelper extends DrawerHelper
             Intent intent;
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
-                    TrackingUtils.sendMoEngageOpenHomeEvent();
                     intent = HomeRouter.getHomeActivity(context);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     context.startActivity(intent);
