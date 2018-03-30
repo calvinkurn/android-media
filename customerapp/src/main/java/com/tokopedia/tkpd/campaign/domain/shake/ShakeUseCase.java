@@ -29,7 +29,7 @@ public class ShakeUseCase extends UseCase<CampaignResponseEntity> {
     @Override
     public Observable<CampaignResponseEntity> createObservable(RequestParams requestParams) {
 
-        return campaignDataRepository.getCampaignFromShake(generateRequestBody(requestParams));
+        return campaignDataRepository.getCampaignFromShake(requestParams.getParameters());
     }
 
     protected HashMap<String, RequestBody> generateRequestBody(RequestParams requestParams) {
