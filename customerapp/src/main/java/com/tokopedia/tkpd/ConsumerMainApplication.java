@@ -89,7 +89,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             AudioAttributes att = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                     .build();
-            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.endtune), att);
+            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" +
+                    R.raw.tokopedia_endtune), att);
             NotificationManager notificationManager = (NotificationManager) getSystemService(
                     NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(mChannel);
