@@ -75,16 +75,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
 
         initSendbird();
-        createNotificationChannel();
+        createCustomSoundNotificationChannel();
     }
 
-    private void createNotificationChannel() {
+    private void createCustomSoundNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create the NotificationChannel
             CharSequence name = "CUSTOM_SOUND";
-            String description = "Custom sound for apollo";
+            String description = "Custom sound";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel mChannel = new NotificationChannel("custom sound", name, importance);
+            NotificationChannel mChannel = new NotificationChannel("custom_sound", name, importance);
             mChannel.setDescription(description);
             AudioAttributes att = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION)
