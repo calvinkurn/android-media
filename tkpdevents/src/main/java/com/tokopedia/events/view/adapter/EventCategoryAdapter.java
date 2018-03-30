@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.events.R;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.utils.CurrencyUtil;
@@ -42,7 +43,8 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         public TextView eventTime;
         public LinearLayout eventTimeLayout;
         public TextView tvDisplayTag;
-        int index;
+        private int index;
+        private boolean isShown;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
@@ -65,6 +67,13 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
             return this.index;
         }
 
+        public boolean isShown() {
+            return isShown;
+        }
+
+        public void setShown(boolean shown) {
+            isShown = shown;
+        }
     }
 
     @Override
@@ -112,6 +121,18 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         CategoryItemViewListener listener = new CategoryItemViewListener(holder);
 
         holder.itemView.setOnClickListener(listener);
+
+        UnifyTracking.eventDigitalEventFeedImpression(model.getTitle() + " - " + position);
+    }
+
+    @Override
+    public void onViewAttachedToWindow(ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (!holder.isShown()) {
+            holder.setShown(true);
+            UnifyTracking.eventDigitalEventFeedImpression(categoryItems.get(holder.getIndex()).getTitle()
+                    + " - " + holder.getIndex());
+        }
     }
 
     class CategoryItemViewListener implements View.OnClickListener {
@@ -128,6 +149,8 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(mViewHolder.getIndex()));
             context.startActivity(detailsIntent);
+            UnifyTracking.eventDigitalEventClickProduct(categoryItems.get(mViewHolder.getIndex()).getTitle()
+                    + "-" + String.valueOf(mViewHolder.getIndex()));
         }
     }
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -96,6 +97,7 @@ public class EventReviewTicketPresenter
         else if (code.length() > 3) {
             getView().hideSuccessMessage();
             isPromoCodeCase = true;
+            UnifyTracking.eventDigitalEventCheckPromo(code);
             verifyCart();
         } else {
             getView().hideSuccessMessage();
@@ -118,11 +120,13 @@ public class EventReviewTicketPresenter
     @Override
     public void updateEmail(String mail) {
         this.email = mail;
+        UnifyTracking.eventDigitalEventChangeEmail();
     }
 
     @Override
     public void updateNumber(String umber) {
         this.number = umber;
+        UnifyTracking.eventDigitalEventChaneNumber();
     }
 
     @Override
@@ -336,6 +340,7 @@ public class EventReviewTicketPresenter
                         getView().hideSuccessMessage();
                         getView().showPromoSuccessMessage(errorMsg,
                                 getView().getActivity().getResources().getColor(R.color.red_a700));
+                        UnifyTracking.eventDigitalEventPromoFailure(promocode, errorMsg);
                         promocode = "";
                     } else {
                         String successMsg = verifyCartResponse.getCart().getPromocodeSuccessMessage();
@@ -344,6 +349,7 @@ public class EventReviewTicketPresenter
                             getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),
                                     getView().getActivity().getResources().getColor(R.color.black_54));
                             getView().showCashbackMessage(successMsg);
+                            UnifyTracking.eventDigitalEventPromoSuccess(promocode, successMsg);
                         }
                     }
                 }
@@ -384,6 +390,8 @@ public class EventReviewTicketPresenter
                 paymentPassData.setCallbackSuccessUrl(checkoutResponse.getCallbackUrlSuccess());
                 paymentPassData.setCallbackFailedUrl(checkoutResponse.getCallbackUrlFailed());
                 paymentPassData.setTransactionId(checkoutResponse.getParameter().getTransactionId());
+                UnifyTracking.eventDigitalEventPayment(checkoutData.getTitle() + " - "
+                        + checkoutData.getCategoryId() + " - " + checkoutData.getSalesPrice() + " - " + promocode);
                 getView().navigateToActivityRequest(com.tokopedia.payment.activity.TopPayActivity.
                                 createInstance(getView().getActivity().getApplicationContext(), paymentPassData),
                         PAYMENT_REQUEST_CODE);

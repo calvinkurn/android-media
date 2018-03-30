@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.events.R;
@@ -243,4 +244,10 @@ public class EventSearchActivity extends TActivity implements
             mPresenter.onRecyclerViewScrolled(layoutManager);
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        UnifyTracking.eventDigitalEventClickBack("Digital_Events_Search");
+    }
 }

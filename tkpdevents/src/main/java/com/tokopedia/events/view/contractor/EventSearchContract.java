@@ -52,7 +52,7 @@ public class EventSearchContract {
         LinearLayoutManager getLayoutManager();
     }
 
-    public interface IEventSearchPresenter extends CustomerPresenter<IEventSearchView>{
+    public interface IEventSearchPresenter extends CustomerPresenter<IEventSearchView> {
 
         void getEventsListBySearch(String searchText);
 
@@ -68,7 +68,7 @@ public class EventSearchContract {
 
         void onClickFilterItem(ValuesItemDomain filterItem, FiltersAdapter.FilterViewHolder viewHolder);
 
-        void onSearchResultClick(SearchViewModel searchViewModel);
+        void onSearchResultClick(SearchViewModel searchViewModel, int position);
 
         void onRecyclerViewScrolled(LinearLayoutManager layoutManager);
     }

@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.widget.TouchViewPager;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -261,6 +262,7 @@ public class EventsHomeActivity extends TActivity
         CategoryFragmentPagerAdapter categoryTabsPagerAdapter =
                 new CategoryFragmentPagerAdapter(getSupportFragmentManager(), categoryList);
         categoryViewPager.setAdapter(categoryTabsPagerAdapter);
+        setCategoryViewPagerListener();
         tabs.setupWithViewPager(categoryViewPager);
         categoryViewPager.setCurrentItem(defaultViewPagerPos);
         categoryViewPager.setSaveFromParentEnabled(false);
@@ -291,9 +293,35 @@ public class EventsHomeActivity extends TActivity
         viewPager.setAdapter(adapter);
     }
 
+    private void setCategoryViewPagerListener() {
+        categoryViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                UnifyTracking.eventDigitalEventClickTab(categoryViewPager.getAdapter().getPageTitle(position) + "-"
+                        + String.valueOf(position));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        UnifyTracking.eventDigitalEventClickBack(mPresenter.getSCREEN_NAME());
     }
 
     @Override

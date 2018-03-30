@@ -193,7 +193,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
 
         @OnClick(R2.id.tv_simple_item)
         void onClickFilterItem() {
-            mPresenter.onSearchResultClick(valueItem);
+            mPresenter.onSearchResultClick(valueItem, mPosition);
             notifyItemChanged(mPosition);
         }
     }

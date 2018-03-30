@@ -16,6 +16,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -188,7 +189,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
                             seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getStatus(),
                             maxTickets, rowId, currentChar);
                 } else {
-                    customSeatAreaLayout.addColumn("", 0, 0, 0, "");
+                    customSeatAreaLayout.addColumn("-", 0, 0, 0, "");
                 }
             }
             seatTextLayout.addView(customSeatAreaLayout);
@@ -315,5 +316,11 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPresenter.onActivityResult(requestCode);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        UnifyTracking.eventDigitalEventClickBack("Digital_Events_Ticket_Seat_Details");
     }
 }

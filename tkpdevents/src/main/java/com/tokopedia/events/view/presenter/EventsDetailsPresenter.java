@@ -3,6 +3,7 @@ package com.tokopedia.events.view.presenter;
 import android.content.Intent;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.events.domain.GetEventDetailsRequestUseCase;
@@ -123,6 +124,7 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
         bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL, eventsDetailsViewModel);
         bookTicketIntent.putExtra(EXTRA_SEATING_PARAMETER, hasSeatLayout);
         getView().navigateToActivityRequest(bookTicketIntent, 100);
+        UnifyTracking.eventDigitalEventClickLanjuktan(eventsDetailsViewModel.getTitle() + "-" + "DIGITAL_EVENTS_DETAILS");
     }
 
 }

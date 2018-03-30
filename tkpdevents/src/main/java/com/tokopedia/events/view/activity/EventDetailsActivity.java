@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -273,6 +274,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         }
 
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
+        UnifyTracking.eventDigitalEventProductImpression(data.getTitle());
     }
 
     @Override
@@ -310,10 +312,14 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         if (tvExpandableDescription.isExpanded()) {
             seemorebutton.setText(R.string.expand);
             ivArrowSeating.animate().rotation(0f);
+            UnifyTracking.eventDigitalEventShowHideDescription("deskripsi - " + R.string.expand,
+                    textViewTitle.getText().toString());
 
         } else {
             seemorebutton.setText(R.string.collapse);
             ivArrowSeating.animate().rotation(180f);
+            UnifyTracking.eventDigitalEventShowHideDescription("deskripsi - " + R.string.collapse,
+                    textViewTitle.getText().toString());
         }
         tvExpandableDescription.toggle();
     }
@@ -323,10 +329,14 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         if (tvExpandableTermsNCondition.isExpanded()) {
             seemorebuttonTnC.setText(R.string.expand);
             ivArrowSeatingTnC.animate().rotation(0f);
+            UnifyTracking.eventDigitalEventShowHideDescription("syarat dan ketentuan - " + R.string.expand,
+                    textViewTitle.getText().toString());
 
         } else {
             seemorebuttonTnC.setText(R.string.collapse);
             ivArrowSeatingTnC.animate().rotation(180f);
+            UnifyTracking.eventDigitalEventShowHideDescription("syarat dan ketentuan - " + R.string.collapse,
+                    textViewTitle.getText().toString());
         }
         tvExpandableTermsNCondition.toggle();
     }
@@ -353,6 +363,12 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     public EventComponent getComponent() {
         if (eventComponent == null) initInjector();
         return eventComponent;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        UnifyTracking.eventDigitalEventClickBack("Digital_Events_Product_Details");
     }
 
     @Override

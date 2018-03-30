@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.events.R;
@@ -283,6 +284,7 @@ public class EventBookTicketActivity
             super.onBackPressed();
         else
             finish();
+        UnifyTracking.eventDigitalEventClickBack("Digital_Events_Ticket_Details");
     }
 
     @Override

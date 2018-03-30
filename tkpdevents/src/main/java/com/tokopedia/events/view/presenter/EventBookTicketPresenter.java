@@ -6,6 +6,7 @@ import android.util.TypedValue;
 import android.view.View;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -189,6 +190,9 @@ public class EventBookTicketPresenter
         validateShow.setScheduleId(selectedPackageViewModel.getProductScheduleId());
         validateShow.setProductId(selectedPackageViewModel.getProductId());
         postValidateShowUseCase.setValidateShowModel(validateShow);
+        UnifyTracking.eventDigitalEventCheckout(selectedPackageViewModel.getTitle() + " - " +
+                selectedPackageViewModel.getCategoryId() + " - " +
+                selectedPackageViewModel.getSalesPrice());
         getProfile();
     }
 
@@ -216,6 +220,9 @@ public class EventBookTicketPresenter
             selectedViewHolder.toggleMaxTicketWarning(View.VISIBLE, selectedPackageViewModel.getSelectedQuantity());
         }
         getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
+        UnifyTracking.eventDigitalEventAddTicket("add - " + selectedPackageViewModel.getTitle() + " - " +
+                selectedPackageViewModel.getCategoryId() + " - " +
+                selectedPackageViewModel.getSalesPrice());
     }
 
     public void removeTickets() {
@@ -233,6 +240,9 @@ public class EventBookTicketPresenter
             mChildFragment.setDecorationHeight(0);
             getView().hidePayButton();
         }
+        UnifyTracking.eventDigitalEventRemoveTicket("remove - " + selectedPackageViewModel.getTitle() + " - " +
+                selectedPackageViewModel.getCategoryId() + " - " +
+                selectedPackageViewModel.getSalesPrice());
     }
 
     private void getSeatSelectionDetails() {

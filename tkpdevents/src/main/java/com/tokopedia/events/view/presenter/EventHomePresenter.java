@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -41,13 +42,14 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
 
     private GetEventsListRequestUseCase getEventsListRequestUsecase;
     private GetEventsListByLocationRequestUseCase getEventsListByLocationRequestUseCase;
-    CategoryViewModel carousel;
-    List<CategoryViewModel> categoryViewModels;
-    TouchViewPager mTouchViewPager;
-    int currentPage, totalPages;
-    String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
-    String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
-    String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
+    private CategoryViewModel carousel;
+    private List<CategoryViewModel> categoryViewModels;
+    private TouchViewPager mTouchViewPager;
+    private int currentPage, totalPages;
+    private String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
+    private String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
+    private String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
+    private String SCREEN_NAME = "Digital_Events_Home";
 
     @Inject
     public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase, GetEventsListByLocationRequestUseCase getEventsListByLocationRequestUseCase, GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase) {
@@ -96,6 +98,8 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                             currentPage = 0;
                         }
                         mTouchViewPager.setCurrentItem(currentPage, true);
+                        UnifyTracking.eventDigitalEventPromoImpression(mTouchViewPager.getAdapter().getPageTitle(currentPage).toString() +
+                                " - " + currentPage);
                     }
                 });
     }
@@ -114,18 +118,23 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             searchIntent.putParcelableArrayListExtra("TOPEVENTS", searchViewModelList);
             getView().navigateToActivityRequest(searchIntent,
                     EventsHomeActivity.REQUEST_CODE_EVENTSEARCHACTIVITY);
+            UnifyTracking.eventDigitalEventClickSearch();
             return true;
         } else if (id == R.id.action_promo) {
             startGeneralWebView(PROMOURL);
+            UnifyTracking.eventDigitalEventClickPromo();
             return true;
         } else if (id == R.id.action_booked_history) {
             startGeneralWebView(TRANSATIONSURL);
+            UnifyTracking.eventDigitalEventClickDaftarTransaksi();
             return true;
         } else if (id == R.id.action_faq) {
             startGeneralWebView(FAQURL);
+            UnifyTracking.eventDigitalEventClickBantaun();
             return true;
         } else {
             getView().getActivity().onBackPressed();
+            UnifyTracking.eventDigitalEventClickBack(SCREEN_NAME);
             return true;
         }
     }
@@ -209,6 +218,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             intent.putExtra("homedata", categoryItemsViewModel);
             getView().getActivity().startActivity(intent);
         }
+        UnifyTracking.eventDigitalEventClickPromo(categoryItemsViewModel.getTitle() + "-" + String.valueOf(currentPage));
     }
 
     private void getCarousel(List<CategoryViewModel> categoryViewModels) {
@@ -225,6 +235,12 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             ((TkpdCoreRouter) getView().getActivity().getApplication())
                     .actionOpenGeneralWebView(getView().getActivity(), url);
         }
+    }
+
+
+    @Override
+    public String getSCREEN_NAME() {
+        return SCREEN_NAME;
     }
 
 }

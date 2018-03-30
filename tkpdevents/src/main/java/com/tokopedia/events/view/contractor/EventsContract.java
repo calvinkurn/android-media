@@ -53,5 +53,7 @@ public class EventsContract {
         void onBannerSlide(int page);
 
         boolean onOptionMenuClick(int id);
+
+        public String getSCREEN_NAME();
     }
 }
