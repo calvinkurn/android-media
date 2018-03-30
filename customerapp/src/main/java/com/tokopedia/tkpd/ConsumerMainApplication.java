@@ -84,7 +84,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             CharSequence name = "CUSTOM_SOUND";
             String description = "Custom sound for apollo";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel mChannel = new NotificationChannel("CHANNLE_ID", name, importance);
+            NotificationChannel mChannel = new NotificationChannel("custom sound", name, importance);
             mChannel.setDescription(description);
 
             // Register the channel with the system; you can't change the importance
