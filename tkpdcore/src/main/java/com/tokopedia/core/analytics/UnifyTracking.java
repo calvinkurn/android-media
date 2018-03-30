@@ -2175,6 +2175,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventUssdAttempt(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_IMPRESSION_HOME_PAGE,
+                AppEventTracking.Category.DIGITAL + AppEventTracking.Category.PULSA,
+                AppEventTracking.Action.USSD_ATTEMPT,
+                eventLabel
+        ).getEvent());
+    }
+
     public static void eventClickPaymentAndTopupOnDrawer() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,

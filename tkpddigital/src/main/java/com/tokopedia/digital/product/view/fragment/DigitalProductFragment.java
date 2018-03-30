@@ -931,16 +931,19 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void checkBalanceByUSSD(int simPosition, String ussdCode) {
         presenter.processToCheckBalance(null, simPosition, ussdCode);
         UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_CEK_SALDO, DeviceUtil.getOperatorName(getActivity(), simPosition) + " - " + presenter.getDeviceMobileNumber(simPosition));
+        UnifyTracking.eventUssdAttempt(getString(R.string.ussd_permission_allowed_label));
     }
 
     @OnPermissionDenied({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     void showDeniedForPhone() {
         RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CALL_PHONE);
+        UnifyTracking.eventUssdAttempt(getString(R.string.ussd_permission_denied_label));
     }
 
     @OnNeverAskAgain({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     void showNeverAskForPhone() {
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CALL_PHONE);
+        UnifyTracking.eventUssdAttempt(getString(R.string.ussd_permission_denied_label));
     }
 
     private void renderContactDataToClientNumber(ContactData contactData) {
@@ -1099,11 +1102,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             }
             if (pulsaBalance != null && pulsaBalance.isSuccess()) {
                 pulsaBalance.setMobileNumber(number);
+                UnifyTracking.eventUssdAttempt(getString(R.string.status_success_label) );
                 startActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim),
                         categoryDataState.getClientNumberList().get(0).getValidation(),
                         categoryId, categoryDataState.getName(), selectedSim, presenter.getSelectedUssdOperatorList(selectedSim)));
             } else {
                 showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
+                UnifyTracking.eventUssdAttempt(getString(R.string.status_failed_label) +  getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
             }
         }
     }
