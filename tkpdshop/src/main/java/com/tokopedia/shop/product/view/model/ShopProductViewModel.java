@@ -7,7 +7,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
  * Created by nathan on 2/6/18.
  */
 
-public class ShopProductViewModel implements Visitable<ShopProductAdapterTypeFactory> {
+public abstract class ShopProductViewModel<T> implements Visitable<T> {
 
     private String id;
     private String name;
@@ -26,6 +26,9 @@ public class ShopProductViewModel implements Visitable<ShopProductAdapterTypeFac
     private boolean wishList;
     private String productUrl;
     private boolean showWishList;
+
+    public ShopProductViewModel() {
+    }
 
     public String getOriginalPrice() {
         return originalPrice;
@@ -163,8 +166,4 @@ public class ShopProductViewModel implements Visitable<ShopProductAdapterTypeFac
         this.showWishList = showWishList;
     }
 
-    @Override
-    public int type(ShopProductAdapterTypeFactory typeFactory) {
-        return typeFactory.type(this);
-    }
 }

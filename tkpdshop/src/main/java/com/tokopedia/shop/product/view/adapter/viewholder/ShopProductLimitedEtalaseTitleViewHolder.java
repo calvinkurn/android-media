@@ -20,8 +20,6 @@ public class ShopProductLimitedEtalaseTitleViewHolder extends AbstractViewHolder
     public static final int LAYOUT = R.layout.item_shop_product_limited_etalase_title_view;
     private LabelView etalaseButton;
 
-    private SearchInputView searchInputView;
-
     public ShopProductLimitedEtalaseTitleViewHolder(View itemView,
                                                     View.OnClickListener showMoreEtalaseOnclickListener) {
         super(itemView);

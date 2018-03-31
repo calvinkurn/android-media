@@ -2,8 +2,8 @@ package com.tokopedia.shop.product.view.adapter;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductHomeViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedProductViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
@@ -20,22 +20,11 @@ public class ShopProductLimitedAdapter extends BaseListAdapter<ShopProductBaseVi
     public void updateWishListStatus(String productId, boolean wishList) {
         for (int i = 0; i < getData().size(); i++) {
             ShopProductBaseViewModel shopProductViewModel = getData().get(i);
-            if (shopProductViewModel instanceof ShopProductLimitedFeaturedViewModel) {
-                for (ShopProductViewModel shopProductViewModelContent : ((ShopProductLimitedFeaturedViewModel) shopProductViewModel).getShopProductViewModelList()) {
-                    if (shopProductViewModelContent.getId().equalsIgnoreCase(productId)) {
-                        shopProductViewModelContent.setWishList(wishList);
-                        notifyItemChanged(i);
-                        return;
-                    }
-                }
-            }
-            if (shopProductViewModel instanceof ShopProductLimitedProductViewModel) {
-                for (ShopProductViewModel shopProductViewModelContent : ((ShopProductLimitedProductViewModel) shopProductViewModel).getShopProductViewModelList().getList()) {
-                    if (shopProductViewModelContent.getId().equalsIgnoreCase(productId)) {
-                        shopProductViewModelContent.setWishList(wishList);
-                        notifyItemChanged(i);
-                        return;
-                    }
+            if (shopProductViewModel instanceof ShopProductViewModel) {
+                if (((ShopProductViewModel)shopProductViewModel).getId().equalsIgnoreCase(productId)) {
+                    ((ShopProductViewModel)shopProductViewModel).setWishList(wishList);
+                    notifyItemChanged(i);
+                    return;
                 }
             }
         }

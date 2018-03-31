@@ -8,11 +8,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -40,11 +41,11 @@ import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedPromoViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedProductViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
@@ -65,6 +66,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101;
     private static final int REQUEST_CODE_ETALASE = 200;
+    public static final int SPAN_COUNT = 2;
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
     @Inject
@@ -93,6 +95,12 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         }
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_shop_product_limited_list, container, false);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,17 +112,22 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         super.onViewCreated(view, savedInstanceState);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
-        VerticalRecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-        recyclerView.clearItemDecoration();
-        getRecyclerView(view).addOnScrollListener(new RecyclerView.OnScrollListener() {
+    }
+
+    @Override
+    protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
-                if (lastVisibleItem >= recyclerView.getLayoutManager().getItemCount()) {
-                    onLastItemVisibleTracking();
+            public int getSpanSize(int position) {
+                if(getAdapter().getItemViewType(position) == ShopProductViewHolder.LAYOUT){
+                    return  1;
+                }else{
+                    return SPAN_COUNT;
                 }
             }
         });
+        return gridLayoutManager;
     }
 
     @Override
@@ -267,29 +280,30 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         trackingImpressionFeatureProduct(list);
     }
 
+
     private void trackingImpressionFeatureProduct(List<ShopProductBaseViewModel> list) {
-        for (ShopProductBaseViewModel shopProductBaseViewModel : list) {
-            if (shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModel) {
-                if (shopInfo != null) {
-                    shopPageTracking.eventViewProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
-                            ((ShopProductLimitedFeaturedViewModel) shopProductBaseViewModel).getShopProductViewModelList(),
-                            shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
-                }
-            } else if (shopProductBaseViewModel instanceof ShopProductLimitedProductViewModel) {
-                if (shopInfo != null) {
-                    shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
-                            ((ShopProductLimitedProductViewModel) shopProductBaseViewModel).getShopProductViewModelList().getList(),
-                            true, shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()),
-                            false);
-                }
-            } else if (shopProductBaseViewModel instanceof ShopProductLimitedPromoViewModel) {
-                if (shopInfo != null) {
-                    shopPageTracking.eventViewBannerImpression(getString(R.string.shop_info_title_tab_product),
-                            shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopId(), shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
-                            ShopPageTracking.getShopType(shopInfo.getInfo()));
-                }
-            }
-        }
+//        for (ShopProductBaseViewModel shopProductBaseViewModel : list) {
+//            if (shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModel) {
+//                if (shopInfo != null) {
+//                    shopPageTracking.eventViewProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
+//                            ((ShopProductLimitedFeaturedViewModel) shopProductBaseViewModel).getShopProductViewModelList(),
+//                            shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
+//                }
+//            } else if (shopProductBaseViewModel instanceof ShopProductLimitedProductViewModel) {
+//                if (shopInfo != null) {
+//                    shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
+//                            ((ShopProductLimitedProductViewModel) shopProductBaseViewModel).getShopProductViewModelList().getList(),
+//                            true, shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()),
+//                            false);
+//                }
+//            } else if (shopProductBaseViewModel instanceof ShopProductLimitedPromoViewModel) {
+//                if (shopInfo != null) {
+//                    shopPageTracking.eventViewBannerImpression(getString(R.string.shop_info_title_tab_product),
+//                            shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopId(), shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
+//                            ShopPageTracking.getShopType(shopInfo.getInfo()));
+//                }
+//            }
+//        }
     }
 
     @Override

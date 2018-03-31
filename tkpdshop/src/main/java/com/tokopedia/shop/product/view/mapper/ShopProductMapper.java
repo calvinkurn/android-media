@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.mapper;
 
+import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.common.util.WishListUtils;
@@ -7,6 +8,9 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductBadge;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductLabel;
+import com.tokopedia.shop.product.view.model.ShopProductHomeViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 import java.util.ArrayList;
@@ -25,14 +29,14 @@ public class ShopProductMapper {
     public List<ShopProductViewModel> convertFromShopProduct(List<ShopProduct> shopProductList) {
         List<ShopProductViewModel> shopProductViewModelList = new ArrayList<>();
         for (ShopProduct shopProduct : shopProductList) {
-            ShopProductViewModel shopProductViewModel = convertFromShopProduct(shopProduct);
+            ShopProductListViewModel shopProductViewModel = convertFromShopProduct(shopProduct);
             shopProductViewModelList.add(shopProductViewModel);
         }
         return shopProductViewModelList;
     }
 
-    private ShopProductViewModel convertFromShopProduct(ShopProduct shopProduct) {
-        ShopProductViewModel shopProductViewModel = new ShopProductViewModel();
+    private ShopProductListViewModel convertFromShopProduct(ShopProduct shopProduct) {
+        ShopProductListViewModel shopProductViewModel = new ShopProductListViewModel();
 
         shopProductViewModel.setId(shopProduct.getProductId());
         shopProductViewModel.setName(shopProduct.getProductName());
@@ -91,14 +95,14 @@ public class ShopProductMapper {
     public List<ShopProductViewModel> convertFromProductFeatured(List<GMFeaturedProduct> gmFeaturedProductList) {
         List<ShopProductViewModel> shopProductViewModelList = new ArrayList<>();
         for (GMFeaturedProduct shopProduct : gmFeaturedProductList) {
-            ShopProductViewModel shopProductViewModel = convertFromProductFeatured(shopProduct);
+            ShopProductLimitedFeaturedViewModel shopProductViewModel = convertFromProductFeatured(shopProduct);
             shopProductViewModelList.add(shopProductViewModel);
         }
         return shopProductViewModelList;
     }
 
-    private ShopProductViewModel convertFromProductFeatured(GMFeaturedProduct gmFeaturedProduct) {
-        ShopProductViewModel shopProductViewModel = new ShopProductViewModel();
+    private ShopProductLimitedFeaturedViewModel convertFromProductFeatured(GMFeaturedProduct gmFeaturedProduct) {
+        ShopProductLimitedFeaturedViewModel shopProductViewModel = new ShopProductLimitedFeaturedViewModel();
 
         shopProductViewModel.setId(gmFeaturedProduct.getProductId());
         shopProductViewModel.setName(gmFeaturedProduct.getName());
@@ -115,5 +119,71 @@ public class ShopProductMapper {
         shopProductViewModel.setPo(gmFeaturedProduct.isPreorder());
         shopProductViewModel.setFreeReturn(gmFeaturedProduct.isReturnable());
         return shopProductViewModel;
+    }
+
+    public PagingList<ShopProductHomeViewModel> convertFromProductViewModel(PagingList<ShopProductViewModel> shopProductViewModelPagingList) {
+        PagingList<ShopProductHomeViewModel> shopProductHomeViewModelPagingList = new PagingList<>();
+        shopProductHomeViewModelPagingList.setPaging(shopProductViewModelPagingList.getPaging());
+        shopProductHomeViewModelPagingList.setTotalData(shopProductViewModelPagingList.getTotalData());
+        List<ShopProductHomeViewModel> shopProductHomeViewModels = new ArrayList<>();
+        for(ShopProductViewModel shopProductViewModel : shopProductViewModelPagingList.getList()){
+            ShopProductHomeViewModel shopProductHomeViewModel = convertFromProductModel(shopProductViewModel);
+            shopProductHomeViewModels.add(shopProductHomeViewModel);
+        }
+        shopProductHomeViewModelPagingList.setList(shopProductHomeViewModels);
+        return shopProductHomeViewModelPagingList;
+    }
+
+    private ShopProductHomeViewModel convertFromProductModel(ShopProductViewModel shopProductViewModel) {
+        ShopProductHomeViewModel shopProductHomeViewModel = new ShopProductHomeViewModel();
+        shopProductHomeViewModel.setCashback(shopProductViewModel.getCashback());
+        shopProductHomeViewModel.setDiscountPercentage(shopProductViewModel.getDiscountPercentage());
+        shopProductHomeViewModel.setDisplayedPrice(shopProductViewModel.getDisplayedPrice());
+        shopProductHomeViewModel.setFreeReturn(shopProductViewModel.isFreeReturn());
+        shopProductHomeViewModel.setId(shopProductViewModel.getId());
+        shopProductHomeViewModel.setImageUrl(shopProductViewModel.getImageUrl());
+        shopProductHomeViewModel.setImageUrl300(shopProductViewModel.getImageUrl300());
+        shopProductHomeViewModel.setImageUrl700(shopProductViewModel.getImageUrl700());
+        shopProductHomeViewModel.setName(shopProductViewModel.getName());
+        shopProductHomeViewModel.setOriginalPrice(shopProductViewModel.getOriginalPrice());
+        shopProductHomeViewModel.setPo(shopProductViewModel.isPo());
+        shopProductHomeViewModel.setProductUrl(shopProductViewModel.getProductUrl());
+        shopProductHomeViewModel.setRating(shopProductViewModel.getRating());
+        shopProductHomeViewModel.setShowWishList(shopProductViewModel.isShowWishList());
+        shopProductHomeViewModel.setTotalReview(shopProductViewModel.getTotalReview());
+        shopProductHomeViewModel.setWholesale(shopProductViewModel.isWholesale());
+        shopProductHomeViewModel.setWishList(shopProductViewModel.isWishList());
+        return shopProductHomeViewModel;
+    }
+
+    private ShopProductLimitedFeaturedViewModel convertFromProductModelFeatured(ShopProductViewModel shopProductViewModel) {
+        ShopProductLimitedFeaturedViewModel shopProductLimitedFeaturedViewModel = new ShopProductLimitedFeaturedViewModel();
+        shopProductLimitedFeaturedViewModel.setCashback(shopProductViewModel.getCashback());
+        shopProductLimitedFeaturedViewModel.setDiscountPercentage(shopProductViewModel.getDiscountPercentage());
+        shopProductLimitedFeaturedViewModel.setDisplayedPrice(shopProductViewModel.getDisplayedPrice());
+        shopProductLimitedFeaturedViewModel.setFreeReturn(shopProductViewModel.isFreeReturn());
+        shopProductLimitedFeaturedViewModel.setId(shopProductViewModel.getId());
+        shopProductLimitedFeaturedViewModel.setImageUrl(shopProductViewModel.getImageUrl());
+        shopProductLimitedFeaturedViewModel.setImageUrl300(shopProductViewModel.getImageUrl300());
+        shopProductLimitedFeaturedViewModel.setImageUrl700(shopProductViewModel.getImageUrl700());
+        shopProductLimitedFeaturedViewModel.setName(shopProductViewModel.getName());
+        shopProductLimitedFeaturedViewModel.setOriginalPrice(shopProductViewModel.getOriginalPrice());
+        shopProductLimitedFeaturedViewModel.setPo(shopProductViewModel.isPo());
+        shopProductLimitedFeaturedViewModel.setProductUrl(shopProductViewModel.getProductUrl());
+        shopProductLimitedFeaturedViewModel.setRating(shopProductViewModel.getRating());
+        shopProductLimitedFeaturedViewModel.setShowWishList(shopProductViewModel.isShowWishList());
+        shopProductLimitedFeaturedViewModel.setTotalReview(shopProductViewModel.getTotalReview());
+        shopProductLimitedFeaturedViewModel.setWholesale(shopProductViewModel.isWholesale());
+        shopProductLimitedFeaturedViewModel.setWishList(shopProductViewModel.isWishList());
+        return shopProductLimitedFeaturedViewModel;
+    }
+
+    public List<ShopProductLimitedFeaturedViewModel> convertFromProductViewModelFeatured(List<ShopProductViewModel> shopProductViewModels) {
+        List<ShopProductLimitedFeaturedViewModel> shopProductLimitedFeaturedViewModels = new ArrayList<>();
+        for(ShopProductViewModel shopProductViewModel : shopProductViewModels){
+            ShopProductLimitedFeaturedViewModel shopProductLimitedFeaturedViewModel = convertFromProductModelFeatured(shopProductViewModel);
+            shopProductLimitedFeaturedViewModels.add(shopProductLimitedFeaturedViewModel);
+        }
+        return shopProductLimitedFeaturedViewModels;
     }
 }

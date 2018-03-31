@@ -1,13 +1,11 @@
 package com.tokopedia.shop.product.domain.interactor;
 
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
-import com.tokopedia.shop.common.util.TextApiUtils;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
+import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductHomeViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedProductViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedSearchViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -18,6 +16,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
@@ -25,7 +24,7 @@ import rx.schedulers.Schedulers;
  * Created by normansyahputa on 2/23/18.
  */
 
-public class GetShopProductLimitedUseCase extends UseCase<List<ShopProductBaseViewModel>> {
+public class GetShopProductLimitedUseCase extends UseCase<PagingList<ShopProductBaseViewModel>> {
 
     private static final String SHOP_ID = "SHOP_ID";
     private static final String GOLD_MERCHANT_STORE = "GOLD_MERCHANT";
@@ -34,16 +33,19 @@ public class GetShopProductLimitedUseCase extends UseCase<List<ShopProductBaseVi
 
     private final GetShopProductFeaturedUseCase getShopProductFeaturedUseCase;
     private final GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase;
+    private ShopProductMapper shopProductMapper;
 
     @Inject
     public GetShopProductLimitedUseCase(GetShopProductFeaturedUseCase getShopProductFeaturedUseCase,
-                                        GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase) {
+                                        GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase,
+                                        ShopProductMapper shopProductMapper) {
         this.getShopProductFeaturedUseCase = getShopProductFeaturedUseCase;
         this.getShopProductListWithAttributeUseCase = getShopProductListWithAttributeUseCase;
+        this.shopProductMapper = shopProductMapper;
     }
 
     @Override
-    public Observable<List<ShopProductBaseViewModel>> createObservable(RequestParams requestParams) {
+    public Observable<PagingList<ShopProductBaseViewModel>> createObservable(RequestParams requestParams) {
         final String shopId = requestParams.getString(SHOP_ID, "");
         final boolean goldMerchantStore = requestParams.getBoolean(GOLD_MERCHANT_STORE, false);
         final boolean officialStore = requestParams.getBoolean(OFFICIAL_STORE, false);
@@ -52,32 +54,39 @@ public class GetShopProductLimitedUseCase extends UseCase<List<ShopProductBaseVi
         shopProductRequestModel.setShopId(shopId);
         shopProductRequestModel.setOfficialStore(officialStore);
         shopProductRequestModel.setPage(page);
-        List<ShopProductViewModel> defaultFeaturedProductList = new ArrayList<>();
-        Observable<List<ShopProductViewModel>> featuredProductObservable = Observable.just(defaultFeaturedProductList);
-        if (goldMerchantStore || officialStore) {
-            featuredProductObservable = getShopProductFeaturedUseCase.createObservable(GetShopProductFeaturedUseCase.createRequestParam(shopId, officialStore));
+        List<ShopProductLimitedFeaturedViewModel> defaultFeaturedProductList = new ArrayList<>();
+        Observable<List<ShopProductLimitedFeaturedViewModel>> featuredProductObservable = Observable.just(defaultFeaturedProductList);
+        if ((goldMerchantStore || officialStore) && page == 1) {
+            featuredProductObservable = getShopProductFeaturedUseCase.createObservable(GetShopProductFeaturedUseCase.createRequestParam(shopId, officialStore))
+                    .flatMap(new Func1<List<ShopProductViewModel>, Observable<List<ShopProductLimitedFeaturedViewModel>>>() {
+                        @Override
+                        public Observable<List<ShopProductLimitedFeaturedViewModel>> call(List<ShopProductViewModel> shopProductViewModels) {
+                            return Observable.just(shopProductMapper.convertFromProductViewModelFeatured(shopProductViewModels));
+                        }
+                    });
         }
-        Observable<PagingList<ShopProductViewModel>> shopProductObservable = getShopProductListWithAttributeUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel));
+        Observable<PagingList<ShopProductHomeViewModel>> shopProductObservable =
+                getShopProductListWithAttributeUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel))
+                        .flatMap(new Func1<PagingList<ShopProductViewModel>, Observable<PagingList<ShopProductHomeViewModel>>>() {
+                            @Override
+                            public Observable<PagingList<ShopProductHomeViewModel>> call(PagingList<ShopProductViewModel> shopProductViewModelPagingList) {
+                                return Observable.just(shopProductMapper.convertFromProductViewModel(shopProductViewModelPagingList));
+                            }
+                        });
 
         return Observable.zip(
                 featuredProductObservable.subscribeOn(Schedulers.io()), shopProductObservable.subscribeOn(Schedulers.io()),
-                new Func2<List<ShopProductViewModel>, PagingList<ShopProductViewModel>, List<ShopProductBaseViewModel>>() {
+                new Func2<List<ShopProductLimitedFeaturedViewModel>, PagingList<ShopProductHomeViewModel>, PagingList<ShopProductBaseViewModel>>() {
                     @Override
-                    public List<ShopProductBaseViewModel> call(List<ShopProductViewModel> shopProductViewModelList, PagingList<ShopProductViewModel> shopProductList) {
-                        List<ShopProductBaseViewModel> shopProductBaseViewModelList = new ArrayList<>();
-                        if(page==1){
-                            if (shopProductViewModelList.size() > 0) {
-                                ShopProductLimitedFeaturedViewModel shopProductLimitedFeaturedViewModel = new ShopProductLimitedFeaturedViewModel();
-                                shopProductLimitedFeaturedViewModel.setShopProductViewModelList(shopProductViewModelList);
-                                shopProductBaseViewModelList.add(shopProductLimitedFeaturedViewModel);
-                            }
-                        }
-                        if (shopProductList.getList().size() > 0) {
-                            ShopProductLimitedProductViewModel shopProductLimitedProductViewModel = new ShopProductLimitedProductViewModel();
-                            shopProductLimitedProductViewModel.setShopProductViewModelList(shopProductList);
-                            shopProductBaseViewModelList.add(shopProductLimitedProductViewModel);
-                        }
-                        return shopProductBaseViewModelList;
+                    public PagingList<ShopProductBaseViewModel> call(List<ShopProductLimitedFeaturedViewModel> shopProductFeatured, PagingList<ShopProductHomeViewModel> shopProductList) {
+                        PagingList<ShopProductBaseViewModel> shopProductBaseViewModelPagingList = new PagingList<>();
+                        shopProductBaseViewModelPagingList.setPaging(shopProductList.getPaging());
+                        shopProductBaseViewModelPagingList.setTotalData(shopProductList.getTotalData());
+                        List<ShopProductBaseViewModel> shopProductBaseViewModels = new ArrayList<>();
+                        shopProductBaseViewModels.addAll(shopProductFeatured);
+                        shopProductBaseViewModels.addAll(shopProductList.getList());
+                        shopProductBaseViewModelPagingList.setList(shopProductBaseViewModels);
+                        return shopProductBaseViewModelPagingList;
                     }
                 }
         );
