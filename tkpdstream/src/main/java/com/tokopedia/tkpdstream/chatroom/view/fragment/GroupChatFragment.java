@@ -604,9 +604,46 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     public void onUserEntered(UserActionViewModel userActionViewModel) {
-        adapter.addAction(userActionViewModel);
-        adapter.notifyItemInserted(0);
-        scrollToBottomWhenPossible();
+        if (canShowUserEnter(userActionViewModel)) {
+            adapter.addAction(userActionViewModel);
+            adapter.notifyItemInserted(0);
+            scrollToBottomWhenPossible();
+        }
+    }
+
+    private boolean canShowUserEnter(UserActionViewModel userActionViewModel) {
+        try {
+            return isListEmpty()
+                    || lastItemIsNotUserAction()
+                    || lastItemIsNotSameUser(userActionViewModel);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean lastItemIsNotSameUser(UserActionViewModel userActionViewModel) {
+        int lastItemPosition = 0;
+        return adapter.getItemCount() > 0
+                && adapter.getItemAt(lastItemPosition) != null
+                && adapter.getItemAt(lastItemPosition) instanceof UserActionViewModel
+                && ((UserActionViewModel) adapter.getItemAt(lastItemPosition)).getUserId() != null
+                && !(((UserActionViewModel) adapter.getItemAt(lastItemPosition)).getUserId()
+                .equals(userActionViewModel.getUserId()));
+    }
+
+    private boolean lastItemIsNotUserAction() {
+        int lastItemPosition = 0;
+        return adapter.getItemCount() > 0
+                && adapter.getItemAt(lastItemPosition) != null
+                && !(adapter.getItemAt(lastItemPosition) instanceof UserActionViewModel);
+    }
+
+    private boolean isListEmpty() {
+        return adapter.getItemCount() == 0;
     }
 
     public void onUserExited(UserActionViewModel userActionViewModel) {
