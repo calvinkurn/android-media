@@ -13,6 +13,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
+import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 
@@ -35,6 +36,10 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     private ImageView channelImage4;
     private TextView channelCaption4;
     private TextView seeAllButton;
+    private TextView channelBadge1;
+    private TextView channelBadge2;
+    private TextView channelBadge3;
+    private TextView channelBadge4;
     private Context context;
     private HomeCategoryListener listener;
     private View channelTitleContainer;
@@ -58,6 +63,10 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         channelCaption3 = (TextView)itemView.findViewById( R.id.channel_caption_3 );
         channelImage4 = (ImageView)itemView.findViewById( R.id.channel_image_4 );
         channelCaption4 = (TextView)itemView.findViewById( R.id.channel_caption_4 );
+        channelBadge1 = (TextView) itemView.findViewById(R.id.channel_badge_1);
+        channelBadge2 = (TextView) itemView.findViewById(R.id.channel_badge_2);
+        channelBadge3 = (TextView) itemView.findViewById(R.id.channel_badge_3);
+        channelBadge4 = (TextView) itemView.findViewById(R.id.channel_badge_4);
         seeAllButton = (TextView)itemView.findViewById(R.id.see_all_button);
     }
 
@@ -139,5 +148,10 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[3]));
             }
         });
+
+        TextViewHelper.displayText(channelBadge1, channel.getGrids()[0].getLabel());
+        TextViewHelper.displayText(channelBadge2, channel.getGrids()[1].getLabel());
+        TextViewHelper.displayText(channelBadge3, channel.getGrids()[2].getLabel());
+        TextViewHelper.displayText(channelBadge4, channel.getGrids()[3].getLabel());
     }
 }
