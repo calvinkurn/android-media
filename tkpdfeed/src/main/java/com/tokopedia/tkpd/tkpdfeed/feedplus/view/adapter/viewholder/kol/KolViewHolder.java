@@ -31,7 +31,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.kol_layout;
 
-    private static final int MAX_CHAR = 250;
+    private static final int MAX_CHAR = 175;
     private final FeedPlus.View.Kol viewListener;
     private TextView title;
     private TextView name;
