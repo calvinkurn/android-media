@@ -31,7 +31,10 @@ import com.tokopedia.gamification.cracktoken.CrackTokenActivity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
 import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.floating.view.FloatingEggView;
 import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
+import com.tokopedia.gamification.floatingtoken.model.TokenData;
+import com.tokopedia.gamification.floatingtoken.model.TokenFloating;
 
 import javax.inject.Inject;
 
@@ -41,7 +44,7 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by hendry on 28/03/18.
  */
 
-public class FloatingEggButtonFragment extends BaseDaggerFragment {
+public class FloatingEggButtonFragment extends BaseDaggerFragment implements FloatingEggView {
 
     private static final String COORD_X = "x";
     private static final String COORD_Y = "y";
@@ -226,19 +229,24 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
 
     // TODO load data to get egg/token data from server or cache here
     private void loadEggData() {
-        onSuccessLoadTokopointsToken();
+        floatingEggPresenter.attachView(this);
+        floatingEggPresenter.getGetTokenTokopoints();
     }
 
-    public void onSuccessLoadTokopointsToken() {
-        //TODO will set the variable from the model here
-        boolean offFlag = false;
-        int sumToken = 99;
-        String sumTokenString = "99+";
-        String tokenUnit = "buah";
-        //String pageUrl = "http://tokopedia.com";
-        //String appLink = "tokopedia://";
-        long timeRemainingSeconds = 10;
-        boolean isShowTime = true;
+    @Override
+    public void onSuccessGetToken(TokenData tokenData) {
+        boolean offFlag = tokenData.getOffFlag();
+        int sumToken = tokenData.getSumToken();
+        String sumTokenString = tokenData.getSumTokenStr();
+//        String pageUrl = "http://tokopedia.com";
+//        String appLink = "tokopedia://";
+        TokenFloating tokenFloating = tokenData.getFloating();
+        if (tokenFloating == null) {
+            onErrorGetToken(new Throwable());
+            return;
+        }
+        long timeRemainingSeconds = tokenFloating.getTimeRemainingSeconds();
+        boolean isShowTime = tokenFloating.getShowTime();
         String imageUrl = "https://user-images.githubusercontent.com/13778932/38075015-049430aa-335b-11e8-822e-ca662dc45b7f.png";
 
         setFloatingEggVisibility(!offFlag, 0);
@@ -285,6 +293,13 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
             stopCountdownTimer();
             tvFloatingTimer.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onErrorGetToken(Throwable throwable) {
+        //TODO on failed, need retry?
+        stopCountdownTimer();
+        vgFloatingEgg.setVisibility(View.GONE);
     }
 
     private void startCountdownTimer(long timeRemainingSeconds) {
@@ -373,4 +388,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         outState.putInt(COORD_X, (int) vgFloatingEgg.getX());
         outState.putInt(COORD_Y, (int) vgFloatingEgg.getY());
     }
+
+
 }

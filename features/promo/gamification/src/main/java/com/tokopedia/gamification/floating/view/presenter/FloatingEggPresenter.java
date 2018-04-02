@@ -13,12 +13,12 @@ import rx.Subscriber;
  * Created by hendry on 02/04/18.
  */
 
-public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggView>{
+public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggView> {
     private GetTokenTokopointsUseCase getTokenTokopointsUseCase;
 
     @Inject
-    public FloatingEggPresenter(){
-
+    public FloatingEggPresenter(GetTokenTokopointsUseCase getTokenTokopointsUseCase) {
+        this.getTokenTokopointsUseCase = getTokenTokopointsUseCase;
     }
 
     public void getGetTokenTokopoints() {
@@ -30,7 +30,7 @@ public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggView>{
 
             @Override
             public void onError(Throwable e) {
-                getView().onFailedGetToken(e);
+                getView().onErrorGetToken(e);
             }
 
             @Override
