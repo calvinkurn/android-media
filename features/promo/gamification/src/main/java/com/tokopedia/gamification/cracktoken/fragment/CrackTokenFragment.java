@@ -4,14 +4,18 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult;
@@ -32,6 +37,8 @@ import com.tokopedia.gamification.floating.view.model.TokenUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.Gravity.CENTER_HORIZONTAL;
+
 /**
  * @author Rizky on 28/03/18.
  */
@@ -43,7 +50,7 @@ public class CrackTokenFragment extends BaseDaggerFragment {
 
     private CountDownTimer countDownTimer;
 
-    private RelativeLayout rootContainer;
+    private ViewGroup rootContainer;
     private TextView textCountdownTimer;
     private WidgetTokenView widgetTokenView;
     private WidgetCrackResult widgetCrackResult;
@@ -58,8 +65,8 @@ public class CrackTokenFragment extends BaseDaggerFragment {
     private String imageUrl4;
     private int timeRemainingSeconds;
 
-    boolean isClicked;
     private TokenData tokenData;
+    private View rootView;
 
     public static Fragment newInstance(TokenData tokenData) {
         Fragment fragment = new CrackTokenFragment();
@@ -102,13 +109,13 @@ public class CrackTokenFragment extends BaseDaggerFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        final View v = inflater.inflate(R.layout.fragment_crack_token, container, false);
+        rootView = inflater.inflate(R.layout.fragment_crack_token, container, false);
 
-        rootContainer = v.findViewById(R.id.root_container);
-        textCountdownTimer = v.findViewById(R.id.text_countdown_timer);
-        widgetTokenView = v.findViewById(R.id.widget_token_view);
-        widgetCrackResult = v.findViewById(R.id.widget_reward);
-        widgetRemainingToken = v.findViewById(R.id.widget_remaining_token_view);
+        rootContainer = rootView.findViewById(R.id.root_container);
+        textCountdownTimer = rootView.findViewById(R.id.text_countdown_timer);
+        widgetTokenView = rootView.findViewById(R.id.widget_token_view);
+        widgetCrackResult = rootView.findViewById(R.id.widget_reward);
+        widgetRemainingToken = rootView.findViewById(R.id.widget_remaining_token_view);
 
         Glide.with(this)
                 .load(backgroundImageUrl)
@@ -156,21 +163,51 @@ public class CrackTokenFragment extends BaseDaggerFragment {
         });
 
         widgetRemainingToken.showRemainingToken(smallImageUrl, 20);
-        return v;
+
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                initTimerBound();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    //noinspection deprecation
+                    rootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
+
+        return rootView;
+    }
+
+    private void initTimerBound(){
+        int rootHeight = rootView.getHeight();
+        int imageMarginTop = (int) (0.15 * rootHeight);
+
+        FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) textCountdownTimer.getLayoutParams();
+        ivFullLp.topMargin = imageMarginTop;
+        textCountdownTimer.requestLayout();
+
+        textCountdownTimer.setVisibility(View.VISIBLE);
     }
 
     private void showCountdownTimer(int timeRemainingSeconds) {
-        countDownTimer = new CountDownTimer(timeRemainingSeconds, COUNTDOWN_INTERVAL_SECOND) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                setUIFloatingTimer((int) (millisUntilFinished / 1000));
-            }
+        if (timeRemainingSeconds > 0) {
+            countDownTimer = new CountDownTimer(timeRemainingSeconds, COUNTDOWN_INTERVAL_SECOND) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    setUIFloatingTimer((int) (millisUntilFinished / 1000));
+                }
 
-            @Override
-            public void onFinish() {
+                @Override
+                public void onFinish() {
 
-            }
-        }.start();
+                }
+            }.start();
+            textCountdownTimer.setVisibility(View.VISIBLE);
+        } else {
+            textCountdownTimer.setVisibility(View.GONE);
+        }
     }
 
     private void setUIFloatingTimer(long timeRemainingSeconds) {
@@ -199,7 +236,6 @@ public class CrackTokenFragment extends BaseDaggerFragment {
     }
 
     private void resetEgg() {
-        isClicked = false;
         showCountdownTimer(timeRemainingSeconds);
         widgetTokenView.reset();
         textCountdownTimer.setVisibility(View.VISIBLE);

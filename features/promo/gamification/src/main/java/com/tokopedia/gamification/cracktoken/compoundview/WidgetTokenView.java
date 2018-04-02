@@ -3,11 +3,15 @@ package com.tokopedia.gamification.cracktoken.compoundview;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -21,6 +25,8 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView;
+
+import static android.view.Gravity.CENTER_HORIZONTAL;
 
 /**
  * @author Rizky on 28/03/18.
@@ -42,6 +48,7 @@ public class WidgetTokenView extends FrameLayout {
     private boolean isTokenClicked;
 
     private WidgetTokenListener listener;
+    private View rootView;
 
     public interface WidgetTokenListener {
         void onClick();
@@ -67,13 +74,13 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     private void init() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_token, this, true);
-        imageViewFull = view.findViewById(R.id.imagefull);
-        imageViewCracked = view.findViewById(R.id.imagecracked);
-        imageViewLeft = view.findViewById(R.id.imageleft);
-        imageViewRight = view.findViewById(R.id.imageright);
-        imageViewLightLeft = view.findViewById(R.id.image_light_left);
-        imageViewLightRight = view.findViewById(R.id.image_light_top);
+        rootView = LayoutInflater.from(getContext()).inflate(R.layout.widget_token, this, true);
+        imageViewFull = rootView.findViewById(R.id.imagefull);
+        imageViewCracked = rootView.findViewById(R.id.imagecracked);
+        imageViewLeft = rootView.findViewById(R.id.imageleft);
+        imageViewRight = rootView.findViewById(R.id.imageright);
+        imageViewLightLeft = rootView.findViewById(R.id.image_light_left);
+        imageViewLightRight = rootView.findViewById(R.id.image_light_top);
 
         imageViewFull.setOnClickListener(new OnClickListener() {
             @Override
@@ -87,6 +94,81 @@ public class WidgetTokenView extends FrameLayout {
                 isTokenClicked = true;
             }
         });
+        setVisibility(View.INVISIBLE);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                initImageBound();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    //noinspection deprecation
+                    rootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
+    }
+
+    @SuppressWarnings("SuspiciousNameCombination")
+    public void initImageBound() {
+        int rootWidth = rootView.getWidth();
+        int rootHeight = rootView.getHeight();
+        int imageWidth = (int) (0.5 * Math.min(rootWidth, rootHeight));
+        int imageHeight = imageWidth;
+        int imageMarginTop = (int) (0.64 * (rootHeight)) - imageHeight;
+
+        int lightImageWidth = (int) (0.8 * imageWidth);
+        int lightImageHeight = lightImageWidth;
+
+        FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) imageViewFull.getLayoutParams();
+        ivFullLp.width = imageWidth;
+        ivFullLp.height = imageHeight;
+        ivFullLp.gravity = CENTER_HORIZONTAL;
+        ivFullLp.topMargin = imageMarginTop;
+        imageViewFull.requestLayout();
+
+        FrameLayout.LayoutParams ivCrackedLp = (FrameLayout.LayoutParams) imageViewCracked.getLayoutParams();
+        ivCrackedLp.width = imageWidth;
+        ivCrackedLp.height = imageHeight;
+        ivCrackedLp.gravity = CENTER_HORIZONTAL;
+        ivCrackedLp.topMargin = imageMarginTop;
+        imageViewCracked.requestLayout();
+
+        FrameLayout.LayoutParams ivLeftLp = (FrameLayout.LayoutParams) imageViewLeft.getLayoutParams();
+        ivLeftLp.width = imageWidth;
+        ivLeftLp.height = imageHeight;
+        ivLeftLp.gravity = CENTER_HORIZONTAL;
+        ivLeftLp.topMargin = imageMarginTop;
+        imageViewLeft.requestLayout();
+
+        FrameLayout.LayoutParams ivRightLp = (FrameLayout.LayoutParams) imageViewRight.getLayoutParams();
+        ivRightLp.width = imageWidth;
+        ivRightLp.height = imageHeight;
+        ivRightLp.gravity = CENTER_HORIZONTAL;
+        ivRightLp.topMargin = imageMarginTop;
+        imageViewRight.requestLayout();
+
+        // to show the light on the top left
+        int marginTopLightLeft = (int) (0.64 * (rootHeight)) - (int)(0.75 * imageHeight) - lightImageHeight/2;
+        int marginLeftLightLeft = (int) (0.5 * ( rootWidth - (int)(0.65 * imageWidth) - lightImageWidth ));
+        FrameLayout.LayoutParams ivLightLeftLp = (FrameLayout.LayoutParams) imageViewLightLeft.getLayoutParams();
+        ivLightLeftLp.width = lightImageWidth;
+        ivLightLeftLp.height = lightImageHeight;
+        ivLightLeftLp.topMargin = marginTopLightLeft;
+        ivLightLeftLp.leftMargin = marginLeftLightLeft;
+        imageViewLightLeft.requestLayout();
+
+        // to show the light on the top right
+        int marginTopLightRight = (int) (0.64 * (rootHeight)) - (int)(0.95 * imageHeight) - lightImageHeight/2;
+        int marginLeftLightRight = (int) (0.5 * ( rootWidth + (int)(0.35 * imageWidth) - lightImageWidth ));
+        FrameLayout.LayoutParams ivLightRightLp = (FrameLayout.LayoutParams) imageViewLightRight.getLayoutParams();
+        ivLightRightLp.width = lightImageWidth;
+        ivLightRightLp.height = lightImageHeight;
+        ivLightRightLp.topMargin = marginTopLightRight;
+        ivLightRightLp.leftMargin = marginLeftLightRight;
+        imageViewLightLeft.requestLayout();
+
+        setVisibility(View.VISIBLE);
     }
 
     public void setToken(String full, String cracked, String right, String left) {

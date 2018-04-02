@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:orientation="horizontal">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/activity_horizontal_margin"
+    android:orientation="horizontal"
+    tools:background="#DD00DD">
 
     <ImageView
         android:id="@+id/image_remaining_token"
@@ -13,8 +15,7 @@
 
     <TextView
         android:id="@+id/text_remaining_token"
-        android:layout_weight="1"
-        android:layout_width="0dp"
+        style="@style/TextView.Title.Bold"
         android:textSize="18sp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
