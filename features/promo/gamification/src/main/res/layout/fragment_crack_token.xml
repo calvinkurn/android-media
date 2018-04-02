@@ -23,13 +23,13 @@
         android:textStyle="bold"
         tools:text="12:00:00" />
 
-    <com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetTokenView
+    <com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView
         android:layout_centerInParent="true"
         android:id="@+id/widget_token_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetRemainingToken
+    <com.tokopedia.gamification.cracktoken.compoundview.WidgetRemainingToken
         android:id="@+id/widget_remaining_token_view"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="16dp"
@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetCrackResult
+    <com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult
         android:id="@+id/widget_reward"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

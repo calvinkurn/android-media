@@ -10,7 +10,7 @@
         android:scaleType="fitCenter"
         tools:srcCompat="@mipmap/ic_launcher" />
 
-    <com.tokopedia.gamification.cracktoken.presentation.customview.MaskedHeightImageView
+    <com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView
         android:id="@+id/imagecracked"
         android:layout_width="@dimen/width_egg"
         android:layout_height="@dimen/height_egg"

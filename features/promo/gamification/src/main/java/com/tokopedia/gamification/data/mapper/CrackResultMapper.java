@@ -1,9 +1,9 @@
 package com.tokopedia.gamification.data.mapper;
 
-import com.tokopedia.gamification.cracktoken.presentation.model.CrackBenefit;
-import com.tokopedia.gamification.cracktoken.presentation.model.CrackButton;
-import com.tokopedia.gamification.cracktoken.presentation.model.CrackResult;
-import com.tokopedia.gamification.cracktoken.presentation.model.CrackResultStatus;
+import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
+import com.tokopedia.gamification.cracktoken.model.CrackButton;
+import com.tokopedia.gamification.cracktoken.model.CrackResult;
+import com.tokopedia.gamification.cracktoken.model.CrackResultStatus;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 

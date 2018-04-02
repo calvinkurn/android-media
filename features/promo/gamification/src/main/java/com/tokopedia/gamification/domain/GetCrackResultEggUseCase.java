@@ -1,6 +1,6 @@
 package com.tokopedia.gamification.domain;
 
-import com.tokopedia.gamification.cracktoken.presentation.model.CrackResult;
+import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.data.GamificationRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
