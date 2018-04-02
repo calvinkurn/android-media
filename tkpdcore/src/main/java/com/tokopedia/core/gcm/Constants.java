@@ -27,6 +27,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_RIDE = "ride";
     String ARG_NOTIFICATION_APPLINK_PROMO_LABEL = "promo";
     String ARG_NOTIFICATION_APPLINK_TOPCHAT = "topchat";
+    String ARG_NOTIFICATION_APPLINK_GROUPCHAT = "groupchat";
     String KEY_ORIGIN = "origin";
     int REGISTRATION_STATUS_OK = 1;
     int REGISTRATION_STATUS_ERROR = 2;

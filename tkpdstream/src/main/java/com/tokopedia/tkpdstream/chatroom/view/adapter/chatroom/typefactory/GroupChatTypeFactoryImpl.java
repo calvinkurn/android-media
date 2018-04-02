@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.AdminAnnouncementViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.ChatViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.GroupChatPointsViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.GeneratedMessageViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.ImageAnnouncementViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.PendingChatViewHolder;
@@ -34,12 +35,14 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
     ChatroomContract.View.ImageAnnouncementViewHolderListener imageListener;
     ChatroomContract.View.VoteAnnouncementViewHolderListener voteAnnouncementViewHolderListener;
     ChatroomContract.View.SprintSaleViewHolderListener sprintSaleViewHolderListener;
+    ChatroomContract.View.GroupChatPointsViewHolderListener groupChatPointsViewHolderListener;
 
 
     public GroupChatTypeFactoryImpl(GroupChatFragment fragment) {
         imageListener = fragment;
         voteAnnouncementViewHolderListener = fragment;
         sprintSaleViewHolderListener = fragment;
+        groupChatPointsViewHolderListener = fragment;
     }
 
     @Override
@@ -79,7 +82,7 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
 
     @Override
     public int type(GroupChatPointsViewModel groupChatPointsViewModel) {
-        return 0;
+        return GroupChatPointsViewHolder.LAYOUT;
     }
 
     @Override
@@ -112,6 +115,8 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
             viewHolder = new SprintSaleViewHolder(parent, sprintSaleViewHolderListener);
         } else if (type == GeneratedMessageViewHolder.LAYOUT) {
             viewHolder = new GeneratedMessageViewHolder(parent);
+        } else if (type == GroupChatPointsViewHolder.LAYOUT) {
+            viewHolder = new GroupChatPointsViewHolder(parent, groupChatPointsViewHolderListener);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }

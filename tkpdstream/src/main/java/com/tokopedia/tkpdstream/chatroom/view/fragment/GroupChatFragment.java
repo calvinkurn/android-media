@@ -70,7 +70,8 @@ import javax.inject.Inject;
 public class GroupChatFragment extends BaseDaggerFragment implements ChatroomContract.View,
         ChatroomContract.View.ImageAnnouncementViewHolderListener,
         ChatroomContract.View.VoteAnnouncementViewHolderListener,
-        ChatroomContract.View.SprintSaleViewHolderListener {
+        ChatroomContract.View.SprintSaleViewHolderListener,
+        ChatroomContract.View.GroupChatPointsViewHolderListener {
 
     private static final long DELAY_TIME_SPRINT_SALE = TimeUnit.SECONDS.toMillis(3);
     private static final long MILIS_TO_SECOND = 1000;
@@ -188,7 +189,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         chatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-
+                super.onScrollStateChanged(recyclerView, newState);
                 if (layoutManager.findLastVisibleItemPosition() == adapter.getItemCount() - 1
                         && !adapter.isLoading()) {
                     presenter.loadPreviousMessages(mChannel, mPrevMessageListQuery);
@@ -197,7 +198,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 if (layoutManager.findFirstVisibleItemPosition() == 0) {
                     resetNewMessageCounter();
                 }
+            }
 
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (layoutManager.findFirstVisibleItemPosition() == 0) {
+                    resetNewMessageCounter();
+                }
             }
         });
 
@@ -392,6 +400,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                     && !(adapter.getItemAt(adapter.getItemCount() - 1) instanceof GroupChatPointsViewModel)
                     && groupChatPointsViewModel != null) {
                 addIncomingMessage(groupChatPointsViewModel);
+                ((GroupChatContract.View) getActivity()).removeGroupChatPoints();
                 ((GroupChatContract.View) getActivity()).vibratePhone();
             }
         }
@@ -782,5 +791,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     public void onPushNotifReceived(GroupChatPointsViewModel model) {
         autoAddGroupChatPoints(model);
+    }
+
+    @Override
+    public void onRedirectUrl(String url) {
+        ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity(), url);
     }
 }
