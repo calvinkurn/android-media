@@ -65,8 +65,8 @@ public class CloudNotificationSource {
                     drawerCache.putInt(DrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION, notificationData.getSales().getSalesShippingConfirm());
                     drawerCache.putInt(DrawerNotification.CACHE_SELLING_SHIPPING_STATUS, notificationData.getSales().getSalesShippingStatus());
 
-                    drawerCache.putInt(DrawerNotification.CACHE_TOTAL_CART, notificationData.getTotalCart());
-                    drawerCache.putInt(DrawerNotification.IS_HAS_CART, notificationData.getTotalCart() > 0 ? 1 : 0);
+//                    drawerCache.putInt(DrawerNotification.CACHE_TOTAL_CART, notificationData.getTotalCart());
+//                    drawerCache.putInt(DrawerNotification.IS_HAS_CART, notificationData.getTotalCart() > 0 ? 1 : 0);
                     drawerCache.putInt(DrawerNotification.CACHE_TOTAL_NOTIF, notificationData
                             .getTotalNotif() - notificationData.getInbox().getInboxMessage());
                     drawerCache.putInt(DrawerNotification.CACHE_INCR_NOTIF, notificationData.getIncrNotif());

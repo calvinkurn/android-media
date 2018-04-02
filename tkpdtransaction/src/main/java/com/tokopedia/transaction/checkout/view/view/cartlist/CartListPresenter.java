@@ -26,10 +26,8 @@ import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 

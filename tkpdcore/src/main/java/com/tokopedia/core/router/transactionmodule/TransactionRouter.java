@@ -26,4 +26,9 @@ public interface TransactionRouter {
     Intent getResolutionCenterIntent(Context context);
 
     Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest);
+
+    interface CartRouter {
+        void updateMarketplaceCartCounter();
+    }
+
 }

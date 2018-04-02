@@ -8,6 +8,7 @@ import com.tokopedia.transaction.checkout.data.entity.response.checkpromocodecar
 import com.tokopedia.transaction.checkout.data.entity.response.checkpromocodefinal.CheckPromoCodeFinalDataResponse;
 import com.tokopedia.transaction.checkout.data.entity.response.couponlist.CouponDataResponse;
 import com.tokopedia.transaction.checkout.data.entity.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transaction.checkout.data.entity.response.notifcounter.NotifCounterCartDataResponse;
 import com.tokopedia.transaction.checkout.data.entity.response.resetcart.ResetCartDataResponse;
 import com.tokopedia.transaction.checkout.data.entity.response.shippingaddress.ShippingAddressDataResponse;
 import com.tokopedia.transaction.checkout.data.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
@@ -42,5 +43,7 @@ public interface ICartRepository {
     Observable<CheckPromoCodeFinalDataResponse> checkPromoCodeCartShipment(TKPDMapParam<String, String> param);
 
     Observable<CouponDataResponse> getCouponList(TKPDMapParam<String, String> param);
+
+    Observable<NotifCounterCartDataResponse> getNotificationCounter();
 
 }

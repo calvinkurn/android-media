@@ -190,6 +190,7 @@ import com.tokopedia.transaction.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.transaction.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.transaction.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.transaction.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
+import com.tokopedia.transaction.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.view.cartlist.CartActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -219,7 +220,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
-        AbstractionRouter, FlightModuleRouter, LogisticRouter, ITkpdLoyaltyModuleRouter, ICartCheckoutModuleRouter {
+        AbstractionRouter, FlightModuleRouter, LogisticRouter, ITkpdLoyaltyModuleRouter, ICartCheckoutModuleRouter,
+        TransactionRouter.CartRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1429,4 +1431,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         intent.putExtras(bundle);
         return intent;
     }
+
+    @Override
+    public void updateMarketplaceCartCounter() {
+        GetMarketPlaceCartCounterUseCase getMarketPlaceCartCounterUseCase =
+                new GetMarketPlaceCartCounterUseCase(new CartRepository(new CartService()));
+        getMarketPlaceCartCounterUseCase.executeWithSubscriber(this);
+    }
+
 }

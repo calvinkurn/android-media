@@ -62,6 +62,8 @@ public interface CartApi {
     @GET(TkpdBaseURL.Cart.PATH_COUPON_LIST)
     Observable<Response<CartResponse>> getCouponList(@QueryMap Map<String, String> params);
 
+    @GET(TkpdBaseURL.Cart.PATH_NOTIFICATION_COUNTER)
+    Observable<Response<CartResponse>> getNotificationCounter();
 
 //    public static final String PATH_UPDATE_STATE_BY_PAYMENT = "api/" + VERSION + "/update_state_by_payment";
 //    public static final String PATH_NOTIFICATION_COUNTER = "api/" + VERSION + "/counter";
