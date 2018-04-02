@@ -41,7 +41,7 @@ public interface ChannelContract {
 
         void getChannelListFirstTime();
 
-        void getChannelList();
+        void getChannelList(String lastCursor);
 
         void refreshData();
     }

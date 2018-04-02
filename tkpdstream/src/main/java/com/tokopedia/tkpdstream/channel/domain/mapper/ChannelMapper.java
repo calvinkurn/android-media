@@ -31,7 +31,8 @@ public class ChannelMapper implements Func1<Response<DataResponse<ChannelListPoj
         ChannelListPojo pojo = dataResponseResponse.body().getData();
 
         return new ChannelListViewModel(getListChannel(pojo),
-                hasNextPage(pojo.getCursor()));
+                hasNextPage(pojo.getCursor()),
+                pojo.getCursor());
     }
 
     private boolean hasNextPage(String cursor) {

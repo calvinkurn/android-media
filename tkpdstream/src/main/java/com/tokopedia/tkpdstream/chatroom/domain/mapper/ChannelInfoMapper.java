@@ -68,7 +68,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     }
 
     private SprintSaleViewModel mapToSprintSaleViewModel(Flashsale flashsale) {
-        if (hasSprintSale()) {
+        if (hasSprintSale(flashsale)) {
             return new SprintSaleViewModel(
                     mapToListFlashSaleProducts(flashsale.getProducts()),
                     flashsale.getCampaignName() != null ? flashsale.getCampaignName() : "",
@@ -82,8 +82,10 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
         }
     }
 
-    private boolean hasSprintSale() {
-        return true;
+    private boolean hasSprintSale(Flashsale flashsale) {
+        return flashsale != null
+                && flashsale.getProducts() != null
+                && !flashsale.getProducts().isEmpty();
     }
 
     private ArrayList<SprintSaleProductViewModel> mapToListFlashSaleProducts(List<Product> products) {
@@ -192,15 +194,18 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     private List<ChannelPartnerViewModel> convertChannelPartner(Channel channel) {
         ArrayList<ChannelPartnerViewModel> channelPartnerViewModelList = new ArrayList<>();
 
-        for (ListOfficial official : channel.getListOfficials()) {
+        if (channel.getListOfficials() != null) {
+            for (ListOfficial official : channel.getListOfficials()) {
 
-            ChannelPartnerViewModel channelPartnerViewModel = new ChannelPartnerViewModel(
-                    official.getTitle(),
-                    convertChannelPartnerChild(official)
-            );
+                ChannelPartnerViewModel channelPartnerViewModel = new ChannelPartnerViewModel(
+                        official.getTitle(),
+                        convertChannelPartnerChild(official)
+                );
 
-            channelPartnerViewModelList.add(channelPartnerViewModel);
+                channelPartnerViewModelList.add(channelPartnerViewModel);
+            }
         }
+
         return channelPartnerViewModelList;
     }
 

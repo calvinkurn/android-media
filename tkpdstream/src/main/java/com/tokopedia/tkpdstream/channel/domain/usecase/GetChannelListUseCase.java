@@ -15,11 +15,13 @@ import rx.Observable;
 
 public class GetChannelListUseCase extends UseCase<ChannelListViewModel> {
 
+    private static final String PARAM_CURSOR = "cursor";
     private ChannelSource channelSource;
 
     @Inject
     public GetChannelListUseCase(ChannelSource channelSource) {
         this.channelSource = channelSource;
+
     }
 
     @Override
@@ -32,8 +34,9 @@ public class GetChannelListUseCase extends UseCase<ChannelListViewModel> {
         return requestParams;
     }
 
-    public RequestParams createParam() {
+    public RequestParams createParam(String lastCursor) {
         RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_CURSOR, lastCursor);
         return requestParams;
     }
 }
