@@ -168,7 +168,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
                     holder.stockProgress.setProgress(grid.getSoldPercentage());
                     holder.stockProgress.setVisibility(View.VISIBLE);
                 }
-                if (gridItemClickListener != null) {
+                if (gridItemClickListener != null && grid != null) {
                     holder.countainer.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
