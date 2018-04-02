@@ -1,7 +1,8 @@
-package com.tokopedia.gamification.cracktoken;
+package com.tokopedia.gamification.cracktoken.presentation.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -16,6 +17,12 @@ public class CrackTokenActivity extends BaseSimpleActivity {
 
     public static Intent newInstance(Context context) {
         return new Intent(context, CrackTokenActivity.class);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        updateTitle("TokoPoints");
     }
 
     @Override

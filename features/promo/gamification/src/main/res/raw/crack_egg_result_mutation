@@ -1,4 +1,4 @@
-{
+mutation {
   crack_result(tokenUserID: %s, campaignID: %s) {
     imageUrl
     benefitType
