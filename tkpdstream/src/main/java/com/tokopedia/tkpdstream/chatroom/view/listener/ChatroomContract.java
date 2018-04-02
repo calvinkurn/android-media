@@ -73,6 +73,10 @@ public interface ChatroomContract {
             void onSprintSaleIconClicked(SprintSaleViewModel sprintSaleViewModel);
 
         }
+
+        interface GroupChatPointsViewHolderListener{
+            void onRedirectUrl(String url);
+        }
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -30,9 +30,9 @@ public class GroupChatPointsViewHolder extends BaseChatViewHolder<GroupChatPoint
 
     TextView messageView;
     Context context;
-    private final ChatroomContract.View.VoteAnnouncementViewHolderListener listener;
+    private final ChatroomContract.View.GroupChatPointsViewHolderListener listener;
 
-    public GroupChatPointsViewHolder(View itemView, ChatroomContract.View.VoteAnnouncementViewHolderListener imageListener) {
+    public GroupChatPointsViewHolder(View itemView, ChatroomContract.View.GroupChatPointsViewHolderListener imageListener) {
         super(itemView);
         messageView = itemView.findViewById(R.id.text);
         listener = imageListener;
@@ -44,24 +44,28 @@ public class GroupChatPointsViewHolder extends BaseChatViewHolder<GroupChatPoint
         context = itemView.getContext();
         String text = element.getText();
         String span = element.getSpan();
-        Spannable spannable = new SpannableString(element.getSpan());
-        spannable.setSpan(new ClickableSpan() {
-                              @Override
-                              public void onClick(View view) {
-//                                  listener.onRedirectUrl(element.getUrl());
-                              }
+        if(TextUtils.isEmpty(span)){
+            messageView.setText(text);
+        }else {
+            Spannable spannable = new SpannableString(element.getSpan());
+            spannable.setSpan(new ClickableSpan() {
+                                  @Override
+                                  public void onClick(View view) {
+                                  listener.onRedirectUrl(element.getUrl());
+                                  }
 
-                              @Override
-                              public void updateDrawState(TextPaint ds) {
-                                  ds.setColor(MethodChecker.getColor(context, R.color.tkpd_main_green));
+                                  @Override
+                                  public void updateDrawState(TextPaint ds) {
+                                      ds.setColor(MethodChecker.getColor(context, R.color.tkpd_main_green));
+                                  }
                               }
-                          }
-                , text.indexOf(span)
-                , text.indexOf(span)
-                        + span.length()
-                , 0);
+                    , text.indexOf(span)
+                    , text.indexOf(span)
+                            + span.length()
+                    , 0);
 
-        messageView.setText(spannable, TextView.BufferType.SPANNABLE);
+            messageView.setText(spannable, TextView.BufferType.SPANNABLE);
+        }
     }
 
 }

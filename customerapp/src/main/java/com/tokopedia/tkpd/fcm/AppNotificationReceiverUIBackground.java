@@ -46,6 +46,7 @@ import com.tokopedia.tkpd.fcm.notification.PurchaseShippedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseVerifiedNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
+import com.tokopedia.tkpdstream.chatroom.GroupChatNotifInterface;
 
 import java.util.Map;
 
@@ -159,6 +160,12 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                         data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
                         buildNotifByData(data);
 
+                }
+                break;
+            case Constants.ARG_NOTIFICATION_APPLINK_GROUPCHAT:
+                if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                        && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof GroupChatNotifInterface) {
+                    ((GroupChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);
                 }
                 break;
             case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:

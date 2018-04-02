@@ -60,6 +60,8 @@ public interface GroupChatContract {
         void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel);
 
         String getAttributionTracking(String attributePartnerLogo);
+
+        void removeGroupChatPoints();
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {

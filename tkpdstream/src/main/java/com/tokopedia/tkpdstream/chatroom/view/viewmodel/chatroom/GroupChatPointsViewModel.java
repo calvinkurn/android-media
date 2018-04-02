@@ -18,6 +18,11 @@ public class GroupChatPointsViewModel implements Parcelable,
     String span;
     String url;
 
+    public GroupChatPointsViewModel(String text, String url) {
+        this.text = text;
+        this.url = url;
+    }
+
     public GroupChatPointsViewModel(String text, String span, String url) {
         this.text = text;
         this.span = span;

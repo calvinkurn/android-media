@@ -63,6 +63,7 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             ((BaseChatViewModel) list.get(position)).setHeaderTime(
                     ((BaseChatViewModel) list.get(position)).getUpdatedAt());
         } else if (list.get(position) instanceof BaseChatViewModel
+                && list.get(position+1) instanceof BaseChatViewModel
                 && position != list.size() - 1
                 && headerTimeIsDifferent(
                 ((BaseChatViewModel) list.get(position)).getUpdatedAt(),
