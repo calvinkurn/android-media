@@ -10,6 +10,9 @@ public class CrackBenefit {
     private String color;
     private int size;
 
+    public CrackBenefit() {
+    }
+
     public CrackBenefit(String text, String color, int size) {
         this.text = text;
         this.color = color;
