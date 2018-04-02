@@ -41,6 +41,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
     protected ArrayList<ProductFeedViewModel> list;
     private ActivityCardViewModel activityCardViewModel;
     private int positionInFeed;
+
     public FeedProductAdapter(Context context, FeedPlus.View viewListener) {
         this.context = context;
         this.viewListener = viewListener;
@@ -66,31 +67,36 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             int extraProduct = (activityCardViewModel.getTotalProduct() - LAST_FEED_POSITION);
             showBlackScreen(holder, extraProduct);
 
+            holder.container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToFeedDetail();
+                }
+            });
         } else if (list.size() < MAX_FEED_SIZE
                 && list.size() > MAX_FEED_SIZE_SMALL
                 && position == LAST_FEED_POSITION_SMALL) {
             int extraProduct = (activityCardViewModel.getTotalProduct() - LAST_FEED_POSITION_SMALL);
             showBlackScreen(holder, extraProduct);
 
+            holder.container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToFeedDetail();
+                }
+            });
         } else {
             holder.extraProduct.setBackground(null);
             holder.extraProduct.setVisibility(View.GONE);
 
             holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
-            holder.productName.setOnClickListener(new View.OnClickListener() {
+
+            holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     goToProductDetail(list, position);
                 }
             });
-
-            holder.productImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    goToProductDetail(list, position);
-                }
-            });
-
         }
 
     }
@@ -134,29 +140,17 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         );
         holder.extraProduct.setVisibility(View.VISIBLE);
         holder.extraProduct.setText(extra);
-        holder.extraProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToFeedDetail();
-            }
-        });
 
         String seeOtherProduct = String.format(
                 holder.productName.getContext().getString(R.string.see_other_product),
                 String.valueOf(extraProduct));
         holder.productName.setText(seeOtherProduct);
-        holder.productName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToFeedDetail();
-            }
-        });
     }
 
     private void goToFeedDetail() {
         viewListener.onGoToFeedDetail(
-            activityCardViewModel.getPage(),
-            activityCardViewModel.getRowNumber(), activityCardViewModel.getFeedId()
+                activityCardViewModel.getPage(),
+                activityCardViewModel.getRowNumber(), activityCardViewModel.getFeedId()
         );
     }
 
@@ -200,6 +194,8 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        public View container;
+
         public TextView productName;
 
         public ImageView productImage;
@@ -208,6 +204,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
+            container = itemLayoutView;
             productName = (TextView) itemView.findViewById(R.id.title);
             extraProduct = (TextView) itemView.findViewById(R.id.extra_product);
             productImage = (ImageView) itemView.findViewById(R.id.product_image);
