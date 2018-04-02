@@ -66,4 +66,5 @@ public class CrackTokenActivity extends BaseSimpleActivity {
     protected Fragment getNewFragment() {
         return CrackTokenFragment.newInstance(tokenData);
     }
+
 }

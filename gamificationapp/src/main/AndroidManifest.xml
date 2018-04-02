@@ -12,9 +12,9 @@
         android:name=".GamificationApplication">
         <activity android:name=".HomeActivity">
         </activity>
-        <activity android:name=".MainActivity"
+        <activity android:name="com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity"
             android:label="@string/title_activity_gamification"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

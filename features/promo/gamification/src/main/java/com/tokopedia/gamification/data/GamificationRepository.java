@@ -3,7 +3,7 @@ package com.tokopedia.gamification.data;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.gamification.cracktoken.presentation.model.CrackResult;
+import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.data.mapper.CrackResultMapper;
 import com.tokopedia.gamification.data.mapper.TokenTokopointsMapper;
 import com.tokopedia.gamification.domain.IGamificationRepository;

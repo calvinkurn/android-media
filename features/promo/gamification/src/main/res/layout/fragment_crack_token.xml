@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,10 +10,8 @@
         android:id="@+id/text_countdown_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/margin_bottom_text_countdown_timer"
         android:background="@drawable/bg_countdown_timer"
-        android:layout_above="@+id/widget_token_view"
+        android:layout_gravity="center_horizontal"
         android:paddingBottom="8dp"
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
@@ -23,23 +21,22 @@
         android:textStyle="bold"
         tools:text="12:00:00" />
 
-    <com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetTokenView
-        android:layout_centerInParent="true"
+    <com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView
         android:id="@+id/widget_token_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
-    <com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetRemainingToken
+    <com.tokopedia.gamification.cracktoken.compoundview.WidgetRemainingToken
         android:id="@+id/widget_remaining_token_view"
-        android:layout_alignParentBottom="true"
         android:layout_marginBottom="16dp"
         android:visibility="visible"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"/>
 
-    <com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetCrackResult
+    <com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult
         android:id="@+id/widget_reward"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</RelativeLayout>
+</FrameLayout>

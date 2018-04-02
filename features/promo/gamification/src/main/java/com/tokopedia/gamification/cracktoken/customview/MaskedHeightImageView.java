@@ -60,7 +60,7 @@ public class MaskedHeightImageView extends android.support.v7.widget.AppCompatIm
             if (maskedRect==null) {
                 maskedRect = new Rect();
             }
-            maskedRect.set(0, (int) (  bitmap.getHeight() * percentMasked / 100), bitmap.getWidth(), bitmap.getHeight() );
+            maskedRect.set(0, 0, bitmap.getWidth(), (int)( (1 - percentMasked / 100) * bitmap.getHeight()));
             canvas.drawBitmap(bitmap,maskedRect, maskedRect, null);
             canvas.restoreToCount(saveCount);
         } else {

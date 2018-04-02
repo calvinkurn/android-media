@@ -29,7 +29,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.cracktoken.presentation.activity.CrackTokenActivity;
+import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
@@ -142,14 +142,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                 // TODO CHANGE THIS TRY CATCH
                 try {
                     onInflateRoot();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        vgRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    } else {
-                        //noinspection deprecation
-                        vgRoot.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    }
                 } catch (Exception e) {
                     Log.e(TAG, "onGlobalLayout: " + e.getMessage());
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    vgRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    //noinspection deprecation
+                    vgRoot.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
             }
         });

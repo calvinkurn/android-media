@@ -6,32 +6,27 @@
         android:id="@+id/imagefull"
         android:layout_width="@dimen/width_egg"
         android:layout_height="@dimen/height_egg"
-        android:layout_gravity="center"
         android:scaleType="fitCenter"
+        android:layout_gravity="center"
         tools:srcCompat="@mipmap/ic_launcher" />
 
-    <com.tokopedia.gamification.cracktoken.presentation.customview.MaskedHeightImageView
+    <com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView
         android:id="@+id/imagecracked"
         android:layout_width="@dimen/width_egg"
         android:layout_height="@dimen/height_egg"
-        android:layout_gravity="center"
         android:scaleType="fitCenter"
-        tools:srcCompat="@mipmap/ic_launcher" />
+        tools:srcCompat="@mipmap/ic_launcher"
+        android:layout_gravity="center"/>
 
     <android.support.v7.widget.AppCompatImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginRight="100dp"
-        android:layout_marginEnd="100dp"
-        android:layout_gravity="center"
         android:id="@+id/image_light_left"
         android:src="@drawable/sinar_copy"/>
 
     <android.support.v7.widget.AppCompatImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="100dp"
         android:id="@+id/image_light_top"
         android:src="@drawable/sinar_copy"/>
 
@@ -41,9 +36,9 @@
         android:layout_height="@dimen/height_egg"
         android:layout_marginRight="0dp"
         android:layout_marginEnd="0dp"
-        android:layout_gravity="center"
         android:scaleType="fitCenter"
-        tools:srcCompat="@mipmap/ic_launcher" />
+        tools:srcCompat="@mipmap/ic_launcher"
+        android:layout_gravity="center"/>
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/imageright"
@@ -51,8 +46,8 @@
         android:layout_height="@dimen/height_egg"
         android:layout_marginLeft="0dp"
         android:layout_marginStart="0dp"
-        android:layout_gravity="center"
         android:scaleType="fitCenter"
-        tools:srcCompat="@mipmap/ic_launcher" />
+        tools:srcCompat="@mipmap/ic_launcher"
+        android:layout_gravity="center"/>
 
 </merge>
