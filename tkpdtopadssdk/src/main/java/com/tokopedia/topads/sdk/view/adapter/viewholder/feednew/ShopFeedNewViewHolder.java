@@ -45,15 +45,16 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
     private TextView shopSubtitle;
     private TextView favoriteButton;
     private FeedNewShopAdapter adapter;
+    private View.OnClickListener shopItemClickListener;
 
     private Data data;
 
     public ShopFeedNewViewHolder(View itemView, ImageLoader imageLoader,
-                                 LocalAdsClickListener clickListener) {
+                                 LocalAdsClickListener itemClickListener) {
         super(itemView);
         this.context = itemView.getContext();
         this.imageLoader = imageLoader;
-        this.itemClickListener = clickListener;
+        this.itemClickListener = itemClickListener;
         View header = itemView.findViewById(R.id.header);
         shopImage = itemView.findViewById(R.id.shop_image);
         shopTitle = itemView.findViewById(R.id.shop_title);
@@ -65,7 +66,7 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
                 SPAN_COUNT,
                 GridLayoutManager.VERTICAL,
                 false);
-        adapter = new FeedNewShopAdapter(this);
+        adapter = new FeedNewShopAdapter(onShopItemClicked());
 
         RecyclerView recyclerView = itemView.findViewById(R.id.product_list);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -77,12 +78,15 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
     }
 
     public View.OnClickListener onShopItemClicked() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemClickListener.onShopItemClicked(adapterPosition, data);
-            }
-        };
+        if (shopItemClickListener == null) {
+            shopItemClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemClickListener.onShopItemClicked(adapterPosition, data);
+                }
+            };
+        }
+        return shopItemClickListener;
     }
 
     private View.OnClickListener onAddFavorite() {

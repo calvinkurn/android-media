@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.ImageProduct;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.feednew.ShopFeedNewViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +23,11 @@ public class FeedNewShopAdapter extends RecyclerView.Adapter<FeedNewShopAdapter.
 
     private List<ImageProduct> list;
     private ImageLoader imageLoader;
-    private ShopFeedNewViewHolder viewHolder;
+    private View.OnClickListener itemClickListener;
 
-    public FeedNewShopAdapter(ShopFeedNewViewHolder viewHolder) {
+    public FeedNewShopAdapter(View.OnClickListener itemClickListener) {
         this.list = new ArrayList<>();
-        this.viewHolder = viewHolder;
+        this.itemClickListener = itemClickListener;
     }
 
     @Override
@@ -44,14 +43,7 @@ public class FeedNewShopAdapter extends RecyclerView.Adapter<FeedNewShopAdapter.
             imageLoader = new ImageLoader(holder.imageView.getContext());
         }
         imageLoader.loadImage(list.get(position).getImageUrl(), holder.imageView);
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (viewHolder != null) {
-                    viewHolder.onShopItemClicked();
-                }
-            }
-        });
+        holder.imageView.setOnClickListener(itemClickListener);
     }
 
     @Override

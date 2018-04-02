@@ -11,6 +11,9 @@
         android:gravity="center"
         android:padding="1dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/loading_page" />
+        android:src="@drawable/loading_page"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"/>
 
 </FrameLayout>
