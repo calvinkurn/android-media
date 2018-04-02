@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +17,7 @@ public class ProductVariantByCatModel implements Parcelable {
     public static final int COLOR_ID = 1; // from API
 
     public static final int STATUS_LEVEL_1 = 2; // from API
+    public static final String SIZE_IDENTIFIER_STRING = "size"; // from API
 
     @SerializedName("variant_id")
     @Expose
@@ -72,6 +72,10 @@ public class ProductVariantByCatModel implements Parcelable {
 
     public List<ProductVariantUnit> getUnitList() {
         return unitList;
+    }
+
+    public boolean isSizeIdentifier (){
+        return identifier.equalsIgnoreCase(SIZE_IDENTIFIER_STRING);
     }
 
     @Override

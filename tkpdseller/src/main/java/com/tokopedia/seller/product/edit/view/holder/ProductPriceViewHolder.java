@@ -286,6 +286,7 @@ public class ProductPriceViewHolder extends ProductViewHolder
 
     public void setPriceValue(double price) {
         priceSpinnerCounterInputView.setCounterValue(price);
+        priceSpinnerCounterInputView.getCounterEditText().setError(null);
     }
 
     public int getMinimumOrder() {

@@ -88,6 +88,7 @@ public class ProductDraftDataManager {
                 .querySingle();
         if (productDraftDataBase != null){
             productDraftDataBase.setData(draftData);
+            productDraftDataBase.setVersion(ProductDraftDataBase.CURRENT_VERSION);
             productDraftDataBase.save();
             return Observable.just(productDraftDataBase.getId());
         } else {
@@ -103,6 +104,7 @@ public class ProductDraftDataManager {
         if (productDraftDataBase != null){
             productDraftDataBase.setData(draftData);
             productDraftDataBase.setUploading(isUploading);
+            productDraftDataBase.setVersion(ProductDraftDataBase.CURRENT_VERSION);
             productDraftDataBase.save();
             return Observable.just(productDraftDataBase.getId());
         } else {

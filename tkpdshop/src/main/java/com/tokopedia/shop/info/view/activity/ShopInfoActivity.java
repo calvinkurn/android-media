@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ import com.tokopedia.shop.info.view.adapter.ShopInfoPagerAdapter;
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
 import com.tokopedia.shop.info.view.listener.ShopInfoView;
 import com.tokopedia.shop.info.view.presenter.ShopInfoPresenter;
+import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteList;
 import com.tokopedia.shop.note.view.fragment.ShopNoteListFragment;
 
 import javax.inject.Inject;
@@ -172,8 +174,14 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
         updateTitle(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
         if (viewPager.getAdapter() instanceof ShopInfoPagerAdapter) {
             ShopInfoPagerAdapter adapter = (ShopInfoPagerAdapter) viewPager.getAdapter();
-            ((ShopInfoFragment) adapter.getRegisteredFragment(TAB_POSITION_INFO)).updateShopInfo(shopInfo);
-            ((ShopNoteListFragment) adapter.getRegisteredFragment(TAB_POSITION_NOTE)).updateShopInfo(shopInfo);
+            Fragment fragmentInfo = (Fragment) adapter.instantiateItem(viewPager, TAB_POSITION_INFO);
+            if(fragmentInfo instanceof ShopInfoFragment) {
+                ((ShopInfoFragment) fragmentInfo).updateShopInfo(shopInfo);
+            }
+            Fragment fragmentNote = (Fragment) adapter.instantiateItem(viewPager, TAB_POSITION_NOTE);
+            if(fragmentNote instanceof ShopNoteListFragment) {
+                ((ShopNoteListFragment) fragmentNote).updateShopInfo(shopInfo);
+            }
         }
         setViewState(VIEW_CONTENT);
     }

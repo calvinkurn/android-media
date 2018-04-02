@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.draft.data.mapper;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Base64;
 
 import com.google.gson.Gson;
@@ -51,13 +52,12 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
     @Override
     public ProductViewModel call(ProductDraftDataBase productDraftDataBase) {
         ProductViewModel productViewModel;
-        //  do not use ProductDraftDataBase.CURRENT_VERSION as it can change.
-        if (productDraftDataBase.getVersion() == VERSION_PRODUCT_VIEW_MODEL) {
+        try {
             productViewModel = CacheUtil.convertStringToModel(
                     productDraftDataBase.getData(),
                     ProductViewModel.class
             );
-        } else {
+        } catch (Exception e) {
             ProductDraftModel draftModel = CacheUtil.convertStringToModel(
                     productDraftDataBase.getData(),
                     ProductDraftModel.class
@@ -74,7 +74,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
     private ProductViewModel mapDraftToDomain(ProductDraftModel draftModel) {
         ProductViewModel productViewModel = new ProductViewModel();
         productViewModel.setProductPictureViewModelList(mapPhotosDraftToProductViewModel(draftModel.getProductPhotos().getPhotos()));
-        productViewModel.setProductWholesale(mapWholesaleDraftToDomain(draftModel.getProductWholesaleList()));
+        productViewModel.setProductWholesale(null);
         productViewModel.setProductVideo(mapToProductVideo(draftModel.getProductVideos()));
         productViewModel.setProductName(draftModel.getProductName());
         productViewModel.setProductDescription(draftModel.getProductDescription());
@@ -95,7 +95,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         productViewModel.setProductId(draftModel.getProductId());
         productViewModel.setProductNameEditable(draftModel.getProductNameEditable() != 0);
 
-        productViewModel.setProductVariant(mapProductDraftOldVersion(draftModel));
+        productViewModel.setProductVariant(null);
         return productViewModel;
     }
 
@@ -183,7 +183,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
                 productVariantCombinationViewModel.setActive(productVariantCombinationSubmit.getStatus() == 1);
                 List<Integer> integerList = new ArrayList<>();
                 for (int j = 0, sizej = productVariantCombinationSubmit.getOptionList().size(); j < sizej; j++) {
-                    integerList.add((int)(long) productVariantCombinationSubmit.getOptionList().get(j));
+                    integerList.add((int) (long) productVariantCombinationSubmit.getOptionList().get(j));
                 }
                 productVariantCombinationViewModel.setOpt(integerList);
                 productVariantCombinationViewModelList.add(productVariantCombinationViewModel);
@@ -206,7 +206,8 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         return productCategoryViewModel;
     }
 
-    private @NonNull ProductCatalogViewModel generateCatalog(ProductDraftModel draftModel) {
+    private @NonNull
+    ProductCatalogViewModel generateCatalog(ProductDraftModel draftModel) {
         ProductCatalogViewModel productCatalogViewModel = new ProductCatalogViewModel();
         productCatalogViewModel.setCatalogId(draftModel.getProductCatalogId());
         return productCatalogViewModel;
@@ -229,9 +230,11 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
 
     private List<ProductVideoViewModel> mapToProductVideo(List<String> productVideos) {
         List<ProductVideoViewModel> productVideoViewModels = new ArrayList<>();
-        for (String url : productVideos) {
-            ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel(url);
-            productVideoViewModels.add(productVideoViewModel);
+        if (productVideos != null) {
+            for (String url : productVideos) {
+                ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel(url);
+                productVideoViewModels.add(productVideoViewModel);
+            }
         }
         return productVideoViewModels;
     }
@@ -251,21 +254,32 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         List<ProductPictureViewModel> productPictureViewModelList = new ArrayList<>();
         for (ImageProductInputDraftModel draftModel : photos) {
             ProductPictureViewModel productPictureViewModel = generateProductPictureModel(draftModel);
-            productPictureViewModelList.add(productPictureViewModel);
+            if (productPictureViewModel != null) {
+                productPictureViewModelList.add(productPictureViewModel);
+            }
         }
         return productPictureViewModelList;
     }
 
     private ProductPictureViewModel generateProductPictureModel(ImageProductInputDraftModel draftModel) {
-        ProductPictureViewModel productPictureViewModel = new ProductPictureViewModel();
-        productPictureViewModel.setDescription(draftModel.getDescription());
+        ProductPictureViewModel productPictureViewModel = null;
         try {
-            ProductPictureResultUploadedViewModel resultUploadedViewModel = generatePicObj(draftModel.getPicObj());
-            productPictureViewModel.setY(Long.parseLong(resultUploadedViewModel.getH()));
-            productPictureViewModel.setX(Long.parseLong(resultUploadedViewModel.getW()));
-            productPictureViewModel.setFilePath(resultUploadedViewModel.getFilePath());
-            productPictureViewModel.setFileName(resultUploadedViewModel.getFileName());
-        } catch (UnsupportedEncodingException e) {
+            if (draftModel != null) {
+                productPictureViewModel = new ProductPictureViewModel();
+                productPictureViewModel.setDescription(draftModel.getDescription());
+                if (TextUtils.isEmpty(draftModel.getPicId())) {
+                    productPictureViewModel.setId(0);
+                } else {
+                    productPictureViewModel.setId(Long.parseLong(draftModel.getPicId()));
+                }
+                productPictureViewModel.setFilePath(draftModel.getImagePath());
+                productPictureViewModel.setUrlThumbnail(draftModel.getUrl());
+                productPictureViewModel.setUrlOriginal(draftModel.getUrl());
+                if (TextUtils.isEmpty(productPictureViewModel.getUriOrPath())) {
+                    return null;
+                }
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return productPictureViewModel;

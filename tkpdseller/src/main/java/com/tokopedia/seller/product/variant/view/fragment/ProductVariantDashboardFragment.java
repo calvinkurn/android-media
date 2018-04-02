@@ -26,6 +26,7 @@ import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.StockTypeDef;
+import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
@@ -59,7 +60,6 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         implements ProductVariantMainView, ProductVariantDashboardNewAdapter.OnProductVariantDashboardNewAdapterListener,
         BaseListAdapter.Callback<ProductVariantDashboardViewModel> {
 
-    public static final String SIZE_IDENTIFIER = "ukuran";
     private LabelView variantLevelOneLabelView;
     private LabelView variantLevelTwoLabelView;
 
@@ -125,7 +125,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         }
         if (productVariantByCatModelList != null) {
             for (int i = 0, sizei = productVariantByCatModelList.size(); i < sizei; i++) {
-                if (productVariantByCatModelList.get(i).getName().toLowerCase().contains(SIZE_IDENTIFIER)) {
+                if (productVariantByCatModelList.get(i).isSizeIdentifier()) {
                     indexOptionParentSizeChart = i;
                     break;
                 }
@@ -178,9 +178,16 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
 
         for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
             ProductVariantCombinationViewModel productVariantCombinationViewModel = productVariantCombinationViewModelList.get(i);
-            if (productVariantCombinationViewModel.getPriceVar() == 0) {
+            double priceVar = productVariantCombinationViewModel.getPriceVar();
+            if (priceVar == 0) {
                 NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
                         getString(R.string.product_variant_price_must_be_filled));
+                return false;
+            } else if (!ProductPriceRangeUtils.isPriceValid(priceVar, currencyType, isOfficialStore)) {
+                NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
+                        getString(R.string.product_error_product_price_not_valid,
+                                ProductPriceRangeUtils.getMinPriceString(currencyType, isOfficialStore),
+                                ProductPriceRangeUtils.getMaxPriceString(currencyType, isOfficialStore)));
                 return false;
             }
         }
@@ -554,15 +561,15 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
     private void refreshData() {
         recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
         generateToDashboardViewModel();
+        onSearchLoaded(this.productVariantDashboardViewModelList);
+    }
+
+    public void onSearchLoaded(@NonNull List<ProductVariantDashboardViewModel> list) {
         if (productVariantViewModel != null && productVariantViewModel.getVariantOptionParent(1) != null) {
             productVariantDashboardNewAdapter.setLevel2String(productVariantViewModel.getVariantOptionParent(1).getName());
         } else {
             productVariantDashboardNewAdapter.setLevel2String(null);
         }
-        onSearchLoaded(this.productVariantDashboardViewModelList);
-    }
-
-    public void onSearchLoaded(@NonNull List<ProductVariantDashboardViewModel> list) {
         productVariantDashboardNewAdapter.clearData();
         productVariantDashboardNewAdapter.addData(list);
         if (recyclerViewState != null) {
@@ -600,14 +607,28 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
                 productVariantViewModel.getProductVariantOptionChild(1);
         SparseIntArray mapPvoToIndex = new SparseIntArray();
         createMap(productVariantOptionChildListLv2LookUp, mapPvoToIndex);
+
+        List<ProductVariantCombinationViewModel> productVariant = productVariantViewModel.getProductVariant();
+        if (productVariant == null) {
+            productVariant = new ArrayList<>();
+        }
+
         // loop for level 1: ex: red, blue, purple
         for (int i = 0, sizei = productVariantOptionChildListLv1.size(); i < sizei; i++) {
             ProductVariantDashboardViewModel productVariantDashboardViewModel =
                     new ProductVariantDashboardViewModel(productVariantOptionChildListLv1.get(i));
-            List<ProductVariantCombinationViewModel> productVariant = productVariantViewModel.getProductVariant();
             for (int j = 0, sizej = productVariant.size(); j < sizej; j++) {
                 productVariantDashboardViewModel.addCombinationModelIfAligned(productVariant.get(j),
                         productVariantOptionChildListLv2LookUp, mapPvoToIndex);
+            }
+
+            // server bug, the variant is less than the option; we generate the variant.
+            // ex: option level 1 has red, blur, green, but there is only red and blue in the selected variant;
+            // we generate the missing varian with all empty value and empty stock.
+            if (productVariantDashboardViewModel.getProductVariantCombinationViewModelList().isEmpty() ) {
+                productVariantDashboardViewModel.addCombinationModel(productVariantOptionChildListLv2LookUp);
+                productVariantViewModel.getProductVariant().addAll(
+                        productVariantDashboardViewModel.getProductVariantCombinationViewModelList());
             }
             productVariantDashboardViewModelList.add(productVariantDashboardViewModel);
         }

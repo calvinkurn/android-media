@@ -95,6 +95,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
     private CharSequence mHelperText;
 
     private int mPrefixLength;
+    private String prefixString;
 
     public TkpdHintTextInputLayout(Context context) {
         super(context);
@@ -222,11 +223,8 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         } else if (hasNormalValue) {
             mDisabledHintTextColor = mDefaultHintTextColor;
         }
-        String prefixString = a.getString(R.styleable.TkpdHintTextInputLayout_prefixString);
-        mPrefixLength = prefixString == null ? 0 : prefixString.length();
-        if (mCounterEnabled && mPrefixLength > 0) {
-            setCounterMaxLength(mCounterMaxLength + mPrefixLength);
-        }
+        prefixString = a.getString(R.styleable.TkpdHintTextInputLayout_prefixString);
+
         a.recycle();
 
     }
@@ -243,6 +241,11 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         mTvError = (TextView) view.findViewById(R.id.tv_error);
         mTvSuccess = (TextView) view.findViewById(R.id.tv_success);
         mTvCounter = (TextView) view.findViewById(R.id.tv_counter);
+
+        mPrefixLength = prefixString == null ? 0 : prefixString.length();
+        if (mCounterEnabled && mPrefixLength > 0) {
+            setCounterMaxLength(mCounterMaxLength + mPrefixLength);
+        }
 
         setUIHint();
         setUICounter();

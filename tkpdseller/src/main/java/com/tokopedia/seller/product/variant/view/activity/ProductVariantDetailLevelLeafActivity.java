@@ -88,7 +88,6 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         Intent intent = getIntent();
 
         variantName = intent.getStringExtra(EXTRA_PRODUCT_VARIANT_NAME);
@@ -105,6 +104,8 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
         needRetainImage = intent.getBooleanExtra(EXTRA_NEED_RETAIN_IMAGE, false);
         stockType = intent.getIntExtra(EXTRA_STOCK_TYPE, StockTypeDef.TYPE_ACTIVE);
         isOfficialStore = intent.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false);
+
+        super.onCreate(savedInstanceState);
     }
 
     @Override

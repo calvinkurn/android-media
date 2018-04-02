@@ -25,6 +25,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
+import com.tokopedia.seller.product.edit.view.presenter.ProductAddImagePresenter;
+import com.tokopedia.seller.product.edit.view.presenter.ProductAddImageView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,9 +40,11 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 
@@ -49,11 +53,13 @@ import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
  */
 
 @RuntimePermissions
-public class ProductAddActivity extends BaseProductAddEditActivity {
+public class ProductAddActivity extends BaseProductAddEditActivity implements ProductAddImageView{
 
     public static final String EXTRA_IMAGE_URLS = "img_urls";
     public static final String IMAGE = "image/";
-    public static final String CONTENT_GMAIL_LS = "content://gmail-ls/";
+    public static final String IMAGE_OR_VIDEO = "*/";
+
+    private ProductAddImagePresenter productAddImagePresenter;
 
     // url got from gallery or camera
     private ArrayList<String> imageUrls;
@@ -220,7 +226,7 @@ public class ProductAddActivity extends BaseProductAddEditActivity {
         if (type == null) {
             return false;
         }
-        if (!type.startsWith(IMAGE)) {
+        if (!type.startsWith(IMAGE) && !type.startsWith(IMAGE_OR_VIDEO)) {
             return false;
         }
         if (Intent.ACTION_SEND.equals(action)) {
@@ -263,48 +269,56 @@ public class ProductAddActivity extends BaseProductAddEditActivity {
 
     private void processMultipleImage(ArrayList<Uri> imageUris) {
         showProgressDialog();
-
-        Observable.just(imageUris).map(new Func1<ArrayList<Uri>, ArrayList<String>>() {
-            @Override
-            public ArrayList<String> call(ArrayList<Uri> imageUris) {
-                int imagescount = (imageUris.size() > MAX_IMAGES) ? MAX_IMAGES : imageUris.size();
-                imageUrls = new ArrayList<>();
-                for (int i = 0; i < imagescount; i++) {
-                    Uri imageUri = imageUris.get(i);
-                    String uriString = imageUri.toString();
-                    if (uriString.startsWith(CONTENT_GMAIL_LS)) {// get email attachment from gmail
-                        imageUrls.add(FileUtils.getPathFromGmail(ProductAddActivity.this, imageUri));
-                    } else { // get extras for import from gallery
-                        String url = FileUtils.getTkpdPathFromURI(ProductAddActivity.this, imageUri);
-                        if (!TextUtils.isEmpty(url)) {
-                            imageUrls.add(url);
-                        }
-                    }
-                }
-                return imageUrls;
-            }
-        }).subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ArrayList<String>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        dismissDialog();
-                        createProductAddFragment();
-                    }
-
-                    @Override
-                    public void onNext(ArrayList<String> imageUrls) {
-                        dismissDialog();
-                        createProductAddFragment();
-                    }
-                });
+        initPresenter();
+        productAddImagePresenter.convertUrisToLocalPaths(imageUris);
     }
 
+    private void initPresenter(){
+        if (productAddImagePresenter == null) {
+            productAddImagePresenter = new ProductAddImagePresenter();
+        }
+        productAddImagePresenter.attachView(this);
+    }
+
+    private void showProductAddFragment(){
+        if (!ProductAddActivity.this.isPausing() && !ProductAddActivity.this.isFinishing()) {
+            dismissDialog();
+            createProductAddFragment();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!isDialogShowing()) {
+            createProductAddFragment();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        dismissDialog();
+        if (productAddImagePresenter!= null) {
+            productAddImagePresenter.detachView();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onSuccessStoreImageToLocal(ArrayList<String> imageUrls) {
+        this.imageUrls = new ArrayList<>();
+        this.imageUrls.addAll(imageUrls);
+        showProductAddFragment();
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        showProductAddFragment();
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
 
 }

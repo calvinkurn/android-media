@@ -232,6 +232,13 @@ public abstract class BaseProductAddEditActivity extends BaseSimpleActivity
         tkpdProgressDialog.showDialog();
     }
 
+    public boolean isDialogShowing(){
+        if (tkpdProgressDialog!= null) {
+            return tkpdProgressDialog.isProgress();
+        }
+        return false;
+    }
+
     public void dismissDialog() {
         if (tkpdProgressDialog != null) {
             tkpdProgressDialog.dismiss();
