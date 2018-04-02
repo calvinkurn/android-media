@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.gamification.domain.GetTokenTokopointsUseCase;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
-import com.tokopedia.gamification.floatingtoken.model.TokenData;
+import com.tokopedia.gamification.floating.view.model.TokenData;
 
 import javax.inject.Inject;
 
@@ -16,6 +16,7 @@ import rx.Subscriber;
 
 public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContract.View>
         implements FloatingEggContract.Presenter {
+    
     private GetTokenTokopointsUseCase getTokenTokopointsUseCase;
     private UserSession userSession;
 

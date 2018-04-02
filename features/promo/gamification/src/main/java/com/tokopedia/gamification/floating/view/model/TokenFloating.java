@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.floatingtoken.model;
+package com.tokopedia.gamification.floating.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

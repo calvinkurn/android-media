@@ -1,7 +1,7 @@
 package com.tokopedia.gamification.domain;
 
 import com.tokopedia.gamification.cracktoken.presentation.model.CrackResult;
-import com.tokopedia.gamification.floatingtoken.model.TokenData;
+import com.tokopedia.gamification.floating.view.model.TokenData;
 
 import rx.Observable;
 

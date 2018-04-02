@@ -7,10 +7,10 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.gamification.cracktoken.presentation.fragment.CrackTokenFragment;
-import com.tokopedia.gamification.floatingtoken.model.TokenAsset;
-import com.tokopedia.gamification.floatingtoken.model.TokenData;
-import com.tokopedia.gamification.floatingtoken.model.TokenHome;
-import com.tokopedia.gamification.floatingtoken.model.TokenUser;
+import com.tokopedia.gamification.floating.view.model.TokenAsset;
+import com.tokopedia.gamification.floating.view.model.TokenData;
+import com.tokopedia.gamification.floating.view.model.TokenHome;
+import com.tokopedia.gamification.floating.view.model.TokenUser;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.tokopedia.gamification.domain;
 
-import com.tokopedia.gamification.floatingtoken.model.TokenData;
+import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

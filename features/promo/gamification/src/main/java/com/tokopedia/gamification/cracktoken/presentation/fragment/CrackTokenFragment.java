@@ -24,8 +24,8 @@ import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetCra
 import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetRemainingToken;
 import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetTokenView;
 import com.tokopedia.gamification.cracktoken.presentation.model.CrackBenefit;
-import com.tokopedia.gamification.floatingtoken.model.TokenData;
-import com.tokopedia.gamification.floatingtoken.model.TokenUser;
+import com.tokopedia.gamification.floating.view.model.TokenData;
+import com.tokopedia.gamification.floating.view.model.TokenUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -219,6 +219,4 @@ public class CrackTokenFragment extends BaseDaggerFragment {
         widgetTokenView.reset();
         textCountdownTimer.setVisibility(View.VISIBLE);
     }
-
-
 }

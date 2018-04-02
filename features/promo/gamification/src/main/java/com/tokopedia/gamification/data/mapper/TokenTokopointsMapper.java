@@ -1,11 +1,11 @@
 package com.tokopedia.gamification.data.mapper;
 
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
-import com.tokopedia.gamification.floatingtoken.model.TokenAsset;
-import com.tokopedia.gamification.floatingtoken.model.TokenData;
-import com.tokopedia.gamification.floatingtoken.model.TokenFloating;
-import com.tokopedia.gamification.floatingtoken.model.TokenHome;
-import com.tokopedia.gamification.floatingtoken.model.TokenUser;
+import com.tokopedia.gamification.floating.view.model.TokenAsset;
+import com.tokopedia.gamification.floating.view.model.TokenData;
+import com.tokopedia.gamification.floating.view.model.TokenFloating;
+import com.tokopedia.gamification.floating.view.model.TokenHome;
+import com.tokopedia.gamification.floating.view.model.TokenUser;
 
 import javax.inject.Inject;
 

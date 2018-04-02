@@ -34,8 +34,8 @@ import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
 import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
-import com.tokopedia.gamification.floatingtoken.model.TokenData;
-import com.tokopedia.gamification.floatingtoken.model.TokenFloating;
+import com.tokopedia.gamification.floating.view.model.TokenData;
+import com.tokopedia.gamification.floating.view.model.TokenFloating;
 
 import javax.inject.Inject;
 
