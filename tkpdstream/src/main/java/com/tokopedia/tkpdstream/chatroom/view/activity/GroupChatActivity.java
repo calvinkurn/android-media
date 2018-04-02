@@ -122,6 +122,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private Runnable runnable;
     private Handler tooltipHandler;
     private boolean canShowDialog = true;
+    private boolean isFirstTime;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -207,7 +208,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else {
             initialFragment = CHATROOM_FRAGMENT;
         }
-
+        isFirstTime = true;
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(ARGS_VIEW_MODEL);
         } else if (getIntent().getExtras() != null) {
@@ -425,6 +426,10 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void showFragment(int fragmentPosition) {
         try {
+            if(fragmentPosition == initialFragment && !isFirstTime){
+                return;
+            }
+            isFirstTime = false;
             this.initialFragment = fragmentPosition;
             tabAdapter.setActiveFragment(fragmentPosition);
             tabAdapter.change(fragmentPosition, false);

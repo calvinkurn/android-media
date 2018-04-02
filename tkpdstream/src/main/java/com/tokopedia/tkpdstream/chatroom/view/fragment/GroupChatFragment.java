@@ -189,7 +189,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         chatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-
+                super.onScrollStateChanged(recyclerView, newState);
                 if (layoutManager.findLastVisibleItemPosition() == adapter.getItemCount() - 1
                         && !adapter.isLoading()) {
                     presenter.loadPreviousMessages(mChannel, mPrevMessageListQuery);
@@ -198,7 +198,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 if (layoutManager.findFirstVisibleItemPosition() == 0) {
                     resetNewMessageCounter();
                 }
+            }
 
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (layoutManager.findFirstVisibleItemPosition() == 0) {
+                    resetNewMessageCounter();
+                }
             }
         });
 

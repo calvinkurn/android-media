@@ -6,7 +6,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/space_med"
+    android:layout_marginLeft="@dimen/space_med"
+    android:layout_marginRight="@dimen/space_med"
+    android:elevation="0dp"
     app:cardCornerRadius="@dimen/space_mini">
 
     <android.support.constraint.ConstraintLayout
@@ -23,8 +25,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingEnd="@dimen/space_mini"
-            android:paddingRight="@dimen/space_mini"
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
@@ -45,7 +45,8 @@
             android:id="@+id/text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-
+            android:layout_marginStart="@dimen/space_avg_small"
+            android:layout_marginLeft="@dimen/space_avg_small"
             android:textColor="@color/orange_group_points_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
