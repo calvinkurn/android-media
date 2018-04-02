@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -56,7 +58,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public void onCreate() {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         HockeyAppHelper.setHockeyappKey(HockeyAppHelper.KEY_MAINAPP);
-        GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+        setVersionCode();
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
@@ -73,6 +75,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
 
         initSendbird();
+    }
+
+    private void setVersionCode() {
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+            GlobalConfig.VERSION_CODE = pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+        }
     }
 
     private void initSendbird() {
