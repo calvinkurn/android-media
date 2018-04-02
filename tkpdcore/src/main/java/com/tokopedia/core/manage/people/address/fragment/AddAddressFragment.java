@@ -352,12 +352,14 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         int resultCode = availability.isGooglePlayServicesAvailable(getActivity());
         if (ConnectionResult.SUCCESS == resultCode) {
             CommonUtils.dumper("Google play services available");
-            LocationPass locationPass = null;
+            LocationPass locationPass;
             if (presenter.getLatLng() != null) {
                 locationPass = new LocationPass();
                 locationPass.setLatitude(String.valueOf(presenter.getLatLng().latitude));
                 locationPass.setLongitude(String.valueOf(presenter.getLatLng().longitude));
                 locationPass.setGeneratedAddress(locationEditText.getText().toString());
+            } else if(!spinnerRegency.isShown() || !spinnerSubDistrict.isShown()) {
+                locationPass = null;
             } else {
                 locationPass = new LocationPass();
                 locationPass.setCityName((String)spinnerRegency.getSelectedItem());
