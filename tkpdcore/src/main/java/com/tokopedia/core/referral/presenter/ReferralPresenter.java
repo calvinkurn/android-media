@@ -52,6 +52,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     private GetReferralDataUseCase getReferralDataUseCase;
     private TokoCashUseCase tokoCashUseCase;
     private SessionHandler sessionHandler;
+    private String url = "";
 
     @Inject
     public ReferralPresenter(GetReferralDataUseCase getReferralDataUseCase, TokoCashUseCase tokoCashUseCase, SessionHandler sessionHandler) {
@@ -83,13 +84,13 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     @Override
     public void shareApp() {
         formatSharingContents();
-        String type= ShareData.APP_SHARE_TYPE;
-        if(isAppShowReferralButtonActivated()){
-            type= ShareData.REFERRAL_TYPE;
+        String type = ShareData.APP_SHARE_TYPE;
+        if (isAppShowReferralButtonActivated()) {
+            type = ShareData.REFERRAL_TYPE;
         }
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(type)
-                .setId(getView().getReferralCodeFromTextView())
+                .setId(url)
                 .setName(activity.getString(R.string.app_share_title))
                 .setTextContent(contents)
                 .build();
@@ -121,7 +122,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onError(Throwable e) {
-                if(!isViewAttached()){
+                if (!isViewAttached()) {
                     return;
                 }
                 getView().hideProcessDialog();
@@ -144,7 +145,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(ReferralCodeEntity referralCodeEntity) {
-                if(!isViewAttached()){
+                if (!isViewAttached()) {
                     return;
                 }
                 if (referralCodeEntity.getErorMessage() == null) {
@@ -153,6 +154,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     localCacheHandler.applyEditor();
                     contents = referralCodeEntity.getPromoContent().getContent();
                     getView().renderVoucherCode(referralCodeEntity.getPromoContent().getCode());
+                    url = referralCodeEntity.getPromoContent().getUrl();
                 } else {
                     getView().renderErrorGetVoucherCode(referralCodeEntity.getErorMessage());
                 }
@@ -230,7 +232,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(TokoCashData tokoCashData) {
-                if(!isViewAttached()){
+                if (!isViewAttached()) {
                     return;
                 }
 

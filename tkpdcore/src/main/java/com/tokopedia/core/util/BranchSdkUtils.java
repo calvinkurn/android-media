@@ -64,7 +64,7 @@ public class BranchSdkUtils {
 
         if (isBranchUrlActivated(activity, data.getType()) && !ShareData.RIDE_TYPE.equalsIgnoreCase(data.getType())) {
             if (ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
-                ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(""), data.getTextContentForBranch(""), "");
+                ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(""), data.getTextContentForBranch(""), data.getId());
 
             }else{
                 BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
