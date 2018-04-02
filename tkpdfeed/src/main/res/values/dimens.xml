@@ -61,5 +61,6 @@
     <dimen name="feed_new_kol_button">15dp</dimen>
     <dimen name="feed_new_card_elevation">2dp</dimen>
     <dimen name="content_product_margin">6dp</dimen>
+    <dimen name="feed_new_card_margin">16dp</dimen>
 
 </resources>

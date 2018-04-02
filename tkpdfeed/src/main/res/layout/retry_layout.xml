@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_small"
+    android:layout_marginTop="@dimen/feed_new_card_margin"
     android:layout_marginBottom="@dimen/margin_small"
     android:padding="@dimen/padding_med"
     android:gravity="center_horizontal"
