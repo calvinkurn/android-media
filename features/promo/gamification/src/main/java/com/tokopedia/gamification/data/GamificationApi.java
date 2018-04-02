@@ -1,8 +1,10 @@
 package com.tokopedia.gamification.data;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.gamification.data.entity.ResponseCrackResultEntity;
 import com.tokopedia.gamification.data.entity.ResponseTokenTokopointEntity;
+
+import java.util.Map;
 
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
@@ -15,11 +17,11 @@ import rx.Observable;
 
 public interface GamificationApi {
 
-    @POST("graphql")
+    @POST("./")
     @Headers({"Content-Type: application/json"})
-    Observable<DataResponse<ResponseTokenTokopointEntity>> getTokenTokopoints(@Body String requestBody);
+    Observable<GraphqlResponse<ResponseTokenTokopointEntity>> getTokenTokopoints(@Body Map<String, String> requestBodyMap);
 
-    @POST("graphql")
+    @POST("./")
     @Headers({"Content-Type: application/json"})
-    Observable<DataResponse<ResponseCrackResultEntity>> getCrackResult(@Body String requestBody);
+    Observable<GraphqlResponse<ResponseCrackResultEntity>> getCrackResult(@Body String requestBody);
 }
