@@ -7,7 +7,6 @@ import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,10 +112,8 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            Log.v("yfsx", "saveInstance");
             viewModel = savedInstanceState.getParcelable(ARGS_DATA);
         } else if (getArguments() != null) {
-            Log.v("yfsx", "parcelable");
             viewModel = createViewModel(getArguments());
         } else {
             getActivity().finish();

@@ -31,6 +31,10 @@ import javax.inject.Inject;
 
 public class ChangeNameFragment extends BaseDaggerFragment implements ChangeNameListener.View {
 
+    private static final int COUNT_CHAR_MIN = 3;
+    private static final int COUNT_CHAR_MAX = 128;
+
+
     private EditText etName;
     private Button btnContinue;
     private TkpdProgressDialog progressDialog;
@@ -93,7 +97,8 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
     }
 
     private boolean isValidName(String name) {
-        if (name.length() < 3) return false;
+        if (name.length() < COUNT_CHAR_MIN) return false;
+        else if (name.length() > COUNT_CHAR_MAX) return false;
         return true;
     }
 

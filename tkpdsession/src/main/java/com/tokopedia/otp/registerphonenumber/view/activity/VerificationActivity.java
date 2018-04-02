@@ -2,6 +2,7 @@ package com.tokopedia.otp.registerphonenumber.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,7 +12,7 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.analytics.OTPAnalytics;
-import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.otp.registerphonenumber.view.fragment.VerificationFragment;
 import com.tokopedia.otp.registerphonenumber.view.fragment.VerificationMethodFragment;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
  * @author by yfsx on 5/3/18.
  */
 
-public class VerificationActivity extends TActivity implements HasComponent {
+public class VerificationActivity extends BasePresenterActivity implements HasComponent {
 
     public static final int TYPE_SMS = 1;
     public static final int TYPE_PHONE_CALL = 2;
@@ -40,13 +41,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
     private static final String CHOOSE_FRAGMENT_TAG = "choose";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_simple_fragment);
-        initView();
-    }
-
-    private void initView() {
+    public void initView() {
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null)
             bundle.putAll(getIntent().getExtras());
@@ -210,5 +205,40 @@ public class VerificationActivity extends TActivity implements HasComponent {
         } else {
             finish();
         }
+    }
+
+    @Override
+    protected void setupURIPass(Uri data) {
+
+    }
+
+    @Override
+    protected void setupBundlePass(Bundle extras) {
+
+    }
+
+    @Override
+    protected void initialPresenter() {
+
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_simple_fragment;
+    }
+
+    @Override
+    protected void setViewListener() {
+
+    }
+
+    @Override
+    protected void initVar() {
+
+    }
+
+    @Override
+    protected void setActionVar() {
+
     }
 }
