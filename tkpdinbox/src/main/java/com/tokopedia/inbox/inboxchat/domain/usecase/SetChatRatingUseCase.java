@@ -33,17 +33,17 @@ public class SetChatRatingUseCase extends UseCase<SetChatRatingPojo>{
 
     @Override
     public Observable<SetChatRatingPojo> createObservable(RequestParams requestParams) {
-        return chatRatingApi.setChatRating(requestParams).map(setChatRatingMapper);
+        return chatRatingApi.setChatRating(requestParams.getParameters()).map(setChatRatingMapper);
     }
 
     public static RequestParams getParams(int messageId,
                                           int userId,
-                                          String timeStamp,
+                                          long timeStamp,
                                           int rating){
         RequestParams param = RequestParams.create();
         param.putInt(PARAM_MESSAGE_ID, messageId);
         param.putInt(PARAM_USER_ID, userId);
-        param.putString(PARAM_TIMESTAMP, timeStamp);
+        param.putLong(PARAM_TIMESTAMP, timeStamp);
         param.putInt(PARAM_RATING, rating);
         return param;
     }

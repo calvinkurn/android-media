@@ -6,5 +6,5 @@ package com.tokopedia.inbox.inboxchat.data.network;
 
 public class ChatBotUrl {
 
-    public static String BASE_URL = "https://gql.tokopedia.com/";
+    public static String BASE_URL = "https://api.tokopedia.com/";
 }

@@ -21,22 +21,54 @@ public class AttachInvoiceSentViewModel extends ListReplyViewModel {
     }
 
     public AttachInvoiceSentViewModel(OppositeChatViewModel source){
-        super(source.getMsgId(),source.getUserId(),source.getReplyId(),source.getSenderId()
-                ,source.getSenderName(),source.getRole(),source.getMsg(),source.getSpanned(),
-                source.getReplyTime(),source.getFraudStatus(),source.getReadTime(),source.getAttachment(),
-                source.getAttachmentId(),source.getOldMsgId(),source.isShowTime(),source.isShowHour(),
-                source.isOpposite(),source.isHighlight(),source.getOldMessageTitle());
+        super(source.getMsgId(),
+                source.getUserId(),
+                source.getReplyId(),
+                source.getSenderId(),
+                source.getSenderName(),
+                source.getRole(),
+                source.getMsg(),
+                source.getSpanned(),
+                source.getReplyTime(),
+                source.getFraudStatus(),
+                source.getReadTime(),
+                source.getAttachment(),
+                source.getAttachmentId(),
+                source.getOldMsgId(),
+                source.isShowTime(),
+                source.isShowHour(),
+                source.isOpposite(),
+                source.isHighlight(),
+                source.getOldMessageTitle(),
+                source.isShowRating(),
+                source.getRatingStatus());
         this.isDummy = false;
         this.isRetry = false;
         this.isSender = false;
     }
 
     public AttachInvoiceSentViewModel(ThumbnailChatViewModel source){
-        super(source.getMsgId(),source.getUserId(),source.getReplyId(),source.getSenderId()
-                ,source.getSenderName(),source.getRole(),source.getMsg(),source.getSpanned(),
-                source.getReplyTime(),source.getFraudStatus(),source.getReadTime(),source.getAttachment(),
-                source.getAttachmentId(),source.getOldMsgId(),source.isShowTime(),source.isShowHour(),
-                source.isOpposite(),source.isHighlight(),source.getOldMessageTitle());
+        super(source.getMsgId(),
+                source.getUserId(),
+                source.getReplyId(),
+                source.getSenderId(),
+                source.getSenderName(),
+                source.getRole(),
+                source.getMsg(),
+                source.getSpanned(),
+                source.getReplyTime(),
+                source.getFraudStatus(),
+                source.getReadTime(),
+                source.getAttachment(),
+                source.getAttachmentId(),
+                source.getOldMsgId(),
+                source.isShowTime(),
+                source.isShowHour(),
+                source.isOpposite(),
+                source.isHighlight(),
+                source.getOldMessageTitle(),
+                source.isShowRating(),
+                source.getRatingStatus());
         this.isDummy = false;
         this.isRetry = false;
         this.isSender = false;
@@ -44,11 +76,27 @@ public class AttachInvoiceSentViewModel extends ListReplyViewModel {
 
 
     public AttachInvoiceSentViewModel(MyChatViewModel source){
-        super(source.getMsgId(),source.getUserId(),source.getReplyId(),source.getSenderId()
-                ,source.getSenderName(),source.getRole(),source.getMsg(),source.getSpanned(),
-                source.getReplyTime(),source.getFraudStatus(),source.getReadTime(),source.getAttachment(),
-                source.getAttachmentId(),source.getOldMsgId(),source.isShowTime(),source.isShowHour(),
-                source.isOpposite(),source.isHighlight(),source.getOldMessageTitle());
+        super(source.getMsgId(),
+                source.getUserId(),
+                source.getReplyId(),
+                source.getSenderId(),
+                source.getSenderName(),
+                source.getRole(),
+                source.getMsg(),
+                source.getSpanned(),
+                source.getReplyTime(),
+                source.getFraudStatus(),
+                source.getReadTime(),
+                source.getAttachment(),
+                source.getAttachmentId(),
+                source.getOldMsgId(),
+                source.isShowTime(),
+                source.isShowHour(),
+                source.isOpposite(),
+                source.isHighlight(),
+                source.getOldMessageTitle(),
+                source.isShowRating(),
+                source.getRatingStatus());
         this.isDummy = source.isDummy();
         this.readStatus = source.isReadStatus();
         this.isRetry = source.isRetry();

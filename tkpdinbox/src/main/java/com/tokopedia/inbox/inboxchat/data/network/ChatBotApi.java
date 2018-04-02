@@ -1,7 +1,8 @@
 package com.tokopedia.inbox.inboxchat.data.network;
 
 import com.tokopedia.inbox.inboxchat.data.pojo.SetChatRatingPojo;
-import com.tokopedia.usecase.RequestParams;
+
+import java.util.HashMap;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -20,5 +21,5 @@ public interface ChatBotApi {
     @POST(PATH_SET_RATING)
     @Headers({"Content-Type: application/json"})
     Observable<Response<SetChatRatingPojo>>
-    setChatRating(@Body RequestParams requestParams);
+    setChatRating(@Body HashMap<String, Object> requestParams);
 }
