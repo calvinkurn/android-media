@@ -91,9 +91,9 @@ public class PromoDetailFragment extends BaseDaggerFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_promo_detail, container, false);
 
+        this.llPromoDetailBottomLayout = view.findViewById(R.id.ll_promo_detail_bottom_layout);
         this.tvPromoDetailAction = view.findViewById(R.id.tv_promo_detail_action);
         this.rvPromoDetailView = view.findViewById(R.id.rv_promo_detail_view);
-        this.llPromoDetailBottomLayout = view.findViewById(R.id.ll_promo_detail_bottom_layout);
 
         return view;
     }
@@ -101,26 +101,16 @@ public class PromoDetailFragment extends BaseDaggerFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.llPromoDetailBottomLayout.setVisibility(View.VISIBLE);
 
         this.rvPromoDetailView.setAdapter(promoDetailAdapter);
         this.rvPromoDetailView.setLayoutManager(new LinearLayoutManager(getActivity()));
         this.rvPromoDetailView.setHasFixedSize(true);
-        this.rvPromoDetailView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (rvPromoDetailView != null) {
-                    boolean isEndOfScrolling = rvPromoDetailView.canScrollVertically(1);
-                    llPromoDetailBottomLayout.setVisibility(isEndOfScrolling ? View.GONE : View.VISIBLE);
-                }
-            }
-        });
 
         this.promoDetailAdapter.setPromoDetail(promoDetailObjectList);
         this.promoDetailAdapter.setAdapterActionListener(getAdapterActionListener());
         this.promoDetailAdapter.notifyDataSetChanged();
 
-        this.llPromoDetailBottomLayout.setVisibility(View.GONE);
         this.tvPromoDetailAction.setText(this.promoData.getCtaText());
         this.tvPromoDetailAction.setOnClickListener(new View.OnClickListener() {
             @Override

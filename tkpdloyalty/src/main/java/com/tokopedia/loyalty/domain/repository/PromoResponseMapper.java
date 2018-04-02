@@ -50,7 +50,6 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             promoData.setTitle(promoResponse.getTitle().getRendered());
             promoData.setTermsAndConditions(parseContent(promoResponse.getContent().getRendered()));
             promoData.setAppLink(promoResponse.getMeta().getAppLink());
-            promoData.setMultiplePromoCodeCount(promoResponse.getPromoCodes().size());
             try {
                 promoData.setPeriodFormatted(
                         getDatePeriodPromo(
@@ -71,9 +70,10 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             promoData.setMinTransaction(promoResponse.getMeta().getMinTransaction());
             promoData.setStartDate(promoResponse.getMeta().getStartDate());
             promoData.setEndDate(promoResponse.getMeta().getEndDate());
-            promoData.setMultiplePromo(promoResponse.getPromoCodes().size() > 0);
 
             promoData.setPromoCodeList(getPromoCodes(promoResponse));
+            promoData.setMultiplePromoCodeCount(promoData.getPromoCodeList().size());
+            promoData.setMultiplePromo(!promoData.getPromoCodeList().isEmpty());
             promoData.setPromoCode(promoResponse.getMeta().getPromoCode());
             promoDataList.add(promoData);
         }
@@ -194,5 +194,34 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             promoMenuDataList.add(promoMenuData);
         }
         return promoMenuDataList;
+    }
+
+    private List<PromoCodeViewModel> getPromoCodeList() {
+        List<SingleCodeViewModel> singleCodeViewModelList = new ArrayList<>();
+        singleCodeViewModelList.add(getSingleCodeViewModel("PROMOABC"));
+        singleCodeViewModelList.add(getSingleCodeViewModel("PROMODEF"));
+        singleCodeViewModelList.add(getSingleCodeViewModel("PROMOGHI"));
+
+        List<PromoCodeViewModel> promoCodeViewModelList = new ArrayList<>();
+        promoCodeViewModelList.add(getPromoCodeViewModel("Promo Untuk Pelanggan BCA", singleCodeViewModelList));
+        promoCodeViewModelList.add(getPromoCodeViewModel("Promo Untuk Pelanggan BRI", singleCodeViewModelList));
+        promoCodeViewModelList.add(getPromoCodeViewModel("Promo Untuk Pelanggan Mandiri", singleCodeViewModelList));
+
+        return promoCodeViewModelList;
+    }
+
+    private SingleCodeViewModel getSingleCodeViewModel(String singleCode) {
+        SingleCodeViewModel singleCodeViewModel = new SingleCodeViewModel();
+        singleCodeViewModel.setSingleCode(singleCode);
+        return singleCodeViewModel;
+    }
+
+    private PromoCodeViewModel getPromoCodeViewModel(String title, List<SingleCodeViewModel> singleCodeViewModelList) {
+        PromoCodeViewModel promoCodeViewModel1 = new PromoCodeViewModel();
+        promoCodeViewModel1.setGroupCodeTitle(title);
+        promoCodeViewModel1.setGroupCodeDescription("Kode 1 untuk LG G6 Plus & Kode 2 untuk LG Q6 Plus");
+        promoCodeViewModel1.setGroupCode(singleCodeViewModelList);
+
+        return promoCodeViewModel1;
     }
 }

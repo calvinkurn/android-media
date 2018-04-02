@@ -1,11 +1,10 @@
 package com.tokopedia.loyalty.view.viewholder;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
-import android.widget.TextView;
+import android.webkit.WebViewClient;
 
+import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.view.data.PromoDetailTncHolderData;
 
@@ -17,17 +16,26 @@ public class PromoDetailTnCViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_VIEW_TNC = R.layout.item_view_promo_tnc_layout;
 
-    private TextView tvPromoDetailTnC;
+    private TkpdWebView webView;
 
     public PromoDetailTnCViewHolder(View itemView) {
         super(itemView);
 
-        this.tvPromoDetailTnC = itemView.findViewById(R.id.tv_promo_detail_tnc);
+        this.webView = itemView.findViewById(com.tokopedia.abstraction.R.id.webview);
     }
 
     public void bind(PromoDetailTncHolderData holderData) {
-        this.tvPromoDetailTnC.setText(Html.fromHtml(holderData.getTermAndConditions().get(0)));
-        this.tvPromoDetailTnC.setMovementMethod(LinkMovementMethod.getInstance());
+        loadWeb(holderData.getTermAndConditions().get(0));
+    }
+
+    private void loadWeb(String content) {
+        webView.clearCache(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setBuiltInZoomControls(false);
+        webView.getSettings().setDisplayZoomControls(true);
+        webView.setWebViewClient(new WebViewClient());
+        webView.loadDataWithBaseURL(null, content, "text/html", "UTF-8", null);
     }
 
 }
