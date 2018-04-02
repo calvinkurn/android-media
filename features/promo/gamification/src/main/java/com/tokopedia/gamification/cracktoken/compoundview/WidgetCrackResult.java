@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.cracktoken.presentation.compoundview;
+package com.tokopedia.gamification.cracktoken.compoundview;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,7 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.cracktoken.presentation.model.CrackBenefit;
+import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
 
 import java.util.List;
 

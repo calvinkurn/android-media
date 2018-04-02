@@ -7,7 +7,7 @@ import com.tokopedia.gamification.cracktoken.presentation.model.CrackResult;
 import com.tokopedia.gamification.data.mapper.CrackResultMapper;
 import com.tokopedia.gamification.data.mapper.TokenTokopointsMapper;
 import com.tokopedia.gamification.domain.IGamificationRepository;
-import com.tokopedia.gamification.floatingtoken.model.TokenData;
+import com.tokopedia.gamification.floating.view.model.TokenData;
 
 import javax.inject.Inject;
 

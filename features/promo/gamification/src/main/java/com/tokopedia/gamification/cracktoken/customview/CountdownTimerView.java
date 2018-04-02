@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.cracktoken.presentation.customview;
+package com.tokopedia.gamification.cracktoken.customview;
 
 import android.content.Context;
 import android.graphics.Canvas;
