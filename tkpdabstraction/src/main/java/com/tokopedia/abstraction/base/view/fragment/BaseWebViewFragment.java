@@ -130,7 +130,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Uri[] results = null;
             //Check if response is positive
             if (resultCode == Activity.RESULT_OK) {
