@@ -11,5 +11,6 @@ import dagger.Component;
 @GamificationScope
 @Component(modules = GamificationModule.class, dependencies = BaseAppComponent.class)
 public interface GamificationComponent {
+
     void inject(FloatingEggButtonFragment floatingEggButtonFragment);
 }

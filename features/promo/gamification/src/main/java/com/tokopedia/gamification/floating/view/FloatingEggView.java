@@ -9,5 +9,5 @@ import com.tokopedia.gamification.floatingtoken.model.TokenData;
 
 public interface FloatingEggView extends CustomerView {
     void onSuccessGetToken(TokenData tokenData);
-    void onFailedGetToken(Throwable throwable);
+    void onErrorGetToken(Throwable throwable);
 }
