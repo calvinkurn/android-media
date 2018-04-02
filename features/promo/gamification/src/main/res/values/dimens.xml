@@ -6,4 +6,6 @@
     <fraction name="to_y_scale_reward_anim">600%</fraction>
     <integer name="translate_egg_to_y_delta">-100</integer>
     <dimen name="text_size_countdown_timer">24sp</dimen>
+    <dimen name="floating_egg_widget_width">104dp</dimen>
+    <dimen name="floating_egg_widget_height">108dp</dimen>
 </resources>
