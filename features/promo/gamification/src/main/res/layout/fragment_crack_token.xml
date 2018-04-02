@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_special_egg">
+    android:id="@+id/root_container"
+    tools:background="@drawable/bg_special_egg">
 
     <TextView
         android:id="@+id/text_countdown_timer"

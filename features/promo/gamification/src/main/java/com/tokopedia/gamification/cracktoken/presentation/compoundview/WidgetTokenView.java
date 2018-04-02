@@ -15,6 +15,10 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.presentation.customview.MaskedHeightImageView;
 
@@ -32,8 +36,8 @@ public class WidgetTokenView extends FrameLayout {
     private ImageView imageViewLightLeft;
     private ImageView imageViewLightRight;
 
-    private Bitmap rightCrackedEgg;
-    private Bitmap leftCrackedEgg;
+    private String imageRightUrl;
+    private String imageLeftUrl;
 
     private boolean isTokenClicked;
 
@@ -85,11 +89,20 @@ public class WidgetTokenView extends FrameLayout {
         });
     }
 
-    public void setToken(Bitmap full, Bitmap cracked, Bitmap right, Bitmap left) {
-        this.rightCrackedEgg = right;
-        this.leftCrackedEgg = left;
-        imageViewFull.setImageBitmap(full);
-        imageViewCracked.setImageBitmap(cracked);
+    public void setToken(String full, String cracked, String right, String left) {
+        imageRightUrl = right;
+        imageLeftUrl = left;
+        ImageHandler.LoadImage(imageViewFull, full);
+        Glide.with(getContext())
+                .load(cracked)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        imageViewCracked.setImageBitmap(resource);
+                    }
+                });
+
         shake();
         showLightAnimation();
     }
@@ -146,8 +159,8 @@ public class WidgetTokenView extends FrameLayout {
         imageViewFull.setVisibility(View.GONE);
         imageViewCracked.setVisibility(View.GONE);
 
-        imageViewLeft.setImageBitmap(leftCrackedEgg);
-        imageViewRight.setImageBitmap(rightCrackedEgg);
+        ImageHandler.LoadImage(imageViewRight, imageRightUrl);
+        ImageHandler.LoadImage(imageViewLeft, imageLeftUrl);
         imageViewLeft.setVisibility(View.VISIBLE);
         imageViewRight.setVisibility(View.VISIBLE);
 
@@ -173,6 +186,7 @@ public class WidgetTokenView extends FrameLayout {
         imageViewCracked.setPercentMasked(100);
 
         showLightAnimation();
+        shake();
     }
 
     public void clearTokenAnimation() {

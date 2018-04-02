@@ -9,61 +9,76 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/image_bg_reward"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_centerInParent="true"
-        android:src="@drawable/bg_light_reward"
-        android:visibility="gone"
-        tools:visibility="visible"/>
-
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/image_reward"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_centerInParent="true"
-        tools:src="@drawable/coupon"
-        android:visibility="gone"
-        tools:visibility="visible"/>
-
     <LinearLayout
-        android:id="@+id/container_text_reward"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_bottom_container_text_reward"
-        android:padding="16dp"
+        android:orientation="vertical"
         android:gravity="center"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:weightSum="2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/text_crack_result_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_reward_label"
-            android:text="Selamat anda mendapatkan"
-            android:textColor="@android:color/white" />
+        <FrameLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/image_bg_reward"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="bottom|center"
+                android:src="@drawable/bg_light_reward"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/image_reward"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="bottom|center"
+                tools:src="@drawable/coupon"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
+        </FrameLayout>
 
         <LinearLayout
-            android:orientation="vertical"
-            android:gravity="center"
-            android:id="@+id/view_list_reward_text"
+            android:id="@+id/container_text_reward"
+            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="0dp"
+            android:padding="16dp"
+            android:gravity="top|center"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/button_cta"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="32dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Cek dan Gunakan Hadiah Anda" />
+            <TextView
+                android:id="@+id/text_crack_result_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_reward_label"
+                android:text="Selamat anda mendapatkan"
+                android:textColor="@android:color/white" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:gravity="center"
+                android:id="@+id/view_list_reward_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/button_cta"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Cek dan Gunakan Hadiah Anda" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
