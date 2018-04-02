@@ -56,7 +56,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     private final String NOTIFICATION_CHANNEL_NAME = "CUSTOM SOUND";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
-    private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound."
+    private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
     @Override
     public void onCreate() {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
