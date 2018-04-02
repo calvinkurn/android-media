@@ -62,6 +62,8 @@ public interface GroupChatContract {
         String getAttributionTracking(String attributePartnerLogo);
 
         void removeGroupChatPoints();
+
+        void onSuccessLogin();
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {

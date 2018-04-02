@@ -954,6 +954,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(null);
     }
 
+    @Override
+    public void onSuccessLogin() {
+       initData();
+    }
+
     private void showPushNotif(GroupChatPointsViewModel model) {
         ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                 (GroupChatFragment.class.getSimpleName())).onPushNotifReceived(model);

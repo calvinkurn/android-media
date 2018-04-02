@@ -621,9 +621,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private boolean canShowUserEnter(UserActionViewModel userActionViewModel) {
         try {
-            return isListEmpty()
+            return !TextUtils.isEmpty(userActionViewModel.getUserName())
+                    && (isListEmpty()
                     || lastItemIsNotUserAction()
-                    || lastItemIsNotSameUser(userActionViewModel);
+                    || lastItemIsNotSameUser(userActionViewModel));
         } catch (NullPointerException e) {
             e.printStackTrace();
             return false;
@@ -784,6 +785,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LOGIN
                 && resultCode == Activity.RESULT_OK) {
+            ((GroupChatContract.View)getActivity()).onSuccessLogin();
             userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
             setForLoginUser(userSession != null && userSession.isLoggedIn());
         }
