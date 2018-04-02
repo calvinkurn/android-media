@@ -340,13 +340,7 @@ public class TopPayActivity extends Activity implements TopPayContract.View, Fin
                 fingerPrintUIHelper = new FingerPrintUIHelper(TopPayActivity.this, transactionId, ccHashed,
                         FingerPrintUIHelper.Stage.REGISTER, presenter.getUserId(), "");
                 fingerPrintUIHelper.startListening(TopPayActivity.this);
-                return false;
-            }
-
-            if (!url.isEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_CREDIT_CARD + Constant.TempRedirectPayment.TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA)
-                    || url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_CREDIT_CARD + Constant.TempRedirectPayment.TOP_PAY_PATH_CREDIT_CARD_VERITRANS))) {
-                view.loadUrl("javascript:(function() { " + jsCode + "})()");
-                return false;
+                return true;
             }
 
             /*
@@ -426,6 +420,7 @@ public class TopPayActivity extends Activity implements TopPayContract.View, Fin
 
         @Override
         public void onPageFinished(WebView view, String url) {
+            view.loadUrl("javascript:(function() { " + jsCode + "})()");
             timeout = false;
             if (progressBar != null) progressBar.setVisibility(View.GONE);
         }
