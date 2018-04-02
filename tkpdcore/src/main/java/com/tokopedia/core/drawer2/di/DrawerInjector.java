@@ -4,6 +4,9 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.cache.http.DiskLruCacheStore;
+import com.apollographql.apollo.cache.http.ResponseCacheStore;
+import com.apollographql.apollo.cache.http.TimeoutEvictionStrategy;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.data.UserAttributesRepository;
 import com.tokopedia.core.analytics.data.UserAttributesRepositoryImpl;
@@ -47,6 +50,9 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.util.SessionHandler;
 
+import java.io.File;
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 
 /**
@@ -81,11 +87,21 @@ public class DrawerInjector {
                 sessionHandler
         );
 
+        //Directory where cached responses will be stored
+        File file = new File("/cache/");
+
+        //Size in bytes of the cache
+        int size = 1024*1024;
+
+        //Create the http response cache store
+        ResponseCacheStore cacheStore = new DiskLruCacheStore(file, size);
+
         UserAttributesRepository userAttributesRepository = new UserAttributesRepositoryImpl(
                 new UserAttributesFactory(
                         ApolloClient.builder()
                                 .okHttpClient(OkHttpFactory.create().buildClientDefaultAuth())
                                 .serverUrl(TkpdBaseURL.HOME_DATA_BASE_URL)
+                                .httpCache(cacheStore , new TimeoutEvictionStrategy(1, TimeUnit.MINUTES))
                                 .build())
         );
 

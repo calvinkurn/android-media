@@ -30,8 +30,6 @@ public class CloudAttrDataSource {
 
     public Observable<ConsumerDrawerData.Data> getConsumerUserAttributes(RequestParams requestParams) {
 
-        CommonUtils.dumper("rxapollo called userID " + requestParams.getInt(GetUserAttributesUseCase.PARAM_USER_ID, 0));
-
         ApolloWatcher<ConsumerDrawerData.Data> apolloWatcher = apolloClient.newCall(ConsumerDrawerData.builder()
                 .userID(requestParams.getInt(GetUserAttributesUseCase.PARAM_USER_ID, 0))
                 .build()
