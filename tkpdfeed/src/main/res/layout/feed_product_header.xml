@@ -11,17 +11,18 @@
 
     <ImageView
         android:id="@+id/shop_avatar"
-        android:layout_width="@dimen/avatar_size"
-        android:layout_height="@dimen/avatar_size"
+        android:layout_width="@dimen/feed_new_avatar_size"
+        android:layout_height="@dimen/feed_new_avatar_size"
         android:layout_marginRight="@dimen/margin_small"
         android:background="@drawable/feed_container_rounded_corners_border"
+        android:layout_centerVertical="true"
         tools:src="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/gold_merchant"
         android:layout_marginTop="3dp"
-        android:layout_width="@dimen/ic_badge_size"
-        android:layout_height="@dimen/ic_badge_size"
+        android:layout_width="@dimen/feed_new_badge_size"
+        android:layout_height="@dimen/feed_new_badge_size"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/shop_avatar"
@@ -33,8 +34,8 @@
     <ImageView
         android:id="@+id/official_store"
         android:layout_marginTop="3dp"
-        android:layout_width="@dimen/ic_badge_size"
-        android:layout_height="@dimen/ic_badge_size"
+        android:layout_width="@dimen/feed_new_badge_size"
+        android:layout_height="@dimen/feed_new_badge_size"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/shop_avatar"
@@ -58,7 +59,7 @@
             android:layout_alignParentTop="true"
             android:lineSpacingExtra="4sp"
             android:textColor="@color/black_38"
-            android:textSize="@dimen/text_size_14"
+            android:textSize="@dimen/fontvs"
             android:textStyle="normal"
             tools:text="     Marowiajjfawlaksjdlaksjdlakjsdlaksjdlaksjdlioi ubah 1 produk " />
 
@@ -75,7 +76,7 @@
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="@color/black_38"
-        android:textSize="@dimen/fontvs"
+        android:textSize="@dimen/fontvvs"
         tools:text="4 hours ago" />
 
 </RelativeLayout>
