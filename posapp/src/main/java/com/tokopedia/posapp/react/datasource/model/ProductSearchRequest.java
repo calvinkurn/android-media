@@ -24,6 +24,10 @@ public class ProductSearchRequest {
     @Expose
     private Integer limit;
 
+    @SerializedName("page")
+    @Expose
+    private Integer page;
+
     public String getKeyword() {
         return keyword;
     }
@@ -54,5 +58,13 @@ public class ProductSearchRequest {
 
     public void setLimit(Integer limit) {
         this.limit = limit;
+    }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
     }
 }

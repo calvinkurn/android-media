@@ -2,7 +2,7 @@ package com.tokopedia.posapp.product.common.data.source.cloud;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.posapp.cache.data.mapper.GetProductListMapper;
+import com.tokopedia.posapp.product.productlist.data.mapper.GetProductListMapper;
 import com.tokopedia.posapp.product.productdetail.data.mapper.GetProductMapper;
 import com.tokopedia.posapp.product.productdetail.data.source.cloud.api.ProductApi;
 import com.tokopedia.posapp.product.productlist.data.source.cloud.ProductListApi;
@@ -42,7 +42,7 @@ public class ProductCloudSource {
 
     public Observable<ProductListDomain> getProductList(RequestParams params) {
         return productListApi
-                .getProductList(params.getParamsAllValueInString())
+                .getProductListV2(params.getParamsAllValueInString())
                 .map(getProductListMapper);
     }
 }

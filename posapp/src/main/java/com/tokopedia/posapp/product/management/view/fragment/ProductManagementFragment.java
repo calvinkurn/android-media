@@ -3,10 +3,13 @@ package com.tokopedia.posapp.product.management.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.base.fragment.PosBaseListFragment;
 import com.tokopedia.posapp.product.management.di.component.ProductManagementComponent;
 import com.tokopedia.posapp.product.management.di.component.DaggerProductManagementComponent;
@@ -15,6 +18,7 @@ import com.tokopedia.posapp.product.management.view.adapter.ProductManagementTyp
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductHeaderViewModel;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
 import com.tokopedia.posapp.product.management.view.adapter.ProductManagementAdapterTypeFactory;
+import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
 import java.util.List;
 
@@ -55,7 +59,7 @@ public class ProductManagementFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.reload("11105119");
+        presenter.reload();
     }
 
     @Override
@@ -83,6 +87,11 @@ public class ProductManagementFragment
     }
 
     @Override
+    public void onGetEtalaseCompleted(List<EtalaseDomain> etalaseDomains) {
+        presenter.load(etalaseDomains.get(0).getEtalaseId());
+    }
+
+    @Override
     public void onReloadData(List<Visitable> list) {
         loadInitialData();
         list.add(0, new ProductHeaderViewModel());
@@ -97,5 +106,11 @@ public class ProductManagementFragment
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_product_management, container, false);
     }
 }

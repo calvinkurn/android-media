@@ -1,10 +1,9 @@
 package com.tokopedia.posapp.product.common.data.source.local;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.tokopedia.posapp.database.model.ProductDb_Table;
 import com.tokopedia.posapp.base.domain.model.DataStatus;
+import com.tokopedia.posapp.database.model.ProductDb_Table;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
-import com.tokopedia.posapp.product.productlist.data.pojo.ProductList;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 
 import java.util.List;
@@ -41,8 +40,8 @@ public class ProductLocalSource {
     }
 
     public Observable<List<ProductDomain>> searchProduct(String keyword, String etalaseId) {
-        if(!isEmpty(keyword)) {
-            if(!isEmpty(etalaseId)) {
+        if (!isEmpty(keyword)) {
+            if (!isEmpty(etalaseId)) {
                 return productDbManager.getListData(ConditionGroup.clause()
                         .and(ProductDb_Table.productName.like(getKeyword(keyword)))
                         .and(ProductDb_Table.etalaseId.eq(etalaseId)));
@@ -51,7 +50,7 @@ public class ProductLocalSource {
                         .and(ProductDb_Table.productName.like(getKeyword(keyword))));
             }
         } else {
-            if(!isEmpty(etalaseId)) {
+            if (!isEmpty(etalaseId)) {
                 return productDbManager.getListData(ConditionGroup.clause()
                         .and(ProductDb_Table.etalaseId.eq(etalaseId)));
             } else {

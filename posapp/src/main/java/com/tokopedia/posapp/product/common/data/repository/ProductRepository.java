@@ -13,14 +13,6 @@ import rx.Observable;
  */
 
 public interface ProductRepository {
-    String OFFSET = "OFFSET";
-    String LIMIT = "LIMIT";
-
-    String KEYWORD = "KEYWORD";
-    String ETALASE_ID = "ETALASE_ID";
-
-    String PRODUCT_ID = "PRODUCT_ID";
-
     @Deprecated
     Observable<ProductDetailData> getProduct(RequestParams requestParams);
 

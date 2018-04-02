@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.cache.data.repository;
+package com.tokopedia.posapp.bank.data.repository;
 
 import com.tokopedia.posapp.bank.data.factory.BankFactory;
 import com.tokopedia.posapp.bank.domain.model.BankDomain;

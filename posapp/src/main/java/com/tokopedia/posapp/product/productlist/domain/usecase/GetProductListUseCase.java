@@ -20,10 +20,7 @@ public class GetProductListUseCase extends UseCase<ProductListDomain> {
     private ProductRepository productRepository;
 
     @Inject
-    public GetProductListUseCase(ThreadExecutor threadExecutor,
-                                 PostExecutionThread postExecutionThread,
-                                 ProductCloudRepository productRepository) {
-        super(threadExecutor, postExecutionThread);
+    public GetProductListUseCase(ProductCloudRepository productRepository) {
         this.productRepository = productRepository;
     }
 

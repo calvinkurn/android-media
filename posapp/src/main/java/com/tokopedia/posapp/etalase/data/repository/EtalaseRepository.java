@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.cache.data.repository;
+package com.tokopedia.posapp.etalase.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.posapp.base.domain.model.DataStatus;

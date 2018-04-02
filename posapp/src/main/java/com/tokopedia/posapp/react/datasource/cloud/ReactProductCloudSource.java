@@ -6,8 +6,9 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.base.data.pojo.Paging;
-import com.tokopedia.posapp.cache.data.repository.EtalaseRepository;
-import com.tokopedia.posapp.cache.data.repository.EtalaseRepositoryImpl;
+import com.tokopedia.posapp.etalase.data.repository.EtalaseRepository;
+import com.tokopedia.posapp.etalase.data.repository.EtalaseRepositoryImpl;
+import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.posapp.product.common.data.pojo.ProductDetail;
 import com.tokopedia.posapp.product.common.data.repository.ProductCloudRepository;
 import com.tokopedia.posapp.product.common.data.repository.ProductRepository;
@@ -32,12 +33,6 @@ import rx.functions.Func1;
  */
 
 public class ReactProductCloudSource extends ReactDataSource {
-    private static final String SHOP_ID = "shop_id";
-    private static final String START_OFFSET = "startoffset";
-    private static final String ROW_OFFSET = "rowoffset";
-    private static final String DATA_PER_ROW = "data_per_row";
-    private static final String ETALASE = "etalase";
-    private static final String KEYWORD = "keyword";
 
     private ProductRepository productRepository;
     private EtalaseRepository etalaseRepository;
@@ -62,20 +57,20 @@ public class ReactProductCloudSource extends ReactDataSource {
     @Override
     public Observable<String> getDataList(int offset, int limit) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(SHOP_ID, sessionHandler.getShopID());
-        requestParams.putString(START_OFFSET, Integer.toString(offset));
-        requestParams.putString(ROW_OFFSET, Integer.toString(limit));
-        requestParams.putInt(DATA_PER_ROW, limit);
+        requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
+//        requestParams.putString(START_OFFSET, Integer.toString(offset));
+//        requestParams.putString(ROW_OFFSET, Integer.toString(limit));
+//        requestParams.putInt(DATA_PER_ROW, limit);
         return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
     }
 
     @Override
     public Observable<String> getDataAll() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(SHOP_ID, sessionHandler.getShopID());
-        requestParams.putString(START_OFFSET, Integer.toString(0));
-        requestParams.putString(ROW_OFFSET, Integer.toString(10));
-        requestParams.putInt(DATA_PER_ROW, 10);
+        requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
+//        requestParams.putString(START_OFFSET, Integer.toString(0));
+//        requestParams.putString(ROW_OFFSET, Integer.toString(10));
+//        requestParams.putInt(DATA_PER_ROW, 10);
         return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
     }
 
@@ -126,18 +121,18 @@ public class ReactProductCloudSource extends ReactDataSource {
                     @Override
                     public Observable<String> call(java.util.List<EtalaseDomain> etalaseDomains) {
                         RequestParams requestParams = RequestParams.EMPTY;
-                        requestParams.putString(KEYWORD, request.getKeyword());
-                        requestParams.putString(SHOP_ID, sessionHandler.getShopID());
+                        requestParams.putString(ProductConstant.Key.KEYWORD, request.getKeyword());
+                        requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
                         if (TextUtils.isEmpty(request.getEtalaseId())) {
                             request.setEtalaseId(etalaseDomains.get(0).getEtalaseId());
                         }
-                        requestParams.putString(ETALASE, request.getEtalaseId());
-                        if (request.getOffset() == null || request.getLimit() == null) {
-                            request.setOffset(0);
-                            request.setLimit(10);
+                        requestParams.putString(ProductConstant.Key.ETALASE, request.getEtalaseId());
+                        if (request.getPage() == null || request.getLimit() == null) {
+                            request.setPage(1);
+                            request.setLimit(20);
                         }
-                        requestParams.putString(START_OFFSET, request.getOffset().toString());
-                        requestParams.putString(ROW_OFFSET, request.getLimit().toString());
+                        requestParams.putString(ProductConstant.Key.PAGE, request.getPage().toString());
+                        requestParams.putString(ProductConstant.Key.PER_PAGE, request.getLimit().toString());
                         return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
                     }
                 });

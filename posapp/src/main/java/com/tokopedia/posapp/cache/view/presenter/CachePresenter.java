@@ -6,22 +6,17 @@ import android.util.Log;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.posapp.base.domain.model.DataStatus;
-import com.tokopedia.posapp.base.domain.model.ListDomain;
 import com.tokopedia.posapp.bank.domain.model.BankDomain;
 import com.tokopedia.posapp.bank.domain.model.BankInstallmentDomain;
-import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
-import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 import com.tokopedia.posapp.bank.domain.model.BankSavedResult;
-import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
-import com.tokopedia.posapp.product.productlist.domain.usecase.GetAllProductUseCase;
 import com.tokopedia.posapp.bank.domain.usecase.GetBankUseCase;
-import com.tokopedia.posapp.product.productlist.domain.usecase.GetEtalaseCacheUseCase;
-import com.tokopedia.posapp.cache.domain.usecase.GetEtalaseUseCase;
 import com.tokopedia.posapp.bank.domain.usecase.StoreBankUsecase;
-import com.tokopedia.posapp.cache.domain.usecase.StoreEtalaseCacheUseCase;
-import com.tokopedia.posapp.etalase.StoreProductCacheUseCase;
+import com.tokopedia.posapp.base.domain.model.DataStatus;
+import com.tokopedia.posapp.base.domain.model.ListDomain;
 import com.tokopedia.posapp.cache.view.Cache;
+import com.tokopedia.posapp.etalase.domain.GetEtalaseUseCase;
+import com.tokopedia.posapp.etalase.domain.StoreEtalaseCacheUseCase;
+import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
 import java.util.List;
 
@@ -30,7 +25,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -45,13 +39,10 @@ public class CachePresenter implements Cache.Presenter {
     private static final String ETALASE = "etalase";
 
     private Context context;
-    private StoreProductCacheUseCase storeProductCacheUseCase;
     private GetBankUseCase getBankUseCase;
     private StoreBankUsecase storeBankUsecase;
     private GetEtalaseUseCase getEtalaseUseCase;
     private StoreEtalaseCacheUseCase storeEtalaseCacheUseCase;
-    private GetEtalaseCacheUseCase getEtalaseCacheUseCase;
-    private GetAllProductUseCase getAllProductUseCase;
 
     private Cache.CallbackListener callbackListener;
 
@@ -59,22 +50,16 @@ public class CachePresenter implements Cache.Presenter {
 
     @Inject
     public CachePresenter(@ApplicationContext Context context,
-                          StoreProductCacheUseCase storeProductCacheUseCase,
                           GetBankUseCase getBankUseCase,
                           StoreBankUsecase storeBankUsecase,
                           GetEtalaseUseCase getEtalaseUseCase,
-                          StoreEtalaseCacheUseCase storeEtalaseCacheUseCase,
-                          GetEtalaseCacheUseCase getEtalaseCacheUseCase,
-                          GetAllProductUseCase getAllProductUseCase
+                          StoreEtalaseCacheUseCase storeEtalaseCacheUseCase
     ) {
         this.context = context;
-        this.storeProductCacheUseCase = storeProductCacheUseCase;
         this.getBankUseCase = getBankUseCase;
         this.storeBankUsecase = storeBankUsecase;
         this.getEtalaseUseCase = getEtalaseUseCase;
         this.storeEtalaseCacheUseCase = storeEtalaseCacheUseCase;
-        this.getEtalaseCacheUseCase = getEtalaseCacheUseCase;
-        this.getAllProductUseCase = getAllProductUseCase;
     }
 
     @Override
@@ -124,46 +109,8 @@ public class CachePresenter implements Cache.Presenter {
                     @Override
                     public void onNext(DataStatus dataStatus) {
                         Log.d("CachePresenter", dataStatus.getMessage());
-//                        getAllProduct();
                     }
                 });
-    }
-
-    private void getAllProduct() {
-        getEtalaseCacheUseCase.createObservable(RequestParams.EMPTY)
-                .flatMapIterable(new Func1<List<EtalaseDomain>, Iterable<EtalaseDomain>>() {
-                    @Override
-                    public Iterable<EtalaseDomain> call(List<EtalaseDomain> etalaseDomains) {
-                        return etalaseDomains;
-                    }
-                })
-                .flatMap(new Func1<EtalaseDomain, Observable<ProductListDomain>>() {
-                    @Override
-                    public Observable<ProductListDomain> call(EtalaseDomain etalaseDomain) {
-                        return Observable.zip(
-                                Observable.just(etalaseDomain.getEtalaseId()),
-                                getAllProductUseCase.createObservable(getGatewayProductParam(etalaseDomain.getEtalaseId())),
-                                new Func2<String, ProductListDomain, ProductListDomain>() {
-                                    @Override
-                                    public ProductListDomain call(String etalaseId, ProductListDomain productListDomain) {
-                                        for (ProductDomain productDomain : productListDomain.getProductDomains()) {
-                                            productDomain.setEtalaseId(etalaseId);
-                                        }
-                                        return productListDomain;
-                                    }
-                                }
-                        );
-                    }
-                })
-                .flatMap(new Func1<ProductListDomain, Observable<DataStatus>>() {
-                    @Override
-                    public Observable<DataStatus> call(ProductListDomain productListDomain) {
-                        return storeProductCacheUseCase.createObservable(productListDomain);
-                    }
-                })
-                .toList()
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new SaveProductSubscriber());
     }
 
     private RequestParams getGatewayProductParam(String etalaseId) {

@@ -1,13 +1,12 @@
-package com.tokopedia.posapp.cache.data.factory;
+package com.tokopedia.posapp.etalase.data.factory;
 
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.posapp.etalase.GetEtalaseMapper;
+
+import com.tokopedia.posapp.etalase.data.mapper.GetEtalaseMapper;
+import com.tokopedia.posapp.etalase.data.source.EtalaseCloudSource;
+import com.tokopedia.posapp.etalase.data.source.EtalaseLocalSource;
 import com.tokopedia.posapp.product.productlist.data.source.cloud.ProductListApi;
-import com.tokopedia.posapp.etalase.EtalaseCloudSource;
-import com.tokopedia.posapp.cache.data.source.local.EtalaseLocalSource;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Created by okasurya on 9/25/17.

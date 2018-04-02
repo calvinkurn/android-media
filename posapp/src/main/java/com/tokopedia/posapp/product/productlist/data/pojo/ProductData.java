@@ -2,57 +2,45 @@ package com.tokopedia.posapp.product.productlist.data.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.posapp.base.data.pojo.Paging;
 
 import java.util.List;
 
 /**
- * Created by okasurya on 10/17/17.
+ * @author okasurya on 4/2/18.
  */
 
 public class ProductData {
-    @SerializedName("products")
+    @SerializedName("status")
     @Expose
-    private List<ProductItem> products;
-    @SerializedName("paging")
+    private String status;
+    @SerializedName("data")
     @Expose
-    private Paging paging;
-    @SerializedName("search_url")
+    private List<ProductItem> data;
+    @SerializedName("etalase_id")
     @Expose
-    private String searchUrl;
-    @SerializedName("share_url")
-    @Expose
-    private String shareUrl;
+    private String etalaseId;
 
-    public List<ProductItem> getProducts() {
-        return products;
+    public String getStatus() {
+        return status;
     }
 
-    public void setProducts(List<ProductItem> products) {
-        this.products = products;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public Paging getPaging() {
-        return paging;
+    public List<ProductItem> getData() {
+        return data;
     }
 
-    public void setPaging(Paging paging) {
-        this.paging = paging;
+    public void setData(List<ProductItem> data) {
+        this.data = data;
     }
 
-    public String getSearchUrl() {
-        return searchUrl;
+    public String getEtalaseId() {
+        return etalaseId;
     }
 
-    public void setSearchUrl(String searchUrl) {
-        this.searchUrl = searchUrl;
-    }
-
-    public String getShareUrl() {
-        return shareUrl;
-    }
-
-    public void setShareUrl(String shareUrl) {
-        this.shareUrl = shareUrl;
+    public void setEtalaseId(String etalaseId) {
+        this.etalaseId = etalaseId;
     }
 }

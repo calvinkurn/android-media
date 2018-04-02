@@ -1,9 +1,9 @@
-package com.tokopedia.posapp.cache.data.repository;
+package com.tokopedia.posapp.etalase.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.posapp.cache.data.factory.EtalaseFactory;
 import com.tokopedia.posapp.base.domain.model.DataStatus;
 import com.tokopedia.posapp.base.domain.model.ListDomain;
+import com.tokopedia.posapp.etalase.data.source.EtalaseLocalSource;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
 import java.util.List;
@@ -13,29 +13,29 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * Created by okasurya on 9/19/17.
+ * @author okasurya on 4/2/18.
  */
 
-public class EtalaseRepositoryImpl implements EtalaseRepository {
-    private EtalaseFactory etalaseFactory;
+public class EtalaseLocalRepository implements EtalaseRepository {
+    private EtalaseLocalSource etalaseLocalSource;
 
     @Inject
-    public EtalaseRepositoryImpl(EtalaseFactory etalaseFactory) {
-        this.etalaseFactory = etalaseFactory;
+    EtalaseLocalRepository(EtalaseLocalSource etalaseLocalSource) {
+        this.etalaseLocalSource = etalaseLocalSource;
     }
 
     @Override
     public Observable<List<EtalaseDomain>> getEtalase(RequestParams requestParams) {
-        return etalaseFactory.cloud().getEtalase(requestParams);
+        return null;
     }
 
     @Override
     public Observable<List<EtalaseDomain>> getEtalaseCache() {
-        return etalaseFactory.local().getAllEtalase();
+        return etalaseLocalSource.getAllEtalase();
     }
 
     @Override
     public Observable<DataStatus> storeEtalaseToCache(ListDomain<EtalaseDomain> data) {
-        return etalaseFactory.local().storeEtalase(data);
+        return etalaseLocalSource.storeEtalase(data);
     }
 }

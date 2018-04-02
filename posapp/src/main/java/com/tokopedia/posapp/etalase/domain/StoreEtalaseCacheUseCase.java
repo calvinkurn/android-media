@@ -1,10 +1,10 @@
-package com.tokopedia.posapp.cache.domain.usecase;
+package com.tokopedia.posapp.etalase.domain;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.posapp.cache.data.repository.EtalaseRepository;
+import com.tokopedia.posapp.etalase.data.repository.EtalaseRepository;
 import com.tokopedia.posapp.base.domain.model.DataStatus;
 import com.tokopedia.posapp.base.domain.model.ListDomain;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;

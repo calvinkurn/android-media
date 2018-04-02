@@ -1,11 +1,11 @@
 package com.tokopedia.posapp.react.datasource.cloud;
 
 import com.google.gson.Gson;
-import com.tokopedia.cacheapi.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.posapp.cache.data.repository.EtalaseRepository;
-import com.tokopedia.posapp.cache.data.repository.EtalaseRepositoryImpl;
+import com.tokopedia.posapp.etalase.data.repository.EtalaseRepository;
+import com.tokopedia.posapp.etalase.data.repository.EtalaseRepositoryImpl;
+import com.tokopedia.posapp.etalase.data.source.EtalaseCloudSource;
 import com.tokopedia.posapp.react.datasource.ReactDataSource;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 import com.tokopedia.posapp.react.datasource.model.ListResult;

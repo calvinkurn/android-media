@@ -1,6 +1,6 @@
 package com.tokopedia.posapp.product.management.data.source;
 
-import com.tokopedia.posapp.product.management.data.mapper.GetProductListManagementMapper;
+import com.tokopedia.posapp.product.productlist.data.mapper.GetProductListMapper;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 import com.tokopedia.usecase.RequestParams;
 
@@ -14,11 +14,11 @@ import rx.Observable;
 
 public class ProductManagementCloudSource {
     private ProductManagementApi productManagementApi;
-    private GetProductListManagementMapper getProductListManagementMapper;
+    private GetProductListMapper getProductListManagementMapper;
 
     @Inject
     public ProductManagementCloudSource(ProductManagementApi productManagementApi,
-                                        GetProductListManagementMapper getProductListManagementMapper) {
+                                        GetProductListMapper getProductListManagementMapper) {
         this.productManagementApi = productManagementApi;
         this.getProductListManagementMapper = getProductListManagementMapper;
     }

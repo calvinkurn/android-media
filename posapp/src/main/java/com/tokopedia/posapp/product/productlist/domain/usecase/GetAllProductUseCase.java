@@ -1,6 +1,6 @@
 package com.tokopedia.posapp.product.productlist.domain.usecase;
 
-import com.beloo.widget.chipslayoutmanager.util.log.Log;
+import android.util.Log;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;

@@ -3,6 +3,7 @@ package com.tokopedia.posapp.product.common.data.repository;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.posapp.base.domain.model.DataStatus;
+import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.posapp.product.common.data.source.local.ProductLocalSource;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
@@ -33,22 +34,22 @@ public class ProductLocalRepository implements ProductRepository {
 
     @Override
     public Observable<ProductDomain> getProductDomain(RequestParams requestParams) {
-        return productLocalSource.getProduct(requestParams.getInt(PRODUCT_ID, 0));
+        return productLocalSource.getProduct(requestParams.getInt(ProductConstant.Key.PRODUCT_ID, 0));
     }
 
     @Override
     public Observable<ProductListDomain> getProductList(RequestParams requestParams) {
-        if(requestParams.getParameters().containsKey(KEYWORD) && requestParams.getParameters().containsKey(ETALASE_ID)) {
+        if(requestParams.getParameters().containsKey(ProductConstant.Key.KEYWORD) && requestParams.getParameters().containsKey(ProductConstant.Key.ETALASE_ID)) {
             return productLocalSource
                     .searchProduct(
-                            requestParams.getString(KEYWORD, ""),
-                            requestParams.getString(ETALASE_ID, "")
+                            requestParams.getString(ProductConstant.Key.KEYWORD, ""),
+                            requestParams.getString(ProductConstant.Key.ETALASE_ID, "")
                     ).map(mapProductListDomain());
-        } else if(requestParams.getParameters().containsKey(OFFSET) && requestParams.getParameters().containsKey(LIMIT)) {
+        } else if(requestParams.getParameters().containsKey(ProductConstant.Key.OFFSET) && requestParams.getParameters().containsKey(ProductConstant.Key.LIMIT)) {
             return productLocalSource
                     .getListProduct(
-                            requestParams.getInt(OFFSET, 0),
-                            requestParams.getInt(LIMIT, 0)
+                            requestParams.getInt(ProductConstant.Key.OFFSET, 0),
+                            requestParams.getInt(ProductConstant.Key.LIMIT, 0)
                     )
                     .map(mapProductListDomain());
         } else {

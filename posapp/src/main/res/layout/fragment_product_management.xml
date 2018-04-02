@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_product"
+    <com.tokopedia.design.text.SpinnerTextView
+        android:id="@+id/spinner_etalase"
+        android:layout_height="20dp"
+        android:layout_width="100dp"
+        android:paddingBottom="@dimen/margin_ms"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/new_margin_big"
+        android:layout_marginRight="@dimen/new_margin_big"/>
+    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+        android:id="@+id/recycler_view"
+        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</android.support.constraint.ConstraintLayout>
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/new_margin_big"
+        android:layout_below="@id/spinner_etalase"/>
+</RelativeLayout>

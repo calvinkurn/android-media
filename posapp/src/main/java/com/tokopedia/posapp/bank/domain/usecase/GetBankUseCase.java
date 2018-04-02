@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.posapp.cache.data.repository.BankRepository;
+import com.tokopedia.posapp.bank.data.repository.BankRepository;
 import com.tokopedia.posapp.bank.domain.model.BankDomain;
 
 import java.util.List;

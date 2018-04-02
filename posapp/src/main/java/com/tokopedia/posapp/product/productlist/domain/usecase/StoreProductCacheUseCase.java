@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.etalase;
+package com.tokopedia.posapp.product.productlist.domain.usecase;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;

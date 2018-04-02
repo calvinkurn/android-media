@@ -1,24 +1,19 @@
-package com.tokopedia.posapp.etalase;
+package com.tokopedia.posapp.etalase.data.source;
 
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.posapp.etalase.data.mapper.GetEtalaseMapper;
 import com.tokopedia.posapp.product.productlist.data.source.cloud.ProductListApi;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
 import java.util.List;
 
-import javax.inject.Named;
-
 import rx.Observable;
-import rx.functions.Action1;
 
 /**
  * Created by okasurya on 10/17/17.
  */
 
 public class EtalaseCloudSource {
-    private static final String SHOP_ID = "shop_id";
-
     private ProductListApi productListApi;
     private GetEtalaseMapper getEtalaseMapper;
 

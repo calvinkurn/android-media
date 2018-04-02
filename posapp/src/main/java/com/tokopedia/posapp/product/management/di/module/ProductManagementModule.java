@@ -2,6 +2,8 @@ package com.tokopedia.posapp.product.management.di.module;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.posapp.common.PosApiModule;
+import com.tokopedia.posapp.etalase.domain.GetEtalaseCacheUseCase;
+import com.tokopedia.posapp.product.common.di.ProductModule;
 import com.tokopedia.posapp.product.management.data.source.ProductManagementApi;
 import com.tokopedia.posapp.product.management.di.scope.ProductManagementScope;
 import com.tokopedia.posapp.product.management.domain.GetProductListManagementUseCase;
@@ -17,7 +19,7 @@ import retrofit2.Retrofit;
  */
 
 @ProductManagementScope
-@Module(includes = PosApiModule.class)
+@Module(includes = {PosApiModule.class})
 public class ProductManagementModule {
     @Provides
     @ProductManagementScope
@@ -27,8 +29,9 @@ public class ProductManagementModule {
 
     @Provides
     @ProductManagementScope
-    ProductManagement.Presenter providePresenter(GetProductListManagementUseCase usecase,
+    ProductManagement.Presenter providePresenter(GetProductListManagementUseCase getProductListManagementUseCase,
+                                                 GetEtalaseCacheUseCase getEtalaseCacheUseCase,
                                                  UserSession userSession) {
-        return new ProductManagementPresenter(usecase, userSession);
+        return new ProductManagementPresenter(getProductListManagementUseCase, getEtalaseCacheUseCase, userSession);
     }
 }
