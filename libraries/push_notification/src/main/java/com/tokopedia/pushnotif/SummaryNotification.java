@@ -15,11 +15,9 @@ import java.util.List;
 public class SummaryNotification {
 
     public static SummaryNotificationModel generateSummaryNotificationModel(Context context, int notificationType) {
-        HistoryNotification historyNotification = new HistoryNotification(context, notificationType);
-
         SummaryNotificationModel summaryNotificationModel = new SummaryNotificationModel();
         summaryNotificationModel.setHistoryString(
-                convertHistoryToString(historyNotification.getListHistoryNotification())
+                convertHistoryToString(HistoryNotification.getListHistoryNotification(notificationType))
         );
         summaryNotificationModel.setSummaryText(generateSummaryText(notificationType,
                 summaryNotificationModel.getTotalHistory()));

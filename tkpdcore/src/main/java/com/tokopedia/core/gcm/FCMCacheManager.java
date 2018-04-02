@@ -122,13 +122,14 @@ public class FCMCacheManager {
     }
 
     public boolean isAllowToHandleNotif(Bundle data) {
-        try {
+        /*try {
             return (!cache.isExpired() || cache.getString(TkpdCache.Key.PREV_CODE) == null ||
                     !data.isEmpty() || data.getString("g_id", "").equals(cache.getString(TkpdCache.Key.PREV_CODE)));
         } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }
+        }*/
+        return true;
     }
 
     public Boolean isAllowBell() {

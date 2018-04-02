@@ -22,17 +22,19 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         super(context);
     }
 
-    public Notification createSummaryNotification(ApplinkNotificationModel applinkNotificationModel, int notificationType) {
+    @Override
+    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notificationType) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
-        builder.setContentTitle(applinkNotificationModel.getDesc());
-        builder.setContentText(applinkNotificationModel.getSummary());
+        builder.setContentTitle(getTitleSummary(notificationType));
         builder.setSmallIcon(getDrawableIcon());
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-        HistoryNotification historyNotification = new HistoryNotification(context, notificationType);
-        historyNotification.storeNotification(applinkNotificationModel.getFullName(), applinkNotificationModel.getSummary());
+        HistoryNotification.storeNotification(applinkNotificationModel.getFullName(),
+                applinkNotificationModel.getSummary(), notificationType);
 
         SummaryNotificationModel summaryNotificationModel = SummaryNotification.generateSummaryNotificationModel(context, notificationType);
+
+        if (summaryNotificationModel.getHistoryString().size() == 1) return null;
 
         for (String s : summaryNotificationModel.getHistoryString()) {
             inboxStyle.addLine(s);
@@ -40,11 +42,13 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
 
         inboxStyle.setSummaryText(summaryNotificationModel.getSummaryText());
 
-        builder.setLargeIcon(getBitmap(applinkNotificationModel.getThumbnail()));
+        builder.setContentText(summaryNotificationModel.getHistoryString().get(0));
+        builder.setLargeIcon(getBitmapLargeIcon());
         builder.setStyle(inboxStyle);
         builder.setGroupSummary(true);
         builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
-        builder.setContentIntent(createPendingIntent(getGenericApplinks(notificationType), Constant.NotificationId.GENERAL));
+        builder.setContentIntent(createPendingIntent(getGenericApplinks(notificationType), notificationType));
+        builder.setDeleteIntent(createDismissPendingIntent(notificationType));
 
         return builder.build();
     }
@@ -54,6 +58,14 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
             return ApplinkConst.TALK;
         } else {
             return ApplinkConst.TOPCHAT_IDLESS;
+        }
+    }
+
+    private String getTitleSummary(int notficationType) {
+        if (notficationType == Constant.NotificationId.TALK) {
+            return "Tokopedia - Diskusi";
+        } else {
+            return "Tokopedia - Chat";
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.pushnotif.factory;
 
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +14,9 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.pushnotif.Constant;
+import com.tokopedia.pushnotif.DismissBroadcastReceiver;
 import com.tokopedia.pushnotif.R;
+import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -23,13 +26,15 @@ import java.util.concurrent.TimeoutException;
  * @author ricoharisin .
  */
 
-public class BaseNotificationFactory {
+public abstract class BaseNotificationFactory {
 
     protected Context context;
 
     public BaseNotificationFactory(Context context) {
         this.context = context;
     }
+
+    public abstract Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notifcationType);
 
     protected String generateGroupKey(String appLink) {
         if (appLink.contains("talk")) {
@@ -61,6 +66,10 @@ public class BaseNotificationFactory {
             return R.drawable.ic_big_notif_customerapp;
     }
 
+    protected Bitmap getBitmapLargeIcon() {
+        return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());
+    }
+
     protected Bitmap getBitmap(String url) {
         try {
             return Glide.with(context).load(url)
@@ -86,6 +95,7 @@ public class BaseNotificationFactory {
         intent.setData(Uri.parse(appLinks));
         Bundle bundle = new Bundle();
         bundle.putBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, true);
+        bundle.putInt(Constant.EXTRA_NOTIFICATION_TYPE, notificationId);
         intent.putExtras(bundle);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getActivity(
@@ -104,5 +114,11 @@ public class BaseNotificationFactory {
         }
 
         return resultPendingIntent;
+    }
+
+    protected PendingIntent createDismissPendingIntent(int notificationType) {
+        Intent intent = new Intent(context, DismissBroadcastReceiver.class);
+        intent.putExtra(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
+        return PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
     }
 }

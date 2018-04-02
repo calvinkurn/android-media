@@ -25,7 +25,7 @@ public class HistoryNotification {
 
     }
 
-    public void storeNotification(String message, String senderName) {
+    public static void storeNotification(String senderName, String message, int notificationType) {
         HistoryNotificationDB historyNotificationDB = new HistoryNotificationDB();
         historyNotificationDB.setMessage(message);
         historyNotificationDB.setSenderName(senderName);
@@ -33,16 +33,19 @@ public class HistoryNotification {
         historyNotificationDB.save();
     }
 
-    public List<HistoryNotificationDB> getListHistoryNotification() {
+    public static List<HistoryNotificationDB> getListHistoryNotification(int notificationType) {
         return SQLite.select().from(HistoryNotificationDB.class)
                 .where(HistoryNotificationDB_Table.notification_type.eq(notificationType))
+                .orderBy(HistoryNotificationDB_Table.id, false)
                 .queryList();
 
     }
 
 
-    public static void clearHistoryNotification(Context context, String key) {
-
+    public static void clearHistoryNotification(Context context, int notificationType) {
+        SQLite.delete().from(HistoryNotificationDB.class)
+                .where(HistoryNotificationDB_Table.notification_type.eq(notificationType))
+                .execute();
     }
 
 

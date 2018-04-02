@@ -11,9 +11,8 @@ import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
  * @author ricoharisin .
  */
 
-public class TalkNotificationFactory extends BaseNotificationFactory {
-
-    public TalkNotificationFactory(Context context) {
+public class ChatNotificationFactory extends BaseNotificationFactory{
+    public ChatNotificationFactory(Context context) {
         super(context);
     }
 

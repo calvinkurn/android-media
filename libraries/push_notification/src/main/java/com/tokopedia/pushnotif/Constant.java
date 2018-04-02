@@ -7,6 +7,7 @@ package com.tokopedia.pushnotif;
 public interface Constant {
 
     String EXTRA_APPLINK_FROM_PUSH = "applink_from_notif";
+    String EXTRA_NOTIFICATION_TYPE = "notification_type";
 
      interface NotificationGroup {
          String TALK = "com.tokopedia.tkpd.TALK";

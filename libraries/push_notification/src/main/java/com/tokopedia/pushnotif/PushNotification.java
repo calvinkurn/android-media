@@ -8,6 +8,8 @@ import android.support.v4.app.NotificationManagerCompat;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.PushNotificationGeneratedDatabaseHolder;
+import com.tokopedia.pushnotif.factory.ChatNotificationFactory;
+import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
 import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
@@ -35,17 +37,55 @@ public class PushNotification {
             int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
 
             if (notificationId == Constant.NotificationId.TALK) {
-                Notification notifTalk = new TalkNotificationFactory(context)
-                        .createTalkNotification(applinkNotificationModel, notificationId);
-
-                Notification notifSummary = new SummaryNotificationFactory(context)
-                        .createSummaryNotification(applinkNotificationModel, notificationId);
-
-                notificationManagerCompat.notify(ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks()),
-                        notifTalk);
-
-                notificationManagerCompat.notify(notificationId, notifSummary);
+                notifyTalk(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            } else if (notificationId == Constant.NotificationId.CHAT) {
+                notifyChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            } else {
+                notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             }
         }
+    }
+
+    private static void notifyTalk(Context context, ApplinkNotificationModel applinkNotificationModel,
+                                   int notificationId, NotificationManagerCompat notificationManagerCompat) {
+        Notification notifTalk = new TalkNotificationFactory(context)
+                    .createNotification(applinkNotificationModel, notificationId);
+
+        Notification notifSummary = new SummaryNotificationFactory(context)
+                .createNotification(applinkNotificationModel, notificationId);
+
+        notificationManagerCompat.notify(ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks()),
+                notifTalk);
+
+        if (notifSummary != null) {
+            notificationManagerCompat.notify(notificationId, notifSummary);
+        }
+
+    }
+
+    private static void notifyChat(Context context, ApplinkNotificationModel applinkNotificationModel,
+                                   int notificationId, NotificationManagerCompat notificationManagerCompat) {
+        Notification notifChat = new ChatNotificationFactory(context)
+                .createNotification(applinkNotificationModel, notificationId);
+
+        Notification notifSummary = new SummaryNotificationFactory(context)
+                .createNotification(applinkNotificationModel, notificationId);
+
+        notificationManagerCompat.notify(ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks()),
+                notifChat);
+
+        if (notifSummary != null) {
+            notificationManagerCompat.notify(notificationId, notifSummary);
+        }
+
+    }
+
+    private static void notifyGeneral(Context context, ApplinkNotificationModel applinkNotificationModel,
+                                   int notificationId, NotificationManagerCompat notificationManagerCompat) {
+        Notification notifChat = new GeneralNotificationFactory(context)
+                .createNotification(applinkNotificationModel, notificationId);
+
+        notificationManagerCompat.notify(notificationId, notifChat);
+
     }
 }

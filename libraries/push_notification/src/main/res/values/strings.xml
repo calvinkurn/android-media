@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Push Notification</string>
+    <string name="title_general_push_notification">Notifikasi Baru dari Tokopedia</string>
 </resources>

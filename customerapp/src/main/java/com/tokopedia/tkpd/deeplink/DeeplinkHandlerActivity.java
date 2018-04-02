@@ -34,6 +34,8 @@ import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
+import com.tokopedia.pushnotif.Constant;
+import com.tokopedia.pushnotif.HistoryNotification;
 import com.tokopedia.ride.deeplink.RideDeeplinkModule;
 import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
@@ -123,8 +125,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 Bundle bundle = getIntent().getExtras();
                 if (bundle.getBoolean(Constants.EXTRA_PUSH_PERSONALIZATION, false)) {
                     UnifyTracking.eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
-                } else if (bundle.getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
-                    //HistoryNotification.clearHistoryNotification(this, HistoryN);
+                } else if (bundle.getBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, false)) {
+                    int notificationType = bundle.getInt(Constant.EXTRA_NOTIFICATION_TYPE, 0);
+                    HistoryNotification.clearHistoryNotification(this, notificationType);
                 }
 //                NotificationModHandler.clearCacheIfFromNotification(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }

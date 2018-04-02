@@ -41,23 +41,6 @@ public class ApplinkNotificationHelper {
     public void notifyApplinkNotification(Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = convertToApplinkModel(data);
 
-        if (allowToShow(context, applinkNotificationModel.getToUserId())) {
-            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-            int notificationId = generateNotifictionId(applinkNotificationModel.getApplinks());
-
-            if (notificationId == Constant.NotificationId.TALK) {
-                Notification notifTalk = new TalkNotificationFactory(context)
-                        .createTalkNotification(applinkNotificationModel, notificationId);
-
-                Notification notifSummary = new SummaryNotificationFactory(context)
-                        .createSummaryNotification(applinkNotificationModel, notificationId);
-            }
-
-            Notification notif = buildNotification(applinkNotificationModel, notificationId).build();
-
-            notificationManagerCompat.notify(notificationId, notif);
-        }
-
     }
 
 
