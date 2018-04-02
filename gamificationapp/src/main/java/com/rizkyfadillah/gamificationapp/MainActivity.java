@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.gamification.cracktoken.presentation.fragment.CrackTokenFragment;
 import com.tokopedia.gamification.floatingtoken.model.TokenAsset;
+import com.tokopedia.gamification.floatingtoken.model.TokenData;
 import com.tokopedia.gamification.floatingtoken.model.TokenUser;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         tokenUser.setTokenAsset(tokenAsset);
         tokenUser.setTimeRemainingSeconds(3000);
 
-        Fragment crackTokenFragment = CrackTokenFragment.newInstance(tokenUser);
+        Fragment crackTokenFragment = CrackTokenFragment.newInstance(new TokenData());
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.container_fragment, crackTokenFragment);

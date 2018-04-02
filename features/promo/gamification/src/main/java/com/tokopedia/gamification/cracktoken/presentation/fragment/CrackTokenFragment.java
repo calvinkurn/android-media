@@ -81,6 +81,7 @@ public class CrackTokenFragment extends BaseDaggerFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //TODO argument here for initial only.. use if (savedInstance == null) {..}
         Bundle bundle = getArguments();
         tokenData = bundle.getParcelable(EXTRA_TOKEN_DATA);
         TokenUser tokenUser = tokenData.getHome().getTokensUser();
@@ -151,13 +152,7 @@ public class CrackTokenFragment extends BaseDaggerFragment {
         });
 
         widgetRemainingToken.showRemainingToken(smallImageUrl, 20);
-
         return v;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
     }
 
     private void showCountdownTimer(int timeRemainingSeconds) {
