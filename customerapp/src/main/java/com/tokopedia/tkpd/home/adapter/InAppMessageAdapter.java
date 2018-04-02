@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.home.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +24,12 @@ public class InAppMessageAdapter extends RecyclerView.Adapter<InAppMessageAdapte
 
     private ArrayList<InAppMessageModel> messageList;
     private Context context;
+    private InappAdapterLisner inappAdapterLisner;
 
-    public InAppMessageAdapter(Context context, ArrayList<InAppMessageModel> messageList) {
+    public InAppMessageAdapter(Context context, ArrayList<InAppMessageModel> messageList, InappAdapterLisner inappAdapterLisner) {
         this.messageList = messageList;
         this.context = context;
+        this.inappAdapterLisner = inappAdapterLisner;
     }
 
 
@@ -42,11 +46,16 @@ public class InAppMessageAdapter extends RecyclerView.Adapter<InAppMessageAdapte
     public void onBindViewHolder(MessageHolder holder, int position) {
         final InAppMessageModel inAppMessageModel = messageList.get(position);
         ImageHandler.LoadImage(holder.img, inAppMessageModel.getImageUrl());
-        Toast.makeText(context,position + inAppMessageModel.getImageUrl(),Toast.LENGTH_SHORT).show();
         holder.img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"click on " + inAppMessageModel.getDeeplink(),Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "click on " + inAppMessageModel.getDeeplink(), Toast.LENGTH_LONG).show();
+                Intent intent=new Intent();
+                Uri uri = Uri.parse(inAppMessageModel.getDeeplink());
+                intent.setData(uri);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+                inappAdapterLisner.onRowItemClick();
             }
         });
 
@@ -68,5 +77,9 @@ public class InAppMessageAdapter extends RecyclerView.Adapter<InAppMessageAdapte
             super(itemView);
             img = (ImageView) itemView.findViewById(R.id.img_inapp);
         }
+    }
+
+   public interface InappAdapterLisner {
+         void onRowItemClick();
     }
 }

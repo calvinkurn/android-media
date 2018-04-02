@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
+    android:layout_gravity="top|center_horizontal"
     android:orientation="vertical"
     android:paddingEnd="@dimen/activity_horizontal_margin"
     android:paddingStart="@dimen/activity_horizontal_margin"
@@ -17,19 +17,23 @@
 
     <TextView
         android:id="@+id/tv_inapp_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/fonts" />
+        android:text="title"
+        android:textSize="@dimen/fontm" />
 
     <TextView
         android:id="@+id/tv_inapp_desc"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Description"
         android:textSize="@dimen/fonts" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_inapp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         />
 </LinearLayout>

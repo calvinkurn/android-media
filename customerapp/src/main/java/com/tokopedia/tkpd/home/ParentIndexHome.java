@@ -680,21 +680,24 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     public boolean showInAppMessage(InAppMessage inAppMessage) {
         try {
-            Log.e("inaap message",inAppMessage.content);
+            Log.e("inaap message", inAppMessage.content);
             JSONObject obj = new JSONObject(inAppMessage.content);
-            JSONArray messages=obj.getJSONArray("body");
-            List<InAppMessageModel> inAppMessageModels=new ArrayList<>();
+            JSONArray messages = obj.getJSONArray("body");
+            List<InAppMessageModel> inAppMessageModels = new ArrayList<>();
             InAppMessageModel inAppMessageModel;
-            for (int i=0; i<messages.length();i++){
-                JSONObject jsonObject=messages.getJSONObject(i);
-                inAppMessageModel=new InAppMessageModel();
+            for (int i = 0; i < messages.length(); i++) {
+                JSONObject jsonObject = messages.getJSONObject(i);
+                inAppMessageModel = new InAppMessageModel();
                 inAppMessageModel.setImageUrl(jsonObject.getString("image_url"));
                 inAppMessageModel.setDeeplink(jsonObject.getString("deeplink"));
                 inAppMessageModels.add(inAppMessageModel);
             }
+            String title = obj.getString("title");
+            String desc = obj.getString("description");
+            String type = obj.getString("type");
 
-            InappMessageDialogFragment dialog=InappMessageDialogFragment.newInstance(inAppMessageModels);
-           dialog.show(getFragmentManager(),"inpp");
+            InappMessageDialogFragment dialog = InappMessageDialogFragment.newInstance(inAppMessageModels, title, desc, type);
+            dialog.show(getFragmentManager(), "inpp");
         } catch (Exception e) {
             e.printStackTrace();
         }

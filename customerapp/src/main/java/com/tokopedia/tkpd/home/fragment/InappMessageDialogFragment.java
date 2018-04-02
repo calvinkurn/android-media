@@ -4,6 +4,7 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,17 +23,26 @@ import java.util.List;
  * Created by ashwanityagi on 30/03/18.
  */
 
-public class InappMessageDialogFragment extends DialogFragment {
+public class InappMessageDialogFragment extends DialogFragment implements InAppMessageAdapter.InappAdapterLisner {
 
-    private static final String ARG_PARAM_EXTRA_MESSAGES_LIST_DATA =
-            "ARG_PARAM_EXTRA_MESSAGES_LIST_DATA";
+    private static final String ARG_PARAM_EXTRA_MESSAGES_LIST = "ARG_PARAM_EXTRA_MESSAGES_LIST";
+    private static final String ARG_PARAM_EXTRA_MESSAGES_TITLE = "ARG_PARAM_EXTRA_MESSAGES_LIST_TITLE";
+    private static final String ARG_PARAM_EXTRA_MESSAGES_DESC = "ARG_PARAM_EXTRA_MESSAGES_DESC";
+    private static final String ARG_PARAM_EXTRA_MESSAGES_TYPE = "ARG_PARAM_EXTRA_MESSAGES_TYPE";
+
     private List<InAppMessageModel> messagesList;
+    private String title;
+    private String description ;
+    private String type;
 
 
-    public static InappMessageDialogFragment newInstance(List<InAppMessageModel> messagesList){
+    public static InappMessageDialogFragment newInstance(List<InAppMessageModel> messagesList, String title,String description , String type){
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(ARG_PARAM_EXTRA_MESSAGES_LIST_DATA,
+        bundle.putParcelableArrayList(ARG_PARAM_EXTRA_MESSAGES_LIST,
                 (ArrayList<? extends Parcelable>) messagesList);
+        bundle.putString(ARG_PARAM_EXTRA_MESSAGES_TITLE,title);
+        bundle.putString(ARG_PARAM_EXTRA_MESSAGES_DESC,description);
+        bundle.putString(ARG_PARAM_EXTRA_MESSAGES_TYPE,type);
         InappMessageDialogFragment inappMessageDialogFragment=new InappMessageDialogFragment();
         inappMessageDialogFragment.setArguments(bundle);
 
@@ -41,8 +51,11 @@ public class InappMessageDialogFragment extends DialogFragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(ARG_PARAM_EXTRA_MESSAGES_LIST_DATA,
+        outState.putParcelableArrayList(ARG_PARAM_EXTRA_MESSAGES_LIST,
                 (ArrayList<? extends Parcelable>) messagesList);
+        outState.putString(ARG_PARAM_EXTRA_MESSAGES_TITLE,title);
+        outState.putString(ARG_PARAM_EXTRA_MESSAGES_DESC,description);
+        outState.putString(ARG_PARAM_EXTRA_MESSAGES_TYPE,type);
         super.onSaveInstanceState(outState);
 
     }
@@ -52,7 +65,10 @@ public class InappMessageDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-          messagesList = getArguments().getParcelableArrayList(ARG_PARAM_EXTRA_MESSAGES_LIST_DATA);
+          messagesList = getArguments().getParcelableArrayList(ARG_PARAM_EXTRA_MESSAGES_LIST);
+            title = getArguments().getString(ARG_PARAM_EXTRA_MESSAGES_TITLE);
+            description = getArguments().getString(ARG_PARAM_EXTRA_MESSAGES_DESC);
+            type = getArguments().getString(ARG_PARAM_EXTRA_MESSAGES_TYPE);
         }
     }
 
@@ -70,14 +86,41 @@ public class InappMessageDialogFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         RecyclerView rv= (RecyclerView) view.findViewById(R.id.rv_inapp);
-        rv.setLayoutManager(new LinearLayoutManager(getActivity()));
-        InAppMessageAdapter inAppMessageAdapter=new InAppMessageAdapter(getActivity(),(ArrayList<InAppMessageModel>) messagesList);
+        if("1".equalsIgnoreCase(type)){
+           GridLayoutManager gridLayoutManagerVertical =
+                    new GridLayoutManager(getActivity(),
+                            2, //The number of Columns in the grid
+                            LinearLayoutManager.VERTICAL,
+                            false);
+           rv.setLayoutManager(gridLayoutManagerVertical);
+        }else{
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            rv.setLayoutManager(layoutManager);
+        }
+
+
+        InAppMessageAdapter inAppMessageAdapter=new InAppMessageAdapter(getActivity(),(ArrayList<InAppMessageModel>) messagesList,this);
         rv.setAdapter(inAppMessageAdapter);
 
     }
 
     @Override
+    public void onResume() {
+        ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+        super.onResume();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onRowItemClick() {
+        dismiss();
     }
 }
