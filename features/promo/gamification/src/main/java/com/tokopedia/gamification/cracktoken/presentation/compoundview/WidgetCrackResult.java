@@ -85,7 +85,7 @@ public class WidgetCrackResult extends RelativeLayout {
     private void showRewardImageAnimation(String urlImageCrackResult) {
         DisplayMetrics metrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        final float screenHeightQuarter = metrics.heightPixels;
+        final float screenHeightQuarter = metrics.heightPixels/4;
 
         AnimationSet animationCrackResult = new AnimationSet(true);
         Animation scaleAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_crack_result);
