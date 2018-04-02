@@ -65,11 +65,11 @@ import com.tokopedia.tkpdstream.chatroom.view.preference.NotificationPreference;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.tab.TabViewModel;
 import com.tokopedia.tkpdstream.common.analytics.EEPromotion;
@@ -120,6 +120,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private String voteType;
     private Runnable runnable;
     private Handler tooltipHandler;
+    private boolean canShowDialog = true;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -719,15 +720,18 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void showInfoDialog() {
-        channelInfoDialog.setContentView(
-                createBottomSheetView(
-                        checkPollValid(),
-                        viewModel.getChannelInfoViewModel()));
+        if (canShowDialog) {
+            channelInfoDialog.setContentView(
+                    createBottomSheetView(
+                            checkPollValid(),
+                            viewModel.getChannelInfoViewModel()));
 
-        if (getIntent() != null
-                && getIntent().getExtras() != null
-                && getIntent().getExtras().getBoolean(GroupChatActivity.EXTRA_SHOW_BOTTOM_DIALOG, false)) {
-            channelInfoDialog.show();
+            if (getIntent() != null
+                    && getIntent().getExtras() != null
+                    && getIntent().getExtras().getBoolean(GroupChatActivity.EXTRA_SHOW_BOTTOM_DIALOG, false)) {
+                channelInfoDialog.show();
+                canShowDialog = false;
+            }
         }
     }
 
