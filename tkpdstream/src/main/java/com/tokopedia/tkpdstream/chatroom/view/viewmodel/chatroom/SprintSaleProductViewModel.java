@@ -9,6 +9,7 @@ import android.os.Parcelable;
 
 public class SprintSaleProductViewModel implements Parcelable {
 
+    private String productId;
     String productName;
     String productImage;
     String discountLabel;
@@ -18,9 +19,11 @@ public class SprintSaleProductViewModel implements Parcelable {
     String stockText;
     private String productUrl;
 
-    public SprintSaleProductViewModel(String productName, String productImage, String discountLabel,
+    public SprintSaleProductViewModel(String productId, String productName, String productImage,
+                                      String discountLabel,
                                       String productPrice, String productPriceBeforeDiscount,
                                       int stockPercentage, String stockText, String productUrl) {
+        this.productId = productId;
         this.productName = productName;
         this.productImage = productImage;
         this.discountLabel = discountLabel;
@@ -31,7 +34,9 @@ public class SprintSaleProductViewModel implements Parcelable {
         this.productUrl = productUrl;
     }
 
+
     protected SprintSaleProductViewModel(Parcel in) {
+        productId = in.readString();
         productName = in.readString();
         productImage = in.readString();
         discountLabel = in.readString();
@@ -40,6 +45,24 @@ public class SprintSaleProductViewModel implements Parcelable {
         stockPercentage = in.readInt();
         stockText = in.readString();
         productUrl = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(productId);
+        dest.writeString(productName);
+        dest.writeString(productImage);
+        dest.writeString(discountLabel);
+        dest.writeString(productPrice);
+        dest.writeString(productPriceBeforeDiscount);
+        dest.writeInt(stockPercentage);
+        dest.writeString(stockText);
+        dest.writeString(productUrl);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<SprintSaleProductViewModel> CREATOR = new Creator<SprintSaleProductViewModel>() {
@@ -53,6 +76,10 @@ public class SprintSaleProductViewModel implements Parcelable {
             return new SprintSaleProductViewModel[size];
         }
     };
+
+    public String getProductId() {
+        return productId;
+    }
 
     public String getProductName() {
         return productName;
@@ -87,20 +114,6 @@ public class SprintSaleProductViewModel implements Parcelable {
         return productUrl;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(productName);
-        dest.writeString(productImage);
-        dest.writeString(discountLabel);
-        dest.writeString(productPrice);
-        dest.writeString(productPriceBeforeDiscount);
-        dest.writeInt(stockPercentage);
-        dest.writeString(stockText);
-        dest.writeString(productUrl);
-    }
+
 }

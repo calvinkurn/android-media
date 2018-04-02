@@ -11,7 +11,10 @@ import java.util.ArrayList;
 
 public class SprintSaleAnnouncementViewModel extends BaseChatViewModel implements Visitable<GroupChatTypeFactory> {
 
-    public static final String SPRINT_SALE = "flashsale_add";
+    public static final String SPRINT_SALE_UPCOMING = "flashsale_upcoming";
+    public static final String SPRINT_SALE_START = "flashsale_start";
+    public static final String SPRINT_SALE_END = "flashsale_end";
+
     private ArrayList<SprintSaleProductViewModel> listProducts;
     private String redirectUrl;
     private String campaignName;

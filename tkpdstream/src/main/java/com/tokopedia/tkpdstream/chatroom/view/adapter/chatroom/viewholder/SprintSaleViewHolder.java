@@ -65,7 +65,7 @@ public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleAnnouncem
         mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onSprintSaleClicked(element.getRedirectUrl(), element.getCampaignName());
+                listener.onSprintSaleComponentClicked(element);
             }
         });
     }

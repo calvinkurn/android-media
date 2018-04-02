@@ -31,7 +31,6 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
-import com.tokopedia.tkpdstream.channel.data.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.GroupChatAdapter;
@@ -41,20 +40,23 @@ import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.ChatroomPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
+import com.tokopedia.tkpdstream.common.analytics.EEPromotion;
+import com.tokopedia.tkpdstream.common.analytics.StreamAnalytics;
 import com.tokopedia.tkpdstream.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.tkpdstream.common.design.SpaceItemDecoration;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
-import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -108,7 +110,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     protected String getScreenName() {
-        return ChannelAnalytics.Screen.CHAT_ROOM;
+        return null;
     }
 
     @Override
@@ -238,7 +240,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 SprintSaleViewModel sprintSaleViewModel = ((GroupChatContract.View) getActivity())
                         .getSprintSaleViewModel();
 
-                onSprintSaleClicked(sprintSaleViewModel.getRedirectUrl(), sprintSaleViewModel.getCampaignName());
+                onSprintSaleIconClicked(sprintSaleViewModel);
             }
         });
     }
@@ -300,6 +302,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && isValidSprintSale(sprintSaleViewModel)
                 && sprintSaleViewModel.getSprintSaleType() != null
                 && !sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_FINISHED)) {
+            trackViewSprintSaleComponent(sprintSaleViewModel);
             sprintSaleIconLayout.setVisibility(View.VISIBLE);
             setupSprintSaleIcon(sprintSaleViewModel);
         } else {
@@ -325,8 +328,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && isValidSprintSale(sprintSaleViewModel)
                 && sprintSaleViewModel.getSprintSaleType() != null
                 && !sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_UPCOMING)
-                && channelInfoViewModel != null
-                && channelInfoViewModel.getChannelViewModel() != null) {
+                && !sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_FINISHED)
+                && channelInfoViewModel != null) {
+
+            trackViewSprintSaleComponent(sprintSaleViewModel);
 
             sprintSaleHandler = new Handler();
             sprintSaleRunnable = new Runnable() {
@@ -337,8 +342,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                             new Date().getTime() / MILIS_TO_SECOND,
                             "0",
                             "0",
-                            channelInfoViewModel.getChannelViewModel().getAdminName(),
-                            channelInfoViewModel.getChannelViewModel().getAdminPicture(),
+                            channelInfoViewModel.getAdminName(),
+                            channelInfoViewModel.getAdminPicture(),
                             false,
                             true,
                             sprintSaleViewModel.getRedirectUrl(),
@@ -346,7 +351,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                             sprintSaleViewModel.getCampaignName(),
                             sprintSaleViewModel.getStartDate(),
                             sprintSaleViewModel.getEndDate(),
-                            SprintSaleViewModel.TYPE_UPCOMING
+                            sprintSaleViewModel.getSprintSaleType()
                     );
 
                     if (adapter.getItemAt(adapter.getItemCount() - 1) != null
@@ -360,6 +365,25 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             sprintSaleHandler.postDelayed(sprintSaleRunnable, DELAY_TIME_SPRINT_SALE);
 
         }
+    }
+
+    private void trackViewSprintSaleComponent(SprintSaleViewModel sprintSaleViewModel) {
+        ArrayList<EEPromotion> list = new ArrayList<>();
+        for (SprintSaleProductViewModel productViewModel : sprintSaleViewModel
+                .getListProduct()) {
+            list.add(new EEPromotion(productViewModel.getProductId(),
+                    EEPromotion.NAME_GROUPCHAT,
+                    StreamAnalytics.DEFAULT_EE_POSITION,
+                    productViewModel.getProductName(),
+                    productViewModel.getProductImage(),
+                    ((GroupChatContract.View) getActivity()).getAttributionTracking(StreamAnalytics
+                            .ATTRIBUTE_FLASH_SALE)
+            ));
+        }
+
+        ((GroupChatContract.View) getActivity()).eventViewComponentEnhancedEcommerce(StreamAnalytics
+                .COMPONENT_FLASH_SALE, sprintSaleViewModel.getCampaignName(), StreamAnalytics
+                .ATTRIBUTE_FLASH_SALE, list);
     }
 
     public void autoAddGroupChatPoints(@Nullable final GroupChatPointsViewModel
@@ -527,8 +551,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         if (messageItem instanceof VoteAnnouncementViewModel) {
             handleVoteAnnouncement((VoteAnnouncementViewModel) messageItem);
         } else if (messageItem instanceof SprintSaleAnnouncementViewModel) {
-            setSprintSaleIcon(((GroupChatContract.View)getActivity()).getSprintSaleViewModel());
-            addIncomingMessage(messageItem);
+            setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
+            if (!((SprintSaleAnnouncementViewModel) messageItem).getSprintSaleType().equals
+                    (SprintSaleAnnouncementViewModel.SPRINT_SALE_UPCOMING)) {
+                addIncomingMessage(messageItem);
+            }
         } else if (!(messageItem instanceof
                 VibrateViewModel)) {
             addIncomingMessage(messageItem);
@@ -632,14 +659,80 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     @Override
-    public void onSprintSaleClicked(String url, String campaignName) {
+    public void onSprintSaleProductClicked(SprintSaleProductViewModel sprintSaleViewModel, int
+            position) {
 
-        ((GroupChatContract.View) getActivity()).eventClickComponent(StreamAnalytics
-                .COMPONENT_FLASH_SALE, campaignName, StreamAnalytics.ATTRIBUTE_FLASH_SALE);
+        ArrayList<EEPromotion> list = new ArrayList<>();
+        list.add(new EEPromotion(sprintSaleViewModel.getProductId(),
+                EEPromotion.NAME_GROUPCHAT,
+                position,
+                sprintSaleViewModel.getProductName(),
+                sprintSaleViewModel.getProductImage(),
+                ((GroupChatContract.View) getActivity()).getAttributionTracking(StreamAnalytics
+                        .ATTRIBUTE_FLASH_SALE)
+        ));
+
+        ((GroupChatContract.View) getActivity()).eventClickComponentEnhancedEcommerce(StreamAnalytics
+                .COMPONENT_FLASH_SALE, sprintSaleViewModel.getProductName(), StreamAnalytics
+                .ATTRIBUTE_FLASH_SALE, list);
 
         ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
-                , ((GroupChatContract.View) getActivity()).generateAttributeApplink(url,
-                        StreamAnalytics.ATTRIBUTE_FLASH_SALE));
+                , ((GroupChatContract.View) getActivity()).generateAttributeApplink
+                        (sprintSaleViewModel.getProductUrl(), StreamAnalytics.ATTRIBUTE_FLASH_SALE));
+    }
+
+    @Override
+    public void onSprintSaleComponentClicked(SprintSaleAnnouncementViewModel sprintSaleAnnouncementViewModel) {
+
+        ArrayList<EEPromotion> list = new ArrayList<>();
+        for (SprintSaleProductViewModel productViewModel : sprintSaleAnnouncementViewModel
+                .getListProducts()) {
+            list.add(new EEPromotion(productViewModel.getProductId(),
+                    EEPromotion.NAME_GROUPCHAT,
+                    StreamAnalytics.DEFAULT_EE_POSITION,
+                    productViewModel.getProductName(),
+                    productViewModel.getProductImage(),
+                    ((GroupChatContract.View) getActivity()).getAttributionTracking(StreamAnalytics
+                            .ATTRIBUTE_FLASH_SALE)
+            ));
+        }
+
+        ((GroupChatContract.View) getActivity()).eventClickComponentEnhancedEcommerce(StreamAnalytics
+                .COMPONENT_FLASH_SALE, sprintSaleAnnouncementViewModel.getCampaignName(), StreamAnalytics
+                .ATTRIBUTE_FLASH_SALE, list);
+
+        ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
+                , ((GroupChatContract.View) getActivity()).generateAttributeApplink
+                        (sprintSaleAnnouncementViewModel.getRedirectUrl(),
+                                StreamAnalytics.ATTRIBUTE_FLASH_SALE));
+
+    }
+
+    @Override
+    public void onSprintSaleIconClicked(SprintSaleViewModel sprintSaleViewModel) {
+        if (!TextUtils.isEmpty(sprintSaleViewModel.getRedirectUrl())) {
+            ArrayList<EEPromotion> list = new ArrayList<>();
+            for (SprintSaleProductViewModel productViewModel : sprintSaleViewModel
+                    .getListProduct()) {
+                list.add(new EEPromotion(productViewModel.getProductId(),
+                        EEPromotion.NAME_GROUPCHAT,
+                        StreamAnalytics.DEFAULT_EE_POSITION,
+                        productViewModel.getProductName(),
+                        productViewModel.getProductImage(),
+                        ((GroupChatContract.View) getActivity()).getAttributionTracking(StreamAnalytics
+                                .ATTRIBUTE_FLASH_SALE)
+                ));
+            }
+
+            ((GroupChatContract.View) getActivity()).eventClickComponentEnhancedEcommerce(StreamAnalytics
+                    .COMPONENT_FLASH_SALE, sprintSaleViewModel.getCampaignName(), StreamAnalytics
+                    .ATTRIBUTE_FLASH_SALE, list);
+
+            ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
+                    , ((GroupChatContract.View) getActivity()).generateAttributeApplink
+                            (sprintSaleViewModel.getRedirectUrl(),
+                                    StreamAnalytics.ATTRIBUTE_FLASH_SALE));
+        }
     }
 
     @Override

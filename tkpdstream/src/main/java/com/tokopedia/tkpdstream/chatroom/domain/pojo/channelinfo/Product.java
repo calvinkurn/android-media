@@ -1,8 +1,11 @@
-
-package com.tokopedia.tkpdstream.chatroom.domain.pojo.sprintsale;
+package com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+/**
+ * @author by nisie on 3/29/18.
+ */
 
 public class Product {
 

@@ -97,4 +97,5 @@ public class GroupChatViewModel implements Parcelable{
         dest.writeParcelable(channelInfoViewModel, flags);
         dest.writeLong(timeStampBeforePause);
     }
+
 }

@@ -7,21 +7,23 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.AdminAnnouncementViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.ChatViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.GroupChatPointsViewHolder;
-import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.SprintSaleViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.GeneratedMessageViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.ImageAnnouncementViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.PendingChatViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.SprintSaleViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.UserActionViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.VoteAnnouncementViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GeneratedMessageViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 
 /**
@@ -89,6 +91,11 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
     }
 
     @Override
+    public int type(GeneratedMessageViewModel generatedMessageViewModel) {
+        return GeneratedMessageViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder viewHolder;
 
@@ -106,6 +113,8 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
             viewHolder = new VoteAnnouncementViewHolder(parent, voteAnnouncementViewHolderListener);
         } else if (type == SprintSaleViewHolder.LAYOUT) {
             viewHolder = new SprintSaleViewHolder(parent, sprintSaleViewHolderListener);
+        } else if (type == GeneratedMessageViewHolder.LAYOUT) {
+            viewHolder = new GeneratedMessageViewHolder(parent);
         } else if (type == GroupChatPointsViewHolder.LAYOUT) {
             viewHolder = new GroupChatPointsViewHolder(parent, groupChatPointsViewHolderListener);
         } else {

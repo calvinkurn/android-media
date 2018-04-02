@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdstream.chatroom.view.viewmodel;
+package com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;

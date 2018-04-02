@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -23,14 +24,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -67,18 +66,19 @@ import com.tokopedia.tkpdstream.chatroom.view.preference.NotificationPreference;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VibrateViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.tab.TabViewModel;
+import com.tokopedia.tkpdstream.common.analytics.EEPromotion;
+import com.tokopedia.tkpdstream.common.analytics.StreamAnalytics;
 import com.tokopedia.tkpdstream.common.applink.ApplinkConstant;
 import com.tokopedia.tkpdstream.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
-import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
 import com.tokopedia.tkpdstream.common.util.TextFormatter;
 import com.tokopedia.tkpdstream.common.util.TransparentStatusBarHelper;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
@@ -227,6 +227,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         initData();
         initPreference();
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -477,21 +478,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void showChannelInfoFragment() {
-
-        Bundle bundle = new Bundle();
-        if (getIntent().getExtras() != null) {
-            bundle.putAll(getIntent().getExtras());
-        }
-
-        Fragment fragment = getSupportFragmentManager().
-                findFragmentByTag(ChannelInfoFragment.class.getSimpleName());
+        Fragment fragment = populateChannelInfoFragment();
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (fragment == null) {
-            fragment = ChannelInfoFragment.createInstance(bundle);
-        }
-        ((ChannelInfoFragmentListener.View) fragment).renderData(
-                viewModel.getChannelInfoViewModel().getChannelViewModel());
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -535,7 +524,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private void addPaddingIfKeyboardIsClosed() {
         if (getSoftButtonsBarSizePort(GroupChatActivity.this) > 0) {
             FrameLayout container = rootView.findViewById(R.id.container);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) container
                     .getLayoutParams();
             params.setMargins(0, 0, 0, getSoftButtonsBarSizePort(GroupChatActivity.this));
             container.setLayoutParams(params);
@@ -545,7 +534,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private void removePaddingIfKeyboardIsShowing() {
         if (getSoftButtonsBarSizePort(GroupChatActivity.this) > 0) {
             FrameLayout container = rootView.findViewById(R.id.container);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) container.getLayoutParams();
             params.setMargins(0, 0, 0, 0);
             container.setLayoutParams(params);
         }
@@ -662,9 +651,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
-        Log.d("NISNIS", "onSuccessGetChannelInfo");
         try {
             setChannelInfoView(channelInfoViewModel);
+            trackAdsEE(channelInfoViewModel);
             presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                     userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken());
 
@@ -672,8 +661,25 @@ public class GroupChatActivity extends BaseSimpleActivity
             intent.putExtra(TOTAL_VIEW, channelInfoViewModel.getTotalView());
             setResult(Activity.RESULT_OK, intent);
         } catch (Exception e) {
-            Log.d("NISNIS", "onSuccessGetChannelInfoErr " + e.toString());
+            e.printStackTrace();
         }
+    }
+
+    private void trackAdsEE(ChannelInfoViewModel channelInfoViewModel) {
+
+        ArrayList<EEPromotion> list = new ArrayList<>();
+        list.add(new EEPromotion(channelInfoViewModel.getAdsId(),
+                EEPromotion.NAME_GROUPCHAT,
+                StreamAnalytics.DEFAULT_EE_POSITION,
+                channelInfoViewModel.getAdsName(),
+                channelInfoViewModel.getAdsImageUrl(),
+                getAttributionTracking(StreamAnalytics.ATTRIBUTE_BANNER)
+        ));
+
+        eventViewComponentEnhancedEcommerce(StreamAnalytics.COMPONENT_BANNER,
+                channelInfoViewModel.getAdsName(),
+                StreamAnalytics.ATTRIBUTE_BANNER,
+                list);
     }
 
     @Override
@@ -718,7 +724,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         channelInfoDialog.setContentView(
                 createBottomSheetView(
                         checkPollValid(),
-                        viewModel.getChannelInfoViewModel().getChannelViewModel()));
+                        viewModel.getChannelInfoViewModel()));
 
         if (getIntent() != null
                 && getIntent().getExtras() != null
@@ -779,7 +785,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
-    private View createBottomSheetView(boolean hasValidPoll, ChannelViewModel channelViewModel) {
+    private View createBottomSheetView(boolean hasValidPoll,
+                                       ChannelInfoViewModel channelInfoViewModel) {
         View view = getLayoutInflater().inflate(R.layout.channel_info_bottom_sheet_dialog, null);
 
         TextView actionButton = view.findViewById(R.id.action_button);
@@ -802,14 +809,16 @@ public class GroupChatActivity extends BaseSimpleActivity
         else
             actionButton.setText(R.string.lets_chat);
 
-        participant.setText(TextFormatter.format(String.valueOf(channelViewModel.getTotalView())));
-        name.setText(channelViewModel.getAdminName());
-        title.setText(channelViewModel.getTitle());
-        subtitle.setText(channelViewModel.getDescription());
+        participant.setText(TextFormatter.format(String.valueOf(channelInfoViewModel.getTotalView())));
+        name.setText(channelInfoViewModel.getAdminName());
+        title.setText(channelInfoViewModel.getTitle());
+        subtitle.setText(channelInfoViewModel.getDescription());
 
-        ImageHandler.loadImage2(image, channelViewModel.getImage(), R.drawable.loading_page);
-        ImageHandler.loadImageCircle2(profile.getContext(), profile, channelViewModel.getAdminPicture(), R
-                .drawable.loading_page);
+        ImageHandler.loadImage2(image, channelInfoViewModel.getImage(), R.drawable.loading_page);
+        ImageHandler.loadImageCircle2(profile.getContext(),
+                profile,
+                channelInfoViewModel.getAdminPicture(),
+                R.drawable.loading_page);
 
         return view;
     }
@@ -842,9 +851,23 @@ public class GroupChatActivity extends BaseSimpleActivity
             sponsorImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    eventClickComponent(StreamAnalytics.COMPONENT_BANNER, viewModel
-                            .getChannelInfoViewModel().getBannerName(), StreamAnalytics
-                            .ATTRIBUTE_BANNER);
+
+                    ArrayList<EEPromotion> list = new ArrayList<>();
+                    list.add(new EEPromotion(viewModel.getChannelInfoViewModel().getAdsId(),
+                            EEPromotion.NAME_GROUPCHAT,
+                            StreamAnalytics.DEFAULT_EE_POSITION,
+                            viewModel.getChannelInfoViewModel().getAdsName(),
+                            viewModel.getChannelInfoViewModel().getAdsImageUrl(),
+                            getAttributionTracking(StreamAnalytics
+                                    .ATTRIBUTE_BANNER)
+                    ));
+
+                    eventClickComponentEnhancedEcommerce(
+                            StreamAnalytics.COMPONENT_BANNER,
+                            viewModel.getChannelInfoViewModel().getAdsName(),
+                            StreamAnalytics.ATTRIBUTE_BANNER,
+                            list);
+
                     openSponsor(generateAttributeApplink(
                             viewModel.getChannelInfoViewModel().getAdsLink(),
                             StreamAnalytics.ATTRIBUTE_BANNER,
@@ -886,9 +909,14 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     @Override
+    public String getScreenName() {
+        return StreamAnalytics.SCREEN_CHAT_ROOM;
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
-        Log.d("NISNIS", "onStart");
+        analytics.sendScreen(this, getScreenName());
     }
 
     @Override
@@ -899,7 +927,15 @@ public class GroupChatActivity extends BaseSimpleActivity
             refreshChat();
         } else if (currentFragmentIsVote()) {
             refreshVote(channelInfoViewModel.getVoteInfoViewModel());
+        } else if (currentFragmentIsInfo()) {
+            populateChannelInfoFragment();
         }
+    }
+
+    @Override
+    public String getAttributionTracking(String attributeName) {
+        return StreamAnalytics.generateTrackerAttribution(attributeName, viewModel.getChannelUrl
+                (), viewModel.getChannelName());
     }
 
     @Override
@@ -922,9 +958,28 @@ public class GroupChatActivity extends BaseSimpleActivity
                 (ChannelVoteFragment.class.getSimpleName())).refreshVote(voteInfoViewModel);
     }
 
+    private Fragment populateChannelInfoFragment() {
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(
+                ChannelInfoFragment.class.getSimpleName());
+
+        if (fragment == null) {
+            fragment = ChannelInfoFragment.createInstance(bundle);
+        }
+
+        ((ChannelInfoFragmentListener.View) fragment).renderData(
+                viewModel.getChannelInfoViewModel());
+
+        return fragment;
+    }
+
     @Override
     protected void onPause() {
-        if(tooltipHandler !=null && runnable != null) {
+        if (tooltipHandler != null && runnable != null) {
             tooltipHandler.removeCallbacks(runnable);
         }
         super.onPause();
@@ -954,7 +1009,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(tooltipHandler !=null && runnable != null) {
+        if (tooltipHandler != null && runnable != null) {
             tooltipHandler.removeCallbacks(runnable);
         }
         presenter.detachView();
@@ -990,13 +1045,10 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onSuccessEnterChannel(OpenChannel openChannel) {
         try {
-            Log.d("NISNIS", "onSuccessEnterChannel");
             hideLoading();
             mChannel = openChannel;
             setupViewPager();
             showFragment(initialFragment);
-
-
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (NullPointerException e) {
@@ -1006,7 +1058,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onErrorEnterChannel(String errorMessage) {
-        Log.d("NISNIS", "onErrorEnterChannel " + errorMessage);
         hideLoading();
         NetworkErrorHelper.showEmptyState(this, rootView, errorMessage, new NetworkErrorHelper
                 .RetryClickedListener() {
@@ -1248,10 +1299,22 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void eventClickComponent(String componentName, String campaignName, String attributeName) {
+    public void eventClickComponentEnhancedEcommerce(String componentType, String campaignName,
+                                                     String attributeName, List<EEPromotion>
+                                                             listEE) {
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
-            analytics.eventClickComponent(componentName, campaignName, attributeName, viewModel
-                    .getChannelUrl(), viewModel.getChannelName());
+            analytics.eventClickComponentEnhancedEcommerce(componentType, campaignName,
+                    attributeName, viewModel.getChannelUrl(), viewModel.getChannelName(), listEE);
+        }
+    }
+
+    @Override
+    public void eventViewComponentEnhancedEcommerce(String componentType, String campaignName,
+                                                    String attributeName, List<EEPromotion>
+                                                            listEE) {
+        if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
+            analytics.eventClickComponentEnhancedEcommerce(componentType, campaignName,
+                    attributeName, viewModel.getChannelUrl(), viewModel.getChannelName(), listEE);
         }
     }
 
@@ -1261,13 +1324,13 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && this.viewModel.getChannelInfoViewModel() != null
                 && this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel() != null) {
             this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
-                    .setCampaignName(messageItem.getCampaignName());
-            this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
                     .setListProduct(messageItem.getListProducts());
             this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
-                    .setEndDate(messageItem.getEndDate());
+                    .setCampaignName(messageItem.getCampaignName());
             this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
                     .setStartDate(messageItem.getStartDate());
+            this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
+                    .setEndDate(messageItem.getEndDate());
             this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
                     .setRedirectUrl(messageItem.getRedirectUrl());
             this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()

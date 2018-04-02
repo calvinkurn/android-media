@@ -26,7 +26,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
-import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
+import com.tokopedia.tkpdstream.common.analytics.StreamAnalytics;
 
 import java.util.ArrayList;
 
