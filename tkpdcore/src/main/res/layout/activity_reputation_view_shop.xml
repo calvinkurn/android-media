@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -112,7 +113,7 @@
                             android:layout_alignParentTop="true"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
-                            android:src="@drawable/remove" />
+                            app:srcCompat="@drawable/remove" />
 
                         <ImageView
                             android:layout_width="wrap_content"
@@ -121,7 +122,7 @@
                             android:layout_alignParentTop="true"
                             android:layout_alignParentRight="true"
                             android:layout_alignParentEnd="true"
-                            android:src="@drawable/ic_new_action_overflow_black"/>
+                            app:srcCompat="@drawable/ic_new_action_overflow_black"/>
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -154,7 +155,7 @@
                                     android:id="@+id/rep_icon"
                                     android:layout_width="@dimen/img_thumb_s"
                                     android:layout_height="@dimen/img_thumb_s"
-                                    android:src="@drawable/ic_icon_repsis_smile_active"/>
+                                    app:srcCompat="@drawable/ic_icon_repsis_smile_active"/>
                                 <TextView
                                     android:id="@+id/rep_rating"
                                     android:layout_width="wrap_content"
@@ -251,7 +252,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:id="@+id/star_quality"
-                                    android:src="@drawable/ic_star_five"
+                                    app:srcCompat="@drawable/ic_star_five"
                                     android:layout_gravity="center_vertical"
                                     android:paddingTop="@dimen/padding_vs"
                                     android:paddingBottom="@dimen/padding_vs"
@@ -288,7 +289,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:id="@+id/star_accuracy"
-                                    android:src="@drawable/ic_star_five"
+                                    app:srcCompat="@drawable/ic_star_five"
                                     android:layout_gravity="center_vertical"
                                     android:paddingTop="@dimen/padding_vs"
                                     android:paddingBottom="@dimen/padding_vs"
@@ -322,7 +323,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight=".50"
-                            android:src="@drawable/ic_star_five"
+                            app:srcCompat="@drawable/ic_star_five"
                             android:shopId="@+shopId/star_quality"
                             android:layout_gravity="center"
                             android:scaleType="fitStart"/>
@@ -340,7 +341,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight=".50"
-                            android:src="@drawable/ic_star_five"
+                            app:srcCompat="@drawable/ic_star_five"
                             android:shopId="@+shopId/star_accuracy"
                             android:scaleType="fitEnd"/>
 
@@ -367,7 +368,7 @@
                     <ImageView
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
-                        android:src="@drawable/ic_menu_talk"
+                        app:srcCompat="@drawable/ic_menu_talk"
                         android:id="@+id/icon_comment"
                         android:layout_toRightOf="@+id/counter_comment"
                         android:layout_alignTop="@+id/counter_comment"
@@ -384,7 +385,7 @@
                         <ImageView
                             android:layout_width="@dimen/img_thumb_s"
                             android:layout_height="@dimen/img_thumb_s"
-                            android:src="@drawable/ic_icon_repsis_like"
+                            app:srcCompat="@drawable/ic_icon_repsis_like"
                             android:id="@+id/icon_like"/>
 
                         <TextView
@@ -402,7 +403,7 @@
                             android:layout_width="@dimen/img_thumb_s"
                             android:layout_height="@dimen/img_thumb_s"
                             android:layout_toRightOf="@id/counter_like"
-                            android:src="@drawable/ic_icon_repsis_dislike"
+                            app:srcCompat="@drawable/ic_icon_repsis_dislike"
                             android:id="@+id/icon_dislike"/>
 
                         <TextView
@@ -435,7 +436,7 @@
                             android:id="@+id/user_ava_comment"
                             android:layout_width="@dimen/img_thumb"
                             android:layout_height="@dimen/img_thumb"
-                            android:src="@drawable/remove" />
+                            app:srcCompat="@drawable/remove" />
 
                         <ImageView
                             android:id="@+id/but_overflow_comment"
@@ -443,7 +444,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:background="@drawable/overflow_selected"
-                            android:src="@drawable/ic_new_action_overflow_black" />
+                            app:srcCompat="@drawable/ic_new_action_overflow_black" />
 
                         <LinearLayout
                             android:layout_width="match_parent"

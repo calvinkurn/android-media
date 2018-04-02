@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
     android:layout_marginBottom="@dimen/margin_small">
 
     <TextView
+        android:id="@+id/title_tokocash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/padding_ms"
@@ -23,6 +24,7 @@
         android:layout_height="1dp"
         android:layout_below="@+id/balance_tokocash"
         android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/margin_sm"
         android:background="@color/grey_300" />
 
     <com.tokopedia.digital.product.view.compoundview.DigitalProductChooserView
@@ -51,9 +53,9 @@
 
     <TextView
         android:id="@+id/btn_topup"
-        style="@style/DigitalButtonBuy"
+        style="@style/Button.Submit.Orange"
         android:layout_marginTop="@dimen/padding_ms"
-        android:layout_marginBottom="@dimen/padding_ms"
+        android:layout_marginBottom="@dimen/margin_med"
         android:layout_marginLeft="@dimen/margin_sm"
         android:layout_marginRight="@dimen/margin_sm"
         android:text="@string/label_btn_buy_digital" />

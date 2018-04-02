@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -733,7 +732,14 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void addGuidedSearch() {
-        adapter.addGuidedSearch();
+        String currentKey = productViewModel.getQuery();
+        String currentPage = String.valueOf(adapter.getStartFrom() / 12);
+
+        SearchTracking.eventImpressionGuidedSearch(
+                currentKey,
+                currentPage
+        );
+        adapter.addGuidedSearch(currentKey, currentPage);
     }
 
     @Override

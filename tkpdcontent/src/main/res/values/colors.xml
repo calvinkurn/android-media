@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="black_12">#1e000000</color>
+    <color name="black_36">#5b000000</color>
+    <color name="black_38">#61000000</color>
+    <color name="black_54">#8a000000</color>
+    <color name="black_70">#b3000000</color>
+    <color name="black_70b">#b3000000</color>
+    <color name="black_87">#de000000</color>
+    <color name="black_tooltip">#96000000</color>
+
+    <color name="shadow_color_1">#00CCCCCC</color>
+    <color name="shadow_color_2">#10CCCCCC</color>
+    <color name="shadow_color_3">#15CCCCCC</color>
+    <color name="shadow_color_4">#20CCCCCC</color>
+    <color name="shadow_color_5">#25CCCCCC</color>
+</resources>

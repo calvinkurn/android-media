@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -20,12 +21,14 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.payment.BuildConfig;
 import com.tokopedia.payment.R;
 import com.tokopedia.payment.listener.ITopPayView;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -81,6 +84,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -121,14 +125,21 @@ public class TopPayActivity extends Activity implements ITopPayView {
     @SuppressLint("SetJavaScriptEnabled")
     private void setViewListener() {
         progressBar.setIndeterminate(true);
-        scroogeWebView.getSettings().setJavaScriptEnabled(true);
-        scroogeWebView.getSettings().setDomStorageEnabled(true);
-        scroogeWebView.getSettings().setBuiltInZoomControls(false);
-        scroogeWebView.getSettings().setDisplayZoomControls(true);
-        scroogeWebView.getSettings().setAppCacheEnabled(true);
+
+        WebSettings webSettings = scroogeWebView.getSettings();
+
+        String userAgent = String.format("%s [%s/%s]", webSettings.getUserAgentString(), getString(R.string.app_android), BuildConfig.VERSION_NAME);
+        webSettings.setUserAgentString(userAgent);
+
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setBuiltInZoomControls(false);
+        webSettings.setDisplayZoomControls(true);
+        webSettings.setAppCacheEnabled(true);
         scroogeWebView.setWebViewClient(new TopPayWebViewClient());
         scroogeWebView.setWebChromeClient(new TopPayWebViewChromeClient());
         scroogeWebView.setOnKeyListener(getWebViewOnKeyListener());
+        btnBack.setVisibility(View.VISIBLE);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

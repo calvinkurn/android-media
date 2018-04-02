@@ -33,7 +33,7 @@
             android:id="@+id/ic_shop_score_limit"
             android:layout_width="@dimen/image_width_xs"
             android:layout_height="@dimen/image_width_xs"
-            android:src="@drawable/ic_pointer_gold_badge" />
+            app:srcCompat="@drawable/ic_pointer_gold_badge" />
 
         <TextView
             style="@style/TextView.Micro.BlackDisabled"

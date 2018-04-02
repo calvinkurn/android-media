@@ -46,6 +46,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
+import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -86,6 +87,7 @@ import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
@@ -200,6 +202,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_INDEX_HOME;
+    }
+
+    @Override
+    protected void sendScreenAnalytics() {
+        IndexScreenTracking.sendScreen(this, this);
     }
 
     @Override
@@ -530,9 +537,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart_active);
+                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new_active);
             } else {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart);
+                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new);
             }
         } else {
             getMenuInflater().inflate(R.menu.menu_guest, menu);
@@ -554,6 +561,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             return true;
         } else if (item.getItemId() == R.id.action_barcode_scan) {
             startActivity(QrScannerActivity.newInstance(this));
+            CampaignTracking.eventQRButtonClick();
             return true;
         } else {
             return super.onOptionsItemSelected(item);

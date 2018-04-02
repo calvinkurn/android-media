@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
     android:padding="@dimen/margin_sm">
 
@@ -17,5 +18,5 @@
         android:id="@+id/image_view_check"
         android:layout_width="@dimen/image_width_xs"
         android:layout_height="@dimen/image_width_xs"
-        android:src="@drawable/ic_check_green_24dp" />
+        app:srcCompat="@drawable/ic_check_green_24dp" />
 </LinearLayout>

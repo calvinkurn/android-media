@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
     android:background="@drawable/material_card"
@@ -57,7 +58,7 @@
                 android:layout_gravity="left|center_vertical"
                 android:background="@drawable/shape_bg_cab_img"
                 android:padding="6dp"
-                android:src="@drawable/cabs_uber_ic"
+                app:srcCompat="@drawable/cabs_uber_ic"
                 android:visibility="visible" />
 
             <TextView
@@ -73,13 +74,13 @@
                 android:textSize="13sp"
                 android:visibility="visible" />
 
-            <TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/tvSurgeRate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:drawableLeft="@drawable/cab_surge"
+                app:drawableLeftCompat="@drawable/cab_surge"
                 android:drawablePadding="5dp"
                 android:text="1x"
                 android:textColor="#25a8ed"
@@ -132,7 +133,7 @@
                         android:id="@+id/img_payment_method"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_tokocash_icon" />
+                        app:srcCompat="@drawable/ic_tokocash_icon" />
 
                     <TextView
                         android:id="@+id/tv_payment_method"

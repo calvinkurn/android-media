@@ -1,20 +1,16 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.session.R;
-
-import butterknife.ButterKnife;
 
 
 /**
@@ -48,9 +44,11 @@ public class ProfileCompletionFinishedFragment extends BaseDaggerFragment {
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().startActivity(
-                        PeopleInfoDrawerActivity.createInstance(getActivity(), SessionHandler.getLoginID(getActivity()))
-                );
+                Intent intent = ((SessionRouter) getActivity().getApplicationContext())
+                        .getTopProfileIntent(getActivity(),
+                                SessionHandler.getLoginID(getActivity()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                getActivity().startActivity(intent);
                 getActivity().finish();
             }
         });

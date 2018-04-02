@@ -25,6 +25,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="x_type">%1$d x %2$s</string>
     <string name="select_max_ticket">Silahkan pilih %1$d tiket</string>
+    <string name="more_seat_than_tiket_warning_toast">Tidak dapat memilih lebih dari %1$d tiket</string>
     <string name="jumlah_tiket">Jumlah Tiket : %1$d</string>
     <string name="some_info">Dengan menekan tombol di bawah, saya telah menyetujui Syarat dan Ketentuan untuk pembelian tiket dengan atas nama di atas.</string>
     <string name="cek_kode">Cek Kode</string>
@@ -65,6 +66,8 @@
     <string name="jadwal">Jadwal</string>
     <string name="ubah_jadwal">Ubah Jadwal</string>
     <string name="ubah_lokasi">Ubah Lokasi</string>
+    <string name="promocode_minimum_lenght_warning">Masukkan minimal 4 karakter</string>
+    <string name="please_enter_email">Mohon isi e-mail Anda</string>
 
     <!-- need to changed -->
 

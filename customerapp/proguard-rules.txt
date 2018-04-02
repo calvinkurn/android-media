@@ -337,3 +337,7 @@
 -keep class com.tokopedia.events.view.viewmodel.** { *; }
 -keep class com.tokopedia.core.network.exception.model.** { *; }
 -keep class com.tokopedia.events.data.entity.response.** { *; }
+
+
+#Sendbird
+-dontwarn com.sendbird.android.shadow.**

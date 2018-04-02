@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="@dimen/keyline_1">
 
@@ -46,11 +47,11 @@
                 android:textSize="@dimen/font_small" />
 
 
-            <EditText
+            <com.tokopedia.design.component.EditTextCompat
                 android:id="@+id/et_expiry_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableRight="@drawable/info_icon"
+                app:drawableRightCompat="@drawable/info_icon"
                 android:hint="@string/hint_expiration_date"
                 android:textColor="@color/black"
                 android:textSize="@dimen/font_medium"
@@ -74,11 +75,11 @@
                 android:textSize="@dimen/font_small" />
 
 
-            <EditText
+            <com.tokopedia.design.component.EditTextCompat
                 android:id="@+id/et_cvv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableRight="@drawable/info_icon"
+                app:drawableRightCompat="@drawable/info_icon"
                 android:hint="@string/hint_cvv"
                 android:inputType="number"
                 android:textColor="@color/black"

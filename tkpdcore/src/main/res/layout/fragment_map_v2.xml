@@ -53,7 +53,7 @@
             android:id="@+id/icon_pointer"
             android:layout_above="@id/pointer_0"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/ic_icon_pointer_toped" />
+            app:srcCompat="@drawable/ic_icon_pointer_toped" />
 
         <RelativeLayout
             android:id="@+id/view_address_pointer"
@@ -91,7 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/ic_new_action_check"/>
+                    app:srcCompat="@drawable/ic_new_action_check"/>
 
             </RelativeLayout>
 
@@ -105,7 +105,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_edit_location_white_24dp"
+        app:srcCompat="@drawable/ic_edit_location_white_24dp"
         android:background="@color/tkpd_dark_green"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"

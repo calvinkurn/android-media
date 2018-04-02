@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="110dp"
-              android:layout_height="wrap_content"
-              android:background="@drawable/filter_button_background"
-              android:elevation="5dp"
-              android:orientation="horizontal">
+    android:layout_width="110dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/filter_button_background"
+    android:elevation="5dp"
+    android:orientation="horizontal">
 
     <ImageView
         android:layout_width="20dp"
@@ -14,7 +15,7 @@
         android:layout_marginLeft="@dimen/margin_med"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_small"
-        android:src="@drawable/ic_filter_list"/>
+        app:srcCompat="@drawable/ic_filter_list"/>
 
     <TextView
         android:layout_width="wrap_content"

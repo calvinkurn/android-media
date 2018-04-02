@@ -15,11 +15,6 @@
         android:paddingTop="@dimen/padding_16"
         app:lv_show_arrow="true" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/bg_line_separator" />
-
     <LinearLayout
         android:id="@+id/passenger_detail_layout"
         android:layout_width="match_parent"
@@ -49,10 +44,6 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/bg_line_separator" />
     </LinearLayout>
 
 </LinearLayout>

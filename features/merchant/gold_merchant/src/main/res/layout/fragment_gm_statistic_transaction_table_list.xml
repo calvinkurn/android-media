@@ -70,7 +70,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="4dp"
                         android:scaleType="fitXY"
-                        android:src="@drawable/ic_arrow_down" />
+                        app:srcCompat="@drawable/ic_arrow_down" />
                 </LinearLayout>
             </LinearLayout>
 

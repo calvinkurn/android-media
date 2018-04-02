@@ -61,7 +61,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical|left"
                     android:contentDescription="@string/image_product_desc"
-                    android:src="@drawable/ic_star_five" />
+                    app:srcCompat="@drawable/ic_star_five" />
             </LinearLayout>
 
             <TextView
@@ -83,7 +83,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="@dimen/margin_small"
-            android:src="@drawable/ic_quote"
+            app:srcCompat="@drawable/ic_quote"
             android:scaleType="fitXY"/>
 
 

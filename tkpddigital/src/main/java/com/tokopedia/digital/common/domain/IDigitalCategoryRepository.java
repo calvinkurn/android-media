@@ -16,4 +16,5 @@ public interface IDigitalCategoryRepository {
 
     Observable<DigitalNumberList> getFavoriteList(TKPDMapParam<String, String> param);
 
+    Observable<String> getHelpUrl(String categoryId);
 }

@@ -1,8 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context=".purchase.activity.TxConfirmationDetailActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".purchase.activity.TxConfirmationDetailActivity">
 
     <ScrollView
         android:id="@+id/main_scroll"
@@ -203,14 +204,13 @@
 
             </RelativeLayout>
 
-            <TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/check_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"
                 android:background="@drawable/cards_ui_2"
-                android:drawableEnd="@drawable/info_icon"
-                android:drawableRight="@drawable/info_icon"
+                app:drawableRightCompat="@drawable/info_icon"
                 android:gravity="center_vertical"
                 android:padding="@dimen/padding_small"
                 android:text="Nomor Rekening"

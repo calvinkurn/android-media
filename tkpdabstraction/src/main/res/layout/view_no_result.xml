@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -18,7 +19,7 @@
             android:layout_height="@dimen/image_no_result"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/margin_vs"
-            android:src="@drawable/status_no_result" />
+            app:srcCompat="@drawable/status_no_result" />
 
         <TextView
             android:id="@+id/text_no_result"

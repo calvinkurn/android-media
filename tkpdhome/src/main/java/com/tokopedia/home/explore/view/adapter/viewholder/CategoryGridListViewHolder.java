@@ -88,7 +88,7 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
                     holder.title.setText(rowModel.getName());
                 }
                 if (rowModel.getImageUrl() != null) {
-                    ImageHandler.loadImageAndCache(holder.icon, rowModel.getImageUrl());
+                    ImageHandler.loadImageThumbs(context, holder.icon, rowModel.getImageUrl());
                 }
                 if (rowModel.getType() != null) {
                     holder.container.setOnClickListener(new View.OnClickListener() {

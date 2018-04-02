@@ -31,7 +31,7 @@
                 android:id="@+id/product_image"
                 android:layout_width="@dimen/img_thumb_m"
                 android:layout_height="@dimen/img_thumb_m"
-                android:src="@drawable/remove"
+                app:srcCompat="@drawable/remove"
                 android:layout_marginRight="@dimen/margin_ms"
                 android:layout_marginEnd="@dimen/margin_ms"/>
 

@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/gm_tooltip_compare_width"
-    android:layout_height="@dimen/gm_tooltip_compare_height">
+    android:layout_height="@dimen/gm_tooltip_compare_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -33,7 +34,7 @@
                     android:layout_width="@dimen/gm_tooltip_dot_image"
                     android:layout_height="@dimen/gm_tooltip_dot_image"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/circle_green" />
+                    app:srcCompat="@drawable/circle_green" />
 
                 <TextView
                     android:id="@+id/tv_text_top"
@@ -59,7 +60,7 @@
                     android:layout_width="@dimen/gm_tooltip_dot_image"
                     android:layout_height="@dimen/gm_tooltip_dot_image"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/circle_grey_gmstat" />
+                    app:srcCompat="@drawable/circle_grey_gmstat" />
 
                 <TextView
                     android:id="@+id/tv_text_bottom"

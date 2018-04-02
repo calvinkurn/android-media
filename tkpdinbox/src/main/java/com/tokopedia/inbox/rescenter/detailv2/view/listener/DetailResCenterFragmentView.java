@@ -45,7 +45,7 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionAcceptAdminSolutionClick();
 
-    void setOnActionEditSolutionClick();
+    void setOnActionEditSolutionClick(boolean isFromButton);
 
     void setOnActionMoreProductClick();
 
@@ -73,9 +73,11 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionHelpClick();
 
+    void setOnActionHelpTimeViewClick();
+
     void setOnActionAppealClick();
 
-    void setOnActionInputAwbNumberClick();
+    void setOnActionInputAwbNumberClick(boolean isFromButton);
 
     void setOnDiscussionButtonPosition(boolean isButtonAvailable);
 
@@ -102,4 +104,6 @@ public interface DetailResCenterFragmentView {
     void doOnActionTimeOut();
 
     void hideTimeTicker();
+
+    void doImpressionTrackingButton(String buttonType);
 }

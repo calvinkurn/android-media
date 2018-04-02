@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class ActivitySavedStateLogger extends EmptyActivityLifecycleCallbacks {
         if (savedState != null) {
             String message = activity.getClass().getSimpleName() + ".onSaveInstanceState wrote: " + TooLargeTool.bundleBreakdown(savedState);
             log(message);
-            if (TooLargeTool.isPotentialCrash(savedState))
+            if (TooLargeTool.isPotentialCrash(savedState) && !com.tokopedia.core.util.GlobalConfig.DEBUG)
                 Crashlytics.logException(new Throwable(message));
         }
     }

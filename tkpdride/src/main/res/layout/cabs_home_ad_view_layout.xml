@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/crux_cabs_home_ad"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="13dp"
-        android:src="@drawable/cabs_promo_ad_ic" />
+        app:srcCompat="@drawable/cabs_promo_ad_ic" />
 
     <TextView
         android:id="@+id/crux_cabs_ad_title"
@@ -35,5 +36,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="12dp"
-        android:src="@drawable/cabs_cross_white" />
+        app:srcCompat="@drawable/cabs_cross_white" />
 </LinearLayout>
