@@ -10,6 +10,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +28,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
@@ -36,11 +38,11 @@ import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.ChannelVotePresenter;
+import com.tokopedia.tkpdstream.common.analytics.StreamAnalytics;
 import com.tokopedia.tkpdstream.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.tkpdstream.common.design.SpaceItemDecoration;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
-import com.tokopedia.tkpdstream.common.analytics.StreamAnalytics;
 import com.tokopedia.tkpdstream.common.util.TextFormatter;
 import com.tokopedia.tkpdstream.vote.view.adapter.VoteAdapter;
 import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactory;
@@ -175,6 +177,22 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 > System.currentTimeMillis() / 1000L
                 ) {
             progressBarWithTimer.restart();
+        }
+
+        checkDateTime();
+    }
+
+    private void checkDateTime() {
+        if (MethodChecker.isTimezoneNotAutomatic(getActivity())) {
+            Snackbar snackBar = SnackbarManager.make(getActivity(), getString(R.string.check_timezone),
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.action_check, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
+                        }
+                    });
+            snackBar.show();
         }
     }
 
