@@ -554,6 +554,26 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
+    public void cancelPromo() {
+        cartDataInteractor.cancelVoucherCache(new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(String s) {
+
+            }
+        });
+    }
+
+    @Override
     public void clearNotificationCart() {
         LocalCacheHandler cache = view.getLocalCacheHandlerNotificationData();
         cache.putInt(TkpdCache.Key.IS_HAS_CART, 0);

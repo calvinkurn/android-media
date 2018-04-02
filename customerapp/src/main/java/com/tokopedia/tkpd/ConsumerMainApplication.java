@@ -43,6 +43,7 @@ import com.tokopedia.tkpdcontent.common.network.KolUrl;
 import com.tokopedia.tkpdstream.common.data.SendbirdKey;
 import com.tokopedia.tkpdstream.common.data.StreamUrl;
 import com.tokopedia.tokocash.network.api.WalletUrl;
+import com.tokopedia.transaction.network.TransactionUrl;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -123,6 +124,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlightUrl.ALL_PROMO_LINK = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.PROMO_PATH;
         FlightUrl.CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.CONTACT_US_PATH;
         FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL = FlightUrl.CONTACT_US + FlightUrl.CONTACT_US_FLIGHT_PREFIX;
+        TransactionUrl.BASE_URL = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         WalletUrl.BaseUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         WalletUrl.BaseUrl.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;

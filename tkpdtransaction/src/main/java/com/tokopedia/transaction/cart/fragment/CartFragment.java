@@ -1072,6 +1072,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             public void onClick(View view) {
                 promoResultLayout.setVisibility(View.GONE);
                 promoCodeLayout.setVisibility(View.VISIBLE);
+                presenter.cancelPromo();
             }
         };
     }

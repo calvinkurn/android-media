@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import com.tokopedia.abstraction.common.network.response.TokopediaApiResponse;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
@@ -31,10 +32,12 @@ import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
+import com.tokopedia.transaction.network.VoucherCartService;
 
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -63,6 +66,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     private final TXVoucherService txVoucherService;
     private final CompositeSubscription compositeSubscription;
     private final KeroAuthService keroAuthService;
+    private final VoucherCartService voucherCartService;
 
     private IShipmentCartRepository shipmentCartRepository;
 
@@ -74,6 +78,7 @@ public class CartDataInteractor implements ICartDataInteractor {
         this.txVoucherService = new TXVoucherService();
         this.shipmentCartRepository = new ShipmentCartDataRepository();
         this.keroAuthService = new KeroAuthService(3);
+        this.voucherCartService = new VoucherCartService();
     }
 
     @Override
@@ -275,6 +280,25 @@ public class CartDataInteractor implements ICartDataInteractor {
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber));
+    }
+
+    @Override
+    public void cancelVoucherCache(Subscriber<String> subscriber) {
+        compositeSubscription.add(voucherCartService.getApi()
+                .checkVoucherCode(new HashMap<String, String>())
+                .map(new Func1<Response<TokopediaApiResponse>, String>() {
+
+                         @Override
+                         public String call(Response<TokopediaApiResponse> tkpdResponseResponse) {
+                            return  "";
+                         }
+                     }
+                )
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber)
+        );
     }
 
     @Override

@@ -59,6 +59,8 @@ public interface ICartDataInteractor {
     void checkVoucherCode(TKPDMapParam<String, String> stringStringTKPDMapParam,
                           Subscriber<ResponseTransform<VoucherData>> subscriber);
 
+    void cancelVoucherCache(Subscriber<String> subscriber);
+
     void unSubscribeObservable();
 
     void calculateKeroRates(String token, String ut,
