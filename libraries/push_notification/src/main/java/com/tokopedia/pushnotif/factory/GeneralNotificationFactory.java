@@ -18,14 +18,19 @@ public class GeneralNotificationFactory extends BaseNotificationFactory {
     }
 
     @Override
-    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notifcationType) {
+    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notifcationType, int notificationId) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
         builder.setContentTitle(context.getResources().getString(R.string.title_general_push_notification));
         builder.setContentText(applinkNotificationModel.getDesc());
         builder.setSmallIcon(getDrawableIcon());
         builder.setLargeIcon(getBitmapLargeIcon());
         builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
-        builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), Constant.NotificationId.GENERAL));
+        builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), Constant.NotificationId.GENERAL, notificationId));
+
+        if (isAllowBell()) {
+            builder.setSound(getRingtoneUri());
+            if (isAllowVibrate()) builder.setVibrate(getVibratePattern());
+        }
 
         return builder.build();
     }

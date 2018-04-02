@@ -4,14 +4,18 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.DismissBroadcastReceiver;
@@ -34,7 +38,7 @@ public abstract class BaseNotificationFactory {
         this.context = context;
     }
 
-    public abstract Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notifcationType);
+    public abstract Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notifcationType, int notificationId);
 
     protected String generateGroupKey(String appLink) {
         if (appLink.contains("talk")) {
@@ -89,13 +93,14 @@ public abstract class BaseNotificationFactory {
         return context.getResources().getDimensionPixelSize(R.dimen.notif_height);
     }
 
-    protected PendingIntent createPendingIntent(String appLinks, int notificationId) {
+    protected PendingIntent createPendingIntent(String appLinks, int notificationType, int notificationId) {
         PendingIntent resultPendingIntent;
         Intent intent = RouteManager.getIntent(context, appLinks);
         intent.setData(Uri.parse(appLinks));
         Bundle bundle = new Bundle();
         bundle.putBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, true);
-        bundle.putInt(Constant.EXTRA_NOTIFICATION_TYPE, notificationId);
+        bundle.putInt(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
+        bundle.putInt(Constant.EXTRA_NOTIFICATION_ID, notificationId);
         intent.putExtras(bundle);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getActivity(
@@ -120,5 +125,30 @@ public abstract class BaseNotificationFactory {
         Intent intent = new Intent(context, DismissBroadcastReceiver.class);
         intent.putExtra(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
         return PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
+    }
+
+    protected Boolean isAllowBell() {
+        LocalCacheHandler cache = new LocalCacheHandler(context, Constant.CACHE_DELAY);
+        long prevTime = cache.getLong(Constant.PREV_TIME);
+        long currTIme = System.currentTimeMillis();
+        if (currTIme - prevTime > 15000) {
+            cache.putLong(Constant.PREV_TIME, currTIme);
+            cache.applyEditor();
+            return true;
+        }
+        return false;
+    }
+
+    protected Boolean isAllowVibrate() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getBoolean(Constant.Settings.NOTIFICATION_VIBRATE, false);
+    }
+
+    protected long[] getVibratePattern() {
+        return new long[]{500, 500};
+    }
+
+    protected Uri getRingtoneUri() {
+        return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
     }
 }

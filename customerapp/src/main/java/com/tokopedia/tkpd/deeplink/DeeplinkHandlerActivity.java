@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -127,7 +128,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     UnifyTracking.eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
                 } else if (bundle.getBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, false)) {
                     int notificationType = bundle.getInt(Constant.EXTRA_NOTIFICATION_TYPE, 0);
+                    int notificationId = bundle.getInt(Constant.EXTRA_NOTIFICATION_ID, 0);
                     HistoryNotification.clearHistoryNotification(this, notificationType);
+                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                    notificationManagerCompat.cancel(notificationId);
+                    notificationManagerCompat.cancel(notificationType);
                 }
 //                NotificationModHandler.clearCacheIfFromNotification(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }

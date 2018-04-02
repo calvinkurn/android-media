@@ -4,11 +4,13 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -43,79 +45,6 @@ public class ApplinkNotificationHelper {
 
     }
 
-
-
-    private NotificationCompat.Builder buildNotification(ApplinkNotificationModel applinkNotificationModel, int notificationId) {
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
-        builder.setContentTitle(applinkNotificationModel.getDesc());
-        builder.setContentText(applinkNotificationModel.getSummary());
-        builder.setSmallIcon(getDrawableIcon());
-
-        if (notificationId == Constant.NotificationId.TALK || notificationId == Constant.NotificationId.CHAT) {
-            /*String key = notificationId == Constant.NotificationId.TALK ? HistoryNotification.KEY_TALK : HistoryNotification.KEY_CHAT;
-            HistoryNotification historyNotification = new HistoryNotification(context, key);
-            if (historyNotification.getListHistoryNotificationModel().size() == 0) {
-                builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notificationId));
-                builder.setLargeIcon(getBitmap(applinkNotificationModel.getThumbnail()));
-            } else {
-                if (notificationId == Constant.NotificationId.TALK) {
-                    builder.setContentIntent(createPendingIntent(ApplinkConst.TALK, notificationId));
-                } else {
-                    builder.setContentIntent(createPendingIntent(ApplinkConst.TOPCHAT_IDLESS, notificationId));
-                }
-            }*/
-
-            NotificationCompat.MessagingStyle messagingStyle = new NotificationCompat.MessagingStyle("ME");
-
-            /*for (HistoryNotificationModel historyNotificationModel : historyNotification.getListHistoryNotificationModel()) {
-                messagingStyle.addMessage(historyNotificationModel.getMessage(),
-                        historyNotificationModel.getTimeStamp(),
-                        historyNotificationModel.getSenderName());
-            }*/
-
-            messagingStyle.addMessage(applinkNotificationModel.getSummary(), System.currentTimeMillis(), applinkNotificationModel.getFullName());
-            //messagingStyle.setConversationTitle(historyNotification.getSummary());
-
-            //historyNotification.storeNotification(applinkNotificationModel.getSummary(), applinkNotificationModel.getFullName());
-
-            builder.setStyle(messagingStyle);
-
-        } else {
-            builder.setLargeIcon(getBitmap(applinkNotificationModel.getThumbnail()));
-            builder.setStyle(new NotificationCompat.BigTextStyle().bigText(applinkNotificationModel.getSummary()));
-            builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), Constant.NotificationId.GENERAL));
-        }
-
-        builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
-
-        return builder;
-
-    }
-
-    private NotificationCompat.Style generateStyle(ApplinkNotificationModel applinkNotificationModel, int notificationId) {
-       /* if (notificationId == Constant.NotificationId.TALK) {
-            HistoryNotification historyNotification = new HistoryNotification(context, HistoryNotification.KEY_TALK);
-            NotificationCompat.MessagingStyle messagingStyle = new NotificationCompat.MessagingStyle("ME");
-
-            for (HistoryNotificationModel historyNotificationModel : historyNotification.getListHistoryNotificationModel()) {
-                messagingStyle.addMessage(historyNotificationModel.getMessage(),
-                        historyNotificationModel.getTimeStamp(),
-                        historyNotificationModel.getSenderName());
-            }
-
-            messagingStyle.addMessage(applinkNotificationModel.getSummary(), System.currentTimeMillis(), applinkNotificationModel.getFullName());
-            messagingStyle.setConversationTitle(historyNotification.getSummary());
-
-            historyNotification.storeNotification(applinkNotificationModel.getSummary(), applinkNotificationModel.getFullName());
-            return messagingStyle;
-        } else {
-            return new NotificationCompat.BigTextStyle().bigText(applinkNotificationModel.getSummary());
-        }*/
-       return null;
-    }
-
-
     public static ApplinkNotificationModel convertToApplinkModel(Bundle data) {
         ApplinkNotificationModel model = new ApplinkNotificationModel();
         model.setApplinks(data.getString("applinks", "tokopedia://home"));
@@ -134,9 +63,10 @@ public class ApplinkNotificationHelper {
         return model;
     }
 
-    public static Boolean allowToShow(Context context, String toUserId) {
+    public static Boolean allowToShow(Context context, ApplinkNotificationModel applinkNotificationModel) {
         String loginId = ((AbstractionRouter) context.getApplicationContext()).getSession().getUserId();
-        return toUserId.equals(loginId);
+        return applinkNotificationModel.getToUserId().equals(loginId) &&
+                checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode());
     }
 
     public static int getNotificationId(String appLinks) {
@@ -166,79 +96,55 @@ public class ApplinkNotificationHelper {
         }
     }
 
-    private String generateGroupKey(String appLink) {
-        if (appLink.contains("talk")) {
-            return Constant.NotificationGroup.TALK;
-        } else if (appLink.contains("chat")) {
-            return Constant.NotificationGroup.TOPCHAT;
-        } else if (appLink.contains("buyer")) {
-            return Constant.NotificationGroup.TRANSACTION;
-        } else if (appLink.contains("seller")) {
-            return Constant.NotificationGroup.NEW_ORDER;
-        } else if (appLink.contains("resolution")) {
-            return Constant.NotificationGroup.RESOLUTION;
-        } else {
-            return Constant.NotificationGroup.GENERAL;
+    public static boolean checkLocalNotificationAppSettings(Context context, int code) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        switch (code) {
+            case Constant.GCMServiceState.GCM_CHAT:
+            case Constant.GCMServiceState.GCM_MESSAGE:
+                return settings.getBoolean(Constant.Settings.NOTIFICATION_PM, true);
+            case Constant.GCMServiceState.GCM_TALK:
+                return settings.getBoolean(Constant.Settings.NOTIFICATION_TALK, true);
+
+            case Constant.GCMServiceState.GCM_REVIEW:
+            case Constant.GCMServiceState.GCM_REVIEW_EDIT:
+            case Constant.GCMServiceState.GCM_REVIEW_REPLY:
+                return settings.getBoolean(Constant.Settings.NOTIFICATION_REVIEW, true);
+
+            case Constant.GCMServiceState.GCM_PROMO:
+            case Constant.GCMServiceState.GCM_HOT_LIST:
+                return settings.getBoolean(Constant.Settings.NOTIFICATION_PROMO, true);
+
+            case Constant.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
+            case Constant.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
+            case Constant.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER:
+            case Constant.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER:
+                return settings.getBoolean(Constant.Settings.NOTIFICATION_REP, true);
+
+            case Constant.GCMServiceState.GCM_NEWORDER:
+                return settings.getBoolean(Constant.Settings.NOTIFICATION_SALES, true);
+
+            case Constant.GCMServiceState.GCM_PURCHASE_VERIFIED:
+            case Constant.GCMServiceState.GCM_PURCHASE_ACCEPTED:
+            case Constant.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED:
+            case Constant.GCMServiceState.GCM_PURCHASE_REJECTED:
+            case Constant.GCMServiceState.GCM_PURCHASE_DELIVERED:
+                return settings.getBoolean(Constant.Settings.NOTIFICATION_PURCHASE, true);
+
+            case Constant.GCMServiceState.GCM_PURCHASE_DISPUTE:
+            case Constant.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
+            case Constant.GCMServiceState.GCM_RESCENTER_BUYER_REPLY:
+            case Constant.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
+            case Constant.GCMServiceState.GCM_RESCENTER_BUYER_AGREE:
+            case Constant.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY:
+            case Constant.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
+                return settings.getBoolean(Constant.Settings.NOTIFICATION_RESCENTER, true);
+
+            case Constant.GCMServiceState.GCM_SELLER_INFO:
+                return settings.getBoolean(Constant.Settings.NOTIFICATION_SELLER_INFO, true);
+
+            default:
+                return true;
         }
-    }
-
-    private int getDrawableIcon() {
-        if (GlobalConfig.isSellerApp())
-            return R.drawable.ic_status_bar_notif_sellerapp;
-        else
-            return R.drawable.ic_status_bar_notif_customerapp;
-    }
-
-    private int getDrawableLargeIcon() {
-        if (GlobalConfig.isSellerApp())
-            return R.drawable.ic_big_notif_sellerapp;
-        else
-            return R.drawable.ic_big_notif_customerapp;
-    }
-
-    private Bitmap getBitmap(String url) {
-        try {
-            return Glide.with(context).load(url)
-                    .asBitmap()
-                    .into(getImageWidth(), getImageHeight())
-                    .get(3, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e ) {
-            return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());
-        }
-    }
-
-    private int getImageWidth() {
-        return context.getResources().getDimensionPixelSize(R.dimen.notif_width);
-    }
-
-    private int getImageHeight() {
-        return context.getResources().getDimensionPixelSize(R.dimen.notif_height);
-    }
-
-    private PendingIntent createPendingIntent(String appLinks, int notificationId) {
-        PendingIntent resultPendingIntent;
-        Intent intent = RouteManager.getIntent(context, appLinks);
-        intent.setData(Uri.parse(appLinks));
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, true);
-        intent.putExtras(bundle);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            resultPendingIntent = PendingIntent.getActivity(
-                    context,
-                    0,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
-        } else {
-            resultPendingIntent = PendingIntent.getActivity(
-                    context,
-                    notificationId,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
-        }
-
-        return resultPendingIntent;
     }
 }
 

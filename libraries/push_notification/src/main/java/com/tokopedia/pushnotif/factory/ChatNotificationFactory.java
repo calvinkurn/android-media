@@ -17,14 +17,19 @@ public class ChatNotificationFactory extends BaseNotificationFactory{
     }
 
     @Override
-    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notifcationType) {
+    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notifcationType, int notificationId) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
         builder.setContentTitle(applinkNotificationModel.getDesc());
         builder.setContentText(applinkNotificationModel.getFullName()+" : "+applinkNotificationModel.getSummary());
         builder.setSmallIcon(getDrawableIcon());
         builder.setLargeIcon(getBitmap(applinkNotificationModel.getThumbnail()));
         builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
-        builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), Constant.NotificationId.GENERAL));
+        builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), Constant.NotificationId.GENERAL, notificationId));
+
+        if (isAllowBell()) {
+            builder.setSound(getRingtoneUri());
+            if (isAllowVibrate()) builder.setVibrate(getVibratePattern());
+        }
 
         return builder.build();
     }

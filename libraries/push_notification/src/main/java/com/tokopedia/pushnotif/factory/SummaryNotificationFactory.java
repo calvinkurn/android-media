@@ -23,7 +23,7 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
     }
 
     @Override
-    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notificationType) {
+    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
         builder.setContentTitle(getTitleSummary(notificationType));
         builder.setSmallIcon(getDrawableIcon());
@@ -47,8 +47,13 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         builder.setStyle(inboxStyle);
         builder.setGroupSummary(true);
         builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
-        builder.setContentIntent(createPendingIntent(getGenericApplinks(notificationType), notificationType));
+        builder.setContentIntent(createPendingIntent(getGenericApplinks(notificationType), notificationType, notificationId));
         builder.setDeleteIntent(createDismissPendingIntent(notificationType));
+
+        if (isAllowBell()) {
+            builder.setSound(getRingtoneUri());
+            if (isAllowVibrate()) builder.setVibrate(getVibratePattern());
+        }
 
         return builder.build();
     }

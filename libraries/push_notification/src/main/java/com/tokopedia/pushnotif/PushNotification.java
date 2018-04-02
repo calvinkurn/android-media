@@ -32,7 +32,7 @@ public class PushNotification {
     public static void notify(Context context, Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
 
-        if (ApplinkNotificationHelper.allowToShow(context, applinkNotificationModel.getToUserId())) {
+        if (ApplinkNotificationHelper.allowToShow(context, applinkNotificationModel)) {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
 
@@ -47,45 +47,49 @@ public class PushNotification {
     }
 
     private static void notifyTalk(Context context, ApplinkNotificationModel applinkNotificationModel,
-                                   int notificationId, NotificationManagerCompat notificationManagerCompat) {
+                                   int notificationType, NotificationManagerCompat notificationManagerCompat) {
+
+        int notificationId = ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks());
+
         Notification notifTalk = new TalkNotificationFactory(context)
-                    .createNotification(applinkNotificationModel, notificationId);
+                    .createNotification(applinkNotificationModel, notificationType, notificationId);
 
         Notification notifSummary = new SummaryNotificationFactory(context)
-                .createNotification(applinkNotificationModel, notificationId);
+                .createNotification(applinkNotificationModel, notificationType, notificationType);
 
-        notificationManagerCompat.notify(ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks()),
-                notifTalk);
+        notificationManagerCompat.notify(notificationId, notifTalk);
 
         if (notifSummary != null) {
-            notificationManagerCompat.notify(notificationId, notifSummary);
+            notificationManagerCompat.notify(notificationType, notifSummary);
         }
 
     }
 
     private static void notifyChat(Context context, ApplinkNotificationModel applinkNotificationModel,
-                                   int notificationId, NotificationManagerCompat notificationManagerCompat) {
+                                   int notificationType, NotificationManagerCompat notificationManagerCompat) {
+
+        int notificationId = ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks());
+
         Notification notifChat = new ChatNotificationFactory(context)
-                .createNotification(applinkNotificationModel, notificationId);
+                .createNotification(applinkNotificationModel, notificationType, notificationId);
 
         Notification notifSummary = new SummaryNotificationFactory(context)
-                .createNotification(applinkNotificationModel, notificationId);
+                .createNotification(applinkNotificationModel, notificationType, notificationType);
 
-        notificationManagerCompat.notify(ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks()),
-                notifChat);
+        notificationManagerCompat.notify(notificationId, notifChat);
 
         if (notifSummary != null) {
-            notificationManagerCompat.notify(notificationId, notifSummary);
+            notificationManagerCompat.notify(notificationType, notifSummary);
         }
 
     }
 
     private static void notifyGeneral(Context context, ApplinkNotificationModel applinkNotificationModel,
-                                   int notificationId, NotificationManagerCompat notificationManagerCompat) {
+                                   int notificationType, NotificationManagerCompat notificationManagerCompat) {
         Notification notifChat = new GeneralNotificationFactory(context)
-                .createNotification(applinkNotificationModel, notificationId);
+                .createNotification(applinkNotificationModel, notificationType, notificationType);
 
-        notificationManagerCompat.notify(notificationId, notifChat);
+        notificationManagerCompat.notify(notificationType, notifChat);
 
     }
 }
