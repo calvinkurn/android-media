@@ -1,65 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:content="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:background="@color/white"
-    android:layout_marginTop="@dimen/new_margin_med"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_small"
+    android:layout_marginBottom="@dimen/content_product_margin"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="@dimen/feed_new_card_elevation">
 
-    <ImageView
-        android:id="@+id/iv_content_product"
-        android:layout_width="match_parent"
-        android:scaleType="centerCrop"
-        android:layout_height="100dp" />
-
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_sm">
+        android:background="@color/white"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/iv_content_product"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|top"
-            android:orientation="vertical">
+            android:layout_margin="@dimen/margin_sm">
 
-            <TextView
-                android:id="@+id/tv_header"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_14"
-                android:textColor="@color/black_70"
-                android:textStyle="bold"
-                android:layout_gravity="center"
-                android:gravity="center"
-                content:text="hello, sebo"/>
+                android:layout_gravity="center|top"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_12"
-                android:textColor="@color/black_70"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginTop="@dimen/margin_vs"
-                content:text="hai juga sebo"/>
+                <TextView
+                    android:id="@+id/tv_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="bold"
+                    content:text="hello, sebo" />
 
-            <Button
-                android:id="@+id/btn_content"
-                android:layout_width="110dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="@dimen/margin_small"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:background="@drawable/bg_button_enable"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:padding="@dimen/padding_vvs"
-                android:textSize="@dimen/text_size_13"
-                content:text="Cari Sebo"/>
-        </LinearLayout>
-    </FrameLayout>
+                <TextView
+                    android:id="@+id/tv_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    android:gravity="center"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/text_size_12"
+                    content:text="hai juga sebo" />
 
-</LinearLayout>
+                <Button
+                    android:id="@+id/btn_content"
+                    android:layout_width="110dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:background="@drawable/bg_button_enable"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_vvs"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_13"
+                    content:text="Cari Sebo" />
+            </LinearLayout>
+        </FrameLayout>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
