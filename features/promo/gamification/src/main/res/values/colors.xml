@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorTransparent">#D9000000</color>
     <color name="colorBgCountdownTimer">#523b95</color>
+    <color name="yellow">#ffea4a</color>
 </resources>

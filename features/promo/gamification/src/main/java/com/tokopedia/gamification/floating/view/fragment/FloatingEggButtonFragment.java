@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.floating.fragment;
+package com.tokopedia.gamification.floating.view.fragment;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -23,11 +23,17 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.gamification.EggGamificationActivity;
+import com.tokopedia.gamification.GamificationComponentInstance;
+import com.tokopedia.gamification.cracktoken.CrackTokenActivity;
+import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
 import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
+
+import javax.inject.Inject;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -40,7 +46,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
     private static final String COORD_X = "x";
     private static final String COORD_Y = "y";
     public static final String COORD_EGG_PREF = "_egg.pref";
-    public static final float SCALE_ON_DOWN = 0.9f;
+    public static final float SCALE_ON_DOWN = 0.95f;
     public static final float SCALE_NORMAL = 1f;
     public static final int EGG_ANIM_TO_BOUND_DURATION = 300;
 
@@ -50,14 +56,15 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
     private TextView tvFloatingCounter;
     private TextView tvFloatingTimer;
 
-    private float eggMarginRight;
-    private float eggMarginBottom;
+    private float initialEggMarginRight;
+    private float initialEggMarginBottom;
     private int rootWidth;
     private boolean isDraggable;
-    private int xEgg;
-    private int yEgg;
 
     private CountDownTimer countDownTimer;
+
+    @Inject
+    public FloatingEggPresenter floatingEggPresenter;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -77,6 +84,13 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
     }
 
     @Override
+    protected void initInjector() {
+        GamificationComponent gamificationComponent =
+                GamificationComponentInstance.getComponent(getActivity().getApplication());
+        gamificationComponent.inject(this);
+    }
+
+    @Override
     public void onInflate(Context context, AttributeSet attrs, Bundle savedInstanceState) {
         super.onInflate(context, attrs, savedInstanceState);
         applyAttrs(context, attrs, savedInstanceState);
@@ -93,8 +107,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FloatingEggButtonFragment);
 
         isDraggable = a.getBoolean(R.styleable.FloatingEggButtonFragment_draggable, false);
-        eggMarginRight = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_right, 0);
-        eggMarginBottom = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_bottom, 0);
+        initialEggMarginRight = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_right, 0);
+        initialEggMarginBottom = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_bottom, 0);
         a.recycle();
     }
 
@@ -107,14 +121,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initDragBound();
-        initEggCoordinate();
+        initEggCoordinate(savedInstanceState);
     }
 
-    private void initDragBound(){
+    private void initDragBound() {
         vgRoot.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                rootWidth = vgRoot.getWidth();
+                onInflateRoot();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     vgRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
@@ -125,29 +139,63 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         });
     }
 
-    private void initEggCoordinate(){
-        if (eggMarginRight != 0 && eggMarginBottom != 0) {
-            int bottomPx = 0;
-            int rightPx = 0;
-            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
-            if (isDraggable && hasCoordPreference()) {
-                layoutParams.setMargins(xEgg, yEgg, 0, 0);
+    private void onInflateRoot() {
+        rootWidth = vgRoot.getWidth();
+        if (isDraggable) {
+            int xEgg = (int) vgFloatingEgg.getX();
+            int yEgg = (int) vgFloatingEgg.getY();
+            if (((xEgg + (vgFloatingEgg.getWidth() / 2))) >= (rootWidth / 2)) {
+                int targetX = rootWidth - vgFloatingEgg.getWidth();
+                setCoordFloatingEgg(targetX, yEgg);
+                saveCoordPreference(targetX, yEgg);
             } else {
-                layoutParams.gravity = Gravity.BOTTOM | Gravity.END;
-                Resources r = getResources();
-                bottomPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, eggMarginBottom, r.getDisplayMetrics());
-                rightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, eggMarginRight, r.getDisplayMetrics());
-
-                layoutParams.setMargins(0, 0, rightPx, bottomPx);
+                setCoordFloatingEgg(0, yEgg);
+                saveCoordPreference(0, yEgg);
             }
         }
     }
 
+    private void initEggCoordinate(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            if (isDraggable && hasCoordPreference()) {
+                int coordPref[] = getCoordPreference();
+                setCoordFloatingEgg(coordPref[0], coordPref[1]);
+            } else {
+                if (initialEggMarginRight != 0 && initialEggMarginBottom != 0) {
+                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
+                    layoutParams.gravity = Gravity.BOTTOM | Gravity.END;
+                    Resources r = getResources();
+                    int bottomPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                            initialEggMarginBottom, r.getDisplayMetrics());
+                    int rightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                            initialEggMarginRight, r.getDisplayMetrics());
+                    layoutParams.setMargins(0, 0, rightPx, bottomPx);
+                } else {
+                    setCoordFloatingEgg(0, 0);
+                }
+            }
+        } else {
+            int coordX = savedInstanceState.getInt(COORD_X);
+            int coordY = savedInstanceState.getInt(COORD_Y);
+            setCoordFloatingEgg(coordX, coordY);
+        }
+    }
+
+    private void setCoordFloatingEgg(int x, int y) {
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
+        layoutParams.setMargins(x, y, 0, 0);
+    }
+
     private boolean hasCoordPreference() {
+        int coord[] = getCoordPreference();
+        return coord[0] != -1 && coord[1] != -1;
+    }
+
+    private int[] getCoordPreference() {
         SharedPreferences sharedPreferences = getSharedPref();
-        xEgg = sharedPreferences.getInt(COORD_X, -1);
-        yEgg = sharedPreferences.getInt(COORD_Y, -1);
-        return xEgg != -1 && yEgg != -1;
+        int xEgg = sharedPreferences.getInt(COORD_X, -1);
+        int yEgg = sharedPreferences.getInt(COORD_Y, -1);
+        return new int[]{xEgg, yEgg};
     }
 
     private void saveCoordPreference(int x, int y) {
@@ -157,7 +205,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         editor.apply();
     }
 
-    private SharedPreferences getSharedPref(){
+    private SharedPreferences getSharedPref() {
         return getContext().getSharedPreferences(
                 getActivity().getClass().getSimpleName() + COORD_EGG_PREF
                 , MODE_PRIVATE);
@@ -199,7 +247,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
             @Override
             public void onClick(View v) {
                 // TODO will point to which activity or page based on applink/url
-                Intent intent = new Intent(getContext(), EggGamificationActivity.class);
+                Intent intent = new Intent(getContext(), CrackTokenActivity.class);
                 startActivity(intent);
             }
         });
@@ -209,8 +257,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
                     new OnDragTouchListener.OnDragActionListener() {
                         @Override
                         public void onDragStart(View view) {
-                            ivFloatingEgg.setScaleX(SCALE_ON_DOWN);
-                            ivFloatingEgg.setScaleY(SCALE_ON_DOWN);
+                            vgFloatingEgg.setScaleX(SCALE_ON_DOWN);
+                            vgFloatingEgg.setScaleY(SCALE_ON_DOWN);
                         }
 
                         @Override
@@ -239,7 +287,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         }
     }
 
-    private void startCountdownTimer(long timeRemainingSeconds){
+    private void startCountdownTimer(long timeRemainingSeconds) {
         stopCountdownTimer();
         countDownTimer = new CountDownTimer(timeRemainingSeconds * 1000L, 1000L) {
             @Override
@@ -261,14 +309,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         countDownTimer.start();
     }
 
-    private void stopCountdownTimer(){
-        if (countDownTimer!= null) {
+    private void stopCountdownTimer() {
+        if (countDownTimer != null) {
             countDownTimer.cancel();
         }
     }
 
     private void setUIFloatingTimer(long timeRemainingSeconds) {
-        int seconds = (int)timeRemainingSeconds;
+        int seconds = (int) timeRemainingSeconds;
         int minutes = seconds / 60;
         int hours = minutes / 60;
         minutes = minutes % 60;
@@ -276,22 +324,22 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         tvFloatingTimer.setText(String.format(getString(R.string.countdown_format), hours, minutes, seconds));
     }
 
-    private void animateToLeftOrRightBound(){
-        xEgg = (int) vgFloatingEgg.getX();
-        yEgg = (int) vgFloatingEgg.getY();
+    private void animateToLeftOrRightBound() {
+        int xEgg = (int) vgFloatingEgg.getX();
+        int yEgg = (int) vgFloatingEgg.getY();
         if (rootWidth <= 0) {
             saveCoordPreference(xEgg, yEgg);
             return;
         }
         //if the egg tends to the right, animate to the right
-        if (((xEgg + (vgFloatingEgg.getWidth() / 2))) >= (rootWidth/ 2)){
-            int targetX = rootWidth-vgFloatingEgg.getWidth();
+        if (((xEgg + (vgFloatingEgg.getWidth() / 2))) >= (rootWidth / 2)) {
+            int targetX = rootWidth - vgFloatingEgg.getWidth();
             PropertyValuesHolder pvhX =
                     PropertyValuesHolder.ofFloat(View.X, xEgg, targetX);
             PropertyValuesHolder pvhScaleX =
-                    PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_NORMAL, 1/ SCALE_ON_DOWN);
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_NORMAL, 1 / SCALE_ON_DOWN);
             PropertyValuesHolder pvhScaleY =
-                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_NORMAL, 1/ SCALE_ON_DOWN);
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_NORMAL, 1 / SCALE_ON_DOWN);
             ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
             objectAnimator.setDuration(EGG_ANIM_TO_BOUND_DURATION);
@@ -302,9 +350,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
             PropertyValuesHolder pvhX =
                     PropertyValuesHolder.ofFloat(View.X, xEgg, 0);
             PropertyValuesHolder pvhScaleX =
-                    PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_NORMAL, 1/ SCALE_ON_DOWN);
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_NORMAL, 1 / SCALE_ON_DOWN);
             PropertyValuesHolder pvhScaleY =
-                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_NORMAL, 1/ SCALE_ON_DOWN);
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_NORMAL, 1 / SCALE_ON_DOWN);
             ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
             objectAnimator.setDuration(EGG_ANIM_TO_BOUND_DURATION);
@@ -312,7 +360,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
 
             saveCoordPreference(0, yEgg);
         }
-
     }
 
     @Override
@@ -321,7 +368,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
     }
 
     @Override
-    protected void initInjector() {
-
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(COORD_X, (int) vgFloatingEgg.getX());
+        outState.putInt(COORD_Y, (int) vgFloatingEgg.getY());
     }
 }

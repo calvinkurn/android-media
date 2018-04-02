@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 
 import dagger.Component;
 
@@ -10,5 +11,5 @@ import dagger.Component;
 @GamificationScope
 @Component(modules = GamificationModule.class, dependencies = BaseAppComponent.class)
 public interface GamificationComponent {
-
+    void inject(FloatingEggButtonFragment floatingEggButtonFragment);
 }
