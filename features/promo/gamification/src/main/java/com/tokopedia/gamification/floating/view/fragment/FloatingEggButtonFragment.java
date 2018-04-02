@@ -142,14 +142,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                 // TODO CHANGE THIS TRY CATCH
                 try {
                     onInflateRoot();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        vgRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    } else {
-                        //noinspection deprecation
-                        vgRoot.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    }
                 } catch (Exception e) {
                     Log.e(TAG, "onGlobalLayout: " + e.getMessage());
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    vgRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    //noinspection deprecation
+                    vgRoot.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
             }
         });
