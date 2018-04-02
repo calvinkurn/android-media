@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.cracktoken.presentation.model;
+package com.tokopedia.gamification.cracktoken.model;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.cracktoken.presentation.activity;
+package com.tokopedia.gamification.cracktoken.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.gamification.cracktoken.presentation.fragment.CrackTokenFragment;
+import com.tokopedia.gamification.cracktoken.fragment.CrackTokenFragment;
 import com.tokopedia.gamification.floating.view.model.TokenAsset;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenHome;
@@ -25,7 +25,7 @@ public class CrackTokenActivity extends BaseSimpleActivity {
         return new Intent(context, CrackTokenActivity.class);
     }
 
-    public static Intent getIntent (Context context, TokenData tokenData){
+    public static Intent getIntent(Context context, TokenData tokenData) {
         Intent intent = new Intent(context, CrackTokenActivity.class);
         intent.putExtra(EXTRA_TOKEN_DATA, tokenData);
         return intent;
@@ -34,7 +34,7 @@ public class CrackTokenActivity extends BaseSimpleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
-        if (intent!= null && intent.hasExtra(EXTRA_TOKEN_DATA)) {
+        if (intent != null && intent.hasExtra(EXTRA_TOKEN_DATA)) {
             tokenData = intent.getParcelableExtra(EXTRA_TOKEN_DATA);
         } else {
             List<String> imageUrls = new ArrayList<>();
@@ -54,7 +54,7 @@ public class CrackTokenActivity extends BaseSimpleActivity {
             tokenUser.setTimeRemainingSeconds(3000);
 
             tokenData = new TokenData();
-            TokenHome tokenHome= new TokenHome();
+            TokenHome tokenHome = new TokenHome();
             tokenHome.setTokensUser(tokenUser);
             tokenData.setHome(tokenHome);
         }

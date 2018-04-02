@@ -16,7 +16,7 @@ import rx.Subscriber;
 
 public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContract.View>
         implements FloatingEggContract.Presenter {
-    
+
     private GetTokenTokopointsUseCase getTokenTokopointsUseCase;
     private UserSession userSession;
 

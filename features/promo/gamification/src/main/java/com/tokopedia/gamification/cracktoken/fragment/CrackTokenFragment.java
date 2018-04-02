@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.cracktoken.presentation.fragment;
+package com.tokopedia.gamification.cracktoken.fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,11 +19,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetCrackResult;
-import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetRemainingToken;
-import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetTokenView;
-import com.tokopedia.gamification.cracktoken.presentation.model.CrackBenefit;
+import com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult;
+import com.tokopedia.gamification.cracktoken.compoundview.WidgetRemainingToken;
+import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView;
+import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
+import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenUser;
 
@@ -89,7 +91,9 @@ public class CrackTokenFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
-
+        GamificationComponent gamificationComponent =
+                GamificationComponentInstance.getComponent(getActivity().getApplication());
+        gamificationComponent.inject(this);
     }
 
     @Override

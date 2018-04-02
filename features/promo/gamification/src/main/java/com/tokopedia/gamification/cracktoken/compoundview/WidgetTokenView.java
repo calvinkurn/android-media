@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.cracktoken.presentation.compoundview;
+package com.tokopedia.gamification.cracktoken.compoundview;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -20,7 +20,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.cracktoken.presentation.customview.MaskedHeightImageView;
+import com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView;
 
 /**
  * @author Rizky on 28/03/18.

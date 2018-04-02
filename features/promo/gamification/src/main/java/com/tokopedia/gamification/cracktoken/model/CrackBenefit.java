@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.cracktoken.presentation.model;
+package com.tokopedia.gamification.cracktoken.model;
 
 /**
  * Created by nabillasabbaha on 3/28/18.

@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.cracktoken.presentation.compoundview;
+package com.tokopedia.gamification.cracktoken.compoundview;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
