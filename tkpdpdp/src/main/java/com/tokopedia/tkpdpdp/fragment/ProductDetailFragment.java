@@ -34,6 +34,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
+import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -791,6 +792,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
+    public void showErrorStock() {
+
+    }
+
+    @Override
     public void showProductOthersRetry() {
 
     }
@@ -1071,6 +1077,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                     if (productVariant != null) {
                         pictureView.renderData(productData);
                         headerInfoView.renderData(productData);
+                        headerInfoView.renderStockAvailability(productData.getInfo());
                         shopInfoView.renderData(productData);
                         presenter.updateRecentView(context,productData.getInfo().getProductId());
                         ratingTalkCourierView.renderData(productData);
@@ -1265,11 +1272,22 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
         int defaultChild =  productVariant.getParentId() == productData.getInfo().getProductId()
                 ?  productVariant.getDefaultChild() : productData.getInfo().getProductId();
+        productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
+        productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
+        headerInfoView.renderStockAvailability(productData.getInfo());
+
         buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
                 defaultChild).isIsBuyable(),productData);
 
         startShowCase();
 
+    }
+
+    @Override
+    public void addProductStock(Child productStock) {
+        productData.getInfo().setProductStockWording(productStock.getStockWording());
+        productData.getInfo().setLimitedStock(productStock.isLimitedStock());
+        headerInfoView.renderStockAvailability(productData.getInfo());
     }
 
     @Override

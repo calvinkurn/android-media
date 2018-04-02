@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -371,6 +372,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             productDetailData.getInfo().setProductPrice(child.getPriceFmt());
             productDetailData.getInfo().setProductUrl(child.getUrl());
             productDetailData.getInfo().setProductAlreadyWishlist(child.isWishlist()?1:0);
+            productDetailData.getInfo().setProductStockWording(child.getStockWording());
+            productDetailData.getInfo().setLimitedStock(child.isLimitedStock());
             productDetailData.setCampaign(child.getCampaign());
             if (!TextUtils.isEmpty(child.getPicture().getThumbnail()))  {
                 productDetailData.getProductImages().get(0).setImageSrc300(child.getPicture().getThumbnail());

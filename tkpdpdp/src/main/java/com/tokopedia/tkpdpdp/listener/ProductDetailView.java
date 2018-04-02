@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.listener.ViewListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
@@ -258,6 +259,8 @@ public interface ProductDetailView extends ViewListener {
 
     void showErrorVariant();
 
+    void showErrorStock();
+
     void showProductOthersRetry();
 
     void showFaveShopRetry();
@@ -293,6 +296,8 @@ public interface ProductDetailView extends ViewListener {
     void showLatestTalkView(LatestTalkViewModel discussion);
 
     void addProductVariant(ProductVariant productVariant);
+
+    void addProductStock(Child productStock);
 
     void actionSuccessAddToWishlist(Integer productId);
 
