@@ -43,7 +43,8 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
     private RoundedCornerImageView shopImage;
     private TextView shopTitle;
     private TextView shopSubtitle;
-    private TextView favoriteButton;
+    private TextView favoriteText;
+    private View favoriteButton;
     private FeedNewShopAdapter adapter;
     private View.OnClickListener shopItemClickListener;
 
@@ -60,6 +61,7 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         shopTitle = itemView.findViewById(R.id.shop_title);
         shopSubtitle = itemView.findViewById(R.id.shop_subtitle);
         favoriteButton = itemView.findViewById(R.id.favorite_button);
+        favoriteText = itemView.findViewById(R.id.favorite_text);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
                 itemView.getContext(),
@@ -152,19 +154,19 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
             favoriteButton.setSelected(true);
             text = context.getString(R.string.favorit);
             drawable = context.getResources().getDrawable(R.drawable.ic_check_favorite);
-            favoriteButton.setTextColor(ContextCompat.getColor(context, R.color.label_color));
+            favoriteText.setTextColor(ContextCompat.getColor(context, R.color.label_color));
         } else {
             favoriteButton.setSelected(false);
             text = context.getString(R.string.favoritkan);
             drawable = context.getResources().getDrawable(R.drawable.ic_add_white_24px);
-            favoriteButton.setTextColor(ContextCompat.getColor(context, R.color.white));
+            favoriteText.setTextColor(ContextCompat.getColor(context, R.color.white));
         }
 
         drawable.setBounds(0, 0,
                 context.getResources().getDimensionPixelOffset(R.dimen.feed_new_fav_icon),
                 context.getResources().getDimensionPixelOffset(R.dimen.feed_new_fav_icon));
-        favoriteButton.setCompoundDrawables(drawable, null, null, null);
-        favoriteButton.setText(text);
+        favoriteText.setCompoundDrawables(drawable, null, null, null);
+        favoriteText.setText(text);
     }
 
     private void generateThumbnailImages(List<ImageProduct> imageProducts) {
