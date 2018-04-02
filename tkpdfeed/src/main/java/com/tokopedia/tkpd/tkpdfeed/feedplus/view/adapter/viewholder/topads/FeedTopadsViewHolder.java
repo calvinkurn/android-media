@@ -22,7 +22,7 @@ public class FeedTopadsViewHolder extends AbstractViewHolder<FeedTopAdsViewModel
     public FeedTopadsViewHolder(View itemView,
                                 TopAdsItemClickListener itemClickListener) {
         super(itemView);
-        topAdsWidgetView = (TopAdsFeedWidgetView) itemView;
+        topAdsWidgetView = itemView.findViewById(R.id.topads_view);
         topAdsWidgetView.setItemClickListener(itemClickListener);
     }
 
