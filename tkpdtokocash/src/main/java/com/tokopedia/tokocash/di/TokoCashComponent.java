@@ -1,4 +1,4 @@
-\package com.tokopedia.tokocash.di;
+package com.tokopedia.tokocash.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.tokocash.accountsetting.presentation.fragment.AccountSettingFragment;
