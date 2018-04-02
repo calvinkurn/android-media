@@ -10,6 +10,8 @@ import android.view.ViewConfiguration;
 
 public class OnDragTouchListener implements View.OnTouchListener {
 
+    private int halfScaledTouchSlop;
+
     /**
      * Callback used to indicate when the drag is finished
      */
@@ -65,6 +67,8 @@ public class OnDragTouchListener implements View.OnTouchListener {
     public OnDragTouchListener(View view, View parent, OnDragActionListener onDragActionListener) {
         initListener(view, parent);
         setOnDragActionListener(onDragActionListener);
+        ViewConfiguration viewConfiguration = ViewConfiguration.get(view.getContext());
+        halfScaledTouchSlop = viewConfiguration.getScaledTouchSlop() / 2;
     }
 
     public void setOnDragActionListener(OnDragActionListener onDragActionListener) {
@@ -135,10 +139,15 @@ public class OnDragTouchListener implements View.OnTouchListener {
                     onDragFinish();
                     break;
                 case MotionEvent.ACTION_MOVE:
-
-                    hasMoved = true;
-                    mView.setX(bounds[0]);
-                    mView.setY(bounds[1]);
+                    if (!hasMoved &&
+                            (Math.abs(mView.getX() - bounds[0]) >= halfScaledTouchSlop ||
+                            Math.abs(mView.getY() - bounds[1]) >= halfScaledTouchSlop) ) {
+                        hasMoved = true;
+                    }
+                    if (hasMoved) {
+                        mView.setX(bounds[0]);
+                        mView.setY(bounds[1]);
+                    }
                     break;
             }
             return true;

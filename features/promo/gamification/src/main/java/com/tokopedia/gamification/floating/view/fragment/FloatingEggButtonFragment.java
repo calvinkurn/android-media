@@ -238,10 +238,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     public void onPause() {
         super.onPause();
-        if (floatingEggPresenter.isUserLogin()) {
-            stopCountdownTimer();
-            // TODO cancel the load data of presenter
-        }
+        stopCountdownTimer();
         if (floatingEggPresenter != null) {
             floatingEggPresenter.detachView();
         }

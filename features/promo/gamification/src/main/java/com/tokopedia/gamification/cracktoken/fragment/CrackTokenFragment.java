@@ -38,16 +38,8 @@ import java.util.List;
 
 public class CrackTokenFragment extends BaseDaggerFragment {
 
-    private static final String ARGS_TOKEN_USER_ID = "tokenUserId";
-    private static final String ARGS_BACKGROUND_IMAGE_URL = "backgroundImageUrl";
-    private static final String ARGS_SMALL_IMAGE_URL = "smallImageUrl";
-    private static final String ARGS_IMAGE_URL1 = "imageUrl1";
-    private static final String ARGS_IMAGE_URL2 = "imageUrl2";
-    private static final String ARGS_IMAGE_URL3 = "imageUrl3";
-    private static final String ARGS_IMAGE_URL4 = "imageUrl4";
-    private static final String ARGS_TIME_REMAINING_SECONDS = "timeRemainingSeconds";
-
     private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
+    public static final String EXTRA_TOKEN_DATA = "extra_token_data";
 
     private CountDownTimer countDownTimer;
 
@@ -67,19 +59,12 @@ public class CrackTokenFragment extends BaseDaggerFragment {
     private int timeRemainingSeconds;
 
     boolean isClicked;
+    private TokenData tokenData;
 
     public static Fragment newInstance(TokenData tokenData) {
-        TokenUser tokenUser = tokenData.getHome().getTokensUser();
         Fragment fragment = new CrackTokenFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ARGS_TOKEN_USER_ID, tokenUser.getTokenUserID());
-        bundle.putString(ARGS_BACKGROUND_IMAGE_URL, tokenUser.getBackgroundImgUrl());
-        bundle.putString(ARGS_SMALL_IMAGE_URL, tokenUser.getTokenAsset().getSmallImgUrl());
-        bundle.putString(ARGS_IMAGE_URL1, tokenUser.getTokenAsset().getImageUrls().get(0));
-        bundle.putString(ARGS_IMAGE_URL2, tokenUser.getTokenAsset().getImageUrls().get(1));
-        bundle.putString(ARGS_IMAGE_URL3, tokenUser.getTokenAsset().getImageUrls().get(2));
-        bundle.putString(ARGS_IMAGE_URL4, tokenUser.getTokenAsset().getImageUrls().get(3));
-        bundle.putInt(ARGS_TIME_REMAINING_SECONDS, tokenUser.getTimeRemainingSeconds());
+        bundle.putParcelable(EXTRA_TOKEN_DATA, tokenData);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -101,15 +86,16 @@ public class CrackTokenFragment extends BaseDaggerFragment {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = getArguments();
-
-        tokenUserId = bundle.getInt(ARGS_TOKEN_USER_ID);
-        backgroundImageUrl = bundle.getString(ARGS_BACKGROUND_IMAGE_URL);
-        smallImageUrl = bundle.getString(ARGS_SMALL_IMAGE_URL);
-        imageUrl1 = bundle.getString(ARGS_IMAGE_URL1);
-        imageUrl2 = bundle.getString(ARGS_IMAGE_URL2);
-        imageUrl3 = bundle.getString(ARGS_IMAGE_URL3);
-        imageUrl4 = bundle.getString(ARGS_IMAGE_URL4);
-        timeRemainingSeconds = bundle.getInt(ARGS_TIME_REMAINING_SECONDS);
+        tokenData = bundle.getParcelable(EXTRA_TOKEN_DATA);
+        TokenUser tokenUser = tokenData.getHome().getTokensUser();
+        tokenUserId = tokenUser.getTokenUserID();
+        backgroundImageUrl = tokenUser.getBackgroundImgUrl();
+        smallImageUrl = tokenUser.getTokenAsset().getSmallImgUrl();
+        imageUrl1 = tokenUser.getTokenAsset().getImageUrls().get(0);
+        imageUrl2 = tokenUser.getTokenAsset().getImageUrls().get(1);
+        imageUrl3 = tokenUser.getTokenAsset().getImageUrls().get(2);
+        imageUrl4 = tokenUser.getTokenAsset().getImageUrls().get(3);
+        timeRemainingSeconds = tokenUser.getTimeRemainingSeconds();
     }
 
     @Nullable
