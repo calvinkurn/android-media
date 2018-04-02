@@ -28,6 +28,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
+import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
@@ -131,6 +132,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         ProfileUrl.BASE_URL = ConsumerAppBaseUrl.TOPPROFILE_DOMAIN;
         DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         StreamUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
+        GamificationUrl.GQL_BASE_URL = ConsumerAppBaseUrl.GAMIFICATION_BASE_URL;
     }
 
     private void generateConsumerAppNetworkKeys() {
