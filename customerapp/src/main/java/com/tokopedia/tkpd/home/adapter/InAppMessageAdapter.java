@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
@@ -39,12 +40,13 @@ public class InAppMessageAdapter extends RecyclerView.Adapter<InAppMessageAdapte
      */
     @Override
     public void onBindViewHolder(MessageHolder holder, int position) {
-        InAppMessageModel inAppMessageModel = messageList.get(position);
+        final InAppMessageModel inAppMessageModel = messageList.get(position);
         ImageHandler.LoadImage(holder.img, inAppMessageModel.getImageUrl());
+        Toast.makeText(context,position + inAppMessageModel.getImageUrl(),Toast.LENGTH_SHORT).show();
         holder.img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Toast.makeText(context,"click on " + inAppMessageModel.getDeeplink(),Toast.LENGTH_LONG).show();
             }
         });
 
