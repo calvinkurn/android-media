@@ -12,8 +12,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,6 +24,7 @@ import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetCra
 import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetRemainingToken;
 import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetTokenView;
 import com.tokopedia.gamification.cracktoken.presentation.model.CrackBenefit;
+import com.tokopedia.gamification.floatingtoken.model.TokenData;
 import com.tokopedia.gamification.floatingtoken.model.TokenUser;
 
 import java.util.ArrayList;
@@ -37,14 +36,14 @@ import java.util.List;
 
 public class CrackTokenFragment extends BaseDaggerFragment {
 
-    private final String ARGS_TOKEN_USER_ID = "tokenUserId";
-    private final String ARGS_BACKGROUND_IMAGE_URL = "backgroundImageUrl";
-    private final String ARGS_SMALL_IMAGE_URL = "smallImageUrl";
-    private final String ARGS_IMAGE_URL1 = "imageUrl1";
-    private final String ARGS_IMAGE_URL2 = "imageUrl2";
-    private final String ARGS_IMAGE_URL3 = "imageUrl3";
-    private final String ARGS_IMAGE_URL4 = "imageUrl4";
-    private final String ARGS_TIME_REMAINING_SECONDS = "timeRemainingSeconds";
+    private static final String ARGS_TOKEN_USER_ID = "tokenUserId";
+    private static final String ARGS_BACKGROUND_IMAGE_URL = "backgroundImageUrl";
+    private static final String ARGS_SMALL_IMAGE_URL = "smallImageUrl";
+    private static final String ARGS_IMAGE_URL1 = "imageUrl1";
+    private static final String ARGS_IMAGE_URL2 = "imageUrl2";
+    private static final String ARGS_IMAGE_URL3 = "imageUrl3";
+    private static final String ARGS_IMAGE_URL4 = "imageUrl4";
+    private static final String ARGS_TIME_REMAINING_SECONDS = "timeRemainingSeconds";
 
     private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
 
@@ -65,21 +64,20 @@ public class CrackTokenFragment extends BaseDaggerFragment {
     private String imageUrl4;
     private int timeRemainingSeconds;
 
-    Interpolator decAccInterpolator;
-
     boolean isClicked;
 
-    public static Fragment newInstance(TokenUser tokenUser) {
+    public static Fragment newInstance(TokenData tokenData) {
+        TokenUser tokenUser = tokenData.getHome().getTokensUser();
         Fragment fragment = new CrackTokenFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("tokenUserId", tokenUser.getTokenUserID());
-        bundle.putString("backgroundImageUrl", tokenUser.getBackgroundImgUrl());
-        bundle.putString("smallImageUrl", tokenUser.getTokenAsset().getSmallImgUrl());
-        bundle.putString("imageUrl1", tokenUser.getTokenAsset().getImageUrls().get(0));
-        bundle.putString("imageUrl2", tokenUser.getTokenAsset().getImageUrls().get(1));
-        bundle.putString("imageUrl3", tokenUser.getTokenAsset().getImageUrls().get(2));
-        bundle.putString("imageUrl4", tokenUser.getTokenAsset().getImageUrls().get(3));
-        bundle.putInt("timeRemainingSeconds", tokenUser.getTimeRemainingSeconds());
+        bundle.putInt(ARGS_TOKEN_USER_ID, tokenUser.getTokenUserID());
+        bundle.putString(ARGS_BACKGROUND_IMAGE_URL, tokenUser.getBackgroundImgUrl());
+        bundle.putString(ARGS_SMALL_IMAGE_URL, tokenUser.getTokenAsset().getSmallImgUrl());
+        bundle.putString(ARGS_IMAGE_URL1, tokenUser.getTokenAsset().getImageUrls().get(0));
+        bundle.putString(ARGS_IMAGE_URL2, tokenUser.getTokenAsset().getImageUrls().get(1));
+        bundle.putString(ARGS_IMAGE_URL3, tokenUser.getTokenAsset().getImageUrls().get(2));
+        bundle.putString(ARGS_IMAGE_URL4, tokenUser.getTokenAsset().getImageUrls().get(3));
+        bundle.putInt(ARGS_TIME_REMAINING_SECONDS, tokenUser.getTimeRemainingSeconds());
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -132,8 +130,6 @@ public class CrackTokenFragment extends BaseDaggerFragment {
                     }
                 });
 
-        decAccInterpolator = new AccelerateDecelerateInterpolator();
-
         showCountdownTimer(timeRemainingSeconds);
 
         widgetTokenView.setToken(imageUrl1, imageUrl2, imageUrl3, imageUrl4);
@@ -182,15 +178,7 @@ public class CrackTokenFragment extends BaseDaggerFragment {
         countDownTimer = new CountDownTimer(timeRemainingSeconds, COUNTDOWN_INTERVAL_SECOND) {
             @Override
             public void onTick(long millisUntilFinished) {
-                int seconds = (int) (millisUntilFinished / 1000);
-                int minutes = seconds / 60;
-                int hours = minutes / 60;
-                minutes = minutes % 60;
-                seconds = seconds % 60;
-                textCountdownTimer.setText(
-                        String.format("%02d", hours) + ":" +
-                                String.format("%02d", minutes) + ":" +
-                                String.format("%02d", seconds));
+                setUIFloatingTimer((int) (millisUntilFinished / 1000));
             }
 
             @Override
@@ -200,9 +188,18 @@ public class CrackTokenFragment extends BaseDaggerFragment {
         }.start();
     }
 
+    private void setUIFloatingTimer(long timeRemainingSeconds) {
+        int seconds = (int) timeRemainingSeconds;
+        int minutes = seconds / 60;
+        int hours = minutes / 60;
+        minutes = minutes % 60;
+        seconds = seconds % 60;
+        textCountdownTimer.setText(String.format(getString(R.string.countdown_format), hours, minutes, seconds));
+    }
+
     private void showSuccessCrackResult() {
         List<CrackBenefit> rewardTexts = new ArrayList<>();
-        rewardTexts.add(new CrackBenefit("+50 Points","#ffdc00", 34));
+        rewardTexts.add(new CrackBenefit("+50 Points", "#ffdc00", 34));
 
         String rewardCouponUrl = "https://ecs7.tokopedia.net/assets/images/gamification/benefit/rewards-coupon.png";
         widgetCrackResult.showCrackResult(rewardCouponUrl, "Selamat anda mendapatkan", rewardTexts, "Cek dan Gunakan Hadiah Anda", "");
@@ -223,39 +220,5 @@ public class CrackTokenFragment extends BaseDaggerFragment {
         textCountdownTimer.setVisibility(View.VISIBLE);
     }
 
-//    private Bitmap getFullEgg(Bitmap bitmap) {
-//        return getSprite(bitmap, 0, 7, false);
-//    }
-//
-//    private Bitmap getCrackedEgg(Bitmap bitmap) {
-//        return getSprite(bitmap, 4, 7, true);
-//    }
-//
-//    private Bitmap getCrackedLeftEgg(Bitmap bitmap) {
-//        return getSprite(bitmap, 6, 7, false);
-//    }
-//
-//    private Bitmap getCrackedRightEgg(Bitmap bitmap) {
-//        return getSprite(bitmap, 5, 7, false);
-//    }
-//
-//    private Bitmap getSprite(Bitmap bitmap, int pos, int totalSprite, boolean isHalfWidth) {
-//        int resultedWidth = bitmap.getWidth() / totalSprite;
-//        int resultedHeight = bitmap.getHeight();
-//        Bitmap bmOverlay = Bitmap.createBitmap(resultedWidth, resultedHeight, Bitmap.Config.ARGB_8888);
-//
-//        Canvas canvas = new Canvas(bmOverlay);
-//        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.OVERLAY);
-//
-//        int offsetWidth = (isHalfWidth ? resultedWidth / 4 : 0);
-//        canvas.drawBitmap(bitmap,
-//                new Rect(pos * resultedWidth + offsetWidth,
-//                        0,
-//                        (pos + 1) * resultedWidth - offsetWidth,
-//                        resultedHeight),
-//                new Rect(offsetWidth, 0, resultedWidth - offsetWidth, resultedHeight), null);
-//
-//        return bmOverlay;
-//    }
 
 }

@@ -1,10 +1,13 @@
 package com.tokopedia.gamification.floatingtoken.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by nabillasabbaha on 3/28/18.
  */
 
-public class TokenUser {
+public class TokenUser implements Parcelable {
 
     private Integer tokenUserID;
     private Integer campaignID;
@@ -87,4 +90,49 @@ public class TokenUser {
     public void setBackgroundImgUrl(String backgroundImgUrl) {
         this.backgroundImgUrl = backgroundImgUrl;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.tokenUserID);
+        dest.writeValue(this.campaignID);
+        dest.writeString(this.title);
+        dest.writeValue(this.unixTimestampFetch);
+        dest.writeValue(this.timeRemainingSeconds);
+        dest.writeValue(this.isShowTime);
+        dest.writeString(this.tokenClass);
+        dest.writeParcelable(this.tokenAsset, flags);
+        dest.writeString(this.backgroundImgUrl);
+    }
+
+    public TokenUser() {
+    }
+
+    protected TokenUser(Parcel in) {
+        this.tokenUserID = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.campaignID = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.title = in.readString();
+        this.unixTimestampFetch = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.timeRemainingSeconds = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.isShowTime = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.tokenClass = in.readString();
+        this.tokenAsset = in.readParcelable(TokenAsset.class.getClassLoader());
+        this.backgroundImgUrl = in.readString();
+    }
+
+    public static final Parcelable.Creator<TokenUser> CREATOR = new Parcelable.Creator<TokenUser>() {
+        @Override
+        public TokenUser createFromParcel(Parcel source) {
+            return new TokenUser(source);
+        }
+
+        @Override
+        public TokenUser[] newArray(int size) {
+            return new TokenUser[size];
+        }
+    };
 }
