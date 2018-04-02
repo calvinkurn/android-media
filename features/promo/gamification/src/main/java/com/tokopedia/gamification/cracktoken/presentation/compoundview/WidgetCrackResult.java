@@ -1,8 +1,11 @@
 package com.tokopedia.gamification.cracktoken.presentation.compoundview;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +13,16 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.presentation.model.CrackBenefit;
 
@@ -77,20 +83,42 @@ public class WidgetCrackResult extends RelativeLayout {
     }
 
     private void showRewardImageAnimation(String urlImageCrackResult) {
-        ImageHandler.LoadImage(imageViewReward, urlImageCrackResult);
+        DisplayMetrics metrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        final float screenHeightQuarter = metrics.heightPixels/4;
 
-        Animation animationCoupon = AnimationUtils.loadAnimation(getContext(), R.anim.animation_reward);
-        imageViewReward.startAnimation(animationCoupon);
+        AnimationSet animationCrackResult = new AnimationSet(true);
+        Animation scaleAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_crack_result);
+        animationCrackResult.addAnimation(scaleAnimationCrackResult);
+        TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
+        animationCrackResult.addAnimation(translateAnimationCrackResult);
+        animationCrackResult.setFillAfter(true);
+        animationCrackResult.setDuration(1000);
+
+        Glide.with(getContext())
+                .load(urlImageCrackResult)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        imageViewReward.setImageBitmap(resource);
+                    }
+                });
+
+        imageViewReward.startAnimation(animationCrackResult);
         imageViewReward.setVisibility(View.VISIBLE);
 
-        AnimationSet animationSet = new AnimationSet(true);
-        Animation rotate = AnimationUtils.loadAnimation(getContext(), R.anim.rotation_bg_reward);
-        animationSet.addAnimation(rotate);
+        AnimationSet animationBgCrackResult = new AnimationSet(true);
+        Animation scaleAnimationBgCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_bg_reward);
+        animationBgCrackResult.addAnimation(scaleAnimationBgCrackResult);
+//        Animation rotateAnimationBgCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_bg_crack_result);
+//        animationBgCrackResult.addAnimation(rotateAnimationBgCrackResult);
+        TranslateAnimation translateAnimationBgCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
+        animationBgCrackResult.addAnimation(translateAnimationBgCrackResult);
+        animationBgCrackResult.setDuration(1000);
+        animationBgCrackResult.setFillAfter(true);
 
-        Animation animationRotation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_bg_reward);
-        animationSet.addAnimation(animationRotation);
-
-        imageViewBgReward.startAnimation(animationSet);
+        imageViewBgReward.startAnimation(animationBgCrackResult);
         imageViewBgReward.setVisibility(View.VISIBLE);
     }
 

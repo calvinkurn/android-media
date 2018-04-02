@@ -2,28 +2,31 @@ package com.tokopedia.gamification.cracktoken.presentation.fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetCrackResult;
 import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetRemainingToken;
 import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetTokenView;
 import com.tokopedia.gamification.cracktoken.presentation.model.CrackBenefit;
+import com.tokopedia.gamification.floatingtoken.model.TokenUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,24 +37,52 @@ import java.util.List;
 
 public class CrackTokenFragment extends BaseDaggerFragment {
 
+    private final String ARGS_TOKEN_USER_ID = "tokenUserId";
+    private final String ARGS_BACKGROUND_IMAGE_URL = "backgroundImageUrl";
+    private final String ARGS_SMALL_IMAGE_URL = "smallImageUrl";
+    private final String ARGS_IMAGE_URL1 = "imageUrl1";
+    private final String ARGS_IMAGE_URL2 = "imageUrl2";
+    private final String ARGS_IMAGE_URL3 = "imageUrl3";
+    private final String ARGS_IMAGE_URL4 = "imageUrl4";
+    private final String ARGS_TIME_REMAINING_SECONDS = "timeRemainingSeconds";
+
     private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
 
     private CountDownTimer countDownTimer;
 
+    private RelativeLayout rootContainer;
     private TextView textCountdownTimer;
-
     private WidgetTokenView widgetTokenView;
     private WidgetCrackResult widgetCrackResult;
     private WidgetRemainingToken widgetRemainingToken;
+
+    private int tokenUserId;
+    private String backgroundImageUrl;
+    private String smallImageUrl;
+    private String imageUrl1;
+    private String imageUrl2;
+    private String imageUrl3;
+    private String imageUrl4;
+    private int timeRemainingSeconds;
 
     Interpolator decAccInterpolator;
 
     boolean isClicked;
 
-    public static CrackTokenFragment newInstance() {
-        return new CrackTokenFragment();
+    public static Fragment newInstance(TokenUser tokenUser) {
+        Fragment fragment = new CrackTokenFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("tokenUserId", tokenUser.getTokenUserID());
+        bundle.putString("backgroundImageUrl", tokenUser.getBackgroundImgUrl());
+        bundle.putString("smallImageUrl", tokenUser.getTokenAsset().getSmallImgUrl());
+        bundle.putString("imageUrl1", tokenUser.getTokenAsset().getImageUrls().get(0));
+        bundle.putString("imageUrl2", tokenUser.getTokenAsset().getImageUrls().get(1));
+        bundle.putString("imageUrl3", tokenUser.getTokenAsset().getImageUrls().get(2));
+        bundle.putString("imageUrl4", tokenUser.getTokenAsset().getImageUrls().get(3));
+        bundle.putInt("timeRemainingSeconds", tokenUser.getTimeRemainingSeconds());
+        fragment.setArguments(bundle);
+        return fragment;
     }
-
 
     @Override
     protected String getScreenName() {
@@ -63,29 +94,49 @@ public class CrackTokenFragment extends BaseDaggerFragment {
 
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Bundle bundle = getArguments();
+
+        tokenUserId = bundle.getInt(ARGS_TOKEN_USER_ID);
+        backgroundImageUrl = bundle.getString(ARGS_BACKGROUND_IMAGE_URL);
+        smallImageUrl = bundle.getString(ARGS_SMALL_IMAGE_URL);
+        imageUrl1 = bundle.getString(ARGS_IMAGE_URL1);
+        imageUrl2 = bundle.getString(ARGS_IMAGE_URL2);
+        imageUrl3 = bundle.getString(ARGS_IMAGE_URL3);
+        imageUrl4 = bundle.getString(ARGS_IMAGE_URL4);
+        timeRemainingSeconds = bundle.getInt(ARGS_TIME_REMAINING_SECONDS);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_crack_token, container, false);
 
+        rootContainer = v.findViewById(R.id.root_container);
         textCountdownTimer = v.findViewById(R.id.text_countdown_timer);
-
         widgetTokenView = v.findViewById(R.id.widget_token_view);
         widgetCrackResult = v.findViewById(R.id.widget_reward);
         widgetRemainingToken = v.findViewById(R.id.widget_remaining_token_view);
 
+        Glide.with(this)
+                .load(backgroundImageUrl)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        Drawable drawable = new BitmapDrawable(getResources(), resource);
+                        rootContainer.setBackground(drawable);
+                    }
+                });
+
         decAccInterpolator = new AccelerateDecelerateInterpolator();
 
-        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.special_sprite);
-        Bitmap fullEggBitmap = getFullEgg(bitmap);
-        Bitmap crackedEgg = getCrackedEgg(bitmap);
-        Bitmap leftCrackedEgg = getCrackedLeftEgg(bitmap);
-        Bitmap rightCrackedEgg = getCrackedRightEgg(bitmap);
-        bitmap.recycle();
+        showCountdownTimer(timeRemainingSeconds);
 
-        showCountdownTimer();
-
-        widgetTokenView.setToken(fullEggBitmap, crackedEgg, rightCrackedEgg, leftCrackedEgg);
+        widgetTokenView.setToken(imageUrl1, imageUrl2, imageUrl3, imageUrl4);
 
         widgetTokenView.setListener(new WidgetTokenView.WidgetTokenListener() {
             @Override
@@ -102,8 +153,8 @@ public class CrackTokenFragment extends BaseDaggerFragment {
                     @Override
                     public void run() {
                         // Do something after 5s = 5000ms
-                        widgetTokenView.stopShaking();
-                        showErrorCrackResult();
+                        widgetTokenView.split();
+                        showSuccessCrackResult();
                     }
                 }, 5000);
             }
@@ -117,6 +168,8 @@ public class CrackTokenFragment extends BaseDaggerFragment {
             }
         });
 
+        widgetRemainingToken.showRemainingToken(smallImageUrl, 20);
+
         return v;
     }
 
@@ -125,8 +178,8 @@ public class CrackTokenFragment extends BaseDaggerFragment {
         super.onAttach(context);
     }
 
-    private void showCountdownTimer() {
-        countDownTimer = new CountDownTimer(30000000, COUNTDOWN_INTERVAL_SECOND) {
+    private void showCountdownTimer(int timeRemainingSeconds) {
+        countDownTimer = new CountDownTimer(timeRemainingSeconds, COUNTDOWN_INTERVAL_SECOND) {
             @Override
             public void onTick(long millisUntilFinished) {
                 int seconds = (int) (millisUntilFinished / 1000);
@@ -165,44 +218,44 @@ public class CrackTokenFragment extends BaseDaggerFragment {
 
     private void resetEgg() {
         isClicked = false;
-        showCountdownTimer();
+        showCountdownTimer(timeRemainingSeconds);
         widgetTokenView.reset();
         textCountdownTimer.setVisibility(View.VISIBLE);
     }
 
-    private Bitmap getFullEgg(Bitmap bitmap) {
-        return getSprite(bitmap, 0, 7, false);
-    }
-
-    private Bitmap getCrackedEgg(Bitmap bitmap) {
-        return getSprite(bitmap, 4, 7, true);
-    }
-
-    private Bitmap getCrackedLeftEgg(Bitmap bitmap) {
-        return getSprite(bitmap, 6, 7, false);
-    }
-
-    private Bitmap getCrackedRightEgg(Bitmap bitmap) {
-        return getSprite(bitmap, 5, 7, false);
-    }
-
-    private Bitmap getSprite(Bitmap bitmap, int pos, int totalSprite, boolean isHalfWidth) {
-        int resultedWidth = bitmap.getWidth() / totalSprite;
-        int resultedHeight = bitmap.getHeight();
-        Bitmap bmOverlay = Bitmap.createBitmap(resultedWidth, resultedHeight, Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(bmOverlay);
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.OVERLAY);
-
-        int offsetWidth = (isHalfWidth ? resultedWidth / 4 : 0);
-        canvas.drawBitmap(bitmap,
-                new Rect(pos * resultedWidth + offsetWidth,
-                        0,
-                        (pos + 1) * resultedWidth - offsetWidth,
-                        resultedHeight),
-                new Rect(offsetWidth, 0, resultedWidth - offsetWidth, resultedHeight), null);
-
-        return bmOverlay;
-    }
+//    private Bitmap getFullEgg(Bitmap bitmap) {
+//        return getSprite(bitmap, 0, 7, false);
+//    }
+//
+//    private Bitmap getCrackedEgg(Bitmap bitmap) {
+//        return getSprite(bitmap, 4, 7, true);
+//    }
+//
+//    private Bitmap getCrackedLeftEgg(Bitmap bitmap) {
+//        return getSprite(bitmap, 6, 7, false);
+//    }
+//
+//    private Bitmap getCrackedRightEgg(Bitmap bitmap) {
+//        return getSprite(bitmap, 5, 7, false);
+//    }
+//
+//    private Bitmap getSprite(Bitmap bitmap, int pos, int totalSprite, boolean isHalfWidth) {
+//        int resultedWidth = bitmap.getWidth() / totalSprite;
+//        int resultedHeight = bitmap.getHeight();
+//        Bitmap bmOverlay = Bitmap.createBitmap(resultedWidth, resultedHeight, Bitmap.Config.ARGB_8888);
+//
+//        Canvas canvas = new Canvas(bmOverlay);
+//        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.OVERLAY);
+//
+//        int offsetWidth = (isHalfWidth ? resultedWidth / 4 : 0);
+//        canvas.drawBitmap(bitmap,
+//                new Rect(pos * resultedWidth + offsetWidth,
+//                        0,
+//                        (pos + 1) * resultedWidth - offsetWidth,
+//                        resultedHeight),
+//                new Rect(offsetWidth, 0, resultedWidth - offsetWidth, resultedHeight), null);
+//
+//        return bmOverlay;
+//    }
 
 }

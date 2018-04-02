@@ -6,6 +6,11 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.gamification.cracktoken.presentation.fragment.CrackTokenFragment;
+import com.tokopedia.gamification.floatingtoken.model.TokenAsset;
+import com.tokopedia.gamification.floatingtoken.model.TokenUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EggGamificationActivity extends BaseSimpleActivity {
 
@@ -15,6 +20,24 @@ public class EggGamificationActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return CrackTokenFragment.newInstance();
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg.png");
+        imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-crack-4.png");
+        imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-right.png");
+        imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-left.png");
+
+        TokenAsset tokenAsset = new TokenAsset();
+        tokenAsset.setImageUrls(imageUrls);
+        tokenAsset.setSmallImgUrl("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-float/plat1.png");
+
+        TokenUser tokenUser = new TokenUser();
+        tokenUser.setTokenUserID(1);
+        tokenUser.setBackgroundImgUrl("https://ecs7.tokopedia.net/assets/images/gamification/background/bg-special-egg--tiny.png");
+        tokenUser.setTokenAsset(tokenAsset);
+        tokenUser.setTimeRemainingSeconds(3000);
+
+        Fragment crackTokenFragment = CrackTokenFragment.newInstance(tokenUser);
+
+        return crackTokenFragment;
     }
 }

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.R;
 
 /**
@@ -41,8 +42,8 @@ public class WidgetRemainingToken extends LinearLayout {
         textRemainingToken = view.findViewById(R.id.text_remaining_token);
     }
 
-    public void showRemainingToken() {
-
+    public void showRemainingToken(String smallImageUrl, int remainingToken) {
+        ImageHandler.LoadImage(imageRemainingToken, smallImageUrl);
     }
 
 }
