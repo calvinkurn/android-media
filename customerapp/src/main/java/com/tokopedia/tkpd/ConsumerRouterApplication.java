@@ -851,17 +851,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getLoginGoogleIntent(Context context) {
-        return null;
+        return LoginActivity.getAutoLoginGoogle(context);
     }
 
     @Override
     public Intent getLoginFacebookIntent(Context context) {
-        return null;
+        return LoginActivity.getAutoLoginFacebook(context);
+
     }
 
     @Override
     public Intent getLoginWebviewIntent(Context context, String name, String url) {
-        return null;
+        return LoginActivity.getAutoLoginWebview(context, name, url);
     }
 
     @Override
