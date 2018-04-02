@@ -4,6 +4,8 @@ import com.tokopedia.gamification.floatingtoken.model.TokenData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -14,6 +16,7 @@ public class GetTokenTokopointsUseCase extends UseCase<TokenData> {
 
     private IGamificationRepository repository;
 
+    @Inject
     public GetTokenTokopointsUseCase(IGamificationRepository repository) {
         this.repository = repository;
     }

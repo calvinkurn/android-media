@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.floating.fragment;
+package com.tokopedia.gamification.floating.view.fragment;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -26,9 +26,14 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.gamification.EggGamificationActivity;
+import com.tokopedia.gamification.GamificationComponentInstance;
+import com.tokopedia.gamification.cracktoken.CrackTokenActivity;
+import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
 import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
+
+import javax.inject.Inject;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -58,6 +63,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
 
     private CountDownTimer countDownTimer;
 
+    @Inject
+    public FloatingEggPresenter floatingEggPresenter;
+
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
     }
@@ -73,6 +81,13 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         tvFloatingTimer = view.findViewById(R.id.tv_floating_timer);
         vgFloatingEgg.setVisibility(View.GONE);
         return view;
+    }
+
+    @Override
+    protected void initInjector() {
+        GamificationComponent gamificationComponent =
+                GamificationComponentInstance.getComponent(getActivity().getApplication());
+        gamificationComponent.inject(this);
     }
 
     @Override
@@ -124,7 +139,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         });
     }
 
-    private void onInflateRoot(){
+    private void onInflateRoot() {
         rootWidth = vgRoot.getWidth();
         if (isDraggable) {
             int xEgg = (int) vgFloatingEgg.getX();
@@ -166,7 +181,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         }
     }
 
-    private void setCoordFloatingEgg(int x, int y){
+    private void setCoordFloatingEgg(int x, int y) {
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
         layoutParams.setMargins(x, y, 0, 0);
     }
@@ -232,7 +247,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
             @Override
             public void onClick(View v) {
                 // TODO will point to which activity or page based on applink/url
-                Intent intent = new Intent(getContext(), EggGamificationActivity.class);
+                Intent intent = new Intent(getContext(), CrackTokenActivity.class);
                 startActivity(intent);
             }
         });
@@ -350,11 +365,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
     @Override
     protected String getScreenName() {
         return null;
-    }
-
-    @Override
-    protected void initInjector() {
-
     }
 
     @Override

@@ -8,7 +8,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name="EggGamificationActivity"
+            android:name=".cracktoken.CrackTokenActivity"
             android:label="@string/title_activity_gamification"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 

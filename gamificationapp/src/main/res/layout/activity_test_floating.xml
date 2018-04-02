@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:name="com.tokopedia.gamification.floating.fragment.FloatingEggButtonFragment"
+        android:name="com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment"
         android:tag="floating_egg"
         app:draggable="true"
         app:margin_right="@dimen/new_margin_sm"
