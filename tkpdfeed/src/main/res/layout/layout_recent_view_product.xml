@@ -16,19 +16,26 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingLeft="@dimen/new_margin_med" android:paddingStart="@dimen/new_margin_med"
+            android:paddingRight="@dimen/padding_small" android:paddingEnd="@dimen/padding_small"
             android:textSize="@dimen/fontvs"
             android:textColor="@color/font_black_primary_70"
             android:fontFamily="sans-serif-medium"
             android:text="@string/sub_history_product"
-            android:textStyle="bold" />
+            android:textStyle="normal" />
 
         <TextView
             android:id="@+id/see_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:padding="@dimen/padding_small"
+            android:focusable="true"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingLeft="@dimen/padding_small" android:paddingStart="@dimen/padding_small"
+            android:paddingRight="@dimen/new_margin_med" android:paddingEnd="@dimen/new_margin_med"
             android:fontFamily="sans-serif-medium"
             android:text="@string/title_see_all"
             android:textColor="@color/tkpd_main_green"
@@ -40,7 +47,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/history_product_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/recent_view_item_height"
+        android:layout_height="wrap_content"
         android:scrollbars="horizontal" />
 
 </LinearLayout>

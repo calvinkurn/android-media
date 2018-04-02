@@ -37,7 +37,10 @@
         android:background="@color/white"
         android:orientation="horizontal"
         android:weightSum="5"
-        android:padding="@dimen/padding_vs">
+        android:paddingTop="@dimen/padding_vs"
+        android:paddingLeft="@dimen/padding_ms"
+        android:paddingRight="@dimen/padding_ms"
+        android:paddingBottom="@dimen/padding_ms">
 
         <TextView
             android:id="@+id/product_name"
