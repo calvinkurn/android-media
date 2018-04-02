@@ -2,6 +2,7 @@ package com.tokopedia.gamification.floating.listener;
 
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 
 /**
  * Created by hendry on 29/03/18.
@@ -134,6 +135,7 @@ public class OnDragTouchListener implements View.OnTouchListener {
                     onDragFinish();
                     break;
                 case MotionEvent.ACTION_MOVE:
+
                     hasMoved = true;
                     mView.setX(bounds[0]);
                     mView.setY(bounds[1]);

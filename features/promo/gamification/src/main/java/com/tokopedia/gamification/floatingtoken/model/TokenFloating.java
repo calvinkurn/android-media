@@ -1,10 +1,13 @@
 package com.tokopedia.gamification.floatingtoken.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by nabillasabbaha on 3/28/18.
  */
 
-public class TokenFloating {
+public class TokenFloating implements Parcelable{
 
     private String tokenClass;
     private Integer tokenId;
@@ -78,4 +81,48 @@ public class TokenFloating {
     public void setUnixTimestamp(Integer unixTimestamp) {
         this.unixTimestamp = unixTimestamp;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.tokenClass);
+        dest.writeValue(this.tokenId);
+        dest.writeParcelable(this.tokenAsset, flags);
+        dest.writeString(this.pageUrl);
+        dest.writeString(this.applink);
+        dest.writeValue(this.timeRemainingSeconds);
+        dest.writeValue(this.isShowTime);
+        dest.writeValue(this.unixTimestamp);
+    }
+
+    public TokenFloating() {
+    }
+
+    protected TokenFloating(Parcel in) {
+        this.tokenClass = in.readString();
+        this.tokenId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.tokenAsset = in.readParcelable(TokenAsset.class.getClassLoader());
+        this.pageUrl = in.readString();
+        this.applink = in.readString();
+        this.timeRemainingSeconds = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.isShowTime = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.unixTimestamp = (Integer) in.readValue(Integer.class.getClassLoader());
+    }
+
+    public static final Creator<TokenFloating> CREATOR = new Creator<TokenFloating>() {
+        @Override
+        public TokenFloating createFromParcel(Parcel source) {
+            return new TokenFloating(source);
+        }
+
+        @Override
+        public TokenFloating[] newArray(int size) {
+            return new TokenFloating[size];
+        }
+    };
 }
