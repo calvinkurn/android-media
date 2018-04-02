@@ -1,0 +1,27 @@
+package com.tokopedia.gamification.cracktoken.contract;
+
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.gamification.cracktoken.model.CrackResult;
+import com.tokopedia.gamification.floating.view.model.TokenData;
+
+/**
+ * Created by nabillasabbaha on 4/2/18.
+ */
+
+public interface CrackTokenContract {
+
+    interface View extends CustomerView {
+        void onSuccessGetToken(TokenData tokenData);
+
+        void onErrorGetToken(Throwable throwable);
+
+        void onSuccessCrackToken(CrackResult crackResult);
+
+        void onErrorCrackToken(Throwable throwable);
+    }
+
+    interface Presenter extends CustomerPresenter<View> {
+        void crackToken(int tokenUserId, int campaignId);
+    }
+}

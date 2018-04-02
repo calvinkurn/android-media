@@ -40,7 +40,7 @@ public class GamificationRepository implements IGamificationRepository {
     }
 
     @Override
-    public Observable<CrackResult> getCrackResult(String tokenIdUser, String campaignId) {
+    public Observable<CrackResult> getCrackResult(int tokenIdUser, int campaignId) {
         return gamificationDataStore.getCrackResult(tokenIdUser, campaignId)
                 .map(crackResultMapper);
     }

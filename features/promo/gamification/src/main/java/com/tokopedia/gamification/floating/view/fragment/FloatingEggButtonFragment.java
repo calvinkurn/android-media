@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -33,9 +32,9 @@ import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
-import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenFloating;
+import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
 
 import javax.inject.Inject;
 
@@ -251,7 +250,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     }
 
     @Override
-    public void onSuccessGetToken(TokenData tokenData) {
+    public void onSuccessGetToken(final TokenData tokenData) {
         boolean offFlag = tokenData.getOffFlag();
         int sumToken = tokenData.getSumToken();
         String sumTokenString = tokenData.getSumTokenStr();
@@ -271,9 +270,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO will point to which activity or page based on applink/url
-                Intent intent = new Intent(getContext(), CrackTokenActivity.class);
-                startActivity(intent);
+                startActivity(CrackTokenActivity.getIntent(getActivity(), tokenData));
             }
         });
 

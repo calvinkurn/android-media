@@ -13,5 +13,5 @@ public interface IGamificationRepository {
 
     Observable<TokenData> getTokenTokopoints();
 
-    Observable<CrackResult> getCrackResult(String tokenIdUser, String campaignId);
+    Observable<CrackResult> getCrackResult(int tokenIdUser, int campaignId);
 }
