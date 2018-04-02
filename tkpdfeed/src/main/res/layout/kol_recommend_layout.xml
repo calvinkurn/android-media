@@ -3,17 +3,9 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginTop="@dimen/margin_sm"
+              android:layout_marginTop="@dimen/margin_small"
               android:background="@color/white"
               android:orientation="vertical">
-
-
-    <View
-        android:id="@+id/separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_300"
-        />
 
     <TextView
         android:id="@id/title"
@@ -50,10 +42,4 @@
         android:textSize="@dimen/unify_font_normal"
         android:textStyle="normal"/>
 
-    <View
-        android:id="@+id/separator3"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_300"
-        />
 </LinearLayout>

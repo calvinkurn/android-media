@@ -66,7 +66,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         likeIcon = (ImageView) itemView.findViewById(R.id.like_icon);
         likeText = (TextView) itemView.findViewById(R.id.like_text);
         commentText = (TextView) itemView.findViewById(R.id.comment_text);
-        topSeparator = itemView.findViewById(R.id.separator);
+        topSeparator = itemView.findViewById(R.id.separator2);
         commentButton = itemView.findViewById(R.id.comment_button);
         likeButton = itemView.findViewById(R.id.like_button);
     }
