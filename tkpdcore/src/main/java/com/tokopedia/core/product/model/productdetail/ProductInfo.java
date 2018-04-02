@@ -120,7 +120,7 @@ public class ProductInfo implements Parcelable {
 
     private String productStockWording;
 
-    private Boolean limitedStock = false;
+    private boolean limitedStock = false;
 
     public ProductInfo() {
     }
