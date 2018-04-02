@@ -102,6 +102,7 @@ import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.domain.FlightDeleteDashboardCacheUseCase;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
+import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsCreateTicketActivity;
@@ -244,7 +245,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
-        DigitalRouter, KolRouter, StreamModuleRouter {
+        DigitalRouter, KolRouter, StreamModuleRouter, GamificationRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1611,7 +1612,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void generateBranchLink(String channelId, String title, String contentMessage, String
             imgUrl, String
-            shareUrl, Activity activity, final ShareListener
+                                           shareUrl, Activity activity, final ShareListener
                                            listener) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setId(channelId)
