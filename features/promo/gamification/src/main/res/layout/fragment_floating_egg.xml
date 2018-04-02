@@ -16,8 +16,7 @@
             android:adjustViewBounds="true"
             tools:src="@mipmap/ic_launcher"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/new_margin_tiny"
-            android:layout_marginRight="@dimen/new_margin_tiny"/>
+            android:layout_marginBottom="@dimen/new_margin_small"/>
 
         <TextView
             android:id="@+id/tv_floating_counter"
