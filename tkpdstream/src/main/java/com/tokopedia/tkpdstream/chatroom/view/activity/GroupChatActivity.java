@@ -126,6 +126,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
+        UserSession userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
         String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
         Intent homeIntent = ((StreamModuleRouter) context.getApplicationContext()).getHomeIntent(context);
         Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
@@ -134,13 +135,16 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(parentIntent);
+        if (userSession.isLoggedIn()) {
+            taskStackBuilder.addNextIntent(parentIntent);
+        }
         taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;
     }
 
     @DeepLink(ApplinkConstant.GROUPCHAT_LIST)
     public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
+        UserSession userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
         String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
         Intent homeIntent = ((StreamModuleRouter) context.getApplicationContext()).getHomeIntent(context);
         Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
@@ -149,13 +153,16 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(parentIntent);
+        if (userSession.isLoggedIn()) {
+            taskStackBuilder.addNextIntent(parentIntent);
+        }
         taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;
     }
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM_VIA_LIST)
     public static TaskStackBuilder getCallingTaskStackViaList(Context context, Bundle extras) {
+        UserSession userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
         String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
         Intent homeIntent = ((StreamModuleRouter) context.getApplicationContext()).getHomeIntent(context);
         Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
@@ -164,7 +171,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(parentIntent);
+        if (userSession.isLoggedIn()) {
+            taskStackBuilder.addNextIntent(parentIntent);
+        }
         taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;
     }
@@ -426,7 +435,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void showFragment(int fragmentPosition) {
         try {
-            if(fragmentPosition == initialFragment && !isFirstTime){
+            if (fragmentPosition == initialFragment && !isFirstTime) {
                 return;
             }
             isFirstTime = false;
@@ -624,13 +633,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_OK) {
-            NetworkErrorHelper.removeEmptyState(rootView);
-            initData();
-            setUserNameOnReplyText();
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
     }
 
     @Override
@@ -1131,14 +1133,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                 getSupportFragmentManager().findFragmentById(R.id.container) instanceof ChannelInfoFragment;
     }
 
-    private void setUserNameOnReplyText() {
-        if (currentFragmentIsChat()) {
-            ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
-                    (GroupChatFragment.class.getSimpleName())).setReplyTextHint();
-
-        }
-    }
-
     @Override
     public void onMessageReceived(Visitable map) {
         if (map instanceof VoteAnnouncementViewModel) {
@@ -1322,7 +1316,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                                                     String attributeName, List<EEPromotion>
                                                             listEE) {
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
-            analytics.eventClickComponentEnhancedEcommerce(componentType, campaignName,
+            analytics.eventViewComponentEnhancedEcommerce(componentType, campaignName,
                     attributeName, viewModel.getChannelUrl(), viewModel.getChannelName(), listEE);
         }
     }
@@ -1401,7 +1395,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
-    public void setDummy(){
+    public void setDummy() {
         GroupChatPointsViewModel model = new GroupChatPointsViewModel(
                 "Selamat! Anda mendapatkan 20 poin dari channel ini. Cek sekarang!"
                 , "www.tokopedia.com"

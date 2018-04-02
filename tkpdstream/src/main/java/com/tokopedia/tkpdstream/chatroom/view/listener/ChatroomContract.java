@@ -50,8 +50,6 @@ public interface ChatroomContract {
 
         void refreshChat();
 
-        void setReplyTextHint();
-
         void setSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel);
 
         void autoAddSprintSaleAnnouncement(SprintSaleViewModel sprintSaleViewModel, ChannelInfoViewModel channelInfoViewModel);

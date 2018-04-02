@@ -297,8 +297,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         presenter.refreshDataAfterReconnect(mChannel);
     }
 
-    @Override
-    public void setReplyTextHint() {
+    private void setReplyTextHint() {
         String hintText = getString(R.string.chat_as) + " " + userSession.getName() + "...";
         replyEditText.setHint(hintText);
     }
@@ -690,6 +689,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private void setForLoginUser(boolean isLoggedIn) {
         if (isLoggedIn) {
+            setReplyTextHint();
             divider.setVisibility(View.VISIBLE);
             replyEditText.setVisibility(View.VISIBLE);
             sendButton.setVisibility(View.VISIBLE);
