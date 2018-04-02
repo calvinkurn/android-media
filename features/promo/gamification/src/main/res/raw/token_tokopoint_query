@@ -1,11 +1,10 @@
 {
-  tokopointsToken {
+tokopointsToken {
     offFlag
     sumToken
     sumTokenStr
     tokenUnit
     floating {
-      tokenClass
       tokenId
       pageUrl
       applink
@@ -13,10 +12,10 @@
       isShowTime
       unixTimestamp
       tokenAsset {
-          smallImgUrl
-          imageUrls
-          spriteUrl
-        }
+        name
+        version
+        smallImgUrl
+      }
     }
     home {
       buttonApplink
@@ -28,12 +27,13 @@
         unixTimestampFetch
         timeRemainingSeconds
         isShowTime
-        tokenClass
-        backgroundImgUrl
         tokenAsset {
+          name
+          version
           smallImgUrl
-          imageUrls
           spriteUrl
+          imageUrls
+          backgroundImgUrl
         }
       }
     }
