@@ -236,9 +236,9 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
                     MAX_CHAR);
             return MethodChecker.fromHtml(
                     subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
-                            + "<font color='#42b549'>"
+                            + "<font color='#42b549'><b>"
                             + kolText.getContext().getString(R.string.read_more_english)
-                            + "</font>");
+                            + "</b></font>");
         } else {
             return MethodChecker.fromHtml(element.getReview().replaceAll("(\r\n|\n)", "<br />"));
         }
