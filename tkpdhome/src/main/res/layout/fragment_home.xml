@@ -44,15 +44,4 @@
             android:background="@color/grey_hint" />
     </com.tokopedia.home.beranda.presentation.view.SectionContainer>
 
-    <fragment
-        android:id="@+id/floating_egg_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:name="com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment"
-        android:tag="floating_egg"
-        app:draggable="true"
-        app:margin_right="@dimen/new_margin_sm"
-        app:margin_bottom="@dimen/new_margin_sm"/>
-
 </android.support.design.widget.CoordinatorLayout>
