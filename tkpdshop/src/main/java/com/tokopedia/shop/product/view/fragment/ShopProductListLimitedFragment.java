@@ -45,12 +45,14 @@ import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductHomeViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -275,35 +277,44 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     }
 
     @Override
-    public void renderList(@NonNull List<ShopProductBaseViewModel> list) {
-        super.renderList(list);
+    public void renderList(@NonNull List<ShopProductBaseViewModel> list, boolean hasNextPage) {
         trackingImpressionFeatureProduct(list);
+        super.renderList(list, hasNextPage);
     }
 
 
     private void trackingImpressionFeatureProduct(List<ShopProductBaseViewModel> list) {
-//        for (ShopProductBaseViewModel shopProductBaseViewModel : list) {
-//            if (shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModel) {
-//                if (shopInfo != null) {
-//                    shopPageTracking.eventViewProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
-//                            ((ShopProductLimitedFeaturedViewModel) shopProductBaseViewModel).getShopProductViewModelList(),
-//                            shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
-//                }
-//            } else if (shopProductBaseViewModel instanceof ShopProductLimitedProductViewModel) {
-//                if (shopInfo != null) {
-//                    shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
-//                            ((ShopProductLimitedProductViewModel) shopProductBaseViewModel).getShopProductViewModelList().getList(),
-//                            true, shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()),
-//                            false);
-//                }
-//            } else if (shopProductBaseViewModel instanceof ShopProductLimitedPromoViewModel) {
-//                if (shopInfo != null) {
-//                    shopPageTracking.eventViewBannerImpression(getString(R.string.shop_info_title_tab_product),
-//                            shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopId(), shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
-//                            ShopPageTracking.getShopType(shopInfo.getInfo()));
-//                }
-//            }
-//        }
+        List<ShopProductViewModel> featuredViewModelList = new ArrayList<>();
+        List<ShopProductViewModel> productHomeViewModelList = new ArrayList<>();
+        for (ShopProductBaseViewModel shopProductBaseViewModel : list) {
+            if (shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModel) {
+                if (shopInfo != null) {
+                    featuredViewModelList.add((ShopProductLimitedFeaturedViewModel)shopProductBaseViewModel);
+                }
+            } else if (shopProductBaseViewModel instanceof ShopProductHomeViewModel) {
+                if (shopInfo != null) {
+                    productHomeViewModelList.add((ShopProductHomeViewModel) shopProductBaseViewModel);
+                }
+            } else if (shopProductBaseViewModel instanceof ShopProductLimitedPromoViewModel) {
+                if (shopInfo != null) {
+                    shopPageTracking.eventViewBannerImpression(getString(R.string.shop_info_title_tab_product),
+                            shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopId(), shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
+                            ShopPageTracking.getShopType(shopInfo.getInfo()));
+                }
+            }
+        }
+        if(featuredViewModelList.size() > 0){
+            shopPageTracking.eventViewProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
+                    featuredViewModelList,
+                    shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
+        }
+        if(productHomeViewModelList.size() > 0){
+            shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
+                    productHomeViewModelList,
+                    true, shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
+                    ShopPageTracking.getShopType(shopInfo.getInfo()),
+                    false, getCurrentPage());
+        }
     }
 
     @Override
