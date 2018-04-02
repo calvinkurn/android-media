@@ -68,7 +68,7 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
         for (int i = 0; i < data.size(); i++) {
             Data d = data.get(i);
             if (d.getProduct() != null) {
-                layoutManager.setSpanCount(3);
+                layoutManager.setSpanCount(data.size() == 4 ? 2 : 3);
                 visitables.add(ModelConverter.convertToProductFeedNewViewModel(d));
             } else if (d.getShop() != null) {
                 layoutManager.setSpanCount(1);
