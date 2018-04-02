@@ -204,30 +204,4 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private void initReact() {
         SoLoader.init(this, false);
     }
-
-    @Override
-    public Intent getSellerHomeIntent(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public Intent getLoginGoogleIntent(Context context) {
-        return LoginActivity.getAutoLoginGoogle(context);
-    }
-
-    @Override
-    public Intent getLoginFacebookIntent(Context context) {
-        return LoginActivity.getAutoLoginFacebook(context);
-
-    }
-
-    @Override
-    public Intent getLoginWebviewIntent(Context context, String name, String url) {
-        return LoginActivity.getAutoLoginWebview(context, name, url);
-    }
-
-    @Override
-    public Intent getTopProfileIntent(Context context, String userId) {
-        return TopProfileActivity.newInstance(context, userId);
-    }
 }
