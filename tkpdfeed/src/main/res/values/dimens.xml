@@ -58,5 +58,6 @@
 
     <dimen name="feed_new_avatar_size">32dp</dimen>
     <dimen name="feed_new_badge_size">12dp</dimen>
+    <dimen name="feed_new_kol_button">15dp</dimen>
 
 </resources>
