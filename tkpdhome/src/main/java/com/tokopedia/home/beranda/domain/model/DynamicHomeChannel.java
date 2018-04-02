@@ -179,7 +179,7 @@ public class DynamicHomeChannel {
                                 "id", grid.getId(),
                                 "name", "/ - p2 - sprint sale banner",
                                 "position", i + 1,
-                                "creative", grid.getName(),
+                                "creative", grid.getAttribution(),
                                 "creative_url", grid.getImageUrl()
                         )
                 );
@@ -229,7 +229,7 @@ public class DynamicHomeChannel {
                                             DataLayer.mapOf("id", getGrids()[position].getId(),
                                                     "name", "/ - p2 - sprint sale banner"),
                                             "position", position + 1,
-                                            "creative", getGrids()[position].getName(),
+                                            "creative", getGrids()[position].getAttribution(),
                                             "creative_url", getGrids()[position].getImageUrl(),
                                             "attribution", getHomeAttribution(position + 1, "")
                                     )
@@ -265,7 +265,7 @@ public class DynamicHomeChannel {
                             DataLayer.mapOf(
                                     "id", grid.getId(),
                                     "name", promoName,
-                                    "creative", grid.getName(),
+                                    "creative", grid.getAttribution(),
                                     "creative_url", grid.getImageUrl(),
                                     "position", String.valueOf(i + 1)
                             )
@@ -298,7 +298,7 @@ public class DynamicHomeChannel {
                 list.add(DataLayer.mapOf(
                         "id", hero[0].getId(),
                         "name", promoName,
-                        "creative", hero[0].getName(),
+                        "creative", hero[0].getAttribution(),
                         "position", String.valueOf(1)
                 ));
             }
@@ -310,7 +310,7 @@ public class DynamicHomeChannel {
                             DataLayer.mapOf(
                                     "id", grid.getId(),
                                     "name", promoName,
-                                    "creative", grid.getName(),
+                                    "creative", grid.getAttribution(),
                                     "position", String.valueOf(i + 2)
                             )
                     );
@@ -331,9 +331,9 @@ public class DynamicHomeChannel {
                                             DataLayer.mapOf(
                                                     "id", hero.getId(),
                                                     "name", getPromoName(),
-                                                    "creative", hero.getName(),
+                                                    "creative", hero.getAttribution(),
                                                     "position", String.valueOf(position),
-                                                    "attribution", getHomeAttribution(position, hero.getName())
+                                                    "attribution", getHomeAttribution(position, hero.getAttribution())
                                             )
                                     )
                             )
@@ -353,9 +353,9 @@ public class DynamicHomeChannel {
                                             DataLayer.mapOf(
                                                     "id", grid.getId(),
                                                     "name", getPromoName(),
-                                                    "creative", grid.getName(),
+                                                    "creative", grid.getAttribution(),
                                                     "position", String.valueOf(position),
-                                                    "attribution", getHomeAttribution(position, grid.getName())
+                                                    "attribution", getHomeAttribution(position, grid.getAttribution())
                                             )
                                     )
                             )
@@ -375,10 +375,10 @@ public class DynamicHomeChannel {
                                             DataLayer.mapOf(
                                                     "id", grid.getId(),
                                                     "name", getPromoName(),
-                                                    "creative", grid.getName(),
+                                                    "creative", grid.getAttribution(),
                                                     "creative_url", grid.getImageUrl(),
                                                     "position", String.valueOf(position),
-                                                    "attribution", getHomeAttribution(position, grid.getName())
+                                                    "attribution", getHomeAttribution(position, grid.getAttribution())
                                             )
                                     )
                             )
@@ -424,6 +424,10 @@ public class DynamicHomeChannel {
         @SerializedName("url")
         private String url;
 
+        @Expose
+        @SerializedName("attribution")
+        private String attribution;
+
         public String getId() {
             return id;
         }
@@ -462,6 +466,14 @@ public class DynamicHomeChannel {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+
+        public String getAttribution() {
+            return attribution;
+        }
+
+        public void setAttribution(String attribution) {
+            this.attribution = attribution;
         }
     }
 
@@ -505,6 +517,10 @@ public class DynamicHomeChannel {
         @Expose
         @SerializedName("soldPercentage")
         private int soldPercentage;
+
+        @Expose
+        @SerializedName("attribution")
+        private String attribution;
 
         public String getLabel() {
             return label;
@@ -584,6 +600,14 @@ public class DynamicHomeChannel {
 
         public void setSlashedPrice(String slashedPrice) {
             this.slashedPrice = slashedPrice;
+        }
+
+        public String getAttribution() {
+            return attribution;
+        }
+
+        public void setAttribution(String attribution) {
+            this.attribution = attribution;
         }
     }
 

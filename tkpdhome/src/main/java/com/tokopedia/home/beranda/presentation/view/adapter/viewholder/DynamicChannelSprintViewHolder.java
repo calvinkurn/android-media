@@ -163,7 +163,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[0], 1));
                 }
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[0]),
-                        channel.getHomeAttribution(1, channel.getGrids()[0].getName())
+                        channel.getHomeAttribution(1, channel.getGrids()[0].getAttribution())
                 );
             }
         });
@@ -176,7 +176,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[1], 2));
                 }
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[1]),
-                        channel.getHomeAttribution(2, channel.getGrids()[1].getName())
+                        channel.getHomeAttribution(2, channel.getGrids()[1].getAttribution())
                 );
             }
         });
@@ -189,7 +189,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[2], 3));
                 }
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[2]),
-                        channel.getHomeAttribution(3, channel.getGrids()[2].getName())
+                        channel.getHomeAttribution(3, channel.getGrids()[2].getAttribution())
                 );
             }
         });
