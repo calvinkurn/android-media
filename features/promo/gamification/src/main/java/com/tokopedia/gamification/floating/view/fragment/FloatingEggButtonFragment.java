@@ -14,6 +14,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,11 +28,11 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationComponentInstance;
-import com.tokopedia.gamification.cracktoken.CrackTokenActivity;
+import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.cracktoken.presentation.activity.CrackTokenActivity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
-import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.floating.view.FloatingEggView;
+import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
 import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
 import com.tokopedia.gamification.floatingtoken.model.TokenData;
 import com.tokopedia.gamification.floatingtoken.model.TokenFloating;
@@ -44,7 +45,9 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by hendry on 28/03/18.
  */
 
-public class FloatingEggButtonFragment extends BaseDaggerFragment implements FloatingEggView {
+public class FloatingEggButtonFragment extends BaseDaggerFragment implements FloatingEggContract.View {
+
+    private static final String TAG = FloatingEggButtonFragment.class.getSimpleName();
 
     private static final String COORD_X = "x";
     private static final String COORD_Y = "y";
@@ -123,20 +126,30 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initDragBound();
-        initEggCoordinate(savedInstanceState);
+        if (floatingEggPresenter.isUserLogin()) {
+            vgRoot.setVisibility(View.VISIBLE);
+            initDragBound();
+            initEggCoordinate(savedInstanceState);
+        } else {
+            vgRoot.setVisibility(View.GONE);
+        }
     }
 
     private void initDragBound() {
         vgRoot.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                onInflateRoot();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    vgRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    //noinspection deprecation
-                    vgRoot.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                // TODO CHANGE THIS TRY CATCH
+                try {
+                    onInflateRoot();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        vgRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        //noinspection deprecation
+                        vgRoot.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "onGlobalLayout: " + e.getMessage());
                 }
             }
         });
@@ -217,14 +230,21 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     public void onResume() {
         super.onResume();
-        loadEggData();
+        if (floatingEggPresenter.isUserLogin()) {
+            loadEggData();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        stopCountdownTimer();
-        // TODO cancel the load data of presenter
+        if (floatingEggPresenter.isUserLogin()) {
+            stopCountdownTimer();
+            // TODO cancel the load data of presenter
+        }
+        if (floatingEggPresenter != null) {
+            floatingEggPresenter.detachView();
+        }
     }
 
     // TODO load data to get egg/token data from server or cache here

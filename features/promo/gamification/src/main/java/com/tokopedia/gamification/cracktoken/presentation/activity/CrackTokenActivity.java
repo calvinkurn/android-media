@@ -1,10 +1,8 @@
-package com.tokopedia.gamification.cracktoken;
+package com.tokopedia.gamification.cracktoken.presentation.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -61,6 +59,7 @@ public class CrackTokenActivity extends BaseSimpleActivity {
             tokenData.setHome(tokenHome);
         }
         super.onCreate(savedInstanceState);
+        updateTitle("TokoPoints");
     }
 
     @Override

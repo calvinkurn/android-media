@@ -8,9 +8,9 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".cracktoken.CrackTokenActivity"
+            android:name=".cracktoken.presentation.activity.CrackTokenActivity"
             android:label="@string/title_activity_gamification"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/Theme.White" />
 
     </application>
 
