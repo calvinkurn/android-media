@@ -718,10 +718,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 fabWishlist.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        showToastMessage(productData.getInfo().getProductStatusTitle() );
+                        showToastMessage(productData.getInfo().getProductStatusTitle());
                     }
                 });
             }
+
         } else if (status == 1) {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
         } else {
@@ -1070,8 +1071,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
                     }
                     priceSimulationView.updateVariant(generateVariantString());
-                    if (data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA) !=null && productVariant != null) {
-                        productData = data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
+                    if (productVariant != null) {
                         pictureView.renderData(productData);
                         headerInfoView.renderData(productData);
                         shopInfoView.renderData(productData);

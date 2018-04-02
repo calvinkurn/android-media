@@ -26,8 +26,7 @@
             <ImageView
                 android:id="@+id/product_image"
                 android:layout_width="50dp"
-                android:layout_height="50dp"
-                app:srcCompat="@drawable/facebook_square_blue" />
+                android:layout_height="50dp" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -84,7 +83,6 @@
                 android:layout_height="wrap_content"
                 app:drawableLeftCompat="@drawable/ic_pen_ico"
                 android:drawablePadding="@dimen/padding_vs"
-                android:drawableStart="@drawable/ic_pen_ico"
                 android:text="Ubah Keterangan" />
 
         </LinearLayout>

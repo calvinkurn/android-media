@@ -135,7 +135,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private PreviousMessageListQuery mPrevMessageListQuery;
     private GroupChatViewModel viewModel;
     private UserSession userSession;
-    private String channelUrl;
 
     private CloseableBottomSheetDialog channelInfoDialog;
 
@@ -306,7 +305,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             if (shareLayout == null) {
                 shareLayout = new ShareLayout(
                         GroupChatFragment.this,
-                        callbackManager, channelUrl, toolbar.getTitle().toString(), analytics);
+                        callbackManager, viewModel.getChannelUrl(), toolbar.getTitle().toString(), analytics);
             }
             shareLayout.setShareModel(shareData);
             shareLayout.show();
@@ -519,9 +518,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 ConnectionManager.ConnectionManagementHandler() {
                     @Override
                     public void onConnected(boolean reconnect) {
-                        Log.d("NISNIS", "onConnected " + reconnect);
-
-                        if (reconnect) {
+                        if (reconnect || viewModel != null) {
                             presenter.refreshDataAfterReconnect(mChannel);
                         }
                     }
@@ -657,20 +654,29 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
 
         hideLoading();
+        setChannelInfoView(channelInfoViewModel);
+        presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
+                userSession.getName(), userSession.getProfilePicture(), this);
+        if (channelInfoViewModel.getVoteInfoViewModel() != null) {
+            autoExpand(channelInfoViewModel.getVoteInfoViewModel().isVoted());
+        }
+    }
+
+    @Override
+    public void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
+        setChannelInfoView(channelInfoViewModel);
+    }
+
+    private void setChannelInfoView(ChannelInfoViewModel channelInfoViewModel) {
         this.viewModel.setChannelInfo(channelInfoViewModel);
         toolbar.setTitle(channelInfoViewModel.getTitle());
         setToolbarParticipantCount();
         ImageHandler.loadImageBlur(getActivity(), channelBanner, channelInfoViewModel
                 .getBannerUrl());
-        presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
-                userSession.getName(), userSession.getProfilePicture(), this);
         setVisibilityHeader(View.VISIBLE);
         setVote(channelInfoViewModel.isHasPoll(), channelInfoViewModel.getVoteInfoViewModel());
-        if (channelInfoViewModel.getVoteInfoViewModel() != null) {
-            autoExpand(channelInfoViewModel.getVoteInfoViewModel().isVoted());
-        }
-        channelUrl = channelInfoViewModel.getChannelUrl();
         channelInfoDialog.setContentView(createBottomSheetView(checkPollValid(channelInfoViewModel.isHasPoll(), channelInfoViewModel.getVoteInfoViewModel()), channelInfoViewModel.getChannelViewModel()));
+
     }
 
     private void autoExpand(boolean voted) {
@@ -794,6 +800,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onErrorVote(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onErrorRefreshChannelInfo(String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
@@ -988,8 +999,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     public void showVoteLayout(final VoteInfoViewModel voteInfoViewModel, String voteType) {
-        Log.d("NISNIS", "showVoteLayout");
-
         updateVoteViewModel(voteInfoViewModel, voteType);
 
         voteBar.setVisibility(View.VISIBLE);
