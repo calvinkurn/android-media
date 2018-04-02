@@ -381,6 +381,8 @@ public class CartDataInteractor implements ICartDataInteractor {
                                    String ut,
                                    final List<CartItem> cartItemList,
                                    KeroRatesListener listener) {
+
+        // TODO: 4/2/18 add shipment graphql
         List<Observable<CartRatesData>> cartItemObservableList = new ArrayList<>();
         for (int i = 0; i < cartItemList.size(); i++) {
             if (isValidated(cartItemList, i)) {

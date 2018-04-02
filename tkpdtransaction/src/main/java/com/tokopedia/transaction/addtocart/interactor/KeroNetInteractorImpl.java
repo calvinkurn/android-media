@@ -33,6 +33,10 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
     public void calculateShipping(@NonNull Context context,
                                   @NonNull TKPDMapParam<String, String> params,
                                   @NonNull final CalculationListener listener) {
+
+        // TODO: 4/2/18 use graphql query
+
+
         Observable<Response<String>> observable = keroService
                 .getApi()
                 .calculateShippingRate(AuthUtil.generateParamsNetwork(context, params));
