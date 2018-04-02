@@ -1,4 +1,4 @@
-package com.tokopedia.gamification;
+package com.tokopedia.gamification.cracktoken;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,10 +12,10 @@ import com.tokopedia.gamification.floatingtoken.model.TokenUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EggGamificationActivity extends BaseSimpleActivity {
+public class CrackTokenActivity extends BaseSimpleActivity {
 
     public static Intent newInstance(Context context) {
-        return new Intent(context, EggGamificationActivity.class);
+        return new Intent(context, CrackTokenActivity.class);
     }
 
     @Override
