@@ -118,27 +118,10 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
         if (isSprintSale(channel)) {
             Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
-            countDownView.setup(expiredTime, new CountDownView.CountDownListener() {
-                @Override
-                public void onCountDownFinished() {
-                    removeOnClickListeners();
-                }
-            });
+            countDownView.setup(expiredTime, null);
             countDownView.setVisibility(View.VISIBLE);
         } else {
             countDownView.setVisibility(View.GONE);
-        }
-    }
-
-    private void removeOnClickListeners() {
-        if (itemContainer1 != null) {
-            itemContainer1.setOnClickListener(null);
-        }
-        if (itemContainer2 != null) {
-            itemContainer2.setOnClickListener(null);
-        }
-        if (itemContainer3 != null) {
-            itemContainer3.setOnClickListener(null);
         }
     }
 
