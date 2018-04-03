@@ -92,17 +92,21 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (ShipmentItemData viewModel : shipments) {
-                    if (viewModel.getServiceId() == shipmentItemData.getServiceId()) {
+                ShipmentItemData selectedShipment = null;
+                for (ShipmentItemData shipment : shipments) {
+                    if (shipment.getServiceId() == shipmentItemData.getServiceId()) {
                         if (shipments.size() > position && position >= 0) {
-                            if (!viewModel.isSelected()) {
-                                viewModel.setSelected(true);
+                            if (!shipment.isSelected()) {
+                                shipment.setSelected(true);
                             }
-                            viewListener.onShipmentItemClick(shipments.get(position));
+                            selectedShipment = shipment;
                         }
                     } else {
-                        viewModel.setSelected(false);
+                        shipment.setSelected(false);
                     }
+                }
+                if (selectedShipment != null) {
+                    viewListener.onShipmentItemClick(selectedShipment);
                 }
                 notifyDataSetChanged();
             }

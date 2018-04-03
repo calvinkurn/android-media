@@ -448,8 +448,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             renderDropshipperView(courierItemData);
             renderPartialOrderView();
             updateFeesGroupLayout();
-            btSave.setBackgroundResource(R.drawable.medium_green_button_rounded);
-            btSave.setTextColor(getResources().getColor(R.color.white));
+            renderButtonSaveEnabled();
         }
     }
 
@@ -480,8 +479,19 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         if (presenter.getShipmentDetailData().getUsePartialOrder() != null) {
             switchPartlyAccept.setChecked(presenter.getShipmentDetailData().getUsePartialOrder());
         }
+        renderButtonSaveEnabled();
+    }
+
+    private void renderButtonSaveEnabled() {
         btSave.setBackgroundResource(R.drawable.medium_green_button_rounded);
         btSave.setTextColor(getResources().getColor(R.color.white));
+        btSave.setClickable(true);
+    }
+
+    private void renderButtonSaveDisabled() {
+        btSave.setBackgroundResource(R.drawable.bg_grey_button_rounded);
+        btSave.setTextColor(getResources().getColor(R.color.grey_500));
+        btSave.setClickable(false);
     }
 
     private void formatInsuranceTncView() {
@@ -883,8 +893,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             presenter.setSelectedShipment(shipmentItemData);
             tvShipmentType.setText(shipmentItemData.getType());
             renderPartialOrderView();
-            btSave.setBackgroundResource(R.drawable.bg_grey_button_rounded);
-            btSave.setTextColor(getResources().getColor(R.color.grey_500));
+            renderButtonSaveDisabled();
         }
     }
 

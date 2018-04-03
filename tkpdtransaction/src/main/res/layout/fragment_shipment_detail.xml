@@ -334,7 +334,8 @@
                         android:layout_marginLeft="@dimen/new_margin_med"
                         android:layout_marginRight="@dimen/new_margin_med"
                         android:layout_marginTop="@dimen/margin_ms"
-                        android:background="@drawable/bg_line_separator" />
+                        android:background="@drawable/bg_line_separator"
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:id="@+id/ll_partial_order"
@@ -344,7 +345,8 @@
                         android:layout_marginRight="@dimen/new_margin_med"
                         android:layout_marginTop="@dimen/margin_ms"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -627,8 +629,8 @@
                         android:id="@+id/bt_save"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:background="@drawable/bg_grey_button_rounded"
                         android:layout_margin="@dimen/margin_small"
+                        android:background="@drawable/bg_grey_button_rounded"
                         android:text="@string/title_save"
                         android:textAllCaps="false"
                         android:textColor="@color/grey_500" />

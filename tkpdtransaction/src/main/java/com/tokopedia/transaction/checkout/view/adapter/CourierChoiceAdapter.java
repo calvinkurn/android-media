@@ -110,16 +110,16 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
             @Override
             public void onClick(View v) {
                 CourierItemData selectedCourier = null;
-                for (CourierItemData viewModel : couriers) {
-                    if (viewModel.getShipperProductId() == courierItemData.getShipperProductId()) {
+                for (CourierItemData courier : couriers) {
+                    if (courier.getShipperProductId() == courierItemData.getShipperProductId()) {
                         if (couriers.size() > position && position >= 0) {
-                            if (!viewModel.isSelected()) {
-                                viewModel.setSelected(true);
+                            if (!courier.isSelected()) {
+                                courier.setSelected(true);
                             }
                             selectedCourier = couriers.get(position);
                         }
                     } else {
-                        viewModel.setSelected(false);
+                        courier.setSelected(false);
                     }
                 }
                 if (selectedCourier != null) {
