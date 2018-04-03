@@ -16,14 +16,13 @@ import java.util.Map;
  */
 
 public class ImageSearchItemRequest extends RoaAcsRequest<NewImageSearchResponse> {
-    private static final int MAX_POST_CONTENT_LENGTH = 8388608;
     private int start;
     private int num;
     private String catId;
     private byte[] searchPicture;
     private String instanceName;
 
-    public SearchItemRequestLocal() {
+    public ImageSearchItemRequest() {
         super("ImageSearch", "2018-01-20", "SearchItem");
         this.setUriPattern("/item/search");
         this.setMethod(MethodType.POST);
@@ -92,8 +91,6 @@ public class ImageSearchItemRequest extends RoaAcsRequest<NewImageSearchResponse
             kv.put("pic_list", encodePicName);
             kv.put(encodePicName, encodePicContent);
             String content = buildContent(kv);
-
-            Log.e("Request String:", content);
 
             if (content.length() > 8388608) {
                 return false;

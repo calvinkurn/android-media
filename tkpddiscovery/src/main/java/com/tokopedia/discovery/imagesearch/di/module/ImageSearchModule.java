@@ -29,14 +29,6 @@ import okhttp3.OkHttpClient;
 public class ImageSearchModule {
 
     @Provides
-    ApolloClient providesApolloClient(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient) {
-        return ApolloClient.builder()
-                .okHttpClient(okHttpClient)
-                .serverUrl(TkpdBaseURL.GRAPHQL_DOMAIN)
-                .build();
-    }
-
-    @Provides
     ImageSearchRepository imageSearchRepository(ImageSearchDataSource imageSearchDataSource) {
         return new ImageSearchRepositoryImpl(imageSearchDataSource);
     }
