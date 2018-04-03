@@ -33,7 +33,7 @@
                 android:id="@+id/image_view_shop_icon"
                 android:layout_width="@dimen/image_width_l"
                 android:layout_height="@dimen/image_width_l"
-                android:src="@drawable/ic_loading_toped" />
+                app:srcCompat="@drawable/ic_loading_toped" />
 
             <View
                 android:layout_width="@dimen/image_width_l"
@@ -57,7 +57,7 @@
                     android:layout_height="@dimen/image_width_xxs"
                     android:layout_marginEnd="@dimen/margin_ms"
                     android:layout_marginRight="@dimen/margin_ms"
-                    android:src="@drawable/ic_badge_shop_gm"
+                    app:srcCompat="@drawable/ic_badge_shop_gm"
                     android:visibility="gone"
                     tools:visibility="visible" />
 
@@ -74,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/margin_ms"
                     android:layout_marginRight="@dimen/margin_ms"
-                    android:src="@drawable/ic_info" />
+                    app:srcCompat="@drawable/ic_info" />
 
             </LinearLayout>
 
@@ -90,7 +90,7 @@
                     android:layout_height="@dimen/image_medal_size"
                     android:layout_marginEnd="@dimen/margin_ms"
                     android:layout_marginRight="@dimen/margin_ms"
-                    android:src="@drawable/ic_info_location_grey" />
+                    app:srcCompat="@drawable/ic_info_location_grey" />
 
                 <TextView
                     android:id="@+id/text_view_location"

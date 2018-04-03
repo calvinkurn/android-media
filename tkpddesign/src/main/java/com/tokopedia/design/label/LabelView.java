@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -66,7 +67,10 @@ public class LabelView extends BaseCustomView {
     private void init(AttributeSet attrs) {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelView);
         try {
-            imageDrawable = styledAttributes.getDrawable(R.styleable.LabelView_lv_image);
+            final int drawableId = styledAttributes.getResourceId(R.styleable.LabelView_lv_image, -1);
+            if (drawableId >= 0) {
+                imageDrawable = AppCompatResources.getDrawable(getContext(), drawableId);
+            }
             imageWidth = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_width, getResources().getDimension(R.dimen.image_width_s));
             titleText = styledAttributes.getString(R.styleable.LabelView_lv_title);
             titleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
