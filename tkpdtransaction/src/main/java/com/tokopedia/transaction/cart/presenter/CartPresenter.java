@@ -759,7 +759,7 @@ public class CartPresenter implements ICartPresenter {
     private void processRenderViewCartData(CartData data) {
         view.renderCheckboxDonasi(data.getDonation());
         if (data.getCartItemList().isEmpty()) {
-            view.renderErrorEmptyCart();
+            view.renderErrorEmptyCart(data.getAutoApply());
             return;
         }
         if (data.getCashback() != 0)
@@ -793,9 +793,13 @@ public class CartPresenter implements ICartPresenter {
         view.renderButtonCheckVoucherListener();
         view.renderInstantPromo(data.getCartPromo());
         view.renderPromoView(data.getIsCouponActive() == 1);
-        if(data.getAutoApply() != null) {
+        if(promoAutoApplied(data)) {
             view.renderAutoApplyVoucherView(data.getAutoApply());
         }
+    }
+
+    private boolean promoAutoApplied(CartData data) {
+        return data.getAutoApply() != null && data.getAutoApply().isSuccess();
     }
 
     @Override

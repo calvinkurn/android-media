@@ -60,7 +60,7 @@ public interface ICartView extends IBaseView {
 
     void renderErrorFromInstantVoucher(int instantVoucher);
 
-    void renderErrorEmptyCart();
+    void renderErrorEmptyCart(AutoApply autoApply);
 
     void renderVisibleMainCartContainer();
 

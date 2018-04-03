@@ -488,7 +488,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderErrorEmptyCart() {
+    public void renderErrorEmptyCart(AutoApply autoApply) {
         tvTickerGTM.setVisibility(View.GONE);
         nsvContainer.setVisibility(View.GONE);
         pbMainLoading.setVisibility(View.GONE);
@@ -520,6 +520,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             topAdsView.setMaxItems(4);
             topAdsView.setAdsItemClickListener(this);
             topAdsView.loadTopAds();
+            if(autoApply != null && autoApply.isSuccess()) {
+                if(autoApply.getIsCoupon() == 1)
+                    renderAutoApplyVoucherView(autoApply);
+            }
         }
     }
 
