@@ -99,6 +99,10 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             });
         }
 
+        if (getItemCount() == 1) {
+            holder.productName.setMaxLines(1);
+        }
+
     }
 
     @Override
