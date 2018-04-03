@@ -92,6 +92,9 @@ public class ProgressBarWithTimer extends FrameLayout {
         long now = System.currentTimeMillis() / 1000L;
         getRootView().setVisibility(VISIBLE);
         listener.onStartTick();
+        if(countDownTimer != null){
+            countDownTimer.cancel();
+        }
         countDownTimer = new CountDownTimer(1000 * (endTime - now), 100) {
             @Override
             public void onTick(long l) {
