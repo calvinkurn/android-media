@@ -28,7 +28,7 @@ public class GetTxInvoicesService extends AuthService<GetTxInvoicesApi>{
 
     @Override
     protected String getBaseUrl() {
-        return "http://10.0.11.130";
+        return TkpdBaseURL.BASE_API_DOMAIN+"/cs/chatbot/";
     }
 
     @Override

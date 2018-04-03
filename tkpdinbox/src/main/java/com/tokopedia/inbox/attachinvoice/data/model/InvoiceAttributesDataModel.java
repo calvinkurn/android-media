@@ -17,7 +17,7 @@ public class InvoiceAttributesDataModel {
     @SerializedName("title")
     @Expose
     String title;
-    @SerializedName("desc")
+    @SerializedName("description")
     @Expose
     String description;
     @SerializedName("create_time")
@@ -36,7 +36,7 @@ public class InvoiceAttributesDataModel {
     @Expose
     String amount;
 
-    @SerializedName("url")
+    @SerializedName("invoice_url")
     @Expose
     String url;
 

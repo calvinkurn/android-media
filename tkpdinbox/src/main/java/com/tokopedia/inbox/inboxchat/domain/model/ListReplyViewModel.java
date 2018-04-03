@@ -55,6 +55,48 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
                               boolean showHour,
                               boolean isOpposite,
                               boolean isHighlight,
+                              String oldMessageTitle) {
+        this.msgId = msgId;
+        this.userId = userId;
+        this.replyId = replyId;
+        this.senderId = senderId;
+        this.senderName = senderName;
+        this.role = role;
+        this.msg = msg;
+        this.spanned = spanned;
+        this.replyTime = replyTime;
+        this.fraudStatus = fraudStatus;
+        this.readTime = readTime;
+        this.attachment = attachment;
+        this.attachmentId = attachmentId;
+        this.oldMsgId = oldMsgId;
+        this.showTime = showTime;
+        this.showHour = showHour;
+        this.isOpposite = isOpposite;
+        this.isHighlight = isHighlight;
+        this.oldMessageTitle = oldMessageTitle;
+        this.showRating = false;
+        this.ratingStatus = 0;
+    }
+
+    public ListReplyViewModel(int msgId,
+                              int userId,
+                              int replyId,
+                              String senderId,
+                              String senderName,
+                              String role,
+                              String msg,
+                              Spanned spanned,
+                              String replyTime,
+                              int fraudStatus,
+                              String readTime,
+                              Attachment attachment,
+                              int attachmentId,
+                              int oldMsgId,
+                              boolean showTime,
+                              boolean showHour,
+                              boolean isOpposite,
+                              boolean isHighlight,
                               String oldMessageTitle,
                               boolean showRating,
                               int ratingStatus) {

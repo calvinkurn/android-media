@@ -530,7 +530,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         json.put("code",ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
 
         JSONObject data = new JSONObject();
-        data.put("message_id",messageId);
+        data.put("message_id",Integer.parseInt(messageId));
         data.put("message",invoice.getInvoiceNo());
         SimpleDateFormat date = new SimpleDateFormat(
                 "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);

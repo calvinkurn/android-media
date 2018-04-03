@@ -20,6 +20,7 @@ public class AttachInvoiceSingleViewModel {
     int statusId;
     String title;
     String amount;
+    boolean isSearchAllButton;
 
     public AttachInvoiceSingleViewModel(String typeString, int type, String code, String createdTime, String description, String url, int id, String imageUrl, String status, int statusId, String title, String amount) {
         this.typeString = typeString;
@@ -34,6 +35,11 @@ public class AttachInvoiceSingleViewModel {
         this.statusId = statusId;
         this.title = title;
         this.amount = amount;
+        isSearchAllButton = false;
+    }
+
+    public AttachInvoiceSingleViewModel(boolean isSearchAllButton) {
+        this.isSearchAllButton = isSearchAllButton;
     }
 
     public String getTypeString() {
@@ -132,5 +138,7 @@ public class AttachInvoiceSingleViewModel {
         this.amount = amount;
     }
 
-
+    public boolean isSearchAllButton() {
+        return isSearchAllButton;
+    }
 }
