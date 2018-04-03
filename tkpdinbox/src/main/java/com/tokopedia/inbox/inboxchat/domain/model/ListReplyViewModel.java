@@ -21,6 +21,7 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
     private String msg;
     private Spanned spanned;
     private String replyTime;
+    private long replyTimeNano;
     private int fraudStatus;
     private String readTime;
     private Attachment attachment;
@@ -293,5 +294,13 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
 
     public void setRatingStatus(int ratingStatus) {
         this.ratingStatus = ratingStatus;
+    }
+
+    public long getReplyTimeNano() {
+        return replyTimeNano;
+    }
+
+    public void setReplyTimeNano(long replyTimeNano) {
+        this.replyTimeNano = replyTimeNano;
     }
 }

@@ -138,6 +138,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                     temp.setOldMessageTitle(item.getOldMessageTitle());
                     temp.setShowRating(item.isShowRating());
                     temp.setRatingStatus(item.getRatingStatus());
+                    temp.setReplyTimeNano(Long.parseLong(item.getReplyTimeNano()));
                     if (item.isHighlight()) {
                         temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
                     }

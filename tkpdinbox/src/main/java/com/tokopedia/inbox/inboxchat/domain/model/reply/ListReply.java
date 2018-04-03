@@ -30,6 +30,9 @@ public class ListReply {
     @SerializedName("reply_time")
     @Expose
     private String replyTime;
+    @SerializedName("reply_time_nano")
+    @Expose
+    private String replyTimeNano;
     @SerializedName("fraud_status")
     @Expose
     private int fraudStatus;
@@ -218,5 +221,13 @@ public class ListReply {
 
     public void setRatingStatus(int ratingStatus) {
         this.ratingStatus = ratingStatus;
+    }
+
+    public String getReplyTimeNano() {
+        return replyTimeNano;
+    }
+
+    public void setReplyTimeNano(String replyTimeNano) {
+        this.replyTimeNano = replyTimeNano;
     }
 }

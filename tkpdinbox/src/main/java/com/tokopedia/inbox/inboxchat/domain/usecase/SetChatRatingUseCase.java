@@ -17,9 +17,9 @@ import rx.Observable;
 public class SetChatRatingUseCase extends UseCase<SetChatRatingPojo>{
 
     public static final String PARAM_USER_ID = "user_id";
-    public static final String PARAM_MESSAGE_ID = "message_id";
-    public static final String PARAM_TIMESTAMP = "timestamp";
-    public static final String PARAM_RATING = "rating";
+    public static final String PARAM_MESSAGE_ID = "msg_id";
+    public static final String PARAM_TIMESTAMP = "reply_time";
+    public static final String PARAM_RATING = "rate_status";
 
     private final ChatBotApi chatRatingApi;
     private final SetChatRatingMapper setChatRatingMapper;

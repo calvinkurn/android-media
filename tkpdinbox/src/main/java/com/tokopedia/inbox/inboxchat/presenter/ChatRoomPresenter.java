@@ -300,6 +300,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 item.setSenderId(String.valueOf(response.getData().getFromUid()));
                 item.setMsg(response.getData().getMessage().getCensoredReply());
                 item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
+                item.setReplyTimeNano(Long.parseLong(response.getData().getMessage().getTimeStampUnixNano()));
                 item.setAttachment(response.getData().getAttachment());
                 item.setShowRating(response.getData().isShowRating());
                 item.setRatingStatus(response.getData().getRatingStatus());
@@ -411,7 +412,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     public void setChatRating(final OppositeChatViewModel element, int userId, final int rating) {
         setChatRatingUseCase.execute(
                 SetChatRatingUseCase.
-                        getParams(element.getMsgId(), userId, Long.parseLong(element.getReplyTime()), rating),
+                        getParams(element.getMsgId(), userId, element.getReplyTimeNano(), rating),
                 new Subscriber<SetChatRatingPojo>() {
                     @Override
                     public void onCompleted() {
