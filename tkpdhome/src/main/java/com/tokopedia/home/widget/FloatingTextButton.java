@@ -168,12 +168,6 @@ public class FloatingTextButton extends FrameLayout {
         setRightIconDrawable(rightIcon);
         setBackgroundColor(background);
 
-        container.setContentPadding(
-                getHorizontalPaddingValue(8),
-                getVerticalPaddingValue(8),
-                getHorizontalPaddingValue(8),
-                getVerticalPaddingValue(8)
-        );
         initViewRadius();
     }
 
