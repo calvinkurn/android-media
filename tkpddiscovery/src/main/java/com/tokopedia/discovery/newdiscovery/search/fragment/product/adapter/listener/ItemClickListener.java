@@ -18,4 +18,6 @@ public interface ItemClickListener extends EmptyStateClickListener {
     void onSuggestionClicked(String suggestedQuery);
 
     void onBannerAdsClicked(String appLink);
+
+    void onSearchGuideClicked(String keyword);
 }

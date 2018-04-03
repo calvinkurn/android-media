@@ -33,7 +33,7 @@
                     android:layout_height="match_parent"
                     android:padding="1dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_placeholder_shop_with_padding"/>
+                    app:srcCompat="@drawable/ic_placeholder_shop_with_padding"/>
 
                 <android.support.v7.widget.AppCompatImageView
                     android:layout_width="match_parent"
@@ -67,7 +67,7 @@
                         android:layout_height="@dimen/image_width_xxs"
                         android:layout_gravity="center_vertical"
                         android:visibility="gone"
-                        android:src="@drawable/ic_shop_gold"
+                        app:srcCompat="@drawable/ic_shop_gold"
                         android:layout_marginRight="@dimen/margin_vs"
                         android:layout_marginEnd="@dimen/margin_vs"
                         tools:visibility="visible" />
@@ -89,7 +89,7 @@
                 android:layout_marginTop="@dimen/margin_ms"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:src="@drawable/icon_setting" />
+                app:srcCompat="@drawable/icon_setting" />
         </LinearLayout>
 
         <com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView

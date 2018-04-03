@@ -14,7 +14,7 @@ public class ValueResponseEntity {
     private String name;
     @SerializedName("priority")
     @Expose
-    private Integer priority;
+    private int priority;
 
     public String getId() {
         return id;
@@ -32,11 +32,11 @@ public class ValueResponseEntity {
         this.name = name;
     }
 
-    public Integer getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(Integer priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 

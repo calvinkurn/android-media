@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:orientation="vertical"
+    tools:parentTag="LinearLayout">
+
+    <LinearLayout
+        style="@style/LabelLayout"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/TextView.Title.Bold"
+            android:text="@string/product_label_product_price" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/view_group_product_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/line_divider"
+        android:orientation="vertical"
+        android:showDividers="end">
+
+        <com.tokopedia.design.text.CounterInputView
+            android:id="@+id/counter_input_view_minimum_order"
+            style="@style/LabelLayout"
+            android:layout_marginLeft="@dimen/text_input_margin_offset"
+            android:layout_marginStart="@dimen/text_input_margin_offset"
+            app:counter_hint="@string/product_label_minimum_buy"
+            app:counter_min="@integer/product_default_counter_minimum_order_text"
+            app:counter_text="@string/product_default_counter_minimum_order_text" />
+
+        <LinearLayout style="@style/LabelLayout">
+
+            <com.tokopedia.design.text.SpinnerCounterInputView
+                android:id="@+id/spinner_counter_input_view_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/text_input_margin_offset"
+                android:layout_marginStart="@dimen/text_input_margin_offset"
+                app:spinner_decimal_entries="@array/product_currency_entries"
+                app:spinner_decimal_hint="@string/product_label_product_price"
+                app:spinner_decimal_max_length="@integer/product_max_counter_length"
+                app:spinner_decimal_show_counter_button="false"
+                app:spinner_decimal_values="@array/product_currency_values" />
+
+            <ImageButton
+                android:id="@+id/image_button_edit_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_edit_green"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+        <com.tokopedia.expandable.ExpandableOptionSwitch
+            android:id="@+id/expandable_option_switch_wholesale"
+            style="@style/LabelLayout"
+            android:visibility="gone"
+            app:eo_checked="false"
+            app:eo_theme="@style/ExpandableStyle"
+            app:eo_title="@string/product_label_wholesale_price"
+            tools:visibility="visible">
+
+            <include layout="@layout/partial_product_wholesale" />
+        </com.tokopedia.expandable.ExpandableOptionSwitch>
+
+        <FrameLayout
+            android:id="@+id/v_wholesale_variant_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"
+            style="@style/LabelLayout">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/product_grosir_not_available_if_has_variant"
+                style="@style/TextView.Micro.BlackDisabled" />
+        </FrameLayout>
+
+
+    </LinearLayout>
+
+</merge>

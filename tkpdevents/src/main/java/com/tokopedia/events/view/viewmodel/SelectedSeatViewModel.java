@@ -24,6 +24,8 @@ public class SelectedSeatViewModel implements Parcelable {
 
     private List<String> physicalRowIds;
 
+    private List<String> actualSeatNos;
+
     private String areaId;
 
 
@@ -75,6 +77,14 @@ public class SelectedSeatViewModel implements Parcelable {
         this.physicalRowIds = physicalRowIds;
     }
 
+    public List<String> getActualSeatNos() {
+        return actualSeatNos;
+    }
+
+    public void setActualSeatNos(List<String> actualSeatNos) {
+        this.actualSeatNos = actualSeatNos;
+    }
+
     public String getAreaId() {
         return areaId;
     }
@@ -83,10 +93,9 @@ public class SelectedSeatViewModel implements Parcelable {
         this.areaId = areaId;
     }
 
-
     public SelectedSeatViewModel() {
-
     }
+
     @Override
     public int describeContents() {
         return 0;
@@ -94,23 +103,24 @@ public class SelectedSeatViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.quantity);
-        dest.writeValue(this.price);
+        dest.writeInt(this.quantity);
+        dest.writeInt(this.price);
         dest.writeStringList(this.areaCodes);
         dest.writeStringList(this.seatIds);
         dest.writeStringList(this.seatRowIds);
         dest.writeStringList(this.physicalRowIds);
+        dest.writeStringList(this.actualSeatNos);
         dest.writeString(this.areaId);
     }
 
-
-    protected  SelectedSeatViewModel(Parcel in) {
-        this.quantity = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.price = (Integer) in.readValue(Integer.class.getClassLoader());
+    protected SelectedSeatViewModel(Parcel in) {
+        this.quantity = in.readInt();
+        this.price = in.readInt();
         this.areaCodes = in.createStringArrayList();
         this.seatIds = in.createStringArrayList();
         this.seatRowIds = in.createStringArrayList();
         this.physicalRowIds = in.createStringArrayList();
+        this.actualSeatNos = in.createStringArrayList();
         this.areaId = in.readString();
     }
 

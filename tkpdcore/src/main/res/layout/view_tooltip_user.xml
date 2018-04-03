@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/padding_med"
     android:paddingBottom="@dimen/padding_small"
     android:paddingLeft="@dimen/padding_small"
     android:paddingRight="@dimen/padding_small"
-    android:background="@drawable/speechbubble_r90" >
+    android:background="@drawable/speechbubble_r90">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -15,7 +17,7 @@
         <ImageView
             android:layout_width="@dimen/img_thumb"
             android:layout_height="@dimen/img_thumb"
-            android:src="@drawable/ic_icon_repsis_smile_active"/>
+            app:srcCompat="@drawable/ic_icon_repsis_smile_active"/>
         <TextView
             android:minWidth="@dimen/img_thumb"
             android:layout_width="wrap_content"
@@ -35,7 +37,7 @@
         <ImageView
             android:layout_width="@dimen/img_thumb"
             android:layout_height="@dimen/img_thumb"
-            android:src="@drawable/ic_icon_repsis_neutral_active"/>
+            app:srcCompat="@drawable/ic_icon_repsis_neutral_active"/>
         <TextView
             android:minWidth="@dimen/img_thumb"
             android:layout_width="wrap_content"
@@ -53,7 +55,7 @@
         <ImageView
             android:layout_width="@dimen/img_thumb"
             android:layout_height="@dimen/img_thumb"
-            android:src="@drawable/ic_icon_repsis_sad_active"/>
+            app:srcCompat="@drawable/ic_icon_repsis_sad_active"/>
         <TextView
             android:minWidth="@dimen/img_thumb"
             android:layout_width="wrap_content"

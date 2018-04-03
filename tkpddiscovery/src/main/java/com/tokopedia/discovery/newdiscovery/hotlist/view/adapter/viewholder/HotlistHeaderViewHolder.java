@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -59,7 +61,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final CirclePageIndicator indicator;
     private final ViewPager viewpager;
     private final LinearLayout containerHashtag;
-    private final RelativeLayout hotlistBackground;
+    private final ImageView hotlistBackground;
     private final View hashtTagScrollView;
     private final HotlistPromoView hotlistPromoView;
     private final TopAdsBannerView topAdsBannerView;
@@ -74,7 +76,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         this.indicator = (CirclePageIndicator) parent.findViewById(R.id.hot_list_banner_indicator);
         this.viewpager = (ViewPager) parent.findViewById(R.id.hot_list_banner_view_pager);
         this.containerHashtag = (LinearLayout) parent.findViewById(R.id.hot_list_banner_hashtags);
-        this.hotlistBackground = (RelativeLayout) parent.findViewById(R.id.hotlist_background);
+        this.hotlistBackground = (ImageView) parent.findViewById(R.id.hotlist_background);
         this.hashtTagScrollView = parent.findViewById(R.id.hashtag_scroll_view);
         this.hotlistPromoView = (HotlistPromoView) parent.findViewById(R.id.view_hotlist_promo);
         this.topAdsBannerView = (TopAdsBannerView) parent.findViewById(R.id.topAdsBannerView);
@@ -164,12 +166,11 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         Glide.with(context)
                 .load(imageUrl)
                 .asBitmap()
-                .centerCrop()
                 .dontAnimate()
                 .placeholder(com.tokopedia.core.R.drawable.loading_page)
                 .error(com.tokopedia.core.R.drawable.error_drawable)
+                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .centerCrop()
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
@@ -183,13 +184,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         counterError = 0;
-                        Drawable drawable;
-                        drawable = new BitmapDrawable(itemView.getResources(), resource);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            hotlistBackground.setBackground(drawable);
-                        } else {
-                            hotlistBackground.setBackgroundDrawable(drawable);
-                        }
+                        hotlistBackground.setImageBitmap(resource);
                     }
 
 
@@ -197,11 +192,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
                     public void onLoadStarted(Drawable placeholder) {
                         super.onLoadStarted(placeholder);
                         counterError = 0;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            hotlistBackground.setBackground(placeholder);
-                        } else {
-                            hotlistBackground.setBackgroundDrawable(placeholder);
-                        }
+                        hotlistBackground.setImageDrawable(placeholder);
                     }
                 });
     }

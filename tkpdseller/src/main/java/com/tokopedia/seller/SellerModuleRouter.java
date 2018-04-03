@@ -3,8 +3,6 @@ package com.tokopedia.seller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
@@ -55,4 +53,8 @@ public interface SellerModuleRouter {
     Intent getShopPageIntent(Context context, String shopId);
 
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
+
+    Intent getTopProfileIntent(Context context, String userId);
+
+    Intent getInboxMessageIntent(Context context);
 }

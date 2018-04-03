@@ -1,0 +1,273 @@
+package com.tokopedia.ride.chat.utils;
+
+import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.util.TypedValue;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.view.adapter.ChatViewListAdapter;
+
+import java.util.ArrayList;
+
+/**
+ * Created by sachinbansal on 2/13/18.
+ */
+
+public class ChatView extends RelativeLayout {
+
+    private static final int FLAT = 0;
+    private static final int ELEVATED = 1;
+
+    private CardView inputFrame;
+    private ListView chatListView;
+    private EditText inputEditText;
+
+    private ViewBuilderInterface viewBuilder;
+    private FloatingActionButton actionButton;
+    private boolean useEditorAction;
+
+    private OnSentMessageListener onSentMessageListener;
+    private OnSendSMSRetry onSendSMSRetry;
+    private ChatViewListAdapter chatViewListAdapter;
+
+    private int inputFrameBackgroundColor, backgroundColor;
+    private int inputTextSize, inputTextColor, inputHintColor;
+
+
+    private Drawable buttonDrawable;
+    private TypedArray attributes;
+    private Context context;
+    private int id = 0;
+
+
+    ChatView(Context context) {
+        this(context, null);
+    }
+
+    public ChatView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public ChatView(Context context, AttributeSet attrs, int defStyleAttr) {
+        this(context, attrs, defStyleAttr, new ViewBuilder());
+    }
+
+    public ChatView(Context context, AttributeSet attrs, int defStyleAttr, ViewBuilderInterface viewBuilder) {
+
+        super(context, attrs, defStyleAttr);
+        this.viewBuilder = viewBuilder;
+        init(context, attrs, defStyleAttr);
+
+    }
+
+
+    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
+        LayoutInflater.from(getContext()).inflate(R.layout.chat_view, this, true);
+        this.context = context;
+        initializeViews();
+        getXMLAttributes(attrs, defStyleAttr);
+        setViewAttributes();
+        setListAdapter();
+        setButtonClickListeners();
+    }
+
+    private void initializeViews() {
+        chatListView = findViewById(R.id.chat_list);
+        inputFrame = findViewById(R.id.input_frame);
+        inputEditText = findViewById(R.id.input_edit_text);
+        actionButton = findViewById(R.id.sendButton);
+    }
+
+    private void getXMLAttributes(AttributeSet attrs, int defStyleAttr) {
+        attributes = context.obtainStyledAttributes(attrs, R.styleable.ChatView, defStyleAttr, R.style.ChatViewDefault);
+        getChatViewBackgroundColor();
+        getAttributesForInputFrame();
+        setInputTextDefaults();
+        getUseEditorAction();
+        attributes.recycle();
+    }
+
+    private void setListAdapter() {
+        chatViewListAdapter = new ChatViewListAdapter(context, new ViewBuilder());
+        chatViewListAdapter.setOnRetryTap(new ChatViewListAdapter.OnRetryTap() {
+            @Override
+            public void onRetryTap(ChatMessage chatMessage) {
+
+                onSendSMSRetry.onTapRetry(chatMessage);
+
+            }
+        });
+        chatListView.setAdapter(chatViewListAdapter);
+    }
+
+
+    private void setViewAttributes() {
+        setChatViewBackground();
+        setInputFrameAttributes();
+        setInputTextAttributes();
+        setUseEditorAction();
+    }
+
+    private void getChatViewBackgroundColor() {
+        backgroundColor = attributes.getColor(R.styleable.ChatView_backgroundColor, -1);
+    }
+
+    private void getAttributesForInputFrame() {
+        inputFrameBackgroundColor = attributes.getColor(R.styleable.ChatView_inputBackgroundColor, -1);
+    }
+
+    private void setInputFrameAttributes() {
+        inputFrame.setCardBackgroundColor(inputFrameBackgroundColor);
+    }
+
+    private void setChatViewBackground() {
+        this.setBackgroundColor(backgroundColor);
+    }
+
+    private void setInputTextAttributes() {
+        inputEditText.setTextColor(inputTextColor);
+        inputEditText.setHintTextColor(inputHintColor);
+        inputEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, inputTextSize);
+    }
+
+    private void getUseEditorAction() {
+        useEditorAction = attributes.getBoolean(R.styleable.ChatView_inputUseEditorAction, false);
+    }
+
+    private void setUseEditorAction() {
+        if (useEditorAction) {
+            setupEditorAction();
+        } else {
+            inputEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        }
+    }
+
+    private void setInputTextDefaults() {
+        inputTextSize = context.getResources().getDimensionPixelSize(R.dimen.default_input_text_size);
+        inputTextColor = ContextCompat.getColor(context, R.color.black);
+        inputHintColor = ContextCompat.getColor(context, R.color.main_color_gray);
+    }
+
+    private void setupEditorAction() {
+        inputEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        inputEditText.setImeOptions(EditorInfo.IME_ACTION_SEND);
+        inputEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    long stamp = System.currentTimeMillis();
+                    String message = inputEditText.getText().toString();
+
+                    if (!TextUtils.isEmpty(message)) {
+                        sendMessage(message, stamp);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    public void setSendActionButton(boolean flag) {
+        actionButton.setEnabled(flag);
+        actionButton.setClickable(flag);
+
+        if (flag) {
+            actionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+        } else {
+            actionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.button_form_grey)));
+        }
+    }
+
+    private void setButtonClickListeners() {
+
+        actionButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                long stamp = System.currentTimeMillis();
+                String message = inputEditText.getText().toString();
+                if (!TextUtils.isEmpty(message)) {
+                    sendMessage(message, stamp);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected boolean addViewInLayout(View child, int index, ViewGroup.LayoutParams params) {
+        return super.addViewInLayout(child, index, params);
+    }
+
+    public void setOnSentMessageListener(OnSentMessageListener onSentMessageListener) {
+        this.onSentMessageListener = onSentMessageListener;
+    }
+
+    public void setOnSendSMSRetry(OnSendSMSRetry onSendSMSRetry) {
+        this.onSendSMSRetry = onSendSMSRetry;
+    }
+
+    private void sendMessage(String message, long stamp) {
+
+        ChatMessage chatMessage = new ChatMessage(message, stamp, ChatMessage.Type.SENT);
+        id++;
+        chatMessage.setId(id);
+        chatMessage.setDeliveryStatus(ChatMessage.DeliveryStatus.PENDING);
+        if (onSentMessageListener != null && onSentMessageListener.sendMessage(chatMessage)) {
+            chatViewListAdapter.addMessage(chatMessage);
+            inputEditText.setText("");
+        }
+    }
+
+    public void addMessage(ChatMessage chatMessage) {
+        chatViewListAdapter.addMessage(chatMessage);
+        chatViewListAdapter.notifyDataSetChanged();
+    }
+
+    public void clearMessages() {
+        chatViewListAdapter.clearMessages();
+        chatViewListAdapter.notifyDataSetChanged();
+    }
+
+    public void addMessages(ArrayList<ChatMessage> messages) {
+        chatViewListAdapter.addMessages(messages);
+    }
+
+    public void updateMessageSentStatus(ChatMessage.DeliveryStatus deliveryStatus, int id) {
+        ArrayList<ChatMessage> chatMessageArrayList = chatViewListAdapter.getChatMessages();
+
+        if (chatMessageArrayList != null && !chatMessageArrayList.isEmpty()) {
+            for (ChatMessage chatMessage : chatMessageArrayList) {
+                if (chatMessage.getId() == id) {
+                    chatMessage.setDeliveryStatus(deliveryStatus);
+                }
+            }
+        }
+
+        chatViewListAdapter.setChatMessages(chatMessageArrayList);
+    }
+
+    public interface OnSentMessageListener {
+        boolean sendMessage(ChatMessage chatMessage);
+    }
+
+    public interface OnSendSMSRetry {
+        void onTapRetry(ChatMessage chatMessage);
+    }
+}

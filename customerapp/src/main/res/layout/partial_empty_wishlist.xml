@@ -26,6 +26,7 @@
         android:fontFamily="sans-serif"
         android:textColor="@color/grey_550"
         android:textSize="@dimen/font_medium"
+        android:textStyle="bold"
         android:gravity="center"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/new_margin_small"/>
@@ -41,12 +42,10 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/new_margin_tiny"/>
 
-    <com.tokopedia.design.button.Button
-        android:id="@+id/login_button"
+    <Button
+        android:id="@+id/btn_login"
         android:layout_width="@dimen/button_width"
-        android:layout_height="wrap_content"
-        app:type="primary"
-        app:size="medium"
+        style="@style/Button.Primary.Medium"
         android:textAllCaps="false"
         android:text="@string/empty_button"
         android:layout_gravity="center_horizontal"

@@ -184,15 +184,15 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
     public static class EmptyViewHolder extends RecyclerView.ViewHolder implements
             TopAdsItemClickListener {
-        @BindView(R.id.topads)
         TopAdsView topAdsView;
-        @BindView(R.id.action_btn)
         Button actionBtn;
         private Context context;
         private final String WISHLISH_SRC = "wishlist";
 
         public EmptyViewHolder(View itemView, View.OnClickListener clickListener) {
             super(itemView);
+            topAdsView = (TopAdsView) itemView.findViewById(R.id.topads);
+            actionBtn = (Button) itemView.findViewById(R.id.action_btn);
             context = itemView.getContext();
             ButterKnife.bind(this, itemView);
             TopAdsParams params = new TopAdsParams();

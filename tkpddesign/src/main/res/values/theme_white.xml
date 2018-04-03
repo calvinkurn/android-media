@@ -7,6 +7,14 @@
         <item name="tabTheme">@style/TabBar.White</item>
         <item name="titleTextAppearance">@style/TitleTextAppearance.White</item>
     </style>
+    
+    <style name="Theme.White.PopupTransparent">
+        <item name="popupTheme">@style/TransparentPopupTheme</item>
+    </style>
+
+    <style name="TransparentPopupTheme">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
 
     <style name="Toolbar.White" parent="Base.Toolbar.Theme">
         <item name="android:background">@android:color/white</item>

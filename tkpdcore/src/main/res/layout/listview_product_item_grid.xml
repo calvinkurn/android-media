@@ -178,12 +178,12 @@
             android:textStyle="normal"
             android:lineSpacingExtra="5sp" />
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:drawableLeft="@drawable/ic_place_black_24dp"
+            app:drawableLeftCompat="@drawable/ic_place_grey_24dp"
             android:gravity="center_vertical"
             android:minHeight="25dp"
             android:textColor="@color/black_38"

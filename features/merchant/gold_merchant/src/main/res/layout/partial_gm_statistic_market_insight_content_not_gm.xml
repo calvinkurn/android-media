@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/bg_card_not_gm"
+    android:clickable="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/margin_med"
+    android:paddingLeft="@dimen/margin_vl"
+    android:paddingRight="@dimen/margin_vl"
+    android:paddingTop="@dimen/margin_med"
+    android:visibility="gone"
+    android:id="@+id/vg_market_insight_not_gm">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="27dp"
+            android:layout_height="33dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/ic_lock_icon_again" />
+
+        <TextView
+            style="@style/TextView.Small.WhiteDisabled"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="@string/gm_statistic_get_access_to_see_gm_stat"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/move_to_gmsubscribe_market_insight"
+        android:layout_width="244dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="9dp"
+        android:background="@drawable/rounded_corner">
+
+        <TextView
+            android:id="@+id/market_insight_gmsubscribe_text"
+            style="@style/TextView.Small.Green"
+            android:layout_centerInParent="true"
+            android:text="@string/gm_statistic_upgrade_to_gold_merchant" />
+    </RelativeLayout>
+
+</LinearLayout>

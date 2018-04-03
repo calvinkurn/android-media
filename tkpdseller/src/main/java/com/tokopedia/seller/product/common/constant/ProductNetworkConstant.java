@@ -28,6 +28,7 @@ public class ProductNetworkConstant {
     public static final String RESOLUTION = "resolution";
     public static final String SERVER_ID = "server_id";
     public static final String PRODUCT_ID = "product_id";
+    public static final String UPLOAD_PRODUCT_IMAGE_PATH = UPLOAD_IMAGE + UPLOAD_IMAGE_PRODUCT_PATH;
 
     //manage product
     public static final String PRODUCT_PRICE = "product_price";

@@ -46,6 +46,9 @@ public class Shop {
     private boolean isOwner;
     private List<Badge> badges = new ArrayList<>();
 
+    public Shop() {
+    }
+
     public Shop(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)) {
             setId(object.getString(KEY_ID));

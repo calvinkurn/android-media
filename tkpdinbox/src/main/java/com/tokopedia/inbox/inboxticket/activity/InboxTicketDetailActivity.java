@@ -3,14 +3,19 @@ package com.tokopedia.inbox.inboxticket.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.TaskStackBuilder;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.inbox.inboxticket.InboxTicketConstant;
+import com.tokopedia.inbox.inboxticket.applink.InboxTicketAppLink;
 import com.tokopedia.inbox.inboxticket.fragment.InboxTicketDetailFragment;
 import com.tokopedia.inbox.inboxticket.fragment.InboxTicketFragment;
 import com.tokopedia.inbox.inboxticket.intentservice.InboxTicketIntentService;
@@ -25,7 +30,27 @@ public class InboxTicketDetailActivity extends BasePresenterActivity<InboxTicket
         implements InboxTicketDetailFragment.DoActionInboxTicketListener, InboxTicketConstant,
         InboxTicketResultReceiver.Receiver {
 
+    public static final String PARAM_TICKET_ID = "ticket_id";
+    public static final String PARAM_INBOX_ID = "inbox_id";
+
     InboxTicketResultReceiver mReceiver;
+
+    @DeepLink(InboxTicketAppLink.CUSTOMER_CARE)
+    public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        Intent parentIntent = new Intent(context, InboxTicketActivity.class);
+        String ticketId = bundle.getString(PARAM_TICKET_ID, "");
+        taskStackBuilder.addNextIntent(parentIntent);
+        taskStackBuilder.addNextIntent(getIntent(context, ticketId));
+        return taskStackBuilder;
+    }
+
+    public static Intent getIntent(Context context, String ticketId) {
+        Intent intent = new Intent(context, InboxTicketDetailActivity.class);
+        intent.putExtra(PARAM_TICKET_ID, ticketId);
+        intent.putExtra(PARAM_INBOX_ID, ticketId);
+        return intent;
+    }
 
     @Override
     public String getScreenName() {

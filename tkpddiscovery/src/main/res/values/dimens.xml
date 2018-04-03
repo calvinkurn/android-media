@@ -21,4 +21,6 @@
     <dimen name="suggestion_text_view_extra_line_spacing">4sp</dimen>
     <dimen name="result_count_padding">16dp</dimen>
     <dimen name="height_banner_category_lifestyle">120dp</dimen>
+    <dimen name="guided_search_padding_vertical">12dp</dimen>
+    <dimen name="guided_search_padding_horizontal">20dp</dimen>
 </resources>

@@ -44,7 +44,7 @@ public class WalletAuthInterceptor extends TkpdAuthInterceptor {
         final Request finalRequest = newRequest.build();
         Response response = getResponse(chain, finalRequest);
 
-        if (isNeedRelogin(response)) {
+        if (isNeedGcmUpdate(response)) {
             doRelogin();
             response = getResponse(chain, finalRequest);
         }

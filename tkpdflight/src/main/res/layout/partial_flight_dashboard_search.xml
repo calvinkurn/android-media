@@ -58,15 +58,16 @@
                 android:paddingTop="@dimen/padding_med">
 
                 <android.support.v7.widget.AppCompatTextView
+                    style="@style/TextView.Micro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_vvs"
                     android:gravity="left"
-                    android:text="@string/flight_search_airport_departure_title"
-                    style="@style/TextView.Micro"/>
+                    android:text="@string/flight_search_airport_departure_title" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_departure_airport_label"
+                    style="@style/TextView.Small"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
@@ -74,8 +75,7 @@
                     android:gravity="left"
                     android:hint="@string/flight_dashboard_departure_airport_hint"
                     android:maxLines="2"
-                    android:textColorHint="@color/grey_400"
-                    style="@style/TextView.Small" />
+                    android:textColorHint="@color/grey_400" />
 
             </LinearLayout>
 
@@ -100,23 +100,23 @@
                 android:paddingTop="@dimen/padding_med">
 
                 <android.support.v7.widget.AppCompatTextView
+                    style="@style/TextView.Micro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_vvs"
                     android:gravity="right"
-                    android:text="@string/flight_search_airport_arrival_title"
-                    style="@style/TextView.Micro" />
+                    android:text="@string/flight_search_airport_arrival_title" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_arrival_airport_label"
+                    style="@style/TextView.Small"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:ellipsize="end"
                     android:gravity="right"
                     android:hint="@string/flight_dashboard_arrival_airport_hint"
                     android:maxLines="2"
-                    android:textColorHint="@color/grey_400"
-                    style="@style/TextView.Small" />
+                    android:textColorHint="@color/grey_400" />
 
             </LinearLayout>
         </LinearLayout>
@@ -173,11 +173,11 @@
             tools:visibility="visible" />
 
         <View
+            android:id="@+id/separator_date_return"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginRight="@dimen/margin_small"
-            android:id="@+id/separator_date_return"
             android:background="@drawable/bg_line_separator" />
 
         <com.tokopedia.flight.dashboard.view.widget.TextInputView

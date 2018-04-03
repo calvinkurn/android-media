@@ -51,7 +51,7 @@
                         android:layout_height="20dp"
                         android:layout_gravity="center"
                         android:tint="@color/tkpd_status_red"
-                        android:src="@drawable/ic_close_24dp"
+                        app:srcCompat="@drawable/ic_close_24dp"
                         android:visibility="gone"
                         context:visibility="visible"/>
                 </LinearLayout>
@@ -105,7 +105,7 @@
                         android:layout_height="20dp"
                         android:layout_gravity="center"
                         android:tint="@color/tkpd_status_red"
-                        android:src="@drawable/ic_close_24dp"
+                        app:srcCompat="@drawable/ic_close_24dp"
                         android:visibility="gone"
                         context:visibility="visible"/>
                 </LinearLayout>

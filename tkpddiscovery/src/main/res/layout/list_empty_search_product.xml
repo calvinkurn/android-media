@@ -22,7 +22,7 @@
             android:layout_marginBottom="@dimen/margin_med"
             android:layout_marginTop="@dimen/margin_vs"
             android:gravity="center_horizontal"
-            android:src="@drawable/ic_empty_search" />
+            app:srcCompat="@drawable/ic_empty_search" />
 
         <TextView
             android:id="@+id/text_view_empty_title_text"

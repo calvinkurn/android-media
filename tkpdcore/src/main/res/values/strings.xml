@@ -1470,9 +1470,6 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_notif_purchase_rejected">Pesanan kamu tidak dapat diproses </string>
     <string name="title_notif_purchase_delivered">Pesanan kamu telah tiba</string>
     <string name="title_notif_rescenter">Pusat Resolusi</string>
-
-    // CONTACT US
-    ===============================================================================================================================
     <string name="title_what_can_we_help">1. Apa yang bisa kami bantu?</string>
     <string name="title_your_problem_bro">2. Apa masalah yang kamu alami?</string>
     <string name="title_did_you_know">3. Tahukah kamu?</string>
@@ -1534,7 +1531,6 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_activity_simple_home">SimpleHomeActivity</string>
     <string name="add_product_name_alert">Maximal 70 huruf</string>
 
-    //INFO TOP ADS
     <string name="promote_0">TopAds</string>
     <string name="promote_1">Tingkatkan penjualan</string>
     <string name="promote_2">Toko dan produk Anda akan lebih mudah ditemukan oleh pengunjung Tokopedia</string>
@@ -1561,7 +1557,6 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="error_choose_google_map_location">Mohon pilih lokasi Pickup</string>
     <string name="error_fill_street_address">Mohon isi Alamat Jalan Anda</string>
     <string name="toggle_rpx_next_day_i_drop">RPX Next Day Package dan IDrop tidak dapat dipilih bersamaan</string>
-    //GOJEK
     <string name="title_delivery_location">Lokasi Pickup (Opsional)</string>
     <string name="title_delivery_location_cart">Lokasi Pengiriman</string>
     <string name="desc_delivery_location">Pastikan lokasi yang Anda tandai di peta sesuai dengan alamat yang Anda isi di atas</string>
@@ -1639,7 +1634,7 @@ di Tokopedia Sekarang!</string>
 
     <string name="subtitle_accuracy">* Nilai ketepatan produk dengan gambar</string>
     <string name="subtitle_quality">* Nilai kualitas produk</string>
-    <string name="image_description">Keterangan gambar...</string>s
+    <string name="image_description">Keterangan gambar...</string>
     <string name="image_description_2">Deskripsi gambar</string>
     <string name="deadline_prompt">"Batas waktu penilaian "</string>
     <string name="edited">(diubah)</string>
@@ -2141,7 +2136,7 @@ di Tokopedia Sekarang!</string>
     <string name="app_share_title">Tokopedia, Satu Aplikasi untuk Semua Kebutuhan</string>
     <string name="app_share_contents"><![CDATA[Mudahnya beli produk idaman, pulsa, token listrik, tiket liburan, hingga bayar berbagai tagihan, semua dimulai dari aplikasi Tokopedia. Kamu juga bisa mulai & kembangkan bisnis di sini. Yuk, download sekarang!]]></string>
     <string name="app_share_label">Share ke Temanmu, Yuk!</string>
-    <string name="app_share_referral_label_desc"><![CDATA[Ayo share kode ini dan dapatkan voucher cashback TokoCash 25% hingga Rp20.000 saat mereka melakukan transaksi pertama di Tokopedia.]]></string>
+    <string name="app_share_referral_label_desc"><![CDATA[Ayo share kode ini ke temanmu dan nikmati bonus TokoCash setelah transaksi pertama mereka berhasil.]]></string>
     <string name="app_share_btn_label">Ajak Teman</string>
     <string name="tambah_produk">+ Tambah Produk</string>
     <string name="product_share_subtitle">Dimana saja dan kapan saja</string>
@@ -2180,8 +2175,9 @@ di Tokopedia Sekarang!</string>
     <string name="referral_phone_number_verify_screen_name">Phone Number Verification</string>
     <string name="phone_not_verified_error_message">Silakan verifikasi nomor handphone Anda untuk masuk ke halaman berikutnya.</string>
     <string name="copy_coupon_code_text">Kode voucher telah tersalin</string>
-    <string name="cek_label"> Cek - </string>
-    <string name="discussion_shop_label_show_more_discussion">Lihat Diskusi Selengkapnya</string>
+    <string name="cek_label"> Cek : </string>
+    <string name="referral_welcome_desc" formatted="false" ><![CDATA[Hai %s, kamu mendapatkan kode referral dari %s. Gunakan kode ini saat transaksi pertamamu di Tokopedia & nikmati bonus cashback ke TokoCash.]]></string>
+	<string name="discussion_shop_label_show_more_discussion">Lihat Diskusi Selengkapnya</string>
     <string name="discussion_shop_label_empty_list_title">Belum ada diskusi di toko ini</string>
     <string name="discussion_shop_label_empty_list_content">Diskusi memberikan kesempatan tanya jawab oleh pembeli &amp; penjual sebelum melakukan transaksi</string>
 

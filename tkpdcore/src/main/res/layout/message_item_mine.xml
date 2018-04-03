@@ -99,7 +99,7 @@
         android:layout_toLeftOf="@+id/card_group_chat_message"
         android:layout_toStartOf="@+id/card_group_chat_message"
         android:visibility="visible"
-        android:src="@drawable/ic_action_attachment"/>
+        app:srcCompat="@drawable/ic_action_attachment"/>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/main"

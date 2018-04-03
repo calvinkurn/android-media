@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingTop="@dimen/padding_small"
     tools:showIn="@layout/item_flight_detail">
 
     <RelativeLayout
@@ -109,6 +108,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/container_pnr"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_8"
         android:background="@color/black_twenty_percent" />
 </RelativeLayout>

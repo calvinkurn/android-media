@@ -16,7 +16,7 @@
 
         <ImageView
             style="@style/ImageView.ShopSettingTitleImage"
-            android:src="@drawable/ic_icon_toko" />
+            app:srcCompat="@drawable/ic_icon_toko" />
 
         <TextView
             android:id="@+id/welcome_shop_label"
@@ -33,7 +33,7 @@
             android:gravity="center"
             android:text="@string/shop_open_label_info_title_shop" />
 
-        <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/shop_slogan_input_layout"
             style="@style/HintTextInputLayout"
             android:layout_marginBottom="@dimen/margin_large"
@@ -48,9 +48,9 @@
                 style="@style/EditText.ShopSetting"
                 android:layout_width="match_parent"
                 android:maxLength="@integer/open_shop_max_slogan_char" />
-        ​</com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
+        ​</com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-        <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/shop_desc_input_layout"
             style="@style/HintTextInputLayout"
             android:layout_marginBottom="@dimen/margin_large"
@@ -66,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:maxLength="@integer/open_shop_max_desc_char" />
             ​
-        </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
         <TextView
             style="@style/TextView.Micro.BlackSecondary"
@@ -91,7 +91,7 @@
                     android:id="@+id/image_picker"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/ic_add_photo_box" />
+                    app:srcCompat="@drawable/ic_add_photo_box" />
             </FrameLayout>
 
             <LinearLayout

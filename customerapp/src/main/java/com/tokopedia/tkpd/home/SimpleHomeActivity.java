@@ -185,16 +185,15 @@ public class SimpleHomeActivity extends TActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.home:
+        if (item.getItemId() == R.id.home) {
                 Log.d(TAG, messageTAG + " R.id.home !!!");
                 return true;
-            case android.R.id.home:
-                Log.d(TAG, messageTAG + " android.R.id.home !!!");
-                getSupportFragmentManager().popBackStack();
-                return true;
-            case R.id.action_cart:
-                return onCartOptionSelected(this);
+        } else if (item.getItemId() == android.R.id.home) {
+            Log.d(TAG, messageTAG + " android.R.id.home !!!");
+            getSupportFragmentManager().popBackStack();
+            return true;
+        } else if (item.getItemId() == R.id.action_cart) {
+            return onCartOptionSelected(this);
         }
 
         return super.onOptionsItemSelected(item);

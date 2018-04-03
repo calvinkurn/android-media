@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        app:srcCompat="@drawable/ic_flash_turn_on"
+        app:srcCompat="@drawable/qr_ic_flash_turn_on"
         android:layout_marginBottom="@dimen/margin_large"/>
 
     <ProgressBar

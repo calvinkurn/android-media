@@ -23,7 +23,7 @@
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
                 android:maxWidth="500dp"
-                android:src="@drawable/bg_open_shop_success" />
+                app:srcCompat="@drawable/bg_open_shop_success" />
 
             <TextView
                 style="@style/TextView.TitleBig.Bold"

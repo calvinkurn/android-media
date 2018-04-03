@@ -1,5 +1,8 @@
 package com.tokopedia.flight.booking.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 
@@ -9,7 +12,7 @@ import java.util.List;
  * @author by alvarisi on 11/15/17.
  */
 
-public class FlightBookingCartData {
+public class FlightBookingCartData implements Parcelable {
     private String id;
     private int refreshTime;
     private FlightBookingPhoneCodeViewModel defaultPhoneCode;
@@ -21,6 +24,29 @@ public class FlightBookingCartData {
 
     public FlightBookingCartData() {
     }
+
+    protected FlightBookingCartData(Parcel in) {
+        id = in.readString();
+        refreshTime = in.readInt();
+        defaultPhoneCode = in.readParcelable(FlightBookingPhoneCodeViewModel.class.getClassLoader());
+        departureTrip = in.readParcelable(FlightDetailViewModel.class.getClassLoader());
+        returnTrip = in.readParcelable(FlightDetailViewModel.class.getClassLoader());
+        luggageViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
+        mealViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
+        newFarePrices = in.createTypedArrayList(NewFarePrice.CREATOR);
+    }
+
+    public static final Creator<FlightBookingCartData> CREATOR = new Creator<FlightBookingCartData>() {
+        @Override
+        public FlightBookingCartData createFromParcel(Parcel in) {
+            return new FlightBookingCartData(in);
+        }
+
+        @Override
+        public FlightBookingCartData[] newArray(int size) {
+            return new FlightBookingCartData[size];
+        }
+    };
 
     public int getRefreshTime() {
         return refreshTime;
@@ -85,5 +111,22 @@ public class FlightBookingCartData {
 
     public void setDefaultPhoneCode(FlightBookingPhoneCodeViewModel defaultPhoneCode) {
         this.defaultPhoneCode = defaultPhoneCode;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeInt(refreshTime);
+        dest.writeParcelable(defaultPhoneCode, flags);
+        dest.writeParcelable(departureTrip, flags);
+        dest.writeParcelable(returnTrip, flags);
+        dest.writeTypedList(luggageViewModels);
+        dest.writeTypedList(mealViewModels);
+        dest.writeTypedList(newFarePrices);
     }
 }

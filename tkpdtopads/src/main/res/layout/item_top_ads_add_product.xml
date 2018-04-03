@@ -13,7 +13,7 @@
         android:layout_height="50dp"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/margin_small"
-        android:src="@drawable/ic_loading_toped" />
+        app:srcCompat="@drawable/ic_loading_toped" />
 
     <TextView
         android:id="@+id/name_product"
@@ -30,6 +30,6 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_gravity="right"
-        android:src="@drawable/ic_delete_grey" />
+        app:srcCompat="@drawable/ic_delete_grey" />
 
 </RelativeLayout>

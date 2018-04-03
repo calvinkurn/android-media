@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
@@ -23,7 +24,7 @@
             android:id="@+id/image_view_search"
             android:layout_width="@dimen/image_width_xxs"
             android:layout_height="@dimen/image_width_xxs"
-            android:src="@drawable/ic_search_grey" />
+            app:srcCompat="@drawable/ic_search_grey" />
 
         <EditText
             android:id="@+id/edit_text_search"
@@ -46,7 +47,7 @@
             android:layout_width="@dimen/image_width_xxs"
             android:layout_height="@dimen/image_width_xxs"
             android:background="@null"
-            android:src="@drawable/ic_ticker_action_close_12dp"
+            app:srcCompat="@drawable/ic_ticker_action_close_12dp"
             android:visibility="gone" />
     </LinearLayout>
 
