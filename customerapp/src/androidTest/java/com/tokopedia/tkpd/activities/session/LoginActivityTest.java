@@ -22,10 +22,12 @@ import com.facebook.AccessToken;
 import com.facebook.AccessTokenSource;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.gson.Gson;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.di.SessionModule;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.network.ErrorMessageException;
@@ -67,6 +69,7 @@ import rx.schedulers.Schedulers;
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.unregisterIdlingResources;
+import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.typeText;
@@ -76,8 +79,11 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasCom
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.tokopedia.tkpd.Utils.changeScreenOrientation;
+import static com.tokopedia.tkpd.Utils.childAtPosition;
+import static com.tokopedia.tkpd.Utils.matchToolbarTitle;
 import static com.tokopedia.tkpd.Utils.nthChildOf;
 import static com.tokopedia.tkpd.Utils.snackbarAnyMatcher;
 import static com.tokopedia.tkpd.Utils.snackbarMatcher;
@@ -117,6 +123,7 @@ public class LoginActivityTest {
     private ErrorMessageException facebookErrorNotAuthorizedException;
     private ErrorMessageException facebookException;
     private MockWebServer server3;
+    private String titleActivityActivation;
 
     @Before
     public void setup() throws Exception {
@@ -162,6 +169,8 @@ public class LoginActivityTest {
 
         ConsumerMainApplication application = (ConsumerMainApplication) InstrumentationRegistry.getTargetContext().getApplicationContext();
 
+        titleActivityActivation = application.getString(R.string.title_activity_activation);
+
         facebookErrorNotAuthorizedException = new ErrorMessageException(
                 application.getString(R.string.facebook_error_not_authorized),
                 ErrorCode.FACEBOOK_AUTHORIZATION_EXCEPTION);
@@ -175,6 +184,9 @@ public class LoginActivityTest {
         SessionHandler.clearUserData(application);
 
         baseJsonFactory = new BaseJsonFactory(InstrumentationRegistry.getContext());
+
+        // prevent auto complete textview in here
+        new LocalCacheHandler(application, SessionModule.LOGIN_CACHE).clearCache( SessionModule.LOGIN_CACHE);
     }
 
     /**
@@ -409,8 +421,6 @@ public class LoginActivityTest {
                     return null;
                 }
             }).when(testSessionModule.getGetFacebookCredentialUseCase()).execute(any(RequestParams.class), any(GetFacebookCredentialSubscriber.class));
-
-
         }
 
         ViewInteraction loginTextView = onView(
@@ -705,6 +715,10 @@ public class LoginActivityTest {
         assertTrue(mIntentsRule.getActivity().isDestroyed());
     }
 
+    /**
+     * test_id {"TL/001","TL/002"}
+     * @throws Exception
+     */
     @Test
     public void testTokopediaLoginEnterSecurityQuestion() throws Exception{
         preparePartialSmartLockBundle();
@@ -716,13 +730,93 @@ public class LoginActivityTest {
 
         startEmptyIntentLoginActivity();
 
+        onView(withId(R.id.email_auto)).perform(typeText("cincin.jati+47@tokopedia.com"));
+        onView(withId(R.id.password)).perform(typeText("optimus"));
+
         onView(withId(R.id.accounts_sign_in)).check(matches(isDisplayed())).perform(click());
-        onView(withId(com.tokopedia.design.R.id.email_auto)).perform(typeText("cincin.jati+47@tokopedia.com"));
-        onView(withId(com.tokopedia.design.R.id.password)).perform(typeText("cincin.jati+47@tokopedia.com"));
 
-        Thread.sleep(2000);
+        onView(withText(R.string.verification_for_security)).check(matches(isDisplayed()));
+    }
 
-        Log.d("NORMANSYAH", "test lalalala");
+    @Test
+    public void testTokopediaLoginEmailNotActivated() throws Exception{
+        preparePartialSmartLockBundle();
+
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("info.json")));
+        server2.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("error_not_activated_messages.json")));
+
+        startEmptyIntentLoginActivity();
+
+        onView(withId(R.id.email_auto)).perform(typeText("cincin.jati+47@tokopedia.com"));
+        onView(withId(R.id.password)).perform(typeText("optimus"));
+
+        onView(withId(R.id.accounts_sign_in)).check(matches(isDisplayed())).perform(click());
+
+        onView(withText(R.string.verification_for_security)).check(matches(isDisplayed()));
+
+        matchToolbarTitle(titleActivityActivation);
+    }
+
+    /**
+     * test_id {"TL/003"}
+     * @throws Exception
+     */
+    @Test
+    public void testFailedTokopediaLogin() throws Exception{
+        preparePartialSmartLockBundle();
+
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("info.json")));
+        server2.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("relogin.json")));
+
+        startEmptyIntentLoginActivity();
+
+        onView(withId(R.id.email_auto)).perform(typeText("cincin.jati+47@tokopedia.com"));
+        onView(withId(R.id.password)).perform(typeText("optimus"));
+
+        onView(withId(R.id.accounts_sign_in)).check(matches(isDisplayed())).perform(click());
+
+        snackbarAnyMatcher();
+    }
+
+    @Test
+    public void testVerifyEmailTokopediaLogin() throws Exception{
+        preparePartialSmartLockBundle();
+
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+
+        startEmptyIntentLoginActivity();
+
+        onView(withId(R.id.password)).perform(typeText("optimus"));
+
+        onView(withId(R.id.accounts_sign_in)).check(matches(isDisplayed())).perform(click());
+
+        ViewInteraction loginTextView = onView(
+                nthChildOf(nthChildOf(nthChildOf(nthChildOf(
+                        withId(R.id.wrapper_email),
+                        0),2),0),1));
+        loginTextView.check(matches(withText(R.string.error_field_required)));
+
+        onView(withId(R.id.email_auto)).perform(typeText("cincin.jati+47tokopedia.com"));
+        onView(withId(R.id.accounts_sign_in)).check(matches(isDisplayed())).perform(click());
+
+        loginTextView.check(matches(withText(R.string.error_invalid_email)));
+
+        ViewInteraction passwordTextView = onView(
+                nthChildOf(nthChildOf(nthChildOf(nthChildOf(
+                        withId(R.id.wrapper_password),
+                        0),2),0),1));
+
+        onView(withId(R.id.password)).perform(clearText());
+        onView(withId(R.id.accounts_sign_in)).check(matches(isDisplayed())).perform(click());
+        passwordTextView.check(matches(withText(R.string.error_field_required)));
+
+        onView(withId(R.id.password)).perform(typeText("123"));
+        onView(withId(R.id.accounts_sign_in)).check(matches(isDisplayed())).perform(click());
+        passwordTextView.check(matches(withText(R.string.error_incorrect_password)));
     }
 
     /**

@@ -47,6 +47,9 @@ public class AutomatorTest {
         threeButton.click();
 
         UiObject plusButton = uiDevice.findObject(new UiSelector().resourceId("com.android.calculator2:id/op_add"));
+        if(!plusButton.exists())
+            return;
+
         plusButton.click();
 
         UiObject fiveButton = uiDevice.findObject(new UiSelector().text("5"));
