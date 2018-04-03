@@ -85,6 +85,9 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private static final int REQUEST_CODE_LOYALTY = 200;
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
+    @Inject
+    FlightModuleRouter flightModuleRouter;
+
     FlightBookingReviewModel flightBookingReviewModel;
     private LinearLayout fullPageLoading;
     private LinearLayout discountAppliedLayout;
@@ -278,11 +281,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                 }
                 break;
             case REQUEST_CODE_LOYALTY:
+                if (resultCode == flightModuleRouter.getLoyaltyResultCode())
                 break;
         }
     }
 
-    @Override
+ /*   @Override
     public void onErrorCheckVoucherCode(Throwable t) {
         voucherCartView.setErrorVoucher(FlightErrorUtil.getMessageFromException(getActivity(), t));
     }
@@ -292,7 +296,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         KeyboardHandler.hideSoftKeyboard(getActivity());
         voucherCartView.setUsedVoucher(attributesVoucher.getVoucherCode(), attributesVoucher.getMessage());
     }
-
+*/
     @Override
     public String getVoucherCode() {
         return voucherCartView.getVoucherCode();

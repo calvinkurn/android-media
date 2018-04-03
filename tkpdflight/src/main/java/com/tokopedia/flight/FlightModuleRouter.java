@@ -47,4 +47,6 @@ public interface FlightModuleRouter {
     Interceptor getChuckInterceptor();
 
     Intent getLoyaltyWithCoupon(FragmentActivity activity, String platform, String categoryId, String cartId);
+
+    int getLoyaltyRequestCode();
 }

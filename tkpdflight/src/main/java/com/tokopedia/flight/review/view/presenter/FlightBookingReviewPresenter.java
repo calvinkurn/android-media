@@ -142,7 +142,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     public void checkVoucherCode(String cartId, String voucherCode) {
         getView().showProgressDialog();
         flightAnalytics.eventVoucherClick(voucherCode);
-        flightCheckVoucherCodeUseCase.execute(flightCheckVoucherCodeUseCase.createRequestParams(cartId, voucherCode), getSubscriberCheckVoucherCode(voucherCode));
+//        flightCheckVoucherCodeUseCase.execute(flightCheckVoucherCodeUseCase.createRequestParams(cartId, voucherCode), getSubscriberCheckVoucherCode(voucherCode));
     }
 
     @Override
@@ -191,31 +191,31 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         };
     }
 
-    private Subscriber<AttributesVoucher> getSubscriberCheckVoucherCode(final String voucherCode) {
-        return new Subscriber<AttributesVoucher>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().hideProgressDialog();
-                    getView().onErrorCheckVoucherCode(e);
-                    flightAnalytics.eventVoucherErrors(voucherCode, e.getMessage());
-                }
-            }
-
-            @Override
-            public void onNext(AttributesVoucher attributesVoucher) {
-                getView().hideProgressDialog();
-                flightAnalytics.eventVoucherSuccess(attributesVoucher.getVoucherCode(), attributesVoucher.getMessage());
-                getView().onSuccessCheckVoucherCode(attributesVoucher);
-                getView().updateFinalTotal(attributesVoucher, getView().getCurrentBookingReviewModel());
-            }
-        };
-    }
+//    private Subscriber<AttributesVoucher> getSubscriberCheckVoucherCode(final String voucherCode) {
+//        return new Subscriber<AttributesVoucher>() {
+//            @Override
+//            public void onCompleted() {
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                if (isViewAttached()) {
+//                    getView().hideProgressDialog();
+//                    getView().onErrorCheckVoucherCode(e);
+//                    flightAnalytics.eventVoucherErrors(voucherCode, e.getMessage());
+//                }
+//            }
+//
+//            @Override
+//            public void onNext(AttributesVoucher attributesVoucher) {
+//                getView().hideProgressDialog();
+//                flightAnalytics.eventVoucherSuccess(attributesVoucher.getVoucherCode(), attributesVoucher.getMessage());
+//                getView().onSuccessCheckVoucherCode(attributesVoucher);
+//                getView().updateFinalTotal(attributesVoucher, getView().getCurrentBookingReviewModel());
+//            }
+//        };
+//    }
 
     public Subscriber<FlightCheckoutEntity> getSubscriberSubmitData() {
         return new Subscriber<FlightCheckoutEntity>() {

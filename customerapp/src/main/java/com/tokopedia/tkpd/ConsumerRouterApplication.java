@@ -96,11 +96,15 @@ import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.digital.tokocash.topup.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
+import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.domain.FlightDeleteDashboardCacheUseCase;
+import com.tokopedia.flight.review.data.model.AttributesVoucher;
+import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
@@ -111,8 +115,10 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
+import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
@@ -245,7 +251,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
-        DigitalRouter, KolRouter, StreamModuleRouter {
+        DigitalRouter, KolRouter, StreamModuleRouter, LoyaltyModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -681,7 +687,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getLoyaltyWithCoupon(FragmentActivity activity, String platform, String categoryId, String cartId) {
-        return LoyaltyActivity.newInstanceCouponActive(activity, "digital", categoryId, cartId);
+        return LoyaltyActivity.newInstanceCouponActive(activity, platform, categoryId, cartId);
+    }
+
+    @Override
+    public int getLoyaltyRequestCode() {
+        return LoyaltyActivity.LOYALTY_REQUEST_CODE;
     }
 
     @Override
@@ -1634,5 +1645,24 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 listener.onGenerateLink(shareContents, shareUri);
             }
         });
+    }
+
+    @Override
+    public Observable<VoucherViewModel> checkFlightVoucher(String voucherCode, String cartId, String isCoupon) {
+        FlightRepository flightRepository = FlightComponentInstance.getFlightComponent(this).flightRepository();
+        FlightCheckVoucherCodeUseCase checkVoucherCodeUseCase = new FlightCheckVoucherCodeUseCase(flightRepository);
+        return checkVoucherCodeUseCase.createObservable(checkVoucherCodeUseCase.createRequestParams(cartId, voucherCode, isCoupon))
+                .map(new Func1<AttributesVoucher, VoucherViewModel>() {
+                    @Override
+                    public VoucherViewModel call(AttributesVoucher attributesVoucher) {
+                        VoucherViewModel voucherViewModel = new VoucherViewModel();
+                        voucherViewModel.setCode(attributesVoucher.getVoucherCode());
+                        voucherViewModel.setMessage(attributesVoucher.getMessage());
+                        voucherViewModel.setRawDiscount((long) attributesVoucher.getDiscountAmountPlain());
+                        voucherViewModel.setRawCashback((long) attributesVoucher.getCashbackAmountPlain());
+                        voucherViewModel.setSuccess(true);
+                        return voucherViewModel;
+                    }
+                });
     }
 }

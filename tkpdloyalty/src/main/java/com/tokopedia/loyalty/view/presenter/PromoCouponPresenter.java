@@ -1,15 +1,16 @@
 package com.tokopedia.loyalty.view.presenter;
 
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.interactor.IPromoCouponInteractor;
 import com.tokopedia.loyalty.view.view.IPromoCouponView;
 
@@ -30,11 +31,13 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
     private final IPromoCouponInteractor promoCouponInteractor;
     private final IPromoCouponView view;
+    private FlightCheckVoucherUseCase flightCheckVoucherUseCase;
 
     @Inject
-    public PromoCouponPresenter(IPromoCouponView view, IPromoCouponInteractor promoCouponInteractor) {
+    public PromoCouponPresenter(IPromoCouponView view, IPromoCouponInteractor promoCouponInteractor, FlightCheckVoucherUseCase flightCheckVoucherUseCase) {
         this.view = view;
         this.promoCouponInteractor = promoCouponInteractor;
+        this.flightCheckVoucherUseCase = flightCheckVoucherUseCase;
     }
 
     @Override
@@ -140,6 +143,43 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 couponData.getCode(),
                 AuthUtil.generateParamsNetwork(view.getContext(), param
                 ), makeDigitalCouponSubscriber(couponData));
+    }
+
+    @Override
+    public void submitFlightVoucher(final CouponData data, String cartId) {
+        view.showProgressLoading();
+        flightCheckVoucherUseCase.execute(flightCheckVoucherUseCase.createRequest(cartId, data.getCode(), "1"),
+                new Subscriber<VoucherViewModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        view.hideProgressLoading();
+                        if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                            data.setErrorMessage(e.getMessage());
+                            view.couponError();
+                        } else {
+                            view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(VoucherViewModel voucherViewModel) {
+                        CouponViewModel viewModel = new CouponViewModel();
+                        viewModel.setAmount(voucherViewModel.getAmount());
+                        viewModel.setCode(voucherViewModel.getCode());
+                        viewModel.setRawCashback(voucherViewModel.getRawCashback());
+                        viewModel.setRawDiscount(voucherViewModel.getRawDiscount());
+                        viewModel.setMessage(voucherViewModel.getMessage());
+                        viewModel.setTitle(voucherViewModel.getMessage());
+                        viewModel.setSuccess(true);
+                        view.receiveResult(viewModel);
+                        view.hideProgressLoading();
+                    }
+                });
     }
 
     private Subscriber<CouponViewModel> makeCouponSubscriber(final CouponData couponData) {

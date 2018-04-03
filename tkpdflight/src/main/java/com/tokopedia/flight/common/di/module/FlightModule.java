@@ -69,15 +69,20 @@ public class FlightModule {
         throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
     }
 
+    @FlightScope
+    @Provides
+    public FlightModuleRouter provideFlightModuleRouter(@ApplicationContext Context context){
+        if (context instanceof FlightModuleRouter) {
+            return ((FlightModuleRouter) context);
+        }
+        throw new RuntimeException("App should implement " + FlightModuleRouter.class.getSimpleName());
+    }
 
     @FlightScope
     @Provides
     @FlightChuckQualifier
-    public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-        if (context instanceof FlightModuleRouter) {
-            return ((FlightModuleRouter) context).getChuckInterceptor();
-        }
-        throw new RuntimeException("App should implement " + FlightModuleRouter.class.getSimpleName());
+    public Interceptor provideChuckInterceptory(FlightModuleRouter flightModuleRouter) {
+        return flightModuleRouter.getChuckInterceptor();
     }
 
     @FlightScope
