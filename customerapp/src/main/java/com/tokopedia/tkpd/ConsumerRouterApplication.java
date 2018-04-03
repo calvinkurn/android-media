@@ -105,6 +105,7 @@ import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.domain.FlightDeleteDashboardCacheUseCase;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
+import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
@@ -175,6 +176,7 @@ import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.flight.FlightGetProfileInfoData;
+import com.tokopedia.tkpd.flight.FlightVoucherCodeWrapperImpl;
 import com.tokopedia.tkpd.flight.di.DaggerFlightConsumerComponent;
 import com.tokopedia.tkpd.flight.di.FlightConsumerComponent;
 import com.tokopedia.tkpd.flight.presentation.FlightPhoneVerificationActivity;
@@ -691,8 +693,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public int getLoyaltyRequestCode() {
-        return LoyaltyActivity.LOYALTY_REQUEST_CODE;
+    public FlightVoucherCodeWrapper getFlightVoucherCodeWrapper() {
+        return new FlightVoucherCodeWrapperImpl();
     }
 
     @Override

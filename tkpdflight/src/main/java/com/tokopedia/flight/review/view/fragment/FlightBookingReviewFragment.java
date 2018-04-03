@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
@@ -55,6 +54,7 @@ import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
+import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.activity.OnBackActionListener;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
@@ -281,22 +281,53 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                 }
                 break;
             case REQUEST_CODE_LOYALTY:
-                if (resultCode == flightModuleRouter.getLoyaltyResultCode())
+                FlightVoucherCodeWrapper codeWrapper = flightModuleRouter.getFlightVoucherCodeWrapper();
+                if (resultCode == codeWrapper.voucherResultCode()) {
+                    Bundle bundle = data.getExtras();
+                    if (bundle != null) {
+                        String voucherCode = bundle.getString(codeWrapper.voucherCode(), "");
+                        String voucherMessage = bundle.getString(codeWrapper.voucherMessage(), "");
+                        long voucherDiscountAmount = bundle.getLong(codeWrapper.voucherDiscountAmount());
+
+                        voucherCartView.setVoucher(voucherCode, voucherMessage);
+
+                        AttributesVoucher attributesVoucher = new AttributesVoucher();
+                        attributesVoucher.setVoucherCode(voucherCode);
+                        attributesVoucher.setMessage(voucherMessage);
+                        attributesVoucher.setDiscountAmountPlain(voucherDiscountAmount);
+                        updateFinalTotal(attributesVoucher, getCurrentBookingReviewModel());
+                    }
+                } else if (resultCode == codeWrapper.couponResultCode()) {
+                    Bundle bundle = data.getExtras();
+                    if (bundle != null) {
+                        String couponTitle = bundle.getString(codeWrapper.couponTitle(), "");
+                        String couponMessage = bundle.getString(codeWrapper.couponMessage(), "");
+                        String couponCode = bundle.getString(codeWrapper.couponCode(), "");
+                        long couponDiscountAmount = bundle.getLong(codeWrapper.couponDiscountAmount());
+
+                        AttributesVoucher attributesVoucher = new AttributesVoucher();
+                        attributesVoucher.setVoucherCode(couponCode);
+                        attributesVoucher.setMessage(couponMessage);
+                        attributesVoucher.setDiscountAmountPlain(couponDiscountAmount);
+                        updateFinalTotal(attributesVoucher, getCurrentBookingReviewModel());
+                        voucherCartView.setCoupon(couponTitle, couponMessage, couponCode);
+                    }
+                }
                 break;
         }
     }
 
- /*   @Override
-    public void onErrorCheckVoucherCode(Throwable t) {
-        voucherCartView.setErrorVoucher(FlightErrorUtil.getMessageFromException(getActivity(), t));
-    }
+    /*   @Override
+       public void onErrorCheckVoucherCode(Throwable t) {
+           voucherCartView.setErrorVoucher(FlightErrorUtil.getMessageFromException(getActivity(), t));
+       }
 
-    @Override
-    public void onSuccessCheckVoucherCode(AttributesVoucher attributesVoucher) {
-        KeyboardHandler.hideSoftKeyboard(getActivity());
-        voucherCartView.setUsedVoucher(attributesVoucher.getVoucherCode(), attributesVoucher.getMessage());
-    }
-*/
+       @Override
+       public void onSuccessCheckVoucherCode(AttributesVoucher attributesVoucher) {
+           KeyboardHandler.hideSoftKeyboard(getActivity());
+           voucherCartView.setUsedVoucher(attributesVoucher.getVoucherCode(), attributesVoucher.getMessage());
+       }
+   */
     @Override
     public String getVoucherCode() {
         return voucherCartView.getVoucherCode();
@@ -356,8 +387,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
 
     @Override
     public void onClickUseVoucher() {
-        if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter){
-            Intent intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCoupon(getActivity(),"flight", "27", getCurrentCartData().getId());
+        if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
+            Intent intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCoupon(getActivity(), "flight", "27", getCurrentCartData().getId());
             startActivityForResult(intent, REQUEST_CODE_LOYALTY);
         }
     }

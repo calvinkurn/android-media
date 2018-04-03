@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
+import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 
 import okhttp3.Interceptor;
@@ -48,5 +49,5 @@ public interface FlightModuleRouter {
 
     Intent getLoyaltyWithCoupon(FragmentActivity activity, String platform, String categoryId, String cartId);
 
-    int getLoyaltyRequestCode();
+    FlightVoucherCodeWrapper getFlightVoucherCodeWrapper();
 }
