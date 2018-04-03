@@ -1,7 +1,11 @@
 package com.tokopedia.loyalty.view.viewholder;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
@@ -35,6 +39,14 @@ public class PromoDetailTnCViewHolder extends RecyclerView.ViewHolder {
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setDisplayZoomControls(true);
         webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String request) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(request));
+                view.getContext().startActivity(intent);
+                return true;
+            }
+        });
         webView.loadDataWithBaseURL(null, content, "text/html", "UTF-8", null);
     }
 

@@ -72,12 +72,23 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             promoData.setEndDate(promoResponse.getMeta().getEndDate());
 
             promoData.setPromoCodeList(getPromoCodes(promoResponse));
-            promoData.setMultiplePromoCodeCount(promoData.getPromoCodeList().size());
+            promoData.setMultiplePromoCodeCount(getMultiplePromoCodeCount(promoData.getPromoCodeList()));
             promoData.setMultiplePromo(!promoData.getPromoCodeList().isEmpty());
             promoData.setPromoCode(promoResponse.getMeta().getPromoCode());
             promoDataList.add(promoData);
         }
+
         return promoDataList;
+    }
+
+    private int getMultiplePromoCodeCount(List<PromoCodeViewModel> promoCodeViewModelList) {
+        int numberOfPromoCode = 0;
+
+        for (PromoCodeViewModel promoCode : promoCodeViewModelList) {
+            numberOfPromoCode += promoCode.getGroupCode().size();
+        }
+
+        return numberOfPromoCode;
     }
 
     private List<PromoCodeViewModel> getPromoCodes(PromoResponse promoResponse) {
