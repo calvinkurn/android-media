@@ -1,8 +1,6 @@
 package com.tokopedia.transaction.checkout.domain.usecase;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
