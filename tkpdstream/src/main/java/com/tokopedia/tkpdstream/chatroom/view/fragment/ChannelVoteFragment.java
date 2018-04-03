@@ -89,6 +89,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     private ProgressBarWithTimer progressBarWithTimer;
     private UserSession userSession;
     private Snackbar snackBar;
+    private boolean canVote;
 
     @Override
     protected String getScreenName() {
@@ -321,8 +322,9 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     @Override
     public void onVoteOptionClicked(VoteViewModel element) {
-        if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
-                || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE) {
+        if (canVote && (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
+                || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE)) {
+            canVote = false;
             boolean voted = (votedView.getVisibility() == View.VISIBLE);
             presenter.sendVote(userSession, voteInfoViewModel.getPollId(), voted, element);
 
@@ -361,6 +363,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     @Override
     public void onSuccessVote(VoteViewModel element, VoteStatisticViewModel voteStatisticViewModel) {
+        canVote = true;
         if (voteInfoViewModel != null) {
             voteAdapter.change(voteInfoViewModel, element, voteStatisticViewModel);
             voteInfoViewModel.setVoted(true);
@@ -382,6 +385,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     @Override
     public void onErrorVote(String errorMessage) {
+        canVote = true;
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 

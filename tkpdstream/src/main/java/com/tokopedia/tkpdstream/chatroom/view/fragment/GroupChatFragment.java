@@ -796,7 +796,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     @Override
-    public void onRedirectUrl(String url) {
+    public void onPointsClicked(String url) {
         ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity(), url);
+
+        if (getActivity() != null
+                && ((GroupChatActivity) getActivity()).getChannelInfoViewModel() != null
+                && ((GroupChatActivity) getActivity())
+                        .getChannelInfoViewModel().getTitle() != null) {
+            String channelName = ((GroupChatActivity) getActivity())
+                    .getChannelInfoViewModel().getTitle();
+            analytics.eventClickLoyaltyWidget(channelName);
+        }
+
     }
 }

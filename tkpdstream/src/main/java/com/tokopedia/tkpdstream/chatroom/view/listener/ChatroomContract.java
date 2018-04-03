@@ -73,7 +73,7 @@ public interface ChatroomContract {
         }
 
         interface GroupChatPointsViewHolderListener{
-            void onRedirectUrl(String url);
+            void onPointsClicked(String url);
         }
     }
 
