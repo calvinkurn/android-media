@@ -175,6 +175,11 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
     private Visitable checkAndConvertItemModelToAttachmentType(Visitable input, Attachment attachment){
         if(attachment == null) return input;
 
+        if(attachment.getType()==null){
+            attachment.setType("");
+            return input;
+        }
+
         if(attachment.getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)) {
             if ((input instanceof MyChatViewModel)) {
                 return new AttachProductViewModel((MyChatViewModel) input);
