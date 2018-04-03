@@ -96,38 +96,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         if (savedInstanceState == null) {
             Bundle bundle = getArguments();
             tokenData = bundle.getParcelable(EXTRA_TOKEN_DATA);
-            //TODO remove this, just for test
-            if (tokenData == null) {
-                List<String> imageUrls = new ArrayList<>();
-                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg.png");
-                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-crack-4.png");
-                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-crack-4.png");
-                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-crack-4.png");
-                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-crack-4.png");
-                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-crack-4.png");
-                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-right.png");
-                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-left.png");
-
-                TokenAsset tokenAsset = new TokenAsset();
-                tokenAsset.setImageUrls(imageUrls);
-                tokenAsset.setSmallImgUrl("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-float/plat1.png");
-                tokenAsset.setBackgroundImgUrl("https://ecs7.tokopedia.net/assets/images/gamification/background/bg-special-egg--tiny.png");
-
-                TokenUser tokenUser = new TokenUser();
-                tokenUser.setTokenUserID(1);
-                tokenUser.setCampaignID(1);
-                tokenUser.setTokenAsset(tokenAsset);
-                tokenUser.setTimeRemainingSeconds(3000);
-                tokenUser.setShowTime(true);
-
-                tokenData = new TokenData();
-                TokenHome tokenHome = new TokenHome();
-                tokenHome.setTokensUser(tokenUser);
-                tokenData.setHome(tokenHome);
-
-                tokenData.setTokenUnit("buaH");
-                tokenData.setSumToken(10);
-            }
         } else {
             tokenData = savedInstanceState.getParcelable(EXTRA_TOKEN_DATA);
         }
