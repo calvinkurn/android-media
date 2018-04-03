@@ -485,15 +485,18 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             switch (resultCode) {
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_SUCCESS:
                     getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
+                    UnifyTracking.eventDigitalEventPurchaseAttempt("payment success");
                     finish();
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
+                    UnifyTracking.eventDigitalEventPurchaseAttempt("payment failed");
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
+                    UnifyTracking.eventDigitalEventPurchaseAttempt("payment cancelled");
                     break;
                 default:
                     break;

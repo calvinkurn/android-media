@@ -249,4 +249,8 @@ public class EventSearchPresenter
                 .convertSearchResultsToModel(categoryItemsViewModels);
     }
 
+    public String getSearchTag() {
+        return searchTag;
+    }
+
 }

@@ -3408,6 +3408,15 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
+    public static void eventDigitalEventSearchImpression(String searchTag) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_DIGITAL_EVENT,
+                AppEventTracking.Category.DIGITAL_EVENT,
+                AppEventTracking.Action.EVENT_SEARCH_IMPRESSION,
+                searchTag
+        ).setUserId().getEvent());
+    }
+
     public static void eventDigitalEventProductImpression(String productName) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,

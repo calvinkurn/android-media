@@ -185,6 +185,7 @@ public class EventSearchActivity extends TActivity implements
             tvTopevents.setVisibility(View.GONE);
             rvTopEventSuggestions.setVisibility(View.VISIBLE);
             rvSearchResults.setVisibility(View.GONE);
+            UnifyTracking.eventDigitalEventSearchImpression(mPresenter.getSearchTag() + " - " + suggestions.get(0).getTitle() + " - " + "0")
         } else {
             rvSearchResults.setVisibility(View.GONE);
             rvTopEventSuggestions.setVisibility(View.GONE);

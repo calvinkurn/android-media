@@ -522,6 +522,7 @@ public interface AppEventTracking {
         String EVENT_REMOVE_TICKET = "remove cart";
         String EVENT_CHECKOUT = "checkout";
         String EVENT_SEARCH_CLICK = "search result click";
+        String EVENT_SEARCH_IMPRESSION = "search result impression";
 
     }
 
