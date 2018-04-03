@@ -54,6 +54,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
@@ -101,6 +102,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
     private EndlessRecyclerviewListener feedLoadMoreTriggerListener;
     private LinearLayoutManager layoutManager;
+    private RecyclerView.OnScrollListener onEggScrollListener;
+    private FloatingEggButtonFragment floatingEggButtonFragment;
 
     public static HomeFragment newInstance() {
 
@@ -171,6 +174,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initAdapter();
         initRefreshLayout();
         initFeedLoadMoreTriggerListener();
+        initEggTokenScrollListener();
         fetchRemoteConfig();
     }
 
@@ -207,9 +211,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             public void run() {
                 presenter.getHomeData();
                 presenter.getHeaderData(true);
+                loadEggData();
             }
         });
         refreshLayout.setOnRefreshListener(this);
+    }
+
+    private void loadEggData(){
+        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+        if (floatingEggButtonFragment != null) {
+            floatingEggButtonFragment.loadEggData();
+        }
     }
 
     private void initFeedLoadMoreTriggerListener() {
@@ -226,6 +238,34 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (SessionHandler.isV4Login(getContext())) {
             recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
         }
+    }
+
+    private void initEggTokenScrollListener(){
+        onEggScrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy == 0) {
+                    return;
+                }
+                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+                if (floatingEggButtonFragment != null) {
+                    floatingEggButtonFragment.hideFloatingEggVisibility(true);
+                    floatingEggButtonFragment.showFloatingEggVisibility(true,true);
+                }
+            }
+        };
+        if (SessionHandler.isV4Login(getContext())) {
+            recyclerView.removeOnScrollListener(onEggScrollListener);
+            recyclerView.addOnScrollListener(onEggScrollListener);
+        }
+    }
+
+    private FloatingEggButtonFragment getFloatingEggButtonFragment(){
+        if (floatingEggButtonFragment == null) {
+            floatingEggButtonFragment = (FloatingEggButtonFragment) getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment);
+        }
+        return floatingEggButtonFragment;
     }
 
     private boolean isAllowLoadMore() {
@@ -416,6 +456,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         resetFeedState();
         presenter.getHomeData();
         presenter.getHeaderData(false);
+        loadEggData();
     }
 
     private void resetFeedState() {

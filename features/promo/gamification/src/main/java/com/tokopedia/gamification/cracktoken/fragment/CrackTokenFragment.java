@@ -197,7 +197,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
         });
 
-        widgetRemainingToken.showRemainingToken(smallImageUrl, tokenData.getSumTokenStr(), tokenData.getTokenUnit());
+        widgetRemainingToken.showRemainingToken(smallImageUrl, tokenData.getSumTokenStr(),
+                tokenData.getSumToken(), tokenData.getTokenUnit());
     }
 
     private void stopTimer() {

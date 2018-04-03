@@ -49,7 +49,7 @@ public class WidgetRemainingToken extends LinearLayout {
         ivCounter = view.findViewById(R.id.tv_floating_counter);
     }
 
-    public void showRemainingToken(String smallImageUrl, String remainingTokenString, String tokenUnit) {
+    public void showRemainingToken(String smallImageUrl, String remainingTokenString, int remainingTokenInt, String tokenUnit) {
         ImageHandler.loadImageAndCache(imageRemainingToken, smallImageUrl);
         if (TextUtils.isEmpty(remainingTokenString)) {
             ivCounter.setVisibility(View.GONE);
@@ -58,9 +58,10 @@ public class WidgetRemainingToken extends LinearLayout {
             ivCounter.setText(remainingTokenString);
             ivCounter.setVisibility(VISIBLE);
 
-            String stringToShow = getContext().getString(R.string.egg_crack_x_token_left, remainingTokenString, tokenUnit);
+            String remainingTokenIntString = String.valueOf(remainingTokenInt);
+            String stringToShow = getContext().getString(R.string.egg_crack_x_token_left, remainingTokenInt, tokenUnit);
             Spannable spannable = new SpannableString(stringToShow );
-            int indexStart = stringToShow.indexOf(remainingTokenString);
+            int indexStart = stringToShow.indexOf(remainingTokenIntString);
             int indexEnd = stringToShow.indexOf(tokenUnit) + tokenUnit.length();
 
             spannable.setSpan(new ForegroundColorSpan(
