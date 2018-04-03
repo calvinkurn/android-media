@@ -21,7 +21,7 @@ public class ShopCloudRepository implements ShopRepository {
     }
 
     @Override
-    public Observable<ShopDomain> getShop(RequestParams requestParams) {
-        return shopCloudSource.getShop(requestParams);
+    public Observable<ShopDomain> getShop() {
+        return shopCloudSource.getShop();
     }
 }

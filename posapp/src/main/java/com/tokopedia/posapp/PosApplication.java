@@ -5,12 +5,18 @@ import android.content.Context;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
+import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.facebook.soloader.SoLoader;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.posapp.common.PosUrl;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by okasurya on 7/30/17.
@@ -24,7 +30,16 @@ public class PosApplication extends PosRouterApplication {
         generatePosAppConstant();
         initializeDatabase();
         initReact();
+        initCacheApi();
         super.onCreate();
+    }
+
+    public void initCacheApi() {
+        CacheApiLoggingUtils.setLogEnabled(com.tokopedia.core.util.GlobalConfig.isAllowDebuggingTools());
+        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = new ArrayList<>();
+        new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
+                cacheApiWhiteListDomains,
+                String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 
     private void generatePosAppConstant() {

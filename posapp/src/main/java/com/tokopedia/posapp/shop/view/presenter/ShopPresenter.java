@@ -1,13 +1,11 @@
 package com.tokopedia.posapp.shop.view.presenter;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.posapp.shop.domain.usecase.GetShopUseCase;
-import com.tokopedia.posapp.shop.view.Shop;
 import com.tokopedia.posapp.shop.view.GetShopSubscriber;
+import com.tokopedia.posapp.shop.view.Shop;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -24,13 +22,10 @@ public class ShopPresenter implements Shop.Presenter {
 
     private Shop.View view;
     private GetShopUseCase shopUseCase;
-    private UserSession userSession;
 
     @Inject
-    public ShopPresenter(GetShopUseCase shopUseCase,
-                         UserSession userSession) {
+    public ShopPresenter(GetShopUseCase shopUseCase) {
         this.shopUseCase = shopUseCase;
-        this.userSession = userSession;
     }
 
     @Override
@@ -43,16 +38,8 @@ public class ShopPresenter implements Shop.Presenter {
 
     }
 
-
     @Override
     public void getUserShop() {
-        if(TextUtils.isEmpty(userSession.getShopId())) {
-            RequestParams params = RequestParams.create();
-            params.putString(SHOP_ID, userSession.getShopId());
-//            params.putString(SHOP_DOMAIN, SessionHandler.getShopDomain(context));
-            params.putString(SHOW_ALL, "1");
-
-            shopUseCase.execute(params, new GetShopSubscriber(view));
-        }
+        shopUseCase.execute(new GetShopSubscriber(view));
     }
 }

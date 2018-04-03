@@ -33,6 +33,7 @@ public class ProductManagementFragment
         implements ProductManagementTypeFactory.Listener, ProductManagement.View {
 
     public static final String TAG = ProductManagementFragment.class.getSimpleName();
+    private String selectedEtalaseId = "";
 
     @Inject
     ProductManagement.Presenter presenter;
@@ -59,12 +60,16 @@ public class ProductManagementFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    protected void loadInitialData() {
         presenter.reload();
     }
 
     @Override
     public void loadData(int page) {
-
+        presenter.loadMore(selectedEtalaseId);
     }
 
     @Override
@@ -88,7 +93,9 @@ public class ProductManagementFragment
 
     @Override
     public void onGetEtalaseCompleted(List<EtalaseDomain> etalaseDomains) {
-        presenter.load(etalaseDomains.get(0).getEtalaseId());
+        selectedEtalaseId = etalaseDomains.get(0).getEtalaseId();
+        renderEtalaseSpinner(etalaseDomains);
+        presenter.load(selectedEtalaseId);
     }
 
     @Override
@@ -112,5 +119,9 @@ public class ProductManagementFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_product_management, container, false);
+    }
+
+    private void renderEtalaseSpinner(List<EtalaseDomain> etalaseDomains) {
+
     }
 }

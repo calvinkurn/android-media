@@ -10,5 +10,5 @@ import rx.Observable;
  */
 
 public interface ShopRepository {
-    Observable<ShopDomain> getShop(RequestParams requestParams);
+    Observable<ShopDomain> getShop();
 }

@@ -36,7 +36,7 @@ public class GetShopSubscriber extends Subscriber<ShopDomain> {
     private ShopViewModel getShopViewModel(ShopDomain shopDomain) {
         ShopViewModel shopViewModel = new ShopViewModel();
         ShopInfoViewModel shopInfoViewModel = new ShopInfoViewModel();
-        shopInfoViewModel.setShopName(shopDomain.getShopInfo().getShopName());
+        shopInfoViewModel.setShopName(shopDomain.getName());
         shopViewModel.setShopInfo(shopInfoViewModel);
         return shopViewModel;
     }

@@ -1,9 +1,8 @@
 package com.tokopedia.posapp.shop.data;
 
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.posapp.base.data.pojo.PosSimpleResponse;
+import com.tokopedia.posapp.shop.data.pojo.ShopResponse;
 import com.tokopedia.posapp.shop.domain.model.ShopDomain;
-import com.tokopedia.posapp.shop.domain.model.ShopInfoDomain;
 
 import javax.inject.Inject;
 
@@ -14,7 +13,7 @@ import rx.functions.Func1;
  * Created by okasurya on 8/3/17.
  */
 
-public class GetShopMapper implements Func1<Response<TkpdResponse>, ShopDomain> {
+public class GetShopMapper implements Func1<Response<PosSimpleResponse<ShopResponse>>, ShopDomain> {
 
     @Inject
     public GetShopMapper() {
@@ -22,28 +21,23 @@ public class GetShopMapper implements Func1<Response<TkpdResponse>, ShopDomain> 
     }
 
     @Override
-    public ShopDomain call(Response<TkpdResponse> response) {
-        return mapResponse(response);
-    }
-
-    private ShopDomain mapResponse(Response<TkpdResponse> response) {
+    public ShopDomain call(Response<PosSimpleResponse<ShopResponse>> response) {
         if(response.body() != null && response.isSuccessful()) {
-            ShopModel shopModel = response.body().convertDataObj(ShopModel.class);
-
-            if(shopModel != null) {
-                ShopDomain shopDomain = getShopFromResponse(shopModel);
-                return shopDomain;
-            }
+            return getShopFromResponse(response.body().getData().getData());
         }
 
         return null;
     }
 
-    private ShopDomain getShopFromResponse(ShopModel shopModel) {
+    private ShopDomain getShopFromResponse(ShopResponse shopModel) {
         ShopDomain shopDomain = new ShopDomain();
-        ShopInfoDomain shopInfoDomain = new ShopInfoDomain();
-        shopInfoDomain.setShopName(shopModel.info.shopName);
-        shopDomain.setShopInfo(shopInfoDomain);
+        shopDomain.setId(shopModel.getShopId());
+        shopDomain.setAvatar(shopModel.getShopAvatar());
+        shopDomain.setCover(shopModel.getShopCover());
+        shopDomain.setDescription(shopModel.getShopDescription());
+        shopDomain.setDomain(shopModel.getShopDomain());
+        shopDomain.setName(shopModel.getShopDomain());
+        shopDomain.setTagline(shopDomain.getTagline());
         return shopDomain;
     }
 }

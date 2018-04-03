@@ -7,9 +7,14 @@ import com.tokopedia.posapp.product.management.view.ProductManagement;
 import com.tokopedia.posapp.product.management.view.subscriber.GetEtalaseSubscriber;
 import com.tokopedia.posapp.product.management.view.subscriber.GetProductManagementSubsrciber;
 import com.tokopedia.posapp.etalase.domain.GetEtalaseCacheUseCase;
+import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.List;
+
 import javax.inject.Inject;
+
+import rx.functions.Func1;
 
 /**
  * @author okasurya on 3/14/18.

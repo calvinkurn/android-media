@@ -23,7 +23,7 @@ public class ShopCloudSource {
         this.getShopMapper = getShopMapper;
     }
 
-    public Observable<ShopDomain> getShop(RequestParams params) {
-        return shopApi.getInfo(params.getParamsAllValueInString()).map(getShopMapper);
+    public Observable<ShopDomain> getShop() {
+        return shopApi.getInfo().map(getShopMapper);
     }
 }

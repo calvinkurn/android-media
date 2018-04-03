@@ -14,7 +14,8 @@ public class PosUrl {
     }
 
     public class Shop {
-        public static final String OUTLET_LIST_V1 = "o2o/v1/outlet_list";
+        public static final String OUTLET_LIST_V1 = "o2o/v1/shops/outlet_list";
+        public static final String GET_SHOP_INFO_V1 = "o2o/v1/shops/get_shop_info";
     }
 
     public class Payment {

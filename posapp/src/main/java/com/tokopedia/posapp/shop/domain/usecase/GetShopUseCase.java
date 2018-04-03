@@ -24,6 +24,6 @@ public class GetShopUseCase extends UseCase<ShopDomain> {
 
     @Override
     public Observable<ShopDomain> createObservable(RequestParams requestParams) {
-        return shopRepository.getShop(requestParams);
+        return shopRepository.getShop();
     }
 }
