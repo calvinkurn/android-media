@@ -228,7 +228,7 @@ public class LoginActivityTest {
 
         startLoginActivity();
 
-        performClickYahoo();
+        performClickYahoo(true);
 
         assertTrue(mIntentsRule.getActivity().isDestroyed());
     }
@@ -302,24 +302,25 @@ public class LoginActivityTest {
 
         startLoginActivity();
 
-        performClickYahoo();
+        performClickYahoo(true);
 
         snackbarAnyMatcher();
 
         Thread.sleep(2000);
 
-        performClickYahoo();
+        performClickYahoo(false);
 
         assertTrue(mIntentsRule.getActivity().isDestroyed());
     }
 
-    private void performClickYahoo() throws InterruptedException {
+    private void performClickYahoo(boolean isFirstTime) throws InterruptedException {
         ViewInteraction loginTextView = onView(
                 nthChildOf(
                         withId(R.id.login_buttons_container),
                         3));
 
-        onView(withId(R.id.btn_load_more)).perform(click());//.check(not(isVisible()));
+        if(isFirstTime)
+            onView(withId(R.id.btn_load_more)).perform(click());
 
 
         Thread.sleep(3_000);
