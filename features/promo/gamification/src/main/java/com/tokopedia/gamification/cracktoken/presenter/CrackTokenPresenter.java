@@ -48,27 +48,6 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
                 });
     }
 
-//    private void getGetTokenTokopoints(final CrackResult crackResult) {
-//        getTokenTokopointsUseCase.execute(new Subscriber<TokenData>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                //TODO need to handle if error getting token but success getting crack egg?
-//                getView().onErrorGetToken(e);
-//            }
-//
-//            @Override
-//            public void onNext(TokenData tokenData) {
-//                getView().onSuccessCrackToken(crackResult);
-//                getView().onSuccessGetToken(tokenData);
-//            }
-//        });
-//    }
-
     public void getGetTokenTokopoints() {
         getTokenTokopointsUseCase.execute(new Subscriber<TokenData>() {
             @Override
