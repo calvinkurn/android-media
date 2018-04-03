@@ -105,6 +105,11 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         itemAdapter.setGridItemClickListener(this);
         Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
         countDownView.setup(expiredTime, null);
+        if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channels.getHeader()))) {
+            seeMore.setVisibility(View.VISIBLE);
+        } else {
+            seeMore.setVisibility(View.GONE);
+        }
         seeMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
