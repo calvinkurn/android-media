@@ -15,6 +15,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.webkit.WebView;
 
 import com.facebook.AccessToken;
@@ -68,6 +69,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.unregisterIdlingResources;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
@@ -703,25 +705,32 @@ public class LoginActivityTest {
         assertTrue(mIntentsRule.getActivity().isDestroyed());
     }
 
+    @Test
+    public void testTokopediaLoginEnterSecurityQuestion() throws Exception{
+        preparePartialSmartLockBundle();
 
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("info.json")));
+        server2.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("make_login_security_question.json")));
+
+        startEmptyIntentLoginActivity();
+
+        onView(withId(R.id.accounts_sign_in)).check(matches(isDisplayed())).perform(click());
+        onView(withId(com.tokopedia.design.R.id.email_auto)).perform(typeText("cincin.jati+47@tokopedia.com"));
+        onView(withId(com.tokopedia.design.R.id.password)).perform(typeText("cincin.jati+47@tokopedia.com"));
+
+        Thread.sleep(2000);
+
+        Log.d("NORMANSYAH", "test lalalala");
+    }
 
     /**
      * @throws Exception
      */
     @Test
     public void testSmartLockFullBundle() throws Exception {
-        Intent resultData = new Intent();
-        Bundle bundle = new Bundle();
-        String phoneNumber = "123-345-6789";
-        bundle.putString("phone", phoneNumber);
-        bundle.putString("username", "cincin.jati+47@tokopedia.com");
-        bundle.putString("password", "optimus");
-
-        resultData.putExtras(bundle);
-        Instrumentation.ActivityResult result =
-                new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
-
-        intending(hasComponent(SmartLockActivity.class.getName())).respondWith(result);
+        prepareForFullSmartLockBundle();
 
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
@@ -735,8 +744,7 @@ public class LoginActivityTest {
         assertTrue(mIntentsRule.getActivity().isDestroyed());
     }
 
-    @Test
-    public void testSmartLockFullBundleWithErrorResponse() throws Exception {
+    private void prepareForFullSmartLockBundle() {
         Intent resultData = new Intent();
         Bundle bundle = new Bundle();
         String phoneNumber = "123-345-6789";
@@ -749,6 +757,11 @@ public class LoginActivityTest {
                 new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
 
         intending(hasComponent(SmartLockActivity.class.getName())).respondWith(result);
+    }
+
+    @Test
+    public void testSmartLockFullBundleWithErrorResponse() throws Exception {
+        prepareForFullSmartLockBundle();
 
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
@@ -764,6 +777,18 @@ public class LoginActivityTest {
 
     @Test
     public void testSmartLockPartialBundle() throws Exception {
+        preparePartialSmartLockBundle();
+
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+
+        startEmptyIntentLoginActivity();
+
+        Thread.sleep(3000);
+
+        assertFalse(mIntentsRule.getActivity().isDestroyed());
+    }
+
+    private void preparePartialSmartLockBundle() {
         Intent resultData = new Intent();
         Bundle bundle = new Bundle();
         String phoneNumber = "123-345-6789";
@@ -775,14 +800,6 @@ public class LoginActivityTest {
                 new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
 
         intending(hasComponent(SmartLockActivity.class.getName())).respondWith(result);
-
-        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
-
-        startEmptyIntentLoginActivity();
-
-        Thread.sleep(3000);
-
-        assertFalse(mIntentsRule.getActivity().isDestroyed());
     }
 
     private void startLoginActivity() {
