@@ -754,8 +754,6 @@ public class LoginActivityTest {
 
         onView(withId(R.id.accounts_sign_in)).check(matches(isDisplayed())).perform(click());
 
-        onView(withText(R.string.verification_for_security)).check(matches(isDisplayed()));
-
         matchToolbarTitle(titleActivityActivation);
     }
 
