@@ -60,7 +60,7 @@ public class CrackResultMapper implements Func1<CrackResultEntity, CrackResult> 
                 for (CrackBenefitEntity crackBenefitEntity : crackResultEntity.getBenefits()) {
                     CrackBenefit crackBenefit = new CrackBenefit();
                     crackBenefit.setColor(crackBenefitEntity.getColor());
-                    crackBenefit.setSize(Integer.valueOf(crackBenefitEntity.getSize()));
+                    crackBenefit.setSize(crackBenefitEntity.getSize());
                     crackBenefit.setText(crackBenefitEntity.getText());
                     crackBenefitList.add(crackBenefit);
                 }

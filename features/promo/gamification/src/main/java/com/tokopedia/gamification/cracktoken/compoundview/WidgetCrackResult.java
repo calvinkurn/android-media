@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,17 +76,72 @@ public class WidgetCrackResult extends RelativeLayout {
         textCrackResultLabel = view.findViewById(R.id.text_crack_result_label);
     }
 
-    public void showCrackResult(String urlImageCrackResult, String labelCrackResult, List<CrackBenefit> listRewardText, String textCtaButton, String applink) {
+    public void showCrackResult(String urlImageCrackResult, String labelCrackResult, List<CrackBenefit> listRewardText,
+                                String textCtaButton, String applink) {
         showRewardImageAnimation(urlImageCrackResult);
         showRewardBackgroundAnimation();
         showListRewardText(listRewardText, labelCrackResult);
         showCtaButton(textCtaButton, applink);
     }
 
-    private void showRewardImageAnimation(String urlImageCrackResult) {
+    public void showErrorCrackResult(Bitmap errorBitmap, String labelCrackResult, List<CrackBenefit> listRewardText,
+                                     String textCtaButton, String applink) {
+        showErrorImageAnimation(errorBitmap);
+        showRewardBackgroundAnimation();
+        showListRewardText(listRewardText, labelCrackResult);
+        showCtaButton(textCtaButton, applink);
+    }
+
+    private void showErrorImageAnimation(Bitmap errorBitmap) {
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (getContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        }
+
         DisplayMetrics metrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        final float screenHeightQuarter = metrics.heightPixels/4;
+        float screenHeightQuarter = metrics.heightPixels/4;
+        screenHeightQuarter = screenHeightQuarter - actionBarHeight;
+
+        AnimationSet animationCrackResult = new AnimationSet(true);
+        Animation scaleAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_crack_result);
+        animationCrackResult.addAnimation(scaleAnimationCrackResult);
+        TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
+        animationCrackResult.addAnimation(translateAnimationCrackResult);
+        animationCrackResult.setFillAfter(true);
+        animationCrackResult.setDuration(1000);
+
+        imageViewReward.setImageBitmap(errorBitmap);
+
+        imageViewReward.startAnimation(animationCrackResult);
+        imageViewReward.setVisibility(View.VISIBLE);
+
+        AnimationSet animationBgCrackResult = new AnimationSet(true);
+        Animation scaleAnimationBgCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_bg_reward);
+        animationBgCrackResult.addAnimation(scaleAnimationBgCrackResult);
+        TranslateAnimation translateAnimationBgCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
+        animationBgCrackResult.addAnimation(translateAnimationBgCrackResult);
+        animationBgCrackResult.setDuration(1000);
+        animationBgCrackResult.setFillAfter(true);
+
+        imageViewBgReward.startAnimation(animationBgCrackResult);
+        imageViewBgReward.setVisibility(View.VISIBLE);
+    }
+
+    private void showRewardImageAnimation(String urlImageCrackResult) {
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (getContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        }
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        float screenHeightQuarter = metrics.heightPixels/4;
+        screenHeightQuarter = screenHeightQuarter - actionBarHeight;
 
         AnimationSet animationCrackResult = new AnimationSet(true);
         Animation scaleAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_crack_result);
@@ -137,13 +193,28 @@ public class WidgetCrackResult extends RelativeLayout {
             textView.setGravity(Gravity.CENTER);
             textView.setText(rewardText.getText());
             textView.setTextColor(Color.parseColor(rewardText.getColor()));
-            textView.setTextSize(rewardText.getSize());
+            int dimenTextSize = convertSize(rewardText.getSize());
+            float textSizeInPx = getContext().getResources().getDimension(dimenTextSize);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx);
             listRewardText.addView(textView);
         }
         AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
         alphaAnimation.setDuration(500);
         containerTextReward.setAnimation(alphaAnimation);
         containerTextReward.setVisibility(VISIBLE);
+    }
+
+    private int convertSize(String size) {
+        switch (size) {
+            case "large":
+                return R.dimen.text_size_reward_large;
+            case "medium":
+                return R.dimen.text_size_reward_medium;
+            case "small":
+                return R.dimen.text_size_reward_small;
+            default:
+                return R.dimen.text_size_reward_medium;
+        }
     }
 
     public void showCtaButton(String textCtaButton, final String applink) {
