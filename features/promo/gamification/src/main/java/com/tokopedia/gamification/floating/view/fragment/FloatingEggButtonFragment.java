@@ -292,7 +292,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             vgFloatingEgg.setOnTouchListener(null);
         }
 
-        ImageHandler.LoadImage(ivFloatingEgg, imageUrl);
+        ImageHandler.loadImageAndCache(ivFloatingEgg, imageUrl);
         tvFloatingCounter.setText(sumTokenString);
         if (isShowTime) {
             setUIFloatingTimer(timeRemainingSeconds);

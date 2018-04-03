@@ -20,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -149,8 +150,8 @@ public class WidgetTokenView extends FrameLayout {
         imageViewRight.requestLayout();
 
         // to show the light on the top left
-        int marginTopLightLeft = (int) (0.64 * (rootHeight)) - (int)(0.75 * imageHeight) - lightImageHeight/2;
-        int marginLeftLightLeft = (int) (0.5 * ( rootWidth - (int)(0.65 * imageWidth) - lightImageWidth ));
+        int marginTopLightLeft = (int) (0.64 * (rootHeight)) - (int) (0.75 * imageHeight) - lightImageHeight / 2;
+        int marginLeftLightLeft = (int) (0.5 * (rootWidth - (int) (0.65 * imageWidth) - lightImageWidth));
         FrameLayout.LayoutParams ivLightLeftLp = (FrameLayout.LayoutParams) imageViewLightLeft.getLayoutParams();
         ivLightLeftLp.width = lightImageWidth;
         ivLightLeftLp.height = lightImageHeight;
@@ -159,8 +160,8 @@ public class WidgetTokenView extends FrameLayout {
         imageViewLightLeft.requestLayout();
 
         // to show the light on the top right
-        int marginTopLightRight = (int) (0.64 * (rootHeight)) - (int)(0.95 * imageHeight) - lightImageHeight/2;
-        int marginLeftLightRight = (int) (0.5 * ( rootWidth + (int)(0.35 * imageWidth) - lightImageWidth ));
+        int marginTopLightRight = (int) (0.64 * (rootHeight)) - (int) (0.95 * imageHeight) - lightImageHeight / 2;
+        int marginLeftLightRight = (int) (0.5 * (rootWidth + (int) (0.35 * imageWidth) - lightImageWidth));
         FrameLayout.LayoutParams ivLightRightLp = (FrameLayout.LayoutParams) imageViewLightRight.getLayoutParams();
         ivLightRightLp.width = lightImageWidth;
         ivLightRightLp.height = lightImageHeight;
@@ -174,17 +175,19 @@ public class WidgetTokenView extends FrameLayout {
     public void setToken(String full, String cracked, String right, String left) {
         imageRightUrl = right;
         imageLeftUrl = left;
-        ImageHandler.LoadImage(imageViewFull, full);
+        ImageHandler.loadImageAndCache(imageViewFull, full);
         Glide.with(getContext())
                 .load(cracked)
                 .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageViewCracked.setImageBitmap(resource);
                     }
                 });
-
+        ImageHandler.loadImageAndCache(imageViewRight, imageRightUrl);
+        ImageHandler.loadImageAndCache(imageViewLeft, imageLeftUrl);
         shake();
         showLightAnimation();
     }
@@ -241,8 +244,6 @@ public class WidgetTokenView extends FrameLayout {
         imageViewFull.setVisibility(View.GONE);
         imageViewCracked.setVisibility(View.GONE);
 
-        ImageHandler.LoadImage(imageViewRight, imageRightUrl);
-        ImageHandler.LoadImage(imageViewLeft, imageLeftUrl);
         imageViewLeft.setVisibility(View.VISIBLE);
         imageViewRight.setVisibility(View.VISIBLE);
 

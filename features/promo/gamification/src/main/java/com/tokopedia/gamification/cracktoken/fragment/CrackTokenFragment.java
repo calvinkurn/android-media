@@ -13,12 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult;
@@ -29,7 +31,9 @@ import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
 import com.tokopedia.gamification.di.GamificationComponent;
+import com.tokopedia.gamification.floating.view.model.TokenAsset;
 import com.tokopedia.gamification.floating.view.model.TokenData;
+import com.tokopedia.gamification.floating.view.model.TokenHome;
 import com.tokopedia.gamification.floating.view.model.TokenUser;
 
 import java.util.ArrayList;
@@ -71,6 +75,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Inject
     CrackTokenPresenter crackTokenPresenter;
+    private ImageView ivContainer;
 
     public static Fragment newInstance(TokenData tokenData) {
         Fragment fragment = new CrackTokenFragment();
@@ -91,6 +96,38 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         if (savedInstanceState == null) {
             Bundle bundle = getArguments();
             tokenData = bundle.getParcelable(EXTRA_TOKEN_DATA);
+            //TODO remove this, just for test
+            if (tokenData == null) {
+                List<String> imageUrls = new ArrayList<>();
+                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg.png");
+                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-crack-4.png");
+                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-crack-4.png");
+                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-crack-4.png");
+                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-crack-4.png");
+                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-crack-4.png");
+                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-right.png");
+                imageUrls.add("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-special/special-egg-left.png");
+
+                TokenAsset tokenAsset = new TokenAsset();
+                tokenAsset.setImageUrls(imageUrls);
+                tokenAsset.setSmallImgUrl("https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/032018-float/plat1.png");
+                tokenAsset.setBackgroundImgUrl("https://ecs7.tokopedia.net/assets/images/gamification/background/bg-special-egg--tiny.png");
+
+                TokenUser tokenUser = new TokenUser();
+                tokenUser.setTokenUserID(1);
+                tokenUser.setCampaignID(1);
+                tokenUser.setTokenAsset(tokenAsset);
+                tokenUser.setTimeRemainingSeconds(3000);
+                tokenUser.setShowTime(true);
+
+                tokenData = new TokenData();
+                TokenHome tokenHome = new TokenHome();
+                tokenHome.setTokensUser(tokenUser);
+                tokenData.setHome(tokenHome);
+
+                tokenData.setTokenUnit("buaH");
+                tokenData.setSumToken(10);
+            }
         } else {
             tokenData = savedInstanceState.getParcelable(EXTRA_TOKEN_DATA);
         }
@@ -103,6 +140,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         rootView = inflater.inflate(R.layout.fragment_crack_token, container, false);
 
         rootContainer = rootView.findViewById(R.id.root_container);
+        ivContainer = rootView.findViewById(R.id.iv_container);
         textCountdownTimer = rootView.findViewById(R.id.text_countdown_timer);
         widgetTokenView = rootView.findViewById(R.id.widget_token_view);
         widgetCrackResult = rootView.findViewById(R.id.widget_reward);
@@ -162,16 +200,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private void renderViewCrackEgg() {
         widgetTokenView.reset();
 
-        Glide.with(this)
-                .load(backgroundImageUrl)
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        Drawable drawable = new BitmapDrawable(getResources(), resource);
-                        rootContainer.setBackground(drawable);
-                    }
-                });
+        ImageHandler.loadImageAndCache(ivContainer, backgroundImageUrl);
 
         if (isCountdownTimerShow) {
             textCountdownTimer.setVisibility(View.VISIBLE);
@@ -217,6 +246,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void initTimerBound() {
+        if (this.isDetached()) {
+            return;
+        }
         int rootHeight = rootView.getHeight();
         int imageMarginTop = (int) (RATIO_MARGIN_TOP_TIMER * rootHeight);
 
@@ -232,7 +264,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             countDownTimer = new CountDownTimer(timeRemainingSeconds, COUNTDOWN_INTERVAL_SECOND) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    setUIFloatingTimer((int) (millisUntilFinished / COUNTDOWN_INTERVAL_SECOND));
+                    CrackTokenFragment.this.timeRemainingSeconds = (int) (millisUntilFinished / COUNTDOWN_INTERVAL_SECOND);
+                    setUIFloatingTimer(CrackTokenFragment.this.timeRemainingSeconds);
                 }
 
                 @Override
