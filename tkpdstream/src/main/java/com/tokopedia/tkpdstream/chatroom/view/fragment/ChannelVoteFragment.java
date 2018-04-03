@@ -89,7 +89,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     private ProgressBarWithTimer progressBarWithTimer;
     private UserSession userSession;
     private Snackbar snackBar;
-    private boolean canVote;
+    private boolean canVote = true;
 
     @Override
     protected String getScreenName() {

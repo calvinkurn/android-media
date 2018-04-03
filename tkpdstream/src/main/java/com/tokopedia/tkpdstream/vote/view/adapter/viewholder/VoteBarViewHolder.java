@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
@@ -25,16 +26,14 @@ public class VoteBarViewHolder extends AbstractViewHolder<VoteViewModel> {
     public static final int LAYOUT = R.layout.vote_option_bar;
     private final ChannelVoteContract.View.VoteOptionListener viewListener;
     private ProgressBar progressBar;
-    private TextView option;
+    private TextViewCompat option;
     private TextView percent;
-    private View icon;
 
     public VoteBarViewHolder(View itemView, ChannelVoteContract.View.VoteOptionListener viewListener) {
         super(itemView);
         progressBar = itemView.findViewById(R.id.progress_bar);
         option = itemView.findViewById(R.id.text_view);
         percent = itemView.findViewById(R.id.percent);
-        icon = itemView.findViewById(R.id.icon_vote);
         this.viewListener = viewListener;
     }
 
@@ -46,16 +45,17 @@ public class VoteBarViewHolder extends AbstractViewHolder<VoteViewModel> {
             percent.setVisibility(View.GONE);
             progressBar.setProgress(0);
             progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_bar_default));
-            icon.setVisibility(View.GONE);
+            option.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
             percent.setTextColor(MethodChecker.getColor(context, R.color.black_38));
         } else {
             percent.setVisibility(View.VISIBLE);
             progressBar.setProgress(element.getPercentageInteger());
             if (element.getSelected() == VoteViewModel.SELECTED) {
-                icon.setVisibility(View.VISIBLE);
+                option.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                        (context, R.drawable.ic_checked), null);
                 progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_bar_selected));
             } else if (element.getSelected() == VoteViewModel.UNSELECTED) {
-                icon.setVisibility(View.GONE);
+                option.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_bar_unselected));
             }
             percent.setTextColor(MethodChecker.getColor(context, R.color.black_54));
