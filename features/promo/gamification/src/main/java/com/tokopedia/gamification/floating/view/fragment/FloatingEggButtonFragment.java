@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -34,6 +35,7 @@ import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenFloating;
+import com.tokopedia.gamification.floating.view.model.TokenHome;
 import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
 
 import javax.inject.Inject;
@@ -117,9 +119,13 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         a.recycle();
     }
 
-    public void setFloatingEggVisibility(boolean isVisible, int delayInMs) {
-        //TODO for animation and delay, set here
-        vgFloatingEgg.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    public void setFloatingEggVisibility(final boolean isVisible, int delayInMs) {
+        vgFloatingEgg.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                vgFloatingEgg.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+            }
+        }, delayInMs<= 0? 0 : delayInMs);
     }
 
     @Override
@@ -247,7 +253,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
     }
 
-    // TODO load data to get egg/token data from server or cache here
     private void loadEggData() {
         floatingEggPresenter.attachView(this);
         floatingEggPresenter.getGetTokenTokopoints();
@@ -256,18 +261,16 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     public void onSuccessGetToken(final TokenData tokenData) {
         boolean offFlag = tokenData.getOffFlag();
-        int sumToken = tokenData.getSumToken();
         String sumTokenString = tokenData.getSumTokenStr();
-//        String pageUrl = "http://tokopedia.com";
-//        String appLink = "tokopedia://";
+
+        TokenHome tokenHome = tokenData.getHome();
+        String pageUrl = tokenHome.getButtonURL();
+        String appLink = tokenHome.getButtonApplink();
+
         TokenFloating tokenFloating = tokenData.getFloating();
-        if (tokenFloating == null) {
-            onErrorGetToken(new Throwable());
-            return;
-        }
         long timeRemainingSeconds = tokenFloating.getTimeRemainingSeconds();
         boolean isShowTime = tokenFloating.getShowTime();
-        String imageUrl = "https://user-images.githubusercontent.com/13778932/38075015-049430aa-335b-11e8-822e-ca662dc45b7f.png";
+        String imageUrl = tokenFloating.getTokenAsset().getSmallImgUrl();
 
         setFloatingEggVisibility(!offFlag, 0);
 
@@ -284,6 +287,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                         @Override
                         public void onDragStart(View view) {
                             vgFloatingEgg.setScaleX(SCALE_ON_DOWN);
+                            vgFloatingEgg.setScaleY(SCALE_ON_DOWN);
                         }
 
                         @Override
@@ -296,8 +300,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
 
         ImageHandler.loadImageAndCache(ivFloatingEgg, imageUrl);
-        tvFloatingCounter.setText(sumTokenString);
-        if (isShowTime) {
+        if (TextUtils.isEmpty(sumTokenString)) {
+            tvFloatingCounter.setVisibility(View.GONE);
+        } else {
+            tvFloatingCounter.setText(sumTokenString);
+            tvFloatingCounter.setVisibility(View.VISIBLE);
+        }
+
+        if (isShowTime && timeRemainingSeconds > 0) {
             setUIFloatingTimer(timeRemainingSeconds);
             tvFloatingTimer.setVisibility(View.VISIBLE);
         } else {
@@ -314,7 +324,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     @Override
     public void onErrorGetToken(Throwable throwable) {
-        //TODO on failed, need retry?
         stopCountdownTimer();
         vgFloatingEgg.setVisibility(View.GONE);
     }
@@ -370,7 +379,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                     PropertyValuesHolder.ofFloat(View.X, xEgg, targetX);
             PropertyValuesHolder pvhScaleX =
                     PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_ON_DOWN, SCALE_NORMAL);
-            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX);
+            PropertyValuesHolder pvhScaleY =
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_ON_DOWN, SCALE_NORMAL);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
             objectAnimator.setDuration(EGG_ANIM_TO_BOUND_DURATION);
             objectAnimator.start();
@@ -381,7 +392,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                     PropertyValuesHolder.ofFloat(View.X, xEgg, 0);
             PropertyValuesHolder pvhScaleX =
                     PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_ON_DOWN, SCALE_NORMAL);
-            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX);
+            PropertyValuesHolder pvhScaleY =
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_ON_DOWN, SCALE_NORMAL);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
             objectAnimator.setDuration(EGG_ANIM_TO_BOUND_DURATION);
             objectAnimator.start();
