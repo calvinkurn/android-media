@@ -78,6 +78,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Inject
     public FloatingEggPresenter floatingEggPresenter;
     private boolean isHideAnimating;
+    private boolean serverOffFlag;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -125,76 +126,73 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         a.recycle();
     }
 
-    public void hideFloatingEggVisibility(final boolean isAnimate) {
+    public void hideOnScrolling() {
+        hideFloatingEggAnimate();
+        showFloatingEggAnimate(true);
+    }
+
+    private void hideFloatingEggAnimate() {
         if (vgFloatingEgg.getVisibility() == View.GONE || isHideAnimating) {
             return;
         }
-        if (!isAnimate) {
-            vgFloatingEgg.setVisibility(View.GONE);
-        } else { //animate
-            isHideAnimating = true;
+        isHideAnimating = true;
+        vgFloatingEgg.setVisibility(View.VISIBLE);
+        PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_NORMAL, 0);
+        PropertyValuesHolder pvhScaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_NORMAL, 0);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhScaleX, pvhScaleY);
+        objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
+        objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
+        objectAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                vgFloatingEgg.setVisibility(View.GONE);
+                isHideAnimating = false;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        objectAnimator.start();
+    }
+
+    private void showFloatingEggAnimate(boolean hasDelay) {
+        if (vgFloatingEgg.getVisibility() == View.VISIBLE && !isHideAnimating && !serverOffFlag) {
+            return;
+        }
+        if (hasDelay) {
+            if (visibilityHandler == null) {
+                visibilityHandler = new Handler();
+            }
+            if (visibilityRunnableToShow == null) {
+                visibilityRunnableToShow = new Runnable() {
+                    @Override
+                    public void run() {
+                        showFloatingEggAnimate(false);
+                    }
+                };
+            }
+            visibilityHandler.removeCallbacks(visibilityRunnableToShow);
+            visibilityHandler.postDelayed(visibilityRunnableToShow, LONG_ANIMATION_DURATION);
+        } else {
             vgFloatingEgg.setVisibility(View.VISIBLE);
-            PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_NORMAL, 0);
-            PropertyValuesHolder pvhScaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_NORMAL, 0);
+            PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 0, SCALE_NORMAL);
+            PropertyValuesHolder pvhScaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0, SCALE_NORMAL);
             ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhScaleX, pvhScaleY);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
             objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
-            objectAnimator.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    vgFloatingEgg.setVisibility(View.GONE);
-                    isHideAnimating = false;
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
             objectAnimator.start();
-        }
-    }
-
-    public void showFloatingEggVisibility(boolean hasDelay, final boolean isAnimate) {
-        if (vgFloatingEgg.getVisibility() == View.VISIBLE && !isHideAnimating) {
-            return;
-        }
-        if (!isAnimate) {
-            vgFloatingEgg.setVisibility(View.VISIBLE);
-        } else { //animate
-            if (!hasDelay) {
-                vgFloatingEgg.setVisibility(View.VISIBLE);
-                PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 0, SCALE_NORMAL);
-                PropertyValuesHolder pvhScaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0, SCALE_NORMAL);
-                ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhScaleX, pvhScaleY);
-                objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
-                objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
-                objectAnimator.start();
-            } else {
-                if (visibilityHandler == null) {
-                    visibilityHandler = new Handler();
-                }
-                if (visibilityRunnableToShow == null) {
-                    visibilityRunnableToShow = new Runnable() {
-                        @Override
-                        public void run() {
-                            showFloatingEggVisibility(false, true);
-                        }
-                    };
-                }
-                visibilityHandler.removeCallbacks(visibilityRunnableToShow);
-                visibilityHandler.postDelayed(visibilityRunnableToShow, LONG_ANIMATION_DURATION);
-            }
         }
     }
 
@@ -336,7 +334,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     @Override
     public void onSuccessGetToken(final TokenData tokenData) {
-        boolean offFlag = tokenData.getOffFlag();
+        serverOffFlag = tokenData.getOffFlag();
         String sumTokenString = tokenData.getSumTokenStr();
 
         TokenHome tokenHome = tokenData.getHome();
@@ -348,10 +346,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         boolean isShowTime = tokenFloating.getShowTime();
         String imageUrl = tokenFloating.getTokenAsset().getSmallImgUrl();
 
-        if (offFlag) {
-            hideFloatingEggVisibility(false);
+        if (serverOffFlag) {
+            vgFloatingEgg.setVisibility(View.GONE);
         } else {
-            showFloatingEggVisibility(false, false);
+            vgFloatingEgg.setVisibility(View.VISIBLE);
         }
 
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
