@@ -1,4 +1,4 @@
-package com.tokopedia.sellerapp.runner;
+package com.tokopedia.tkpd.runner;
 
 import android.annotation.SuppressLint;
 import android.app.Application;

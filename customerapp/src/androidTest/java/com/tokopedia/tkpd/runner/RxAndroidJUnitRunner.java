@@ -1,11 +1,11 @@
-package com.tokopedia.sellerapp.runner;
+package com.tokopedia.tkpd.runner;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.test.espresso.Espresso;
 
-import com.tokopedia.sellerapp.util.RxIdlingExecutionHook;
-import com.tokopedia.sellerapp.util.RxIdlingResource;
+import com.tokopedia.tkpd.util.RxIdlingExecutionHook;
+import com.tokopedia.tkpd.util.RxIdlingResource;
 
 import rx.Scheduler;
 import rx.functions.Func1;

@@ -1,4 +1,4 @@
-package com.tokopedia.sellerapp.util;
+package com.tokopedia.tkpd.util;
 
 import android.support.test.espresso.IdlingResource;
 

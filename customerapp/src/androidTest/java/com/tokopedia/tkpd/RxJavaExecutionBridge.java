@@ -1,4 +1,4 @@
-package com.tokopedia.sellerapp;
+package com.tokopedia.tkpd;
 
 /**
  * Created by pt2121 on 3/7/15.

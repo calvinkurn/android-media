@@ -1,4 +1,4 @@
-package com.tokopedia.sellerapp.activities.sellerhome;
+package com.tokopedia.tkpd.activities.sellerhome;
 
 import com.tokopedia.core.network.apiservices.shop.apis.ShopApi;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;

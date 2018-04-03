@@ -237,4 +237,9 @@ dependencies {
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.testDependencies.junit
 }

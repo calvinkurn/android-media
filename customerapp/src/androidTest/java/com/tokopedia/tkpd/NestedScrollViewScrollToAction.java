@@ -1,4 +1,4 @@
-package com.tokopedia.sellerapp;
+package com.tokopedia.tkpd;
 
 import android.graphics.Rect;
 import android.support.design.widget.CoordinatorLayout;

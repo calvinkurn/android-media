@@ -1,4 +1,4 @@
-package com.tokopedia.sellerapp.activities;
+package com.tokopedia.tkpd.activities;
 
 import android.content.Context;
 

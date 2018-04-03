@@ -1,4 +1,4 @@
-package com.tokopedia.sellerapp.util;
+package com.tokopedia.tkpd.util;
 
 import rx.Observable;
 import rx.Subscription;

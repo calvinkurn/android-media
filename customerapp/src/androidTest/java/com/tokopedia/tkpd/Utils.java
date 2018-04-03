@@ -1,4 +1,4 @@
-package com.tokopedia.sellerapp;
+package com.tokopedia.tkpd;
 
 import android.app.Activity;
 import android.content.res.Resources;
@@ -46,9 +46,14 @@ import okhttp3.mockwebserver.MockResponse;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.AllOf.allOf;
 
 /**
  * Created by normansyahputa on 8/22/16.
@@ -255,7 +260,7 @@ public class Utils {
 
             public Matcher<View> getConstraints() {
                 return Matchers.allOf(new Matcher[]{
-                        ViewMatchers.isAssignableFrom(RecyclerView.class), ViewMatchers.isDisplayed()
+                        ViewMatchers.isAssignableFrom(RecyclerView.class), isDisplayed()
                 });
             }
 
@@ -299,7 +304,7 @@ public class Utils {
 
             public Matcher<View> getConstraints() {
                 return Matchers.allOf(new Matcher[]{
-                        ViewMatchers.isAssignableFrom(RecyclerView.class), ViewMatchers.isDisplayed()
+                        ViewMatchers.isAssignableFrom(RecyclerView.class), isDisplayed()
                 });
             }
 
@@ -502,6 +507,17 @@ public class Utils {
                 return parentMatcher.matches(view.getParent()) && group.getChildAt(childPosition).equals(view);
             }
         };
+    }
+
+    public static void snackbarMatcher(String text){
+        assert  text != null;
+        onView(allOf(withId(android.support.design.R.id.snackbar_text), withText(text)))
+                .check(matches(isDisplayed()));
+    }
+
+    public static void snackbarAnyMatcher(){
+        onView(allOf(withId(android.support.design.R.id.snackbar_text)))
+                .check(matches(isDisplayed()));
     }
 
 }
