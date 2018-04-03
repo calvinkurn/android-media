@@ -32,7 +32,8 @@
                 android:layout_height="1dp"
                 android:layout_marginBottom="8dp"
                 android:background="@color/grey_300"
-                android:visibility="gone"tools:visibility="gone"/>
+                android:visibility="gone"
+                tools:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/button_send"
@@ -45,7 +46,8 @@
                 android:padding="@dimen/new_margin_med"
                 app:srcCompat="@drawable/ic_send_24dp_green"
                 tools:layout_editor_absoluteX="42dp"
-                tools:layout_editor_absoluteY="460dp"tools:visibility="gone"/>
+                tools:layout_editor_absoluteY="460dp"
+                tools:visibility="gone"/>
 
             <EditText
                 android:id="@+id/reply_edit_text"
@@ -65,7 +67,8 @@
                 android:paddingRight="@dimen/new_margin_med"
                 android:paddingTop="@dimen/padding_ms"
                 android:textSize="@dimen/font_small"
-                tools:text="dsajj\nfdfidjidfijdfijd"tools:visibility="gone"/>
+                tools:text="dsajj\nfdfidjidfijdfijd"
+                tools:visibility="gone"/>
 
             <TextView
                 android:id="@+id/login"
@@ -82,7 +85,8 @@
                 android:text="@string/login_to_chat"
                 android:textColor="@color/medium_green"
                 android:textSize="@dimen/font_small"
-                android:elevation="40dp"android:textStyle="normal"
+                android:elevation="40dp"
+                android:textStyle="normal"
                 />
         </RelativeLayout>
 
