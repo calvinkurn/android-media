@@ -171,8 +171,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 && voteInfoViewModel != null
                 && voteInfoViewModel.getStartTime() != 0
                 && voteInfoViewModel.getEndTime() != 0
-                && voteInfoViewModel.getStartTime()
-                < voteInfoViewModel.getEndTime()
+                && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime()
                 && voteInfoViewModel.getEndTime()
                 > System.currentTimeMillis() / 1000L
                 ) {
@@ -244,7 +243,9 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         voteAdapter.addList(voteInfoViewModel.getListOption());
 
         if (voteInfoViewModel.isVoted()) {
-            setVoted();
+            setVoted(true);
+        }else {
+            setVoted(false);
         }
 
         voteParticipant.setText(String.format("%s %s", TextFormatter.format(voteInfoViewModel.getParticipant())
@@ -303,11 +304,16 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             } else {
                 iconVote.setImageResource(R.drawable.ic_timer);
             }
+
         }
     }
 
-    public void setVoted() {
-        votedView.setVisibility(View.VISIBLE);
+    public void setVoted(boolean voted) {
+        if(voted) {
+            votedView.setVisibility(View.VISIBLE);
+        }else {
+            votedView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -357,7 +363,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             voteInfoViewModel.setVoted(true);
             voteInfoViewModel.setParticipant(
                     String.valueOf(Integer.parseInt(voteStatisticViewModel.getTotalParticipants())));
-            setVoted();
+            setVoted(true);
 
             voteParticipant.setText(String.format("%s %s", TextFormatter.format(voteInfoViewModel.getParticipant())
                     , getActivity().getString(R.string.voter)));

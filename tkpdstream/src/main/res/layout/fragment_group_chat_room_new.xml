@@ -9,6 +9,9 @@
         android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:background="@color/white"
         android:orientation="vertical">
 
@@ -29,7 +32,7 @@
                 android:layout_height="1dp"
                 android:layout_marginBottom="8dp"
                 android:background="@color/grey_300"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/button_send"
@@ -42,7 +45,7 @@
                 android:padding="@dimen/new_margin_med"
                 app:srcCompat="@drawable/ic_send_24dp_green"
                 tools:layout_editor_absoluteX="42dp"
-                tools:layout_editor_absoluteY="460dp"/>
+                tools:layout_editor_absoluteY="460dp" />
 
             <EditText
                 android:id="@+id/reply_edit_text"
@@ -62,24 +65,23 @@
                 android:paddingRight="@dimen/new_margin_med"
                 android:paddingTop="@dimen/padding_ms"
                 android:textSize="@dimen/font_small"
-                tools:text="dsajj\nfdfidjidfijdfijd"/>
+                tools:text="dsajj\nfdfidjidfijdfijd" />
 
             <TextView
                 android:id="@+id/login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_margin="@dimen/new_margin_med"
-                android:background="@color/medium_green"
+                android:background="@color/white"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
-                android:paddingBottom="@dimen/new_margin_med"
-                android:paddingTop="@dimen/new_margin_med"
+                android:paddingBottom="@dimen/space_edittext"
+                android:paddingTop="@dimen/space_edittext"
                 android:text="@string/login_to_chat"
-                android:textColor="@color/white"
+                android:textColor="@color/medium_green"
                 android:textSize="@dimen/font_small"
-                android:textStyle="normal"
-                />
+                android:elevation="40dp"
+                android:textStyle="normal" />
         </RelativeLayout>
 
 
@@ -97,7 +99,7 @@
             app:reverseLayout="true"
             app:stackFromEnd="true"
             tools:itemCount="1"
-            tools:listitem="@layout/chat_view_holder"/>
+            tools:listitem="@layout/chat_view_holder" />
 
         <LinearLayout
             android:id="@+id/layout_new_chat"
@@ -126,18 +128,18 @@
                 android:text="@string/new_message"
                 android:textColor="@color/medium_green"
                 android:textSize="12sp"
-                android:textStyle="normal"/>
+                android:textStyle="normal" />
 
             <Space
                 android:layout_width="@dimen/space_mini"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
             <ImageView
                 android:layout_width="@dimen/arrow_size"
                 android:layout_height="@dimen/arrow_size"
                 android:layout_gravity="center_vertical"
                 android:rotation="180"
-                app:srcCompat="@drawable/ic_arrow_up_green"/>
+                app:srcCompat="@drawable/ic_arrow_up_green" />
 
         </LinearLayout>
 
@@ -156,7 +158,7 @@
                 android:layout_height="@dimen/sprint_sale_icon_size"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                app:srcCompat="@drawable/ic_ss_svg_fin"/>
+                app:srcCompat="@drawable/ic_ss_svg_fin" />
 
             <TextView
                 android:id="@+id/sprintsale_text"
@@ -173,7 +175,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_tinier"
                 android:textStyle="bold"
-                tools:text="Berlangsung"/>
+                tools:text="Berlangsung" />
 
         </RelativeLayout>
 
