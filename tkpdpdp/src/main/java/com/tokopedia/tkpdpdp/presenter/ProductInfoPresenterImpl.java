@@ -103,6 +103,8 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                         .setProductId(productItem.getId())
                         .setProductName(productItem.getName())
                         .setProductImage(productItem.getImgUri())
+                        .setTrackerAttribution(productItem.getTrackerAttribution())
+                        .setTrackerListName(productItem.getTrackerListName())
                         .build();
             }
         } else {

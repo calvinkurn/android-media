@@ -103,6 +103,8 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
 
     @Transient
     TopAds topAds;
+    private String trackerAttribution;
+    private String trackerListName;
 
     /**
      *
@@ -406,6 +408,8 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         dest.writeValue(this.isAvailable);
         dest.writeValue(this.isTopAds);
         dest.writeParcelable(this.topAds, flags);
+        dest.writeString(this.trackerAttribution);
+        dest.writeString(this.trackerListName);
     }
 
     protected ProductItem(android.os.Parcel in) {
@@ -436,6 +440,8 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         this.isAvailable = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.isTopAds = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.topAds = in.readParcelable(TopAds.class.getClassLoader());
+        this.trackerAttribution = in.readString();
+        this.trackerListName = in.readString();
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {
@@ -449,4 +455,20 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
             return new ProductItem[size];
         }
     };
+
+    public void setTrackerAttribution(String trackerAttribution) {
+        this.trackerAttribution = trackerAttribution;
+    }
+
+    public String getTrackerAttribution() {
+        return trackerAttribution;
+    }
+
+    public void setTrackerListName(String trackerListName) {
+        this.trackerListName = trackerListName;
+    }
+
+    public String getTrackerListName() {
+        return trackerListName;
+    }
 }
