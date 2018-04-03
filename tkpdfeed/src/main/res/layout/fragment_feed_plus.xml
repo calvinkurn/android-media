@@ -7,8 +7,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:background="@color/white"
-    android:descendantFocusability="blocksDescendants"
-    android:paddingTop="@dimen/margin_small">
+    android:descendantFocusability="blocksDescendants">
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -22,7 +21,8 @@
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
             android:clipToPadding="false"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:paddingTop="@dimen/margin_small"/>
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 
 
