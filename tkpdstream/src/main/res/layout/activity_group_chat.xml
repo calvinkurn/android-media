@@ -18,13 +18,13 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scaleType="centerCrop"
+            android:background="@color/medium_green"
             app:layout_constraintBottom_toBottomOf="@+id/sponsor_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_weight="1"
-            tools:src="@color/cardview_dark_background"/>
+            app:layout_constraintVertical_weight="1"/>
 
         <RelativeLayout
             android:id="@+id/shadow_layer"
