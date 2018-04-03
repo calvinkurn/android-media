@@ -380,14 +380,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onPromoClick(BannerSlidesModel slidesModel) {
-        /*if (getActivity() != null
+        if (getActivity() != null
                 && getActivity().getApplicationContext() instanceof TkpdCoreRouter
                 && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
             openApplink(slidesModel.getApplink());
         } else {
             openWebViewURL(slidesModel.getRedirectUrl(), getContext());
-        }*/
-        openApplink("tokopedia://discovery/sprint-sale-pagination");
+        }
     }
 
     @Override
@@ -484,15 +483,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             return;
         }
 
-//        if (getActivity() != null
-//                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
-//                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(actionLink)) {
-//            openApplink(actionLink);
-//        } else {
-//            openWebViewURL(actionLink, getContext());
-//        }
-
-        openApplink("tokopedia://discovery/sprint-sale");
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
+                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(actionLink)) {
+            openApplink(actionLink);
+        } else {
+            openWebViewURL(actionLink, getContext());
+        }
     }
 
     private void openApplink(String applink) {
