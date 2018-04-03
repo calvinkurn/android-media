@@ -52,7 +52,6 @@
         android:name="com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment"
         android:tag="floating_egg"
         app:draggable="true"
-        app:margin_right="@dimen/new_margin_sm"
         app:margin_bottom="@dimen/new_margin_sm"/>
 
 </android.support.design.widget.CoordinatorLayout>

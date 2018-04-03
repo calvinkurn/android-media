@@ -178,6 +178,10 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     public void onPause() {
         super.onPause();
         // TODO stop the timer; we don't want the timer run when the fragment is paused and save the timestamp here
+        // TODO change below, this just to prevent the app crash
+        if (countDownTimer!= null) {
+            countDownTimer.cancel();
+        }
     }
 
     /**
