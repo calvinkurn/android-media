@@ -3,7 +3,6 @@ package com.tokopedia.events.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +13,7 @@ import android.widget.TextView;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
-import com.tokopedia.events.view.adapter.EventCategoryAdapter;
+import com.tokopedia.events.view.adapter.EventCategoryAdapterRevamp;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 
 import butterknife.BindView;
@@ -60,13 +59,12 @@ public class CategoryFragment extends TkpdBaseV4Fragment {
         ButterKnife.bind(this, view);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        EventCategoryAdapter eventCategoryAdapter = new EventCategoryAdapter(getActivity(), categoryViewModel.getItems());
+        EventCategoryAdapterRevamp eventCategoryAdapter = new EventCategoryAdapterRevamp(getActivity(), categoryViewModel.getItems());
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(eventCategoryAdapter);
 
         return view;
     }
-
 
 
     @Override

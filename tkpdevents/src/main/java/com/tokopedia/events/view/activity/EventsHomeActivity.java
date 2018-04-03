@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.widget.TouchViewPager;
@@ -30,12 +31,15 @@ import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
+import com.tokopedia.events.view.adapter.CardPagerAdapter;
 import com.tokopedia.events.view.adapter.CategoryFragmentPagerAdapter;
 import com.tokopedia.events.view.adapter.SlidingImageAdapter;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.customview.EventCategoryView;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
 import com.tokopedia.events.view.utils.CirclePageIndicator;
+import com.tokopedia.events.view.utils.ShadowTransformer;
+import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import com.tokopedia.events.view.viewmodel.EventLocationViewModel;
 
@@ -82,8 +86,10 @@ public class EventsHomeActivity extends TActivity
     View progressBarLayout;
     @BindView(R2.id.prog_bar)
     ProgressBar progBar;
-    @BindView(R2.id.indicator_promo_layout)
-    View indicatorLayout;
+    @BindView(R2.id.tv_addtocalendar)
+    TextView addToCalendar;
+    @BindView(R2.id.viewpager_top_events)
+    ViewPager topEventsViewPager;
 
 
     private int mBannnerPos;
@@ -116,7 +122,7 @@ public class EventsHomeActivity extends TActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_events_home_new);
+        setContentView(R.layout.activity_events_home_revamp);
         defaultSection = getIntent().getStringExtra(EXTRA_SECTION);
         if (defaultSection == null || defaultSection.length() <= 1)
             defaultSection = TOP;
@@ -250,6 +256,31 @@ public class EventsHomeActivity extends TActivity
                     setViewPagerListener();
                     tabLayout.setViewPager(viewPager);
                     mPresenter.startBannerSlide(viewPager);
+                } else if ("top".equalsIgnoreCase(categoryViewModel.getName())) {
+                    CardPagerAdapter cardPagerAdapter = new CardPagerAdapter(mPresenter);
+                    cardPagerAdapter.addData(categoryViewModel.getItems());
+                    ShadowTransformer cardShadowTransformer = new ShadowTransformer(topEventsViewPager, cardPagerAdapter);
+                    cardShadowTransformer.enableScaling(true);
+                    topEventsViewPager.setAdapter(cardPagerAdapter);
+                    topEventsViewPager.setPageTransformer(false, cardShadowTransformer);
+                    topEventsViewPager.setOffscreenPageLimit(1);
+                    topEventsViewPager.setPageMargin(Utils.getSingletonInstance().convertDip2Pixels(this, 8));
+                    topEventsViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                        @Override
+                        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                        }
+
+                        @Override
+                        public void onPageSelected(int position) {
+
+                        }
+
+                        @Override
+                        public void onPageScrollStateChanged(int state) {
+
+                        }
+                    });
                 }
                 if (defaultSection.equalsIgnoreCase(categoryViewModel.getName()))
                     defaultViewPagerPos = categoryList.indexOf(categoryViewModel);
@@ -264,7 +295,6 @@ public class EventsHomeActivity extends TActivity
         tabs.setupWithViewPager(categoryViewPager);
         categoryViewPager.setCurrentItem(defaultViewPagerPos);
         categoryViewPager.setSaveFromParentEnabled(false);
-        indicatorLayout.setVisibility(View.VISIBLE);
     }
 
 

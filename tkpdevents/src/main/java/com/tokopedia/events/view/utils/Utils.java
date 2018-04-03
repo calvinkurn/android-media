@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -221,6 +222,10 @@ public class Utils {
         canvas.drawColor(ContextCompat.getColor(context, R.color.preview_bg));
         v.draw(canvas);
         return bmp;
+    }
+
+    public int convertDip2Pixels(Context context, int dip) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
     }
 
     public static void saveImage(Context context, Bitmap finalBitmap) {

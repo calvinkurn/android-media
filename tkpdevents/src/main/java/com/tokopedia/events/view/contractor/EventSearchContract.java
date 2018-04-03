@@ -27,7 +27,6 @@ public class EventSearchContract {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels);
 
         void showProgressBar();
 
