@@ -154,7 +154,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void showRecomendationButton(boolean showRecomendation) {
-        if(showRecomendation){
+        if (showRecomendation && SessionHandler.isV4Login(getActivity())) {
             floatingTextButton.setVisibility(View.VISIBLE);
         } else {
             floatingTextButton.setVisibility(View.GONE);
@@ -204,13 +204,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (SessionHandler.isV4Login(getActivity()) && showRecomendation) {
                     int firstVisibleItemPos = layoutManager.findFirstVisibleItemPosition();
                     Visitable visitable = adapter.getItem(firstVisibleItemPos);
-                    if ((visitable instanceof InspirationViewModel || visitable instanceof TopAdsViewModel)
-                            && floatingTextButton.getVisibility() == View.VISIBLE) {
-                        floatingTextButton.setVisibility(View.GONE);
-                    } else if (firstVisibleItemPos == 0 && floatingTextButton.getVisibility() == View.GONE) {
+                    if ((visitable instanceof InspirationViewModel || visitable instanceof TopAdsViewModel)) {
+                        floatingTextButton.setVisibility(View.INVISIBLE);
+                    } else {
                         floatingTextButton.setVisibility(View.VISIBLE);
                     }
-                } else if (floatingTextButton.getVisibility() == View.VISIBLE) {
+                } else {
                     floatingTextButton.setVisibility(View.GONE);
                 }
             }
