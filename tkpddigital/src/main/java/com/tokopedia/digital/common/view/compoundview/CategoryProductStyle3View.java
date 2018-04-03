@@ -103,26 +103,27 @@ public class CategoryProductStyle3View extends
         } else {
             tvTitle.setVisibility(GONE);
         }
-            renderOperatorChooserOptions();
+        renderOperatorChooserOptions();
         renderInstantCheckoutOptions();
         btnBuyDigital.setOnClickListener(getButtonBuyClickedListener());
     }
 
     @Override
     protected void onUpdateSelectedOperatorData() {
-            digitalOperatorChooserView.renderUpdateDataSelected(operatorSelected);
+        digitalOperatorChooserView.renderUpdateDataSelected(operatorSelected);
     }
 
     @Override
     protected void onUpdateSelectedProductData() {
         if (operatorSelected.getRule().getProductViewStyle() != SINGLE_PRODUCT) {
-                this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
+            this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
         }
     }
 
     @Override
     protected void onInstantCheckoutUnChecked() {
-        if (operatorSelected != null) setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
+        if (operatorSelected != null)
+            setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
     }
 
     @Override
@@ -212,7 +213,7 @@ public class CategoryProductStyle3View extends
     }
 
     private void showProducts() {
-            renderProductChooserOptions();
+        renderProductChooserOptions();
     }
 
     private void renderProductChooserOptions() {
@@ -382,7 +383,8 @@ public class CategoryProductStyle3View extends
                     clientNumber = operatorSelected.getClientNumberList().get(0);
                 }
                 actionListener.onClientNumberCleared(clientNumber,
-                        historyClientNumber.getRecentClientNumberList());            }
+                        historyClientNumber.getRecentClientNumberList());
+            }
 
             @Override
             public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {

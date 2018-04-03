@@ -82,16 +82,16 @@
                     android:layout_marginEnd="@dimen/margin_vs"
                     android:layout_marginRight="@dimen/margin_vs"
                     android:contentDescription="@string/app_name"
-                    android:paddingBottom="5dp"
+                    android:paddingBottom="@dimen/digital_padding_5"
                     tools:src="@drawable/ic_close_24dp" />
 
                 <Button
                     android:id="@+id/btn_clear_client_number"
-                    android:layout_width="20dp"
+                    android:layout_width="@dimen/digital_height_width_20"
                     android:layout_height="@dimen/digital_height_width_25"
                     android:layout_gravity="end|center_vertical"
                     android:background="@drawable/digital_bg_widget_close"
-                    android:paddingBottom="5dp" />
+                    android:paddingBottom="@dimen/digital_padding_5" />
 
             </LinearLayout>
         </RelativeLayout>

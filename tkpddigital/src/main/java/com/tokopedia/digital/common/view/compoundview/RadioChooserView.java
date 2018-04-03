@@ -3,7 +3,6 @@ package com.tokopedia.digital.common.view.compoundview;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,8 @@ import butterknife.BindView;
 
 public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
 
-    private static final int PARAM_EMPTY_MARGIN = 0;
+    private static final int EMPTY_MARGIN_VALUE = 0;
+    private static final int RADIO_DIVIDER_MARGIN_VALUE = 40;
     @BindView(R2.id.radio_group_container)
     LinearLayout radioGroupContainer;
 
@@ -87,14 +87,14 @@ public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
         this.operators = data;
         RadioGroup.LayoutParams layoutParams = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(
-                PARAM_EMPTY_MARGIN,
-                PARAM_EMPTY_MARGIN,
-                40,
-                PARAM_EMPTY_MARGIN
+                EMPTY_MARGIN_VALUE,
+                EMPTY_MARGIN_VALUE,
+                RADIO_DIVIDER_MARGIN_VALUE,
+                EMPTY_MARGIN_VALUE
         );
         for (int i = 0; i < data.size(); i++) {
-            View v = inflater.inflate(R.layout.view_digital_radio_button,null, false);
-            RadioButton radioButton  = (RadioButton) v.findViewById(R.id.radio_button);
+            View radioView = inflater.inflate(R.layout.view_digital_radio_button,null, false);
+            RadioButton radioButton  = (RadioButton) radioView.findViewById(R.id.radio_button);
             radioButton.setLayoutParams(layoutParams);
             radioButton.setId(i);
             radioButton.setText(data.get(i).getName());
