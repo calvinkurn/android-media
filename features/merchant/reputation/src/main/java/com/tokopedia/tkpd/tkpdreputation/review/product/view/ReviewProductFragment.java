@@ -18,7 +18,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.design.quickfilter.QuickFilterItem;

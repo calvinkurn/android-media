@@ -18,7 +18,7 @@
 
     <dimen name="radius">5dp</dimen>
 
-    <dimen name="space_between">14dp</dimen>
+    <dimen name="space_between">13dp</dimen>
     <dimen name="space_edittext">20dp</dimen>
 
     <dimen name="size_icon_vote">15dp</dimen>

@@ -188,14 +188,19 @@ public class LoginFragment extends BaseDaggerFragment
         menu.add(Menu.NONE, R.id.action_register, 0, "");
         MenuItem menuItem = menu.findItem(R.id.action_register);
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menuItem.setIcon(getDraw());
+        if (getDraw() != null) {
+            menuItem.setIcon(getDraw());
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     private Drawable getDraw() {
-        TextDrawable drawable = new TextDrawable(getActivity());
-        drawable.setText(getResources().getString(R.string.register));
-        drawable.setTextColor(R.color.black_70b);
+        TextDrawable drawable = null;
+        if (getActivity() != null) {
+            drawable = new TextDrawable(getActivity());
+            drawable.setText(getResources().getString(R.string.register));
+            drawable.setTextColor(R.color.black_70b);
+        }
         return drawable;
     }
 

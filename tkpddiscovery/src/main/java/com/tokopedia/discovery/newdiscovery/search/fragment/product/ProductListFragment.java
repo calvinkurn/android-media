@@ -745,7 +745,14 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void addGuidedSearch() {
-        adapter.addGuidedSearch();
+        String currentKey = productViewModel.getQuery();
+        String currentPage = String.valueOf(adapter.getStartFrom() / 12);
+
+        SearchTracking.eventImpressionGuidedSearch(
+                currentKey,
+                currentPage
+        );
+        adapter.addGuidedSearch(currentKey, currentPage);
     }
 
     @Override

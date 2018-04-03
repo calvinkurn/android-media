@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
-    android:paddingTop="@dimen/padding_small">
+    android:paddingTop="@dimen/margin_8">
 
     <include layout="@layout/include_header_detail_flight" />
 

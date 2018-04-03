@@ -7,19 +7,26 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/icon"
+    <FrameLayout
+        android:id="@+id/icon_wrapper"
         android:layout_width="@dimen/indicator_icon_size"
         android:layout_height="@dimen/indicator_icon_size"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:padding="@dimen/padding_vvs"
+        android:background="@drawable/shadow_background_circle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_chat_personal"/>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/indicator_icon_size"
+            android:layout_height="@dimen/indicator_icon_size"
+            android:padding="@dimen/padding_vvs"
+            tools:src="@drawable/ic_chat_personal"/>
+    </FrameLayout>
 
     <TextView
         android:id="@+id/notification"
@@ -33,7 +40,7 @@
         android:paddingRight="@dimen/padding_vs"
         android:textColor="#ffffff"
         android:textSize="@dimen/font_micro"
-        app:layout_constraintStart_toStartOf="@+id/icon"
+        app:layout_constraintStart_toStartOf="@+id/icon_wrapper"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="30"/>
 
@@ -51,7 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/icon"
+        app:layout_constraintTop_toBottomOf="@+id/icon_wrapper"
         tools:text="Personal"/>
 
 </android.support.constraint.ConstraintLayout>

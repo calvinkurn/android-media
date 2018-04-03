@@ -26,6 +26,7 @@
             android:layout_height="@dimen/profile_avatar_size"
             android:layout_marginEnd="@dimen/new_margin_med"
             android:layout_marginRight="@dimen/new_margin_med"
+            android:background="@drawable/avatar_border_circle"
             tools:src="@drawable/ic_set_profile" />
 
         <LinearLayout

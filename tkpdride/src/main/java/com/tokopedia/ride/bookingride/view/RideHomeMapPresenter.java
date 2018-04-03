@@ -468,6 +468,8 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached() && !isUnsubscribed()) {
+                    if (mCurrentLocation == null) return;
+
                     String sourceAddress = String.valueOf(mCurrentLocation.getLatitude()) + "," + String.valueOf(mCurrentLocation.getLongitude());
 
                     if (isViewAttached() && !isUnsubscribed()) {

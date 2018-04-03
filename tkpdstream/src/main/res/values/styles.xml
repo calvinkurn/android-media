@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Transparent" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.Transparent.Groupchat" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:statusBarColor">@color/pure_transparent</item>
     </style>
 

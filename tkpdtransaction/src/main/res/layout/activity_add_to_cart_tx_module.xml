@@ -242,6 +242,7 @@
 
                         <EditText
                             android:id="@id/et_form_notes"
+                            android:importantForAutofill="noExcludeDescendants"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/title_catatan_penjual" />

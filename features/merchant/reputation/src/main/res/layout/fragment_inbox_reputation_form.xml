@@ -177,7 +177,7 @@
                 android:id="@+id/upload_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/info_icon"/>
+                android:src="@drawable/info_icon"/>
 
         </LinearLayout>
 

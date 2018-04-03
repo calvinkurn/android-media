@@ -96,9 +96,9 @@
             layout="@layout/include_seating_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/seat_plan_height"
-            android:layout_marginBottom="@dimen/margin_default"
+            android:layout_marginBottom="@dimen/divider_height_thin"
             android:layout_marginRight="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_default" />
+            android:layout_marginTop="@dimen/divider_height_thin" />
 
 
     </LinearLayout>

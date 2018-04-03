@@ -144,7 +144,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             getView().setTextAreaReply(true);
             getView().hideNotifier();
         }
-        getTemplate();
+        if(!getView().isChatBot()) {
+            getTemplate();
+        }
     }
 
     @Override

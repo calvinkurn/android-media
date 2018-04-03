@@ -78,6 +78,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String OVERRIDE_URL = "override_url";
+    private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
 
     private final Activity context;
@@ -229,7 +230,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openHomepageHot();
                     break;
                 case DeepLinkChecker.CATALOG:
-                    openCatalogProduct(linkSegment, uriData);
+                    openCatalogDetail(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_CATALOG;
                     break;
                 case DeepLinkChecker.DISCOVERY_PAGE:
@@ -300,10 +301,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         int SEGMENT_GROUPCHAT = 2;
         Intent intent;
         if (linkSegment.size() == SEGMENT_GROUPCHAT) {
-            intent = ((TkpdCoreRouter) context).getGroupChatIntent(
+            intent = ((TkpdCoreRouter) context.getApplication()).getGroupChatIntent(
                     context, linkSegment.get(1));
         } else {
-            intent = ((TkpdCoreRouter) context).getInboxChannelsIntent(
+            intent = ((TkpdCoreRouter) context.getApplication()).getInboxChannelsIntent(
                     context);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -510,9 +511,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         viewListener.hideActionBar();
     }
 
-    private void openCatalogProduct(List<String> linkSegment, Uri uriData) {
+    private void openCatalogDetail(List<String> linkSegment, Uri uriData) {
         viewListener.inflateFragment(DetailProductRouter
-                .getCatalogDetailListFragment(context, linkSegment.get(1)), "CATALOG_PRODUCT");
+                .getCatalogDetailFragment(context, linkSegment.get(1)), TAG_FRAGMENT_CATALOG_DETAIL);
     }
 
     private void openHotProduct(List<String> linkSegment, Uri uriData) {
