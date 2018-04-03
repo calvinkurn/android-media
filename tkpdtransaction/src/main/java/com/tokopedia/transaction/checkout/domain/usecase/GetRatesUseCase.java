@@ -59,6 +59,8 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
         if (!TextUtils.isEmpty(shipmentDetailData.getShipmentCartData().getOriginPostalCode())) {
             originBuilder.append("|")
                     .append(shipmentDetailData.getShipmentCartData().getOriginPostalCode());
+        } else {
+            originBuilder.append("|").append("0");
         }
         if (shipmentDetailData.getShipmentCartData().getOriginLatitude() != null) {
             originBuilder.append("|")
@@ -75,6 +77,8 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
         if (!TextUtils.isEmpty(shipmentDetailData.getShipmentCartData().getDestinationPostalCode())) {
             destinationBuilder.append("|")
                     .append(shipmentDetailData.getShipmentCartData().getDestinationPostalCode());
+        } else {
+            originBuilder.append("|").append("0");
         }
         if (shipmentDetailData.getShipmentCartData().getDestinationLatitude() != null) {
             destinationBuilder.append("|")
