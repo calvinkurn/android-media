@@ -88,9 +88,9 @@
                 <Button
                     android:id="@+id/btn_clear_client_number"
                     android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_height="@dimen/digital_height_width_25"
                     android:layout_gravity="end|center_vertical"
-                    android:background="@drawable/ic_digital_widget_close"
+                    android:background="@drawable/digital_bg_widget_close"
                     android:paddingBottom="5dp" />
 
             </LinearLayout>
@@ -100,8 +100,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:paddingBottom="@dimen/padding_vs"
             android:layout_weight="0.12"
+            android:paddingBottom="@dimen/padding_vs"
             tools:visibility="visible">
 
             <Button
