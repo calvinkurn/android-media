@@ -617,16 +617,29 @@ public class GTMContainer implements IGTMContainer {
     @Override
     public void eventAddToCartPurchase(Product product) {
         clearEnhanceEcommerce();
-        GTMDataLayer.pushGeneral(
-                context, DataLayer.mapOf(
-                        AppEventTracking.EVENT, "addToCart",
-                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "add", DataLayer.mapOf(
-                                        "products", product.getProduct())
-                        )
+        try {
+            GTMDataLayer.pushGeneral(
+                    context, DataLayer.mapOf(
+                            AppEventTracking.EVENT, "addToCart",
+                            AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                                    "currencyCode", "IDR",
+                                    "add", DataLayer.mapOf(
+                                            "products", product.getProduct())
+                            )
+                    )
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        CommonUtils.dumper("DATA LAYER " + DataLayer.mapOf(
+                AppEventTracking.EVENT, "addToCart",
+                AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "add", DataLayer.mapOf(
+                                "products", product.getProduct())
                 )
-        );
+        ));
     }
 
     @Override
@@ -640,33 +653,6 @@ public class GTMContainer implements IGTMContainer {
                                 "add", DataLayer.mapOf(
                                         "products", product.getProduct())
                         )
-                )
-        );
-    }
-
-    @Override
-    public void eventCheckout(List<Product> productList,
-                              String step,
-                              String option) {
-        clearEnhanceEcommerce();
-        List<Object> productHashedList = new ArrayList<>();
-        for(int i = 0; i < productList.size(); i++) {
-            DataLayer.mapOf(productList.get(i).getProduct());
-        }
-        GTMDataLayer.pushGeneral(
-                context, DataLayer.mapOf(
-                        AppEventTracking.EVENT,
-                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                                "checkout", DataLayer.mapOf(
-                                    "actionField", DataLayer.mapOf(
-                                            "step", step,
-                                                "option", option
-                                        ),
-                                        "products", DataLayer.listOf(productHashedList)
-                                )
-
-                        )
-
                 )
         );
     }

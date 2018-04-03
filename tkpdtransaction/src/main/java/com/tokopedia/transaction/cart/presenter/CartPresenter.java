@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.cart.presenter;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
@@ -304,17 +306,18 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processSubmitEditCart(@NonNull CartItem cartData,
-                                      @NonNull List<ProductEditData> cartProductEditDataList) {
+    public void processSubmitEditCart(@NonNull final Context context,
+                                      @NonNull final CartItem cartItem,
+                                      @NonNull final List<ProductEditData> cartProductEditDataList) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
         maps.put("carts", new Gson().toJson(cartProductEditDataList));
-        maps.put("cart_shop_id", cartData.getCartShop().getShopId());
-        maps.put("cart_addr_id", cartData.getCartDestination().getAddressId());
-        maps.put("cart_shipping_id", cartData.getCartShipments().getShipmentId());
-        maps.put("cart_sp_id", cartData.getCartShipments().getShipmentPackageId());
+        maps.put("cart_shop_id", cartItem.getCartShop().getShopId());
+        maps.put("cart_addr_id", cartItem.getCartDestination().getAddressId());
+        maps.put("cart_shipping_id", cartItem.getCartShipments().getShipmentId());
+        maps.put("cart_sp_id", cartItem.getCartShipments().getShipmentPackageId());
         maps.put("lp_flag", "1");
-        maps.put("cart_string", cartData.getCartString());
+        maps.put("cart_string", cartItem.getCartString());
         cartDataInteractor.updateCart(view.getGeneratedAuthParamNetwork(maps),
                 view.getGeneratedAuthParamNetwork(null),
                 new Subscriber<ResponseTransform<CartData>>() {
@@ -345,6 +348,54 @@ public class CartPresenter implements ICartPresenter {
                             e.printStackTrace();
                         }
                         processRenderViewCartData(cartData);
+                        for (int i = 0; i < cartProductEditDataList.size(); i++) {
+                            if (cartProductEditDataList.get(i).getOriginalQuantity()
+                                    > cartProductEditDataList.get(i).getProductQuantity()) {
+
+                                Product analysisProduct = new Product();
+                                analysisProduct.setProductName(cartItem.getCartProducts()
+                                        .get(i)
+                                        .getProductName());
+                                analysisProduct.setProductID(cartItem.getCartProducts()
+                                        .get(i)
+                                        .getProductId());
+                                analysisProduct.setPrice(cartItem.getCartProducts()
+                                        .get(i)
+                                        .getProductPrice());
+                                analysisProduct.setQty(cartProductEditDataList
+                                        .get(i)
+                                        .getOriginalQuantity()
+                                        - cartProductEditDataList.get(i).getProductQuantity());
+                                GTMContainer.newInstance(context).
+                                        eventRemoveFromCartPurchase(analysisProduct);
+
+                            } else if (cartProductEditDataList.get(i).getOriginalQuantity()
+                                    < cartProductEditDataList.get(i).getProductQuantity()) {
+
+                                Product analysisProduct = new Product();
+                                analysisProduct.setProductName(cartItem.getCartProducts()
+                                        .get(i)
+                                        .getProductName());
+                                analysisProduct.setProductID(cartItem.getCartProducts()
+                                        .get(i)
+                                        .getProductId());
+                                analysisProduct.setPrice(cartItem.getCartProducts()
+                                        .get(i)
+                                        .getProductPrice());
+                                analysisProduct.setQty(
+                                        cartProductEditDataList
+                                        .get(i)
+                                        .getProductQuantity()
+                                        - cartProductEditDataList
+                                                .get(i)
+                                                .getOriginalQuantity());
+                                GTMContainer.newInstance(context).
+                                        eventAddToCartPurchase(analysisProduct);
+                                GTMContainer.newInstance(context).
+                                        eventAddToCartPurchase(analysisProduct);
+
+                            }
+                        }
                     }
                 });
     }

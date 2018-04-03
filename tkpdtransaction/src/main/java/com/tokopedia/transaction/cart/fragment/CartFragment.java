@@ -850,7 +850,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onSubmitEditCartItem(CartItem cartData, List<ProductEditData> cartProductEditDataList) {
-        presenter.processSubmitEditCart(cartData, cartProductEditDataList);
+        presenter.processSubmitEditCart(getActivity(), cartData, cartProductEditDataList);
     }
 
     @Override

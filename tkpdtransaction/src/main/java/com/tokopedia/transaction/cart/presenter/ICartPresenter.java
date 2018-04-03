@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.cart.presenter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -25,7 +26,8 @@ public interface ICartPresenter {
     void processCancelCartProduct(@NonNull CartItem cartData,
                                   @NonNull CartProduct cartProductData);
 
-    void processSubmitEditCart(@NonNull CartItem cartData,
+    void processSubmitEditCart(@NonNull Context context,
+                               @NonNull CartItem cartData,
                                @NonNull List<ProductEditData> cartProductEditDataList);
 
     void processUpdateInsurance(@NonNull CartItemEditable cartItemEditable, boolean useInsurance);

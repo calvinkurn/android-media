@@ -450,7 +450,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         .setProductName(productData.getInfo().getProductName())
                         .setWeight(weightProduct)
                         .setShopId(productData.getShopInfo().getShopId())
-                        .setPrice(productData.getInfo().getProductPrice())
+                        .setPrice(String.valueOf(productData.getInfo().getProductPriceUnformatted()))
                         .setShopType(generateShopType(productData.getShopInfo()))
                         .build();
                 pass.setNotes(generateVariantString());

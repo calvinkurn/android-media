@@ -120,7 +120,6 @@ public interface IGTMContainer {
 
     void clickTncButtonHotlistPromo(String hotlistName, String promoName, String promoCode);
 
-
     void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData);
 
     void clearEnhanceEcommerce();
@@ -132,8 +131,6 @@ public interface IGTMContainer {
     void eventAddToCartPurchase(Product product);
 
     void eventRemoveFromCartPurchase(Product product);
-
-    void eventCheckout(List<Product> productList, String step, String option);
 
     void eventImpressionPromoList(List<Object> list, String promoName);
 
