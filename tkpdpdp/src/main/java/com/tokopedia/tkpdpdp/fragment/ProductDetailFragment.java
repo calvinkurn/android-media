@@ -302,6 +302,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        float heightScreen = getResources().getDisplayMetrics().widthPixels;
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
+        layoutParams.height = (int)heightScreen;
+        appBarLayout.setVisibility(View.VISIBLE);
+
         appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
             @Override
             public void onStateChanged(AppBarLayout appBarLayout, State state) {
@@ -1270,6 +1276,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
         startShowCase();
 
+    }
+
+    @Override
+    public void setVariantFalse() {
+        useVariant = false;
+        productData.getInfo().setHasVariant(false);
     }
 
     @Override

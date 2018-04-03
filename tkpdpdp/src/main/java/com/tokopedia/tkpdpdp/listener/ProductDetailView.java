@@ -294,6 +294,8 @@ public interface ProductDetailView extends ViewListener {
 
     void addProductVariant(ProductVariant productVariant);
 
+    void setVariantFalse();
+
     void actionSuccessAddToWishlist(Integer productId);
 
     void actionSuccessRemoveFromWishlist(Integer productId);
