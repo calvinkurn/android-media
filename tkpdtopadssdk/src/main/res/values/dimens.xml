@@ -48,5 +48,6 @@
     <dimen name="feed_new_fav_icon">10dp</dimen>
     <dimen name="feed_new_fav_padding">7dp</dimen>
     <dimen name="feed_new_image_padding">1dp</dimen>
+    <dimen name="feed_new_toa_height">30dp</dimen>
 
 </resources>
