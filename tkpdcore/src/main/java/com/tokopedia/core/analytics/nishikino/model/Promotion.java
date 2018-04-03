@@ -92,7 +92,7 @@ public class Promotion {
                                                 "name", getPromotionName(),
                                                 "creative", getPromotionAlias(),
                                                 "position", getPromotionPosition(),
-                                                "promo_code", !TextUtils.isEmpty(getPromoCode()) ? getPromoCode() : "none / other"
+                                                "promo_code", !TextUtils.isEmpty(getPromoCode()) ? getPromoCode() : "NoPromoCode"
                                         )
                                 )
                         )
