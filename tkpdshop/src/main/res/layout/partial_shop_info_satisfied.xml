@@ -38,7 +38,7 @@
                 android:id="@+id/image_view_smiley_good"
                 android:layout_width="@dimen/image_width_xxs"
                 android:layout_height="@dimen/image_width_xxs"
-                android:src="@drawable/ic_smiley_good" />
+                app:srcCompat="@drawable/ic_smiley_good" />
         </LinearLayout>
 
         <LinearLayout
@@ -59,7 +59,7 @@
                 android:id="@+id/image_view_smiley_neutral"
                 android:layout_width="@dimen/image_width_xxs"
                 android:layout_height="@dimen/image_width_xxs"
-                android:src="@drawable/ic_smiley_neutral" />
+                app:srcCompat="@drawable/ic_smiley_neutral" />
         </LinearLayout>
 
         <LinearLayout
@@ -80,7 +80,7 @@
                 android:id="@+id/image_view_smiley_bad"
                 android:layout_width="@dimen/image_width_xxs"
                 android:layout_height="@dimen/image_width_xxs"
-                android:src="@drawable/ic_smiley_bad" />
+                app:srcCompat="@drawable/ic_smiley_bad" />
         </LinearLayout>
     </LinearLayout>
 
