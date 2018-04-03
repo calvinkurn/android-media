@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
@@ -39,6 +40,13 @@ public class FloatingTextButton extends FrameLayout {
 
     public FloatingTextButton(Context context, AttributeSet attrs) {
         super(context, attrs);
+        inflateLayout(context);
+        initAttributes(attrs);
+        initView();
+    }
+
+    public FloatingTextButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         inflateLayout(context);
         initAttributes(attrs);
         initView();
@@ -167,16 +175,7 @@ public class FloatingTextButton extends FrameLayout {
         setLeftIconDrawable(leftIcon);
         setRightIconDrawable(rightIcon);
         setBackgroundColor(background);
-
         initViewRadius();
-    }
-
-    @Override
-    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
-        super.onVisibilityChanged(changedView, visibility);
-        if(visibility==VISIBLE) {
-            initViewRadius();
-        }
     }
 
     private void initViewRadius() {
@@ -190,11 +189,11 @@ public class FloatingTextButton extends FrameLayout {
 
     @SuppressWarnings("SameParameterValue")
     private int getVerticalPaddingValue(int dp) {
-        return DimensionUtils.dpToPx(getContext(), dp);
+        return DimensionUtils.convertDpToPixel(dp, getContext());
     }
 
     @SuppressWarnings("SameParameterValue")
     private int getHorizontalPaddingValue(int dp) {
-        return DimensionUtils.dpToPx(getContext(), dp);
+        return DimensionUtils.convertDpToPixel(dp, getContext());
     }
 }

@@ -51,6 +51,7 @@
         android:layout_gravity="center_horizontal|bottom"
         android:layout_margin="@dimen/margin_card_home"
         android:visibility="gone"
+        app:layout_behavior="com.tokopedia.home.widget.FabBehaviour"
         app:floating_title_allcaps="false"
         app:floating_left_icon="@drawable/ic_info"
         app:floating_title="@string/cek_recomendasi" />
