@@ -8,12 +8,12 @@ public class CrackBenefit {
 
     private String text;
     private String color;
-    private int size;
+    private String size;
 
     public CrackBenefit() {
     }
 
-    public CrackBenefit(String text, String color, int size) {
+    public CrackBenefit(String text, String color, String size) {
         this.text = text;
         this.color = color;
         this.size = size;
@@ -27,7 +27,7 @@ public class CrackBenefit {
         return color;
     }
 
-    public int getSize() {
+    public String getSize() {
         return size;
     }
 
@@ -39,7 +39,7 @@ public class CrackBenefit {
         this.color = color;
     }
 
-    public void setSize(int size) {
+    public void setSize(String size) {
         this.size = size;
     }
 }
