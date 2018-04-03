@@ -817,10 +817,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                 analytics.eventClickJoin();
             }
         });
-        if (hasValidPoll)
-            actionButton.setText(R.string.lets_vote);
-        else
-            actionButton.setText(R.string.lets_chat);
 
         participant.setText(TextFormatter.format(String.valueOf(channelInfoViewModel.getTotalView())));
         name.setText(channelInfoViewModel.getAdminName());
