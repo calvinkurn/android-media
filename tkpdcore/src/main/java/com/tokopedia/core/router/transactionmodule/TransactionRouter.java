@@ -28,6 +28,8 @@ public interface TransactionRouter {
     Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest);
 
     interface CartRouter {
+        String CART_NOTIFICATION_BROADCAST_INTENT_FILTER = "com.tokopedia.tkpd.CART_NOTIFICATION_BROADCAST";
+
         void updateMarketplaceCartCounter();
     }
 
