@@ -102,6 +102,6 @@ public interface FlightApi {
 
     @Headers({"Content-Type: application/json"})
     @PATCH(FlightUrl.FLIGHT_PASSENGER_SAVED)
-    Observable<Response<Object>> updatePassengerListData(@Body DataRequest<UpdatePassengerRequest> request,
+    Observable<Response<FlightDataResponse<SavedPassengerEntity>>> updatePassengerListData(@Body DataRequest<UpdatePassengerRequest> request,
                                                          @Header("Idempotency-Key") String idemPotencyKeyHeader);
 }

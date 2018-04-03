@@ -6,6 +6,7 @@ import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequ
 import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
 import com.tokopedia.flight.passenger.data.db.FlightPassengerDataListDbSource;
 import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
+import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -67,10 +68,11 @@ public class FlightPassengerFactorySource {
 
     public Observable<Boolean> updatePassenger(final UpdatePassengerRequest updatePassengerRequest, String idempotencyKey) {
         return flightSavedPassengerDataListCloudSource.updatePassenger(updatePassengerRequest, idempotencyKey)
-                .flatMap(new Func1<Response<Object>, Observable<Boolean>>() {
+                .flatMap(new Func1<Response<FlightDataResponse<SavedPassengerEntity>>, Observable<Boolean>>() {
                     @Override
-                    public Observable<Boolean> call(Response<Object> objectResponse) {
-                        return flightPassengerDataListDbSource.updatePassengerData(updatePassengerRequest);
+                    public Observable<Boolean> call(Response<FlightDataResponse<SavedPassengerEntity>> savedPassengerResponse) {
+                        return flightPassengerDataListDbSource.updatePassengerData(updatePassengerRequest.getPassengerId(),
+                                savedPassengerResponse.body().getData());
                     }
                 });
     }
