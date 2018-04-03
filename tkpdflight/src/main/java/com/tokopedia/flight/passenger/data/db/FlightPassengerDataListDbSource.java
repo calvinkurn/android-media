@@ -6,6 +6,7 @@ import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 import com.tokopedia.flight.passenger.data.cloud.entity.SavedPassengerEntity;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
 import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb_Table;
 import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
@@ -73,6 +74,32 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
 
                 if (result != null) {
                     result.setIsSelected(isSelected);
+                    result.save();
+                    subscriber.onNext(true);
+                } else {
+                    subscriber.onNext(false);
+                }
+            }
+        });
+    }
+
+    public Observable<Boolean> updatePassengerData(final UpdatePassengerRequest updatePassengerRequest) {
+
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                ConditionGroup conditions = ConditionGroup.clause();
+                conditions.and(FlightPassengerDb_Table.id.eq(updatePassengerRequest.getPassengerId()));
+
+                FlightPassengerDb result = new Select().from(FlightPassengerDb.class)
+                        .where(conditions)
+                        .querySingle();
+
+                if (result != null) {
+                    result.setFirstName(updatePassengerRequest.getAttributes().getFirstName());
+                    result.setLastName(updatePassengerRequest.getAttributes().getLastName());
+                    result.setBirthdate(updatePassengerRequest.getAttributes().getDob());
+                    result.setTitleId(updatePassengerRequest.getAttributes().getTitle());
                     result.save();
                     subscriber.onNext(true);
                 } else {

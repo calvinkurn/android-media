@@ -102,6 +102,26 @@ public class FlightPassengerDb extends BaseModel implements Parcelable {
         return isSelected == 1;
     }
 
+    public void setPassengerId(String passengerId) {
+        this.passengerId = passengerId;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setBirthdate(String birthdate) {
+        this.birthdate = birthdate;
+    }
+
+    public void setTitleId(int titleId) {
+        this.titleId = titleId;
+    }
+
     @Override
     public int describeContents() {
         return 0;

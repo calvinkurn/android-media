@@ -65,8 +65,14 @@ public class FlightPassengerFactorySource {
         return flightSavedPassengerDataListCloudSource.deletePassenger(deletePassengerRequest, idempotencyKey);
     }
 
-    public Observable<Response<Object>> updatePassenger(UpdatePassengerRequest updatePassengerRequest, String idempotencyKey) {
-        return flightSavedPassengerDataListCloudSource.updatePassenger(updatePassengerRequest, idempotencyKey);
+    public Observable<Boolean> updatePassenger(final UpdatePassengerRequest updatePassengerRequest, String idempotencyKey) {
+        return flightSavedPassengerDataListCloudSource.updatePassenger(updatePassengerRequest, idempotencyKey)
+                .flatMap(new Func1<Response<Object>, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Response<Object> objectResponse) {
+                        return flightPassengerDataListDbSource.updatePassengerData(updatePassengerRequest);
+                    }
+                });
     }
 
     private Observable<List<FlightPassengerDb>> getPassengerListFromCloud() {

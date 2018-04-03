@@ -37,18 +37,12 @@ public class FlightPassengerUpdateDataUseCase extends UseCase<Boolean> {
     @Override
     public Observable<Boolean> createObservable(final RequestParams requestParams) {
         return createRequest(requestParams)
-                .flatMap(new Func1<UpdatePassengerRequest, Observable<Response<Object>>>() {
+                .flatMap(new Func1<UpdatePassengerRequest, Observable<Boolean>>() {
                     @Override
-                    public Observable<Response<Object>> call(UpdatePassengerRequest request) {
+                    public Observable<Boolean> call(UpdatePassengerRequest request) {
                         return flightRepository.updatePassengerListData(request,
                                 requestParams.getString(PARAM_IDEMPOTENCY, DEFAULT_STRING_VALUE)
                         );
-                    }
-                })
-                .flatMap(new Func1<Response<Object>, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Response<Object> objectResponse) {
-                        return flightRepository.deleteAllListPassenger();
                     }
                 });
     }

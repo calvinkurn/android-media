@@ -21,6 +21,14 @@ public class UpdatePassengerRequest {
         this.attributes = attributes;
     }
 
+    public String getPassengerId() {
+        return passengerId;
+    }
+
+    public void setPassengerId(String passengerId) {
+        this.passengerId = passengerId;
+    }
+
     public UpdatePassengerAttributesRequest getAttributes() {
         return attributes;
     }

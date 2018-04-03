@@ -402,7 +402,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<Response<Object>> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey) {
+    public Observable<Boolean> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey) {
         return flightPassengerFactorySource.updatePassenger(request, idempotencyKey);
     }
 
