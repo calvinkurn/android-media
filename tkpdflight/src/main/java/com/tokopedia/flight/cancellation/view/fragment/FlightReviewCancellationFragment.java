@@ -1,9 +1,12 @@
 package com.tokopedia.flight.cancellation.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +31,7 @@ public class FlightReviewCancellationFragment extends BaseListFragment<FlightCan
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
 
     private AppCompatButton btnSubmit;
+    private AppCompatTextView txtDescription;
 
     private String invoiceId;
     private List<FlightCancellationViewModel> flightCancellationPassData;
@@ -42,11 +46,18 @@ public class FlightReviewCancellationFragment extends BaseListFragment<FlightCan
         return fragment;
     }
 
+    @SuppressLint("StringFormatMatches")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_cancellation_review, container, false);
+        txtDescription = view.findViewById(R.id.tv_description);
         btnSubmit = view.findViewById(R.id.button_submit);
+
+        int color = getContext().getResources().getColor(R.color.green_500);
+        txtDescription.setText(Html.fromHtml(
+            getContext().getString(R.string.flight_cancellation_review_description, color)
+        ));
 
         return view;
     }

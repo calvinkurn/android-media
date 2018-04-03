@@ -33,6 +33,7 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
     public static int LAYOUT = R.layout.item_flight_cancellation_review;
 
     private Context context;
+    private TextView txtDepartureNumber;
     private TextView txtDepartureDetail;
     private TextView txtJourneyDetail;
     private TextView txtAirlineName;
@@ -45,6 +46,7 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
 
         context = itemView.getContext();
 
+        txtDepartureNumber = itemView.findViewById(R.id.tv_departure_label);
         txtDepartureDetail = itemView.findViewById(R.id.tv_departure_time_label);
         txtJourneyDetail = itemView.findViewById(R.id.tv_journey_detail_label);
         txtAirlineName = itemView.findViewById(R.id.airline_name);
@@ -79,11 +81,8 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
                 FlightDateUtil.FORMAT_TIME_DETAIL,
                 element.getFlightCancellationJourney().getArrivalTime());
 
-        txtDepartureDetail.setText(
-                String.format("Penerbangan %d - %s",
-                        getAdapterPosition() + 1,
-                        departureDate)
-        );
+        txtDepartureNumber.setText(String.format("Penerbangan %d", getAdapterPosition() + 1));
+        txtDepartureDetail.setText(departureDate);
         txtJourneyDetail.setText(
                 String.format("%s (%s) - %s (%s)",
                         element.getFlightCancellationJourney().getDepartureCity(),

@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingBottom="@dimen/padding_small"
     android:background="@color/background_apps"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/padding_small">
+
+    <TextView
+        android:id="@+id/tv_departure_label"
+        style="@style/TextView.Title.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_16"
+        android:paddingRight="@dimen/padding_16"
+        android:paddingTop="@dimen/padding_med"
+        android:background="@color/white"
+        tools:text="@string/flight_label_departure_flight" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -70,16 +81,15 @@
     </LinearLayout>
 
     <android.support.v7.widget.AppCompatTextView
+        style="@style/TextView.Micro.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:paddingTop="@dimen/padding_small"
         android:paddingBottom="@dimen/padding_small"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        style="@style/TextView.Micro.Bold"
-        android:text="@string/flight_label_passenger_data"
-        />
+        android:paddingTop="@dimen/padding_small"
+        android:text="@string/flight_label_passenger_data" />
 
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/recycler_view_passenger"

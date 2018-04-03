@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/background_apps"
     android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,18 +20,19 @@
         android:paddingBottom="@dimen/padding_small">
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_description"
             style="@style/TextView.Micro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingLeft="@dimen/padding_med"
             android:paddingRight="@dimen/padding_med"
-            android:text="@string/flight_cancellation_review_description" />
+            tools:text="@string/flight_cancellation_review_description" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_submit"
-            style="@style/Button.Submit.Green"
-            android:text="@string/flight_cancellation_next_button" />
+            style="@style/Button.Submit.Orange"
+            android:text="@string/flight_cancellation_review_button" />
     </LinearLayout>
 
 </LinearLayout>
