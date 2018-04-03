@@ -3,6 +3,7 @@ package com.tokopedia.gamification.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.gamification.data.GamificationApi;
@@ -15,6 +16,7 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -23,12 +25,21 @@ import retrofit2.Retrofit;
 @Module
 public class GamificationModule {
 
+    private HttpLoggingInterceptor getHttpLoggingInterceptor() {
+        HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            loggingLevel = HttpLoggingInterceptor.Level.BODY;
+        }
+        return new HttpLoggingInterceptor().setLevel(loggingLevel);
+    }
+
     @GamificationScope
     @Provides
     OkHttpClient provideOkHttpClient(GamificationAuthInterceptor gamificationAuthInterceptor,
                                      @GamificationChuckQualifier Interceptor chuckInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(gamificationAuthInterceptor)
+                .addInterceptor(getHttpLoggingInterceptor())
                 .addInterceptor(chuckInterceptor)
                 .build();
     }

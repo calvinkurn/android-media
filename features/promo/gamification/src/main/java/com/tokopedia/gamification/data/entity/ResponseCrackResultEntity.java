@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class ResponseCrackResultEntity {
 
-    @SerializedName("crack_result")
+    @SerializedName("crackResult")
     @Expose
     private CrackResultEntity crackResultEntity;
 

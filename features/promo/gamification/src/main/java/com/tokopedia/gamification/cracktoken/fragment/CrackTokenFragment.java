@@ -1,5 +1,7 @@
 package com.tokopedia.gamification.cracktoken.fragment;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -176,6 +178,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetRewardListener() {
             @Override
             public void onClickCtaButton(String applink) {
+                // TODO: direct to the associated applink page
                 widgetCrackResult.clearReward();
 
                 crackTokenPresenter.getGetTokenTokopoints();
@@ -273,21 +276,20 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     @Override
     public void onSuccessCrackToken(CrackResult crackResult) {
         widgetTokenView.split();
-        List<CrackBenefit> rewardTexts = new ArrayList<>();
-        rewardTexts.add(new CrackBenefit("+50 Points", "#ffdc00", 34));
+        List<CrackBenefit> crackBenefits = crackResult.getBenefits();
 
-        String rewardCouponUrl = "https://ecs7.tokopedia.net/assets/images/gamification/benefit/rewards-coupon.png";
-        widgetCrackResult.showCrackResult(rewardCouponUrl, "Selamat anda mendapatkan", rewardTexts, "Cek dan Gunakan Hadiah Anda", "");
+        widgetCrackResult.showCrackResult(crackResult.getImageUrl(), "Selamat anda mendapatkan",
+                crackBenefits, crackResult.getCtaButton().getTitle(), crackResult.getCtaButton().getApplink());
     }
 
     @Override
     public void onErrorCrackToken(Throwable throwable) {
         widgetTokenView.stopShaking();
         List<CrackBenefit> rewardTexts = new ArrayList<>();
-        rewardTexts.add(new CrackBenefit("Terjadi Kesalahan Teknis", "#ffffff", 40));
+        rewardTexts.add(new CrackBenefit("Terjadi Kesalahan Teknis", "#ffffff", "medium"));
 
-        String rewardCouponUrl = "https://ecs7.tokopedia.net/assets/images/gamification/benefit/rewards-coupon.png";
-        widgetCrackResult.showCrackResult(rewardCouponUrl, "Maaf, sayang sekali sepertinya", rewardTexts, "Coba Lagi", "");
+        Bitmap errorBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image_error_crack_result);
+        widgetCrackResult.showErrorCrackResult(errorBitmap, "Maaf, sayang sekali sepertinya", rewardTexts, "Coba Lagi", "");
     }
 
     @Override
