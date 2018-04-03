@@ -30,9 +30,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent;
 import com.tokopedia.payment.BuildConfig;
 import com.tokopedia.payment.R;
+import com.tokopedia.payment.fingerprint.di.FingerprintModule;
 import com.tokopedia.payment.fingerprint.util.FingerprintConstant;
 import com.tokopedia.payment.fingerprint.view.FingerPrintUIHelper;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -57,18 +60,6 @@ public class TopPayActivity extends Activity implements TopPayContract.View, Fin
     private static final String TAG = TopPayActivity.class.getSimpleName();
 
     public static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
-    private final String jsCode = "" + "function parseForm(form){" +
-            "var values='';" +
-            "for(var i=0 ; i< form.elements.length; i++){" +
-            "   values+=form.elements[i].name+'='+form.elements[i].value+'&'" +
-            "}" +
-            "var url=form.action;" +
-            "console.log('parse form fired');" +
-            "window.parseFormData.processFormData(url,values);" +
-            "   }" +
-            "for(var i=0 ; i< document.forms.length ; i++){" +
-            "   parseForm(document.forms[i]);" +
-            "};"; // get form data request
 
     private static final String ACCOUNTS_URL = "accounts.tokopedia.com";
     public static final String KEY_QUERY_PAYMENT_ID = "id";
@@ -142,10 +133,10 @@ public class TopPayActivity extends Activity implements TopPayContract.View, Fin
     }
 
     private void initInjector() {
-        DaggerShopPageComponent
+        DaggerFingerprintComponent
                 .builder()
-                .shopPageModule(new ShopPageModule())
-                .shopComponent(getComponent())
+                .fingerprintModule(new FingerprintModule())
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build()
                 .inject(this);
         presenter.attachView(this);
@@ -169,7 +160,6 @@ public class TopPayActivity extends Activity implements TopPayContract.View, Fin
         webSettings.setBuiltInZoomControls(false);
         webSettings.setDisplayZoomControls(true);
         webSettings.setAppCacheEnabled(true);
-        scroogeWebView.addJavascriptInterface(new FormDataInterface(), "parseFormData");
         scroogeWebView.setWebViewClient(new TopPayWebViewClient());
         scroogeWebView.setWebChromeClient(new TopPayWebViewChromeClient());
         scroogeWebView.setOnKeyListener(getWebViewOnKeyListener());
@@ -420,7 +410,6 @@ public class TopPayActivity extends Activity implements TopPayContract.View, Fin
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            view.loadUrl("javascript:(function() { " + jsCode + "})()");
             timeout = false;
             if (progressBar != null) progressBar.setVisibility(View.GONE);
         }
@@ -480,33 +469,6 @@ public class TopPayActivity extends Activity implements TopPayContract.View, Fin
             }
             view.stopLoading();
             showToastMessageWithForceCloseView(message);
-        }
-    }
-
-    /*
-        javascript method to get request body form data
-     */
-    private class FormDataInterface {
-        @JavascriptInterface
-        public void processFormData(String url, String formData) {
-            if ((url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_CREDIT_CARD + Constant.TempRedirectPayment.TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA)
-                    || url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_CREDIT_CARD + Constant.TempRedirectPayment.TOP_PAY_PATH_CREDIT_CARD_VERITRANS))) {
-                HashMap<String, String> map = new HashMap<>();
-                String[] values = formData.split("&");
-                for (String pair : values) {
-                    String[] nameValue = pair.split("=");
-                    if (nameValue.length == 2) {
-                        map.put(nameValue[0], nameValue[1]);
-                    }
-                }
-                String enableFingerprint = map.get(FingerprintConstant.ENABLE_FINGERPRINT);
-                String transactionId = map.get(FingerprintConstant.TRANSACTION_ID);
-                if(!TextUtils.isEmpty(enableFingerprint) && enableFingerprint.equalsIgnoreCase("true")){
-                    fingerPrintUIHelper = new FingerPrintUIHelper(TopPayActivity.this, transactionId,
-                            "", FingerPrintUIHelper.Stage.PAYMENT, presenter.getUserId(), "");
-                    fingerPrintUIHelper.startListening(TopPayActivity.this);
-                }
-            }
         }
     }
 

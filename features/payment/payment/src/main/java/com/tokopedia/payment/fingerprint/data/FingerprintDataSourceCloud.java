@@ -7,6 +7,8 @@ import com.tokopedia.payment.fingerprint.data.model.ResponseRegisterFingerprint;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
@@ -21,6 +23,7 @@ public class FingerprintDataSourceCloud {
     private FingerprintApi fingerprintApi;
     private AccountFingerprintApi accountFingerprintApi;
 
+    @Inject
     public FingerprintDataSourceCloud(FingerprintApi fingerprintApi,
                                       AccountFingerprintApi accountFingerprintApi) {
         this.fingerprintApi = fingerprintApi;
