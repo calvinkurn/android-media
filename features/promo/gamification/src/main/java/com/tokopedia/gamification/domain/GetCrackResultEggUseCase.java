@@ -24,14 +24,14 @@ public class GetCrackResultEggUseCase extends UseCase<CrackResult> {
 
     @Override
     public Observable<CrackResult> createObservable(RequestParams requestParams) {
-        return gamificationRepository.getCrackResult(requestParams.getParamsAllValueInString().get(TOKEN_ID),
-                requestParams.getParamsAllValueInString().get(CAMPAIGN_ID));
+        return gamificationRepository.getCrackResult(requestParams.getInt(TOKEN_ID, 0),
+                requestParams.getInt(CAMPAIGN_ID, 0));
     }
 
-    public RequestParams createRequestParam(String tokenUserId, String campaignId) {
+    public RequestParams createRequestParam(int tokenUserId, int campaignId) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(TOKEN_ID, tokenUserId);
-        requestParams.putString(CAMPAIGN_ID, campaignId);
+        requestParams.putInt(TOKEN_ID, tokenUserId);
+        requestParams.putInt(CAMPAIGN_ID, campaignId);
         return requestParams;
     }
 }

@@ -23,5 +23,5 @@ public interface GamificationApi {
 
     @POST("./")
     @Headers({"Content-Type: application/json"})
-    Observable<GraphqlResponse<ResponseCrackResultEntity>> getCrackResult(@Body String requestBody);
+    Observable<GraphqlResponse<ResponseCrackResultEntity>> getCrackResult(@Body Map<String, Object> requestBody);
 }

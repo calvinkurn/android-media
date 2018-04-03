@@ -11,6 +11,9 @@ import com.tokopedia.gamification.data.entity.ResponseTokenTokopointEntity;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -21,6 +24,9 @@ import rx.functions.Func1;
 public class GamificationCloudDataStore implements GamificationDataStore {
 
     private static final String QUERY_KEY = "query";
+    private static final String VARIABLE_KEY = "variables";
+    private static final String CAMPAIGN_ID = "campaignID";
+    private static final String TOKEN_USER_ID = "tokenUserID";
 
     private Context context;
     private GamificationApi gamificationApi;
@@ -44,8 +50,16 @@ public class GamificationCloudDataStore implements GamificationDataStore {
     }
 
     @Override
-    public Observable<CrackResultEntity> getCrackResult(String tokenIdUser, String campaignI) {
-        return gamificationApi.getCrackResult(getRequestCrackEggPayload(tokenIdUser, campaignI))
+    public Observable<CrackResultEntity> getCrackResult(int tokenIdUser, int campaignId) {
+        Map<String, Object> mapContentVariable = new HashMap<>();
+        mapContentVariable.put(CAMPAIGN_ID, campaignId);
+        mapContentVariable.put(TOKEN_USER_ID, tokenIdUser);
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(QUERY_KEY, getRequestCrackEggPayload());
+        requestParams.putObject(VARIABLE_KEY, mapContentVariable);
+
+        return gamificationApi.getCrackResult(requestParams.getParameters())
                 .map(new Func1<GraphqlResponse<ResponseCrackResultEntity>, CrackResultEntity>() {
                     @Override
                     public CrackResultEntity call(GraphqlResponse<ResponseCrackResultEntity> responseCrackResultEntityGraphqlResponse) {
@@ -58,9 +72,7 @@ public class GamificationCloudDataStore implements GamificationDataStore {
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.token_tokopoint_query);
     }
 
-    private String getRequestCrackEggPayload(String tokenIdUser, String campaignId) {
-        return String.format(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.crack_egg_result_mutation),
-                tokenIdUser, campaignId);
+    private String getRequestCrackEggPayload() {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.crack_egg_result_mutation);
     }
 }

@@ -14,5 +14,5 @@ public interface GamificationDataStore {
 
     Observable<TokenDataEntity> getTokenTokopoints();
 
-    Observable<CrackResultEntity> getCrackResult(String tokenIdUser, String campaignId);
+    Observable<CrackResultEntity> getCrackResult(int tokenIdUser, int campaignId);
 }
