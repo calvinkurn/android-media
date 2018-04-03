@@ -1503,6 +1503,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         "ecommerce", DataLayer.mapOf(
                                 "currencyCode", "IDR",
                                 "detail", DataLayer.mapOf(
+                                        "actionField", DataLayer.mapOf("list", productPass.getTrackerListName()),
                                         "products", DataLayer.listOf(
                                                 DataLayer.mapOf(
                                                         "name", productData.getInfo().getProductName(),
@@ -1510,7 +1511,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                                                         "price", productData.getInfo().getProductPriceUnformatted(),
                                                         "brand", "none / other",
                                                         "category", getEnhanceCategoryFormatted(),
-                                                        "variant", getEnhanceVariant()
+                                                        "variant", getEnhanceVariant(),
+                                                        "attribution", productPass.getTrackerAttribution()
                                                 )
                                         )
                                 )

@@ -198,6 +198,7 @@ public class ProductPass implements Parcelable {
     }
 
     public String getTrackerAttribution() {
+        if (trackerAttribution == null || trackerAttribution.isEmpty()) return "none / other";
         return trackerAttribution;
     }
 
@@ -206,7 +207,8 @@ public class ProductPass implements Parcelable {
     }
 
     public String getTrackerListName() {
-        return trackerListName;
+        if (trackerListName == null || trackerListName.isEmpty()) return "none / other";
+        else return trackerListName;
     }
 
 
