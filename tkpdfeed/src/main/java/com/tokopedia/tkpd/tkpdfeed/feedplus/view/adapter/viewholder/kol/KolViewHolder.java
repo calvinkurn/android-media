@@ -105,7 +105,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             topSeparator.setVisibility(View.VISIBLE);
         }
 
-        MethodChecker.loadImageFitCenter(reviewImage, element.getKolImage());
+        ImageHandler.LoadImage(reviewImage, element.getKolImage());
 
         if (TextUtils.isEmpty(element.getProductTooltip())) {
             tooltipClickArea.setVisibility(View.GONE);
