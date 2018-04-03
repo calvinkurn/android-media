@@ -287,6 +287,12 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void onErrorUpdatePassengerData() {
+        getActivity().setResult(Activity.RESULT_CANCELED);
+        getActivity().finish();
+    }
+
+    @Override
     public String getRequestId() {
         return getArguments().getString(EXTRA_REQUEST_ID);
     }

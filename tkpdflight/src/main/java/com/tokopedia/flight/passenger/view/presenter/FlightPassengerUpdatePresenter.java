@@ -156,6 +156,7 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
                     @Override
                     public void onError(Throwable throwable) {
                         throwable.printStackTrace();
+                        getView().onErrorUpdatePassengerData();
                     }
 
                     @Override

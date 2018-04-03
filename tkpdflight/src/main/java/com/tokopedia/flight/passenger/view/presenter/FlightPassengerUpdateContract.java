@@ -75,6 +75,8 @@ public interface FlightPassengerUpdateContract {
 
         void onSuccessUpdatePassengerData();
 
+        void onErrorUpdatePassengerData();
+
     }
 
     interface Presenter {
