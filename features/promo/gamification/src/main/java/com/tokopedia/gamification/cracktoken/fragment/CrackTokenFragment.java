@@ -42,19 +42,18 @@ import javax.inject.Inject;
 public class CrackTokenFragment extends BaseDaggerFragment implements CrackTokenContract.View {
 
     private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
-    public static final String EXTRA_TOKEN_DATA = "extra_token_data";
+
     public static final double RATIO_MARGIN_TOP_TIMER = 0.15;
+    public static final String SAVED_TIMESTAMP = "timestamp";
+    public static final String SAVED_TOKEN_DATA = "extra_token_data";
 
     private CountDownTimer countDownTimer;
 
-    private ViewGroup rootContainer;
     private TextView textCountdownTimer;
     private WidgetTokenView widgetTokenView;
     private WidgetCrackResult widgetCrackResult;
     private WidgetRemainingToken widgetRemainingToken;
 
-    private int tokenUserId;
-    private int campaignId;
     private String backgroundImageUrl;
     private String smallImageUrl;
     private String fullEggImg;
@@ -62,7 +61,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private String rightCrackedEggImg;
     private String leftCrackedEggImg;
     private int timeRemainingSeconds;
-    private boolean isCountdownTimerShow;
 
     private TokenData tokenData;
     private View rootView;
@@ -71,12 +69,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     CrackTokenPresenter crackTokenPresenter;
     private ImageView ivContainer;
 
-    public static Fragment newInstance(TokenData tokenData) {
-        Fragment fragment = new CrackTokenFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_TOKEN_DATA, tokenData);
-        fragment.setArguments(bundle);
-        return fragment;
+    public static Fragment newInstance() {
+        return new CrackTokenFragment();
     }
 
     @Override
@@ -87,11 +81,17 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            Bundle bundle = getArguments();
-            tokenData = bundle.getParcelable(EXTRA_TOKEN_DATA);
-        } else {
-            tokenData = savedInstanceState.getParcelable(EXTRA_TOKEN_DATA);
+        if (savedInstanceState != null) {
+            tokenData = savedInstanceState.getParcelable(SAVED_TOKEN_DATA);
+            if (savedInstanceState.containsKey(SAVED_TIMESTAMP)) {
+                long savedTimeStamp = savedInstanceState.getLong(SAVED_TIMESTAMP);
+                long currentTimeStamp = System.currentTimeMillis();
+                int diffSeconds = (int) ((currentTimeStamp - savedTimeStamp) / 1000L);
+                TokenUser tokenUser = tokenData.getHome().getTokensUser();
+                int prevTimeRemainingSecond = tokenUser.getTimeRemainingSeconds();
+                tokenUser.setTimeRemainingSeconds(prevTimeRemainingSecond - diffSeconds);
+            }
+            initDataCrackEgg(tokenData);
         }
         super.onCreate(savedInstanceState);
     }
@@ -101,7 +101,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_crack_token, container, false);
 
-        rootContainer = rootView.findViewById(R.id.root_container);
         ivContainer = rootView.findViewById(R.id.iv_container);
         textCountdownTimer = rootView.findViewById(R.id.text_countdown_timer);
         widgetTokenView = rootView.findViewById(R.id.widget_token_view);
@@ -121,27 +120,18 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        resetEgg();
-    }
-
-    private void resetEgg() {
-        initDataCrackEgg(tokenData);
-        renderViewCrackEgg();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // TODO if there is countdowntimer:
-        // TODO restart the timer, add with delay when onpause
+        if (tokenData == null ||
+                (tokenData.isShowCountDown() && tokenData.getHome().getTokensUser().getTimeRemainingSeconds() <= 0)) {
+            crackTokenPresenter.getGetTokenTokopoints();
+        } else {
+            renderViewCrackEgg();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        // TODO stop the timer; we don't want the timer run when the fragment is paused and save the timestamp here
-        // TODO change below, this just to prevent the app crash
-        if (countDownTimer!= null) {
+        if (countDownTimer != null) {
             countDownTimer.cancel();
         }
     }
@@ -150,9 +140,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
      * copy the token data retrieved to field variable
      */
     private void initDataCrackEgg(TokenData tokenData) {
+        this.tokenData = tokenData;
         TokenUser tokenUser = tokenData.getHome().getTokensUser();
-        tokenUserId = tokenUser.getTokenUserID();
-        campaignId = tokenUser.getCampaignID();
         backgroundImageUrl = tokenUser.getTokenAsset().getBackgroundImgUrl();
         smallImageUrl = tokenUser.getTokenAsset().getSmallImgUrl();
         fullEggImg = tokenUser.getTokenAsset().getImageUrls().get(0);
@@ -160,15 +149,16 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         rightCrackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(6);
         leftCrackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(5);
         timeRemainingSeconds = tokenUser.getTimeRemainingSeconds();
-        isCountdownTimerShow = tokenUser.getShowTime();
     }
 
     private void renderViewCrackEgg() {
         widgetTokenView.reset();
 
+        TokenUser tokenUser = tokenData.getHome().getTokensUser();
+
         ImageHandler.loadImageAndCache(ivContainer, backgroundImageUrl);
 
-        if (isCountdownTimerShow) {
+        if (tokenUser.getShowTime()) {
             textCountdownTimer.setVisibility(View.VISIBLE);
             showCountdownTimer(timeRemainingSeconds);
         } else {
@@ -179,11 +169,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetTokenView.setListener(new WidgetTokenView.WidgetTokenListener() {
             @Override
             public void onClick() {
-                if (isCountdownTimerShow) {
-                    countDownTimer.cancel();
-                    textCountdownTimer.setVisibility(View.GONE);
-                }
-                crackTokenPresenter.crackToken(tokenUserId, campaignId);
+                stopTimer();
+                TokenUser tokenUser = tokenData.getHome().getTokensUser();
+                crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
             }
         });
 
@@ -192,11 +180,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             public void onClickCtaButton(String applink) {
                 // TODO: direct to the associated applink page
                 widgetCrackResult.clearReward();
-                resetEgg();
+
+                crackTokenPresenter.getGetTokenTokopoints();
             }
         });
 
-        widgetRemainingToken.showRemainingToken(smallImageUrl, 20);
+        widgetRemainingToken.showRemainingToken(smallImageUrl, tokenData.getSumTokenStr(), tokenData.getTokenUnit());
 
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -212,10 +201,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         });
     }
 
-    private void initTimerBound() {
-        if (this.isDetached()) {
-            return;
+    private void stopTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
         }
+        textCountdownTimer.setVisibility(View.GONE);
+    }
+
+    private void initTimerBound() {
         int rootHeight = rootView.getHeight();
         int imageMarginTop = (int) (RATIO_MARGIN_TOP_TIMER * rootHeight);
 
@@ -226,13 +219,13 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         textCountdownTimer.setVisibility(View.VISIBLE);
     }
 
-    private void showCountdownTimer(int timeRemainingSeconds) {
+    private void showCountdownTimer(final int timeRemainingSeconds) {
         if (timeRemainingSeconds > 0) {
-            countDownTimer = new CountDownTimer(timeRemainingSeconds, COUNTDOWN_INTERVAL_SECOND) {
+            countDownTimer = new CountDownTimer(timeRemainingSeconds * COUNTDOWN_INTERVAL_SECOND,
+                    COUNTDOWN_INTERVAL_SECOND) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    CrackTokenFragment.this.timeRemainingSeconds = (int) (millisUntilFinished / COUNTDOWN_INTERVAL_SECOND);
-                    setUIFloatingTimer(CrackTokenFragment.this.timeRemainingSeconds);
+                    CrackTokenFragment.this.onTick(millisUntilFinished);
                 }
 
                 @Override
@@ -246,6 +239,17 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }
     }
 
+    private void onTick(long millisUntilFinished) {
+        this.timeRemainingSeconds = (int) (millisUntilFinished / COUNTDOWN_INTERVAL_SECOND);
+        if (this.timeRemainingSeconds <= 0) {
+            stopTimer();
+            widgetTokenView.hide();
+            crackTokenPresenter.getGetTokenTokopoints();
+        } else {
+            setUIFloatingTimer(CrackTokenFragment.this.timeRemainingSeconds);
+        }
+    }
+
     private void setUIFloatingTimer(long timeRemainingSeconds) {
         if (textCountdownTimer != null) {
             int seconds = (int) timeRemainingSeconds;
@@ -254,12 +258,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             minutes = minutes % 60;
             seconds = seconds % 60;
             textCountdownTimer.setText(String.format(getString(R.string.countdown_format), hours, minutes, seconds));
+            textCountdownTimer.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onSuccessGetToken(TokenData tokenData) {
-        this.tokenData = tokenData;
+        initDataCrackEgg(tokenData);
+        renderViewCrackEgg();
     }
 
     @Override
@@ -290,6 +296,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         tokenData.getHome().getTokensUser().setTimeRemainingSeconds(timeRemainingSeconds);
-        outState.putParcelable(EXTRA_TOKEN_DATA, tokenData);
+        outState.putParcelable(SAVED_TOKEN_DATA, tokenData);
+        if (tokenData.isShowCountDown()) {
+            outState.putLong(SAVED_TIMESTAMP, System.currentTimeMillis());
+        }
     }
 }

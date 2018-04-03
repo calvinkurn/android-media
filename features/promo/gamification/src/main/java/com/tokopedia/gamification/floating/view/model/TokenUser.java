@@ -67,7 +67,11 @@ public class TokenUser implements Parcelable {
     }
 
     public void setTimeRemainingSeconds(Integer timeRemainingSeconds) {
-        this.timeRemainingSeconds = timeRemainingSeconds;
+        if (timeRemainingSeconds <= 0) {
+            this.timeRemainingSeconds = 0;
+        } else {
+            this.timeRemainingSeconds = timeRemainingSeconds;
+        }
     }
 
     public void setShowTime(Boolean showTime) {
