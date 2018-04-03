@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/main"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="@color/white"
-                android:descendantFocusability="blocksDescendants">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:descendantFocusability="blocksDescendants"
+    android:paddingTop="@dimen/margin_small">
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -30,13 +31,13 @@
         android:layout_width="@dimen/label_new_feed_width"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/margin_sm"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_sm"
         android:background="@drawable/label_new_feed"
+        android:elevation="@dimen/cardview_default_elevation"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="@dimen/padding_vs"
-        android:elevation="@dimen/cardview_default_elevation"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -52,8 +53,8 @@
             android:id="@+id/new_feed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/you_have_new_feed"
             android:fontFamily="sans-serif"
+            android:text="@string/you_have_new_feed"
             android:textColor="@color/medium_green"
             android:textSize="@dimen/fontvs" />
     </LinearLayout>

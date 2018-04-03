@@ -1,29 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/feed_new_card_margin"
-    app:cardCornerRadius="0dp"
-    app:cardElevation="@dimen/feed_new_card_elevation">
+    android:orientation="vertical"
+    android:background="@drawable/background_shadow_feed_new" >
 
-    <LinearLayout
+    <include layout="@layout/feed_product_header" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/product_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@id/container"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:layout_height="wrap_content" />
 
-        <include layout="@layout/feed_product_header" />
+    <include layout="@layout/feed_share_button" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/product_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+    <include layout="@layout/buy_button" />
 
-        <include layout="@layout/feed_share_button" />
-
-        <include layout="@layout/buy_button" />
-
-    </LinearLayout>
-</android.support.v7.widget.CardView>
+</LinearLayout>

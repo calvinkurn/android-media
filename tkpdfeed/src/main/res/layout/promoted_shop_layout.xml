@@ -4,8 +4,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/padding_small"
     android:paddingBottom="@dimen/padding_small"
-    android:layout_marginTop="@dimen/margin_small"
-    android:background="@drawable/cards_ui_2">
+    android:background="@drawable/background_shadow_feed_new">
 
 
     <include

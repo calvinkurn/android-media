@@ -2,9 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_small"
     android:padding="@dimen/padding_small"
-    android:background="@drawable/cards_ui_feed">
+    android:background="@drawable/background_shadow_feed_new">
 
     <include
         layout="@layout/header_title"

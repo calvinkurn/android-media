@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.tokopedia.topads.sdk.widget.TopAdsFeedWidgetView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/topads_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/feed_new_card_margin"
-    app:cardCornerRadius="0dp"
-    app:cardElevation="@dimen/feed_new_card_elevation">
-
-    <com.tokopedia.topads.sdk.widget.TopAdsFeedWidgetView
-        android:id="@+id/topads_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</android.support.v7.widget.CardView>
+    android:background="@drawable/background_shadow_feed_new" />

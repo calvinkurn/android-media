@@ -3,7 +3,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginTop="@dimen/feed_new_card_margin"
+              android:layout_marginBottom="@dimen/feed_new_card_margin"
               android:background="@color/white"
               android:orientation="vertical">
 

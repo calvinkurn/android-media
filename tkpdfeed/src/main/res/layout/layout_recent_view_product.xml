@@ -1,55 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/feed_new_card_margin"
-    app:cardCornerRadius="0dp"
-    app:cardElevation="@dimen/feed_new_card_elevation">
+    android:background="@drawable/background_shadow_feed_new"
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/main_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="sans-serif-medium"
-                android:padding="@dimen/padding_small"
-                android:text="@string/sub_history_product"
-                android:textColor="@color/font_black_primary_70"
-                android:textSize="@dimen/fontvs"
-                android:textStyle="normal" />
-
-            <TextView
-                android:id="@+id/see_all"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:fontFamily="sans-serif-medium"
-                android:padding="@dimen/padding_small"
-                android:text="@string/title_see_all"
-                android:textColor="@color/tkpd_main_green"
-                android:textSize="@dimen/fontvs" />
-
-
-        </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/history_product_recycler_view"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:scrollbars="horizontal" />
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:padding="@dimen/padding_small"
+            android:text="@string/sub_history_product"
+            android:textColor="@color/font_black_primary_70"
+            android:textSize="@dimen/fontvs"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/see_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="sans-serif-medium"
+            android:padding="@dimen/padding_small"
+            android:text="@string/title_see_all"
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="@dimen/fontvs" />
+
 
     </LinearLayout>
-</android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/history_product_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="horizontal" />
+
+</LinearLayout>
