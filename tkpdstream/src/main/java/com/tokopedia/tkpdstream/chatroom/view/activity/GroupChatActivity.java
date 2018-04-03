@@ -1,9 +1,11 @@
 package com.tokopedia.tkpdstream.chatroom.view.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +37,7 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.CallbackManager;
+import com.readystatesoftware.chuck.internal.ui.MainActivity;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -43,6 +47,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.design.card.ToolTipUtils;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
@@ -123,6 +128,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private Handler tooltipHandler;
     private boolean canShowDialog = true;
     private boolean isFirstTime;
+    private BroadcastReceiver notifReceiver;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -915,6 +921,21 @@ public class GroupChatActivity extends BaseSimpleActivity
                     }
                 });
 
+        if (notifReceiver == null) {
+            notifReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    onGetNotif(intent.getExtras());
+                }
+            };
+        }
+
+        try {
+            LocalBroadcastManager.getInstance(this).registerReceiver(notifReceiver, new IntentFilter
+                    (TkpdState.LOYALTY_GROUP_CHAT));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -1007,6 +1028,10 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
         ConnectionManager.removeConnectionManagementHandler(getConnectionHandlerId());
         SendBird.removeChannelHandler(getChannelHandlerId());
+
+        if (notifReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(notifReceiver);
+        }
     }
 
     private String getChannelHandlerId() {
