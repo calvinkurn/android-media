@@ -111,8 +111,6 @@ public class WidgetCrackResult extends RelativeLayout {
         AnimationSet animationBgCrackResult = new AnimationSet(true);
         Animation scaleAnimationBgCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_bg_reward);
         animationBgCrackResult.addAnimation(scaleAnimationBgCrackResult);
-//        Animation rotateAnimationBgCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_bg_crack_result);
-//        animationBgCrackResult.addAnimation(rotateAnimationBgCrackResult);
         TranslateAnimation translateAnimationBgCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
         animationBgCrackResult.addAnimation(translateAnimationBgCrackResult);
         animationBgCrackResult.setDuration(1000);
