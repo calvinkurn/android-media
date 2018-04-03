@@ -33,7 +33,6 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -226,13 +225,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
                 getTokoPointData();
                 getProfileCompletion();
                 getDrawerUserAttrUseCase(sessionHandler);
-                getNotificationCounter();
             }
         }
-    }
-
-    private void getNotificationCounter() {
-        ((TransactionRouter.CartRouter) getApplication()).updateMarketplaceCartCounter();
     }
 
     private void getTokoPointData() {

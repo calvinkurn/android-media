@@ -1,10 +1,13 @@
 package com.tokopedia.transaction.checkout.domain.usecase;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.transaction.checkout.data.entity.response.notifcounter.NotifCounterCartDataResponse;
 import com.tokopedia.transaction.checkout.data.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
@@ -12,6 +15,8 @@ import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -54,13 +59,14 @@ public class GetMarketPlaceCartCounterUseCase extends UseCase<Integer> {
             }
 
             @Override
-            public void onNext(final Integer integer) {
+            public void onNext(Integer integer) {
                 LocalCacheHandler cache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
                 cache.putInt(DrawerNotification.IS_HAS_CART, integer > 0 ? 1 : 0);
                 cache.putInt(DrawerNotification.CACHE_TOTAL_CART, integer);
                 cache.applyEditor();
 
-                // Todo : Send broadcast to home
+                LocalBroadcastManager.getInstance(context).sendBroadcast(
+                        new Intent(TransactionRouter.CartRouter.CART_NOTIFICATION_BROADCAST_INTENT_FILTER));
             }
         });
     }

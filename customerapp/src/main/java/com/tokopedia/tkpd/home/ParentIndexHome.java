@@ -59,6 +59,7 @@ import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
@@ -121,6 +122,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
 
     private BroadcastReceiver hockeyBroadcastReceiver;
+    private BroadcastReceiver cartNotificationBroadcastReceiver;
 
     @DeepLink(Constants.Applinks.HOME)
     public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
@@ -261,6 +263,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         checkIsHaveApplinkComeFromDeeplink(getIntent());
 
         initHockeyBroadcastReceiver();
+        initCartNotificationBroadcastReceiver();
     }
 
     @Override
@@ -532,6 +535,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         viewPagerIndex = mViewPager.getCurrentItem();
 
         unregisterBroadcastHockeyApp();
+        unregisterCartNotificationBroadcastReceiver();
     }
 
     @Override
@@ -579,6 +583,13 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         // Register to receive broadcast hockeyapp
         registerBroadcastHockeyApp();
+
+        registerCartNotificationBroadcastReceiver();
+        updateCartNotification();
+    }
+
+    private void updateCartNotification() {
+        ((TransactionRouter.CartRouter) getApplication()).updateMarketplaceCartCounter();
     }
 
     private void setScrollFeedListener() {
@@ -821,4 +832,25 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     }
                 });
     }
+
+    private void initCartNotificationBroadcastReceiver() {
+        cartNotificationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                invalidateOptionsMenu();
+            }
+        };
+    }
+
+    private void registerCartNotificationBroadcastReceiver(){
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                cartNotificationBroadcastReceiver,
+                new IntentFilter(TransactionRouter.CartRouter.CART_NOTIFICATION_BROADCAST_INTENT_FILTER)
+        );
+    }
+
+    private void unregisterCartNotificationBroadcastReceiver() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(cartNotificationBroadcastReceiver);
+    }
+
 }
