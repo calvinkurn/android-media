@@ -23,6 +23,18 @@ public class TokenAssetEntity {
     @Expose
     private String spriteUrl;
 
+    @SerializedName("name")
+    @Expose
+    private String name;
+
+    @SerializedName("version")
+    @Expose
+    private int version;
+
+    @SerializedName("backgroundImgUrl")
+    @Expose
+    private String backgroundImgUrl;
+
     public String getSmallImgUrl() {
         return smallImgUrl;
     }
@@ -33,5 +45,17 @@ public class TokenAssetEntity {
 
     public String getSpriteUrl() {
         return spriteUrl;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public String getBackgroundImgUrl() {
+        return backgroundImgUrl;
     }
 }

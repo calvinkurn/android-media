@@ -11,9 +11,33 @@ import java.util.List;
 
 public class TokenAsset implements Parcelable{
 
+    private String name;
+    private int version;
+    private String backgroundImgUrl;
     private String smallImgUrl;
     private List<String> imageUrls;
     private String spriteUrl;
+
+    protected TokenAsset(Parcel in) {
+        name = in.readString();
+        version = in.readInt();
+        smallImgUrl = in.readString();
+        imageUrls = in.createStringArrayList();
+        spriteUrl = in.readString();
+        backgroundImgUrl = in.readString();
+    }
+
+    public static final Creator<TokenAsset> CREATOR = new Creator<TokenAsset>() {
+        @Override
+        public TokenAsset createFromParcel(Parcel in) {
+            return new TokenAsset(in);
+        }
+
+        @Override
+        public TokenAsset[] newArray(int size) {
+            return new TokenAsset[size];
+        }
+    };
 
     public String getSmallImgUrl() {
         return smallImgUrl;
@@ -39,6 +63,32 @@ public class TokenAsset implements Parcelable{
         this.spriteUrl = spriteUrl;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getBackgroundImgUrl() {
+        return backgroundImgUrl;
+    }
+
+    public void setBackgroundImgUrl(String backgroundImgUrl) {
+        this.backgroundImgUrl = backgroundImgUrl;
+    }
+
+    public TokenAsset() {
+    }
 
     @Override
     public int describeContents() {
@@ -46,30 +96,12 @@ public class TokenAsset implements Parcelable{
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.smallImgUrl);
-        dest.writeStringList(this.imageUrls);
-        dest.writeString(this.spriteUrl);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeInt(version);
+        parcel.writeString(smallImgUrl);
+        parcel.writeStringList(imageUrls);
+        parcel.writeString(spriteUrl);
+        parcel.writeString(backgroundImgUrl);
     }
-
-    public TokenAsset() {
-    }
-
-    protected TokenAsset(Parcel in) {
-        this.smallImgUrl = in.readString();
-        this.imageUrls = in.createStringArrayList();
-        this.spriteUrl = in.readString();
-    }
-
-    public static final Creator<TokenAsset> CREATOR = new Creator<TokenAsset>() {
-        @Override
-        public TokenAsset createFromParcel(Parcel source) {
-            return new TokenAsset(source);
-        }
-
-        @Override
-        public TokenAsset[] newArray(int size) {
-            return new TokenAsset[size];
-        }
-    };
 }

@@ -41,10 +41,6 @@ public class TokenUserEntity {
     @Expose
     private TokenAssetEntity tokenAsset;
 
-    @SerializedName("backgroundImgUrl")
-    @Expose
-    private String backgroundImgUrl;
-
     public Integer getTokenUserID() {
         return tokenUserID;
     }
@@ -75,9 +71,5 @@ public class TokenUserEntity {
 
     public TokenAssetEntity getTokenAsset() {
         return tokenAsset;
-    }
-
-    public String getBackgroundImgUrl() {
-        return backgroundImgUrl;
     }
 }

@@ -58,10 +58,10 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private int campaignId;
     private String backgroundImageUrl;
     private String smallImageUrl;
-    private String imageUrl1;
-    private String imageUrl2;
-    private String imageUrl3;
-    private String imageUrl4;
+    private String fullEggImg;
+    private String crackedEggImg;
+    private String rightCrackedEggImg;
+    private String leftCrackedEggImg;
     private int timeRemainingSeconds;
     private boolean isCountdownTimerShow;
 
@@ -107,12 +107,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         TokenUser tokenUser = tokenData.getHome().getTokensUser();
         tokenUserId = tokenUser.getTokenUserID();
         campaignId = tokenUser.getCampaignID();
-        backgroundImageUrl = tokenUser.getBackgroundImgUrl();
+        backgroundImageUrl = tokenUser.getTokenAsset().getBackgroundImgUrl();
         smallImageUrl = tokenUser.getTokenAsset().getSmallImgUrl();
-        imageUrl1 = tokenUser.getTokenAsset().getImageUrls().get(0);
-        imageUrl2 = tokenUser.getTokenAsset().getImageUrls().get(4);
-        imageUrl3 = tokenUser.getTokenAsset().getImageUrls().get(6);
-        imageUrl4 = tokenUser.getTokenAsset().getImageUrls().get(5);
+        fullEggImg = tokenUser.getTokenAsset().getImageUrls().get(0);
+        crackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(4);
+        rightCrackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(6);
+        leftCrackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(5);
         timeRemainingSeconds = tokenUser.getTimeRemainingSeconds();
         isCountdownTimerShow = tokenUser.getShowTime();
     }
@@ -149,7 +149,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             textCountdownTimer.setVisibility(View.GONE);
         }
 
-        widgetTokenView.setToken(imageUrl1, imageUrl2, imageUrl3, imageUrl4);
+        widgetTokenView.setToken(fullEggImg, crackedEggImg, rightCrackedEggImg, leftCrackedEggImg);
         widgetTokenView.setListener(new WidgetTokenView.WidgetTokenListener() {
             @Override
             public void onClick() {

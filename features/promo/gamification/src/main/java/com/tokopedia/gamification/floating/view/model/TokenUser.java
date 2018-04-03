@@ -17,7 +17,6 @@ public class TokenUser implements Parcelable {
     private Boolean isShowTime;
     private String tokenClass;
     private TokenAsset tokenAsset;
-    private String backgroundImgUrl;
 
     public Integer getTokenUserID() {
         return tokenUserID;
@@ -49,10 +48,6 @@ public class TokenUser implements Parcelable {
 
     public TokenAsset getTokenAsset() {
         return tokenAsset;
-    }
-
-    public String getBackgroundImgUrl() {
-        return backgroundImgUrl;
     }
 
     public void setTokenUserID(Integer tokenUserID) {
@@ -87,10 +82,6 @@ public class TokenUser implements Parcelable {
         this.tokenAsset = tokenAsset;
     }
 
-    public void setBackgroundImgUrl(String backgroundImgUrl) {
-        this.backgroundImgUrl = backgroundImgUrl;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -106,7 +97,6 @@ public class TokenUser implements Parcelable {
         dest.writeValue(this.isShowTime);
         dest.writeString(this.tokenClass);
         dest.writeParcelable(this.tokenAsset, flags);
-        dest.writeString(this.backgroundImgUrl);
     }
 
     public TokenUser() {
@@ -121,7 +111,6 @@ public class TokenUser implements Parcelable {
         this.isShowTime = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.tokenClass = in.readString();
         this.tokenAsset = in.readParcelable(TokenAsset.class.getClassLoader());
-        this.backgroundImgUrl = in.readString();
     }
 
     public static final Parcelable.Creator<TokenUser> CREATOR = new Parcelable.Creator<TokenUser>() {
