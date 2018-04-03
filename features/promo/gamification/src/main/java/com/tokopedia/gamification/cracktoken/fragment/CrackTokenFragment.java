@@ -89,6 +89,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 int prevTimeRemainingSecond = tokenUser.getTimeRemainingSeconds();
                 tokenUser.setTimeRemainingSeconds(prevTimeRemainingSecond - diffSeconds);
             }
+            initDataCrackEgg(tokenData);
         }
         super.onCreate(savedInstanceState);
     }
@@ -217,7 +218,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private void showCountdownTimer(final int timeRemainingSeconds) {
         if (timeRemainingSeconds > 0) {
-            countDownTimer = new CountDownTimer(timeRemainingSeconds, COUNTDOWN_INTERVAL_SECOND) {
+            countDownTimer = new CountDownTimer(timeRemainingSeconds * COUNTDOWN_INTERVAL_SECOND,
+                    COUNTDOWN_INTERVAL_SECOND) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     CrackTokenFragment.this.onTick(millisUntilFinished);
