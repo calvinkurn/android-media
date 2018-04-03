@@ -54,7 +54,7 @@
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/icon_time_grey"
+                app:srcCompat="@drawable/icon_time_grey"
                 android:layout_marginRight="@dimen/margin_vs"
                 android:layout_marginEnd="@dimen/margin_vs"/>
 

@@ -158,29 +158,9 @@
     <attr name="bottomSheetBuilderItemTextColor" format="color" />
     <attr name="bottomSheetBuilderTitleTextColor" format="color" />
 
-    <declare-styleable name="Button">
-        <attr name="type" format="enum">
-            <enum name="primary" value="1"/>
-            <enum name="secondary" value="2"/>
-        </attr>
-        <attr name="size" format="enum">
-            <enum name="big" value="3"/>
-            <enum name="medium" value="4"/>
-            <enum name="small" value="5"/>
-        </attr>
-    </declare-styleable>
-
     <declare-styleable name="FloatingButton">
-        <attr name="text" format="string" />
-        <attr name="buttonType" format="enum">
-            <enum name="primary" value="1"/>
-            <enum name="secondary" value="2"/>
-        </attr>
-        <attr name="buttonSizeType" format="enum">
-            <enum name="big" value="3"/>
-            <enum name="medium" value="4"/>
-            <enum name="small" value="5"/>
-        </attr>
+        <attr name="text" format="string"/>
+        <attr name="style" format="integer"/>
         <attr name="buttonTextAllCaps" format="boolean"/>
         <attr name="shadow" format="boolean"/>
         <attr name="shadowLeft" format="boolean"/>
@@ -196,4 +176,10 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="TextViewCompat">
+        <attr name="drawableLeftCompat" format="reference"/>
+        <attr name="drawableRightCompat" format="reference"/>
+        <attr name="drawableTopCompat" format="reference"/>
+        <attr name="drawableBottomCompat" format="reference"/>
+    </declare-styleable>
 </resources>

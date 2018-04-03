@@ -10,10 +10,10 @@ import java.util.List;
 
 public class PackageViewModel implements Parcelable {
 
-    private Integer id;
-    private Integer productId;
-    private Integer productScheduleId;
-    private Integer productGroupId;
+    private int id;
+    private int productId;
+    private int productScheduleId;
+    private int productGroupId;
     private String providerScheduleId;
     private String providerTicketId;
     private String thumbnailApp;
@@ -21,16 +21,16 @@ public class PackageViewModel implements Parcelable {
     private String title;
     private String description;
     private String tnc;
-    private Integer convenienceFee;
-    private Integer mrp;
-    private Integer commission;
+    private int convenienceFee;
+    private int mrp;
+    private int commission;
     private String commissionType;
-    private Integer salesPrice;
-    private Integer sold;
-    private Integer booked;
-    private Integer available;
-    private Integer minQty;
-    private Integer maxQty;
+    private int salesPrice;
+    private int sold;
+    private int booked;
+    private int available;
+    private int minQty;
+    private int maxQty;
     private String providerStatus;
     private int selectedQuantity;
     private String timeRange;
@@ -47,15 +47,15 @@ public class PackageViewModel implements Parcelable {
         this.title = title;
     }
 
-    public Integer getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
 
-    private Integer categoryId;
+    private int categoryId;
 
     public Form getForm() {
         return form;
@@ -64,35 +64,35 @@ public class PackageViewModel implements Parcelable {
         this.form = form;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
-    public Integer getProductScheduleId() {
+    public int getProductScheduleId() {
         return productScheduleId;
     }
 
-    public void setProductScheduleId(Integer productScheduleId) {
+    public void setProductScheduleId(int productScheduleId) {
         this.productScheduleId = productScheduleId;
     }
 
-    public Integer getProductGroupId() {
+    public int getProductGroupId() {
         return productGroupId;
     }
 
-    public void setProductGroupId(Integer productGroupId) {
+    public void setProductGroupId(int productGroupId) {
         this.productGroupId = productGroupId;
     }
 
@@ -136,27 +136,27 @@ public class PackageViewModel implements Parcelable {
         this.tnc = tnc;
     }
 
-    public Integer getConvenienceFee() {
+    public int getConvenienceFee() {
         return convenienceFee;
     }
 
-    public void setConvenienceFee(Integer convenienceFee) {
+    public void setConvenienceFee(int convenienceFee) {
         this.convenienceFee = convenienceFee;
     }
 
-    public Integer getMrp() {
+    public int getMrp() {
         return mrp;
     }
 
-    public void setMrp(Integer mrp) {
+    public void setMrp(int mrp) {
         this.mrp = mrp;
     }
 
-    public Integer getCommission() {
+    public int getCommission() {
         return commission;
     }
 
-    public void setCommission(Integer commission) {
+    public void setCommission(int commission) {
         this.commission = commission;
     }
 
@@ -168,51 +168,51 @@ public class PackageViewModel implements Parcelable {
         this.commissionType = commissionType;
     }
 
-    public Integer getSalesPrice() {
+    public int getSalesPrice() {
         return salesPrice;
     }
 
-    public void setSalesPrice(Integer salesPrice) {
+    public void setSalesPrice(int salesPrice) {
         this.salesPrice = salesPrice;
     }
 
-    public Integer getSold() {
+    public int getSold() {
         return sold;
     }
 
-    public void setSold(Integer sold) {
+    public void setSold(int sold) {
         this.sold = sold;
     }
 
-    public Integer getBooked() {
+    public int getBooked() {
         return booked;
     }
 
-    public void setBooked(Integer booked) {
+    public void setBooked(int booked) {
         this.booked = booked;
     }
 
-    public Integer getAvailable() {
+    public int getAvailable() {
         return available;
     }
 
-    public void setAvailable(Integer available) {
+    public void setAvailable(int available) {
         this.available = available;
     }
 
-    public Integer getMinQty() {
+    public int getMinQty() {
         return minQty;
     }
 
-    public void setMinQty(Integer minQty) {
+    public void setMinQty(int minQty) {
         this.minQty = minQty;
     }
 
-    public Integer getMaxQty() {
+    public int getMaxQty() {
         return maxQty;
     }
 
-    public void setMaxQty(Integer maxQty) {
+    public void setMaxQty(int maxQty) {
         this.maxQty = maxQty;
     }
 
@@ -275,10 +275,6 @@ public class PackageViewModel implements Parcelable {
         this.forms = forms;
     }
 
-
-    public PackageViewModel() {
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -286,10 +282,10 @@ public class PackageViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.id);
-        dest.writeValue(this.productId);
-        dest.writeValue(this.productScheduleId);
-        dest.writeValue(this.productGroupId);
+        dest.writeInt(this.id);
+        dest.writeInt(this.productId);
+        dest.writeInt(this.productScheduleId);
+        dest.writeInt(this.productGroupId);
         dest.writeString(this.providerScheduleId);
         dest.writeString(this.providerTicketId);
         dest.writeString(this.thumbnailApp);
@@ -297,31 +293,34 @@ public class PackageViewModel implements Parcelable {
         dest.writeString(this.title);
         dest.writeString(this.description);
         dest.writeString(this.tnc);
-        dest.writeValue(this.convenienceFee);
-        dest.writeValue(this.mrp);
-        dest.writeValue(this.commission);
+        dest.writeInt(this.convenienceFee);
+        dest.writeInt(this.mrp);
+        dest.writeInt(this.commission);
         dest.writeString(this.commissionType);
-        dest.writeValue(this.salesPrice);
-        dest.writeValue(this.sold);
-        dest.writeValue(this.booked);
-        dest.writeValue(this.available);
-        dest.writeValue(this.minQty);
-        dest.writeValue(this.maxQty);
+        dest.writeInt(this.salesPrice);
+        dest.writeInt(this.sold);
+        dest.writeInt(this.booked);
+        dest.writeInt(this.available);
+        dest.writeInt(this.minQty);
+        dest.writeInt(this.maxQty);
         dest.writeString(this.providerStatus);
         dest.writeInt(this.selectedQuantity);
         dest.writeString(this.timeRange);
         dest.writeString(this.address);
-        dest.writeString(this.fetchSectionUrl);
         dest.writeParcelable(this.form, flags);
+        dest.writeString(this.fetchSectionUrl);
         dest.writeTypedList(this.forms);
-        dest.writeValue(this.categoryId);
+        dest.writeInt(this.categoryId);
+    }
+
+    public PackageViewModel() {
     }
 
     protected PackageViewModel(Parcel in) {
-        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.productId = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.productScheduleId = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.productGroupId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.id = in.readInt();
+        this.productId = in.readInt();
+        this.productScheduleId = in.readInt();
+        this.productGroupId = in.readInt();
         this.providerScheduleId = in.readString();
         this.providerTicketId = in.readString();
         this.thumbnailApp = in.readString();
@@ -329,27 +328,27 @@ public class PackageViewModel implements Parcelable {
         this.title = in.readString();
         this.description = in.readString();
         this.tnc = in.readString();
-        this.convenienceFee = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.mrp = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.commission = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.convenienceFee = in.readInt();
+        this.mrp = in.readInt();
+        this.commission = in.readInt();
         this.commissionType = in.readString();
-        this.salesPrice = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.sold = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.booked = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.available = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.minQty = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.maxQty = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.salesPrice = in.readInt();
+        this.sold = in.readInt();
+        this.booked = in.readInt();
+        this.available = in.readInt();
+        this.minQty = in.readInt();
+        this.maxQty = in.readInt();
         this.providerStatus = in.readString();
         this.selectedQuantity = in.readInt();
         this.timeRange = in.readString();
         this.address = in.readString();
-        this.fetchSectionUrl = in.readString();
         this.form = in.readParcelable(Form.class.getClassLoader());
+        this.fetchSectionUrl = in.readString();
         this.forms = in.createTypedArrayList(Form.CREATOR);
-        this.categoryId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.categoryId = in.readInt();
     }
 
-    public static final Creator<PackageViewModel> CREATOR = new Creator<PackageViewModel>() {
+    public static final Parcelable.Creator<PackageViewModel> CREATOR = new Parcelable.Creator<PackageViewModel>() {
         @Override
         public PackageViewModel createFromParcel(Parcel source) {
             return new PackageViewModel(source);

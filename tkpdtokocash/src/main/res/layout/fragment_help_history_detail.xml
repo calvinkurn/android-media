@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_detail">
+
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/margin_sm"
+            android:text="@string/title_spinner_help_category"
+            android:textColor="@color/digital_voucher_notes"
+            android:textSize="@dimen/fontvs" />
+
+        <Spinner
+            android:id="@+id/spinner_history_help"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom"
+            android:spinnerMode="dialog" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/margin_small"
+            android:text="@string/title_detail_help_category"
+            android:textColor="@color/digital_voucher_notes"
+            android:textSize="@dimen/fontvs" />
+
+        <EditText
+            android:id="@+id/history_help_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:gravity="top|left"
+            android:hint="@string/hint_detail_help_category"
+            android:inputType="textMultiLine"
+            android:textSize="@dimen/font_medium" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/cancel_send_help"
+            style="@style/Button.Submit.White.Border"
+            android:layout_above="@+id/send_help"
+            android:layout_centerHorizontal="true"
+            android:text="@string/button_label_cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/digital_voucher"
+            android:textSize="@dimen/text_size_s_medium" />
+
+        <Button
+            android:id="@+id/send_help"
+            style="@style/Button.Submit.Green"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/margin_small"
+            android:enabled="false"
+            android:text="@string/button_label_send_help"
+            android:textAllCaps="false"
+            android:textColor="@color/digital_voucher_notes"
+            android:textSize="@dimen/fonts" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar_help"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</LinearLayout>

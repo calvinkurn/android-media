@@ -26,7 +26,7 @@
         android:layout_marginEnd="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_vs"
         android:layout_toLeftOf="@id/market_insight_number"
-        android:src="@drawable/ic_search_white" />
+        app:srcCompat="@drawable/ic_search_white" />
 
     <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
         android:id="@+id/market_insight_progress"

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -67,14 +68,14 @@
                 android:layout_width="@dimen/icon_prod_pad"
                 android:layout_height="@dimen/icon_prod_pad"
                 android:layout_marginRight="@dimen/med_dp"
-                android:src="@drawable/ic_action_edit"
+                app:srcCompat="@drawable/ic_action_edit"
                 android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/delete"
                 android:layout_width="@dimen/icon_prod_pad"
                 android:layout_height="@dimen/icon_prod_pad"
-                android:src="@drawable/ic_action_delete"
+                app:srcCompat="@drawable/ic_action_delete"
                 android:visibility="gone" />
 
             <!-- <TextView -->
@@ -170,7 +171,7 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:background="@drawable/overflow_selected"
                 android:padding="@dimen/padding_vs"
-                android:src="@drawable/ic_chevron_down" />
+                app:srcCompat="@drawable/ic_chevron_down" />
         </RelativeLayout>
 
         <View

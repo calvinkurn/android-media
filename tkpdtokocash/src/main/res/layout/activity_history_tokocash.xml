@@ -34,13 +34,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
-                <android.support.v7.widget.RecyclerView
+                <com.tokopedia.design.quickfilter.QuickSingleFilterView
                     android:id="@+id/filter_history_tokocash"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/date_label_view"
-                    android:paddingLeft="@dimen/margin_small"
-                    android:paddingRight="@dimen/margin_small" />
+                    android:layout_height="wrap_content" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -81,7 +78,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/padding_med"
         app:bav_2_display="true"
-        app:bav_icon_2="@drawable/ic_arrow_up_grey"
+        app:bav_icon_2="@drawable/history_ic_arrow_up_grey"
         app:bav_label_2="@string/back_to_top"
         app:layout_anchor="@+id/history_tokocash"
         app:layout_anchorGravity="bottom|center_horizontal"

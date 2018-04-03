@@ -22,6 +22,7 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
@@ -387,7 +388,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     public void onFailedSaveInfoShop(Throwable t) {
 
         String errorMessage;
-        Crashlytics.logException(t);
+        if(!GlobalConfig.DEBUG) Crashlytics.logException(t);
         if (t instanceof ShopException) {
             errorMessage = t.getMessage();
         } else {

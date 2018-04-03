@@ -68,6 +68,9 @@ TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> {
         adapter.setList(list);
         adapter.setAdapterPosition(getAdapterPosition());
         adapter.setPosition(getAdapterPosition());
+        if (list.size() > 0) {
+            switchDisplay(list.get(0));
+        }
     }
 
     public void setDisplayMode(DisplayMode displayMode) {

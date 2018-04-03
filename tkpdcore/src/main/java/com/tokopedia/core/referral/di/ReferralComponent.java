@@ -1,7 +1,6 @@
 package com.tokopedia.core.referral.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.drawer2.domain.TokoCashRepository;
 import com.tokopedia.core.referral.domain.ReferralRepository;
 import com.tokopedia.core.referral.fragment.FragmentReferral;
 
@@ -12,10 +11,8 @@ import dagger.Component;
  */
 
 @ReferralScope
-@Component(modules =ReferralModule.class, dependencies = AppComponent.class)
+@Component(modules = ReferralModule.class, dependencies = AppComponent.class)
 public interface ReferralComponent {
-
-    TokoCashRepository getTokoCashRepository();
 
     ReferralRepository referralRepository();
 

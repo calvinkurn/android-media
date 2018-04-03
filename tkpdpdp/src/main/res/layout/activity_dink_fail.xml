@@ -90,7 +90,7 @@
                 android:layout_height="@dimen/half_screen_3pad"
                 android:layout_gravity="center"
                 android:padding="@dimen/text_size_s_medium"
-                android:src="@drawable/icon_topads" />
+                app:srcCompat="@drawable/icon_topads" />
 
             <TextView
                 android:layout_width="match_parent"

@@ -6,6 +6,8 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.HelpHistoryToko
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.functions.Func1;
 
 /**
@@ -13,6 +15,10 @@ import rx.functions.Func1;
  */
 
 public class HelpHistoryDataMapper implements Func1<List<HelpHistoryTokoCashEntity>, List<HelpHistoryTokoCash>> {
+
+    @Inject
+    public HelpHistoryDataMapper() {
+    }
 
     @Override
     public List<HelpHistoryTokoCash> call(List<HelpHistoryTokoCashEntity> helpHistoryTokoCashEntities) {

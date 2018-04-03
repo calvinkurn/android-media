@@ -6,10 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.method.ArrowKeyMovementMethod;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
@@ -132,8 +129,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     TextView dismissTooltip;
     @BindView(R2.id.tv_ticket_cnt_type)
     TextView tvTicketCntType;
-    @BindView(R2.id.tv_someinfo)
-    TextView tvSomeInfo;
     @BindView(R2.id.selected_seats_layout)
     View selectedSeatLayout;
     @BindView(R2.id.seat_numbers)
@@ -196,14 +191,10 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         tvEmailID.setEnabled(false);
         tvEmailID.setTextIsSelectable(false);
         tvEmailID.setFocusable(false);
-        tvEmailID.setInputType(InputType.TYPE_NULL);
 
         tvTelephone.setEnabled(false);
         tvTelephone.setTextIsSelectable(false);
         tvTelephone.setFocusable(false);
-        tvTelephone.setInputType(InputType.TYPE_NULL);
-
-
     }
 
     @Override
@@ -229,7 +220,11 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         String timerange = packageViewModel.getTimeRange();
         ImageHandler.loadImageCover2(eventImageSmall, packageViewModel.getThumbnailApp());
         eventNameTv.setText(packageViewModel.getDisplayName());
-        setHolder(R.drawable.ic_time, timerange, timeHolder);
+        if (timerange == null || timerange.length() == 0) {
+            eventTimeTv.setVisibility(View.GONE);
+        } else {
+            setHolder(R.drawable.ic_time, timerange, timeHolder);
+        }
         setHolder(R.drawable.ic_skyline, packageViewModel.getAddress(), addressHolder);
         eventTotalTickets.setText(String.format(getString(R.string.jumlah_tiket),
                 packageViewModel.getSelectedQuantity()));
@@ -240,9 +235,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         tvConvFees.setText("Rp " + CurrencyUtil.convertToCurrencyString(convFees));
         tvTotalPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(baseFare + convFees));
         buttonTextview.setText(getString(R.string.pay_button));
-        SpannableString someinfo = new SpannableString(getResources().getString(R.string.some_info));
-        someinfo.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.green_nob)), 54, 74, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        tvSomeInfo.setText(someinfo);
         tvTicketCntType.setText(String.format(getString(R.string.x_type),
                 packageViewModel.getSelectedQuantity(), packageViewModel.getDisplayName()));
         String baseBreak = String.format(getString(R.string.x_type),
@@ -391,6 +383,8 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
     @OnClick(R2.id.btn_go_to_payment)
     void clickPay() {
+        mPresenter.updateEmail(tvEmailID.getText().toString());
+        mPresenter.updateNumber(tvTelephone.getText().toString());
         mPresenter.proceedToPayment();
     }
 
@@ -403,15 +397,18 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     void updateEmail() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (!tvEmailID.isEnabled()) {
+            tvTelephone.setEnabled(false);
+            tvTelephone.setTextIsSelectable(false);
+            tvTelephone.setFocusable(false);
+            tvTelephone.setInputType(InputType.TYPE_NULL);
             tvEmailID.setEnabled(true);
             tvEmailID.setTextIsSelectable(true);
             tvEmailID.setFocusable(true);
             tvEmailID.setFocusableInTouchMode(true);
+            tvEmailID.setSelection(tvEmailID.getText().length());
             tvEmailID.setInputType(InputType.TYPE_CLASS_TEXT);
             tvEmailID.requestFocus();
-            if (imm != null) {
-                imm.showSoftInputFromInputMethod(tvEmailID.getWindowToken(), 0);
-            }
+            imm.showSoftInput(tvEmailID, InputMethodManager.SHOW_IMPLICIT);
         } else {
             if (imm != null) {
                 imm.hideSoftInputFromWindow(tvEmailID.getWindowToken(), 0);
@@ -420,24 +417,28 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvEmailID.setTextIsSelectable(false);
             tvEmailID.setFocusable(false);
             tvEmailID.setInputType(InputType.TYPE_NULL);
+            tvEmailID.clearFocus();
             mainContent.requestFocus();
-            mPresenter.updateEmail(tvEmailID.getText().toString());
         }
+        mPresenter.updateEmail(tvEmailID.getText().toString());
     }
 
     @OnClick(R2.id.update_number)
     void updateNumber() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (!tvTelephone.isEnabled()) {
+            tvEmailID.setEnabled(false);
+            tvEmailID.setTextIsSelectable(false);
+            tvEmailID.setFocusable(false);
+            tvEmailID.setInputType(InputType.TYPE_NULL);
             tvTelephone.setEnabled(true);
             tvTelephone.setTextIsSelectable(true);
+            tvTelephone.setSelection(tvTelephone.getText().length());
             tvTelephone.setFocusable(true);
             tvTelephone.setFocusableInTouchMode(true);
             tvTelephone.setInputType(InputType.TYPE_CLASS_TEXT);
             tvTelephone.requestFocus();
-            if (imm != null) {
-                imm.showSoftInputFromInputMethod(tvTelephone.getWindowToken(), 0);
-            }
+            imm.showSoftInput(tvTelephone, InputMethodManager.SHOW_IMPLICIT);
         } else {
             if (imm != null) {
                 imm.hideSoftInputFromWindow(tvTelephone.getWindowToken(), 0);
@@ -446,9 +447,10 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvTelephone.setTextIsSelectable(false);
             tvTelephone.setFocusable(false);
             tvTelephone.setInputType(InputType.TYPE_NULL);
+            tvTelephone.clearFocus();
             mainContent.requestFocus();
-            mPresenter.updateEmail(tvTelephone.getText().toString());
         }
+        mPresenter.updateNumber(tvTelephone.getText().toString());
     }
 
     @OnClick(R2.id.batal)

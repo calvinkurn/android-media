@@ -6,12 +6,11 @@ buildscript {
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
     }
 }
+
 apply plugin: 'com.android.library'
 apply plugin: 'android-apt'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'com.jfrog.artifactory'
-apply plugin: 'maven-publish'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {

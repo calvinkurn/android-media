@@ -170,7 +170,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"
-                        android:src="@drawable/ic_new_action_overflow_black" />
+                        app:srcCompat="@drawable/ic_new_action_overflow_black" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -216,7 +216,7 @@
                                 android:id="@+id/rep_icon"
                                 android:layout_width="@dimen/img_thumb_s"
                                 android:layout_height="@dimen/img_thumb_s"
-                                android:src="@drawable/ic_icon_repsis_smile_active" />
+                                app:srcCompat="@drawable/ic_icon_repsis_smile_active" />
 
                             <TextView
                                 android:id="@+id/rep_rating"
@@ -284,7 +284,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight=".50"
-                        android:src="@drawable/ic_star_five"
+                        app:srcCompat="@drawable/ic_star_five"
                         android:shopId="@+shopId/star_quality"
                         android:layout_gravity="center"
                         android:scaleType="fitStart"/>
@@ -302,7 +302,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight=".50"
-                        android:src="@drawable/ic_star_five"
+                        app:srcCompat="@drawable/ic_star_five"
                         android:shopId="@+shopId/star_accuracy"
                         android:scaleType="fitEnd"/>
 
@@ -335,7 +335,7 @@
                     android:layout_alignBottom="@+id/counter_comment"
                     android:layout_alignTop="@+id/counter_comment"
                     android:layout_toRightOf="@+id/counter_comment"
-                    android:src="@drawable/ic_menu_talk" />
+                    app:srcCompat="@drawable/ic_menu_talk" />
 
                 <RelativeLayout
                     android:id="@+id/view_like_dislike"
@@ -348,7 +348,7 @@
                         android:id="@+id/icon_like"
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
-                        android:src="@drawable/ic_icon_repsis_like" />
+                        app:srcCompat="@drawable/ic_icon_repsis_like" />
 
                     <TextView
                         android:id="@+id/counter_like"
@@ -368,7 +368,7 @@
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
                         android:layout_toRightOf="@id/counter_like"
-                        android:src="@drawable/ic_icon_repsis_dislike" />
+                        app:srcCompat="@drawable/ic_icon_repsis_dislike" />
 
                     <TextView
                         android:id="@+id/counter_dislike"

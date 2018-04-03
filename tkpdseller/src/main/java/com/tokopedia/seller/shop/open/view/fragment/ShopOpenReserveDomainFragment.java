@@ -16,6 +16,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
@@ -233,7 +234,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Override
     public void onErrorReserveShop(Throwable t) {
         hideSubmitLoading();
-        Crashlytics.logException(t);
+        if(!GlobalConfig.DEBUG) Crashlytics.logException(t);
         String message = ShopErrorHandler.getErrorMessage(getActivity(), t);
         sendErrorTracking(message);
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),

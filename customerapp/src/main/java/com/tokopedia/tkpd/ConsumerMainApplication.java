@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatDelegate;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.soloader.SoLoader;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -17,21 +21,31 @@ import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
+import com.sendbird.android.SendBird;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.pushnotif.PushNotification;
+import com.tokopedia.profile.data.network.ProfileUrl;
+import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
+import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
+import com.tokopedia.tkpdcontent.common.network.KolUrl;
+import com.tokopedia.tkpdstream.common.data.SendbirdKey;
+import com.tokopedia.tkpdstream.common.data.StreamUrl;
+import com.tokopedia.tokocash.network.api.WalletUrl;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -45,7 +59,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public void onCreate() {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         HockeyAppHelper.setHockeyappKey(HockeyAppHelper.KEY_MAINAPP);
-        GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+        setVersionCode();
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
@@ -60,6 +74,22 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
+
+        initSendbird();
+    }
+
+    private void setVersionCode() {
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+            GlobalConfig.VERSION_CODE = pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+        }
+    }
+
+    private void initSendbird() {
+        SendBird.init(SendbirdKey.APP_ID, this);
     }
 
     private void generateConsumerAppBaseUrl() {
@@ -68,7 +98,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.BASE_API_DOMAIN = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         TkpdBaseURL.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
         TkpdBaseURL.TOME_DOMAIN = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
-        TkpdBaseURL.CLOVER_DOMAIN = ConsumerAppBaseUrl.BASE_CLOVER_DOMAIN;
         TkpdBaseURL.TOPADS_DOMAIN = ConsumerAppBaseUrl.BASE_TOPADS_DOMAIN;
         TkpdBaseURL.MOJITO_DOMAIN = ConsumerAppBaseUrl.BASE_MOJITO_DOMAIN;
         TkpdBaseURL.HADES_DOMAIN = ConsumerAppBaseUrl.BASE_HADES_DOMAIN;
@@ -107,13 +136,20 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlightUrl.ALL_PROMO_LINK = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.PROMO_PATH;
         FlightUrl.CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.CONTACT_US_PATH;
         FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL = FlightUrl.CONTACT_US + FlightUrl.CONTACT_US_FLIGHT_PREFIX;
+        WalletUrl.BaseUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        WalletUrl.BaseUrl.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
+        KolUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
+        ProfileUrl.BASE_URL = ConsumerAppBaseUrl.TOPPROFILE_DOMAIN;
+        DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
+        StreamUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
+        WalletUrl.KeyHmac.HMAC_PENDING_CASHBACK = ConsumerAppNetworkKeys.HMAC_PENDING_CASHBACK;
     }
 
     public void initializeDatabase() {
@@ -163,7 +199,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
                 startActivity(intent);
 
-            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)) {
+            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)
+                    || deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS_SELLER)) {
                 Intent intent = new Intent(this, DeeplinkHandlerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
@@ -204,5 +241,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public Intent getLoginWebviewIntent(Context context, String name, String url) {
         return LoginActivity.getAutoLoginWebview(context, name, url);
+    }
+
+    @Override
+    public Intent getTopProfileIntent(Context context, String userId) {
+        return TopProfileActivity.newInstance(context, userId);
     }
 }

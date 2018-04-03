@@ -92,7 +92,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         if (model.getMinStartDate() == 0) {
             holder.eventTimeLayout.setVisibility(View.GONE);
         } else {
-            if (model.getMinStartDate().equals(model.getMaxEndDate()))
+            if (model.getMinStartDate() == model.getMaxEndDate())
                 holder.eventTime.setText(Utils.convertEpochToString(model.getMinStartDate()));
             else
                 holder.eventTime.setText(Utils.convertEpochToString(model.getMinStartDate())

@@ -86,10 +86,10 @@ public class SearchInputView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_search_input_view, this);
-        searchImageView = (ImageView) view.findViewById(R.id.image_view_search);
-        searchTextView = (EditText) view.findViewById(R.id.edit_text_search);
-        closeImageButton = (ImageButton) view.findViewById(R.id.image_button_close);
+        View view = inflate(getContext(), R.layout.widget_event_search_input_view, this);
+        searchImageView = view.findViewById(R.id.image_view_search);
+        searchTextView = view.findViewById(R.id.edit_text_search);
+        closeImageButton = view.findViewById(R.id.image_button_close);
         delayTextChanged = DEFAULT_DELAY_TEXT_CHANGED;
     }
 

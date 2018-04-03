@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- START xml_defaults -->
+<?xml version="1.0" encoding="utf-8"?><!-- START xml_defaults -->
 <defaultsMap>
     <entry>
         <key>mainapp_is_need_update</key>
@@ -39,7 +38,9 @@
     </entry>
     <entry>
         <key>sellerapp_update_message</key>
-        <value>Update Top Seller versi terbaru untuk mendapatkan pengalaman berjualan yang lebih baik.</value>
+        <value>Update Top Seller versi terbaru untuk mendapatkan pengalaman berjualan yang lebih
+            baik.
+        </value>
     </entry>
     <entry>
         <key>sellerapp_update_title</key>
@@ -67,7 +68,10 @@
     </entry>
     <entry>
         <key>app_share_description</key>
-        <value>Hai. Aku udah nyobain beli &amp; bayar ini itu di aplikasi Tokopedia, gampang banget! Mau beli barang idaman, isi pulsa, token listrik, bayar semua tagihan, sampai beli tiket liburan, semua bisa lewat 1 aplikasi. Yuk, ikut nikmati kemudahannya, download aja di </value>
+        <value>Hai. Aku udah nyobain beli &amp; bayar ini itu di aplikasi Tokopedia, gampang banget!
+            Mau beli barang idaman, isi pulsa, token listrik, bayar semua tagihan, sampai beli tiket
+            liburan, semua bisa lewat 1 aplikasi. Yuk, ikut nikmati kemudahannya, download aja di
+        </value>
     </entry>
     <entry>
         <key>mainapp_activate_branch_links</key>
@@ -107,7 +111,9 @@
     </entry>
     <entry>
         <key>mainapp_rating_message</key>
-        <value>Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</value>
+        <value>Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan
+            memberi rating 5 bintang dan ulasan di Google Play.
+        </value>
     </entry>
 
     <entry>
@@ -117,6 +123,15 @@
 
     <entry>
         <key>app_notp_enabled</key>
+        <value>false</value>
+    </entry>
+
+    <entry>
+        <key>app_shake_feature_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>audio_campaign_is_audio</key>
         <value>false</value>
     </entry>
     <entry>
@@ -129,7 +144,7 @@
     </entry>
     <entry>
         <key>flight_airport</key>
-        <value>1</value>
+        <value>3</value>
     </entry>
     <entry>
         <key>notification_logger</key>
@@ -137,11 +152,14 @@
     </entry>
     <entry>
         <key>app_refferal_content</key>
-        <value>Ayo share kode ini dan dapatkan voucher cashback TokoCash 25% hingga Rp 20.000 saat mereka melakukan transaksi pertama di Tokopedia.</value>
+        <value>Ayo share kode ini ke temanmu dan nikmati bonus TokoCash setelah transaksi pertama mereka berhasil.
+        </value>
     </entry>
     <entry>
         <key>app_share_welcome_message</key>
-        <value>Hai %s, kamu mendapatkan kode referral dari %s. Ayo gunakan kode ini saat melakukan transaksi pertama di Tokopedia &amp; nikmati cashback TokoCash 50% hingga Rp50.000.</value>
+        <vlue>Hai %s, kamu mendapatkan kode referral dari %s. Gunakan kode ini saat transaksi
+            pertamamu di Tokopedia &amp; nikmati bonus cashback ke TokoCash.
+        </vlue>
     </entry>
     <entry>
         <key>app_referral_title</key>
@@ -149,7 +167,7 @@
     </entry>
     <entry>
         <key>app_referral_howitworks</key>
-        <value> Info lebih lanjut</value>
+        <value>Info lebih lanjut</value>
     </entry>
     <entry>
         <key>app_show_referral_button</key>

@@ -29,9 +29,9 @@
         android:layout_marginTop="@dimen/margin_vs"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
-        android:textStyle="normal"
         android:maxLines="2"
         android:textColor="@color/black_70"
+        android:textStyle="normal"
         tools:text="Nexus 5X 32 ,awawdawdasdas  pure white dan juga warna rose gold" />
 
     <TextView

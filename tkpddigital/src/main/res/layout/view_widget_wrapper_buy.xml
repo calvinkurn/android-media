@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/buy_wrapper_linearlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -28,7 +29,7 @@
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_toRightOf="@+id/buy_with_credit_checkbox"
             android:layout_centerVertical="true"
-            android:src="@drawable/info_icon" />
+            app:srcCompat="@drawable/info_icon" />
 
     </RelativeLayout>
 

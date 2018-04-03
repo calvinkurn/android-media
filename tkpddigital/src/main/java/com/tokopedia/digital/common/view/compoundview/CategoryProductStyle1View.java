@@ -202,10 +202,22 @@ public class CategoryProductStyle1View extends
         holderClientNumber.addView(clientNumberInputView);
 
         String lastClientNumberHistory = "";
-        if (hasLastOrderHistoryData())
+        String lastOperatorHistory = "";
+        if (hasLastOrderHistoryData()) {
             lastClientNumberHistory = historyClientNumber.getLastOrderClientNumber().getClientNumber();
+            lastOperatorHistory = historyClientNumber.getLastOrderClientNumber().getOperatorId();
+        }
         if (!TextUtils.isEmpty(lastClientNumberHistory)) {
             clientNumberInputView.setText(lastClientNumberHistory);
+        } else {
+            if (!TextUtils.isEmpty(lastOperatorHistory)) {
+                for (Operator operator : data.getOperatorList()) {
+                    if (operator.getOperatorId().equals(lastOperatorHistory)) {
+                        setOperator(operator);
+                        break;
+                    }
+                }
+            }
         }
 
         if (source == WIDGET) {
@@ -215,6 +227,21 @@ public class CategoryProductStyle1View extends
                 }
             }
         }
+    }
+
+    private void setOperator(Operator operator) {
+        operatorSelected = operator;
+        clientNumberInputView.tvErrorClientNumber.setText("");
+        clientNumberInputView.tvErrorClientNumber.setVisibility(GONE);
+        clientNumberInputView.enableImageOperator(operator.getImage());
+        clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
+        if (operator.getRule().getProductViewStyle() == SINGLE_PRODUCT) {
+            renderDefaultProductSelected();
+        } else {
+            showProducts();
+        }
+        setBtnBuyDigitalText(operator.getRule().getButtonText());
+        actionListener.onOperatorSelected(data.getName(), operator.getName());
     }
 
     private void showProducts() {
@@ -386,19 +413,8 @@ public class CategoryProductStyle1View extends
                     for (Operator operator : data.getOperatorList()) {
                         for (String prefix : operator.getPrefixList()) {
                             if (validClientNumber.startsWith(prefix)) {
-                                operatorSelected = operator;
-                                clientNumberInputView.tvErrorClientNumber.setText("");
-                                clientNumberInputView.tvErrorClientNumber.setVisibility(GONE);
-                                clientNumberInputView.enableImageOperator(operator.getImage());
-                                clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
-                                if (operator.getRule().getProductViewStyle() == SINGLE_PRODUCT) {
-                                    renderDefaultProductSelected();
-                                } else {
-                                    showProducts();
-                                }
-                                setBtnBuyDigitalText(operator.getRule().getButtonText());
+                                setOperator(operator);
                                 operatorFound = true;
-                                actionListener.onOperatorSelected(data.getName(), operator.getName());
                                 break outerLoop;
                             }
                         }

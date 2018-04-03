@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/black">
 
     <com.tkpd.library.ui.widget.TouchViewPager
@@ -21,7 +22,7 @@
             android:id="@+id/close_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_close_white"
+            app:srcCompat="@drawable/icon_close_white"
             android:layout_centerVertical="true"/>
 
         <ImageView
@@ -31,7 +32,7 @@
             android:layout_alignBottom="@id/close_button"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_download"
+            app:srcCompat="@drawable/ic_download"
             android:layout_centerVertical="true"/>
 
         <TextView

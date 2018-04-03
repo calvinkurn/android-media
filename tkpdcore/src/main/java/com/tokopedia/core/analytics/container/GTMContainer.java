@@ -3,6 +3,7 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -193,8 +194,14 @@ public class GTMContainer implements IGTMContainer {
         Log.i("Tag Manager", "UA-9801603-15: Send Checkout Event");
         Log.i("Tag Manager", "UA-9801603-15: MAP: " + checkout.getCheckoutMap().toString());
 
-        GTMDataLayer.pushEvent(context, "checkout", DataLayer.mapOf("ecommerce", DataLayer.mapOf(
-                "checkout", checkout.getCheckoutMapEvent()
+        GTMDataLayer.pushGeneral(context,
+                DataLayer.mapOf(
+                        AppEventTracking.EVENT, AppEventTracking.Event.EVENT_CHECKOUT,
+                        AppEventTracking.EVENT_CATEGORY, AppEventTracking.Category.ECOMMERCE,
+                        AppEventTracking.EVENT_ACTION, AppEventTracking.Action.CHECKOUT,
+                        AppEventTracking.EVENT_LABEL, checkout.getStep(),
+                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                        AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
         )));
 
         return this;
@@ -243,12 +250,23 @@ public class GTMContainer implements IGTMContainer {
     @Override
     public GTMContainer eventAuthenticate(Authenticated authenticated) {
         CommonUtils.dumper("GAv4 send authenticated");
-        GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
-                Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
-                Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
-                Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
-                Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed()
-        ));
+        if (TextUtils.isEmpty(authenticated.getcIntel())) {
+            GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
+                    Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
+                    Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
+                    Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
+                    Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed()
+            ));
+
+        } else {
+            GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
+                    Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
+                    Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
+                    Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
+                    Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
+                    Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel()
+            ));
+        }
 
         return this;
     }

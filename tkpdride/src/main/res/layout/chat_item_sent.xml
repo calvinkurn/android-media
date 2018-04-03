@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_small"
+    android:paddingEnd="@dimen/chat_padding_small"
+    android:paddingLeft="@dimen/chat_padding_large"
+    android:paddingRight="@dimen/chat_padding_small"
+    android:paddingStart="@dimen/chat_padding_large">
+
+    <ImageView
+        android:id="@+id/retry_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_toLeftOf="@+id/main"
+        android:layout_toStartOf="@+id/main"
+        android:contentDescription="@string/tap_retry"
+        android:padding="@dimen/padding_vvs"
+        android:visibility="visible"
+        app:srcCompat="@drawable/ic_error_to_send" />
+
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center_vertical|start"
+        android:background="@drawable/right_bubble"
+        android:gravity="end"
+        android:maxWidth="@dimen/chat_width"
+        android:minWidth="@dimen/min_chat_width"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_ms">
+
+        <TextView
+            android:id="@+id/message_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/fonts" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vvs"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/sms_status"
+                android:layout_width="@dimen/chat_status_width"
+                android:layout_height="@dimen/chat_status_height"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/margin_vvs"
+                android:layout_marginRight="@dimen/margin_vvs"
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_sms_delivered" />
+
+            <TextView
+                android:id="@+id/timestamp_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|start"
+                android:textColor="@color/grey_100"
+                android:textSize="@dimen/fontvvs" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

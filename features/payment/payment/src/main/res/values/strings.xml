@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Tokopedia Payment</string>
+
+    <string name="app_android">App Android</string>
 </resources>
