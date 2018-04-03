@@ -45,6 +45,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
     public static final String EXTRA_TOKEN_DATA = "extra_token_data";
+    public static final double RATIO_MARGIN_TOP_TIMER = 0.15;
 
     private CountDownTimer countDownTimer;
 
@@ -84,37 +85,16 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         return null;
     }
 
-    @Override
-    protected void initInjector() {
-        GamificationComponent gamificationComponent =
-                GamificationComponentInstance.getComponent(getActivity().getApplication());
-        gamificationComponent.inject(this);
-        crackTokenPresenter.attachView(this);
-    }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        //TODO argument here for initial only.. use if (savedInstance == null) {..}
-        Bundle bundle = getArguments();
-        tokenData = bundle.getParcelable(EXTRA_TOKEN_DATA);
-        initDataCrackEgg(tokenData);
-        renderViewCrackEgg();
-    }
-
-    private void initDataCrackEgg(TokenData tokenData) {
-        TokenUser tokenUser = tokenData.getHome().getTokensUser();
-        tokenUserId = tokenUser.getTokenUserID();
-        campaignId = tokenUser.getCampaignID();
-        backgroundImageUrl = tokenUser.getBackgroundImgUrl();
-        smallImageUrl = tokenUser.getTokenAsset().getSmallImgUrl();
-        imageUrl1 = tokenUser.getTokenAsset().getImageUrls().get(0);
-        imageUrl2 = tokenUser.getTokenAsset().getImageUrls().get(4);
-        imageUrl3 = tokenUser.getTokenAsset().getImageUrls().get(6);
-        imageUrl4 = tokenUser.getTokenAsset().getImageUrls().get(5);
-        timeRemainingSeconds = tokenUser.getTimeRemainingSeconds();
-        isCountdownTimerShow = tokenUser.getShowTime();
+    public void onCreate(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            Bundle bundle = getArguments();
+            tokenData = bundle.getParcelable(EXTRA_TOKEN_DATA);
+        } else {
+            tokenData = savedInstanceState.getParcelable(EXTRA_TOKEN_DATA);
+        }
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -130,7 +110,58 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         return rootView;
     }
 
+    @Override
+    protected void initInjector() {
+        GamificationComponent gamificationComponent =
+                GamificationComponentInstance.getComponent(getActivity().getApplication());
+        gamificationComponent.inject(this);
+        crackTokenPresenter.attachView(this);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        resetEgg();
+    }
+
+    private void resetEgg() {
+        initDataCrackEgg(tokenData);
+        renderViewCrackEgg();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // TODO if there is countdowntimer:
+        // TODO restart the timer, add with delay when onpause
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // TODO stop the timer; we don't want the timer run when the fragment is paused and save the timestamp here
+    }
+
+    /**
+     * copy the token data retrieved to field variable
+     */
+    private void initDataCrackEgg(TokenData tokenData) {
+        TokenUser tokenUser = tokenData.getHome().getTokensUser();
+        tokenUserId = tokenUser.getTokenUserID();
+        campaignId = tokenUser.getCampaignID();
+        backgroundImageUrl = tokenUser.getBackgroundImgUrl();
+        smallImageUrl = tokenUser.getTokenAsset().getSmallImgUrl();
+        imageUrl1 = tokenUser.getTokenAsset().getImageUrls().get(0);
+        imageUrl2 = tokenUser.getTokenAsset().getImageUrls().get(4);
+        imageUrl3 = tokenUser.getTokenAsset().getImageUrls().get(6);
+        imageUrl4 = tokenUser.getTokenAsset().getImageUrls().get(5);
+        timeRemainingSeconds = tokenUser.getTimeRemainingSeconds();
+        isCountdownTimerShow = tokenUser.getShowTime();
+    }
+
     private void renderViewCrackEgg() {
+        widgetTokenView.reset();
+
         Glide.with(this)
                 .load(backgroundImageUrl)
                 .asBitmap()
@@ -187,7 +218,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private void initTimerBound() {
         int rootHeight = rootView.getHeight();
-        int imageMarginTop = (int) (0.15 * rootHeight);
+        int imageMarginTop = (int) (RATIO_MARGIN_TOP_TIMER * rootHeight);
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) textCountdownTimer.getLayoutParams();
         ivFullLp.topMargin = imageMarginTop;
@@ -201,7 +232,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             countDownTimer = new CountDownTimer(timeRemainingSeconds, COUNTDOWN_INTERVAL_SECOND) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    setUIFloatingTimer((int) (millisUntilFinished / 1000));
+                    setUIFloatingTimer((int) (millisUntilFinished / COUNTDOWN_INTERVAL_SECOND));
                 }
 
                 @Override
@@ -224,12 +255,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             seconds = seconds % 60;
             textCountdownTimer.setText(String.format(getString(R.string.countdown_format), hours, minutes, seconds));
         }
-    }
-
-    private void resetEgg() {
-        widgetTokenView.reset();
-        initDataCrackEgg(tokenData);
-        renderViewCrackEgg();
     }
 
     @Override
@@ -260,5 +285,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         String rewardCouponUrl = "https://ecs7.tokopedia.net/assets/images/gamification/benefit/rewards-coupon.png";
         widgetCrackResult.showCrackResult(rewardCouponUrl, "Maaf, sayang sekali sepertinya", rewardTexts, "Coba Lagi", "");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        tokenData.getHome().getTokensUser().setTimeRemainingSeconds(timeRemainingSeconds);
+        outState.putParcelable(EXTRA_TOKEN_DATA, tokenData);
     }
 }
