@@ -118,6 +118,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
+import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
@@ -1666,5 +1667,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         return voucherViewModel;
                     }
                 });
+    }
+
+    @Override
+    public Intent getPromoListIntent(Activity activity) {
+        return PromoListActivity.newInstance(activity);
     }
 }
