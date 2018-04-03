@@ -113,7 +113,9 @@ public class CountDownView extends FrameLayout {
     private void handleExpiredTime(CountDownListener listener) {
         stopAutoRefreshCounter();
         setTime(0, 0, 0);
-        listener.onCountDownFinished();
+        if (listener != null) {
+            listener.onCountDownFinished();
+        }
     }
 
     private boolean isExpired(Date expiredTime) {
