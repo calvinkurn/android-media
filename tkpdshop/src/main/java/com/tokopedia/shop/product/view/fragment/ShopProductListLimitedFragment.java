@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -51,6 +52,7 @@ import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
+import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +70,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101;
     private static final int REQUEST_CODE_ETALASE = 200;
+    private static final int REQUEST_CODE_SORT = 300;
     public static final int SPAN_COUNT = 2;
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
@@ -78,6 +81,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     private ShopInfo shopInfo;
     private ShopModuleRouter shopModuleRouter;
     private ShopPagePromoWebView.Listener promoWebViewListener;
+    private BottomActionView bottomActionView;
+    private String sortName = Integer.toString(Integer.MIN_VALUE);
 
     public static ShopProductListLimitedFragment createInstance() {
         ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
@@ -112,6 +117,13 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        bottomActionView = view.findViewById(R.id.bottom_action_view);
+        bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ShopProductListLimitedFragment.this.startActivityForResult(ShopProductSortActivity.createIntent(getActivity(), sortName, shopInfo.getInfo().getShopId()), REQUEST_CODE_SORT);
+            }
+        });
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
     }
@@ -279,9 +291,14 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     @Override
     public void renderList(@NonNull List<ShopProductBaseViewModel> list, boolean hasNextPage) {
         trackingImpressionFeatureProduct(list);
+        if(list.size()>0)
+            showBottomActionView();
         super.renderList(list, hasNextPage);
     }
 
+    private void showBottomActionView() {
+        bottomActionView.setVisibility(View.VISIBLE);
+    }
 
     private void trackingImpressionFeatureProduct(List<ShopProductBaseViewModel> list) {
         List<ShopProductViewModel> featuredViewModelList = new ArrayList<>();
@@ -387,6 +404,12 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
             case REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW:
                 if (resultCode == Activity.RESULT_OK && !TextUtils.isEmpty(urlNeedTobBeProceed)) {
                     promoClicked(urlNeedTobBeProceed);
+                }
+                break;
+            case REQUEST_CODE_SORT:
+                if (resultCode == Activity.RESULT_OK) {
+                    sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME);
+                    startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), "", "", sortName));
                 }
                 break;
             default:
