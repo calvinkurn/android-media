@@ -15,7 +15,7 @@ import java.util.Map;
  * Created by sachinbansal on 3/8/18.
  */
 
-public class SearchItemRequestLocal extends RoaAcsRequest<NewImageSearchResponse> {
+public class ImageSearchItemRequest extends RoaAcsRequest<NewImageSearchResponse> {
     private static final int MAX_POST_CONTENT_LENGTH = 8388608;
     private int start;
     private int num;

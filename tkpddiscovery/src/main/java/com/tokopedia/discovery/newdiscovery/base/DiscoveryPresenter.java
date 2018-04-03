@@ -9,7 +9,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.imagesearch.domain.usecase.NewImageSearchResponse;
-import com.tokopedia.discovery.imagesearch.domain.usecase.SearchItemRequestLocal;
+import com.tokopedia.discovery.imagesearch.domain.usecase.ImageSearchItemRequest;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
@@ -82,7 +82,7 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
 
                 IAcsClient client = new DefaultAcsClient(profile);
 
-                SearchItemRequestLocal request = new SearchItemRequestLocal();
+                ImageSearchItemRequest request = new ImageSearchItemRequest();
                 request.setInstanceName(IMAGE_SEARCH_INSTANCE);
                 request.setSearchPicture(imageByteArray);
 
