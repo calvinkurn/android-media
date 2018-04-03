@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics.nishikino.model;
 
+import android.text.TextUtils;
+
 import com.google.android.gms.tagmanager.DataLayer;
 
 import java.util.HashMap;
@@ -16,6 +18,7 @@ public class Promotion {
     private String promotionAlias;
     private String promotionPosition;
     private String redirectUrl;
+    private String promoCode;
 
     public void setPromotionID(String promotionID) {
         this.promotionID = promotionID;
@@ -33,6 +36,10 @@ public class Promotion {
         this.promotionPosition = String.valueOf(promotionPosition);
     }
 
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
+    }
+
     public String getPromotionID() {
         return promotionID;
     }
@@ -47,6 +54,10 @@ public class Promotion {
 
     public String getPromotionPosition() {
         return promotionPosition;
+    }
+
+    public String getPromoCode() {
+        return promoCode;
     }
 
     public Map<String, Object> getPromotionDataEvent() {
@@ -80,7 +91,8 @@ public class Promotion {
                                                 "id", getPromotionID(),
                                                 "name", getPromotionName(),
                                                 "creative", getPromotionAlias(),
-                                                "position", getPromotionPosition()
+                                                "position", getPromotionPosition(),
+                                                "promo_code", !TextUtils.isEmpty(getPromoCode()) ? getPromoCode() : "none / other"
                                         )
                                 )
                         )
@@ -101,7 +113,8 @@ public class Promotion {
                                                 "id", getPromotionID(),
                                                 "name", getPromotionName(),
                                                 "creative", getPromotionAlias(),
-                                                "position", getPromotionPosition()
+                                                "position", getPromotionPosition(),
+                                                "attribution", String.format("1 - sliderBanner - %s - %s", getPromotionPosition(), getPromotionAlias())
                                         )
                                 )
                         )

@@ -31,11 +31,11 @@ public interface HomeCategoryListener {
 
     void showNetworkError(String message);
 
-    void onDynamicChannelClicked(String applink);
+    void onDynamicChannelClicked(String applink, String trackingAttribution);
 
     void onRefreshTokoPointButtonClicked();
 
     void onRefreshTokoCashButtonClicked();
 
-    void onSixGridItemClicked(String actionLink);
+    void onSixGridItemClicked(String actionLink, String trackingAttribution);
 }

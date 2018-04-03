@@ -99,7 +99,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), "");
             }
         });
 
@@ -109,7 +109,8 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getHero()[0], 1)
                 );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]),
+                        element.getChannel().getHomeAttribution(1, element.getChannel().getHero()[0].getAttribution()));
             }
         });
         channelImage1.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +119,8 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[0], 2)
                 );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[0]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[0]),
+                        element.getChannel().getHomeAttribution(2, element.getChannel().getGrids()[0].getAttribution()));
             }
         });
         channelImage2.setOnClickListener(new View.OnClickListener() {
@@ -127,7 +129,8 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[1], 3)
                 );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[1]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[1]),
+                        element.getChannel().getHomeAttribution(3, element.getChannel().getGrids()[1].getAttribution()));
             }
         });
         channelImage3.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +139,8 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[2], 4)
                 );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[2]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[2]),
+                        element.getChannel().getHomeAttribution(4, element.getChannel().getGrids()[2].getAttribution()));
             }
         });
         channelImage4.setOnClickListener(new View.OnClickListener() {
@@ -145,7 +149,8 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[3], 5)
                 );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[3]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[3]),
+                        element.getChannel().getHomeAttribution(5, element.getChannel().getGrids()[3].getAttribution()));
             }
         });
 
