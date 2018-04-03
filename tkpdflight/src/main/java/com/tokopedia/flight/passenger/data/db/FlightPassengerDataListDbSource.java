@@ -5,11 +5,11 @@ import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
+import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
 import com.tokopedia.flight.passenger.data.cloud.entity.SavedPassengerEntity;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
 import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb_Table;
-import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -8,7 +8,6 @@ import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
