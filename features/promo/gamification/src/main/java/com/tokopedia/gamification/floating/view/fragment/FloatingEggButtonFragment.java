@@ -159,6 +159,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         if (isDraggable) {
             int xEgg = (int) vgFloatingEgg.getX();
             int yEgg = (int) vgFloatingEgg.getY();
+            if (xEgg == 0 && yEgg == 0) {
+                return;
+            }
             if (((xEgg + (vgFloatingEgg.getWidth() / 2))) >= (rootWidth / 2)) {
                 int targetX = rootWidth - vgFloatingEgg.getWidth();
                 setCoordFloatingEgg(targetX, yEgg);
@@ -171,12 +174,13 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     }
 
     private void initEggCoordinate(@Nullable Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null ||
+                !savedInstanceState.containsKey(COORD_X)) {
             if (isDraggable && hasCoordPreference()) {
                 int coordPref[] = getCoordPreference();
                 setCoordFloatingEgg(coordPref[0], coordPref[1]);
             } else {
-                if (initialEggMarginRight != 0 && initialEggMarginBottom != 0) {
+                if (initialEggMarginRight != 0 || initialEggMarginBottom != 0) {
                     FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
                     layoutParams.gravity = Gravity.BOTTOM | Gravity.END;
                     Resources r = getResources();
@@ -280,7 +284,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                         @Override
                         public void onDragStart(View view) {
                             vgFloatingEgg.setScaleX(SCALE_ON_DOWN);
-                            vgFloatingEgg.setScaleY(SCALE_ON_DOWN);
                         }
 
                         @Override
@@ -292,7 +295,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             vgFloatingEgg.setOnTouchListener(null);
         }
 
-        ImageHandler.LoadImage(ivFloatingEgg, imageUrl);
+        ImageHandler.loadImageAndCache(ivFloatingEgg, imageUrl);
         tvFloatingCounter.setText(sumTokenString);
         if (isShowTime) {
             setUIFloatingTimer(timeRemainingSeconds);
@@ -366,10 +369,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             PropertyValuesHolder pvhX =
                     PropertyValuesHolder.ofFloat(View.X, xEgg, targetX);
             PropertyValuesHolder pvhScaleX =
-                    PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_NORMAL, 1 / SCALE_ON_DOWN);
-            PropertyValuesHolder pvhScaleY =
-                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_NORMAL, 1 / SCALE_ON_DOWN);
-            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_ON_DOWN, SCALE_NORMAL);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
             objectAnimator.setDuration(EGG_ANIM_TO_BOUND_DURATION);
             objectAnimator.start();
@@ -379,10 +380,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             PropertyValuesHolder pvhX =
                     PropertyValuesHolder.ofFloat(View.X, xEgg, 0);
             PropertyValuesHolder pvhScaleX =
-                    PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_NORMAL, 1 / SCALE_ON_DOWN);
-            PropertyValuesHolder pvhScaleY =
-                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_NORMAL, 1 / SCALE_ON_DOWN);
-            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_ON_DOWN, SCALE_NORMAL);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
             objectAnimator.setDuration(EGG_ANIM_TO_BOUND_DURATION);
             objectAnimator.start();
@@ -399,9 +398,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(COORD_X, (int) vgFloatingEgg.getX());
-        outState.putInt(COORD_Y, (int) vgFloatingEgg.getY());
+        if (floatingEggPresenter.isUserLogin() && vgFloatingEgg.getVisibility() == View.VISIBLE) {
+            outState.putInt(COORD_X, (int) vgFloatingEgg.getX());
+            outState.putInt(COORD_Y, (int) vgFloatingEgg.getY());
+        }
     }
-
 
 }

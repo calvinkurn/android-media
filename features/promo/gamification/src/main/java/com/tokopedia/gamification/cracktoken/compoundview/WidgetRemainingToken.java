@@ -43,7 +43,7 @@ public class WidgetRemainingToken extends LinearLayout {
     }
 
     public void showRemainingToken(String smallImageUrl, int remainingToken) {
-        ImageHandler.LoadImage(imageRemainingToken, smallImageUrl);
+        ImageHandler.loadImageAndCache(imageRemainingToken, smallImageUrl);
         //TODO setText remaining
     }
 

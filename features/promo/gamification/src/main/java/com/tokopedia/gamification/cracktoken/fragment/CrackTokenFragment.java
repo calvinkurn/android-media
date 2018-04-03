@@ -13,12 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult;
@@ -29,7 +31,9 @@ import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
 import com.tokopedia.gamification.di.GamificationComponent;
+import com.tokopedia.gamification.floating.view.model.TokenAsset;
 import com.tokopedia.gamification.floating.view.model.TokenData;
+import com.tokopedia.gamification.floating.view.model.TokenHome;
 import com.tokopedia.gamification.floating.view.model.TokenUser;
 
 import java.util.ArrayList;
@@ -71,6 +75,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Inject
     CrackTokenPresenter crackTokenPresenter;
+    private ImageView ivContainer;
 
     public static Fragment newInstance(TokenData tokenData) {
         Fragment fragment = new CrackTokenFragment();
@@ -103,6 +108,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         rootView = inflater.inflate(R.layout.fragment_crack_token, container, false);
 
         rootContainer = rootView.findViewById(R.id.root_container);
+        ivContainer = rootView.findViewById(R.id.iv_container);
         textCountdownTimer = rootView.findViewById(R.id.text_countdown_timer);
         widgetTokenView = rootView.findViewById(R.id.widget_token_view);
         widgetCrackResult = rootView.findViewById(R.id.widget_reward);
@@ -140,6 +146,10 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     public void onPause() {
         super.onPause();
         // TODO stop the timer; we don't want the timer run when the fragment is paused and save the timestamp here
+        // TODO change below, this just to prevent the app crash
+        if (countDownTimer!= null) {
+            countDownTimer.cancel();
+        }
     }
 
     /**
@@ -162,16 +172,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private void renderViewCrackEgg() {
         widgetTokenView.reset();
 
-        Glide.with(this)
-                .load(backgroundImageUrl)
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        Drawable drawable = new BitmapDrawable(getResources(), resource);
-                        rootContainer.setBackground(drawable);
-                    }
-                });
+        ImageHandler.loadImageAndCache(ivContainer, backgroundImageUrl);
 
         if (isCountdownTimerShow) {
             textCountdownTimer.setVisibility(View.VISIBLE);
@@ -217,6 +218,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void initTimerBound() {
+        if (this.isDetached()) {
+            return;
+        }
         int rootHeight = rootView.getHeight();
         int imageMarginTop = (int) (RATIO_MARGIN_TOP_TIMER * rootHeight);
 
@@ -232,7 +236,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             countDownTimer = new CountDownTimer(timeRemainingSeconds, COUNTDOWN_INTERVAL_SECOND) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    setUIFloatingTimer((int) (millisUntilFinished / COUNTDOWN_INTERVAL_SECOND));
+                    CrackTokenFragment.this.timeRemainingSeconds = (int) (millisUntilFinished / COUNTDOWN_INTERVAL_SECOND);
+                    setUIFloatingTimer(CrackTokenFragment.this.timeRemainingSeconds);
                 }
 
                 @Override
