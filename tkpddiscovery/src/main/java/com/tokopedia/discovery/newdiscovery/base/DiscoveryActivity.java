@@ -37,7 +37,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
-import com.tokopedia.discovery.imagesearch.domain.usecase.NewImageSearchResponse;
+import com.tokopedia.discovery.imagesearch.domain.usecase.ImageSearchItemResponse;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -475,7 +475,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     List<String> productIDList = new ArrayList<>();
 
     @Override
-    public void onHandleImageSearchResponse(NewImageSearchResponse imageSearchResponse) {
+    public void onHandleImageSearchResponse(ImageSearchItemResponse imageSearchResponse) {
         if (imageSearchResponse == null || imageSearchResponse.getAuctionsArrayList() == null) {
             if (tkpdProgressDialog != null) {
                 tkpdProgressDialog.dismiss();

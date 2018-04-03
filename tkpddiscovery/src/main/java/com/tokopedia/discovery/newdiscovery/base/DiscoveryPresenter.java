@@ -8,7 +8,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
-import com.tokopedia.discovery.imagesearch.domain.usecase.NewImageSearchResponse;
+import com.tokopedia.discovery.imagesearch.domain.usecase.ImageSearchItemResponse;
 import com.tokopedia.discovery.imagesearch.domain.usecase.ImageSearchItemRequest;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
@@ -88,10 +88,10 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
 
                 if (!request.buildPostContent()) {
                     CommonUtils.dumper("Image Search build post content failed.");
-                    return new NewImageSearchResponse();
+                    return new ImageSearchItemResponse();
                 }
 
-                NewImageSearchResponse response = null;
+                ImageSearchItemResponse response = null;
                 try {
                     response = client.getAcsResponse(request);
                 } catch (Exception e) {

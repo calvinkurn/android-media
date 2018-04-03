@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.imagesearch.data.subscriber;
 
-import com.tokopedia.discovery.imagesearch.domain.usecase.NewImageSearchResponse;
+import com.tokopedia.discovery.imagesearch.domain.usecase.ImageSearchItemResponse;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract;
 
 import rx.Subscriber;
@@ -10,7 +10,7 @@ import rx.Subscriber;
  */
 
 public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
-        extends Subscriber<NewImageSearchResponse> {
+        extends Subscriber<ImageSearchItemResponse> {
 
     private D2 discoveryView;
 
@@ -30,7 +30,7 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     }
 
     @Override
-    public void onNext(NewImageSearchResponse searchItemResponse) {
+    public void onNext(ImageSearchItemResponse searchItemResponse) {
         discoveryView.onHandleImageSearchResponse(searchItemResponse);
     }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.imagesearch.domain.usecase;
 
 import android.util.Base64;
-import android.util.Log;
 
 import com.aliyuncs.RoaAcsRequest;
 import com.aliyuncs.http.FormatType;
@@ -15,7 +14,7 @@ import java.util.Map;
  * Created by sachinbansal on 3/8/18.
  */
 
-public class ImageSearchItemRequest extends RoaAcsRequest<NewImageSearchResponse> {
+public class ImageSearchItemRequest extends RoaAcsRequest<ImageSearchItemResponse> {
     private int start;
     private int num;
     private String catId;
@@ -125,8 +124,8 @@ public class ImageSearchItemRequest extends RoaAcsRequest<NewImageSearchResponse
         return meta + "^" + body;
     }
 
-    public Class<NewImageSearchResponse> getResponseClass() {
-        return NewImageSearchResponse.class;
+    public Class<ImageSearchItemResponse> getResponseClass() {
+        return ImageSearchItemResponse.class;
     }
 }
 

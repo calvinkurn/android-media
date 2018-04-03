@@ -8,10 +8,11 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.discovery.imagesearch.domain.usecase.NewImageSearchResponse;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
+import com.tokopedia.discovery.imagesearch.domain.usecase.ImageSearchItemResponse;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
+import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 
 /**
@@ -101,10 +102,12 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
+        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
+        finish();
     }
 
     @Override
-    public void onHandleImageSearchResponse(NewImageSearchResponse imageSearchResponse) {
+    public void onHandleImageSearchResponse(ImageSearchItemResponse imageSearchResponse) {
     }
 
     @Override

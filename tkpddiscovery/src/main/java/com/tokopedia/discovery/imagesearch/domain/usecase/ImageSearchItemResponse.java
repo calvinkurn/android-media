@@ -12,7 +12,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class NewImageSearchResponse extends com.aliyuncs.AcsResponse implements Serializable {
+public class ImageSearchItemResponse extends com.aliyuncs.AcsResponse implements Serializable {
 
     @SerializedName("Auctions")
     @Expose
@@ -40,7 +40,7 @@ public class NewImageSearchResponse extends com.aliyuncs.AcsResponse implements 
 
     private final static long serialVersionUID = -860839202756349796L;
 
-    protected NewImageSearchResponse(Parcel in) {
+    protected ImageSearchItemResponse(Parcel in) {
         this.auctions = ((Auctions) in.readValue((Auctions.class.getClassLoader())));
         this.head = ((Head) in.readValue((Head.class.getClassLoader())));
         this.picInfo = ((PicInfo) in.readValue((PicInfo.class.getClassLoader())));
@@ -54,10 +54,10 @@ public class NewImageSearchResponse extends com.aliyuncs.AcsResponse implements 
     /**
      * No args constructor for use in serialization
      */
-    public NewImageSearchResponse() {
+    public ImageSearchItemResponse() {
     }
 
-    public NewImageSearchResponse getInstance(UnmarshallerContext context) {
+    public ImageSearchItemResponse getInstance(UnmarshallerContext context) {
         return NewImageSearchResponseUnmarshaller.unmarshall(this, context);
     }
 
@@ -70,8 +70,8 @@ public class NewImageSearchResponse extends com.aliyuncs.AcsResponse implements 
      * @param success
      * @param picInfo
      */
-    public NewImageSearchResponse(Auctions auctions, Head head, PicInfo picInfo, String message,
-                                  String requestId, boolean success, int code, ArrayList<Auction> auctionsArrayList) {
+    public ImageSearchItemResponse(Auctions auctions, Head head, PicInfo picInfo, String message,
+                                   String requestId, boolean success, int code, ArrayList<Auction> auctionsArrayList) {
         super();
         this.auctions = auctions;
         this.head = head;
@@ -91,7 +91,7 @@ public class NewImageSearchResponse extends com.aliyuncs.AcsResponse implements 
         this.auctions = auctions;
     }
 
-    public NewImageSearchResponse withAuctions(Auctions auctions) {
+    public ImageSearchItemResponse withAuctions(Auctions auctions) {
         this.auctions = auctions;
         return this;
     }
@@ -112,7 +112,7 @@ public class NewImageSearchResponse extends com.aliyuncs.AcsResponse implements 
         this.head = head;
     }
 
-    public NewImageSearchResponse withHead(Head head) {
+    public ImageSearchItemResponse withHead(Head head) {
         this.head = head;
         return this;
     }
@@ -125,7 +125,7 @@ public class NewImageSearchResponse extends com.aliyuncs.AcsResponse implements 
         this.picInfo = picInfo;
     }
 
-    public NewImageSearchResponse withPicInfo(PicInfo picInfo) {
+    public ImageSearchItemResponse withPicInfo(PicInfo picInfo) {
         this.picInfo = picInfo;
         return this;
     }
@@ -138,7 +138,7 @@ public class NewImageSearchResponse extends com.aliyuncs.AcsResponse implements 
         this.message = message;
     }
 
-    public NewImageSearchResponse withMessage(String message) {
+    public ImageSearchItemResponse withMessage(String message) {
         this.message = message;
         return this;
     }
@@ -151,7 +151,7 @@ public class NewImageSearchResponse extends com.aliyuncs.AcsResponse implements 
         this.requestId = requestId;
     }
 
-    public NewImageSearchResponse withRequestId(String requestId) {
+    public ImageSearchItemResponse withRequestId(String requestId) {
         this.requestId = requestId;
         return this;
     }
@@ -164,7 +164,7 @@ public class NewImageSearchResponse extends com.aliyuncs.AcsResponse implements 
         this.success = success;
     }
 
-    public NewImageSearchResponse withSuccess(boolean success) {
+    public ImageSearchItemResponse withSuccess(boolean success) {
         this.success = success;
         return this;
     }
@@ -177,7 +177,7 @@ public class NewImageSearchResponse extends com.aliyuncs.AcsResponse implements 
         this.code = code;
     }
 
-    public NewImageSearchResponse withCode(int code) {
+    public ImageSearchItemResponse withCode(int code) {
         this.code = code;
         return this;
     }
