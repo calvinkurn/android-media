@@ -1,6 +1,7 @@
 package com.tokopedia.flight.detail.view.adapter;
 
 import android.support.annotation.LayoutRes;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -61,7 +62,8 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         setDefaultAmenities(route);
         airlineName.setText(route.getAirlineName());
         airlineCode.setText(String.format("%s - %s", route.getAirlineCode(), route.getFlightNumber()));
-        ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(), R.drawable.ic_airline_default);
+        ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),
+                VectorDrawableCompat.create(itemView.getResources(), R.drawable.ic_airline_default, itemView.getContext().getTheme()));
         setRefundableInfo(route);
     }
 
