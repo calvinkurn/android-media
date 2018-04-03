@@ -202,7 +202,7 @@ public class ClientNumberInputView extends LinearLayout {
                 0, ViewGroup.LayoutParams.WRAP_CONTENT);
         if (clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_TEL)) {
             btnContactPicker.setVisibility(View.VISIBLE);
-            layoutParams.weight = 0.92f;
+            layoutParams.weight = 0.88f;
         } else {
             btnContactPicker.setVisibility(View.GONE);
             layoutParams.weight = 1;

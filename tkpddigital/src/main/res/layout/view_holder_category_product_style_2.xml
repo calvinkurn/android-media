@@ -33,14 +33,14 @@
             android:id="@+id/holder_radio_chooser_operator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/margin_small"
             android:orientation="vertical" />
 
         <LinearLayout
             android:id="@+id/holder_client_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/margin_ms"
             android:orientation="vertical" />
 
         <LinearLayout

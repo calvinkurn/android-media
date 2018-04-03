@@ -3,8 +3,10 @@ package com.tokopedia.digital.common.view.compoundview;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -24,6 +26,7 @@ import butterknife.BindView;
 
 public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
 
+    private static final int PARAM_EMPTY_MARGIN = 0;
     @BindView(R2.id.radio_group_container)
     LinearLayout radioGroupContainer;
 
@@ -82,10 +85,17 @@ public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
         radioGroup.setOrientation(LinearLayout.HORIZONTAL);
 
         this.operators = data;
-
+        RadioGroup.LayoutParams layoutParams = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(
+                PARAM_EMPTY_MARGIN,
+                PARAM_EMPTY_MARGIN,
+                40,
+                PARAM_EMPTY_MARGIN
+        );
         for (int i = 0; i < data.size(); i++) {
             View v = inflater.inflate(R.layout.view_digital_radio_button,null, false);
             RadioButton radioButton  = (RadioButton) v.findViewById(R.id.radio_button);
+            radioButton.setLayoutParams(layoutParams);
             radioButton.setId(i);
             radioButton.setText(data.get(i).getName());
             radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_small) /
