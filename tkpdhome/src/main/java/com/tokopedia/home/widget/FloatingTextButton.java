@@ -52,6 +52,12 @@ public class FloatingTextButton extends FrameLayout {
         initView();
     }
 
+    public FloatingTextButton(@NonNull Context context) {
+        super(context);
+        inflateLayout(context);
+        initView();
+    }
+
     public void setTitle(String newTitle) {
         title = newTitle;
 
