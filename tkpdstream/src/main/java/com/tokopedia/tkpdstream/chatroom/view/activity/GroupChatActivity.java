@@ -1,9 +1,11 @@
 package com.tokopedia.tkpdstream.chatroom.view.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +37,7 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.CallbackManager;
+import com.readystatesoftware.chuck.internal.ui.MainActivity;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -43,6 +47,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.design.card.ToolTipUtils;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
@@ -123,9 +128,11 @@ public class GroupChatActivity extends BaseSimpleActivity
     private Handler tooltipHandler;
     private boolean canShowDialog = true;
     private boolean isFirstTime;
+    private BroadcastReceiver notifReceiver;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
+        UserSession userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
         String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
         Intent homeIntent = ((StreamModuleRouter) context.getApplicationContext()).getHomeIntent(context);
         Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
@@ -134,13 +141,16 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(parentIntent);
+        if (userSession.isLoggedIn()) {
+            taskStackBuilder.addNextIntent(parentIntent);
+        }
         taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;
     }
 
     @DeepLink(ApplinkConstant.GROUPCHAT_LIST)
     public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
+        UserSession userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
         String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
         Intent homeIntent = ((StreamModuleRouter) context.getApplicationContext()).getHomeIntent(context);
         Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
@@ -149,13 +159,16 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(parentIntent);
+        if (userSession.isLoggedIn()) {
+            taskStackBuilder.addNextIntent(parentIntent);
+        }
         taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;
     }
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM_VIA_LIST)
     public static TaskStackBuilder getCallingTaskStackViaList(Context context, Bundle extras) {
+        UserSession userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
         String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
         Intent homeIntent = ((StreamModuleRouter) context.getApplicationContext()).getHomeIntent(context);
         Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
@@ -164,7 +177,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(parentIntent);
+        if (userSession.isLoggedIn()) {
+            taskStackBuilder.addNextIntent(parentIntent);
+        }
         taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;
     }
@@ -426,7 +441,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void showFragment(int fragmentPosition) {
         try {
-            if(fragmentPosition == initialFragment && !isFirstTime){
+            if (fragmentPosition == initialFragment && !isFirstTime) {
                 return;
             }
             isFirstTime = false;
@@ -624,13 +639,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_OK) {
-            NetworkErrorHelper.removeEmptyState(rootView);
-            initData();
-            setUserNameOnReplyText();
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
     }
 
     @Override
@@ -659,7 +667,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         try {
             setChannelInfoView(channelInfoViewModel);
-            trackAdsEE(channelInfoViewModel);
+            if (!TextUtils.isEmpty(channelInfoViewModel.getAdsImageUrl())) {
+                trackAdsEE(channelInfoViewModel);
+            }
             presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                     userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken());
 
@@ -813,10 +823,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                 analytics.eventClickJoin();
             }
         });
-        if (hasValidPoll)
-            actionButton.setText(R.string.lets_vote);
-        else
-            actionButton.setText(R.string.lets_chat);
 
         participant.setText(TextFormatter.format(String.valueOf(channelInfoViewModel.getTotalView())));
         name.setText(channelInfoViewModel.getAdminName());
@@ -915,11 +921,31 @@ public class GroupChatActivity extends BaseSimpleActivity
                     }
                 });
 
+        if (notifReceiver == null) {
+            notifReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    onGetNotif(intent.getExtras());
+                }
+            };
+        }
+
+        try {
+            LocalBroadcastManager.getInstance(this).registerReceiver(notifReceiver, new IntentFilter
+                    (TkpdState.LOYALTY_GROUP_CHAT));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public String getScreenName() {
-        return StreamAnalytics.SCREEN_CHAT_ROOM;
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            String roomName = getIntent().getExtras().getString(EXTRA_CHANNEL_UUID, "");
+            return StreamAnalytics.SCREEN_CHAT_ROOM + roomName;
+        } else {
+            return StreamAnalytics.SCREEN_CHAT_ROOM;
+        }
     }
 
     @Override
@@ -950,6 +976,11 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void removeGroupChatPoints() {
         viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(null);
+    }
+
+    @Override
+    public void onSuccessLogin() {
+        initData();
     }
 
     private void showPushNotif(GroupChatPointsViewModel model) {
@@ -997,6 +1028,10 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
         ConnectionManager.removeConnectionManagementHandler(getConnectionHandlerId());
         SendBird.removeChannelHandler(getChannelHandlerId());
+
+        if (notifReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(notifReceiver);
+        }
     }
 
     private String getChannelHandlerId() {
@@ -1129,14 +1164,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     private boolean currentFragmentIsInfo() {
         return getSupportFragmentManager().findFragmentById(R.id.container) != null &&
                 getSupportFragmentManager().findFragmentById(R.id.container) instanceof ChannelInfoFragment;
-    }
-
-    private void setUserNameOnReplyText() {
-        if (currentFragmentIsChat()) {
-            ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
-                    (GroupChatFragment.class.getSimpleName())).setReplyTextHint();
-
-        }
     }
 
     @Override
@@ -1322,7 +1349,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                                                     String attributeName, List<EEPromotion>
                                                             listEE) {
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
-            analytics.eventClickComponentEnhancedEcommerce(componentType, campaignName,
+            analytics.eventViewComponentEnhancedEcommerce(componentType, campaignName,
                     attributeName, viewModel.getChannelUrl(), viewModel.getChannelName(), listEE);
         }
     }
@@ -1401,7 +1428,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
-    public void setDummy(){
+    public void setDummy() {
         GroupChatPointsViewModel model = new GroupChatPointsViewModel(
                 "Selamat! Anda mendapatkan 20 poin dari channel ini. Cek sekarang!"
                 , "www.tokopedia.com"

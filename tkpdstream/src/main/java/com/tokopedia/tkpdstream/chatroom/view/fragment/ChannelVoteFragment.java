@@ -88,6 +88,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     private VoteAdapter voteAdapter;
     private ProgressBarWithTimer progressBarWithTimer;
     private UserSession userSession;
+    private Snackbar snackBar;
+    private boolean canVote = true;
 
     @Override
     protected String getScreenName() {
@@ -182,15 +184,20 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     }
 
     private void checkDateTime() {
-        if (MethodChecker.isTimezoneNotAutomatic(getActivity())) {
-            Snackbar snackBar = SnackbarManager.make(getActivity(), getString(R.string.check_timezone),
+        if (MethodChecker.isTimezoneNotAutomatic(getActivity()) && snackBar == null) {
+            snackBar = SnackbarManager.make(getActivity(), getString(R.string.check_timezone),
                     Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.action_check, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
+                            if (getActivity() != null && isAdded()) {
+                                startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
+                            }
                         }
                     });
+        }
+
+        if (MethodChecker.isTimezoneNotAutomatic(getActivity())) {
             snackBar.show();
         }
     }
@@ -198,6 +205,9 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Override
     public void onPause() {
         progressBarWithTimer.cancel();
+        if (snackBar != null) {
+            snackBar.dismiss();
+        }
         super.onPause();
     }
 
@@ -318,8 +328,9 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     @Override
     public void onVoteOptionClicked(VoteViewModel element) {
-        if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
-                || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE) {
+        if (canVote && (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
+                || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE)) {
+            canVote = false;
             boolean voted = (votedView.getVisibility() == View.VISIBLE);
             presenter.sendVote(userSession, voteInfoViewModel.getPollId(), voted, element);
 
@@ -358,6 +369,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     @Override
     public void onSuccessVote(VoteViewModel element, VoteStatisticViewModel voteStatisticViewModel) {
+        canVote = true;
         if (voteInfoViewModel != null) {
             voteAdapter.change(voteInfoViewModel, element, voteStatisticViewModel);
             voteInfoViewModel.setVoted(true);
@@ -379,6 +391,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     @Override
     public void onErrorVote(String errorMessage) {
+        canVote = true;
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 

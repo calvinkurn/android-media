@@ -50,8 +50,6 @@ public interface ChatroomContract {
 
         void refreshChat();
 
-        void setReplyTextHint();
-
         void setSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel);
 
         void autoAddSprintSaleAnnouncement(SprintSaleViewModel sprintSaleViewModel, ChannelInfoViewModel channelInfoViewModel);
@@ -75,7 +73,7 @@ public interface ChatroomContract {
         }
 
         interface GroupChatPointsViewHolderListener{
-            void onRedirectUrl(String url);
+            void onPointsClicked(String url);
         }
     }
 

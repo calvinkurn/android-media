@@ -1,7 +1,6 @@
 package com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -9,15 +8,12 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 
 /**
  * @author by nisie on 2/27/18.
@@ -30,10 +26,12 @@ public class GroupChatPointsViewHolder extends BaseChatViewHolder<GroupChatPoint
 
     TextView messageView;
     Context context;
+    View mainView;
     private final ChatroomContract.View.GroupChatPointsViewHolderListener listener;
 
     public GroupChatPointsViewHolder(View itemView, ChatroomContract.View.GroupChatPointsViewHolderListener imageListener) {
         super(itemView);
+        mainView = itemView;
         messageView = itemView.findViewById(R.id.text);
         listener = imageListener;
     }
@@ -51,7 +49,6 @@ public class GroupChatPointsViewHolder extends BaseChatViewHolder<GroupChatPoint
             spannable.setSpan(new ClickableSpan() {
                                   @Override
                                   public void onClick(View view) {
-                                  listener.onRedirectUrl(element.getUrl());
                                   }
 
                                   @Override
@@ -65,6 +62,13 @@ public class GroupChatPointsViewHolder extends BaseChatViewHolder<GroupChatPoint
                     , 0);
 
             messageView.setText(spannable, TextView.BufferType.SPANNABLE);
+
+            mainView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onPointsClicked(element.getUrl());
+                }
+            });
         }
     }
 

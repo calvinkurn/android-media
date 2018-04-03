@@ -57,6 +57,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     UserSession userSession;
 
     SwipeRefreshLayout swipeRefreshLayout;
+    private String lastCursor;
 
     public static Fragment createInstance() {
         return new ChannelFragment();
@@ -92,8 +93,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         if (userSession != null && !userSession.isLoggedIn()) {
             startActivityForResult(((StreamModuleRouter) getActivity().getApplicationContext())
-                    .getLoginIntent
-                            (getActivity()), REQUEST_LOGIN);
+                    .getLoginIntent(getActivity()), REQUEST_LOGIN);
         }
     }
 
@@ -130,7 +130,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Override
     public void loadData(int page) {
-        presenter.getChannelList();
+        presenter.getChannelList(lastCursor);
     }
 
     @Override
@@ -168,6 +168,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Override
     public void onSuccessGetChannelFirstTime(ChannelListViewModel channelListViewModel) {
+        this.lastCursor = channelListViewModel.getCursor();
         renderList(channelListViewModel.getChannelViewModelList(), channelListViewModel.isHasNextPage());
     }
 

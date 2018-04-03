@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -105,7 +106,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         if (data.getString(Constants.ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED, "false").equals("true")) {
             if (SessionHandler.getLoginID(mContext).equals(
                     data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))
-            ) {
+                    ) {
                 resetNotificationStatus(data);
                 prepareAndExecuteApplinkNotification(data);
                 refreshUI(data);
@@ -121,36 +122,37 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void prepareAndExecuteApplinkNotification(Bundle data) {
-        if (!isRefreshCart(data)) {String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-        String category = Uri.parse(applinks).getHost();
-        String customIndex = "";
-        String serverId = "";
-        switch (category) {
-            case  Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
-                customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
-                if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
-                    serverId = Uri.parse(applinks).getLastPathSegment();
-                }
-                saveApplinkPushNotification(
-                        category,
-                        convertBundleToJsonString(data),
-                        customIndex,
-                        serverId,
-                        new SavePushNotificationCallback()
-                );
-                break;
-            case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
-                if (Uri.parse(applinks).getPathSegments().size() == DEFAULT_RIDE_URL_SIZE) {
-                    buildNotifByData(data);
-                } else {
-                    CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
-                    RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
-                    push.processReceivedNotification(data);
-                }
-                break;
+        if (!isRefreshCart(data)) {
+            String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+            String category = Uri.parse(applinks).getHost();
+            String customIndex = "";
+            String serverId = "";
+            switch (category) {
+                case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
+                    customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
+                    if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
+                        serverId = Uri.parse(applinks).getLastPathSegment();
+                    }
+                    saveApplinkPushNotification(
+                            category,
+                            convertBundleToJsonString(data),
+                            customIndex,
+                            serverId,
+                            new SavePushNotificationCallback()
+                    );
+                    break;
+                case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
+                    if (Uri.parse(applinks).getPathSegments().size() == DEFAULT_RIDE_URL_SIZE) {
+                        buildNotifByData(data);
+                    } else {
+                        CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
+                        RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
+                        push.processReceivedNotification(data);
+                    }
+                    break;
 
-            case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
+                    if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
                             && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
                         ((ChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);
                     } else {
@@ -160,18 +162,22 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                         data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
                         buildNotifByData(data);
 
-                }
-                break;
-            case Constants.ARG_NOTIFICATION_APPLINK_GROUPCHAT:
-                if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                        && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof GroupChatNotifInterface) {
-                    ((GroupChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);
-                }
-                break;
-            case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
-                if (SessionHandler.isUserHasShop(mContext)) {
-                buildNotifByData(data);
-                }break;default:
+                    }
+                    break;
+                case Constants.ARG_NOTIFICATION_APPLINK_GROUPCHAT:
+                    Intent loyaltyGroupChat = new Intent(com.tokopedia.abstraction.constant
+                            .TkpdState
+                            .LOYALTY_GROUP_CHAT);
+                    loyaltyGroupChat.putExtras(data);
+                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(loyaltyGroupChat);
+                    buildNotifByData(data);
+                    break;
+                case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
+                    if (SessionHandler.isUserHasShop(mContext)) {
+                        buildNotifByData(data);
+                    }
+                    break;
+                default:
                     buildNotifByData(data);
                     break;
             }
@@ -199,7 +205,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     private void refreshUI(Bundle data) {
         if (!mActivitiesLifecycleCallbacks.isAppOnBackground()) {
             Activity currentActivity = mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
-            if(currentActivity != null && currentActivity instanceof NotificationReceivedListener) {
+            if (currentActivity != null && currentActivity instanceof NotificationReceivedListener) {
                 NotificationReceivedListener listener = (NotificationReceivedListener) currentActivity;
                 listener.onGetNotif();
                 if (isRefreshCart(data)) {
@@ -241,7 +247,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void prepareAndExecuteDedicatedNotification(Bundle data) {
-        if (!isRefreshCart(data)){
+        if (!isRefreshCart(data)) {
             Map<Integer, Visitable> visitables = getCommonDedicatedNotification();
             visitables.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER, new ReputationSmileyToBuyerNotification(mContext));
             visitables.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER, new ReputationSmileyToBuyerEditNotification(mContext));

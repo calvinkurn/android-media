@@ -38,9 +38,9 @@ public class ChannelPresenter extends BaseDaggerPresenter<ChannelContract.View> 
     }
 
     @Override
-    public void getChannelList() {
+    public void getChannelList(String lastCursor) {
         getView().showLoading();
-        getChannelListUseCase.execute(getChannelListUseCase.createParam(),
+        getChannelListUseCase.execute(getChannelListUseCase.createParam(lastCursor),
                 new GetChannelSubscriber(getView()));
     }
 

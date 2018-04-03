@@ -48,19 +48,21 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     public ChannelInfoViewModel call(Response<DataResponse<ChannelInfoPojo>> response) {
         ChannelInfoPojo pojo = response.body().getData();
         return new ChannelInfoViewModel(
-                pojo.getChannel().getTitle(),
-                pojo.getChannel().getChannelUrl(),
-                pojo.getChannel().getCoverUrl(),
-                pojo.getChannel().getBannerBlurredUrl(),
-                pojo.getChannel().getAdsImageUrl(),
-                pojo.getChannel().getAdsLink(),
-                pojo.getChannel().getBannerName(),
-                pojo.getChannel().getSendBirdToken(),
-                pojo.getChannel().getModeratorName(),
-                pojo.getChannel().getCoverUrl(),
-                pojo.getChannel().getModeratorProfileUrl(),
-                pojo.getChannel().getDescription(),
-                pojo.getChannel().getTotalViews(),
+                pojo.getChannel().getTitle() != null ? pojo.getChannel().getTitle() : "",
+                pojo.getChannel().getChannelUrl() != null ? pojo.getChannel().getChannelUrl() : "",
+                pojo.getChannel().getCoverUrl() != null ? pojo.getChannel().getCoverUrl() : "",
+                pojo.getChannel().getBannerBlurredUrl() != null ? pojo.getChannel().getBannerBlurredUrl() : "",
+                pojo.getChannel().getAdsImageUrl() != null ? pojo.getChannel().getAdsImageUrl() : "",
+                pojo.getChannel().getAdsLink() != null ? pojo.getChannel().getAdsLink() : "",
+                pojo.getChannel().getAdsName() != null ? pojo.getChannel().getAdsName() : "",
+                pojo.getChannel().getAdsId() != null ? pojo.getChannel().getAdsId() : "",
+                pojo.getChannel().getBannerName() != null ? pojo.getChannel().getBannerName() : "",
+                pojo.getChannel().getSendBirdToken() != null ? pojo.getChannel().getSendBirdToken() : "",
+                pojo.getChannel().getModeratorName() != null ? pojo.getChannel().getModeratorName() : "",
+                pojo.getChannel().getCoverUrl() != null ? pojo.getChannel().getCoverUrl() : "",
+                pojo.getChannel().getModeratorProfileUrl() != null ? pojo.getChannel().getModeratorProfileUrl() : "",
+                pojo.getChannel().getDescription() != null ? pojo.getChannel().getDescription() : "",
+                pojo.getChannel().getTotalViews() != null ? pojo.getChannel().getTotalViews() : "",
                 convertChannelPartner(pojo.getChannel()),
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()),
                 mapToSprintSaleViewModel(pojo.getChannel().getFlashsale())
@@ -68,7 +70,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     }
 
     private SprintSaleViewModel mapToSprintSaleViewModel(Flashsale flashsale) {
-        if (hasSprintSale()) {
+        if (hasSprintSale(flashsale)) {
             return new SprintSaleViewModel(
                     mapToListFlashSaleProducts(flashsale.getProducts()),
                     flashsale.getCampaignName() != null ? flashsale.getCampaignName() : "",
@@ -82,8 +84,10 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
         }
     }
 
-    private boolean hasSprintSale() {
-        return true;
+    private boolean hasSprintSale(Flashsale flashsale) {
+        return flashsale != null
+                && flashsale.getProducts() != null
+                && !flashsale.getProducts().isEmpty();
     }
 
     private ArrayList<SprintSaleProductViewModel> mapToListFlashSaleProducts(List<Product> products) {
@@ -192,15 +196,18 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     private List<ChannelPartnerViewModel> convertChannelPartner(Channel channel) {
         ArrayList<ChannelPartnerViewModel> channelPartnerViewModelList = new ArrayList<>();
 
-        for (ListOfficial official : channel.getListOfficials()) {
+        if (channel.getListOfficials() != null) {
+            for (ListOfficial official : channel.getListOfficials()) {
 
-            ChannelPartnerViewModel channelPartnerViewModel = new ChannelPartnerViewModel(
-                    official.getTitle(),
-                    convertChannelPartnerChild(official)
-            );
+                ChannelPartnerViewModel channelPartnerViewModel = new ChannelPartnerViewModel(
+                        official.getTitle(),
+                        convertChannelPartnerChild(official)
+                );
 
-            channelPartnerViewModelList.add(channelPartnerViewModel);
+                channelPartnerViewModelList.add(channelPartnerViewModel);
+            }
         }
+
         return channelPartnerViewModelList;
     }
 

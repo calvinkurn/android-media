@@ -297,8 +297,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         presenter.refreshDataAfterReconnect(mChannel);
     }
 
-    @Override
-    public void setReplyTextHint() {
+    private void setReplyTextHint() {
         String hintText = getString(R.string.chat_as) + " " + userSession.getName() + "...";
         replyEditText.setHint(hintText);
     }
@@ -613,9 +612,47 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     public void onUserEntered(UserActionViewModel userActionViewModel) {
-        adapter.addAction(userActionViewModel);
-        adapter.notifyItemInserted(0);
-        scrollToBottomWhenPossible();
+        if (canShowUserEnter(userActionViewModel)) {
+            adapter.addAction(userActionViewModel);
+            adapter.notifyItemInserted(0);
+            scrollToBottomWhenPossible();
+        }
+    }
+
+    private boolean canShowUserEnter(UserActionViewModel userActionViewModel) {
+        try {
+            return !TextUtils.isEmpty(userActionViewModel.getUserName())
+                    && (isListEmpty()
+                    || lastItemIsNotUserAction()
+                    || lastItemIsNotSameUser(userActionViewModel));
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean lastItemIsNotSameUser(UserActionViewModel userActionViewModel) {
+        int lastItemPosition = 0;
+        return adapter.getItemCount() > 0
+                && adapter.getItemAt(lastItemPosition) != null
+                && adapter.getItemAt(lastItemPosition) instanceof UserActionViewModel
+                && ((UserActionViewModel) adapter.getItemAt(lastItemPosition)).getUserId() != null
+                && !(((UserActionViewModel) adapter.getItemAt(lastItemPosition)).getUserId()
+                .equals(userActionViewModel.getUserId()));
+    }
+
+    private boolean lastItemIsNotUserAction() {
+        int lastItemPosition = 0;
+        return adapter.getItemCount() > 0
+                && adapter.getItemAt(lastItemPosition) != null
+                && !(adapter.getItemAt(lastItemPosition) instanceof UserActionViewModel);
+    }
+
+    private boolean isListEmpty() {
+        return adapter.getItemCount() == 0;
     }
 
     public void onUserExited(UserActionViewModel userActionViewModel) {
@@ -653,6 +690,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private void setForLoginUser(boolean isLoggedIn) {
         if (isLoggedIn) {
+            setReplyTextHint();
             divider.setVisibility(View.VISIBLE);
             replyEditText.setVisibility(View.VISIBLE);
             sendButton.setVisibility(View.VISIBLE);
@@ -747,6 +785,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LOGIN
                 && resultCode == Activity.RESULT_OK) {
+            ((GroupChatContract.View) getActivity()).onSuccessLogin();
             userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
             setForLoginUser(userSession != null && userSession.isLoggedIn());
         }
@@ -757,7 +796,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     @Override
-    public void onRedirectUrl(String url) {
+    public void onPointsClicked(String url) {
         ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity(), url);
+
+        if (getActivity() != null
+                && ((GroupChatActivity) getActivity()).getChannelInfoViewModel() != null
+                && ((GroupChatActivity) getActivity())
+                        .getChannelInfoViewModel().getTitle() != null) {
+            String channelName = ((GroupChatActivity) getActivity())
+                    .getChannelInfoViewModel().getTitle();
+            analytics.eventClickLoyaltyWidget(channelName);
+        }
+
     }
 }

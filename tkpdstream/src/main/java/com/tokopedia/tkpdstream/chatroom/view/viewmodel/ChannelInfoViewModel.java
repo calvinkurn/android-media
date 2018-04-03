@@ -44,8 +44,8 @@ public class ChannelInfoViewModel implements Parcelable {
 
     public ChannelInfoViewModel(String title, String channelUrl, String bannerUrl,
                                 String blurredBannerUrl,
-                                String adsImageUrl, String adsLink, String bannerName,
-                                String sendBirdToken, String adminName, String image,
+                                String adsImageUrl, String adsLink, String adsName, String adsId,
+                                String bannerName, String sendBirdToken, String adminName, String image,
                                 String adminPicture, String description, String totalView,
                                 List<ChannelPartnerViewModel> channelPartnerViewModels,
                                 @Nullable VoteInfoViewModel voteInfoViewModel,
@@ -56,6 +56,8 @@ public class ChannelInfoViewModel implements Parcelable {
         this.blurredBannerUrl = blurredBannerUrl;
         this.adsImageUrl = adsImageUrl;
         this.adsLink = adsLink;
+        this.adsName = adsName;
+        this.adsId = adsId;
         this.bannerName = bannerName;
         this.sendBirdToken = sendBirdToken;
         this.adminName = adminName;

@@ -155,34 +155,34 @@ public class GroupChatMessagesMapper {
                 message.getSender().getProfileUrl(),
                 false,
                 true,
-                pojo.getAppLink(),
-                mapToListFlashSaleProducts(pojo.getProducts()),
-                pojo.getCampaignName(),
+                pojo.getAppLink() != null ? pojo.getAppLink() : "",
+                mapToListSprintSaleProducts(pojo.getProducts()),
+                pojo.getCampaignName() != null ? pojo.getCampaignName() : "",
                 pojo.getStartDate(),
                 pojo.getEndDate(),
                 message.getCustomType()
         );
     }
 
-    private ArrayList<SprintSaleProductViewModel> mapToListFlashSaleProducts(List<Product> pojo) {
+    private ArrayList<SprintSaleProductViewModel> mapToListSprintSaleProducts(List<Product> pojo) {
         ArrayList<SprintSaleProductViewModel> list = new ArrayList<>();
         for (Product product : pojo) {
-            list.add(mapToFlashSaleProduct(product));
+            list.add(mapToSprintSaleProduct(product));
         }
         return list;
     }
 
-    private SprintSaleProductViewModel mapToFlashSaleProduct(Product product) {
+    private SprintSaleProductViewModel mapToSprintSaleProduct(Product product) {
         return new SprintSaleProductViewModel(
-                product.getProductId(),
-                product.getName(),
-                product.getImageUrl(),
+                product.getProductId() != null ? product.getProductId() : "",
+                product.getName() != null ? product.getName() : "",
+                product.getImageUrl() != null ? product.getImageUrl() : "",
                 String.format(Locale.getDefault(), FORMAT_DISCOUNT_LABEL, product.getDiscountPercentage()),
-                product.getDiscountedPrice(),
-                product.getOriginalPrice(),
+                product.getDiscountedPrice() != null ? product.getDiscountedPrice() : "",
+                product.getOriginalPrice() != null ? product.getOriginalPrice() : "",
                 product.getRemainingStockPercentage(),
-                product.getStockText(),
-                product.getUrlMobile());
+                product.getStockText() != null ? product.getStockText() : "",
+                product.getUrlMobile() != null ? product.getUrlMobile() : "");
     }
 
     private Visitable mapToUserChat(UserMessage message) {

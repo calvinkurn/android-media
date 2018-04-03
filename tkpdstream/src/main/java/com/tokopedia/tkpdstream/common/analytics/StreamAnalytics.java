@@ -2,6 +2,7 @@ package com.tokopedia.tkpdstream.common.analytics;
 
 import android.app.Activity;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ public class StreamAnalytics {
     private static final String EVENT_LABEL = "eventLabel";
     private static final String ECOMMERCE = "ecommerce";
     private static final String TRACKER_ATTRIBUTION = "tracker_attribution";
+    private static final String ATTRIBUTION = "attribution";
+
 
     private static final String EVENT_CATEGORY_GROUPCHAT_LIST = "groupchat";
     private static final String EVENT_CATEGORY_GROUPCHAT_ROOM = "groupchat room";
@@ -38,14 +41,16 @@ public class StreamAnalytics {
     private static final String EVENT_ACTION_SHARE_CHANNEL = "click share channel";
     private static final String EVENT_ACTION_JOIN_VOTE_NOW = "click on join";
     private static final String EVENT_ACTION_CLICK_THUMBNAIL = "click on image thumbnail";
-    private static final String EVENT_ACTION_CLICK_VOTE_COMPONENT = "click on component - ";
+    private static final String EVENT_ACTION_CLICK_COMPONENT = "click on component - ";
+    private static final String EVENT_ACTION_VIEW_COMPONENT = "view on component - ";
     public static final String EVENT_ACTION_CLICK_GROUP_CHAT = "click on groupchat";
+    private static final String EVENT_ACTION_CLICK_LOYALTY_WIDGET = "click on loyalty widget";
 
     private static final String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
     private static final String EVENT_NAME_CLICK_SHARE = "clickShare";
     public static final String EVENT_NAME_CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
     private static final String EVENT_NAME_PROMO_CLICK = "promoClick";
-
+    private static final String EVENT_NAME_PROMO_VIEW = "promoView";
 
     public static final String COMPONENT_FLASH_SALE = "flashsale";
     public static final String COMPONENT_BANNER = "banner";
@@ -58,9 +63,11 @@ public class StreamAnalytics {
     public static final String ATTRIBUTE_BANNER = "Banner";
     public static final String ATTRIBUTE_PARTNER_LOGO = "Logo";
 
-    public static final String SCREEN_CHAT_ROOM = "Group Chat Room";
+    public static final String SCREEN_CHAT_ROOM = "/group-chat-room/";
 
     private static final String EE_PROMO_CLICK = "promoClick";
+    private static final String EE_PROMO_VIEW = "promoView";
+
     private static final String EE_PROMOTIONS = "promotions";
 
     public static final String VIEW_LOGO = "Logo";
@@ -122,18 +129,6 @@ public class StreamAnalytics {
         );
     }
 
-    public void eventClickComponent(String componentType, String componentName, String
-            attributeName, String channelUrl, String channelName) {
-        HashMap<String, Object> eventTracking = new HashMap<>();
-        eventTracking.put(EVENT_NAME, EVENT_NAME_CLICK_GROUPCHAT);
-        eventTracking.put(EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM);
-        eventTracking.put(EVENT_ACTION, EVENT_ACTION_CLICK_VOTE_COMPONENT + componentType);
-        eventTracking.put(EVENT_LABEL, componentType + " " + componentName);
-        eventTracking.put(TRACKER_ATTRIBUTION, generateTrackerAttribution(attributeName,
-                channelUrl, channelName));
-        analyticTracker.sendEventTracking(eventTracking);
-    }
-
     public static String generateTrackerAttribution(String attributeName, String channelUrl, String
             channelName) {
         return String.format("%s - " + ATTRIBUTE_GROUP_CHAT + " -" +
@@ -143,29 +138,51 @@ public class StreamAnalytics {
     public void eventClickVoteComponent(String componentType, String componentName) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
-                EVENT_ACTION_CLICK_VOTE_COMPONENT + componentType,
+                EVENT_ACTION_CLICK_COMPONENT + componentType,
                 componentType + " " + componentName
+        );
+    }
+
+    public void eventClickLoyaltyWidget(String channelName) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_LOYALTY_WIDGET,
+                channelName
         );
     }
 
     public void eventClickComponentEnhancedEcommerce(String componentType, String componentName,
                                                      String attributeName, String channelUrl,
                                                      String channelName, List<EEPromotion> listPromotion) {
-        HashMap<String, Object> eventTracking = new HashMap<>();
-        eventTracking.put(EVENT_NAME, EVENT_NAME_PROMO_CLICK);
-        eventTracking.put(EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM);
-        eventTracking.put(EVENT_ACTION, EVENT_ACTION_CLICK_VOTE_COMPONENT + componentType);
-        eventTracking.put(EVENT_LABEL, componentType + " " + componentName);
-        eventTracking.put(ECOMMERCE, getEEDataLayer(listPromotion));
-        eventTracking.put(TRACKER_ATTRIBUTION, generateTrackerAttribution(attributeName,
-                channelUrl, channelName));
-        analyticTracker.sendEnhancedEcommerce(eventTracking);
+
+        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+                EVENT_NAME, EVENT_NAME_PROMO_CLICK,
+                EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION, EVENT_ACTION_CLICK_COMPONENT + componentType,
+                EVENT_LABEL, componentType + " " + componentName,
+                ECOMMERCE, getEEDataLayer(listPromotion, EE_PROMO_CLICK),
+                ATTRIBUTION, generateTrackerAttribution(attributeName, channelUrl, channelName)
+        ));
+    }
+
+    public void eventViewComponentEnhancedEcommerce(String componentType, String componentName,
+                                                    String attributeName, String channelUrl,
+                                                    String channelName, List<EEPromotion> listPromotion) {
+
+        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+                EVENT_NAME, EVENT_NAME_PROMO_VIEW,
+                EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION, EVENT_ACTION_VIEW_COMPONENT + componentType,
+                EVENT_LABEL, componentType + " " + componentName,
+                ECOMMERCE, getEEDataLayer(listPromotion, EE_PROMO_VIEW),
+                ATTRIBUTION, generateTrackerAttribution(attributeName, channelUrl, channelName)
+        ));
     }
 
 
-    public Map<String, Object> getEEDataLayer(List<EEPromotion> listPromotion) {
+    public Map<String, Object> getEEDataLayer(List<EEPromotion> listPromotion, String eventName) {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(EE_PROMO_CLICK, getEEPromoClickData(listPromotion));
+        hashMap.put(eventName, getEEPromoClickData(listPromotion));
         return hashMap;
     }
 
