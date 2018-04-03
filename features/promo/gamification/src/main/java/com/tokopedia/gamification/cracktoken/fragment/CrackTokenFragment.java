@@ -106,6 +106,18 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetTokenView = rootView.findViewById(R.id.widget_token_view);
         widgetCrackResult = rootView.findViewById(R.id.widget_reward);
         widgetRemainingToken = rootView.findViewById(R.id.widget_remaining_token_view);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                initTimerBound();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    //noinspection deprecation
+                    rootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
         return rootView;
     }
 
@@ -186,19 +198,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         });
 
         widgetRemainingToken.showRemainingToken(smallImageUrl, tokenData.getSumTokenStr(), tokenData.getTokenUnit());
-
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                initTimerBound();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    //noinspection deprecation
-                    rootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-            }
-        });
     }
 
     private void stopTimer() {
@@ -215,8 +214,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) textCountdownTimer.getLayoutParams();
         ivFullLp.topMargin = imageMarginTop;
         textCountdownTimer.requestLayout();
-
-        textCountdownTimer.setVisibility(View.VISIBLE);
     }
 
     private void showCountdownTimer(final int timeRemainingSeconds) {
