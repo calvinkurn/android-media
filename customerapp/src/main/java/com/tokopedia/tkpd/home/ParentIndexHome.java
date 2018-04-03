@@ -263,7 +263,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         checkIsHaveApplinkComeFromDeeplink(getIntent());
 
         initHockeyBroadcastReceiver();
-        initCartNotificationBroadcastReceiver();
     }
 
     @Override
@@ -535,7 +534,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         viewPagerIndex = mViewPager.getCurrentItem();
 
         unregisterBroadcastHockeyApp();
-        unregisterCartNotificationBroadcastReceiver();
     }
 
     @Override
@@ -584,12 +582,17 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         // Register to receive broadcast hockeyapp
         registerBroadcastHockeyApp();
 
-        registerCartNotificationBroadcastReceiver();
         updateCartNotification();
     }
 
     private void updateCartNotification() {
-        ((TransactionRouter.CartRouter) getApplication()).updateMarketplaceCartCounter();
+        ((TransactionRouter.CartRouter) getApplication()).updateMarketplaceCartCounter(
+                new TransactionRouter.CartNotificationListener() {
+            @Override
+            public void onDataReady() {
+                invalidateOptionsMenu();
+            }
+        });
     }
 
     private void setScrollFeedListener() {
@@ -832,25 +835,4 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     }
                 });
     }
-
-    private void initCartNotificationBroadcastReceiver() {
-        cartNotificationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                invalidateOptionsMenu();
-            }
-        };
-    }
-
-    private void registerCartNotificationBroadcastReceiver(){
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                cartNotificationBroadcastReceiver,
-                new IntentFilter(TransactionRouter.CartRouter.CART_NOTIFICATION_BROADCAST_INTENT_FILTER)
-        );
-    }
-
-    private void unregisterCartNotificationBroadcastReceiver() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(cartNotificationBroadcastReceiver);
-    }
-
 }

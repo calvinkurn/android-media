@@ -1433,10 +1433,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void updateMarketplaceCartCounter() {
+    public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
         GetMarketPlaceCartCounterUseCase getMarketPlaceCartCounterUseCase =
                 new GetMarketPlaceCartCounterUseCase(new CartRepository(new CartService()));
-        getMarketPlaceCartCounterUseCase.executeWithSubscriber(this);
+        getMarketPlaceCartCounterUseCase.executeWithSubscriber(this, listener);
     }
 
 }

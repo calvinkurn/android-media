@@ -15,8 +15,6 @@ import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -46,7 +44,7 @@ public class GetMarketPlaceCartCounterUseCase extends UseCase<Integer> {
         return super.getExecuteObservable(requestParams);
     }
 
-    public void executeWithSubscriber(final Context context) {
+    public void executeWithSubscriber(final Context context, final TransactionRouter.CartNotificationListener listener) {
         this.execute(new Subscriber<Integer>() {
             @Override
             public void onCompleted() {
@@ -55,7 +53,7 @@ public class GetMarketPlaceCartCounterUseCase extends UseCase<Integer> {
 
             @Override
             public void onError(Throwable throwable) {
-
+                throwable.printStackTrace();
             }
 
             @Override
@@ -65,8 +63,7 @@ public class GetMarketPlaceCartCounterUseCase extends UseCase<Integer> {
                 cache.putInt(DrawerNotification.CACHE_TOTAL_CART, integer);
                 cache.applyEditor();
 
-                LocalBroadcastManager.getInstance(context).sendBroadcast(
-                        new Intent(TransactionRouter.CartRouter.CART_NOTIFICATION_BROADCAST_INTENT_FILTER));
+                listener.onDataReady();
             }
         });
     }
