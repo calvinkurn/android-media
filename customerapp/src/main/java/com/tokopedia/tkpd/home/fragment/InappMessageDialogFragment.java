@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.fragment;
 
 import android.app.DialogFragment;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.InAppMessageAdapter;
@@ -32,18 +34,18 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
 
     private List<InAppMessageModel> messagesList;
     private String title;
-    private String description ;
+    private String description;
     private String type;
 
 
-    public static InappMessageDialogFragment newInstance(List<InAppMessageModel> messagesList, String title,String description , String type){
+    public static InappMessageDialogFragment newInstance(List<InAppMessageModel> messagesList, String title, String description, String type) {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARG_PARAM_EXTRA_MESSAGES_LIST,
                 (ArrayList<? extends Parcelable>) messagesList);
-        bundle.putString(ARG_PARAM_EXTRA_MESSAGES_TITLE,title);
-        bundle.putString(ARG_PARAM_EXTRA_MESSAGES_DESC,description);
-        bundle.putString(ARG_PARAM_EXTRA_MESSAGES_TYPE,type);
-        InappMessageDialogFragment inappMessageDialogFragment=new InappMessageDialogFragment();
+        bundle.putString(ARG_PARAM_EXTRA_MESSAGES_TITLE, title);
+        bundle.putString(ARG_PARAM_EXTRA_MESSAGES_DESC, description);
+        bundle.putString(ARG_PARAM_EXTRA_MESSAGES_TYPE, type);
+        InappMessageDialogFragment inappMessageDialogFragment = new InappMessageDialogFragment();
         inappMessageDialogFragment.setArguments(bundle);
 
         return inappMessageDialogFragment;
@@ -53,9 +55,9 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(ARG_PARAM_EXTRA_MESSAGES_LIST,
                 (ArrayList<? extends Parcelable>) messagesList);
-        outState.putString(ARG_PARAM_EXTRA_MESSAGES_TITLE,title);
-        outState.putString(ARG_PARAM_EXTRA_MESSAGES_DESC,description);
-        outState.putString(ARG_PARAM_EXTRA_MESSAGES_TYPE,type);
+        outState.putString(ARG_PARAM_EXTRA_MESSAGES_TITLE, title);
+        outState.putString(ARG_PARAM_EXTRA_MESSAGES_DESC, description);
+        outState.putString(ARG_PARAM_EXTRA_MESSAGES_TYPE, type);
         super.onSaveInstanceState(outState);
 
     }
@@ -65,7 +67,7 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-          messagesList = getArguments().getParcelableArrayList(ARG_PARAM_EXTRA_MESSAGES_LIST);
+            messagesList = getArguments().getParcelableArrayList(ARG_PARAM_EXTRA_MESSAGES_LIST);
             title = getArguments().getString(ARG_PARAM_EXTRA_MESSAGES_TITLE);
             description = getArguments().getString(ARG_PARAM_EXTRA_MESSAGES_DESC);
             type = getArguments().getString(ARG_PARAM_EXTRA_MESSAGES_TYPE);
@@ -77,6 +79,7 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         return inflater.inflate(R.layout.inapp_message_dialog, container);
 
     }
@@ -85,23 +88,34 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView rv= (RecyclerView) view.findViewById(R.id.rv_inapp);
-        if("1".equalsIgnoreCase(type)){
-           GridLayoutManager gridLayoutManagerVertical =
+        RecyclerView rv = view.findViewById(R.id.rv_inapp);
+        if ("1".equalsIgnoreCase(type)) {
+            GridLayoutManager gridLayoutManagerVertical =
                     new GridLayoutManager(getActivity(),
                             2, //The number of Columns in the grid
                             LinearLayoutManager.VERTICAL,
                             false);
-           rv.setLayoutManager(gridLayoutManagerVertical);
-        }else{
+            rv.setLayoutManager(gridLayoutManagerVertical);
+        } else {
             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             rv.setLayoutManager(layoutManager);
         }
 
+        TextView tvTitle =  view.findViewById(R.id.tv_inapp_title);
+        TextView tvDesc =  view.findViewById(R.id.tv_inapp_desc);
+        tvTitle.setText(title);
+        tvDesc.setText(description);
 
-        InAppMessageAdapter inAppMessageAdapter=new InAppMessageAdapter(getActivity(),(ArrayList<InAppMessageModel>) messagesList,this);
+        InAppMessageAdapter inAppMessageAdapter = new InAppMessageAdapter(getActivity(), (ArrayList<InAppMessageModel>) messagesList, this);
         rv.setAdapter(inAppMessageAdapter);
+
+        view.findViewById(R.id.img_inapp_cross).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
 
     }
 
