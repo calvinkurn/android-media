@@ -1,8 +1,7 @@
 package com.tokopedia.gamification.cracktoken.fragment;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -16,9 +15,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationComponentInstance;
@@ -31,9 +27,7 @@ import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
 import com.tokopedia.gamification.di.GamificationComponent;
-import com.tokopedia.gamification.floating.view.model.TokenAsset;
 import com.tokopedia.gamification.floating.view.model.TokenData;
-import com.tokopedia.gamification.floating.view.model.TokenHome;
 import com.tokopedia.gamification.floating.view.model.TokenUser;
 
 import java.util.ArrayList;
@@ -196,6 +190,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetRewardListener() {
             @Override
             public void onClickCtaButton(String applink) {
+                // TODO: direct to the associated applink page
                 widgetCrackResult.clearReward();
                 resetEgg();
             }
@@ -275,21 +270,20 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     @Override
     public void onSuccessCrackToken(CrackResult crackResult) {
         widgetTokenView.split();
-        List<CrackBenefit> rewardTexts = new ArrayList<>();
-        rewardTexts.add(new CrackBenefit("+50 Points", "#ffdc00", 34));
+        List<CrackBenefit> crackBenefits = crackResult.getBenefits();
 
-        String rewardCouponUrl = "https://ecs7.tokopedia.net/assets/images/gamification/benefit/rewards-coupon.png";
-        widgetCrackResult.showCrackResult(rewardCouponUrl, "Selamat anda mendapatkan", rewardTexts, "Cek dan Gunakan Hadiah Anda", "");
+        widgetCrackResult.showCrackResult(crackResult.getImageUrl(), "Selamat anda mendapatkan",
+                crackBenefits, crackResult.getCtaButton().getTitle(), crackResult.getCtaButton().getApplink());
     }
 
     @Override
     public void onErrorCrackToken(Throwable throwable) {
         widgetTokenView.stopShaking();
         List<CrackBenefit> rewardTexts = new ArrayList<>();
-        rewardTexts.add(new CrackBenefit("Terjadi Kesalahan Teknis", "#ffffff", 40));
+        rewardTexts.add(new CrackBenefit("Terjadi Kesalahan Teknis", "#ffffff", "medium"));
 
-        String rewardCouponUrl = "https://ecs7.tokopedia.net/assets/images/gamification/benefit/rewards-coupon.png";
-        widgetCrackResult.showCrackResult(rewardCouponUrl, "Maaf, sayang sekali sepertinya", rewardTexts, "Coba Lagi", "");
+        Bitmap errorBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image_error_crack_result);
+        widgetCrackResult.showErrorCrackResult(errorBitmap, "Maaf, sayang sekali sepertinya", rewardTexts, "Coba Lagi", "");
     }
 
     @Override
