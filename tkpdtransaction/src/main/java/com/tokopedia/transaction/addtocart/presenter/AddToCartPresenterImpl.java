@@ -442,7 +442,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         product.setCategoryId(productCartPass.getCategoryId());
         /*product.setHomeAttribution(addToCartBundle.getString("home_attribution"));
         product.setList(addToCartBundle.getString("list_name_product"));*/
-        GTMContainer.newInstance(context).eventAddToCartPurchase(product);
+        UnifyTracking.eventAddToCartPurchase(product);
     }
 
     @Override

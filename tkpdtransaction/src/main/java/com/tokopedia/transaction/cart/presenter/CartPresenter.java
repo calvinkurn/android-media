@@ -366,8 +366,8 @@ public class CartPresenter implements ICartPresenter {
                                         .get(i)
                                         .getOriginalQuantity()
                                         - cartProductEditDataList.get(i).getProductQuantity());
-                                GTMContainer.newInstance(context).
-                                        eventRemoveFromCartPurchase(analysisProduct);
+                                /*GTMContainer.newInstance(context).
+                                        eventRemoveFromCartPurchase(analysisProduct);*/
 
                             } else if (cartProductEditDataList.get(i).getOriginalQuantity()
                                     < cartProductEditDataList.get(i).getProductQuantity()) {
@@ -389,10 +389,10 @@ public class CartPresenter implements ICartPresenter {
                                         - cartProductEditDataList
                                                 .get(i)
                                                 .getOriginalQuantity());
-                                GTMContainer.newInstance(context).
+                                /*GTMContainer.newInstance(context).
                                         eventAddToCartPurchase(analysisProduct);
                                 GTMContainer.newInstance(context).
-                                        eventAddToCartPurchase(analysisProduct);
+                                        eventAddToCartPurchase(analysisProduct);*/
 
                             }
                         }

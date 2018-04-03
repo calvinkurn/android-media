@@ -128,7 +128,7 @@ public interface IGTMContainer {
 
     void eventPurchaseDigital(Purchase purchase);
 
-    void eventAddToCartPurchase(Product product);
+    GTMContainer eventAddToCartPurchase(Product product);
 
     void eventRemoveFromCartPurchase(Product product);
 

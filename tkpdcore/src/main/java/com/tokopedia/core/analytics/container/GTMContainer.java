@@ -615,12 +615,10 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
-    public void eventAddToCartPurchase(Product product) {
-        clearEnhanceEcommerce();
+    public GTMContainer eventAddToCartPurchase(Product product) {
         try {
-            GTMDataLayer.pushGeneral(
-                    context, DataLayer.mapOf(
-                            AppEventTracking.EVENT, "addToCart",
+            GTMDataLayer.pushEvent(
+                    context, "addToCart",DataLayer.mapOf(
                             AppEventTracking.ECOMMERCE, DataLayer.mapOf(
                                     "currencyCode", "IDR",
                                     "add", DataLayer.mapOf(
@@ -629,10 +627,11 @@ public class GTMContainer implements IGTMContainer {
                     )
             );
         } catch (Exception e) {
+            CommonUtils.dumper("GAv4 DATA LAYER "+e.getMessage());
             e.printStackTrace();
         }
 
-        CommonUtils.dumper("DATA LAYER " + DataLayer.mapOf(
+        CommonUtils.dumper("GAv4 DATA LAYER " + DataLayer.mapOf(
                 AppEventTracking.EVENT, "addToCart",
                 AppEventTracking.ECOMMERCE, DataLayer.mapOf(
                         "currencyCode", "IDR",
@@ -640,6 +639,7 @@ public class GTMContainer implements IGTMContainer {
                                 "products", product.getProduct())
                 )
         ));
+        return this;
     }
 
     @Override
