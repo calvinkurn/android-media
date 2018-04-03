@@ -19,6 +19,7 @@ import android.webkit.WebView;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenSource;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -28,6 +29,7 @@ import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.tkpd.BaseJsonFactory;
 import com.tokopedia.sellerapp.RxJavaTestPlugins;
 import com.tokopedia.tkpd.Utils;
@@ -73,6 +75,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.tokopedia.tkpd.Utils.changeScreenOrientation;
 import static com.tokopedia.tkpd.Utils.nthChildOf;
 import static com.tokopedia.tkpd.Utils.snackbarAnyMatcher;
 import static com.tokopedia.tkpd.Utils.snackbarMatcher;
@@ -81,6 +84,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by normansyahputa on 3/21/18.
@@ -210,6 +215,7 @@ public class LoginActivityTest {
     }
 
     /**
+     * test_id {"YH/003"}
      * Test yahoo login
      */
     @Test
@@ -222,10 +228,96 @@ public class LoginActivityTest {
 
         startLoginActivity();
 
+        performClickYahoo();
+
+        assertTrue(mIntentsRule.getActivity().isDestroyed());
+    }
+
+    /**
+     * test_id {"YH/003", "YH/007"}
+     * Test yahoo login
+     */
+    @Test
+    public void testCancelYahooLogin() throws Exception {
+
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+
+        startLoginActivity();
+
         ViewInteraction loginTextView = onView(
-                                    nthChildOf(
-                                        withId(R.id.login_buttons_container),
-                                        3));
+                nthChildOf(
+                        withId(R.id.login_buttons_container),
+                        3));
+
+        onView(withId(R.id.btn_load_more)).perform(click());//.check(not(isVisible()));
+
+
+        Thread.sleep(3_000);
+
+        loginTextView.perform(click());
+
+        // necessary to make it wait.
+        Thread.sleep(10000);
+
+        // waiting all url to be finished
+        DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+        final WebView webview = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
+        if (webview != null) {
+            try {
+                mIntentsRule.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        webViewIdlingResource = new WebViewIdlingResource(webview);
+                        Espresso.registerIdlingResources(webViewIdlingResource);
+                    }
+                });
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }
+
+        // dismiss fragment or press back
+        dialog.dismiss();
+
+        Thread.sleep(1_000);
+
+        assertFalse(mIntentsRule.getActivity().isDestroyed());
+    }
+
+    /**
+     * test_id {"YH/008"}
+     * Test yahoo login
+     */
+    @Test
+    public void testYahooReLogin() throws Exception {
+
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("relogin.json")));
+        server3.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
+        server3.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_gcm_update.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("info.json")));
+        server2.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("make_login.json")));
+
+        startLoginActivity();
+
+        performClickYahoo();
+
+        snackbarAnyMatcher();
+
+        Thread.sleep(2000);
+
+        performClickYahoo();
+
+        assertTrue(mIntentsRule.getActivity().isDestroyed());
+    }
+
+    private void performClickYahoo() throws InterruptedException {
+        ViewInteraction loginTextView = onView(
+                nthChildOf(
+                        withId(R.id.login_buttons_container),
+                        3));
 
         onView(withId(R.id.btn_load_more)).perform(click());//.check(not(isVisible()));
 
@@ -269,8 +361,6 @@ public class LoginActivityTest {
         dialog.dismiss();
 
         Thread.sleep(1_000);
-
-        assertTrue(mIntentsRule.getActivity().isDestroyed());
     }
 
     /**
@@ -496,6 +586,123 @@ public class LoginActivityTest {
 
         assertTrue(mIntentsRule.getActivity().isDestroyed());
     }
+
+    /**
+     * test_id : {"GP/001","GP/003","GP/004","GP/013","GP/014"}
+     * @throws Exception
+     */
+    @Test
+    public void testGoogleLogin() throws Exception{
+        Intent resultData = new Intent();
+        Bundle bundle = new Bundle();
+        GoogleSignInAccount account = mock(GoogleSignInAccount.class);
+        when(account.getEmail()).thenReturn("test123@gmailcom");
+        bundle.putParcelable(GoogleSignInActivity.KEY_GOOGLE_ACCOUNT, account);
+        bundle.putString(GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN, "12345");
+
+        resultData.putExtras(bundle);
+        Instrumentation.ActivityResult result =
+                new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+
+        intending(hasComponent(GoogleSignInActivity.class.getName())).respondWith(result);
+
+
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("info.json")));
+        server2.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("make_login.json")));
+
+        startLoginActivity();
+
+        ViewInteraction loginTextView = onView(
+                nthChildOf(
+                        withId(R.id.login_buttons_container),
+                        1));
+
+        loginTextView.perform(click());
+
+        Thread.sleep(200);
+
+        assertTrue(mIntentsRule.getActivity().isDestroyed());
+    }
+
+    /**
+     * test_id {"GP/012", "GP/005"}
+     * @throws Exception
+     */
+    @Test
+    public void testCancelGoogleLogin() throws Exception{
+        Instrumentation.ActivityResult result =
+                new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null);
+
+        intending(hasComponent(GoogleSignInActivity.class.getName())).respondWith(result);
+
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+
+        startLoginActivity();
+
+        ViewInteraction loginTextView = onView(
+                nthChildOf(
+                        withId(R.id.login_buttons_container),
+                        1));
+
+        loginTextView.perform(click());
+
+        Thread.sleep(200);
+
+        assertFalse(mIntentsRule.getActivity().isDestroyed());
+    }
+
+    /**
+     * test_id {"GP/017"}
+     * @throws Exception
+     */
+    @Test
+    public void testGoogleRelogin() throws Exception{
+        Intent resultData = new Intent();
+        Bundle bundle = new Bundle();
+        GoogleSignInAccount account = mock(GoogleSignInAccount.class);
+        when(account.getEmail()).thenReturn("test123@gmailcom");
+        bundle.putParcelable(GoogleSignInActivity.KEY_GOOGLE_ACCOUNT, account);
+        bundle.putString(GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN, "12345");
+
+        resultData.putExtras(bundle);
+        Instrumentation.ActivityResult result =
+                new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+
+        intending(hasComponent(GoogleSignInActivity.class.getName())).respondWith(result);
+
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("relogin.json")));
+        server3.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
+        server3.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_gcm_update.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("info.json")));
+        server2.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("make_login.json")));
+
+        startLoginActivity();
+
+        ViewInteraction loginTextView = onView(
+                nthChildOf(
+                        withId(R.id.login_buttons_container),
+                        1));
+
+        loginTextView.perform(click());
+
+        Thread.sleep(200);
+
+        snackbarAnyMatcher();
+
+        // this is necessary, wait for snackbar to dismiss
+        Thread.sleep(2000);
+
+        loginTextView.perform(click());
+
+        assertTrue(mIntentsRule.getActivity().isDestroyed());
+    }
+
+
 
     /**
      * @throws Exception

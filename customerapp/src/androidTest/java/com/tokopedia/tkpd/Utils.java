@@ -1,11 +1,15 @@
 package com.tokopedia.tkpd;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -518,6 +522,25 @@ public class Utils {
     public static void snackbarAnyMatcher(){
         onView(allOf(withId(android.support.design.R.id.snackbar_text)))
                 .check(matches(isDisplayed()));
+    }
+
+    public static void changeScreenOrientation(final Activity activity) {
+        int orientation = activity.getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+        if (Settings.System.getInt(activity.getContentResolver(),
+                Settings.System.ACCELEROMETER_ROTATION, 0) == 1) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                }
+            }, 4000);
+        }
     }
 
 }
