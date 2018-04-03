@@ -146,7 +146,7 @@
             android:padding="@dimen/space_med"
             android:textColor="@color/white"
             android:textSize="@dimen/font_small"
-            tools:text="Ikutan Vote" />
+            android:text="@string/enter_event_group_chat" />
 
     </android.support.v7.widget.CardView>
 
