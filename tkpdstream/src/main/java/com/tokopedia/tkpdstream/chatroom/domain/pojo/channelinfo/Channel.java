@@ -70,6 +70,12 @@ public class Channel {
     @SerializedName("ads_link")
     @Expose
     private String adsLink;
+    @SerializedName("ads_name")
+    @Expose
+    private String adsName;
+    @SerializedName("ads_id")
+    @Expose
+    private String adsId;
     @SerializedName("banner_name")
     @Expose
     private String bannerName;
@@ -219,5 +225,13 @@ public class Channel {
 
     public List<ListOfficial> getListOfficials() {
         return listOfficials;
+    }
+
+    public String getAdsName() {
+        return adsName;
+    }
+
+    public String getAdsId() {
+        return adsId;
     }
 }

@@ -785,7 +785,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LOGIN
                 && resultCode == Activity.RESULT_OK) {
-            ((GroupChatContract.View)getActivity()).onSuccessLogin();
+            ((GroupChatContract.View) getActivity()).onSuccessLogin();
             userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
             setForLoginUser(userSession != null && userSession.isLoggedIn());
         }

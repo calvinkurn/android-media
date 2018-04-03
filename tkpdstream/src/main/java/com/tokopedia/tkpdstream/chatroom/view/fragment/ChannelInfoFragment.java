@@ -25,9 +25,9 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChannelPartnerChildViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
 import com.tokopedia.tkpdstream.common.analytics.EEPromotion;
+import com.tokopedia.tkpdstream.common.analytics.StreamAnalytics;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
-import com.tokopedia.tkpdstream.common.analytics.StreamAnalytics;
 import com.tokopedia.tkpdstream.common.util.TextFormatter;
 
 import java.util.ArrayList;
@@ -159,7 +159,10 @@ public class ChannelInfoFragment extends BaseDaggerFragment
             return;
         }
 
-        trackEEViewPartner(channelInfoViewModel);
+        if (channelInfoViewModel.getChannelPartnerViewModels() != null && !channelInfoViewModel
+                .getChannelPartnerViewModels().isEmpty()) {
+            trackEEViewPartner(channelInfoViewModel);
+        }
 
         totalView.setText(TextFormatter.format(String.valueOf(channelInfoViewModel.getTotalView())));
         name.setText(channelInfoViewModel.getAdminName());

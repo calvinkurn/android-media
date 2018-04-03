@@ -661,7 +661,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         try {
             setChannelInfoView(channelInfoViewModel);
-            trackAdsEE(channelInfoViewModel);
+            if(!TextUtils.isEmpty(channelInfoViewModel.getAdsImageUrl())) {
+                trackAdsEE(channelInfoViewModel);
+            }
             presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                     userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken());
 
