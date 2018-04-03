@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -31,7 +30,6 @@ import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
-import com.tokopedia.core.network.entity.variant.ProductVariantResponse;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -311,6 +309,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                         ,Integer.toString(productDetailData.getInfo().getProductId()));
                             } else {
                                 productDetailData.getInfo().setHasVariant(false);
+                                viewListener.trackingEnhanceProductDetail();
                             }
                             validateProductDataWithProductPassAndShowMessage(productDetailData,productPass,context);
                         }
@@ -826,6 +825,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                     ,Integer.toString(data.getInfo().getProductId()));
                         } else {
                             data.getInfo().setHasVariant(false);
+                            viewListener.trackingEnhanceProductDetail();
                         }
                         validateProductDataWithProductPassAndShowMessage(data,productPass,context);
                     }
@@ -1070,6 +1070,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     public void onSucccess(final ProductVariant productVariant) {
                         if (productVariant!=null && productVariant.getVariant()!=null && productVariant.getVariant().size()>0) {
                             viewListener.addProductVariant(productVariant);
+                            viewListener.trackingEnhanceProductDetail();
                         }
                         viewListener.updateButtonBuyListener();
                     }
