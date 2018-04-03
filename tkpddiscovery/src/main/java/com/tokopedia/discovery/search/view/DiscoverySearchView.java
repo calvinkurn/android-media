@@ -785,6 +785,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mSavedState = new SavedState(superState);
         mSavedState.query = mUserQuery != null ? mUserQuery.toString() : null;
         mSavedState.isSearchOpen = this.mIsSearchOpen;
+        mSavedState.allowImageSearch = this.allowImageSearch;
 
         return mSavedState;
     }
@@ -803,12 +804,15 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             setQuery(mSavedState.query, false);
         }
 
+        setImageSearch(mSavedState.allowImageSearch);
+
         super.onRestoreInstanceState(mSavedState.getSuperState());
     }
 
     static class SavedState extends BaseSavedState {
         String query;
         boolean isSearchOpen;
+        boolean allowImageSearch;
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -818,6 +822,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             super(in);
             this.query = in.readString();
             this.isSearchOpen = in.readInt() == 1;
+            this.allowImageSearch = in.readInt() == 1;
         }
 
         @Override
@@ -825,6 +830,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             super.writeToParcel(out, flags);
             out.writeString(query);
             out.writeInt(isSearchOpen ? 1 : 0);
+            out.writeInt(allowImageSearch ? 1 : 0);
         }
 
         //required field that makes Parcelables from a Parcel
