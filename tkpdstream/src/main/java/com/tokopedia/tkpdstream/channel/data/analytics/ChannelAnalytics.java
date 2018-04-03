@@ -7,7 +7,7 @@ package com.tokopedia.tkpdstream.channel.data.analytics;
 public class ChannelAnalytics {
 
     public static class Screen {
-        public static final String CHANNEL_LIST = "Group Chat List";
+        public static final String CHANNEL_LIST = "/group-chat-list";
     }
 
 

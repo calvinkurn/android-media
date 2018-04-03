@@ -661,7 +661,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         try {
             setChannelInfoView(channelInfoViewModel);
-            if(!TextUtils.isEmpty(channelInfoViewModel.getAdsImageUrl())) {
+            if (!TextUtils.isEmpty(channelInfoViewModel.getAdsImageUrl())) {
                 trackAdsEE(channelInfoViewModel);
             }
             presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
@@ -919,7 +919,12 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public String getScreenName() {
-        return StreamAnalytics.SCREEN_CHAT_ROOM;
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            String roomName = getIntent().getExtras().getString(EXTRA_CHANNEL_UUID, "");
+            return StreamAnalytics.SCREEN_CHAT_ROOM + roomName;
+        } else {
+            return StreamAnalytics.SCREEN_CHAT_ROOM;
+        }
     }
 
     @Override
@@ -954,7 +959,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onSuccessLogin() {
-       initData();
+        initData();
     }
 
     private void showPushNotif(GroupChatPointsViewModel model) {
