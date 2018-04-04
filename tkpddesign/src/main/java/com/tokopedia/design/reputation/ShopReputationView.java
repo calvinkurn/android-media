@@ -55,7 +55,7 @@ public class ShopReputationView extends BaseCustomView {
         try {
             showTooltip = styledAttributes.getBoolean(R.styleable.ShopReputationView_srv_show_tooltip, false);
             medalWidth = (int) styledAttributes.getDimension(R.styleable.ShopReputationView_srv_medal_width,
-                    getContext().getResources().getDimensionPixelSize(R.dimen.image_medal_size));
+                    getContext().getResources().getDimensionPixelSize(R.dimen.dp_15));
         } finally {
             styledAttributes.recycle();
         }

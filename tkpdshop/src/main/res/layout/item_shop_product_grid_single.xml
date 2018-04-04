@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_ms"
+        android:layout_margin="@dimen/dp_8"
         android:orientation="vertical">
 
         <com.tokopedia.shop.product.view.widget.SquareImageView
@@ -27,7 +27,7 @@
             layout="@layout/partial_shop_product_item_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_ms" />
+            android:layout_marginTop="@dimen/dp_8" />
     </LinearLayout>
 
     <include

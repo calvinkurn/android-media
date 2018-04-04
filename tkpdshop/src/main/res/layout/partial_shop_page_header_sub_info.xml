@@ -24,10 +24,10 @@
             android:gravity="center_vertical">
 
             <ImageView
-                android:layout_width="@dimen/image_width_xxs"
-                android:layout_height="@dimen/image_width_xs"
-                android:layout_marginLeft="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/margin_vs"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
                 app:srcCompat="@drawable/ic_info_favourite_green" />
 
             <TextView
@@ -52,10 +52,10 @@
             android:gravity="center_vertical">
 
             <ImageView
-                android:layout_width="@dimen/image_width_xxs"
-                android:layout_height="@dimen/image_width_xs"
-                android:layout_marginLeft="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/margin_vs"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
                 app:srcCompat="@drawable/ic_info_product_green" />
 
             <TextView
@@ -105,8 +105,8 @@
             <TextView
                 android:id="@+id/text_view_product_quality_value"
                 style="@style/TextView.Small.Bold"
-                android:layout_marginLeft="@dimen/margin_vvs"
-                android:layout_marginRight="@dimen/margin_vvs"
+                android:layout_marginLeft="@dimen/dp_3"
+                android:layout_marginRight="@dimen/dp_3"
                 tools:text="@string/app_name" />
 
             <RatingBar
@@ -137,10 +137,10 @@
 
             <ImageView
                 android:id="@+id/image_view_speed"
-                android:layout_width="@dimen/image_width_xxs"
-                android:layout_height="@dimen/image_width_xs"
-                android:layout_marginLeft="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/margin_vs"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
                 app:srcCompat="@drawable/ic_shop_reputation_speed_default" />
 
             <TextView
