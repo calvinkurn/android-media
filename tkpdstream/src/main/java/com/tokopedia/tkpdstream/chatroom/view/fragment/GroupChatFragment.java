@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
@@ -319,9 +320,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
         long currentTime = new Date().getTime() / MILIS_TO_SECOND;
         if (currentTime < sprintSaleViewModel.getStartDate()) {
+            MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
+                    R.drawable.bg_rounded_pink_label));
+            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
             sprintSaleText.setText(String.format("%s - %s", sprintSaleViewModel
                     .getFormattedStartDate(), sprintSaleViewModel.getFormattedEndDate()));
         } else {
+            MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
+                    R.drawable.bg_rounded_red_label));
+            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
             sprintSaleText.setText(getString(R.string.ongoing));
         }
     }
@@ -802,7 +809,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         if (getActivity() != null
                 && ((GroupChatActivity) getActivity()).getChannelInfoViewModel() != null
                 && ((GroupChatActivity) getActivity())
-                        .getChannelInfoViewModel().getTitle() != null) {
+                .getChannelInfoViewModel().getTitle() != null) {
             String channelName = ((GroupChatActivity) getActivity())
                     .getChannelInfoViewModel().getTitle();
             analytics.eventClickLoyaltyWidget(channelName);

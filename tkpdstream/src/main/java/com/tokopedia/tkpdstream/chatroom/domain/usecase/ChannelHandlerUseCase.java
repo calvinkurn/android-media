@@ -58,7 +58,7 @@ public class ChannelHandlerUseCase {
             @Override
             public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
                 try {
-                    if (baseChannel.getUrl().equals(mChannelUrl)) {
+                    if (baseChannel.getUrl().equals(mChannelUrl) && mapper.map(baseMessage) != null) {
                         listener.onMessageReceived(mapper.map(baseMessage));
                     }
                 } catch (NullPointerException e) {
@@ -89,7 +89,7 @@ public class ChannelHandlerUseCase {
             @Override
             public void onMessageUpdated(BaseChannel channel, BaseMessage message) {
                 super.onMessageUpdated(channel, message);
-                if (channel.getUrl().equals(mChannelUrl)) {
+                if (channel.getUrl().equals(mChannelUrl) && mapper.map(message) != null) {
                     listener.onMessageUpdated(mapper.map(message));
                 }
             }
