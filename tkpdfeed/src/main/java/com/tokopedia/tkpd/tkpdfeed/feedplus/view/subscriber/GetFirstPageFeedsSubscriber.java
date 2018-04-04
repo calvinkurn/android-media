@@ -52,6 +52,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentView
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksItemViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
+import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +82,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private static final String TYPE_KOL_RECOMMENDATION = "kolrecommendation";
     private static final String TYPE_FAVORITE_CTA = "favorite_cta";
     private static final String SHOP_ID_BRACKETS = "{shop_id}";
-    private static final int TOPADS_SIZE = 6;
+    private static final int TOPADS_MAX_SIZE = 6;
+    private static final int TOPADS_MAX_SIZE_SMALL = 3;
 
     private final int page;
 
@@ -317,9 +319,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                     case TYPE_TOPADS:
                         if (domain.getContent() != null
                                 && domain.getContent().getTopAdsList() != null
-                                && domain.getContent().getTopAdsList().size() == TOPADS_SIZE) {
+                                && !domain.getContent().getTopAdsList().isEmpty()) {
                             FeedTopAdsViewModel feedTopAdsViewModel =
-                                    new FeedTopAdsViewModel(domain.getContent().getTopAdsList());
+                                    convertToTopadsViewModel(domain);
                             listFeedView.add(feedTopAdsViewModel);
                         }
                         break;
@@ -427,6 +429,27 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             ));
         }
         return list;
+    }
+
+    private FeedTopAdsViewModel convertToTopadsViewModel(DataFeedDomain domain) {
+        boolean isTopadsShop = domain.getContent().getTopAdsList().get(0).getProduct() == null;
+        int topadsSize = 0;
+
+        if (isTopadsShop) {
+            topadsSize = 1;
+        } else if (domain.getContent().getTopAdsList().size() >= TOPADS_MAX_SIZE) {
+            topadsSize = TOPADS_MAX_SIZE;
+        } else if (domain.getContent().getTopAdsList().size() >= TOPADS_MAX_SIZE_SMALL) {
+            topadsSize = TOPADS_MAX_SIZE_SMALL;
+        }
+
+        List<Data> topadsDataList = new ArrayList<>();
+        for (int i = 0; i < topadsSize; i++) {
+            Data topadsData = domain.getContent().getTopAdsList().get(i);
+            topadsDataList.add(topadsData);
+        }
+
+        return new FeedTopAdsViewModel(topadsDataList);
     }
 
     private KolViewModel convertToKolViewModel(DataFeedDomain domain) {
