@@ -174,6 +174,7 @@ public class WidgetTokenOnBoarding extends FrameLayout {
             @Override
             public void onAnimationCancel(Animator animation) {
                 mCanceled = true;
+                handler.removeCallbacks(runnable);
             }
 
             @Override
