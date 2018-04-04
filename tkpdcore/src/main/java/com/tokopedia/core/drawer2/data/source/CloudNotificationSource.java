@@ -3,8 +3,8 @@ package com.tokopedia.core.drawer2.data.source;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.drawer2.data.pojo.notification.NotificationData;
 import com.tokopedia.core.drawer2.data.mapper.NotificationMapper;
+import com.tokopedia.core.drawer2.data.pojo.notification.NotificationData;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
@@ -13,7 +13,6 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import rx.Observable;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 /**
  * Created by nisie on 5/5/17.
@@ -51,7 +50,6 @@ public class CloudNotificationSource {
                     NotificationData notificationData = notificationModel.getNotificationData();
                     drawerCache.putInt(DrawerNotification.CACHE_INBOX_TALK, notificationData.getInbox().getInboxTalk());
                     drawerCache.putInt(DrawerNotification.CACHE_INBOX_REVIEW, notificationData.getInbox().getInboxReputation());
-                    drawerCache.putInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, notificationData.getResolution());
                     drawerCache.putInt(DrawerNotification.CACHE_INBOX_TICKET, notificationData.getInbox().getInboxTicket());
 
                     drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_DELIVERY_CONFIRM, notificationData.getPurchase().getPurchaseDeliveryConfirm());
@@ -70,6 +68,9 @@ public class CloudNotificationSource {
                     drawerCache.putInt(DrawerNotification.CACHE_TOTAL_NOTIF, notificationData
                             .getTotalNotif() - notificationData.getInbox().getInboxMessage());
                     drawerCache.putInt(DrawerNotification.CACHE_INCR_NOTIF, notificationData.getIncrNotif());
+
+                    drawerCache.putInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_BUYER, notificationData.getResolutionModel().getResolutionBuyer());
+                    drawerCache.putInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, notificationData.getResolutionModel().getResolutionSeller());
 
                     drawerCache.applyEditor();
                 }

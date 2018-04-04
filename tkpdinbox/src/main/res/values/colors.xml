@@ -10,4 +10,6 @@
     <color name="color_chat_buyer">#2AB4C2</color>
     <color name="color_chat_seller">#b94a48</color>
     <color name="black_alpha_12">#26000000</color>
+    <color name="color_white_fafafa">#fafafa</color>
+    <color name="color_notification">#ea212d</color>
 </resources>

@@ -11,9 +11,10 @@ public class DrawerNotification {
     public static final String CACHE_INBOX_MESSAGE = "CACHE_INBOX_MESSAGE";
     public static final String CACHE_INBOX_TALK = "CACHE_INBOX_TALK";
     public static final String CACHE_INBOX_REVIEW = "CACHE_INBOX_REVIEW";
-    public static final String CACHE_INBOX_RESOLUTION_CENTER = "CACHE_INBOX_RESOLUTION_CENTER";
     public static final String CACHE_INBOX_TICKET = "CACHE_INBOX_TICKET";
     public static final String CACHE_INBOX_SELLER_INFO = "CACHE_INBOX_SELLER_INFO";
+    public static final String CACHE_INBOX_RESOLUTION_CENTER_BUYER = "CACHE_INBOX_RESOLUTION_CENTER_BUYER";
+    public static final String CACHE_INBOX_RESOLUTION_CENTER_SELLER = "CACHE_INBOX_RESOLUTION_CENTER_SELLER";
 
     public static final String CACHE_PURCHASE_ORDER_STATUS = "CACHE_PURCHASE_ORDER_STATUS";
     public static final String CACHE_PURCHASE_PAYMENT_CONF = "CACHE_PURCHASE_PAYMENT_CONF";

@@ -9,14 +9,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.OneOnClick;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.purchase.activity.PaymentProcedureActivity;
 import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
 
 import java.text.MessageFormat;
@@ -96,7 +99,24 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
                 renderNormalHolder(holder);
                 break;
         }
+
+        if(item.getHowtopay() != null && item.getHowtopay() == 1 && item.getHowtopayUrl() != null) {
+            holder.btnPaymentProcedure.setVisibility(View.VISIBLE);
+            holder.btnPaymentProcedure.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openPaymentProcedure(item.getHowtopayUrl());
+                }
+            });
+        } else {
+            holder.btnPaymentProcedure.setVisibility(View.GONE);
+        }
+
         return convertView;
+    }
+
+    private void openPaymentProcedure(String url) {
+        context.startActivity(PaymentProcedureActivity.newIntent(context, url));
     }
 
     private void showPopUp(View view, final TxVerData data) {
@@ -190,9 +210,11 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
         LinearLayout holderNormalPayment;
         @BindView(R2.id.unchangeable_payment_info)
         LinearLayout holderUnchangeablePayment;
+        Button btnPaymentProcedure;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
+            btnPaymentProcedure = view.findViewById(R.id.button_payment_procedure);
         }
     }
 }

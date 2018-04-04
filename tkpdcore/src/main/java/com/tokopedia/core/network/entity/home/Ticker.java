@@ -15,20 +15,20 @@ import java.util.Arrays;
  * Created by Nisie on 7/15/16.
  */
 public class Ticker {
-    @SerializedName("data")
+    @SerializedName("tickers")
     @Expose
-    Data data;
+    ArrayList<Tickers> tickers;
 
     @SerializedName("meta")
     @Expose
     Meta meta;
 
-    public Data getData() {
-        return data;
+    public ArrayList<Tickers> getTickers() {
+        return tickers;
     }
 
-    public void setData(Data data) {
-        this.data = data;
+    public void setTickers(ArrayList<Tickers> tickers) {
+        this.tickers = tickers;
     }
 
     public Meta getMeta() {
@@ -42,23 +42,9 @@ public class Ticker {
     @Override
     public String toString() {
         return "Ticker{" +
-                "data=" + data +
+                "data=" + tickers +
                 ", meta=" + meta +
                 '}';
-    }
-
-    public static class Data {
-        @SerializedName("tickers")
-        @Expose
-        ArrayList<Tickers> tickers;
-
-        public ArrayList<Tickers> getTickers() {
-            return tickers;
-        }
-
-        public void setTickers(ArrayList<Tickers> tickers) {
-            this.tickers = tickers;
-        }
     }
 
     public static class Tickers {

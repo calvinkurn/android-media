@@ -10,4 +10,6 @@
     <dimen name="chip_thumb_size">45dp</dimen>
 
     <dimen name="card_elevation_checkout">3dp</dimen>
+    <dimen name="side_margin">16dp</dimen>
+    <dimen name="side_padding">16dp</dimen>
 </resources>

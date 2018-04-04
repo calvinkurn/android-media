@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="top"
     android:background="@drawable/selector_rounded_gray_red"
     tools:layout_marginLeft="16dp"
@@ -35,6 +36,6 @@
         android:layout_toEndOf="@+id/textview_keyword_item"
         android:layout_toRightOf="@+id/textview_keyword_item"
         android:background="@null"
-        android:src="@drawable/vector_cancel_24dp" />
+        app:srcCompat="@drawable/vector_cancel_24dp" />
 
 </RelativeLayout>

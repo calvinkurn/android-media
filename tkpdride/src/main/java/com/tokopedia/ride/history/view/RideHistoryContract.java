@@ -1,5 +1,8 @@
 package com.tokopedia.ride.history.view;
 
+import android.app.Activity;
+import android.content.Context;
+
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
@@ -56,6 +59,8 @@ public interface RideHistoryContract {
         void hideLoadMoreLoading();
 
         RequestParams getHistoriesLoadMoreParam();
+
+        Activity getActivity();
     }
 
     interface Presenter extends CustomerPresenter<View>{

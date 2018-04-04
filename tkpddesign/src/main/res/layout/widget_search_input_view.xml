@@ -24,7 +24,7 @@
             android:id="@+id/image_view_search"
             android:layout_width="@dimen/image_width_xxs"
             android:layout_height="@dimen/image_width_xxs"
-            android:src="@drawable/ic_search_grey" />
+            app:srcCompat="@drawable/ic_search_grey" />
 
         <EditText
             android:id="@+id/edit_text_search"
@@ -47,7 +47,7 @@
             android:layout_width="@dimen/image_width_xxs"
             android:layout_height="@dimen/image_width_xxs"
             android:background="@null"
-            android:src="@drawable/ic_ticker_action_close_12dp"
+            app:srcCompat="@drawable/ic_ticker_action_close_12dp"
             android:visibility="gone" />
     </LinearLayout>
 

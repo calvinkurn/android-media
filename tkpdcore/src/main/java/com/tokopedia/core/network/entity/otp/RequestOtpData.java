@@ -5,8 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by nisie on 3/7/17.
+ * @deprecated see RequestOtpPojo instead.
  */
 
+@Deprecated
 public class RequestOtpData {
 
     @SerializedName("is_success")

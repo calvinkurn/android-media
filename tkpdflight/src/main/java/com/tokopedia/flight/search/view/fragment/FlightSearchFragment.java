@@ -77,6 +77,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private static final int EMPTY_MARGIN = 0;
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
+    private static final String SAVED_NEED_REFRESH_AIRLINE = "svd_need_refresh_airline";
     private static final String SAVED_FILTER_MODEL = "svd_filter_model";
     private static final String SAVED_SORT_OPTION = "svd_sort_option";
     private static final String SAVED_STAT_MODEL = "svd_stat_model";
@@ -97,8 +98,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private AirportCombineModelList airportCombineModelList;
     private SwipeToRefresh swipeToRefresh;
     private boolean needRefreshFromCache;
+    private boolean needRefreshAirline = true;
     private boolean inFilterMode = false;
-
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle args = new Bundle();
@@ -121,11 +122,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             setUpCombinationAirport();
             progress = 0;
         } else {
+            needRefreshAirline = savedInstanceState.getBoolean(SAVED_NEED_REFRESH_AIRLINE);
             flightFilterModel = savedInstanceState.getParcelable(SAVED_FILTER_MODEL);
             selectedSortOption = savedInstanceState.getInt(SAVED_SORT_OPTION);
             airportCombineModelList = savedInstanceState.getParcelable(SAVED_AIRPORT_COMBINE);
             progress = savedInstanceState.getInt(SAVED_PROGRESS, 0);
-            needRefreshFromCache = true;
+            setNeedRefreshFromCache(true);
         }
     }
 
@@ -265,22 +267,33 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         showMessageErrorInSnackBar(resId);
     }
 
+    @Override
+    public void finishFragment() {
+        getActivity().finish();
+    }
+
+    @Override
+    public boolean isNeedRefreshFromCache() {
+        return needRefreshFromCache;
+    }
+
+    @Override
+    public void setNeedRefreshFromCache(boolean needRefreshFromCache) {
+        this.needRefreshFromCache = needRefreshFromCache;
+    }
+
     @CallSuper
     @Override
     public void onResume() {
         super.onResume();
         flightSearchPresenter.attachView(this);
-        if (needRefreshFromCache) {
-            reloadDataFromCache();
-            setUIMarkFilter();
-            needRefreshFromCache = false;
-        }
-        loadInitialData();
+
+        flightSearchPresenter.checkCacheExpired();
     }
 
     @Override
     public void loadInitialData() {
-        actionFetchFlightSearchData();
+        flightSearchPresenter.initialize();
     }
 
     @Override
@@ -327,7 +340,16 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         }
     }
 
-    private void actionFetchFlightSearchData() {
+    @Override
+    public void onItemClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
+        flightSearchPresenter.onSearchItemClicked(flightSearchViewModel, adapterPosition);
+        if (onFlightSearchFragmentListener != null) {
+            onFlightSearchFragmentListener.selectFlight(flightSearchViewModel.getId());
+        }
+    }
+
+    public void actionFetchFlightSearchData() {
+        setUpProgress();
         if (getAdapter().getItemCount() == 0) {
             showLoading();
         }
@@ -358,9 +380,20 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         }
     }
 
+    @Override
+    public void setNeedRefreshAirline(boolean needRefresh) {
+        needRefreshAirline = needRefresh;
+    }
+
+    @Override
+    public boolean isNeedRefreshAirline() {
+        return needRefreshAirline;
+    }
+
     /**
      * load all data from cache
      */
+    @Override
     public void reloadDataFromCache() {
         flightSearchPresenter.searchAndSortFlight(null,
                 isReturning(), true, flightFilterModel, selectedSortOption);
@@ -416,7 +449,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         filterAndSortBottomAction.setVisibility(View.GONE);
     }
 
-    private void setUIMarkFilter() {
+    @Override
+    public void setUIMarkFilter() {
         if (flightFilterModel.hasFilter()) {
             filterAndSortBottomAction.setMarkLeft(true);
             inFilterMode = true;
@@ -442,7 +476,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 case REQUEST_CODE_SEARCH_FILTER:
                     if (data != null && data.hasExtra(FlightSearchFilterActivity.EXTRA_FILTER_MODEL)) {
                         flightFilterModel = (FlightFilterModel) data.getExtras().get(FlightSearchFilterActivity.EXTRA_FILTER_MODEL);
-                        needRefreshFromCache = true;
+                        setNeedRefreshFromCache(true);
                     }
                     break;
                 case REQUEST_CODE_SEE_DETAIL_FLIGHT:
@@ -467,6 +501,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
+    public void onSwipeRefresh() {
+        removeBottomPaddingForSortAndFilterActionButton();
+        super.onSwipeRefresh();
+    }
+
+    @Override
     public void onSuccessGetDetailFlightDeparture(FlightSearchViewModel flightSearchViewModel) {
         // do nothing
     }
@@ -482,34 +522,46 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
-    public void onSuccessGetDataFromCache(List<FlightSearchViewModel> flightSearchViewModelList) {
-        hideLoading();
-        addToolbarElevation();
+    public void clearAdapterData() {
         getAdapter().clearAllElements();
-        if (flightSearchViewModelList.size() == 0) {
-            if (progress < MAX_PROGRESS) {
-                getAdapter().showLoading();
-            } else {
-                RecyclerView recyclerView = getRecyclerView(getView());
-                recyclerView.setPadding(
-                        EMPTY_MARGIN,
-                        EMPTY_MARGIN,
-                        EMPTY_MARGIN,
-                        EMPTY_MARGIN
-                );
-                getAdapter().addElement(getEmptyDataViewModel());
-            }
-        } else {
-            float scale = getResources().getDisplayMetrics().density;
-            RecyclerView recyclerView = getRecyclerView(getView());
-            recyclerView.setPadding(
-                    EMPTY_MARGIN,
-                    EMPTY_MARGIN,
-                    EMPTY_MARGIN,
-                    (int) (scale * PADDING_SEARCH_LIST + DEFAULT_DIMENS_MULTIPLIER)
-            );
-            getAdapter().addElement(flightSearchViewModelList);
-        }
+    }
+
+    @Override
+    public void renderFlightSearchFromCache(List<FlightSearchViewModel> flightSearchViewModels) {
+        getAdapter().addElement(flightSearchViewModels);
+    }
+
+    @Override
+    public void addBottomPaddingForSortAndFilterActionButton() {
+        float scale = getResources().getDisplayMetrics().density;
+        RecyclerView recyclerView = getRecyclerView(getView());
+        recyclerView.setPadding(
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                (int) (scale * PADDING_SEARCH_LIST + DEFAULT_DIMENS_MULTIPLIER)
+        );
+    }
+
+    @Override
+    public boolean isAlreadyFullLoadData() {
+        return progress >= MAX_PROGRESS;
+    }
+
+    @Override
+    public void showEmptyFlightStateView() {
+        getAdapter().addElement(getEmptyDataViewModel());
+    }
+
+    @Override
+    public void removeBottomPaddingForSortAndFilterActionButton() {
+        RecyclerView recyclerView = getRecyclerView(getView());
+        recyclerView.setPadding(
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                EMPTY_MARGIN
+        );
     }
 
     @Override
@@ -620,6 +672,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void showGetListError(Throwable t) {
         this.addToolbarElevation();
+        progressBar.setVisibility(View.GONE);
+        removeBottomPaddingForSortAndFilterActionButton();
         super.showGetListError(t);
     }
 
@@ -649,8 +703,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
-    public void onDetailClicked(FlightSearchViewModel flightSearchViewModel) {
-        flightSearchPresenter.onSeeDetailItemClicked(flightSearchViewModel);
+    public void onDetailClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
+        flightSearchPresenter.onSeeDetailItemClicked(flightSearchViewModel, adapterPosition);
         FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
         flightDetailViewModel.build(flightSearchViewModel);
         flightDetailViewModel.build(flightSearchPassDataViewModel);
@@ -661,7 +715,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void onRetryClicked() {
         getAdapter().clearAllElements();
-        actionFetchFlightSearchData();
+        flightSearchPresenter.initialize();
     }
 
     public void onResetFilterClicked() {
@@ -721,6 +775,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_NEED_REFRESH_AIRLINE, needRefreshAirline);
         outState.putParcelable(SAVED_FILTER_MODEL, flightFilterModel);
         outState.putInt(SAVED_SORT_OPTION, selectedSortOption);
         outState.putParcelable(SAVED_AIRPORT_COMBINE, airportCombineModelList);
@@ -783,6 +838,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     protected boolean isLoadMoreEnabledByDefault() {
         return false;
     }
+
 
     public interface OnFlightSearchFragmentListener {
         void selectFlight(String selectedFlightID);

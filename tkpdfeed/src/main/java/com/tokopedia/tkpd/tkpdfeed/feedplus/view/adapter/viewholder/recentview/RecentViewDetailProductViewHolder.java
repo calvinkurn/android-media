@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.recentview;
 
+import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -128,12 +130,12 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
         shopName.setText(MethodChecker.fromHtml(element.getShopName()));
 
         if (element.isOfficial()) {
-            iconLocation.setImageDrawable(ContextCompat.getDrawable(MainApplication.getAppContext(),com.tokopedia.core.R.drawable.ic_icon_authorize_grey));
+            iconLocation.setImageDrawable(AppCompatResources.getDrawable(MainApplication.getAppContext(),com.tokopedia.core.R.drawable.ic_icon_authorize_grey));
             shopLocation.setText(MainApplication.getAppContext().getResources().getString(R.string.authorized)
             );
         } else {
             shopLocation.setText(element.getShopLocation());
-            iconLocation.setImageDrawable(ContextCompat.getDrawable(MainApplication.getAppContext(),com.tokopedia.core.R.drawable.ic_icon_location_grey));
+            iconLocation.setImageDrawable(AppCompatResources.getDrawable(MainApplication.getAppContext(), com.tokopedia.core.R.drawable.ic_icon_location_grey));
         }
 
         mainView.setOnClickListener(new View.OnClickListener() {

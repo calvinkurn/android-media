@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Base64;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -73,6 +74,7 @@ public class AuthUtil {
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
 
     public static final String HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps:";
+    private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
 
     public static Map<String, String> generateHeaderCartCheckout(String path,
                                                                  String strParam,
@@ -576,5 +578,22 @@ public class AuthUtil {
             finalKey = finalKey + Character.toString((char) i);
         }
         return finalKey;
+    }
+
+    public static String getHeaderRequestReactNative(Context context) {
+        SessionHandler session = new SessionHandler(context);
+        Map<String, String> header = new HashMap<>();
+        header.put(HEADER_TKPD_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(context));
+        header.put(HEADER_TKPD_USER_ID, session.isV4Login() ? session.getLoginID() : "0");
+        header.put(HEADER_ACCOUNTS_AUTHORIZATION, String.format("Bearer %s", SessionHandler.getAccessToken(context)));
+        header.put(PARAM_OS_TYPE, "1");
+        header.put(HEADER_DEVICE, String.format("android-%s", GlobalConfig.VERSION_NAME));
+        header.put(HEADER_USER_ID, session.isV4Login() ? session.getLoginID() : "0");
+        header.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        header.put(HEADER_X_TKPD_USER_ID, session.isV4Login() ? session.getLoginID() : "0");
+        header.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        header.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+        Gson gson = new Gson();
+        return gson.toJson(header);
     }
 }

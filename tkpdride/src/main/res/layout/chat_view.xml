@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ListView
+        android:id="@+id/chat_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/input_frame"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        android:paddingBottom="@dimen/padding_ms"
+        android:stackFromBottom="false"
+        android:transcriptMode="alwaysScroll" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/sendButton"
+        android:layout_width="@dimen/chat_fab_width"
+        android:layout_height="@dimen/chat_fab_height"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/margin_ms"
+        android:elevation="1dp"
+        app:srcCompat="@drawable/ic_send_white"
+        app:elevation="1dp"
+        app:layout_anchorGravity="bottom|right|end" />
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/input_frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="@dimen/margin_ms"
+        android:layout_marginLeft="@dimen/margin_ms"
+        android:layout_marginStart="@dimen/margin_ms"
+        android:layout_toLeftOf="@id/sendButton"
+        android:layout_toStartOf="@id/sendButton"
+        android:descendantFocusability="beforeDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="1dp"
+        app:contentPadding="@dimen/padding_vvvs">
+
+        <EditText
+            android:id="@+id/input_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:background="@null"
+            android:hint="@string/default_input_hint"
+            android:inputType="text"
+            android:maxLines="5"
+            android:minHeight="@dimen/chat_view_min_height"
+            android:paddingBottom="@dimen/padding_vvs"
+            android:paddingLeft="@dimen/padding_ms"
+            android:paddingRight="@dimen/padding_ms"
+            android:paddingTop="@dimen/padding_vvs"
+            android:textColor="@color/black"
+            android:textColorHint="@color/grey_300"
+            android:textSize="@dimen/default_input_text_size" />
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

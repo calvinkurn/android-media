@@ -8,7 +8,9 @@ import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.ValidationTextUtil;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
@@ -152,10 +154,13 @@ public class NewOrderImpl extends NewOrder {
     @Override
     public void moveToDetail(int position) {
         if (listDatas != null && position >= 0 && listDatas.get(position) != null) {
-            Intent intent = new Intent(context, SellingDetailActivity.class);
-            intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(listDatas.get(position)));
-            intent.putExtra(SellingDetailActivity.DATA_EXTRA2, modelNewOrder.Permission);
-            intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.NEW_ORDER);
+            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                    .goToOrderDetail(
+                            context,
+                            listDatas.get(position)
+                                    .getOrderDetail()
+                                    .getDetailOrderId()
+                                    .toString());
             view.moveToDetailResult(intent, FragmentSellingNewOrder.PROCESS_ORDER);
         }
     }

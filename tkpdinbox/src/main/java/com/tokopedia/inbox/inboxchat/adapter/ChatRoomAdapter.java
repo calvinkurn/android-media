@@ -14,7 +14,12 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
+import com.tokopedia.inbox.inboxchat.viewholder.AttachedProductViewHolder;
+import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
@@ -23,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by stevenfredian on 9/27/17.
@@ -61,6 +67,17 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             showHour(holder.itemView.getContext(), holder.getAdapterPosition());
         }
         holder.bind(list.get(holder.getAdapterPosition()));
+    }
+
+    @Override
+    public void onViewRecycled(AbstractViewHolder holder) {
+        super.onViewRecycled(holder);
+        if(holder instanceof MyChatViewHolder) {
+            ((MyChatViewHolder) holder).onViewRecycled();
+        }
+        else if(holder instanceof AttachedProductViewHolder) {
+            ((AttachedProductViewHolder) holder).onViewRecycled();
+        }
     }
 
     private void showTime(Context context, int position) {
@@ -175,11 +192,51 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     }
 
+    public void removeLastProductWithId(Integer productId){
+        if ((list != null && !list.isEmpty())) {
+            ListIterator<Visitable> iterator = list.listIterator(list.size());
+            while (iterator.hasPrevious()) {
+                int position = iterator.previousIndex();
+                Visitable visitable = iterator.previous();
+                Attachment attachment = getProductAttachmentFromVisitable(visitable);
+                if(isAttachmentMatched(attachment,productId)) {
+                    iterator.remove();
+                    notifyItemRemoved(position);
+                }
+            }
+        }
+    }
+
+    private boolean isAttachmentMatched(Attachment attachment, Integer productId){
+        if (attachment != null) {
+            if (attachment.getId().equals(productId.toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Attachment getProductAttachmentFromVisitable(Visitable visitable){
+        if ((visitable instanceof AttachProductViewModel)) {
+            AttachProductViewModel viewModel = (AttachProductViewModel) visitable;
+            if (viewModel.getAttachment() != null && viewModel.getAttachment().getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)) {
+                return viewModel.getAttachment();
+            }
+        }
+        return null;
+    }
+
     public void removeLast() {
         if (list != null && !list.isEmpty()) {
             list.remove(list.size() - 1);
             notifyItemRemoved(list.size());
         }
+    }
+
+    public void remove(MyChatViewModel model) {
+        int position = list.indexOf(model);
+        list.remove(model);
+        notifyItemRemoved(position);
     }
 
     public void addReply(Visitable item) {
@@ -254,5 +311,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public boolean isTyping() {
         return isTyping;
+    }
+
+    public void showRetryFor(MyChatViewModel model, boolean b) {
+        int position = list.indexOf(model);
+        ((MyChatViewModel) list.get(position)).setRetry(true);
+        notifyItemChanged(position);
     }
 }

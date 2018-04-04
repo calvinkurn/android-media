@@ -47,4 +47,9 @@ public interface MojitoAuthApi {
     Observable<Response<WishlistData>> getWishlist(@Path("userId") String UserId,
                                                    @Query("count") int Count,
                                                    @Query("page") int Page);
+
+    @GET(TkpdBaseURL.Mojito.PATH_RECENT_VIEW_UPDATE)
+    Observable<Response<TkpdResponse>> updateRecentView(
+            @Query("product_id") String productId, @Query("user_id") String userId
+    );
 }

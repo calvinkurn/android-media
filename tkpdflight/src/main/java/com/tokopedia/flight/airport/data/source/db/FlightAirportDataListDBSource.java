@@ -2,6 +2,7 @@ package com.tokopedia.flight.airport.data.source.db;
 
 import android.text.TextUtils;
 
+import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
@@ -18,6 +19,7 @@ import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -109,28 +111,12 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
     @Override
     public Observable<List<FlightAirportDB>> getData(HashMap<String, Object> params) {
         final String id = FlightAirportDataListSource.getIDFromMap(params);
-        final String idCountry = FlightAirportDataListSource.getIdCountryFromMap(params);
         if (TextUtils.isEmpty(id)) {
-            final String queryText = FlightAirportDataListSource.getQueryFromMap(params);
+            final ConditionGroup conditions = buildQuery(params);
             return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightAirportDB>>() {
                 @Override
                 public void call(Subscriber<? super List<FlightAirportDB>> subscriber) {
-                    ConditionGroup conditions = ConditionGroup.clause();
-                    if (!TextUtils.isEmpty(idCountry)) {
-                        conditions.and(FlightAirportDB_Table.country_id.eq(idCountry));
-                    }
-                    String queryLike = "%" + queryText + "%";
-                    if (!TextUtils.isEmpty(queryText)) {
-                        ConditionGroup likeConditionsGroup = ConditionGroup.clause();
-                        likeConditionsGroup.or(FlightAirportDB_Table.country_id.like(queryLike))
-                                .or(FlightAirportDB_Table.country_name.like(queryLike))
-                                .or(FlightAirportDB_Table.city_name.like(queryLike))
-                                .or(FlightAirportDB_Table.city_code.like(queryLike))
-                                .or(FlightAirportDB_Table.airport_id.like(queryLike))
-                                .or(FlightAirportDB_Table.airport_name.like(queryLike))
-                                .or(FlightAirportDB_Table.aliases.like(queryLike));
-                        conditions.and(likeConditionsGroup);
-                    }
+
                     List<OrderBy> orderBies = new ArrayList<OrderBy>();
                     orderBies.add(OrderBy.fromProperty(FlightAirportDB_Table.country_name).ascending());
                     orderBies.add(OrderBy.fromProperty(FlightAirportDB_Table.city_name).ascending());
@@ -155,13 +141,36 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
         }
     }
 
+    private ConditionGroup buildQuery(HashMap<String, Object> params) {
+        String idCountry = FlightAirportDataListSource.getIdCountryFromMap(params);
+        String queryText = FlightAirportDataListSource.getQueryFromMap(params);
+
+        ConditionGroup conditions = ConditionGroup.clause();
+        if (!TextUtils.isEmpty(idCountry)) {
+            conditions.and(FlightAirportDB_Table.country_id.eq(idCountry));
+        }
+        if (!TextUtils.isEmpty(queryText)) {
+            String queryLike = "%" + queryText + "%";
+            ConditionGroup likeConditionsGroup = ConditionGroup.clause();
+            likeConditionsGroup.or(FlightAirportDB_Table.country_id.like(queryLike))
+                    .or(FlightAirportDB_Table.country_name.like(queryLike))
+                    .or(FlightAirportDB_Table.city_name.like(queryLike))
+                    .or(FlightAirportDB_Table.city_code.like(queryLike))
+                    .or(FlightAirportDB_Table.airport_id.like(queryLike))
+                    .or(FlightAirportDB_Table.airport_name.like(queryLike))
+                    .or(FlightAirportDB_Table.aliases.like(queryLike));
+            conditions.and(likeConditionsGroup);
+        }
+        return conditions;
+    }
+
     @Override
     public Observable<Integer> getDataCount(HashMap<String, Object> params) {
-        // TODO use param to filter
+        final ConditionGroup conditions = buildQuery(params);
         return Observable.unsafeCreate(new Observable.OnSubscribe<Integer>() {
             @Override
             public void call(Subscriber<? super Integer> subscriber) {
-                long count = new Select(Method.count()).from(getDBClass()).count();
+                long count = new Select(Method.count()).from(getDBClass()).where(conditions).count();
                 subscriber.onNext((int) count);
             }
         });
@@ -293,6 +302,29 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                 FlightAirportDB flightAirportDBList = new Select()
                         .from(FlightAirportDB.class)
                         .where(FlightAirportDB_Table.airport_id.like(queryLike))
+                        .querySingle();
+                subscriber.onNext(flightAirportDBList);
+            }
+        });
+    }
+
+    public Observable<FlightAirportDB> getAirport(Map<String, String> params) {
+        final ConditionGroup conditionGroup = ConditionGroup.clause();
+
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if (entry.getKey().equals(FlightAirportDataListSource.CITY_CODE)) {
+                conditionGroup.or(FlightAirportDB_Table.city_code.eq(entry.getValue()));
+            } else if (entry.getKey().equals(FlightAirportDataListSource.AIRPORT_ID)) {
+                conditionGroup.or(FlightAirportDB_Table.airport_id.eq(entry.getValue()));
+            }
+        }
+
+        return Observable.unsafeCreate(new Observable.OnSubscribe<FlightAirportDB>() {
+            @Override
+            public void call(Subscriber<? super FlightAirportDB> subscriber) {
+                FlightAirportDB flightAirportDBList = new Select()
+                        .from(FlightAirportDB.class)
+                        .where(conditionGroup)
                         .querySingle();
                 subscriber.onNext(flightAirportDBList);
             }

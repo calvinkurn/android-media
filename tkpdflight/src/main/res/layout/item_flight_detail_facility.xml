@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
+    android:paddingTop="@dimen/padding_small"
     android:orientation="vertical">
 
-    <include layout="@layout/include_header_detail_flight"
-        android:paddingTop="0dp"/>
+    <include layout="@layout/include_header_detail_flight"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,4 +61,12 @@
 
         </LinearLayout>
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/container_pnr"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:background="@color/black_twenty_percent" />
+
 </LinearLayout>

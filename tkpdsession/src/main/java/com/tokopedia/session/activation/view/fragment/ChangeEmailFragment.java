@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.di.ChangeEmailDependencyInjector;
 import com.tokopedia.session.activation.view.presenter.ChangeEmailPresenter;

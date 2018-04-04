@@ -1,19 +1,12 @@
 package com.tokopedia.tokocash.qrpayment.presentation.presenter;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.exception.HttpErrorException;
-import com.tokopedia.core.network.exception.ResponseDataNullException;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.PostQrPaymentUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.contract.QrPaymentContract;
 import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
-
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -66,17 +59,7 @@ public class QrPaymentPresenter extends BaseDaggerPresenter<QrPaymentContract.Vi
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                    getView().showErrorBalanceTokoCash(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-                } else if (e instanceof SocketTimeoutException) {
-                    getView().showErrorBalanceTokoCash(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                } else if (e instanceof ResponseDataNullException) {
-                    getView().showErrorBalanceTokoCash(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-                    getView().showErrorBalanceTokoCash(e.getMessage());
-                } else {
-                    getView().showErrorBalanceTokoCash(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+                getView().showErrorBalanceTokoCash(e);
             }
 
             @Override

@@ -1,7 +1,7 @@
 package com.tokopedia.session.login.loginphonenumber.view.presenter;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.login.loginphonenumber.domain.interactor.LoginPhoneNumberUseCase;
 import com.tokopedia.session.login.loginphonenumber.view.subscriber.LoginTokoCashSubscriber;
@@ -45,7 +45,7 @@ public class ChooseTokocashAccountPresenter extends BaseDaggerPresenter<ChooseTo
     }
 
     @Override
-    public void clearUserData() {
-        sessionHandler.clearUserData(MainApplication.getAppContext());
+    public void clearToken() {
+        sessionHandler.clearToken();
     }
 }

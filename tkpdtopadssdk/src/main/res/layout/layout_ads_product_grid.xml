@@ -74,8 +74,8 @@
 
         <ImageView
             android:id="@id/rating"
-            android:layout_width="@dimen/rating_width"
-            android:layout_height="@dimen/rating_height"
+            android:layout_width="@dimen/topads_rating_width"
+            android:layout_height="@dimen/topads_rating_height"
             android:visibility="gone" />
 
         <TextView
@@ -132,17 +132,17 @@
                     android:layout_width="17dp"
                     android:layout_height="14dp"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/ic_toa" />
+                    app:srcCompat="@drawable/ic_toa" />
 
             </RelativeLayout>
         </LinearLayout>
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:drawableLeft="@drawable/ic_place_black_24dp"
+            app:drawableLeftCompat="@drawable/ic_place_grey_24dp"
             android:gravity="center_vertical"
             android:minHeight="25dp"
             android:textColor="@color/black_70"

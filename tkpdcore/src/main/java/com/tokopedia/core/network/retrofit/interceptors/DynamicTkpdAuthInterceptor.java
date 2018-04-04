@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 import com.google.android.gms.auth.api.Auth;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import java.io.IOException;

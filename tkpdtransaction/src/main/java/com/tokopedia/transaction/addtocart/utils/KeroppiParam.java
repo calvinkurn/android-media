@@ -51,14 +51,18 @@ public class KeroppiParam {
         params.put(UT, shop.getUt() + "");
         params.put(PRODUCT_INSURANCE, productDetail.getProductMustInsurance() == 1 ? "1" : "0");
         params.put(INSURANCE, "1");
-        params.put(ORDER_VALUE, getRawPrice(productDetail.getProductPrice()));
+        params.put(ORDER_VALUE, getRawStringPrice(productDetail.getProductPrice()));
         params.put(CAT_ID, productDetail.getProductCatId());
 
         return params;
     }
 
-    private static String getRawPrice(String formattedPrice) {
+    private static String getRawStringPrice(String formattedPrice) {
         return formattedPrice.replace("Rp ", "").replace(".", "");
+    }
+
+    private static int getRawIntPrice(String rawStringPrice) {
+        return Integer.parseInt(rawStringPrice);
     }
 
     public static TKPDMapParam<String, String> paramsKeroOrderData(OrderData orderData) {
@@ -82,7 +86,8 @@ public class KeroppiParam {
         params.put(CAT_ID, orderData.getCatId());
         params.put(INSURANCE, "1");
         params.put(PRODUCT_INSURANCE, isProductMustInsurance(orderData));
-        String rawPrice = getRawPrice(orderData.getPriceTotal());
+        String rawPrice = String.valueOf(getRawIntPrice(getRawStringPrice(orderData.getPriceItem())) *
+                orderData.getQuantity());
         params.put(ORDER_VALUE, rawPrice);
 
         return params;

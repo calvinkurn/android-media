@@ -25,14 +25,12 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
@@ -645,9 +643,9 @@ public class HotlistFragment extends SearchSectionFragment
 
     private void openLoginActivity(String productID) {
         Bundle extras = new Bundle();
-        extras.putInt(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         extras.putString("product_id", productID);
-        Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
+        Intent intent = ((DiscoveryRouter) MainApplication.getAppContext()).getLoginIntent
+                (getActivity());
         intent.putExtras(extras);
         startActivity(intent);
     }

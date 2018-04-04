@@ -23,7 +23,7 @@
             android:layout_width="@dimen/img_thumb_l"
             android:layout_height="@dimen/img_thumb_l"
             android:layout_centerInParent="true"
-            android:src="@drawable/ic_image_unavailable" />
+            app:srcCompat="@drawable/ic_image_unavailable" />
 
     </RelativeLayout>
 
@@ -85,6 +85,6 @@
             android:scaleType="centerInside"
             android:padding="8dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_trash_can"/>
+            app:srcCompat="@drawable/ic_trash_can"/>
     </FrameLayout>
 </LinearLayout>

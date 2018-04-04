@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/shop_topads_card"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:gravity="center_horizontal"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/shop_topads_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/container"
@@ -18,9 +19,7 @@
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_margin="@dimen/margin_small"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:orientation="horizontal">
@@ -96,11 +95,11 @@
         android:orientation="horizontal"
         android:padding="@dimen/padding_small">
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/fav_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_add_black_24dp"
+            app:drawableLeftCompat="@drawable/ic_add_black_24dp"
             android:gravity="center"
             android:textColor="@color/white"/>
     </LinearLayout>

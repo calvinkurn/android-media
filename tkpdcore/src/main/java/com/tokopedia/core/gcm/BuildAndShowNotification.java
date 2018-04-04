@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -25,9 +26,13 @@ import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_ICON;
@@ -122,8 +127,7 @@ public class BuildAndShowNotification {
             downloadImageAndShowNotification(applinkNotificationPass, mBuilder, configuration);
         } else if(!TextUtils.isEmpty(applinkNotificationPass.getBannerUrl())){
             configureLargeImageNotification(applinkNotificationPass, mBuilder, configuration);
-        } else
-            {
+        } else {
             mBuilder.setLargeIcon(
                     BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
             );
@@ -150,6 +154,21 @@ public class BuildAndShowNotification {
                     public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                         mBuilder.setLargeIcon(
                                 ImageHandler.getRoundedCornerBitmap(resource, 60)
+                        );
+
+                        NotificationManager mNotificationManager =
+                                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                        Notification notif = mBuilder.build();
+                        if (configuration.isVibrate() && configuration.isBell()) {
+                            notif.defaults |= Notification.DEFAULT_VIBRATE;
+                        }
+                        mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        mBuilder.setLargeIcon(
+                                BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
                         );
 
                         NotificationManager mNotificationManager =
@@ -240,9 +259,10 @@ public class BuildAndShowNotification {
         NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-        mBuilder.setContentTitle(applinkNotificationPass.getTitle());
+
+        mBuilder.setContentTitle(MethodChecker.fromHtml(applinkNotificationPass.getTitle()));
         mBuilder.setContentText(applinkNotificationPass.getDescription());
-        bigStyle.bigText(applinkNotificationPass.getDescription());
+        bigStyle.bigText(MethodChecker.fromHtml(applinkNotificationPass.getDescription()));
         mBuilder.setStyle(bigStyle);
         mBuilder.setTicker(applinkNotificationPass.getTicker());
 
@@ -351,8 +371,8 @@ public class BuildAndShowNotification {
                                             true
                                     )
                             );
-                            bigStyle.setBigContentTitle(applinkNotificationPass.getTitle());
-                            bigStyle.setSummaryText(applinkNotificationPass.getDescription());
+                            bigStyle.setBigContentTitle(MethodChecker.fromHtml(applinkNotificationPass.getTitle()));
+                            bigStyle.setSummaryText(MethodChecker.fromHtml(applinkNotificationPass.getDescription()));
 
                             mBuilder.setStyle(bigStyle);
 
@@ -427,5 +447,16 @@ public class BuildAndShowNotification {
 
     public interface OnGetFileListener {
         void onFileReady(File file);
+    }
+
+    private Bitmap getBitmap(String url) {
+        try {
+            return Glide.with(mContext).load(url)
+                    .asBitmap()
+                    .into(60, 60)
+                    .get(3, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e ) {
+            return BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon());
+        }
     }
 }

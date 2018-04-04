@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 @Deprecated
 public class TouchViewPager extends ViewPager {
     private boolean AllowPageSwitching = true;
+    private boolean isSmoothScroll = true;
 
     public TouchViewPager(Context context) {
         super(context);
@@ -50,4 +51,17 @@ public class TouchViewPager extends ViewPager {
         }
     }
 
+    public void setSmoothScroll(boolean smoothScroll) {
+        isSmoothScroll = smoothScroll;
+    }
+
+    @Override
+    public void setCurrentItem(int item) {
+        super.setCurrentItem(item, isSmoothScroll);
+    }
+
+    @Override
+    public void setCurrentItem(int item, boolean smoothScroll) {
+        super.setCurrentItem(item, isSmoothScroll);
+    }
 }

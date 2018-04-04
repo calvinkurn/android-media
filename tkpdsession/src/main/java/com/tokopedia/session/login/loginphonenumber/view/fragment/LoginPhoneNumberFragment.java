@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +16,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
+import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.session.login.loginphonenumber.view.presenter.LoginPhoneNumberPresenter;
@@ -64,7 +66,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_LOGIN_PHONE_NUMBER;
+        return LoginPhoneNumberAnalytics.Screen.SCREEN_LOGIN_PHONE_NUMBER;
     }
 
     @Override
@@ -114,10 +116,10 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
             }
         });
 
-
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                errorText.setText("");
                 UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
                 presenter.loginWithPhoneNumber(phoneNumber.getText().toString());
             }
@@ -136,7 +138,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void goToVerifyAccountPage(String phoneNumber) {
-        startActivityForResult(VerificationActivity.getSmsVerificationIntent(
+        startActivityForResult(VerificationActivity.getLoginTokoCashVerificationIntent(
                 getActivity(),
                 phoneNumber,
                 getListVerificationMethod()),
@@ -164,6 +166,11 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
                     .NORMAL_PROGRESS);
 
         progressDialog.showDialog();
+    }
+
+    @Override
+    public void onForbidden() {
+        ForbiddenActivity.startActivity(getActivity());
     }
 
     private ArrayList<MethodItem> getListVerificationMethod() {

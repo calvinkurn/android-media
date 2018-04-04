@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.purchase.detail.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -23,6 +26,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -38,31 +42,43 @@ import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
 import com.tokopedia.transaction.purchase.detail.di.DaggerOrderDetailComponent;
 import com.tokopedia.transaction.purchase.detail.di.OrderDetailComponent;
+import com.tokopedia.transaction.purchase.detail.dialog.AcceptOrderDialog;
+import com.tokopedia.transaction.purchase.detail.dialog.AcceptPartialOrderDialog;
 import com.tokopedia.transaction.purchase.detail.dialog.ComplaintDialog;
 import com.tokopedia.transaction.purchase.detail.dialog.FinishOrderDialog;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelSearchFragment;
+import com.tokopedia.transaction.purchase.detail.fragment.CancelShipmentFragment;
+import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
+import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
+import com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 
+import java.util.List;
+
 import javax.inject.Inject;
+
+import static com.tokopedia.transaction.purchase.detail.fragment.RejectOrderBaseFragment.FRAGMENT_REJECT_ORDER_SUB_MENU_TAG;
+import static com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment.REJECT_ORDER_MENU_FRAGMENT_TAG;
+import static com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment.INFO_FRAGMENT_TAG;
 
 /**
  * Created by kris on 11/2/17. Tokopedia
  */
 
 public class OrderDetailActivity extends TActivity
-        implements OrderDetailView,
-        FinishOrderDialog.FinishOrderDialogListener,
-        ComplaintDialog.ComplaintDialogListener,
-        CancelOrderFragment.CancelOrderListener,
-        CancelSearchFragment.CancelSearchReplacementListener {
+        implements OrderDetailView {
 
     public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
+    private static final String REJECT_ORDER_FRAGMENT_TAG = "reject_order_fragment_teg";
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     private static final String EXTRA_USER_MODE = "EXTRA_USER_MODE";
+    private static final int CONFIRM_SHIPMENT_REQUEST_CODE = 16;
     private static final int BUYER_MODE = 1;
     private static final int SELLER_MODE = 2;
 
@@ -111,6 +127,8 @@ public class OrderDetailActivity extends TActivity
     }
 
     private void initView(OrderDetailData data) {
+        setInsuranceNotificationView(data);
+        setRejectionNoticeLayout(data);
         setStatusView(data);
         setDriverInfoView(data);
         setItemListView(data);
@@ -119,6 +137,29 @@ public class OrderDetailActivity extends TActivity
         setPriceView(data);
         setButtonView(data);
         setPickupPointView(data);
+    }
+
+    private void setInsuranceNotificationView(OrderDetailData data) {
+        if(data.isShowInsuranceNotification() && getExtraUserMode() == SELLER_MODE) {
+            ViewGroup notificationLayout = findViewById(R.id.notification_layout);
+            TextView notificationTextView = findViewById(R.id.notification_text_view);
+            notificationLayout.setVisibility(View.VISIBLE);
+            notificationTextView.setText(Html.fromHtml(data.getInsuranceNotification()));
+        }
+    }
+
+    private void setRejectionNoticeLayout(OrderDetailData data) {
+        if (data.isRequestCancel()) {
+            ViewGroup rejectionNoticeLayout = findViewById(R.id.rejection_notice_layout);
+            TextView rejectionNoticeSubtitle = findViewById(R.id.rejection_notice_subtitle);
+            rejectionNoticeLayout.setVisibility(View.VISIBLE);
+            rejectionNoticeSubtitle.setText(
+                    rejectionNoticeSubtitle
+                            .getText()
+                            .toString()
+                            .replace("#", Html.fromHtml(data.getRequestCancelReason()))
+            );
+        }
     }
 
     private void setStatusView(OrderDetailData data) {
@@ -135,21 +176,6 @@ public class OrderDetailActivity extends TActivity
         } else {
             statusLayout.setVisibility(View.GONE);
         }
-    }
-
-    private void setPriceView(OrderDetailData data) {
-        TextView itemAmount = findViewById(R.id.item_amount);
-        TextView productPrice = findViewById(R.id.product_price);
-        TextView deliveryPrice = findViewById(R.id.delivery_price);
-        TextView insurancePrice = findViewById(R.id.insurance_price);
-        TextView additionalFee = findViewById(R.id.additional_fee);
-        TextView totalPayment = findViewById(R.id.total_payment);
-        itemAmount.setText(data.getTotalItemQuantity());
-        productPrice.setText(data.getProductPrice());
-        deliveryPrice.setText(data.getDeliveryPrice());
-        insurancePrice.setText(data.getInsurancePrice());
-        additionalFee.setText(data.getAdditionalFee());
-        totalPayment.setText(data.getTotalPayment());
     }
 
     private void setDriverInfoView(OrderDetailData data) {
@@ -227,6 +253,24 @@ public class OrderDetailActivity extends TActivity
         }
     }
 
+    private void setPriceView(OrderDetailData data) {
+        TextView itemAmount = findViewById(R.id.item_amount);
+        TextView itemTotalWeight = findViewById(R.id.item_total_weight);
+        TextView productPrice = findViewById(R.id.product_price);
+        TextView deliveryPrice = findViewById(R.id.delivery_price);
+        TextView insurancePrice = findViewById(R.id.insurance_price);
+        TextView additionalFee = findViewById(R.id.additional_fee);
+        TextView totalPayment = findViewById(R.id.total_payment);
+        itemAmount.setText(data.getTotalItemQuantity());
+        itemTotalWeight.setText(getString(R.string.weight_place_holder)
+                .replace("WEIGHT", data.getTotalItemWeight()));
+        productPrice.setText(data.getProductPrice());
+        deliveryPrice.setText(data.getDeliveryPrice());
+        insurancePrice.setText(data.getInsurancePrice());
+        additionalFee.setText(data.getAdditionalFee());
+        totalPayment.setText(data.getTotalPayment());
+    }
+
 
     private void setButtonView(OrderDetailData data) {
         OrderDetailButtonLayout buttonLayout = findViewById(R.id.button_layout);
@@ -249,18 +293,32 @@ public class OrderDetailActivity extends TActivity
 
     private void setDescriptionView(OrderDetailData data) {
         TextView descriptionDate = findViewById(R.id.description_date);
-        TextView descriptionBuyerName = findViewById(R.id.description_buyer_name);
+        if (getExtraUserMode() == SELLER_MODE) setBuyerInfo(data);
+        else setShopInfo(data);
         TextView descriptionCourierName = findViewById(R.id.description_courier_name);
         TextView descriptionShippingAddess = findViewById(R.id.description_shipping_address);
         TextView descriptionPartialOrderStatus = findViewById(R.id.description_partial_order_status);
         descriptionDate.setText(data.getPurchaseDate());
-        descriptionBuyerName.setText(data.getBuyerName());
         descriptionCourierName.setText(data.getCourierName());
         descriptionShippingAddess.setText(data.getShippingAddress());
         descriptionPartialOrderStatus.setText(data.getPartialOrderStatus());
         setResponseTimeView(data);
         setPreorderView(data);
         setDropshipperView(data);
+    }
+
+    private void setShopInfo(OrderDetailData data) {
+        ViewGroup descriptionSellerLayout = findViewById(R.id.seller_description_layout);
+        TextView descriptionShopName = findViewById(R.id.description_shop_name);
+        descriptionShopName.setText(data.getShopName());
+        descriptionSellerLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void setBuyerInfo(OrderDetailData data) {
+        ViewGroup descriptionBuyerLayout = findViewById(R.id.buyer_description_layout);
+        TextView descriptionBuyerName = findViewById(R.id.description_buyer_name);
+        descriptionBuyerLayout.setVisibility(View.VISIBLE);
+        descriptionBuyerName.setText(data.getBuyerUserName());
     }
 
     private void setDropshipperView(OrderDetailData data) {
@@ -333,6 +391,7 @@ public class OrderDetailActivity extends TActivity
                 Intent intent = OrderHistoryActivity
                         .createInstance(OrderDetailActivity.this, orderId, getExtraUserMode());
                 startActivity(intent);
+                overridePendingTransition(0, R.anim.right_to_left_out);
             }
         };
     }
@@ -401,17 +460,29 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onAskBuyer(OrderDetailData orderData) {
         //TODO later change get Shop Logo with get buyer logo once available
+        String id;
+        String name;
+        String logoUrl;
+        if(getExtraUserMode() == SELLER_MODE) {
+            id = orderData.getBuyerId();
+            name = orderData.getBuyerUserName();
+            logoUrl = orderData.getBuyerLogo();
+        } else {
+            id = orderData.getShopId();
+            name = orderData.getShopName();
+            logoUrl = orderData.getShopLogo();
+        }
         Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
                 .getAskBuyerIntent(this,
-                        orderData.getShopId(),
-                        orderData.getShopName(),
+                        id,
+                        name,
                         orderData.getInvoiceNumber(),
                         MethodChecker.fromHtml(
                                 getString(R.string.dialog_message_ask_seller)
                                         .replace("XXX",
                                                 orderData.getInvoiceUrl())
                         ).toString(),
-                        TkpdInboxRouter.TX_ASK_BUYER, orderData.getShopLogo());
+                        TkpdInboxRouter.TX_ASK_BUYER, logoUrl);
         startActivity(intent);
     }
 
@@ -454,32 +525,77 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onSellerConfirmShipping(OrderDetailData data) {
-        //TODO Bundle important things here, dont put entire model in the bundle!!
+        Intent intent = ConfirmShippingActivity.createInstance(this, data);
+        startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }
 
     @Override
     public void onAcceptOrder(OrderDetailData data) {
-        //TODO Bundle important things here, dont put entire model in the bundle!!
+        AcceptOrderDialog dialog = AcceptOrderDialog.createDialog(data.getOrderId());
+        dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
+    }
+
+    @Override
+    public void onAcceptOrderPartially(OrderDetailData data) {
+        AcceptPartialOrderDialog dialog = AcceptPartialOrderDialog.createDialog(data);
+        dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
     }
 
     @Override
     public void onRequestPickup(OrderDetailData data) {
-        //TODO Bundle important things here, dont put entire model in the bundle!!
+        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
+            RequestPickupFragment requestPickupFragment = RequestPickupFragment
+                    .createFragment(data.getOrderId());
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                    .add(R.id.main_view, requestPickupFragment, VALIDATION_FRAGMENT_TAG)
+                    .commit();
+        }
     }
 
     @Override
     public void onChangeCourier(OrderDetailData data) {
-        //TODO Bundle important things here, dont put entire model in the bundle!!
+        //TODO Check Again Later
+        Intent intent = ConfirmShippingActivity.createChangeCourierInstance(this, data);
+        startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }
 
     @Override
     public void onRejectOrder(OrderDetailData data) {
-        //TODO Bundle important things here, dont put entire model in the bundle!!
+        //TODO Change LATER
+        if (getFragmentManager().findFragmentByTag(REJECT_ORDER_FRAGMENT_TAG) == null) {
+            RejectOrderFragment rejectOrderFragment = RejectOrderFragment
+                    .createFragment(data);
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                    .add(R.id.main_view, rejectOrderFragment, REJECT_ORDER_FRAGMENT_TAG)
+                    .commit();
+            toolbar.setTitle("");
+        }
+    }
+
+    @Override
+    public void onRejectShipment(OrderDetailData data) {
+        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
+            CancelShipmentFragment cancelShipmentFragment = CancelShipmentFragment
+                    .createFragment(data.getOrderId());
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                    .add(R.id.main_view, cancelShipmentFragment, VALIDATION_FRAGMENT_TAG)
+                    .commit();
+        }
     }
 
     @Override
     public void onChangeAwb(OrderDetailData data) {
-        //TODO Bundle important things here, dont put entire model in the bundle!!
+        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
+            ChangeAwbFragment changeAwbFragment = ChangeAwbFragment
+                    .createFragment(data.getOrderId(), data.getAwb());
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                    .add(R.id.main_view, changeAwbFragment, VALIDATION_FRAGMENT_TAG)
+                    .commit();
+        }
     }
 
     @Override
@@ -513,8 +629,56 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void showErrorSnackbar(String errorMessage) {
+    public void showSnackbar(String errorMessage) {
         NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    public void dismissSellerActionFragment() {
+        //Alternative 1 refresh activity
+        /*getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
+                .remove(getFragmentManager()
+                        .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
+        toolbar.setTitle(getString(R.string.title_detail_transaction));
+        onRefreshActivity();*/
+
+        //Alternative 2 close activity
+        setResult(Activity.RESULT_OK);
+        finish();
+    }
+
+    @Override
+    public void dismissRejectOrderActionFragment() {
+        /*if (getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG) != null) {
+            getFragmentManager().beginTransaction()
+                    .remove(getFragmentManager()
+                    .findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG)).commit();
+        }
+        getFragmentManager().beginTransaction()
+                .remove(getFragmentManager()
+                .findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG)).commit();
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
+                .remove(getFragmentManager()
+                .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();*/
+        Toast.makeText(
+                this, getString(R.string.default_success_message_reject_order),
+                Toast.LENGTH_LONG).show();
+        setResult(Activity.RESULT_OK);
+        finish();
+    }
+
+    @Override
+    public void onRefreshActivity() {
+        presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
+
+    }
+
+    @Override
+    public void dismissActivity() {
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     @Override
@@ -530,6 +694,13 @@ public class OrderDetailActivity extends TActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CONFIRM_SHIPMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            //TODO Alternative kalo mau langsung ganti status di halaman detail
+            //presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
+            //TODO Alternative kalo langsung balik ke halaman order list
+            setResult(Activity.RESULT_OK);
+            finish();
+        }
     }
 
     @Override
@@ -596,10 +767,106 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onBackPressed() {
-        setToolbarCancelSearch(getString(R.string.title_detail_transaction), R.drawable.ic_arrow_back_black);
-        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) != null) {
-            getFragmentManager().beginTransaction().remove(getFragmentManager()
-                    .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
+        if (getFragmentManager().findFragmentByTag(INFO_FRAGMENT_TAG) != null) {
+            removeFragmentOnBackPressed(INFO_FRAGMENT_TAG);
+        } else if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) != null) {
+            toolbar.setTitle(getString(R.string.title_detail_transaction));
+            removeFragmentOnBackPressed(VALIDATION_FRAGMENT_TAG);
+        } else if (getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG) != null) {
+            toolbar.setTitle("");
+            removeFragmentOnBackPressed(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG);
+        } else if (getFragmentManager().findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG) != null) {
+            removeFragmentOnBackPressed(REJECT_ORDER_MENU_FRAGMENT_TAG);
+        } else if (getFragmentManager().findFragmentByTag(REJECT_ORDER_FRAGMENT_TAG) != null) {
+            toolbar.setTitle(getString(R.string.title_detail_transaction));
+            removeFragmentOnBackPressed(REJECT_ORDER_FRAGMENT_TAG);
         } else super.onBackPressed();
+    }
+
+    private void removeFragmentOnBackPressed(String tag) {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
+                .remove(getFragmentManager()
+                        .findFragmentByTag(tag)).commit();
+    }
+
+    @Override
+    public void onAcceptOrder(String orderId) {
+        presenter.acceptOrder(this, orderId);
+    }
+
+    @Override
+    public void changeAwb(String orderId, String refNumber) {
+        presenter.confirmChangeAwb(this, orderId, refNumber);
+    }
+
+    @Override
+    public void onAcceptPartialOrderCreated(String orderId, String remark, String param) {
+        presenter.partialOrder(this, orderId, remark, param);
+    }
+
+    @Override
+    public void cancelShipment(String orderId, String notes) {
+        presenter.cancelShipping(this, orderId, notes);
+    }
+
+    @Override
+    public void onRejectEmptyStock(TKPDMapParam<String, String> param) {
+        presenter.rejectOrderGenericReason(this, param);
+    }
+
+    @Override
+    public void rejectOrderCourierReason(TKPDMapParam<String, String> param) {
+        presenter.rejectOrderGenericReason(this, param);
+    }
+
+    @Override
+    public void rejectOrderBuyerRequest(TKPDMapParam<String, String> rejectParam) {
+        presenter.rejectOrderGenericReason(this, rejectParam);
+    }
+
+    @Override
+    public void onClosedDateSelected(TKPDMapParam<String, String> rejectParam) {
+        presenter.rejectOrderGenericReason(this, rejectParam);
+    }
+
+    @Override
+    public void onRejectEmptyVarian(List<EmptyVarianProductEditable> editableList) {
+        presenter.rejectOrderChangeVarian(this, editableList);
+    }
+
+    @Override
+    public void onConfirmWeightPrice(List<WrongProductPriceWeightEditable> listOfEditable) {
+        presenter.rejectOrderChangeWeightPrice(this, listOfEditable);
+    }
+
+    @Override
+    public void onConfirmPickup(String orderId) {
+        presenter.processInstantCourierShipping(this, orderId);
+    }
+
+    @Override
+    public void onWebViewSuccessLoad() {
+
+    }
+
+    @Override
+    public void onWebViewErrorLoad() {
+
+    }
+
+    @Override
+    public void onWebViewProgressLoad() {
+
+    }
+
+    @Override
+    public void onRemoveTitle() {
+        toolbar.setTitle("");
+    }
+
+    @Override
+    public void onChangeTitle(String toolbarTitle) {
+        toolbar.setTitle(toolbarTitle);
     }
 }

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_100">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/id_toolbar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/white"
+                app:layout_behavior="com.tokopedia.events.view.behaviours.ToolBarBehaviour"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:subtitleTextAppearance="@style/EventToolbarTextStyle"
+                app:theme="@style/AppBarTheme"
+                app:titleTextAppearance="@style/EventToolbarTextStyle" />
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/activity_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/id_toolbar_container"
+            android:orientation="vertical">
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appbarlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent">
+
+                <android.support.design.widget.CollapsingToolbarLayout
+                    android:id="@+id/collasing_toolbar_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                    app:titleEnabled="false">
+
+
+                    <ImageView
+                        android:id="@+id/event_detail_banner"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/banner_height"
+                        android:scaleType="centerCrop"
+                        app:layout_collapseMode="pin" />
+
+
+                </android.support.design.widget.CollapsingToolbarLayout>
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <include layout="@layout/timings_location_card" />
+                    </FrameLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/divider_height_thin"
+                        android:background="@color/grey_100" />
+
+                    <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="1px"-->
+                    <!--android:background="?android:attr/listDivider" />-->
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingBottom="70dp">
+
+                        <include layout="@layout/terms_conditions" />
+                    </FrameLayout>
+
+                </LinearLayout>
+
+
+            </android.support.v4.widget.NestedScrollView>
+
+            <include
+                android:id="@+id/btn_book"
+                layout="@layout/btn_lanjutkan_event"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom" />
+        </android.support.design.widget.CoordinatorLayout>
+
+        <FrameLayout
+            android:id="@+id/progress_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black_12"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/prog_bar"
+                android:layout_width="@dimen/progbar_height"
+                android:layout_height="@dimen/progbar_height"
+                android:layout_gravity="center" />
+        </FrameLayout>
+    </RelativeLayout>
+</FrameLayout>

@@ -1,11 +1,10 @@
 package com.tokopedia.tokocash.historytokocash.presentation.contract;
 
-
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tokocash.historytokocash.presentation.model.HeaderHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -25,9 +24,9 @@ public interface TokoCashHistoryContract {
 
         void renderEmptyTokoCashHistory(List<HeaderHistory> headerHistoryList);
 
-        void renderErrorMessage(String message);
+        void renderErrorMessage(Throwable throwable);
 
-        void renderEmptyPage(String message);
+        void renderEmptyPage(Throwable throwable);
 
         void renderWaitingTransaction(TokoCashHistoryData tokoCashHistoryData);
 

@@ -1,6 +1,6 @@
 package com.tokopedia.otp.cotp.view.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.data.model.RequestOtpViewModel;
 

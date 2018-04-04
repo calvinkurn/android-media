@@ -7,8 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Menu;
 
+import com.tokopedia.core.network.entity.variant.Campaign;
+import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
-import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -59,7 +60,7 @@ public interface ProductDetailPresenter {
 
     void processToSendMessage(@NonNull Context context, @NonNull Intent intent);
 
-    void requestProductDetail(final @NonNull Context context, final @NonNull ProductPass productPass, int type, boolean forceNetwork);
+    void requestProductDetail(final @NonNull Context context, final @NonNull ProductPass productPass, int type, boolean forceNetwork, boolean useVariant);
 
     void requestFaveShop(@NonNull Context context, @NonNull String shopId, Integer productId);
 
@@ -81,17 +82,19 @@ public interface ProductDetailPresenter {
 
     void saveStateProductDetail(Bundle outState, String key, ProductDetailData value);
 
+    void saveStateProductVariant(Bundle outState, String key, ProductVariant value);
+
     void saveStateProductOthers(Bundle outState, String key, List<ProductOther> values);
 
     void saveStateVideoData(Bundle outState, String key, VideoData value);
 
-    void saveStateProductCampaign(Bundle outState, String key, ProductCampaign productCampaign);
+    void saveStateProductCampaign(Bundle outState, String key, Campaign productCampaign);
 
     void saveStatePromoWidget(Bundle outState, String key, PromoAttributes promoAttributes);
 
     void saveStateAppBarCollapsed(Bundle outState, String key, boolean isAppBarCollapsed);
 
-    void processStateData(Bundle savedInstanceState);
+    void processStateData(Bundle savedInstanceState, Context context);
 
     void processToCatalog(Context context, String catalogId);
 
@@ -108,4 +111,6 @@ public interface ProductDetailPresenter {
     void processGetGTMTicker();
 
     void onPromoAdsClicked(Context context, String shopId, int itemId, String userId);
+
+    void updateRecentView(final @NonNull Context context, final int productId);
 }

@@ -280,6 +280,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, Long.toString(ad.getGroupId()));
             intent.putExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, true);
+            intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true);
             startActivity(intent);
         }
     }

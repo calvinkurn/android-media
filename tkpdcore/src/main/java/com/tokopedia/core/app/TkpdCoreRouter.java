@@ -11,11 +11,14 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.util.SessionHandler;
+
+import rx.Observable;
 
 /**
  * Created by sebastianuskh on 12/8/16.
@@ -68,8 +71,6 @@ public interface TkpdCoreRouter {
 
     Intent getOnBoardingActivityIntent(Context context);
 
-    Intent getTrueCallerActivityIntent(Context context);
-
     Intent getPhoneVerificationActivityIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
@@ -83,8 +84,6 @@ public interface TkpdCoreRouter {
     void onLogout(AppComponent appComponent);
 
     void goToCreateMerchantRedirect(Context context);
-
-    void goToRegister(Context context);
 
     Intent getLoginIntent(Context context);
 
@@ -132,7 +131,7 @@ public interface TkpdCoreRouter {
 
     Intent getActivitySellingTransactionList(Context context);
 
-    Intent getActivitySellingTransactionOpportunity(Context context);
+    Intent getActivitySellingTransactionOpportunity(Context context, String query);
 
     Intent getHomeHotlistIntent(Context context);
 
@@ -143,10 +142,37 @@ public interface TkpdCoreRouter {
 
     Intent getResolutionCenterIntent(Context context);
 
+    Intent getResolutionCenterIntentBuyer(Context context);
+
+    Intent getResolutionCenterIntentSeller(Context context);
+
     String applink(Activity activity, String deeplink);
 
     Intent getKolFollowingPageIntent(Context context, int userId);
 
     Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
 
+    Intent getPhoneVerificationProfileIntent(Context context);
+
+    Intent getPhoneVerificationActivationIntent(Context context);
+
+    Intent getSellerHomeIntent(Activity activity);
+
+    Intent getLoginGoogleIntent(Context context);
+
+    Intent getLoginFacebookIntent(Context context);
+
+    Intent getLoginWebviewIntent(Context context, String name, String url);
+
+    Observable<TokoCashData> getTokoCashBalance();
+
+    Intent getTopProfileIntent(Context context, String userId);
+
+    Intent getGroupChatIntent(Context context, String channelUrl);
+
+    Intent getInboxChannelsIntent(Context context);
+
+    Intent getInboxMessageIntent(Context context);
+
+    void sendTrackingGroupChatLeftNavigation();
 }

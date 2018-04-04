@@ -23,7 +23,6 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -62,7 +61,9 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     private static final String TAG = "addressautocomplete";
     private static final String SHOW_AUTO_DETECT_LOCATION = "SHOW_AUTO_DETECT_LOCATION";
     private static final String SHOW_SELECT_LOCATION_ON_MAP = "SHOW_SELECT_LOCATION_ON_MAP";
+    private static final String SHOW_NEARBY_PLACES = "SHOW_NEARBY_PLACES";
     public static final int REQUEST_CHECK_LOCATION_SETTING_REQUEST_CODE = 101;
+
 
     @Inject
     PlaceAutoCompletePresenter mPresenter;
@@ -95,6 +96,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     OnFragmentInteractionListener mOnFragmentInteractionListener;
     private boolean showAutodetectLocation;
     private boolean showSelectLocationOnMap;
+    private boolean showNearbyPlaces;
 
     public interface OnFragmentInteractionListener {
         void onLocationSelected(PlacePassViewModel placeId);
@@ -102,11 +104,12 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
         void onSelectLocationOnMapSelected();
     }
 
-    public static Fragment newInstance(boolean showAutoDetectLocation, boolean showSelectLocationOnMap) {
+    public static Fragment newInstance(boolean showAutoDetectLocation, boolean showSelectLocationOnMap, boolean showNearbyPlaces) {
         PlaceAutocompleteFragment fragment = new PlaceAutocompleteFragment();
         Bundle arguments = new Bundle();
         arguments.putBoolean(SHOW_AUTO_DETECT_LOCATION, showAutoDetectLocation);
         arguments.putBoolean(SHOW_SELECT_LOCATION_ON_MAP, showSelectLocationOnMap);
+        arguments.putBoolean(SHOW_NEARBY_PLACES, showNearbyPlaces);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -122,6 +125,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
         showAutodetectLocation = getArguments().getBoolean(SHOW_AUTO_DETECT_LOCATION, true);
         showSelectLocationOnMap = getArguments().getBoolean(SHOW_SELECT_LOCATION_ON_MAP, false);
+        showNearbyPlaces = getArguments().getBoolean(SHOW_NEARBY_PLACES, false);
     }
 
     @Override
@@ -159,8 +163,13 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
                 CommonUtils.dumper("af : " + mAutocompleteEditText.getText().toString());
                 if (TextUtils.isEmpty(s.toString())) {
                     CommonUtils.dumper("Executed OTC M");
-                    setActiveMarketplaceSource();
-                    mPresenter.actionGetUserAddressesFromCache();
+                    if (showNearbyPlaces) {
+                        setActiveGooglePlaceSource();
+                        mPresenter.showNearbyPlaces();
+                    } else {
+                        setActiveMarketplaceSource();
+                        mPresenter.actionGetUserAddressesFromCache();
+                    }
                 } else {
                     setActiveGooglePlaceSource();
                     CommonUtils.dumper("Executed OTC G");
@@ -177,6 +186,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
         mAutoCompleteRecylerView.setHasFixedSize(true);
         mAutoCompleteRecylerView.setAdapter(mAdapter);
     }
+
     /**
      * This function handles location alert result, initiated from Activity class
      *
@@ -211,10 +221,10 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     @Override
     public void onPlaceSelected(PlaceAutoCompeleteViewModel address) {
         CommonUtils.closeKeyboard(getActivity(), mAutocompleteEditText.getWindowToken());
-        if(showAutodetectLocation) {
-            RideGATracking.eventClickSourceRecentAddress(getScreenName(),address.getAddress());
-        }else {
-            RideGATracking.eventClickDestinationRecentAddress(getScreenName(),address.getAddress());//14
+        if (showAutodetectLocation) {
+            RideGATracking.eventClickSourceRecentAddress(getScreenName(), address.getAddress());
+        } else {
+            RideGATracking.eventClickDestinationRecentAddress(getScreenName(), address.getAddress());//14
         }
 
         mPresenter.onPlaceSelected(address);
@@ -265,6 +275,11 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     @Override
     public void showAutoDetectLocationButton() {
         mAutoDetectLocationRelativeLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public boolean isShowNearbyPlaces() {
+        return showNearbyPlaces;
     }
 
     @Override
@@ -334,9 +349,9 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     @OnClick(R2.id.set_location_on_map_container)
     public void actionSelectLocationOnMapClicked() {
-        if(showAutodetectLocation) {
+        if (showAutodetectLocation) {
             RideGATracking.eventClickSourceOpenMap(getScreenName());
-        }else {
+        } else {
             RideGATracking.eventClickDestinationOpenMap(getScreenName());
         }
         mOnFragmentInteractionListener.onSelectLocationOnMapSelected();
@@ -456,7 +471,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     @Override
     public void sendAutoDetectGAEvent(PlacePassViewModel placePassViewModel) {
-        RideGATracking.eventClickAutDetectLocation(getScreenName(),placePassViewModel.getAddress()); //9
+        RideGATracking.eventClickAutDetectLocation(getScreenName(), placePassViewModel.getAddress()); //9
     }
 
     @OnClick(R2.id.iv_cross)

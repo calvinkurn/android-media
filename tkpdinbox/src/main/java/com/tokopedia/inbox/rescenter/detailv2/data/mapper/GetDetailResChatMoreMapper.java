@@ -1,9 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.data.mapper;
 
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ButtonResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationActionResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationAddressResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationAttachmentResponse;
@@ -16,17 +14,9 @@ import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.Conversati
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationShippingDetailResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationSolutionResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationTroubleResponse;
-import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.CustomerResponse;
-import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.DetailResChatResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.LastResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.LastSolutionResponse;
-import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.NextActionDetailResponse;
-import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.NextActionDetailStepResponse;
-import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.NextActionResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.OrderResponse;
-import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ResolutionResponse;
-import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ShopResponse;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ButtonDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationActionDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAddressDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
@@ -39,24 +29,15 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.Conve
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationShippingDetailDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationSolutionDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationTroubleDomain;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.CustomerDomain;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.LastDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.LastSolutionDomain;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailDomain;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailStepDomain;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.OrderDomain;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ResolutionDomain;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ShopDomain;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Response;
 import rx.functions.Func1;
-
-import static com.tokopedia.core.network.ErrorMessageException.DEFAULT_ERROR;
 
 /**
  * Created by milhamj on 22/11/17.
@@ -70,24 +51,23 @@ public class GetDetailResChatMoreMapper implements Func1<Response<TkpdResponse>,
     }
 
     private ConversationListDomain mappingResponse(Response<TkpdResponse> response) {
-        ConversationListResponse conversationListResponse = response.body().convertDataObj(
-                ConversationListResponse.class);
-        ConversationListDomain model = conversationListResponse != null ?
-                        mappingConversationListDomain(conversationListResponse) :
-                        null;
+
         if (response.isSuccessful()) {
-            if (response.raw().code() == ResponseStatus.SC_OK) {
-                if (response.body().isNullData()) {
-                    if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                        throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                    } else {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
-                    }
+            if (response.body().isNullData()) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
+                    throw new ErrorMessageException("");
                 }
-            }
+        }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
+        ConversationListResponse conversationListResponse = response.body().convertDataObj(
+                ConversationListResponse.class);
+        ConversationListDomain model = conversationListResponse != null ?
+                mappingConversationListDomain(conversationListResponse) :
+                null;
         return model;
     }
 

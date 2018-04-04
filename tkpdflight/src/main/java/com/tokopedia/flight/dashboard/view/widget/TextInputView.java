@@ -1,7 +1,6 @@
 package com.tokopedia.flight.dashboard.view.widget;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.graphics.drawable.VectorDrawableCompat;
@@ -12,7 +11,6 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;

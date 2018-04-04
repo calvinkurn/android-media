@@ -33,6 +33,12 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
         return new Intent(context, DigitalCategoryListActivity.class);
     }
 
+    public static Intent newInstance(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, DigitalCategoryListActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     public static Intent newInstance(Context context, boolean isFromSeller) {
         Intent intent = new Intent(context, DigitalCategoryListActivity.class);
         return intent;
@@ -66,8 +72,16 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
     protected void setViewListener() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof DigitalCategoryListFragment)) {
-            DigitalCategoryListFragment digitalCategoryListFragment
-                    = DigitalCategoryListFragment.newInstance();
+            DigitalCategoryListFragment digitalCategoryListFragment;
+
+
+            if (getIntent() != null) {
+                boolean isFromAppShortCut = getIntent().getBooleanExtra(Constants.FROM_APP_SHORTCUTS, false);
+                digitalCategoryListFragment = DigitalCategoryListFragment.newInstance(isFromAppShortCut);
+            } else {
+                digitalCategoryListFragment = DigitalCategoryListFragment.newInstance();
+            }
+
             getFragmentManager().beginTransaction().replace(R.id.container,
                     digitalCategoryListFragment).commit();
         }

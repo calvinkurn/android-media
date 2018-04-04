@@ -2,7 +2,7 @@ package com.tokopedia.otp.tokocashotp.view.presenter;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.otp.tokocashotp.domain.interactor.RequestOtpTokoCashUseCase;
 import com.tokopedia.otp.tokocashotp.domain.interactor.VerifyOtpTokoCashUseCase;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;

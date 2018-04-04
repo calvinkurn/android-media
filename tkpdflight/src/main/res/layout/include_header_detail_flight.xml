@@ -2,19 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/layout_header_container"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingTop="@dimen/padding_small"
     tools:showIn="@layout/item_flight_detail">
 
     <RelativeLayout
         android:id="@+id/container_header"
         android:layout_width="match_parent"
-        android:paddingLeft="@dimen/padding_small"
-        android:paddingRight="@dimen/padding_med"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_16"
+        android:paddingRight="@dimen/padding_16">
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/airline_icon"
@@ -82,8 +81,8 @@
         android:layout_marginTop="@dimen/margin_small"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/padding_med"
-        android:paddingRight="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_16"
+        android:paddingRight="@dimen/padding_16"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -109,6 +108,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/container_pnr"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_8"
         android:background="@color/black_twenty_percent" />
 </RelativeLayout>

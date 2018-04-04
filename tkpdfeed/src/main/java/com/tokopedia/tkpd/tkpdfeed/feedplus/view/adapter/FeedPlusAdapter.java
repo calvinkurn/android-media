@@ -12,7 +12,8 @@ import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.EndlessScrollRecycleListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.AddFeedModel;
 
 import java.util.ArrayList;
@@ -27,10 +28,32 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private List<Visitable> list;
     private final FeedPlusTypeFactory typeFactory;
     private EmptyModel emptyModel;
+    private EmptyFeedBeforeLoginModel emptyFeedBeforeLoginModel;
     private LoadingModel loadingModel;
     private RetryModel retryModel;
-    private boolean canLoadMore;
+    private boolean unsetListener;
     private AddFeedModel addFeedModel;
+    private OnLoadListener loadListener;
+    private RecyclerView recyclerView;
+    private int itemTreshold = 5;
+
+    private EndlessScrollRecycleListener endlessScrollListener = new EndlessScrollRecycleListener() {
+        @Override
+        public void onLoadMore(int page, int totalItemsCount) {
+            if (isLoading())
+                return;
+            if (loadListener != null && !unsetListener && list.size() > itemTreshold) {
+                showLoading();
+                loadListener.onLoad(totalItemsCount);
+            }
+        }
+
+        @Override
+        public void onScroll(int lastVisiblePosition) {
+            if (loadListener instanceof OnScrollListener)
+                ((OnScrollListener) loadListener).onScroll(lastVisiblePosition);
+        }
+    };
 
     public FeedPlusAdapter(FeedPlusTypeFactory typeFactory) {
         this.list = new ArrayList<>();
@@ -107,21 +130,12 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return this.list.contains(loadingModel);
     }
 
-    public void setCanLoadMore(boolean canLoadMore) {
-        this.canLoadMore = canLoadMore;
-    }
-
-    public boolean isCanLoadMore() {
-        return canLoadMore;
-    }
-
     public List<Visitable> getlist() {
         return list;
     }
 
     public void showAddFeed() {
         this.list.add(addFeedModel);
-
     }
 
     public void removeAddFeed(){
@@ -130,5 +144,49 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void addItem(Visitable item) {
         this.list.add(item);
+    }
+
+    public int getItemTreshold() {
+        return itemTreshold;
+    }
+
+    public void setItemTreshold(int itemTreshold) {
+        this.itemTreshold = itemTreshold;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
+        this.recyclerView.setItemAnimator(null);
+        setEndlessScrollListener();
+    }
+
+    public void setOnLoadListener(OnLoadListener loadListener) {
+        this.loadListener = loadListener;
+    }
+
+    public void setEndlessScrollListener() {
+        unsetListener = false;
+        recyclerView.addOnScrollListener(endlessScrollListener);
+    }
+
+    public void unsetEndlessScrollListener() {
+        unsetListener = true;
+        recyclerView.removeOnScrollListener(endlessScrollListener);
+    }
+
+    public interface OnLoadListener {
+        void onLoad(int totalCount);
+
+    }
+
+    public interface OnScrollListener extends OnLoadListener {
+        void onScroll(int lastVisiblePosition);
+
+    }
+
+    public void showUserNotLogin() {
+        emptyFeedBeforeLoginModel = new EmptyFeedBeforeLoginModel();
+        this.list.add(emptyFeedBeforeLoginModel);
     }
 }

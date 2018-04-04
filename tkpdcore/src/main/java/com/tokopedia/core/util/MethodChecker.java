@@ -11,6 +11,7 @@ import android.provider.Telephony;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.content.res.AppCompatResources;
 import android.telephony.SmsMessage;
 import android.text.Html;
 import android.text.Spanned;
@@ -125,7 +126,7 @@ public class MethodChecker {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
             return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
         else
-            return context.getResources().getDrawable(resId);
+            return AppCompatResources.getDrawable(context, resId);
     }
 
     public static boolean isTimezoneNotAutomatic() {

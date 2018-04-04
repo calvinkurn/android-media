@@ -68,7 +68,7 @@
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:src="@drawable/icon_frs"/>
+                            app:srcCompat="@drawable/icon_frs"/>
 
                         <TextView
                             android:layout_marginLeft="@dimen/margin_vs"
@@ -129,7 +129,7 @@
                 android:layout_height="28dp"
                 android:layout_marginLeft="@dimen/margin_sm"
                 android:layout_gravity="center"
-                android:src="@drawable/info_icon"/>
+                app:srcCompat="@drawable/info_icon"/>
 
         </LinearLayout>
 
@@ -179,7 +179,7 @@
                     android:id="@+id/btn_minus"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@drawable/ic_minus_disable"/>
+                    app:srcCompat="@drawable/ic_minus_disable"/>
 
                 <TextView
                     android:id="@+id/tv_qty"
@@ -194,7 +194,7 @@
                     android:id="@+id/btn_plus"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@drawable/ic_plus_disable"/>
+                    app:srcCompat="@drawable/ic_plus_disable"/>
 
             </LinearLayout>
 

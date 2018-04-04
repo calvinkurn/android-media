@@ -68,4 +68,8 @@ public class LoginTokenViewModel implements Parcelable{
         dest.writeString(expiresIn);
         dest.writeString(tokenType);
     }
+
+    public String getConcatedToken() {
+        return tokenType + " " + accessToken;
+    }
 }

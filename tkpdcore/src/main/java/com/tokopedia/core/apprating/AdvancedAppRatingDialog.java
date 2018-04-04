@@ -9,21 +9,27 @@ import android.widget.Button;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by okasurya on 1/10/18.
  */
 
 public class AdvancedAppRatingDialog extends AppRatingDialog {
+    private static final String LABEL_CLICK_ADVANCED_APP_RATING = "ClickAdvancedAppRating: ";
+    private static final String LABEL_CANCEL_ADVANCED_APP_RATING = "CancelAdvancedAppRating";
+    private static final String HIDE_ADVANCED_APP_RATING = "HideAdvancedAppRating";
+    private static final String DEFAULT_VALUE = "1";
+    private static final long EXPIRED_TIME = TimeUnit.DAYS.toSeconds(7);
+
     private AlertDialog dialog;
     private Button buttonSend;
     private Button buttonClose;
     private AppRatingView appRatingView;
-
-    private static final String LABEL_CLICK_ADVANCED_APP_RATING = "ClickAdvancedAppRating: ";
-    private static final String LABEL_CANCEL_ADVANCED_APP_RATING = "CancelAdvancedAppRating";
 
     public static void show(Activity activity) {
         AdvancedAppRatingDialog dialog = new AdvancedAppRatingDialog(activity);
@@ -67,6 +73,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
         buttonClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideDialog();
                 UnifyTracking.eventCancelAppRating(LABEL_CANCEL_ADVANCED_APP_RATING);
                 dialog.dismiss();
             }
@@ -75,18 +82,37 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
         return dialog;
     }
 
+    private void hideDialog() {
+        globalCacheManager.setCacheDuration(EXPIRED_TIME);
+        globalCacheManager.setKey(HIDE_ADVANCED_APP_RATING);
+        globalCacheManager.setValue(DEFAULT_VALUE);
+        globalCacheManager.store();
+    }
+
     private void saveVersionCodeForState() {
-        cacheHandler.putInt(TkpdCache.Key.KEY_ADVANCED_APP_RATING_VERSION, GlobalConfig.VERSION_CODE);
+        cacheHandler.putInt(getLocalKey(), GlobalConfig.VERSION_CODE);
         cacheHandler.applyEditor();
+    }
+
+    private String getLocalKey(){
+        return TkpdCache.Key.KEY_ADVANCED_APP_RATING_VERSION;
+    }
+
+    private String getRemoteConfigKey(){
+        if (GlobalConfig.isSellerApp()) {
+            return TkpdCache.RemoteConfigKey.SELLERAPP_SHOW_ADVANCED_APP_RATING;
+        } else {
+            return TkpdCache.RemoteConfigKey.MAINAPP_SHOW_ADVANCED_APP_RATING;
+        }
     }
 
     @Override
     protected boolean isDialogNeedToBeShown() {
-        if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_ADVANCED_APP_RATING, false)) {
-            Integer appRatingVersion = cacheHandler.getInt(TkpdCache.Key.KEY_ADVANCED_APP_RATING_VERSION);
+        if (remoteConfig.getBoolean(getRemoteConfigKey(), false)
+                && globalCacheManager.isExpired(HIDE_ADVANCED_APP_RATING)) {
+            Integer appRatingVersion = cacheHandler.getInt(getLocalKey());
             return appRatingVersion == null || appRatingVersion == -1;
         }
-
         return false;
     }
 

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:context="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true"
+        app:cardBackgroundColor="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/ll_item">
+
+            <FrameLayout
+                android:id="@+id/ff_title_notif"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                context:background="#fce3e4">
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_small"
+                    context:text="Pesan belum dibalas"
+                    android:layout_gravity="center"
+                    context:textColor="#ab3733"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/ff_invoice"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_marginRight="@dimen/margin_med">
+
+                <TextView
+                    android:id="@+id/tv_invoice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_70"
+                    android:layout_gravity="center|left"
+                    android:textSize="@dimen/text_size_small"
+                    android:textStyle="bold"
+                    context:text="INVOICE"/>
+
+                <ImageView
+                    android:id="@+id/ic_notification"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center|right"
+                    android:background="@drawable/bg_notification"/>
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black_12"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_marginRight="@dimen/margin_sm"
+                android:paddingTop="@dimen/margin_sm"
+                android:paddingBottom="@dimen/margin_sm"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_username_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_38"
+                            android:textSize="@dimen/text_size_small"
+                            context:text="Penjual:"/>
+
+                        <TextView
+                            android:id="@+id/tv_username"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_70"
+                            android:layout_marginTop="@dimen/margin_vs"
+                            android:textSize="@dimen/text_size_small"
+                            android:textStyle="bold"
+                            context:text="Penjual:" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_38"
+                            android:layout_marginTop="@dimen/margin_sm"
+                            android:textSize="@dimen/text_size_small"
+                            android:text="@string/string_last_reply"
+                            />
+
+                        <TextView
+                            android:id="@+id/tv_last_reply"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_70"
+                            android:layout_marginTop="@dimen/margin_vs"
+                            android:textSize="@dimen/text_size_small"
+                            android:textStyle="bold"
+                            context:text="Penjual:" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_38"
+                            android:textSize="@dimen/text_size_small"
+                            android:text="@string/string_auto_execute"/>
+
+                        <TextView
+                            android:id="@+id/tv_auto_execute"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_70"
+                            android:layout_marginTop="@dimen/margin_vs"
+                            android:textSize="@dimen/text_size_small"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_title_inbox"
+                            context:text="Penjual:" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_38"
+                            android:layout_marginTop="@dimen/margin_sm"
+                            android:textSize="@dimen/text_size_small"
+                            android:text="@string/string_free_return"
+                            />
+
+                        <TextView
+                            android:id="@+id/tv_free_return"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_70"
+                            android:layout_marginTop="@dimen/margin_vs"
+                            android:textSize="@dimen/text_size_small"
+                            android:textStyle="bold"
+                            context:text="Penjual:" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/ff_product"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_med">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_product"
+                        android:layout_width="180dp"
+                        android:layout_height="50dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_more_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|right"
+                        android:textColor="@color/tkpd_main_green"
+                        android:textSize="@dimen/text_size_small"
+                        context:text="+3 produk lainnya"/>
+                </FrameLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black_12"/>
+
+            <TextView
+                android:id="@+id/tv_see_conversation"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/tkpd_main_green"
+                android:textSize="@dimen/text_size_small"
+                android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_marginRight="@dimen/margin_sm"
+                android:text="@string/string_see_conv"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_margin="@dimen/margin_small"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        context:visibility="visible"/>
+</RelativeLayout>

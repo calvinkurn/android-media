@@ -244,11 +244,9 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     public void onBackPressed() {
         if (backButtonListener != null && backButtonListener.canGoBack()) {
             backButtonListener.onBackPressed();
-        } else if (backButtonListener != null && backButtonListener.isAnyPendingRequest()) {
+        } else {
             Intent intent = getIntent();
             setResult(APP_HOME_RESULT_CODE, intent);
-            finish();
-        } else {
             finish();
         }
     }

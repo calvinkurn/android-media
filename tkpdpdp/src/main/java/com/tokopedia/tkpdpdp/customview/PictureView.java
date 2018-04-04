@@ -107,17 +107,9 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
         } else {
             imagePagerAdapter.addAll(productImageList);
             indicator.notifyDataSetChanged();
-            imagePagerAdapter.setActionListener(new PagerAdapterAction(data));
+            imagePagerAdapter.setActionListener(new PagerAdapterAction());
         }
-        if (!data.getInfo().getProductStatus().equals(PRD_STATE_ACTIVE)) {
-            listener.onProductStatusError();
-            if (!TextUtils.isEmpty(data.getInfo().getProductStatusTitle())
-                    && !TextUtils.isEmpty(data.getInfo().getProductStatusMessage())) {
-                errorProductContainer.setVisibility(VISIBLE);
-                errorProductTitle.setText(data.getInfo().getProductStatusTitle());
-                errorProductSubitle.setText(data.getInfo().getProductStatusMessage());
-            }
-        } else if (data.getShopInfo().getShopStatus() != SHOP_STATUS_ACTIVE) {
+        if (data.getShopInfo().getShopStatus() != SHOP_STATUS_ACTIVE) {
             errorProductContainer.setVisibility(VISIBLE);
             errorProductTitle.setText(data.getShopInfo().getShopStatusTitle() != null
                     && !data.getShopInfo().getShopStatusTitle().isEmpty()
@@ -126,6 +118,14 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
                     && !data.getShopInfo().getShopStatusMessage().isEmpty()
                     ? data.getShopInfo().getShopStatusMessage() : "");
 
+        } else if (!data.getInfo().getProductStatus().equals(PRD_STATE_ACTIVE)) {
+            listener.onProductStatusError();
+            if (!TextUtils.isEmpty(data.getInfo().getProductStatusTitle())
+                    && !TextUtils.isEmpty(data.getInfo().getProductStatusMessage())) {
+                errorProductContainer.setVisibility(VISIBLE);
+                errorProductTitle.setText(data.getInfo().getProductStatusTitle());
+                errorProductSubitle.setText(data.getInfo().getProductStatusMessage());
+            }
         } else {
             errorProductContainer.setVisibility(GONE);
         }
@@ -142,21 +142,12 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
     }
 
     private class PagerAdapterAction implements ImagePagerAdapter.OnActionListener {
-        private final ProductDetailData data;
 
-        PagerAdapterAction(ProductDetailData data) {
-            this.data = data;
-        }
+        PagerAdapterAction() {}
 
         @Override
-        public void onItemImageClicked(ProductImage productImage, int position) {
-            Bundle bundle = new Bundle();
-            bundle.putStringArrayList(PreviewProductImageDetail.FILELOC, imagePagerAdapter.getImageURIPaths());
-            bundle.putString("product_name", MethodChecker.fromHtml(data.getInfo().getProductName()).toString());
-            bundle.putString("product_price", MethodChecker.fromHtml(data.getInfo().getProductPrice()).toString());
-            bundle.putStringArrayList("image_desc", imagePagerAdapter.getImageDescs());
-            bundle.putInt(PreviewProductImageDetail.IMG_POSITION, position);
-            listener.onProductPictureClicked(bundle);
+        public void onItemImageClicked(int position) {
+            listener.onImageZoomClick(position);
         }
     }
 }

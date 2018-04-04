@@ -22,13 +22,6 @@ public class EditAppealResolutionResponseMapper
 
 
     private EditAppealResolutionSolutionDomain mappingResponse(Response<TkpdResponse> response) {
-        EditAppealSolutionResponse editAppealSolutionResponse =
-                response.body().convertDataObj(EditAppealSolutionResponse.class);
-        EditAppealResolutionSolutionDomain model =
-                new EditAppealResolutionSolutionDomain(response.isSuccessful(),
-                        editAppealSolutionResponse != null ?
-                                editAppealSolutionResponse.getSuccessMessage() :
-                                null);
         if (response.isSuccessful()) {
             if (response.body().isNullData()) {
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
@@ -36,12 +29,18 @@ public class EditAppealResolutionResponseMapper
                 } else {
                     throw new ErrorMessageException("");
                 }
-            } else {
-                model.setSuccess(true);
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
+        EditAppealSolutionResponse editAppealSolutionResponse =
+                response.body().convertDataObj(EditAppealSolutionResponse.class);
+        EditAppealResolutionSolutionDomain model =
+                new EditAppealResolutionSolutionDomain(response.isSuccessful(),
+                        editAppealSolutionResponse != null ?
+                                editAppealSolutionResponse.getSuccessMessage() :
+                                null);
+        model.setSuccess(true);
         return model;
     }
 }

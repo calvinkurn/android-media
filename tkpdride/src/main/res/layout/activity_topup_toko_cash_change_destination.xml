@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
-            android:src="@drawable/insufficient_tokocash_image" />
+            app:srcCompat="@drawable/insufficient_tokocash_image" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -127,7 +127,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:padding="3dp"
-                    android:src="@drawable/icon_angle_arrow_down"
+                    app:srcCompat="@drawable/icon_angle_arrow_down"
                     tools:ignore="ContentDescription" />
 
             </RelativeLayout>

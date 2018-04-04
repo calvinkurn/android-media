@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.session.activation.data.factory.RegisterActivationFactory;
 import com.tokopedia.session.activation.data.mapper.ActivateUnicodeMapper;

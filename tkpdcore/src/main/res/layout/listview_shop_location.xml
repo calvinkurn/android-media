@@ -1,12 +1,11 @@
-	<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-    	xmlns:tools="http://schemas.android.com/tools"
-		android:padding="@dimen/padding_small"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:orientation="vertical"
-	    android:background="@drawable/cards_ui_2"
-	    >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:padding="@dimen/padding_small"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:background="@drawable/cards_ui_2">
 		
 		<TextView 
 		android:id="@+id/detail_shop_name_all"
@@ -32,11 +31,11 @@
 		android:layout_marginBottom="@dimen/margin_small"
 		/>
 		
-		<TextView
+		<com.tokopedia.design.component.TextViewCompat
 		android:id="@+id/detail_shop_phone_all"
 		android:layout_width="match_parent"
     	android:layout_height="wrap_content"
-    	android:drawableLeft="@drawable/ic_shop_phone"
+			app:drawableLeftCompat="@drawable/ic_shop_phone"
     	android:text="Telepone sini"
     	android:gravity="center|left"
     	android:drawablePadding="5dp"
@@ -44,11 +43,11 @@
     	android:visibility="gone"
 		/>
 		
-		<TextView 
+		<com.tokopedia.design.component.TextViewCompat
 		android:id="@+id/detail_shop_fax_all"
 		android:layout_width="match_parent"
     	android:layout_height="wrap_content"
-    	android:drawableLeft="@drawable/ic_shop_fax"
+			app:drawableLeftCompat="@drawable/ic_shop_fax"
     	android:text="Faximil sini"
     	android:drawablePadding="5dp"
     	android:gravity="center|left"
@@ -56,11 +55,11 @@
 		android:visibility="gone"
 		/>
 		
-		<TextView
+		<com.tokopedia.design.component.TextViewCompat
 		android:id="@+id/detail_shop_email_all"
 		android:layout_width="match_parent"
     	android:layout_height="wrap_content"
-    	android:drawableLeft="@drawable/ic_shop_email"
+			app:drawableLeftCompat="@drawable/ic_shop_email"
     	android:drawablePadding="5dp"
     	android:text="Imel sini"
     	android:gravity="center|left"

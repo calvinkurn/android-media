@@ -11,7 +11,7 @@
         android:gravity="center"
         android:paddingBottom="@dimen/margin_med"
         android:paddingTop="@dimen/margin_small"
-        android:paddingStart="@dimen/margin_small"
+        android:paddingStart="@dimen/margin_sm"
         android:background="@color/white">
 
         <TableRow
@@ -164,6 +164,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/padding_small"
+                    android:layout_marginRight="@dimen/margin_small"
                     android:gravity="end"
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="@dimen/fonts"
@@ -174,6 +175,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/padding_small"
+                    android:layout_marginRight="@dimen/margin_small"
                     android:gravity="end"
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="@dimen/fonts"

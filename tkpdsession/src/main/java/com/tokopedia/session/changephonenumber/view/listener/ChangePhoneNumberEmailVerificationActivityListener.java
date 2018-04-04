@@ -1,6 +1,6 @@
 package com.tokopedia.session.changephonenumber.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
 /**
  * Created by milhamj on 03/01/18.

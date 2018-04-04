@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -20,7 +21,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginRight="@dimen/padding_detail"
-            android:src="@drawable/ic_tokocash_icon" />
+            app:srcCompat="@drawable/ic_tokocash_icon" />
 
         <TextView
             android:id="@+id/title_item_history"

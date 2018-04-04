@@ -5,8 +5,36 @@
     android:layout_height="?attr/actionBarSize"
     android:orientation="horizontal">
 
+    <LinearLayout
+        android:id="@+id/container_btn_buy"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:visibility="gone"
+        android:background="@color/deep_orange_500"
+        android:orientation="horizontal">
+
+        <ProgressBar
+            android:id="@+id/variant_progress_bar"
+            android:layout_width="19dp"
+            android:layout_gravity="center"
+            android:layout_height="19dp"
+            android:visibility="gone"
+            style="?android:attr/progressBarStyleInverse"/>
+
+        <TextView
+            android:id="@id/tv_buy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/title_buy"
+            android:textSize="@dimen/fontm"
+            android:textColor="@color/href_link_rev"
+            android:textStyle="bold" />
+    </LinearLayout>
+
     <TextView
-        android:id="@id/tv_buy"
+        android:id="@+id/tv_promo_hour"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
@@ -16,6 +44,7 @@
         android:layout_weight="1"
         android:textColor="@color/href_link_rev"
         android:background="@drawable/btn_promo_ads"
+        android:visibility="gone"
         android:textStyle="bold" />
 
     <TextView
@@ -23,6 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:visibility="gone"
         android:gravity="center"
         android:text="@string/title_promo_topads"
         android:textColor="@color/href_link_rev"

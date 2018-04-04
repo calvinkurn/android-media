@@ -12,20 +12,26 @@ import com.tokopedia.session.R;
 
 public class MethodItem implements Parcelable {
 
-    private int type;
+    private String modeName;
     private int iconResId;
     private String methodText;
+    private String imageUrl;
+    private String verificationText;
 
-    public MethodItem(int type, int iconResId, String methodText) {
-        this.type = type;
-        this.iconResId = iconResId;
+    public MethodItem(String mode, String imageUrl, String methodText, String verificationText) {
+        this.modeName = mode;
+        this.iconResId = 0;
+        this.imageUrl = imageUrl;
         this.methodText = methodText;
+        this.verificationText = verificationText;
     }
 
     protected MethodItem(Parcel in) {
-        type = in.readInt();
+        modeName = in.readString();
         iconResId = in.readInt();
         methodText = in.readString();
+        imageUrl = in.readString();
+        verificationText = in.readString();
     }
 
     public static final Creator<MethodItem> CREATOR = new Creator<MethodItem>() {
@@ -40,12 +46,8 @@ public class MethodItem implements Parcelable {
         }
     };
 
-    public int getType() {
-        return type;
-    }
-
-    public int getIconResId() {
-        return iconResId;
+    public String getModeName() {
+        return modeName;
     }
 
     public String getMethodText() {
@@ -59,9 +61,11 @@ public class MethodItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(type);
+        dest.writeString(modeName);
         dest.writeInt(iconResId);
         dest.writeString(methodText);
+        dest.writeString(imageUrl);
+        dest.writeString(verificationText);
     }
 
     public static String getSmsMethodText(String phoneNumber) {
@@ -72,5 +76,18 @@ public class MethodItem implements Parcelable {
     public static String getCallMethodText(String phoneNumber) {
         return MainApplication.getAppContext().getString(R.string.verification_call_to) + " " +
                 phoneNumber;
+    }
+
+    public static String getMaskedPhoneNumber(String phone) {
+        phone = phone.substring(phone.length() - 4);
+        return String.format(("**** - **** - %s"), phone);
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public String getVerificationText() {
+        return verificationText;
     }
 }

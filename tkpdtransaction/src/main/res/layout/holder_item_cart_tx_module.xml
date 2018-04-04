@@ -70,7 +70,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/holder_error"
             android:background="@drawable/overflow_selected"
-            android:src="@drawable/ic_new_action_overflow_black"
+            app:srcCompat="@drawable/ic_new_action_overflow_black"
             tools:ignore="ContentDescription" />
 
     </RelativeLayout>
@@ -170,7 +170,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/margin_small"
             android:layout_marginRight="@dimen/margin_small"
-            android:src="@drawable/arrow_drop_down"
+            app:srcCompat="@drawable/arrow_drop_down"
             tools:ignore="ContentDescription" />
 
         <View
@@ -253,7 +253,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/margin_vvs"
                     android:layout_marginStart="@dimen/margin_vvs"
-                    android:src="@drawable/info_icon" />
+                    app:srcCompat="@drawable/info_icon" />
 
             </LinearLayout>
 

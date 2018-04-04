@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="56dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_vertical"
     android:background="@color/white"
     android:orientation="vertical">
@@ -28,7 +29,7 @@
         <ImageView
             android:id="@+id/category_child_dropdown"
             android:layout_marginRight="@dimen/margin_small"
-            android:src="@drawable/carret_down"
+            app:srcCompat="@drawable/carret_down"
             android:layout_width="16dp"
             android:layout_height="wrap_content" />
 

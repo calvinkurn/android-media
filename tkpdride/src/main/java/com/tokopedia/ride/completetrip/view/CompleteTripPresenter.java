@@ -1,5 +1,7 @@
 package com.tokopedia.ride.completetrip.view;
 
+import android.os.Build;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -244,6 +246,11 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
     @Override
     public void showPopupToAddShortcutForFirstTime() {
         if (!isViewAttached()) {
+            return;
+        }
+
+        //do not show popup below M
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return;
         }
 

@@ -19,15 +19,19 @@
         android:layout_height="match_parent"
         tools:context=".ParentIndexHome">
 
-        <include layout="@layout/layout_tab_indicator_main_fixed" />
+        <com.tokopedia.design.tab.Tabs
+            android:id="@+id/tab"
+            app:tabType="main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabTextAppearance="@style/Tabs.Main"/>
 
         <com.tkpd.library.ui.widget.TouchViewPager
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/index_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/indicator"
-            />
+            android:layout_below="@+id/tab" />
 
         <LinearLayout
             android:id="@+id/guest_layout"
@@ -47,6 +51,7 @@
                 android:dividerHeight="@dimen/margin_vs"
                 android:listSelector="@android:color/transparent" />
         </LinearLayout>
+
     </RelativeLayout>
 
 </RelativeLayout>

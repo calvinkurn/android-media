@@ -20,6 +20,7 @@ public class SearchResultModel {
     private String source;
     private String shareUrl;
     private String suggestionText;
+    private String suggestionCurrentKeyword;
     private String suggestedQuery;
     private String departmentId="";
     private String additionalParams;
@@ -102,6 +103,14 @@ public class SearchResultModel {
 
     public void setSuggestionText(String suggestionText) {
         this.suggestionText = suggestionText;
+    }
+
+    public String getSuggestionCurrentKeyword() {
+        return suggestionCurrentKeyword;
+    }
+
+    public void setSuggestionCurrentKeyword(String suggestionCurrentKeyword) {
+        this.suggestionCurrentKeyword = suggestionCurrentKeyword;
     }
 
     public String getSuggestedQuery() {

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="top"
+        android:background="@color/tkpd_main_green"
+        android:minHeight="?attr/actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:elevation="0dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:subtitleTextAppearance="@style/EventToolbarTextStyle"
+        app:titleTextAppearance="@style/EventToolbarTextStyle" />
+
+    <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/htab_maincontent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        tools:context="com.tokopedia.events.view.activity.EventsHomeActivity">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapse_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:titleEnabled="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_collapseMode="parallax">
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white">
+
+                        <com.tkpd.library.ui.widget.TouchViewPager
+                            android:id="@+id/event_bannerpager"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/banner_height" />
+
+                        <FrameLayout
+                            android:id="@+id/indicator_promo_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/promo_layout_height"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@id/event_bannerpager"
+                            android:background="@color/grey_100"
+                            android:visibility="gone"
+                            android:layout_alignParentStart="true">
+
+                            <com.tokopedia.events.view.utils.CirclePageIndicator
+                                android:id="@+id/pager_indicator"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/circle_indicator_height"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="@dimen/margin_default"
+                                android:layout_marginLeft="@dimen/margin_default"
+                                android:layout_marginRight="@dimen/margin_default"
+                                android:layout_marginStart="@dimen/margin_default"
+                                android:padding="@dimen/divider_height_thin"
+                                app:fillColor="@color/green_nob"
+                                app:pageColor="@color/grey_400"
+                                app:radius="@dimen/margin_padding_small"
+                                app:centered="false"
+                                app:strokeColor="@color/grey_400" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|right"
+                                android:layout_marginRight="@dimen/new_margin_big"
+                                android:gravity="top"
+                                android:text="@string/promo_button_text"
+                                android:textColor="@color/green_nob"
+                                android:textStyle="normal"
+                                android:visibility="gone"
+                                android:layout_marginEnd="@dimen/new_margin_big" />
+
+                            <ImageView
+                                android:layout_width="@dimen/margin_default"
+                                android:layout_height="@dimen/margin_default"
+                                android:layout_gravity="center_vertical|right"
+                                android:layout_marginRight="@dimen/margin_default"
+                                android:visibility="gone"
+                                app:srcCompat="@drawable/ic_arrow_right"
+                                android:layout_marginEnd="@dimen/margin_default" />
+                        </FrameLayout>
+                    </RelativeLayout>
+
+                </LinearLayout>
+            </android.support.design.widget.CollapsingToolbarLayout>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@color/white"
+                app:layout_scrollFlags="scroll|snap"
+                app:tabGravity="fill"
+                app:tabIndicatorColor="@color/green_nob"
+                app:tabMode="scrollable"
+                app:tabSelectedTextColor="@color/green_nob"
+                app:tabTextAppearance="@style/EventTabLayoutTextStyle"
+                app:tabTextColor="@color/black_38" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/category_view_pager"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        </android.support.v4.view.ViewPager>
+
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="@dimen/progbar_height"
+            android:layout_height="@dimen/progbar_height"
+            android:layout_gravity="center" />
+    </FrameLayout>
+</FrameLayout>

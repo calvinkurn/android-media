@@ -6,6 +6,51 @@
     android:background="@color/white"
     android:orientation="vertical">
 
+
+    <LinearLayout
+        android:id="@+id/variant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:padding="@dimen/padding_small"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/product_variant"
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/font_medium" />
+
+            <TextView
+                android:id="@+id/variant_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:text="@string/choose_variant"
+                android:textColor="@color/medium_green"
+                android:textSize="@dimen/fontvs" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/separator1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        android:background="@color/grey_line"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@id/installmet"
         android:layout_width="match_parent"
@@ -35,14 +80,14 @@
                 android:layout_marginTop="@dimen/margin_vs"
                 android:layout_marginBottom="@dimen/margin_small"
                 android:text="@string/installment_bank"
-                android:textColor="@color/black_38"
+                android:textColor="@color/medium_green"
                 android:textSize="@dimen/fontvs" />
         </LinearLayout>
 
     </LinearLayout>
 
     <View
-        android:id="@id/separator"
+        android:id="@+id/separator2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="@dimen/margin_small"
@@ -78,7 +123,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:textColor="@color/black_38"
+                android:textColor="@color/medium_green"
                 android:textSize="@dimen/fontvs" />
         </LinearLayout>
 

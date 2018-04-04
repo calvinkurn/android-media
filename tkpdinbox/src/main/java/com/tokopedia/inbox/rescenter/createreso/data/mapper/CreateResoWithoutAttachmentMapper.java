@@ -24,9 +24,20 @@ public class CreateResoWithoutAttachmentMapper implements Func1<Response<TkpdRes
     }
 
     private CreateResoWithoutAttachmentDomain mappingResponse(Response<TkpdResponse> response) {
+        if (response.isSuccessful()) {
+            if (response.body().isNullData()) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
+                    throw new ErrorMessageException("");
+                }
+            }
+        } else {
+            throw new RuntimeException(String.valueOf(response.code()));
+        }
         CreateResoWithoutAttachmentResponse createResoWithoutAttachmentResponse =
                 response.body().convertDataObj(CreateResoWithoutAttachmentResponse.class);
-        CreateResoWithoutAttachmentDomain model = new CreateResoWithoutAttachmentDomain(
+        return new CreateResoWithoutAttachmentDomain(
                 createResoWithoutAttachmentResponse.getResolution() != null ?
                         mappingResolutionDomain(createResoWithoutAttachmentResponse.getResolution()) :
                         null,
@@ -35,20 +46,6 @@ public class CreateResoWithoutAttachmentMapper implements Func1<Response<TkpdRes
                         mappingShopDomain(createResoWithoutAttachmentResponse.getShop()) :
                         null,
                 createResoWithoutAttachmentResponse.getSuccessMessage());
-        if (response.isSuccessful()) {
-            if (response.body().isNullData()) {
-                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                } else {
-                    throw new ErrorMessageException("");
-                }
-            } else {
-                model.setSuccess(true);
-            }
-        } else {
-            throw new RuntimeException(String.valueOf(response.code()));
-        }
-        return model;
     }
 
     private ResolutionDomain mappingResolutionDomain(ResolutionResponse response) {

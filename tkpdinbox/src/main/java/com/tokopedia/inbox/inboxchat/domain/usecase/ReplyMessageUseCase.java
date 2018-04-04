@@ -35,4 +35,14 @@ public class ReplyMessageUseCase extends UseCase<ReplyActionData>{
         requestParams.putString("message_reply", messageReply);
         return requestParams;
     }
+
+    public static RequestParams generateParamAttachImage(String messageId, String filePath)
+    {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString("msg_id", messageId);
+        requestParams.putString("message_reply", "Uploaded Image");
+        requestParams.putString("file_path", filePath);
+        requestParams.putInt("attachment_type",2);
+        return requestParams;
+    }
 }

@@ -193,7 +193,7 @@ public class CategoryProductStyle99View extends
         if (hasLastOrderHistoryData()) {
             if (operatorSelected != null && operator.getOperatorId().equalsIgnoreCase(
                     historyClientNumber.getLastOrderClientNumber().getOperatorId())
-                    && !historyClientNumber.getLastOrderClientNumber().getClientNumber().isEmpty()
+                    && !TextUtils.isEmpty(historyClientNumber.getLastOrderClientNumber().getClientNumber())
                     ) {
                 clientNumberInputView.setText(
                         historyClientNumber.getLastOrderClientNumber().getClientNumber()

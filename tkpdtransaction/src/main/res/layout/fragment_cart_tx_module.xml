@@ -252,7 +252,7 @@
                                 android:layout_toEndOf="@+id/tv_desc_btn_payment_method"
                                 android:layout_toRightOf="@+id/tv_desc_btn_payment_method"
                                 android:background="@drawable/overflow_selected"
-                                android:src="@drawable/chevron_down"
+                                app:srcCompat="@drawable/chevron_down"
                                 tools:ignore="ContentDescription" />
                         </RelativeLayout>
 

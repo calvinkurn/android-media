@@ -1,7 +1,7 @@
 package com.tokopedia.session.changephonenumber.view.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorCode;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorCode;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 
 import rx.Subscriber;
@@ -25,7 +25,8 @@ public class ValidateNumberSubscriber extends Subscriber<Boolean> {
     @Override
     public void onError(Throwable e) {
         view.dismissLoading();
-        view.onValidateNumberError(ErrorHandler.getErrorMessage(e));
+        view.onValidateNumberError(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(),
+                e));
     }
 
     @Override

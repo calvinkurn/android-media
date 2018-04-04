@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <include android:id="@+id/topbar" layout="@layout/simple_top_bar_layout" />
+
+    <View
+        android:id="@+id/topbar_shadow"
+        android:layout_below="@id/topbar"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/top_bar_shadow" />
+
+    <ScrollView
+        android:layout_below="@id/topbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="80dp"
+            android:orientation="vertical">
+
+            <include layout="@layout/variant_title_item"/>
+
+            <View
+                android:layout_below="@id/topbar"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@drawable/variant_shadow" />
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_height="wrap_content" android:paddingLeft="@dimen/padding_detail"
+                android:paddingRight="@dimen/padding_detail" android:paddingBottom="@dimen/padding_detail">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/text_variant_option_level1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/size_text_variant"
+                        android:textColor="@color/checkbox_text"/>
+
+                    <TextView
+                        android:id="@+id/selected_variant_level1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/size_text_variant"
+                        android:textColor="@color/black_70"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/sizechart_level1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:textSize="@dimen/size_text_variant"
+                        android:textColor="@color/medium_green"
+                        android:text="Panduan Ukuran"
+                        android:visibility="gone"/>
+
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_variant_option_level1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layoutDirection="ltr"
+                    android:layout_marginTop="@dimen/margin_sm"/>
+
+                <View
+                    android:id="@+id/separator1"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/grey_line" />
+
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:paddingLeft="@dimen/padding_detail"
+                android:paddingRight="@dimen/padding_detail" android:paddingBottom="@dimen/padding_detail">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/text_variant_option_level2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/size_text_variant"
+                        android:textColor="@color/checkbox_text"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/selected_variant_level2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/size_text_variant"
+                        android:textColor="@color/black_70"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/sizechart_level2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:textSize="@dimen/size_text_variant"
+                        android:textColor="@color/medium_green"
+                        android:text="Panduan Ukuran"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_variant_option_level2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layoutDirection="ltr"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/margin_sm"/>
+
+                <View
+                    android:id="@+id/separator2" android:layout_marginTop="@dimen/margin_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/grey_line"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/button_save"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginLeft="@dimen/margin_sm"
+        android:layout_marginRight="@dimen/margin_sm"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:background="@drawable/button_save_grey"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_button_save_variant"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/title_buy"
+            android:textColor="@color/href_link_rev"
+            android:textSize="@dimen/fonts"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+</RelativeLayout>

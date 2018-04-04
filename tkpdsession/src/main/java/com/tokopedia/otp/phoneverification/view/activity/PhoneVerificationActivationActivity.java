@@ -1,13 +1,16 @@
 package com.tokopedia.otp.phoneverification.view.activity;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -21,7 +24,7 @@ import com.tokopedia.session.R;
  * Created by nisie on 2/22/17.
  */
 
-public class PhoneVerificationActivationActivity extends BasePresenterActivity {
+public class PhoneVerificationActivationActivity extends TActivity implements HasComponent {
 
     public static final String EXTRA_IS_MANDATORY = "EXTRA_IS_MANDATORY";
     public static final String EXTRA_IS_LOGOUT_ON_BACK = "EXTRA_LOGOUT_ON_BACK";
@@ -37,22 +40,7 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_IS_MANDATORY)) {
             canSkip = intent.getBooleanExtra(EXTRA_IS_MANDATORY, false);
@@ -61,32 +49,23 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
             isLogoutOnBack = intent.getBooleanExtra(EXTRA_IS_LOGOUT_ON_BACK, false);
         }
         super.onCreate(savedInstanceState);
+        inflateView(R.layout.activity_phone_verification_activation);
+        initView();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_phone_verification_activation;
-    }
-
-    @Override
-    protected void initView() {
-
+    private void initView() {
         PhoneVerificationActivationFragment fragmentHeader = PhoneVerificationActivationFragment.createInstance();
         PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance(getPhoneVerificationListener(), canSkip);
 
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container_header) == null) {
             fragmentTransaction.add(R.id.container_header, fragmentHeader, fragmentHeader.getClass().getSimpleName());
         }
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
-        } else if (((PhoneVerificationFragment) getFragmentManager().findFragmentById(R.id.container)).getListener() == null) {
-            ((PhoneVerificationFragment) getFragmentManager().findFragmentById(R.id.container))
+        } else if (((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container))
+                .getListener() == null) {
+            ((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container))
                     .setPhoneVerificationListener(getPhoneVerificationListener());
         }
         fragmentTransaction.commit();
@@ -158,27 +137,20 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
     }
 
     @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
     }
 
     public static Intent getCallingIntent(Context context) {
-        return new Intent(context, PhoneVerificationActivationActivity.class);
+        Intent intent = new Intent(context, PhoneVerificationActivationActivity.class);
+        intent.putExtra(EXTRA_IS_MANDATORY, false);
+        intent.putExtra(EXTRA_IS_LOGOUT_ON_BACK, false);
+        return intent;
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 
     @Override

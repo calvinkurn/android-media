@@ -120,6 +120,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/payment_cost_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -146,6 +147,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/payment_due_date_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -159,7 +161,7 @@
                         style="@style/TextView.Small.BlackSecondary"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:text="Batas Akhir Pembayaran" />
+                        android:text="@string/flight_order_detail_due_date_label"/>
 
                     <TextView
                         android:id="@+id/tv_payment_due_date"
@@ -207,8 +209,8 @@
 
                     <ImageView
                         android:id="@+id/copy_order_id"
-                        android:layout_width="@dimen/image_width_xs"
-                        android:layout_height="@dimen/image_width_xs"
+                        android:layout_width="@dimen/image_width_xxs"
+                        android:layout_height="@dimen/image_width_xxs"
                         app:srcCompat="@drawable/ic_copy_order" />
                 </LinearLayout>
 
@@ -222,15 +224,8 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="top"
-                        android:layout_marginRight="@dimen/margin_vs"
-                        app:srcCompat="@drawable/ic_download_eticket" />
-
                     <TextView
-                        style="@style/TextView.Small.Green"
+                        style="@style/TextView.Micro.Green"
                         android:text="@string/flight_label_eticket" />
 
                 </LinearLayout>
@@ -330,14 +325,14 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
                         android:layout_gravity="top"
                         android:layout_marginRight="@dimen/margin_vs"
                         app:srcCompat="@drawable/ic_download_eticket" />
 
                     <TextView
-                        style="@style/TextView.Small.Green"
+                        style="@style/TextView.Micro.Green"
                         android:text="@string/flight_label_invoice" />
 
                 </LinearLayout>

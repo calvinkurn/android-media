@@ -16,6 +16,7 @@ public class PlaceAutoCompeleteViewModel implements Visitable<PlaceAutoCompleteT
     private TYPE type;
     private String distance;
     private String duration;
+    private Integer distanceValue;
 
     public PlaceAutoCompeleteViewModel() {
     }
@@ -81,8 +82,17 @@ public class PlaceAutoCompeleteViewModel implements Visitable<PlaceAutoCompleteT
         this.distance = distance;
     }
 
+    public Integer getDistanceValue() {
+        return distanceValue;
+    }
+
+    public void setDistanceValue(Integer distanceValue) {
+        this.distanceValue = distanceValue;
+    }
+
     public enum TYPE {
         MARKETPLACE_PLACE,
-        GOOGLE_PLACE
+        GOOGLE_PLACE,
+        NEARBY_PLACE
     }
 }

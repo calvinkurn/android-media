@@ -12,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <com.tokopedia.core.util.TkpdWebView
+            <com.tokopedia.abstraction.base.view.webview.TkpdWebView
                 android:id="@+id/webview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

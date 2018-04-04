@@ -46,8 +46,7 @@ public class AccountsService {
                         .addOkHttpRetryPolicy(OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy())
                         .buildClientAccountsAuth(authKey,
                                 isUsingHMAC,
-                                isUsingBothAuthorization,
-                                isBasic))
+                                isUsingBothAuthorization))
                 .build());
     }
 

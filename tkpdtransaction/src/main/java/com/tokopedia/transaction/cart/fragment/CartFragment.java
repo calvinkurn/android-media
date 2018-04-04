@@ -244,7 +244,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void initialPresenter() {
-        presenter = new CartPresenter(this);
+        presenter = new CartPresenter(
+                this,
+                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA)
+        );
     }
 
     @Override
@@ -410,6 +413,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderCartListData(String keroToken, String ut, final List<CartItem> cartList) {
+        hasLogisticInsurance = false;
         cartItemAdapter = new CartItemAdapter(this, this);
         totalPaymentLoading.setVisibility(View.VISIBLE);
         cartItemAdapter.fillDataList(keroToken, cartList);
@@ -419,7 +423,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     private void setInsuranceTermsVisibility(CartCourierPrices cartCourierPrices) {
-        if (cartCourierPrices.getCartInsuranceProd() != 0) {
+        if (cartCourierPrices.getUseInsurance() != 0) {
             if (!hasLogisticInsurance &&
                     (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST ||
                             cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL)) {
@@ -967,10 +971,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onGetThanksTopPaySuccess(ThanksTopPayData data) {
-        presenter.processCheckoutAnalytics(
-                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA),
-                data.getParameter().getGatewayName()
-        );
         presenter.clearNotificationCart();
         try {
             presenter.processPaymentAnalytics(
@@ -989,10 +989,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onGetThanksTopPayFailed(String message, final String paymentId) {
         hideProgressLoading();
-        presenter.processCheckoutAnalytics(
-                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA),
-                ANALYTICS_GATEWAY_PAYMENT_FAILED
-        );
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -1314,4 +1310,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return kursIndonesia.format(value);
     }
 
+    @Override
+    public void setListnerCancelPromoLayoutOnAutoApplyCode() {
+        cancelPromoLayout.setOnClickListener(onPromoCancelled());
+
+    }
 }

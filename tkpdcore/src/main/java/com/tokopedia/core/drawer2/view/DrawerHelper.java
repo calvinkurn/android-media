@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 
 public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemListener {
     public static final String DRAWER_CACHE = "DRAWER_CACHE";
+    public static final int REQUEST_LOGIN = 345;
     protected LocalCacheHandler drawerCache;
 
     public DrawerAdapter adapter;
@@ -66,42 +68,26 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
     public abstract void initDrawer(Activity activity);
 
-//    public abstract ToolbarBuyerHandler.OnDrawerToggleClickListener onDrawerToggleClick();
-
     @Override
     public void onItemClicked(DrawerItem item) {
         Intent intent;
         switch (item.getId()) {
             case TkpdState.DrawerPosition.LOGIN:
                 intent = ((TkpdCoreRouter) context.getApplication()).getLoginIntent(context);
-                Intent intentHome = ((TkpdCoreRouter) context.getApplication()).getHomeIntent
-                        (context);
-                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                context.startActivities(new Intent[]
-                        {
-                                intentHome,
-                                intent
-                        });
-                context.finish();
+                context.startActivityForResult(intent, REQUEST_LOGIN);
                 break;
             case TkpdState.DrawerPosition.REGISTER:
                 intent = ((TkpdCoreRouter) context.getApplication()).getRegisterIntent(context);
-                intentHome = ((TkpdCoreRouter) context.getApplication()).getHomeIntent
-                        (context);
-                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                context.startActivities(new Intent[]
-                        {
-                                intentHome,
-                                intent
-                        });
-                context.finish();
+                context.startActivityForResult(intent, REQUEST_LOGIN);
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
-                if (context.getApplication() instanceof TkpdInboxRouter) {
-                    intent = ((TkpdInboxRouter) context.getApplication()).getInboxMessageIntent
+                if (context.getApplication() instanceof TkpdCoreRouter) {
+                    intent = ((TkpdCoreRouter) context.getApplication()).getInboxMessageIntent
                             (context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
+                    ((TkpdCoreRouter) context.getApplication())
+                            .sendTrackingGroupChatLeftNavigation();
                 }
                 break;
             case TkpdState.DrawerPosition.INBOX_TALK:
@@ -121,14 +107,6 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.HELP);
                 break;
-            case TkpdState.DrawerPosition.RESOLUTION_CENTER:
-                if (context.getApplication() instanceof TkpdCoreRouter) {
-                    context.startActivity(((TkpdCoreRouter) context.getApplication())
-                            .getResolutionCenterIntent(context));
-                    sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
-
-                }
-                break;
             case TkpdState.DrawerPosition.DEVELOPER_OPTIONS:
                 startIntent(context, DeveloperOptions.class);
                 break;
@@ -138,7 +116,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 break;
             case TkpdState.DrawerPosition.APPSHARE:
                 context.startActivity(new Intent(context, ReferralActivity.class));
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.APPSHARE);
+                sendReferralGTMNavigationEvent(item);
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
                 intent = InboxRouter.getContactUsActivityIntent(context);
@@ -211,5 +189,13 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
             }
         }
         return null;
+    }
+
+    private void sendReferralGTMNavigationEvent(DrawerItem item) {
+        if (context.getString(R.string.drawer_title_appshare).equalsIgnoreCase(item.getLabel())) {
+            sendGTMNavigationEvent(AppEventTracking.EventLabel.APPSHARE);
+        } else {
+            sendGTMNavigationEvent(AppEventTracking.EventLabel.REFERRAL);
+        }
     }
 }

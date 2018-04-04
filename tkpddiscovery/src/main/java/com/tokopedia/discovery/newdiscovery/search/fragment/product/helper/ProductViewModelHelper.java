@@ -55,6 +55,7 @@ public class ProductViewModelHelper {
         SuggestionModel model = new SuggestionModel();
         model.setSuggestionText(searchResultModel.getSuggestionText());
         model.setSuggestedQuery(searchResultModel.getSuggestedQuery());
+        model.setSuggestionCurrentKeyword(searchResultModel.getSuggestionCurrentKeyword());
         model.setFormattedResultCount(searchResultModel.getTotalDataText());
         return model;
     }

@@ -22,16 +22,14 @@ import android.widget.Toast;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
@@ -399,8 +397,8 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
     @Override
     public void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
         this.digitalCheckoutPassDataState = digitalCheckoutPassData;
-        Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
-        intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+        Intent intent = ((IDigitalModuleRouter) MainApplication.getAppContext()).getLoginIntent
+                (getActivity());
         navigateToActivityRequest(intent, IDigitalModuleRouter.REQUEST_CODE_LOGIN);
     }
 

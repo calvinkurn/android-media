@@ -250,7 +250,9 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
                         presenter.onSelected(position);
                     }
                 }else {
-                    if (!messageItem.getLabel().equals(ADMIN) && !messageItem.getLabel().equals(OFFICIAL)) {
+                    if (!messageItem.getLabel().equals(ADMIN)
+                            && !messageItem.getLabel().equals(OFFICIAL)
+                            && messageItem.getSenderId() != null) {
                         if (messageItem.getLabel().equals(SELLER)) {
                             presenter.goToShop(Integer.parseInt(messageItem.getSenderId()));
                         } else {

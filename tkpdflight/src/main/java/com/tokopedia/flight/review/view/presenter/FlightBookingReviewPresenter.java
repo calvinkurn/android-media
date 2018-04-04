@@ -2,6 +2,7 @@ package com.tokopedia.flight.review.view.presenter;
 
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
+import com.tokopedia.flight.booking.domain.FlightBookingDeleteAllPassengerListUseCase;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
@@ -38,6 +39,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     private final FlightCheckVoucherCodeUseCase flightCheckVoucherCodeUseCase;
     private final FlightBookingCheckoutUseCase flightBookingCheckoutUseCase;
     private final FlightBookingVerifyUseCase flightBookingVerifyUseCase;
+    private final FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase;
     private FlightAnalytics flightAnalytics;
 
     @Inject
@@ -46,11 +48,13 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                                         FlightAddToCartUseCase flightAddToCartUseCase,
                                         FlightBookingCartDataMapper flightBookingCartDataMapper,
                                         FlightBookingVerifyUseCase flightBookingVerifyUseCase,
+                                        FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase,
                                         FlightAnalytics flightAnalytics) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightCheckVoucherCodeUseCase = flightCheckVoucherCodeUseCase;
         this.flightBookingCheckoutUseCase = flightBookingCheckoutUseCase;
         this.flightBookingVerifyUseCase = flightBookingVerifyUseCase;
+        this.flightBookingDeleteAllPassengerListUseCase = flightBookingDeleteAllPassengerListUseCase;
         this.flightAnalytics = flightAnalytics;
     }
 
@@ -59,6 +63,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                               List<FlightBookingPassengerViewModel> flightPassengerViewModels,
                               String contactName, String country, String email, String phone) {
         getView().showCheckoutLoading();
+        flightAnalytics.eventReviewNextClick();
         flightBookingVerifyUseCase.createObservable(
                 flightBookingVerifyUseCase.createRequestParams(
                         promoCode,
@@ -102,8 +107,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
             }
         })
                 .onBackpressureDrop()
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<FlightCheckoutViewModel>() {
                     @Override
@@ -122,13 +127,11 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                             } else {
                                 getView().showErrorInEmptyState(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
                             }
-                            flightAnalytics.eventFailedPurchaseAttempt();
                         }
                     }
 
                     @Override
                     public void onNext(FlightCheckoutViewModel flightCheckoutViewModel) {
-                        flightAnalytics.eventPurchaseAttempt(flightCheckoutViewModel);
                         getView().setNeedToRefreshOnPassengerInfo();
                         getView().navigateToTopPay(flightCheckoutViewModel);
                     }
@@ -149,18 +152,20 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
     @Override
     public void onPaymentSuccess() {
-        getView().navigateToOrderList();
+        deleteListPassenger();
     }
 
     @Override
     public void onPaymentFailed() {
         getView().showPaymentFailedErrorMessage(R.string.flight_review_failed_checkout_message);
+        flightAnalytics.eventPurchaseAttemptFailed();
     }
 
     @Override
     public void onPaymentCancelled() {
         getView().setNeedToRefreshOnPassengerInfo();
         getView().showPaymentFailedErrorMessage(R.string.flight_review_cancel_checkout_message);
+        flightAnalytics.eventPurchaseAttemptCancelled();
     }
 
     private Subscriber<DataResponseVerify> getSubscriberVerifyBooking() {
@@ -272,5 +277,28 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     @Override
     protected void onCountDownTimestimeChanged(String timestamp) {
         getView().setTimeStamp(timestamp);
+    }
+
+    private void deleteListPassenger() {
+        flightBookingDeleteAllPassengerListUseCase.execute(
+                flightBookingDeleteAllPassengerListUseCase.createEmptyRequestParams(),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        getView().navigateToOrderList();
+                        flightAnalytics.eventPurchaseAttemptSuccess();
+                    }
+                }
+        );
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -23,7 +24,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_vs"
-            android:src="@drawable/remove" />
+            app:srcCompat="@drawable/remove" />
 
         <!-- User name, etc. -->
         <LinearLayout
@@ -60,7 +61,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_icon_repsis_smile_active" />
+                    app:srcCompat="@drawable/ic_icon_repsis_smile_active" />
 
                 <TextView
                     android:id="@+id/rep_rating"
@@ -113,7 +114,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_new_action_overflow_black" />
+            app:srcCompat="@drawable/ic_new_action_overflow_black" />
 
 
         <LinearLayout
@@ -136,7 +137,7 @@
                 android:layout_width="@dimen/img_thumb_s"
                 android:layout_height="@dimen/img_thumb_s"
                 android:layout_marginLeft="2dp"
-                android:src="@drawable/ic_menu_talk" />
+                app:srcCompat="@drawable/ic_menu_talk" />
 
         </LinearLayout>
 

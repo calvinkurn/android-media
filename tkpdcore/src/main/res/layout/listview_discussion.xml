@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:id="@+id/main_view"
@@ -17,7 +18,7 @@
             android:layout_height="@dimen/img_thumb_m"
             android:layout_marginRight="@dimen/margin_vs"
             android:contentDescription="@string/product_image"
-            android:src="@drawable/remove"/>
+            app:srcCompat="@drawable/remove"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -52,7 +53,7 @@
                     android:layout_width="@dimen/img_thumb_s"
                     android:layout_height="@dimen/img_thumb_s"
                     android:contentDescription="@string/title_reputation"
-                    android:src="@drawable/ic_icon_repsis_smile_active"/>
+                    app:srcCompat="@drawable/ic_icon_repsis_smile_active"/>
 
                 <TextView
                     android:id="@+id/rep_rating"
@@ -102,7 +103,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/overflow_selected"
-                android:src="@drawable/ic_new_action_overflow_black"
+                app:srcCompat="@drawable/ic_new_action_overflow_black"
                 />
 
             <TextView
@@ -151,7 +152,7 @@
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:layout_marginRight="@dimen/margin_vs"
                 android:layout_marginTop="@dimen/margin_vs"
-                android:src="@drawable/ic_menu_talk"
+                app:srcCompat="@drawable/ic_menu_talk"
                 />
 
         </RelativeLayout>

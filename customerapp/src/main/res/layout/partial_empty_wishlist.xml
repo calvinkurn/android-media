@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/new_margin_big" android:paddingStart="@dimen/new_margin_big"
+    android:paddingEnd="@dimen/new_margin_big" android:paddingRight="@dimen/new_margin_big"
+    android:background="@color/white"
+    android:visibility="gone"
+    android:id="@+id/partial_empty_wishlist"
+    android:layout_marginBottom="@dimen/new_margin_small">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/img_height"
+        app:srcCompat="@drawable/ic_no_wishlist"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/new_margin_sm"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/wishlist_empty_title"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/grey_550"
+        android:textSize="@dimen/font_medium"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/new_margin_small"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/wishlist_empty_message"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/grey_450"
+        android:textSize="@dimen/font_small"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/new_margin_tiny"/>
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="@dimen/button_width"
+        style="@style/Button.Primary.Medium"
+        android:textAllCaps="false"
+        android:text="@string/empty_button"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/new_margin_med"
+        android:layout_marginBottom="@dimen/new_margin_sm"/>
+
+</LinearLayout>

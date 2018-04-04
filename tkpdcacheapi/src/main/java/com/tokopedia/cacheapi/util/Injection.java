@@ -33,6 +33,6 @@ public class Injection {
         if (cacheApiRepository == null) {
             cacheApiRepository = new CacheApiRepositoryImpl(provideCacheApiDataSource());
         }
-        return new CacheApiRepositoryImpl(provideCacheApiDataSource());
+        return cacheApiRepository;
     }
 }

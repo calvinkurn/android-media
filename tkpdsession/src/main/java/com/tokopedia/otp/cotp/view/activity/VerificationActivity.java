@@ -9,14 +9,20 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.analytics.OTPAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
+import com.tokopedia.otp.cotp.view.fragment.InterruptVerificationFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
+import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.session.R;
+import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
 
 /**
  * @author by nisie on 11/29/17.
@@ -29,14 +35,10 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     public static final String PASS_MODEL = "VerificationPassModel";
 
-    public static final int TYPE_SMS = 1;
-    public static final int TYPE_PHONE_CALL = 2;
-    public static final int TYPE_EMAIL = 3;
-
-    public static final String PARAM_DEFAULT_FRAGMENT_TYPE = "fragmentType";
-    public static final String PARAM_OTP_TYPE = "otpType";
+    public static final String PARAM_REQUEST_OTP_MODE = "fragmentType";
 
     public static final String PARAM_IMAGE = "image";
+    public static final String PARAM_IMAGE_URL = "image_url";
     public static final String PARAM_PHONE_NUMBER = "phone";
     public static final String PARAM_EMAIL = "email";
     public static final String PARAM_APP_SCREEN = "app_screen";
@@ -62,13 +64,22 @@ public class VerificationActivity extends TActivity implements HasComponent {
         if (getIntent().getExtras() != null)
             bundle.putAll(getIntent().getExtras());
 
-        Fragment fragment;
-        fragment = getFragment(getIntent().getExtras().getInt(PARAM_DEFAULT_FRAGMENT_TYPE, -1), bundle);
-
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
-        fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
+        Fragment fragment;
+
+        if (passModel.getInterruptModel() != null) {
+            fragment = InterruptVerificationFragment.createInstance(bundle);
+            fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
+            fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
+        } else {
+            fragment =
+                    getDefaultFragment(getIntent().getExtras().getString(PARAM_REQUEST_OTP_MODE, ""), bundle);
+            fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
+            fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
+        }
+
         fragmentTransaction.commit();
+
     }
 
     private void setupPassdata() {
@@ -81,15 +92,16 @@ public class VerificationActivity extends TActivity implements HasComponent {
         }
     }
 
-    private Fragment getFragment(int type, Bundle bundle) {
+    private Fragment getDefaultFragment(String mode, Bundle bundle) {
         Fragment fragment;
-        switch (type) {
-            case TYPE_SMS: {
+        switch (mode) {
+            case RequestOtpUseCase.MODE_SMS: {
                 String phoneNumber = passModel.getPhoneNumber();
-                fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber));
+                int otpType = passModel.getOtpType();
+                fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber, otpType));
                 break;
             }
-            case TYPE_EMAIL: {
+            case RequestOtpUseCase.MODE_EMAIL: {
                 String email = passModel.getEmail();
                 fragment = VerificationFragment.createInstance(createEmailBundle(email));
                 break;
@@ -104,7 +116,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_COTP_DEFAULT;
+        return OTPAnalytics.Screen.SCREEN_COTP_DEFAULT;
     }
 
     @Override
@@ -115,14 +127,6 @@ public class VerificationActivity extends TActivity implements HasComponent {
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
-    }
-
-    public static Intent getCallingIntent(Context context, int defaultType) {
-        Intent intent = new Intent(context, VerificationActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, defaultType);
-        intent.putExtras(bundle);
-        return intent;
     }
 
     public void goToSelectVerificationMethod() {
@@ -139,91 +143,97 @@ public class VerificationActivity extends TActivity implements HasComponent {
         }
     }
 
-    public void goToSmsVerification() {
-        if (getIntent().getExtras() != null
-                && (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
-                VerificationFragment))) {
+    /**
+     * @param mode should be from {@link com.tokopedia.otp.domain.interactor.RequestOtpUseCase}
+     *             Do not use this for dynamic verification page. This should only be used for default page.
+     */
+    public void goToDefaultVerificationPage(String mode) {
+        if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
+                VerificationFragment)) {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            String phoneNumber = passModel.getPhoneNumber();
-
-            Fragment fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber));
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0,
-                    com.tokopedia.core.R.animator.slide_out_right);
+
+            Fragment fragment = getDefaultFragment(mode, getIntent().getExtras());
+            fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0, com
+                    .tokopedia.core.R.animator.slide_out_right);
             fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
             fragmentTransaction.commit();
         }
     }
 
-    public void goToCallVerification() {
-        if (getIntent().getExtras() != null
-                && (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
-                VerificationFragment))) {
+    /**
+     * @param methodItem should be from {@link com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment}
+     *                   Use this for dynamic otp.
+     */
+    public void goToVerificationPage(MethodItem methodItem) {
+        if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
+                VerificationFragment)) {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            String phoneNumber = passModel.getPhoneNumber();
-
-            Fragment fragment = VerificationFragment.createInstance(createCallBundle(phoneNumber));
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0,
-                    com.tokopedia.core.R.animator.slide_out_right);
+
+            Fragment fragment = VerificationFragment.createInstance(createDynamicBundle(methodItem));
+            fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0, com
+                    .tokopedia.core.R.animator.slide_out_right);
             fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
             fragmentTransaction.commit();
         }
     }
 
-    private Bundle createSmsBundle(String phoneNumber) {
+    private Bundle createSmsBundle(String phoneNumber, int otpType) {
         Bundle bundle = new Bundle();
-        bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_SMS);
+        bundle.putString(PARAM_REQUEST_OTP_MODE, RequestOtpUseCase.MODE_SMS);
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_sms);
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
-        bundle.putString(PARAM_MESSAGE, createSmsMessage(phoneNumber));
-        bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_SMS);
-        return bundle;
-    }
-
-    private Bundle createCallBundle(String phoneNumber) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_PHONE_CALL);
-        bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_call);
-        bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
-        bundle.putString(PARAM_MESSAGE, createCallMessage(phoneNumber));
-        bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_CALL);
+        bundle.putString(PARAM_MESSAGE, createSmsMessage(phoneNumber, otpType));
+        bundle.putString(PARAM_APP_SCREEN, OTPAnalytics.Screen.SCREEN_COTP_SMS);
         return bundle;
     }
 
     private Bundle createEmailBundle(String email) {
         Bundle bundle = new Bundle();
-        bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_EMAIL);
+        bundle.putString(PARAM_REQUEST_OTP_MODE, RequestOtpUseCase.MODE_EMAIL);
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_email);
         bundle.putString(PARAM_EMAIL, email);
         bundle.putString(PARAM_MESSAGE, createEmailMessage(email));
-        bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_EMAIL);
+        bundle.putString(PARAM_APP_SCREEN, OTPAnalytics.Screen.SCREEN_COTP_EMAIL);
         return bundle;
     }
 
-    private String getMaskedPhone(String phoneNumber) {
-        String masked = String.valueOf(phoneNumber).replaceFirst("(\\d{4})(\\d{4})(\\d+)",
-                "$1-$2-$3");
-        return String.format(
-                ("<b>%s</b>"), masked);
+    private Bundle createDynamicBundle(MethodItem methodItem) {
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_REQUEST_OTP_MODE, methodItem.getModeName());
+        bundle.putInt(PARAM_IMAGE, 0);
+        bundle.putString(PARAM_IMAGE_URL, methodItem.getImageUrl());
+        bundle.putString(PARAM_PHONE_NUMBER, passModel.getPhoneNumber());
+        bundle.putString(PARAM_EMAIL, passModel.getEmail());
+        bundle.putString(PARAM_MESSAGE, methodItem.getVerificationText());
+        bundle.putString(PARAM_APP_SCREEN, getDynamicAppScreen(methodItem.getModeName()));
+        return bundle;
     }
 
-    private String createSmsMessage(String phoneNumber) {
-        if (!TextUtils.isEmpty(phoneNumber)) {
-            return getString(R.string.verification_code_sent_to) + " " + getMaskedPhone(phoneNumber);
+    private String getDynamicAppScreen(String mode) {
+        return OTPAnalytics.Screen.SCREEN_COTP_DEFAULT + mode;
+    }
+
+    private String getMaskedPhone(String phoneNumber, int otpType) {
+        if (otpType == RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION) {
+            return MethodItem.getMaskedPhoneNumber(phoneNumber);
         } else {
-            return "";
+            String masked = String.valueOf(phoneNumber).replaceFirst("(\\d{4})(\\d{4})(\\d+)",
+                    "$1-$2-$3");
+            return String.format(
+                    ("<b>%s</b>"), masked);
         }
     }
 
-    private String createCallMessage(String phoneNumber) {
+    private String createSmsMessage(String phoneNumber, int otpType) {
         if (!TextUtils.isEmpty(phoneNumber)) {
-            return getString(R.string.verification_code_sent_to_call)
-                    + " " + getMaskedPhone(phoneNumber);
+            return getString(R.string.verification_code_sms_sent_to) + "<br/>" + getMaskedPhone
+                    (phoneNumber, otpType);
         } else {
             return "";
         }
@@ -231,8 +241,8 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     private String createEmailMessage(String email) {
         if (!TextUtils.isEmpty(email)) {
-            return getString(R.string.verification_code_sent_to)
-                    + " <b>" + email + "</b>";
+            return getString(R.string.verification_code_email_sent_to)
+                    + "<br/><b>" + email + "</b>";
         } else {
             return "";
         }
@@ -245,5 +255,27 @@ public class VerificationActivity extends TActivity implements HasComponent {
         } else {
             finish();
         }
+    }
+
+
+    public static Intent getSecurityQuestionVerificationIntent(Context context, int
+            typeSecurityQuestion) {
+        Intent intent = new Intent(context, VerificationActivity.class);
+        Bundle bundle = new Bundle();
+        if (typeSecurityQuestion == LoginFragment.TYPE_SQ_PHONE) {
+            bundle.putString(PARAM_REQUEST_OTP_MODE, RequestOtpUseCase.MODE_SMS);
+        } else {
+            bundle.putString(PARAM_REQUEST_OTP_MODE, RequestOtpUseCase.MODE_EMAIL);
+        }
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getCallingIntent(Context context, String requestMode) {
+        Intent intent = new Intent(context, VerificationActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_REQUEST_OTP_MODE, requestMode);
+        intent.putExtras(bundle);
+        return intent;
     }
 }

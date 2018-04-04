@@ -8,6 +8,8 @@ import com.tokopedia.session.R;
  */
 
 public class RegisterUtil {
+    public static final int MAX_PHONE_NUMBER = 13;
+    public static final int MIN_PHONE_NUMBER = 6;
 
     public static boolean checkRegexNameLocal(String param){
         String regex = "[A-Za-z]+";
@@ -39,5 +41,13 @@ public class RegisterUtil {
             default: bulan = MainApplication.getAppContext().getString(R.string.wrong_input); break;
         }
         return String.format("%d %s %d", mDateDay, bulan, mDateYear);
+    }
+
+    public static boolean isValidPhoneNumber(String phoneNo) {
+        for (int i = MIN_PHONE_NUMBER; i <= MAX_PHONE_NUMBER; i++) {
+            if (phoneNo.matches("\\d{" + i + "}")) return true;
+        }
+        return false;
+
     }
 }

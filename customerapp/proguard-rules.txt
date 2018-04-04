@@ -319,3 +319,25 @@
 -keep public class com.google.android.gms.iid.InstanceID {
     public *;
 }
+
+-keep public class com.tokopedia.design.bottomnavigation.BottomNavigation { *; }
+-keep public class android.support.design.widget.BottomNavigationView { *; }
+-keep public class android.support.design.internal.BottomNavigationMenuView { *; }
+-keep public class android.support.design.internal.BottomNavigationPresenter { *; }
+-keep public class android.support.design.internal.BottomNavigationItemView { *; }
+
+
+-dontwarn android.net.http.**
+-dontwarn org.apache.http.impl.auth.NegotiateScheme
+-dontwarn com.android.internal.http.multipart.MultipartEntity
+-dontwarn org.xbill.DNS.spi.DNSJavaNameServiceDescriptor
+
+#events
+-keep class com.tokopedia.events.domain.model.** { *; }
+-keep class com.tokopedia.events.view.viewmodel.** { *; }
+-keep class com.tokopedia.core.network.exception.model.** { *; }
+-keep class com.tokopedia.events.data.entity.response.** { *; }
+
+
+#Sendbird
+-dontwarn com.sendbird.android.shadow.**

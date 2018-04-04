@@ -82,7 +82,7 @@
                 android:layout_marginEnd="@dimen/margin_med"
                 android:layout_marginRight="@dimen/margin_med"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_arrow_up" />
+                app:srcCompat="@drawable/ic_arrow_up" />
         </LinearLayout>
 
         <FrameLayout
