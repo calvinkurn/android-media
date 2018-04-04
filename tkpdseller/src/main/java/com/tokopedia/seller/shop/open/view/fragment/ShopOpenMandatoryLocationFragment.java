@@ -227,7 +227,10 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
         if(!locationShippingViewHolder.getDistrictName().isEmpty()
                 && !locationShippingViewHolder.getCityName().isEmpty()) {
-            locationPass = new LocationPass();
+
+            if(locationPass == null)
+                locationPass = new LocationPass();
+
             locationPass.setDistrictName(locationShippingViewHolder.getDistrictName());
             locationPass.setCityName(locationShippingViewHolder.getCityName());
         }
