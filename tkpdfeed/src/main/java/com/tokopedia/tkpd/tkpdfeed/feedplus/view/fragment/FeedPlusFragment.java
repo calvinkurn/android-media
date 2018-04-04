@@ -102,7 +102,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_COMMENT = 101;
 
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
-    private static final String NONE = "none";
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
     RelativeLayout mainContent;
@@ -722,11 +721,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         Integer.valueOf(product.getAdId()),
                         FeedEnhancedTracking.Promotion
                                 .createContentNameTopadsProduct(),
-                        (product.getAdRefKey().equals("") ? NONE : product.getAdRefKey()),
+                        (product.getAdRefKey().equals("") ?
+                                FeedEnhancedTracking.Promotion.TRACKING_NONE :
+                                product.getAdRefKey()),
                         position,
                         String.valueOf(product.getCategory()),
                         Integer.valueOf(product.getId()),
-                        "-"));
+                        FeedEnhancedTracking.Promotion.TRACKING_EMPTY));
 
         TrackingUtils.eventTrackingEnhancedEcommerce(
                 FeedEnhancedTracking.getClickTracking(listTopAds, loginIdInt));
@@ -748,9 +749,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         .createContentNameTopadsShop(),
                 shop.getAdRefKey(),
                 position,
-                "-",
+                FeedEnhancedTracking.Promotion.TRACKING_EMPTY,
                 Integer.valueOf(shop.getAdId()),
-                "-"
+                FeedEnhancedTracking.Promotion.TRACKING_EMPTY
         ));
 
         TrackingUtils.eventTrackingEnhancedEcommerce(

@@ -88,6 +88,10 @@ public class FeedEnhancedTracking {
         private static final String SINGLE = "single";
         private static final String MULTIPLE = "multiple";
         private static String PROFILE = "profile";
+
+        public static final String TRACKING_NONE = "none";
+        public static final String TRACKING_EMPTY = "-";
+
         int id;
         String name;
         String creative;

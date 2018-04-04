@@ -337,7 +337,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                         currentPosition,
                                         String.valueOf(data.getProduct().getCategory()),
                                         Integer.valueOf(data.getId()),
-                                        "-"
+                                        FeedEnhancedTracking.Promotion.TRACKING_EMPTY
                                         ));
                                 }
                                 else if (data.getShop() != null){
@@ -347,9 +347,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                                     .createContentNameTopadsShop(),
                                             data.getAdRefKey(),
                                             currentPosition,
-                                            "-",
+                                            FeedEnhancedTracking.Promotion.TRACKING_EMPTY,
                                             Integer.valueOf(data.getId()),
-                                            "-"
+                                            FeedEnhancedTracking.Promotion.TRACKING_EMPTY
                                     ));
                                 }
 
