@@ -203,8 +203,10 @@ public class FCMCacheManager {
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_SELLER_INFO, true);
 
             case TkpdState.GCMServiceState.GCM_GROUP_CHAT:
+            case TkpdState.GCMServiceState.GCM_GROUP_CHAT_POINTS:
+            case TkpdState.GCMServiceState.GCM_GROUP_CHAT_LOYALTY:
+            case TkpdState.GCMServiceState.GCM_GROUP_CHAT_COUPON:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_GROUP_CHAT, false);
-
             default:
                 return true;
         }
