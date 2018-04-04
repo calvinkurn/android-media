@@ -47,14 +47,7 @@ public class AttachInvoicesUseCase extends UseCase<List<InvoiceViewModel>>{
         if(!TextUtils.isEmpty(query)) param.putString(KEYWORD_KEY,query);
         param.putString(USER_ID_KEY,userId);
         param.putString(PAGE_KEY,String.valueOf(page));
-//        param.putString("start","1/1/2018");
         param.putString(MESSAGE_ID_KEY,String.valueOf(messageId));
-//        param.putString("end","12/12/2018");
-
-//        Map<String,String> authParam = AuthUtil.generateParams(context);
-//        for(String key:authParam.keySet()){
-//            param.putString(key,authParam.get(key));
-//        }
         return param;
     }
 }
