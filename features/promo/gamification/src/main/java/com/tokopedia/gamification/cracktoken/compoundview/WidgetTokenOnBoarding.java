@@ -4,14 +4,13 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -145,14 +144,20 @@ public class WidgetTokenOnBoarding extends FrameLayout {
                 PropertyValuesHolder.ofFloat(View.SCALE_Y, 0, 1);
         PropertyValuesHolder pvhAlpha =
                 PropertyValuesHolder.ofFloat(View.ALPHA, 1, 0f);
-        ObjectAnimator scaleAnimator = ObjectAnimator.ofPropertyValuesHolder(ivOnboardingCircle, pvhScaleX, pvhScaleY);
+        ObjectAnimator scaleAnimator = ObjectAnimator.ofPropertyValuesHolder(ivOnboardingCircle, pvhScaleX, pvhScaleY, pvhAlpha);
         scaleAnimator.setInterpolator(new AccelerateInterpolator());
         scaleAnimator.setDuration(SHORT_ANIM_DURATION);
         scaleAnimator.setRepeatCount(2);
 
         set.playSequentially(translateAnimator, scaleAnimator);
-        set.setStartDelay(MEDIUM_ANIM_DURATION);
         set.addListener(new Animator.AnimatorListener() {
+            Handler handler = new Handler();
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    set.start();
+                }
+            };
             private boolean mCanceled;
             @Override
             public void onAnimationStart(Animator animation) {
@@ -162,7 +167,7 @@ public class WidgetTokenOnBoarding extends FrameLayout {
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (!mCanceled) {
-                    set.start();
+                    handler.postDelayed(runnable, MEDIUM_ANIM_DURATION);
                 }
             }
 
