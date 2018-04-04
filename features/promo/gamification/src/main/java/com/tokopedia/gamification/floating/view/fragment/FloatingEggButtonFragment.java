@@ -326,7 +326,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         removeShowAnimationCallback();
     }
 
-    private void removeShowAnimationCallback(){
+    private void removeShowAnimationCallback() {
         if (visibilityRunnableToShow != null) {
             visibilityHandler.removeCallbacks(visibilityRunnableToShow);
             visibilityRunnableToShow = null;
@@ -353,7 +353,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         TokenFloating tokenFloating = tokenData.getFloating();
         long timeRemainingSeconds = tokenFloating.getTimeRemainingSeconds();
         boolean isShowTime = tokenFloating.getShowTime();
-        String imageUrl = tokenFloating.getTokenAsset().getSmallImgUrl();
+        String imageUrl = tokenFloating.getTokenAsset().getFloatingImgUrl();
 
         if (serverOffFlag) {
             hideFLoatingEgg();

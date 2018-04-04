@@ -3,6 +3,7 @@ package com.tokopedia.gamification.data.mapper;
 import com.tokopedia.gamification.data.entity.TokenAssetEntity;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.floating.view.model.TokenAsset;
+import com.tokopedia.gamification.floating.view.model.TokenBackgroundAsset;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenFloating;
 import com.tokopedia.gamification.floating.view.model.TokenHome;
@@ -38,7 +39,6 @@ public class TokenTokopointsMapper implements Func1<TokenDataEntity, TokenData> 
                 tokenFloating.setPageUrl(tokenDataEntity.getFloating().getPageUrl());
                 tokenFloating.setShowTime(tokenDataEntity.getFloating().getShowTime());
                 tokenFloating.setTimeRemainingSeconds(tokenDataEntity.getFloating().getTimeRemainingSeconds());
-                tokenFloating.setTokenClass(tokenDataEntity.getFloating().getTokenClass());
                 tokenFloating.setTokenId(tokenDataEntity.getFloating().getTokenId());
                 tokenFloating.setUnixTimestamp(tokenDataEntity.getFloating().getUnixTimestamp());
                 tokenData.setFloating(tokenFloating);
@@ -53,11 +53,19 @@ public class TokenTokopointsMapper implements Func1<TokenDataEntity, TokenData> 
                     if (tokenDataEntity.getHome().getTokensUser().getTokenAsset() != null) {
                         tokenUser.setTokenAsset(setTokenAsset(tokenDataEntity.getHome().getTokensUser().getTokenAsset()));
                     }
+
+                    if (tokenDataEntity.getHome().getTokensUser().getBackgroundAsset() != null) {
+                        TokenBackgroundAsset tokenBackgroundAsset = new TokenBackgroundAsset();
+                        tokenBackgroundAsset.setName(tokenDataEntity.getHome().getTokensUser().getBackgroundAsset().getName());
+                        tokenBackgroundAsset.setVersion(tokenDataEntity.getHome().getTokensUser().getBackgroundAsset().getVersion());
+                        tokenBackgroundAsset.setBackgroundImgUrl(tokenDataEntity.getHome().getTokensUser().getBackgroundAsset().getBackgroundImgUrl());
+                        tokenUser.setBackgroundAsset(tokenBackgroundAsset);
+                    }
+
                     tokenUser.setCampaignID(tokenDataEntity.getHome().getTokensUser().getCampaignID());
                     tokenUser.setShowTime(tokenDataEntity.getHome().getTokensUser().getShowTime());
                     tokenUser.setTimeRemainingSeconds(tokenDataEntity.getHome().getTokensUser().getTimeRemainingSeconds());
                     tokenUser.setTitle(tokenDataEntity.getHome().getTokensUser().getTitle());
-                    tokenUser.setTokenClass(tokenDataEntity.getHome().getTokensUser().getTokenClass());
                     tokenUser.setTokenUserID(tokenDataEntity.getHome().getTokensUser().getTokenUserID());
                     tokenUser.setUnixTimestampFetch(tokenDataEntity.getHome().getTokensUser().getUnixTimestampFetch());
                     tokenHome.setTokensUser(tokenUser);
@@ -65,6 +73,7 @@ public class TokenTokopointsMapper implements Func1<TokenDataEntity, TokenData> 
 
                 tokenHome.setButtonApplink(tokenDataEntity.getHome().getButtonApplink());
                 tokenHome.setButtonURL(tokenDataEntity.getHome().getButtonURL());
+                tokenHome.setCountingMessage(tokenDataEntity.getHome().getCountingMessage());
                 tokenData.setHome(tokenHome);
             }
 
@@ -85,8 +94,7 @@ public class TokenTokopointsMapper implements Func1<TokenDataEntity, TokenData> 
         tokenAsset.setImageUrls(tokenAssetEntity.getImageUrls());
         tokenAsset.setName(tokenAssetEntity.getName());
         tokenAsset.setVersion(tokenAssetEntity.getVersion());
-        tokenAsset.setBackgroundImgUrl(tokenAssetEntity.getBackgroundImgUrl());
-
+        tokenAsset.setFloatingImgUrl(tokenAssetEntity.getFloatingImgUrl());
         return tokenAsset;
     }
 }

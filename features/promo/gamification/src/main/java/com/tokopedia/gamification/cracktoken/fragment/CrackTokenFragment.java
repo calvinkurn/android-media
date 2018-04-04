@@ -165,7 +165,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private void initDataCrackEgg(TokenData tokenData) {
         this.tokenData = tokenData;
         TokenUser tokenUser = tokenData.getHome().getTokensUser();
-        backgroundImageUrl = tokenUser.getTokenAsset().getBackgroundImgUrl();
+        backgroundImageUrl = tokenUser.getBackgroundAsset().getBackgroundImgUrl();
         smallImageUrl = tokenUser.getTokenAsset().getSmallImgUrl();
         fullEggImg = tokenUser.getTokenAsset().getImageUrls().get(0);
         crackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(4);
@@ -199,7 +199,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         });
         widgetRemainingToken.show();
         widgetRemainingToken.showRemainingToken(smallImageUrl, tokenData.getSumTokenStr(),
-                tokenData.getSumToken(), tokenData.getTokenUnit());
+                tokenData.getHome().getCountingMessage());
 
         showTimer(tokenData);
     }

@@ -33,9 +33,9 @@ public class TokenUserEntity {
     @Expose
     private Boolean isShowTime;
 
-    @SerializedName("tokenClass")
+    @SerializedName("backgroundAsset")
     @Expose
-    private String tokenClass;
+    private TokenBackgroundAssetEntity backgroundAsset;
 
     @SerializedName("tokenAsset")
     @Expose
@@ -65,11 +65,11 @@ public class TokenUserEntity {
         return isShowTime;
     }
 
-    public String getTokenClass() {
-        return tokenClass;
-    }
-
     public TokenAssetEntity getTokenAsset() {
         return tokenAsset;
+    }
+
+    public TokenBackgroundAssetEntity getBackgroundAsset() {
+        return backgroundAsset;
     }
 }
