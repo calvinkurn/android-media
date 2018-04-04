@@ -306,7 +306,7 @@ public class ProductFragment extends SearchSectionFragment
 
     public Map<String, Object> createClickProductDataLayer(Map<String, Object> productMap, String trackerName) {
         return DataLayer.mapOf("event", "productClick",
-                "eventCategory", "product page",
+                "eventCategory", "category page",
                 "eventAction", "click product curation",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
