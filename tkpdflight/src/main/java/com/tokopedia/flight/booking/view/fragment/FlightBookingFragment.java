@@ -750,10 +750,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         getActivity().finish();
     }
 
-    public void onBackPressed() {
-        presenter.deleteAllPassengerList();
-    }
-
     @Override
     public void setSameAsContactChecked(boolean isChecked) {
         // ((CompoundButton) sameAsContactCheckbox).setChecked(isChecked);

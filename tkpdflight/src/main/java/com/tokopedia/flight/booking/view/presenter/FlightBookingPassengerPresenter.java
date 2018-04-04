@@ -30,13 +30,10 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     private final int MINUS_TWO_YEARS = -2;
     private final int MINUS_TWELVE_YEARS = -12;
 
-    private FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase;
     private FlightPassengerInfoValidator flightPassengerInfoValidator;
 
     @Inject
-    public FlightBookingPassengerPresenter(FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase,
-                                           FlightPassengerInfoValidator flightPassengerInfoValidator) {
-        this.flightBookingUpdateSelectedPassengerUseCase = flightBookingUpdateSelectedPassengerUseCase;
+    public FlightBookingPassengerPresenter(FlightPassengerInfoValidator flightPassengerInfoValidator) {
         this.flightPassengerInfoValidator = flightPassengerInfoValidator;
     }
 
