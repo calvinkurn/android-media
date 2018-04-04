@@ -55,6 +55,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.share.ShareActivity;
@@ -1203,6 +1204,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void renderAddToCartSuccess(String message) {
+        updateCartNotification();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(
                 AddToCartConfirmationDialog.newInstance(
@@ -1225,6 +1227,22 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 AddToCartConfirmationDialog.ADD_TO_CART_DIALOG_FRAGMENT_TAG
         );
         ft.commitAllowingStateLoss();
+    }
+
+    private void updateCartNotification() {
+        ((TransactionRouter.CartRouter) getActivity().getApplication())
+                .updateMarketplaceCartCounter(new TransactionRouter.CartNotificationListener() {
+                    @Override
+                    public void onDataReady() {
+                        if (isAdded()) {
+                            if (isAppBarCollapsed) {
+                                initToolbarLight();
+                            } else {
+                                initToolbarTransparant();
+                            }
+                        }
+                    }
+                });
     }
 
 }
