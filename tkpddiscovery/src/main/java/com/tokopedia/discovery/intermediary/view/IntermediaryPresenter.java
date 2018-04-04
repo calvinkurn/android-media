@@ -127,7 +127,7 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
                 CuratedSectionModel model = domain.getCuratedSectionModelList().get(i);
                 model.setProducts(mappingProduct(
                         model.getProducts(),
-                        String.format(Locale.getDefault(), "/intermediary/%s - product %d - %s", domain.getHeaderModel().getCategoryName(), page, model.getTitle()),
+                        String.format(Locale.getDefault(), "/intermediary/%s - product %d - %s", domain.getHeaderModel().getCategoryName().toLowerCase(), page, model.getTitle()),
                         getView().getTrackerAttribution())
                 );
                 domain.getCuratedSectionModelList().set(i, model);
