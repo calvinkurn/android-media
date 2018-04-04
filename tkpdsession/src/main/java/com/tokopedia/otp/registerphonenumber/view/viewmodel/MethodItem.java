@@ -66,11 +66,15 @@ public class MethodItem implements Parcelable {
 
     public static String getSmsMethodText(String phoneNumber) {
         return MainApplication.getAppContext().getString(R.string.verification_sms_to) + " " +
-                phoneNumber;
+                getMaskedPhoneNumber(phoneNumber);
     }
 
     public static String getCallMethodText(String phoneNumber) {
         return MainApplication.getAppContext().getString(R.string.verification_call_to) + " " +
-                phoneNumber;
+                getMaskedPhoneNumber(phoneNumber);
+    }
+    private static String getMaskedPhoneNumber(String phone) {
+        phone = phone.substring(phone.length() - 4);
+        return String.format(("**** - **** - %s"), phone);
     }
 }
