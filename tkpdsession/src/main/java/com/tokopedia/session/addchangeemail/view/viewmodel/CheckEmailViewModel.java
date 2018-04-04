@@ -9,9 +9,19 @@ import android.os.Parcelable;
 
 public class CheckEmailViewModel implements Parcelable {
     private boolean isExist;
+    private String message;
 
-    public CheckEmailViewModel(boolean isExist) {
+    public CheckEmailViewModel(boolean isExist, String message) {
         this.isExist = isExist;
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public boolean isExist() {
@@ -23,6 +33,9 @@ public class CheckEmailViewModel implements Parcelable {
         isExist = exist;
     }
 
+    public CheckEmailViewModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -31,13 +44,12 @@ public class CheckEmailViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.isExist ? (byte) 1 : (byte) 0);
-    }
-
-    public CheckEmailViewModel() {
+        dest.writeString(this.message);
     }
 
     protected CheckEmailViewModel(Parcel in) {
         this.isExist = in.readByte() != 0;
+        this.message = in.readString();
     }
 
     public static final Creator<CheckEmailViewModel> CREATOR = new Creator<CheckEmailViewModel>() {

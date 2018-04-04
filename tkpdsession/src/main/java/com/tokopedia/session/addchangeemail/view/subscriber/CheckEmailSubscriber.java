@@ -1,6 +1,7 @@
 package com.tokopedia.session.addchangeemail.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.session.R;
 import com.tokopedia.session.addchangeemail.view.listener.AddEmailListener;
 import com.tokopedia.session.addchangeemail.view.viewmodel.CheckEmailViewModel;
 
@@ -32,6 +33,10 @@ public class CheckEmailSubscriber extends Subscriber<CheckEmailViewModel> {
     @Override
     public void onNext(CheckEmailViewModel checkEmailViewModel) {
         mainView.dismissLoading();
-        mainView.onSuccessCheckEmail();
+        if (!checkEmailViewModel.isExist()) {
+            mainView.onSuccessCheckEmail();
+        } else {
+            mainView.onErrorCheckEmail(mainView.getContext().getResources().getString(R.string.email_already_registered));
+        }
     }
 }

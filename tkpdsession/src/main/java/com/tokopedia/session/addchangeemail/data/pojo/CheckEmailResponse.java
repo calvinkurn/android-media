@@ -7,14 +7,25 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class CheckEmailResponse {
-    @SerializedName("is_success")
-    private int isSuccess;
+    @SerializedName("isExist")
+    private int isExist;
 
-    public int getIsSuccess() {
-        return isSuccess;
+    @SerializedName("message")
+    private String message;
+
+    public String getMessage() {
+        return message;
     }
 
-    public void setIsSuccess(int isSuccess) {
-        this.isSuccess = isSuccess;
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public int isExist() {
+        return isExist;
+    }
+
+    public void setIsExist(int isExist) {
+        this.isExist = isExist;
     }
 }

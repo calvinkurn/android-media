@@ -134,7 +134,7 @@
     <string name="limit_otp_email_reached">Anda Sudah Melakukan 3 Kali Validasi. Silakan Mencoba Kembali 1 Jam Kemudian.</string>
     <string name="phone_number_not_registered">Nomor ponsel belum terdaftar</string>
     <string name="phone_number_already_registered">Nomor Ponsel Sudah Terdaftar</string>
-    <string name="email_already_registered">Nomor Ponsel Sudah Terdaftar</string>
+    <string name="email_already_registered">Email Sudah Terdaftar</string>
     <string name="email_already_registered_info">Masuk dengan email %1$s?</string>
     <string name="phone_number_invalid">Nomor ponsel tidak benar</string>
     <string name="error_wrong_otp">Kode yang Anda masukkan salah</string>
