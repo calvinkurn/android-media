@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import com.tokopedia.gamification.cracktoken.compoundview.WidgetRemainingToken;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
 import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
+import com.tokopedia.gamification.cracktoken.model.CrackButton;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
 import com.tokopedia.gamification.di.GamificationComponent;
@@ -187,11 +189,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
         });
 
-        widgetCrackResult.setListener(new WidgetCrackResult.WidgetRewardListener() {
+        widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
             public void onClickCtaButton(String applink) {
                 // TODO: direct to the associated applink page
-                widgetCrackResult.clearReward();
+                widgetCrackResult.clearCrackResult();
                 resetEgg();
             }
         });
@@ -268,22 +270,46 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     @Override
-    public void onSuccessCrackToken(CrackResult crackResult) {
-        widgetTokenView.split();
-        List<CrackBenefit> crackBenefits = crackResult.getBenefits();
+    public void onSuccessCrackToken(final CrackResult crackResult) {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Do something after 1s = 1000ms
+                widgetTokenView.split();
 
-        widgetCrackResult.showCrackResult(crackResult.getImageUrl(), "Selamat anda mendapatkan",
-                crackBenefits, crackResult.getCtaButton().getTitle(), crackResult.getCtaButton().getApplink());
+                widgetCrackResult.showCrackResult(crackResult, "Selamat anda mendapatkan");
+
+            }
+        }, 1000);
     }
 
     @Override
     public void onErrorCrackToken(Throwable throwable) {
-        widgetTokenView.stopShaking();
-        List<CrackBenefit> rewardTexts = new ArrayList<>();
-        rewardTexts.add(new CrackBenefit("Terjadi Kesalahan Teknis", "#ffffff", "medium"));
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Do something after 1s = 1000ms
+                widgetTokenView.stopShaking();
 
-        Bitmap errorBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image_error_crack_result);
-        widgetCrackResult.showErrorCrackResult(errorBitmap, "Maaf, sayang sekali sepertinya", rewardTexts, "Coba Lagi", "");
+                CrackResult crackResult = new CrackResult();
+                List<CrackBenefit> crackBenefits = new ArrayList<>();
+                crackBenefits.add(new CrackBenefit("Terjadi Kesalahan Teknis", "#ffffff", "medium"));
+
+                Bitmap errorBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image_error_crack_result);
+
+                CrackButton returnButton = new CrackButton();
+                returnButton.setApplink("");
+                returnButton.setTitle("Coba Lagi");
+
+                crackResult.setBenefits(crackBenefits);
+                crackResult.setImageBitmap(errorBitmap);
+                crackResult.setReturnButton(returnButton);
+
+                widgetCrackResult.showCrackResult(crackResult, "Maaf, sayang sekali sepertinya");
+            }
+        }, 1000);
     }
 
     @Override

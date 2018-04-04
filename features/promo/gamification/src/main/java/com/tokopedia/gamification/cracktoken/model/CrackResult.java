@@ -1,5 +1,7 @@
 package com.tokopedia.gamification.cracktoken.model;
 
+import android.graphics.Bitmap;
+
 import java.util.List;
 
 /**
@@ -10,6 +12,7 @@ public class CrackResult {
 
     private CrackResultStatus resultStatus;
     private String imageUrl;
+    private Bitmap imageBitmap;
     private String benefitType;
     private List<CrackBenefit> benefits;
     private CrackButton ctaButton;
@@ -61,5 +64,13 @@ public class CrackResult {
 
     public void setReturnButton(CrackButton returnButton) {
         this.returnButton = returnButton;
+    }
+
+    public Bitmap getImageBitmap() {
+        return imageBitmap;
+    }
+
+    public void setImageBitmap(Bitmap imageBitmap) {
+        this.imageBitmap = imageBitmap;
     }
 }
