@@ -24,7 +24,7 @@ import static java.lang.Math.min;
 
 /**
  * @author Irfan Khoirul on 05/02/18
- *         Aghny A. Putra on 27/02/18
+ * Aghny A. Putra on 27/02/18
  */
 
 public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddressChoiceView>
@@ -118,12 +118,6 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
         return mSelectedRecipientAddress;
     }
 
-    /**
-     * Logic for creating short listed address
-     *
-     * @param addressList
-     * @return
-     */
     private List<RecipientAddressModel> shortList(final List<RecipientAddressModel> addressList) {
         final int shortListSize = min(addressList.size(), SHORT_LIST_SIZE);
 
@@ -131,13 +125,9 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
             addAll(addressList.subList(0, shortListSize));
         }};
 
-        if (mSelectedRecipientAddress != null) {
-            if (mSelectedRecipientAddress.getAddressStatus() == PRIME_ADDRESS) {
-                shortList.set(0, mSelectedRecipientAddress);
-            } else {
-                shortList.set(shortListSize - 1, mSelectedRecipientAddress);
-            }
-        }
+        if (mSelectedRecipientAddress != null)
+            shortList.set(mSelectedRecipientAddress.getAddressStatus() == PRIME_ADDRESS ?
+                    0 : shortListSize - 1, mSelectedRecipientAddress);
 
         return shortList;
     }

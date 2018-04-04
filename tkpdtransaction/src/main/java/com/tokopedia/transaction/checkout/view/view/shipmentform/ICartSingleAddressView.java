@@ -38,10 +38,6 @@ public interface ICartSingleAddressView extends IBaseView {
 
     void renderErrorTimeoutConnectionCheckShipmentPrepareCheckout(String message);
 
-    TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
-            TKPDMapParam<String, String> originParams
-    );
-
     void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
     void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
