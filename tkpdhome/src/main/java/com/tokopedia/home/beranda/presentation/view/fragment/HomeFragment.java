@@ -149,7 +149,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void fetchRemoteConfig() {
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        showRecomendation = firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
+        showRecomendation = true; //firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
     }
 
     @Override
