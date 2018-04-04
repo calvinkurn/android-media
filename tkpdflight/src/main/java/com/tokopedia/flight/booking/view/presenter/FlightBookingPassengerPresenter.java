@@ -257,32 +257,6 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onUnselectPassengerList(String passengerId) {
-        flightBookingUpdateSelectedPassengerUseCase.execute(
-                flightBookingUpdateSelectedPassengerUseCase.createRequestParams(
-                        passengerId,
-                        FlightBookingListPassengerFragment.IS_NOT_SELECTING
-                ),
-                new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        getView().canGoBack();
-                    }
-                }
-        );
-    }
-
-    @Override
     public void onNewPassengerChoosed() {
         FlightBookingPassengerViewModel flightBookingPassengerViewModel = getView().getCurrentPassengerViewModel();
         flightBookingPassengerViewModel.setPassengerId("");

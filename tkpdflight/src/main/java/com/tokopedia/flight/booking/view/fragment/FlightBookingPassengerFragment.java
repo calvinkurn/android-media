@@ -544,13 +544,6 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void canGoBack() {
-        if (interactionListener != null) {
-            interactionListener.goBack();
-        }
-    }
-
-    @Override
     public void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected) {
         String title = String.format("%s %s", getString(R.string.flight_booking_luggage_toolbar_title), selected.getDescription());
         Intent intent = FlightBookingAmenityActivity.createIntent(getActivity(), title, luggages, selected);
@@ -592,6 +585,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                     if (data != null) {
                         FlightBookingPassengerViewModel flightBookingPassengerViewModel = data.getParcelableExtra(FlightBookingListPassengerFragment.EXTRA_SELECTED_PASSENGER);
                         presenter.onChangeFromSavedPassenger(flightBookingPassengerViewModel);
+                        interactionListener.updatePassengerViewModel(flightBookingPassengerViewModel);
                     } else {
                         presenter.onNewPassengerChoosed();
                     }
@@ -600,20 +594,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         }
     }
 
-    public void onBackPressed() {
-        if (selectedPassengerId == null && viewModel.getPassengerId() != null) {
-            presenter.onUnselectPassengerList(viewModel.getPassengerId());
-        } else if (viewModel.getPassengerId() != null &&
-                !viewModel.getPassengerId().equals(selectedPassengerId)) {
-            presenter.onUnselectPassengerList(viewModel.getPassengerId());
-        } else {
-            canGoBack();
-        }
-    }
-
     public interface OnFragmentInteractionListener {
         void actionSuccessUpdatePassengerData(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
 
-        void goBack();
+        void updatePassengerViewModel(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
+
     }
 }
