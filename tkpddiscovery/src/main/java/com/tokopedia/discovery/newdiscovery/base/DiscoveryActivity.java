@@ -6,7 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
@@ -30,10 +33,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.manage.people.profile.customdialog.UploadImageDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
@@ -47,9 +47,11 @@ import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -81,8 +83,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     private UploadImageDialog uploadDialog;
     private TkpdProgressDialog tkpdProgressDialog;
-    private final int MAX_WIDTH = 400;
-    private final int MAX_HEIGHT = 400;
+    private final int MAX_WIDTH = 600;
+    private final int MAX_HEIGHT = 600;
+    private boolean fromCamera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,9 +161,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         searchView.setOnQueryTextListener(this);
         searchView.setOnSearchViewListener(this);
         searchView.setOnImageSearchClickListener(this);
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        searchView.setImageSearch(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
-                false));
     }
 
     protected void setLastQuerySearchView(String lastQuerySearchView) {
@@ -402,7 +402,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public void showUploadDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(com.tokopedia.core.R.string.dialog_upload_option));
+        builder.setMessage(getString(R.string.dialog_image_upload_option));
         builder.setPositiveButton(getString(com.tokopedia.core.R.string.title_gallery), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -426,6 +426,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == UploadImageDialog.REQUEST_CAMERA || requestCode == UploadImageDialog.REQUEST_GALLERY) {
+
+            fromCamera = requestCode == UploadImageDialog.REQUEST_CAMERA;
 
             uploadDialog.onResult(
                     requestCode,
@@ -463,6 +465,16 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         if (imgFile.exists()) {
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             myBitmap = resize(myBitmap);
+            try {
+                myBitmap = modifyOrientation(myBitmap, imagePath);
+            } catch (IOException exception) {
+
+            }
+
+            if (fromCamera) {
+                addImageToGallery(myBitmap);
+            }
+
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] byteArray = stream.toByteArray();
@@ -473,6 +485,43 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     List<String> productIDList = new ArrayList<>();
+
+    private Bitmap modifyOrientation(Bitmap bitmap, String image_absolute_path) throws IOException {
+        ExifInterface ei = new ExifInterface(image_absolute_path);
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return rotate(bitmap, 90);
+
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return rotate(bitmap, 180);
+
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return rotate(bitmap, 270);
+
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                return flip(bitmap, true, false);
+
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                return flip(bitmap, false, true);
+
+            default:
+                return bitmap;
+        }
+    }
+
+    private Bitmap rotate(Bitmap bitmap, float degrees) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degrees);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    private Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical) {
+        Matrix matrix = new Matrix();
+        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
 
     @Override
     public void onHandleImageSearchResponse(ImageSearchItemResponse imageSearchResponse) {
@@ -549,6 +598,14 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
         image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
         return image;
+    }
+
+    public void addImageToGallery(final Bitmap filePath) {
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        String fname = "Image-" + n;
+        MediaStore.Images.Media.insertImage(getContentResolver(), filePath, fname, "");
     }
 
     public void showSnackBarView(String message) {
