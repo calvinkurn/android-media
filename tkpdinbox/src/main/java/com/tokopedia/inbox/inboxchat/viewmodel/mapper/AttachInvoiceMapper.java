@@ -11,6 +11,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSingleViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class AttachInvoiceMapper {
     public static AttachInvoiceSelectionViewModel attachmentToAttachInvoiceSelectionModel(Attachment attachment) {
-        if(attachment.getType().equals(AttachmentChatHelper.INVOICE_ATTACHED)) {
+        if(attachment.getType().equals(AttachmentChatHelper.INVOICE_LIST_ATTACHED)) {
             AttachInvoiceSelectionViewModel invoiceSelectionViewModel = new AttachInvoiceSelectionViewModel(null, null);
             ArrayList<AttachInvoiceSingleViewModel> listSingleInvoice = new ArrayList<>();
 

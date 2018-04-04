@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 public class InvoiceAttributesDataModel {
     @SerializedName("id")
     @Expose
-    int invoiceId;
+    Long invoiceId;
     @SerializedName("code")
     @Expose
     String invoiceNo;
@@ -40,7 +40,7 @@ public class InvoiceAttributesDataModel {
     @Expose
     String url;
 
-    public InvoiceAttributesDataModel(int invoiceId, String invoiceNo, String title, String description, String invoiceDate, String imageUrl, int statusId, String status, String amount, String url) {
+    public InvoiceAttributesDataModel(Long invoiceId, String invoiceNo, String title, String description, String invoiceDate, String imageUrl, int statusId, String status, String amount, String url) {
         this.invoiceId = invoiceId;
         this.invoiceNo = invoiceNo;
         this.title = title;
@@ -53,11 +53,11 @@ public class InvoiceAttributesDataModel {
         this.url = url;
     }
 
-    public int getInvoiceId() {
+    public Long getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(int invoiceId) {
+    public void setInvoiceId(Long invoiceId) {
         this.invoiceId = invoiceId;
     }
 

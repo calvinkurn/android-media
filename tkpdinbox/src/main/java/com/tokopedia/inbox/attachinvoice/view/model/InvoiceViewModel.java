@@ -10,7 +10,7 @@ import com.tokopedia.inbox.attachinvoice.view.viewholder.InvoiceViewHolder;
 
 public class InvoiceViewModel implements Visitable<AttachInvoiceListAdapterTypeFactory> {
 
-    int invoiceId;
+    Long invoiceId;
     int invoiceType;
     int statusId;
     String invoiceNumber;
@@ -23,7 +23,7 @@ public class InvoiceViewModel implements Visitable<AttachInvoiceListAdapterTypeF
     String description;
     String invoiceUrl;
 
-    public InvoiceViewModel(int invoiceId, int invoiceType, int statusId, String invoiceNumber, String productTopName, String productTopImage, String status, String date, String total, String invoiceTypeStr, String description, String invoiceUrl) {
+    public InvoiceViewModel(Long invoiceId, int invoiceType, int statusId, String invoiceNumber, String productTopName, String productTopImage, String status, String date, String total, String invoiceTypeStr, String description, String invoiceUrl) {
         this.invoiceId = invoiceId;
         this.invoiceType = invoiceType;
         this.statusId = statusId;
@@ -38,11 +38,11 @@ public class InvoiceViewModel implements Visitable<AttachInvoiceListAdapterTypeF
         this.invoiceUrl = invoiceUrl;
     }
 
-    public int getInvoiceId() {
+    public Long getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(int invoiceId) {
+    public void setInvoiceId(Long invoiceId) {
         this.invoiceId = invoiceId;
     }
 

@@ -190,18 +190,16 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                 return new AttachProductViewModel((ThumbnailChatViewModel) input);
             }
         }
+        else if(attachment.getType().equals(AttachmentChatHelper.INVOICE_LIST_ATTACHED)){
+            return AttachInvoiceMapper.attachmentToAttachInvoiceSelectionModel(attachment);
+        }
         else if(attachment.getType().equals(AttachmentChatHelper.INVOICE_ATTACHED)) {
-            if(attachment.getAttributes().getInvoices() == null){
-                if ((input instanceof MyChatViewModel)) {
-                    return new AttachInvoiceSentViewModel((MyChatViewModel) input);
-                } else if (input instanceof OppositeChatViewModel) {
-                    return new AttachInvoiceSentViewModel((OppositeChatViewModel) input);
-                } else if (input instanceof ThumbnailChatViewModel) {
-                    return new AttachInvoiceSentViewModel((ThumbnailChatViewModel) input);
-                }
-            }
-            else {
-                return AttachInvoiceMapper.attachmentToAttachInvoiceSelectionModel(attachment);
+            if ((input instanceof MyChatViewModel)) {
+                return new AttachInvoiceSentViewModel((MyChatViewModel) input);
+            } else if (input instanceof OppositeChatViewModel) {
+                return new AttachInvoiceSentViewModel((OppositeChatViewModel) input);
+            } else if (input instanceof ThumbnailChatViewModel) {
+                return new AttachInvoiceSentViewModel((ThumbnailChatViewModel) input);
             }
         }
         return input;

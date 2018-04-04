@@ -3,6 +3,8 @@ package com.tokopedia.inbox.inboxchat.viewmodel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 /**
  * Created by Hendri on 28/03/18.
  */
@@ -14,7 +16,7 @@ public class AttachInvoiceSingleViewModel {
     String createdTime;
     String description;
     String url;
-    int id;
+    Long id;
     String imageUrl;
     String status;
     int statusId;
@@ -22,7 +24,7 @@ public class AttachInvoiceSingleViewModel {
     String amount;
     boolean isSearchAllButton;
 
-    public AttachInvoiceSingleViewModel(String typeString, int type, String code, String createdTime, String description, String url, int id, String imageUrl, String status, int statusId, String title, String amount) {
+    public AttachInvoiceSingleViewModel(String typeString, int type, String code, String createdTime, String description, String url, Long id, String imageUrl, String status, int statusId, String title, String amount) {
         this.typeString = typeString;
         this.type = type;
         this.code = code;
@@ -90,11 +92,11 @@ public class AttachInvoiceSingleViewModel {
         this.url = url;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -141,4 +143,5 @@ public class AttachInvoiceSingleViewModel {
     public boolean isSearchAllButton() {
         return isSearchAllButton;
     }
+
 }

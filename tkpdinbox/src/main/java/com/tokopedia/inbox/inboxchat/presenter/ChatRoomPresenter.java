@@ -24,6 +24,7 @@ import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
 import com.tokopedia.inbox.inboxchat.data.pojo.SetChatRatingPojo;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.usecase.AttachImageUseCase;
@@ -286,6 +287,12 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                     getView().getAdapter().removeLast();
                     getView().getAdapter().addReply(invoiceSentViewModel);
                 }
+                else if(response.getData().getAttachment() != null &&
+                        response.getData().getAttachment().getType().equals(AttachmentChatHelper.INVOICE_LIST_ATTACHED)){
+                    AttachInvoiceSelectionViewModel invoiceSelectionViewModel = AttachInvoiceMapper.attachmentToAttachInvoiceSelectionModel(item.getAttachment());
+                    getView().getAdapter().removeLast();
+                    getView().getAdapter().addReply(invoiceSelectionViewModel);
+                }
                 else {
                     getView().getAdapter().removeLast();
                     getView().getAdapter().addReply(item);
@@ -312,7 +319,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                     AttachProductViewModel productItem = new AttachProductViewModel(item);
                     getView().getAdapter().addReply(productItem);
                 } else if(response.getData().getAttachment() != null &&
-                        response.getData().getAttachment().getType().equals(AttachmentChatHelper.INVOICE_ATTACHED)) {
+                        response.getData().getAttachment().getType().equals(AttachmentChatHelper.INVOICE_LIST_ATTACHED)) {
                     AttachInvoiceSelectionViewModel invoices = AttachInvoiceMapper.attachmentToAttachInvoiceSelectionModel(response.getData().getAttachment());
                     getView().getAdapter().addReply(invoices);
                 }

@@ -9,7 +9,7 @@ import com.tokopedia.inbox.attachinvoice.view.model.InvoiceViewModel;
  * Created by Hendri on 27/03/18.
  */
 public class SelectedInvoice implements Parcelable {
-    private int invoiceId;
+    private Long invoiceId;
     private String invoiceNo;
     private String invoiceTypeStr;
     private Integer invoiceType;
@@ -22,7 +22,7 @@ public class SelectedInvoice implements Parcelable {
     private String status;
     private int statusId;
 
-    public SelectedInvoice(int invoiceId, String invoiceNo, String invoiceTypeStr, Integer invoiceType, String topProductName, String topProductImage, String description, String amount, String date, String invoiceUrl, String status, int statusId) {
+    public SelectedInvoice(Long invoiceId, String invoiceNo, String invoiceTypeStr, Integer invoiceType, String topProductName, String topProductImage, String description, String amount, String date, String invoiceUrl, String status, int statusId) {
         this.invoiceId = invoiceId;
         this.invoiceNo = invoiceNo;
         this.invoiceTypeStr = invoiceTypeStr;
@@ -116,11 +116,11 @@ public class SelectedInvoice implements Parcelable {
         this.date = date;
     }
 
-    public int getInvoiceId() {
+    public Long getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(int invoiceId) {
+    public void setInvoiceId(Long invoiceId) {
         this.invoiceId = invoiceId;
     }
 
@@ -155,7 +155,7 @@ public class SelectedInvoice implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.invoiceId);
+        dest.writeLong(this.invoiceId);
         dest.writeString(this.invoiceNo);
         dest.writeString(this.invoiceTypeStr);
         dest.writeValue(this.invoiceType);
@@ -170,7 +170,7 @@ public class SelectedInvoice implements Parcelable {
     }
 
     protected SelectedInvoice(Parcel in) {
-        this.invoiceId = in.readInt();
+        this.invoiceId = in.readLong();
         this.invoiceNo = in.readString();
         this.invoiceTypeStr = in.readString();
         this.invoiceType = (Integer) in.readValue(Integer.class.getClassLoader());

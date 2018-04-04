@@ -22,7 +22,7 @@ public class AttachmentInvoiceAttributes {
     String url;
     @SerializedName("id")
     @Expose
-    int id;
+    Long id;
     @SerializedName("image_url")
     @Expose
     String imageUrl;
@@ -42,7 +42,7 @@ public class AttachmentInvoiceAttributes {
     public AttachmentInvoiceAttributes() {
     }
 
-    public AttachmentInvoiceAttributes(String code, String createdTime, String description, String url, int id, String imageUrl, String status, int statusId, String title, String amount) {
+    public AttachmentInvoiceAttributes(String code, String createdTime, String description, String url, Long id, String imageUrl, String status, int statusId, String title, String amount) {
         this.code = code;
         this.createdTime = createdTime;
         this.description = description;
@@ -87,11 +87,11 @@ public class AttachmentInvoiceAttributes {
         this.url = url;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

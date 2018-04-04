@@ -21,8 +21,8 @@ public class Invoice {
     String total;
     String imageUrl;
     int invoiceTypeInt;
-    int invoiceId;
-    public Invoice(int statusInt, String number, String type, String url, String title, String desc, String date, String status, String total, String imageUrl, int invoiceTypeInt, int invoiceId) {
+    Long invoiceId;
+    public Invoice(int statusInt, String number, String type, String url, String title, String desc, String date, String status, String total, String imageUrl, int invoiceTypeInt, Long invoiceId) {
         this.statusInt = statusInt;
         this.number = number;
         this.type = type;
@@ -125,11 +125,11 @@ public class Invoice {
         this.invoiceTypeInt = invoiceTypeInt;
     }
 
-    public int getInvoiceId() {
+    public Long getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(int invoiceId) {
+    public void setInvoiceId(Long invoiceId) {
         this.invoiceId = invoiceId;
     }
 }
