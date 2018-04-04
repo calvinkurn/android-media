@@ -38,22 +38,21 @@ public class ProductLocalRepository implements ProductRepository {
     }
 
     @Override
-    public Observable<ProductListDomain> getProductList(RequestParams requestParams) {
+    public Observable<List<ProductDomain>> getProductList(RequestParams requestParams) {
         if(requestParams.getParameters().containsKey(ProductConstant.Key.KEYWORD) && requestParams.getParameters().containsKey(ProductConstant.Key.ETALASE_ID)) {
             return productLocalSource
                     .searchProduct(
                             requestParams.getString(ProductConstant.Key.KEYWORD, ""),
                             requestParams.getString(ProductConstant.Key.ETALASE_ID, "")
-                    ).map(mapProductListDomain());
+                    );
         } else if(requestParams.getParameters().containsKey(ProductConstant.Key.OFFSET) && requestParams.getParameters().containsKey(ProductConstant.Key.LIMIT)) {
             return productLocalSource
                     .getListProduct(
                             requestParams.getInt(ProductConstant.Key.OFFSET, 0),
                             requestParams.getInt(ProductConstant.Key.LIMIT, 0)
-                    )
-                    .map(mapProductListDomain());
+                    );
         } else {
-            return productLocalSource.getAllProduct().map(mapProductListDomain());
+            return productLocalSource.getAllProduct();
         }
     }
 

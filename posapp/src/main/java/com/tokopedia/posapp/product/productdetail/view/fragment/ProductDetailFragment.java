@@ -597,7 +597,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         buttonAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addToCartPresenter.add(productPass, 1);
+                addToCartPresenter.add(productData, 1);
                 listener.onAddToCart();
             }
         });
@@ -605,7 +605,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         buttonBuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addToCartPresenter.addAndCheckout(productPass, 1);
+                addToCartPresenter.addAndCheckout(productData, 1);
             }
         });
     }

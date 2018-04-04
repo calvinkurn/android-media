@@ -7,6 +7,8 @@ import com.tokopedia.posapp.product.common.data.source.cloud.ProductCloudSource;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -34,7 +36,7 @@ public class ProductCloudRepository implements ProductRepository {
     }
 
     @Override
-    public Observable<ProductListDomain> getProductList(RequestParams requestParams) {
+    public Observable<List<ProductDomain>> getProductList(RequestParams requestParams) {
         return productCloudSource.getProductList(requestParams);
     }
 

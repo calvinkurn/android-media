@@ -16,6 +16,7 @@ public class ProductDomain {
     private String etalaseId;
     private String productOriginalPrice;
     private double productOriginalPriceUnformatted;
+    private int status;
 
     public long getProductId() {
         return productId;
@@ -111,5 +112,13 @@ public class ProductDomain {
 
     public void setProductOriginalPriceUnformatted(double productOriginalPriceUnformatted) {
         this.productOriginalPriceUnformatted = productOriginalPriceUnformatted;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

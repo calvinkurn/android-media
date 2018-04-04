@@ -5,8 +5,11 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.support.v7.app.AppCompatActivity;
 
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.auth.validatepassword.view.fragment.ValidatePasswordFragment;
+
+import javax.inject.Inject;
 
 /**
  * Created by okasurya on 9/26/17.
@@ -27,6 +30,14 @@ public class PosSessionHandler extends SessionHandler {
         editor.putString(OUTLET_ID, null);
         editor.putString(OUTLET_NAME, null);
         editor.apply();
+    }
+
+    public String getOutletId() {
+        return getOutletId(getContext());
+    }
+
+    public String getOutletName() {
+        return getOutletName(getContext());
     }
 
     public static void setOutletId(Context context, String id) {

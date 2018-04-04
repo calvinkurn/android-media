@@ -3,10 +3,6 @@ package com.tokopedia.posapp.product.productlist.data.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * @author okasurya on 4/2/18.
- */
-
 public class ProductItem {
     @SerializedName("product_id")
     @Expose

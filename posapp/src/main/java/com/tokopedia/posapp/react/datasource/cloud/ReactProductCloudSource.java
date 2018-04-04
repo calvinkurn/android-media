@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.base.data.pojo.Paging;
 import com.tokopedia.posapp.etalase.data.repository.EtalaseRepository;
 import com.tokopedia.posapp.etalase.data.repository.EtalaseRepositoryImpl;
@@ -13,6 +13,7 @@ import com.tokopedia.posapp.product.common.data.pojo.ProductDetail;
 import com.tokopedia.posapp.product.common.data.repository.ProductCloudRepository;
 import com.tokopedia.posapp.product.common.data.repository.ProductRepository;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
+import com.tokopedia.posapp.product.productdetail.view.Product;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 import com.tokopedia.posapp.react.datasource.ReactDataSource;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
@@ -36,13 +37,13 @@ public class ReactProductCloudSource extends ReactDataSource {
 
     private ProductRepository productRepository;
     private EtalaseRepository etalaseRepository;
-    private SessionHandler sessionHandler;
+    private PosSessionHandler sessionHandler;
 
     @Inject
     ReactProductCloudSource(ProductCloudRepository productRepository,
                             EtalaseRepositoryImpl etalaseRepository,
                             Gson gson,
-                            SessionHandler sessionHandler) {
+                            PosSessionHandler sessionHandler) {
         super(gson);
         this.productRepository = productRepository;
         this.etalaseRepository = etalaseRepository;
@@ -94,17 +95,17 @@ public class ReactProductCloudSource extends ReactDataSource {
         return null;
     }
 
-    private Func1<ProductListDomain, CacheResult> getListMapper() {
-        return new Func1<ProductListDomain, CacheResult>() {
+    private Func1<List<ProductDomain>, CacheResult> getListMapper() {
+        return new Func1<List<ProductDomain>, CacheResult>() {
             @Override
-            public CacheResult call(ProductListDomain productDomains) {
+            public CacheResult call(List<ProductDomain> productDomains) {
                 ShopProductResponse shopProductResponse = new ShopProductResponse();
                 List<ProductDetail> productList = new ArrayList<>();
-                for (ProductDomain productDomain : productDomains.getProductDomains()) {
+                for (ProductDomain productDomain : productDomains) {
                     productList.add(domainToResponse(productDomain));
                 }
                 shopProductResponse.setList(productList);
-                shopProductResponse.setTotalData(productDomains.getProductDomains().size());
+                shopProductResponse.setTotalData(productDomains.size());
                 shopProductResponse.setPaging(new Paging());
 
                 CacheResult<ShopProductResponse> cacheResult = new CacheResult<>();

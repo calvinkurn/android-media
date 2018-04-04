@@ -1,6 +1,7 @@
 package com.tokopedia.posapp.product.management.view.presenter;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.posapp.product.management.domain.GetProductListManagementUseCase;
 import com.tokopedia.posapp.product.management.view.ProductManagement;
@@ -26,15 +27,18 @@ public class ProductManagementPresenter implements ProductManagement.Presenter {
     private GetEtalaseCacheUseCase getEtalaseUseCase;
     private GetProductListManagementUseCase getProductListManagementUseCase;
     private UserSession userSession;
+    private PosSessionHandler posSession;
     private int page = 0;
 
     @Inject
     public ProductManagementPresenter(GetProductListManagementUseCase getProductListManagementUseCase,
                                       GetEtalaseCacheUseCase getEtalaseUseCase,
-                                      UserSession userSession) {
+                                      UserSession userSession,
+                                      PosSessionHandler posSession) {
         this.getProductListManagementUseCase = getProductListManagementUseCase;
         this.getEtalaseUseCase = getEtalaseUseCase;
         this.userSession = userSession;
+        this.posSession = posSession;
     }
 
     @Override
@@ -68,6 +72,7 @@ public class ProductManagementPresenter implements ProductManagement.Presenter {
         requestParams.putString(ProductConstant.Key.ETALASE, etalaseId);
         requestParams.putString(ProductConstant.Key.PER_PAGE, DEFAULT_PER_PAGE_COUNT);
         requestParams.putString(ProductConstant.Key.PAGE, Integer.toString(pageNo));
+        requestParams.putString(ProductConstant.Key.OUTLET_ID, posSession.getOutletId());
 
         return requestParams;
     }

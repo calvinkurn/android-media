@@ -24,12 +24,12 @@ import rx.functions.Func2;
 
 public class CartLocalSource {
     private CartDbManager cartDbManager;
-    private ProductDbManager productDbManager;
+//    private ProductDbManager productDbManager;
 
     @Inject
     public CartLocalSource() {
         this.cartDbManager = new CartDbManager();
-        this.productDbManager = new ProductDbManager();
+//        this.productDbManager = new ProductDbManager();
     }
 
     public Observable<ATCStatusDomain> storeCartProduct(CartDomain cartDomain) {
@@ -80,35 +80,35 @@ public class CartLocalSource {
         };
     }
 
-    public Func1<List<CartDomain>,? extends Observable<List<CartDomain>>> getProducts() {
-        return new Func1<List<CartDomain>, Observable<List<CartDomain>>>() {
-            @Override
-            public Observable<List<CartDomain>> call(List<CartDomain> cartDomains) {
-                return Observable.just(cartDomains)
-                        .flatMapIterable(new Func1<List<CartDomain>, Iterable<CartDomain>>() {
-                            @Override
-                            public Iterable<CartDomain> call(List<CartDomain> cartDomains) {
-                                return cartDomains;
-                            }
-                        })
-                        .flatMap(new Func1<CartDomain, Observable<CartDomain>>() {
-                            @Override
-                            public Observable<CartDomain> call(CartDomain cartDomain) {
-                                return Observable.zip(
-                                    Observable.just(cartDomain),
-                                    productDbManager.getData(ConditionGroup.clause().and(ProductDb_Table.productId.eq(cartDomain.getProductId()))),
-                                    new Func2<CartDomain, ProductDomain, CartDomain>() {
-                                        @Override
-                                        public CartDomain call(CartDomain cartDomain, ProductDomain productDomain) {
-                                            cartDomain.setProduct(productDomain);
-                                            return cartDomain;
-                                        }
-                                    }
-                                );
-                            }
-                        })
-                        .toList();
-            }
-        };
-    }
+//    public Func1<List<CartDomain>,? extends Observable<List<CartDomain>>> getProducts() {
+//        return new Func1<List<CartDomain>, Observable<List<CartDomain>>>() {
+//            @Override
+//            public Observable<List<CartDomain>> call(List<CartDomain> cartDomains) {
+//                return Observable.just(cartDomains)
+//                        .flatMapIterable(new Func1<List<CartDomain>, Iterable<CartDomain>>() {
+//                            @Override
+//                            public Iterable<CartDomain> call(List<CartDomain> cartDomains) {
+//                                return cartDomains;
+//                            }
+//                        })
+//                        .flatMap(new Func1<CartDomain, Observable<CartDomain>>() {
+//                            @Override
+//                            public Observable<CartDomain> call(CartDomain cartDomain) {
+//                                return Observable.zip(
+//                                    Observable.just(cartDomain),
+//                                    productDbManager.getData(ConditionGroup.clause().and(ProductDb_Table.productId.eq(cartDomain.getProductId()))),
+//                                    new Func2<CartDomain, ProductDomain, CartDomain>() {
+//                                        @Override
+//                                        public CartDomain call(CartDomain cartDomain, ProductDomain productDomain) {
+//                                            cartDomain.setProduct(productDomain);
+//                                            return cartDomain;
+//                                        }
+//                                    }
+//                                );
+//                            }
+//                        })
+//                        .toList();
+//            }
+//        };
+//    }
 }

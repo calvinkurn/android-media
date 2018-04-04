@@ -1,6 +1,10 @@
 package com.tokopedia.posapp.product.management.di.module;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.common.PosApiModule;
 import com.tokopedia.posapp.etalase.domain.GetEtalaseCacheUseCase;
 import com.tokopedia.posapp.product.common.di.ProductModule;
@@ -29,9 +33,16 @@ public class ProductManagementModule {
 
     @Provides
     @ProductManagementScope
+    PosSessionHandler providePosSessionHandler(@ApplicationContext Context context) {
+        return new PosSessionHandler(context);
+    }
+
+    @Provides
+    @ProductManagementScope
     ProductManagement.Presenter providePresenter(GetProductListManagementUseCase getProductListManagementUseCase,
                                                  GetEtalaseCacheUseCase getEtalaseCacheUseCase,
-                                                 UserSession userSession) {
-        return new ProductManagementPresenter(getProductListManagementUseCase, getEtalaseCacheUseCase, userSession);
+                                                 UserSession userSession,
+                                                 PosSessionHandler posSessionHandler) {
+        return new ProductManagementPresenter(getProductListManagementUseCase, getEtalaseCacheUseCase, userSession, posSessionHandler);
     }
 }

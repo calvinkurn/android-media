@@ -1,6 +1,7 @@
 package com.tokopedia.posapp.cart.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.posapp.PosSessionHandler;
@@ -22,7 +23,7 @@ import javax.inject.Inject;
 public class AddToCartPresenter extends BaseDaggerPresenter<AddToCart.View>
         implements AddToCart.Presenter {
 
-    AddToCartUseCase addToCartUseCase;
+    private AddToCartUseCase addToCartUseCase;
 
     @Inject
     public AddToCartPresenter(AddToCartUseCase addToCartUseCase) {
@@ -30,9 +31,9 @@ public class AddToCartPresenter extends BaseDaggerPresenter<AddToCart.View>
     }
 
     @Override
-    public void add(ProductPass product, int quantity) {
+    public void add(ProductDetailData product, int quantity) {
         CartDomain cartDomain = new CartDomain();
-        cartDomain.setProductId(Long.parseLong(product.getProductId()));
+        cartDomain.setProductId(product.getInfo().getProductId());
         cartDomain.setProduct(getProductDomain(product));
         cartDomain.setQuantity(quantity);
         RequestParams requestParams = RequestParams.create();
@@ -40,9 +41,9 @@ public class AddToCartPresenter extends BaseDaggerPresenter<AddToCart.View>
         addToCartUseCase.execute(requestParams, new ATCSubscriber(getView()));
     }
 
-    public void addAndCheckout(ProductPass productPass, int quantity) {
+    public void addAndCheckout(ProductDetailData productPass, int quantity) {
         CartDomain cartDomain = new CartDomain();
-        cartDomain.setProductId(Long.parseLong(productPass.getProductId()));
+        cartDomain.setProductId(productPass.getInfo().getProductId());
         cartDomain.setProduct(getProductDomain(productPass));
         cartDomain.setQuantity(quantity);
         RequestParams requestParams = RequestParams.create();
@@ -50,13 +51,13 @@ public class AddToCartPresenter extends BaseDaggerPresenter<AddToCart.View>
         addToCartUseCase.execute(requestParams, new ATCPaymentSubscriber(getView()));
     }
 
-    private ProductDomain getProductDomain(ProductPass product) {
+    private ProductDomain getProductDomain(ProductDetailData product) {
         ProductDomain productDomain = new ProductDomain();
-        productDomain.setProductId(Long.parseLong(product.getProductId()));
-        productDomain.setProductName(product.getProductName());
-        productDomain.setProductImage300(product.getProductImage());
-        productDomain.setProductPrice(product.getProductPrice());
-        productDomain.setProductPriceUnformatted(CurrencyFormatHelper.convertRupiahToInt(product.getProductPrice()));
+        productDomain.setProductId(product.getInfo().getProductId());
+        productDomain.setProductName(product.getInfo().getProductName());
+        productDomain.setProductImage300(product.getProductImages().get(0).getImageSrc300());
+        productDomain.setProductPrice(product.getInfo().getProductPrice());
+        productDomain.setProductPriceUnformatted(product.getInfo().getProductPriceUnformatted());
         return productDomain;
     }
 }

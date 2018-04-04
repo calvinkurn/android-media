@@ -20,6 +20,9 @@ public class OutletItemResponse {
     @SerializedName("address")
     @Expose
     private String address;
+    @SerializedName("phone")
+    @Expose
+    private String phone;
 
     public String getOutletId() {
         return outletId;
@@ -51,5 +54,13 @@ public class OutletItemResponse {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

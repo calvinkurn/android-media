@@ -2,11 +2,9 @@ package com.tokopedia.posapp.product.productlist.data.mapper;
 
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.posapp.base.data.pojo.PosResponse;
-import com.tokopedia.posapp.base.data.pojo.PosSimpleResponse;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductItem;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductListData;
-import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +18,13 @@ import rx.functions.Func1;
  * Created by okasurya on 10/17/17.
  */
 
-public class GetProductListMapper implements Func1<Response<PosResponse<ProductListData>>, ProductListDomain> {
+public class GetProductListMapper implements Func1<Response<PosResponse<ProductListData>>, List<ProductDomain>> {
     @Inject
     public GetProductListMapper() {
     }
 
     @Override
-    public ProductListDomain call(Response<PosResponse<ProductListData>> response) {
+    public List<ProductDomain> call(Response<PosResponse<ProductListData>> response) {
         if (response.isSuccessful() && response.body() != null) {
             return getProductListDomain(response.body());
         }
@@ -34,8 +32,7 @@ public class GetProductListMapper implements Func1<Response<PosResponse<ProductL
         return null;
     }
 
-    private ProductListDomain getProductListDomain(PosResponse<ProductListData> data) {
-        ProductListDomain productListDomain = new ProductListDomain();
+    private List<ProductDomain> getProductListDomain(PosResponse<ProductListData> data) {
         List<ProductDomain> domains = new ArrayList<>();
 
         for (ProductItem item : data.getData().getData()) {
@@ -50,9 +47,7 @@ public class GetProductListMapper implements Func1<Response<PosResponse<ProductL
             productDomain.setProductImageFull(item.getPrimaryImage().getOriginal());
             domains.add(productDomain);
         }
-        productListDomain.setProductDomains(domains);
-//        if(data.getPaging() != null) productListDomain.setNextUri(data.getPaging().getUriNext());
 
-        return productListDomain;
+        return domains;
     }
 }

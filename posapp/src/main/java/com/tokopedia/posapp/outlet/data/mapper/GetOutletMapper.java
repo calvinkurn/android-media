@@ -39,12 +39,12 @@ public class GetOutletMapper implements Func1<Response<PosResponse<OutletRespons
     private OutletDomain getOutletFromResponse(OutletResponse outletResponse) {
         OutletDomain outletDomain = new OutletDomain();
         outletDomain.setListOutlet(new ArrayList<OutletItemDomain>());
-        for(OutletItemResponse addressModel: outletResponse.getList()) {
+        for(OutletItemResponse response: outletResponse.getList()) {
             OutletItemDomain outlet = new OutletItemDomain();
-            outlet.setOutletId(addressModel.getOutletId());
-            outlet.setOutletAddres(addressModel.getAddress());
-            outlet.setOutletName(addressModel.getName());
-            outlet.setOutletPhone("");
+            outlet.setOutletId(response.getOutletId());
+            outlet.setOutletAddres(response.getAddress());
+            outlet.setOutletName(response.getName());
+            outlet.setOutletPhone(response.getPhone());
             outletDomain.getListOutlet().add(outlet);
         }
 

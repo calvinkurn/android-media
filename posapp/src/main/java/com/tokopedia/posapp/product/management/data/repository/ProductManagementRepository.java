@@ -5,6 +5,8 @@ import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -12,7 +14,7 @@ import rx.Observable;
  */
 
 public interface ProductManagementRepository {
-    Observable<ProductListDomain> getList(RequestParams requestParams);
+    Observable<List<ProductDomain>> getList(RequestParams requestParams);
 
     Observable<ProductDomain> get(RequestParams requestParams);
 

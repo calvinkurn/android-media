@@ -6,6 +6,8 @@ import com.tokopedia.posapp.product.management.data.source.ProductManagementClou
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -23,7 +25,7 @@ public class ProductManagementCloudRepository implements ProductManagementReposi
     }
 
     @Override
-    public Observable<ProductListDomain> getList(RequestParams requestParams) {
+    public Observable<List<ProductDomain>> getList(RequestParams requestParams) {
         return productManagementCloudSource.getProductList(requestParams);
     }
 

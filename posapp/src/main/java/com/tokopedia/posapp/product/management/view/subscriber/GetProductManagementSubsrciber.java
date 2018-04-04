@@ -16,7 +16,7 @@ import rx.Subscriber;
  * @author okasurya on 3/14/18.
  */
 
-public class GetProductManagementSubsrciber extends Subscriber<ProductListDomain> {
+public class GetProductManagementSubsrciber extends Subscriber<List<ProductDomain>> {
     private ProductManagement.View view;
 
     public GetProductManagementSubsrciber(ProductManagement.View view) {
@@ -34,13 +34,13 @@ public class GetProductManagementSubsrciber extends Subscriber<ProductListDomain
     }
 
     @Override
-    public void onNext(ProductListDomain productListDomain) {
-        view.onReloadData(mapData(productListDomain));
+    public void onNext(List<ProductDomain> productList) {
+        view.onReloadData(mapData(productList));
     }
 
-    private List<Visitable> mapData(ProductListDomain productListDomain) {
+    private List<Visitable> mapData(List<ProductDomain> productList) {
         List<Visitable> visitables = new ArrayList<>();
-        for(ProductDomain productDomain : productListDomain.getProductDomains()) {
+        for(ProductDomain productDomain : productList) {
             ProductViewModel productViewModel = new ProductViewModel();
             productViewModel.setId(Long.toString(productDomain.getProductId()));
             productViewModel.setName(productDomain.getProductName());
