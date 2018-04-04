@@ -479,8 +479,9 @@ SessionModule {
     @SessionScope
     @Provides
     AddPasswordSource provideAddPasswordSource(@Named(BEARER_SERVICE) AccountsService service,
-                                             AddPasswordMapper addPasswordMapper) {
-        return new AddPasswordSource(service, addPasswordMapper);
+                                             AddPasswordMapper addPasswordMapper,
+                                               SessionHandler sessionHandler) {
+        return new AddPasswordSource(service, addPasswordMapper, sessionHandler);
     }
 
 

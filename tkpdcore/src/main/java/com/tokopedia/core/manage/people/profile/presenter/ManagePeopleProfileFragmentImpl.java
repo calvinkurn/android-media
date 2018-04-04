@@ -98,8 +98,8 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
         );
 //        param.setHobby(view.getHobby());
 //        param.setMessenger(view.getMessanger());
-        param.setMsisdn(view.getVerifiedPhone());
-        param.setVerifiedPhone(view.getPhone());
+        param.setMsisdn(view.getPhone());
+        param.setVerifiedPhone(view.getVerifiedPhone());
 
         param.setImagePath(view.getImagePath());
         return param;

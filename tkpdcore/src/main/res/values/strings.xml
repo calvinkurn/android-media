@@ -580,6 +580,10 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="success_change_phone_number">Nomor Ponsel Berhasil Diubah</string>
     <string name="check_email_change_phone_number">Segera konfirmasi perubahan nomor ponsel melalui email Anda.</string>
     <string name="string_verified">Terverifikasi</string>
+    <string name="error_no_password_title">Anda tidak memiliki kata sandi</string>
+    <string name="error_no_password_content">Silahkan buat kata sandi terlebih dahulu</string>
+    <string name="error_no_password_no">Tutup</string>
+    <string name="error_no_password_yes">Buat kata sandi</string>
     <!-- Strings related Manage People -->
 
 

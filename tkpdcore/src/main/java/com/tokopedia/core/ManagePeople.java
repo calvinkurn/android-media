@@ -1,5 +1,7 @@
 package com.tokopedia.core;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -26,6 +28,9 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 
 public class ManagePeople extends TkpdActivity {
+
+    private static int REQUEST_CHANGE_PASSWORD = 1234;
+
     private TextView ManageProfile;
     private TextView ManageAddress;
     private TextView ManageBank;
@@ -137,10 +142,15 @@ public class ManagePeople extends TkpdActivity {
                         startActivity(intent);
                         break;
                     case 2:
-                        intent = new Intent(ManagePeople.this, ManagePeopleBankActivity.class);
-                        startActivity(intent);
+                        if (sessionHandler.isHasPassword()) {
+                            intent = new Intent(getActivity(), ManagePeopleBankActivity.class);
+                            startActivity(intent);
+                        } else {
+                            showNoPasswordDialog();
+                        }
                         break;
                     case 3:
+
                         if ((getActivity().getApplication() instanceof TransactionRouter)) {
                             ((TransactionRouter) getActivity().getApplication())
                                     .goToUserPaymentList(getActivity());
@@ -155,9 +165,7 @@ public class ManagePeople extends TkpdActivity {
                             intent = new Intent(getActivity(), ManagePasswordActivity.class);
                             startActivity(intent);
                         } else {
-                            startActivity(
-                                    ((TkpdCoreRouter)getActivity().getApplicationContext())
-                                            .getAddPasswordIntent(getActivity()));
+                            intentToAddPassword();
                         }
                         break;
                 }
@@ -181,8 +189,12 @@ public class ManagePeople extends TkpdActivity {
                         startActivity(intent);
                         break;
                     case 2:
-                        intent = new Intent(ManagePeople.this, ManagePeopleBankActivity.class);
-                        startActivity(intent);
+                        if (sessionHandler.isHasPassword()) {
+                            intent = new Intent(getActivity(), ManagePeopleBankActivity.class);
+                            startActivity(intent);
+                        } else {
+                            showNoPasswordDialog();
+                        }
                         break;
                     case 3:
                         if ((getActivity().getApplication() instanceof TransactionRouter)) {
@@ -199,15 +211,38 @@ public class ManagePeople extends TkpdActivity {
                             intent = new Intent(ManagePeople.this, ManagePasswordActivity.class);
                             startActivity(intent);
                         } else {
-                            startActivity(
-                                    ((TkpdCoreRouter)getActivity().getApplicationContext())
-                                            .getAddPasswordIntent(getActivity()));
+                            intentToAddPassword();
                         }
                         break;
                 }
 
             }
         };
+    }
+    private void intentToAddPassword() {
+        startActivityForResult(
+                ((TkpdCoreRouter)getActivity().getApplicationContext())
+                        .getAddPasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
+    }
+
+    private void showNoPasswordDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getResources().getString(R.string.error_no_password_title));
+        builder.setMessage(getResources().getString(R.string.error_no_password_content));
+        builder.setPositiveButton(getResources().getString(R.string.error_no_password_yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                intentToAddPassword();
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.error_no_password_no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
 }
