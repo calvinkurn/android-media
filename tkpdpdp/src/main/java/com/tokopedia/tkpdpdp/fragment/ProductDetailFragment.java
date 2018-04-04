@@ -1285,9 +1285,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void addProductStock(Child productStock) {
-        productData.getInfo().setProductStockWording(productStock.getStockWording());
-        productData.getInfo().setLimitedStock(productStock.isLimitedStock());
-        headerInfoView.renderStockAvailability(productData.getInfo());
+        if(productStock.isEnabled()){
+            productData.getInfo().setProductStockWording(productStock.getStockWording());
+            productData.getInfo().setLimitedStock(productStock.isLimitedStock());
+            headerInfoView.renderStockAvailability(productData.getInfo());
+        }
     }
 
     @Override
