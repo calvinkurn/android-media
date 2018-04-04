@@ -37,7 +37,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
-import com.tokopedia.discovery.imagesearch.domain.usecase.ImageSearchItemResponse;
+import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchItemResponse;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;

@@ -1,5 +1,5 @@
 
-package com.tokopedia.discovery.imagesearch.domain.usecase;
+package com.tokopedia.discovery.imagesearch.domain.model;
 
 import android.os.Parcel;
 

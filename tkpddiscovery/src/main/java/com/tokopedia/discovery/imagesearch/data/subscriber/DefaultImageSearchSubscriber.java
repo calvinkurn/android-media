@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.imagesearch.data.subscriber;
 
-import com.tokopedia.discovery.imagesearch.domain.usecase.ImageSearchItemResponse;
+import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchItemResponse;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract;
 
 import rx.Subscriber;
