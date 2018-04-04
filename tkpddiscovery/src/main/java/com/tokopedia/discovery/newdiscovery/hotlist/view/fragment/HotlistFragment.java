@@ -678,6 +678,8 @@ public class HotlistFragment extends SearchSectionFragment
         data.setName(product.getProductName());
         data.setPrice(product.getPrice());
         data.setImgUri(product.getImageUrl());
+        data.setTrackerAttribution(trackerAttribution);
+        data.setTrackerListName(product.getTrackerName());
         return data;
     }
 

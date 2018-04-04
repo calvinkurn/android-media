@@ -94,6 +94,8 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                         .setProductName(bundleData.getString("product_key", ""))
                         .setProductPrice(bundleData.getString("product_price", ""))
                         .setShopDomain(bundleData.getString("shop_domain", ""))
+                        .setTrackerAttribution(bundleData.getString("tracker_attribution", ""))
+                        .setTrackerListName(bundleData.getString("tracker_list_name", ""))
                         .build();
             } else if (productItem != null) {
                 productPass = ProductPass.Builder.aProductPass()
@@ -101,6 +103,8 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                         .setProductId(productItem.getId())
                         .setProductName(productItem.getName())
                         .setProductImage(productItem.getImgUri())
+                        .setTrackerAttribution(productItem.getTrackerAttribution())
+                        .setTrackerListName(productItem.getTrackerListName())
                         .build();
             }
         } else {
