@@ -498,6 +498,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         bannerView.setVisibility(View.VISIBLE);
         this.bannerList = bannerList;
         List<String> promoUrls = new ArrayList<>();
+        Log.i("UKURAN", bannerList.size() + "");
         for (BannerDetail bannerModel : bannerList) {
             Log.d("DATADATA", bannerModel.toString());
             promoUrls.add(bannerModel.getAttributes().getFileName());
