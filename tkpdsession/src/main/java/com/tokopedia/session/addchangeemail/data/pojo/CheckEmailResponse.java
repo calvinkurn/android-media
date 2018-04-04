@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class CheckEmailResponse {
     @SerializedName("isExist")
-    private int isExist;
+    private boolean isExist;
 
     @SerializedName("message")
     private String message;
@@ -21,11 +21,11 @@ public class CheckEmailResponse {
         this.message = message;
     }
 
-    public int isExist() {
+    public boolean isExist() {
         return isExist;
     }
 
-    public void setIsExist(int isExist) {
+    public void setIsExist(boolean isExist) {
         this.isExist = isExist;
     }
 }

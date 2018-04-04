@@ -52,6 +52,6 @@ public class CheckEmailMapper implements Func1<Response<TkpdResponse>, CheckEmai
     }
 
     private CheckEmailViewModel mappingToViewModel(CheckEmailResponse response) {
-        return new CheckEmailViewModel(response.isExist() == 1, response.getMessage());
+        return new CheckEmailViewModel(response.isExist(), response.getMessage());
     }
 }
