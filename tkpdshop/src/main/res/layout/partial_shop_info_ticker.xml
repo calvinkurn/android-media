@@ -16,7 +16,7 @@
         android:layout_marginTop="2dp"
         android:background="@color/white"
         android:orientation="vertical"
-        android:padding="@dimen/margin_small">
+        android:padding="@dimen/dp_10">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,11 +25,11 @@
 
             <ImageView
                 android:id="@+id/iv_icon"
-                android:layout_width="@dimen/image_width_xs"
-                android:layout_height="@dimen/image_width_xs"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/margin_vs"
+                android:layout_marginEnd="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
                 tools:src="@drawable/ic_shop_label_closed" />
 
             <TextView
@@ -47,10 +47,10 @@
             android:orientation="horizontal">
 
             <View
-                android:layout_width="@dimen/image_width_xs"
+                android:layout_width="@dimen/dp_24"
                 android:layout_height="0dp"
-                android:layout_marginEnd="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/margin_vs" />
+                android:layout_marginEnd="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -63,7 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_marginTop="@dimen/dp_5"
                     tools:text="Closed Description" />
 
                 <TextView
@@ -71,12 +71,12 @@
                     style="@style/TextView.Small.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_ms"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:background="@drawable/bg_rect_stroke_light_gray"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
-                    android:padding="@dimen/margin_ms" />
+                    android:padding="@dimen/dp_8" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

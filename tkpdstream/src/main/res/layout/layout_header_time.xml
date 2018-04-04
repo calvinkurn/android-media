@@ -9,6 +9,6 @@
     android:layout_gravity="center_horizontal"
     android:fontFamily="sans-serif"
     android:textColor="@color/font_black_disabled_38"
-    android:textSize="@dimen/font_micro"
+    android:textSize="@dimen/sp_12"
     android:textStyle="normal"
     tools:text="HARI INI"/>

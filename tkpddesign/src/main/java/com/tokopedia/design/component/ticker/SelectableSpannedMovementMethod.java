@@ -1,4 +1,4 @@
-package com.tokopedia.design.ticker;
+package com.tokopedia.design.component.ticker;
 
 import android.text.Layout;
 import android.text.Selection;

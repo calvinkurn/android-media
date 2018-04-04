@@ -3,20 +3,20 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/margin_vs"
-    android:paddingTop="@dimen/margin_vs">
+    android:paddingBottom="@dimen/dp_5"
+    android:paddingTop="@dimen/dp_5">
 
     <com.tkpd.library.ui.widget.TouchViewPager
         android:id="@id/view_pager"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/pager_height"
-        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/dp_10"
         android:visibility="visible" />
 
     <com.tkpd.library.viewpagerindicator.LinePageIndicator
         android:id="@id/indicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/margin_vs"
+        android:padding="@dimen/dp_5"
         android:visibility="visible" />
 </LinearLayout>

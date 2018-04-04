@@ -30,14 +30,14 @@
             <TextView
                 android:id="@+id/text_view_score_good"
                 style="@style/TextView.Title"
-                android:layout_marginEnd="@dimen/margin_ms"
-                android:layout_marginRight="@dimen/margin_ms"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
                 tools:text="@string/app_name" />
 
             <ImageView
                 android:id="@+id/image_view_smiley_good"
-                android:layout_width="@dimen/image_width_xxs"
-                android:layout_height="@dimen/image_width_xxs"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
                 app:srcCompat="@drawable/ic_smiley_good" />
         </LinearLayout>
 
@@ -51,14 +51,14 @@
             <TextView
                 android:id="@+id/text_view_score_neutral"
                 style="@style/TextView.Title"
-                android:layout_marginEnd="@dimen/margin_ms"
-                android:layout_marginRight="@dimen/margin_ms"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
                 tools:text="@string/app_name" />
 
             <ImageView
                 android:id="@+id/image_view_smiley_neutral"
-                android:layout_width="@dimen/image_width_xxs"
-                android:layout_height="@dimen/image_width_xxs"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
                 app:srcCompat="@drawable/ic_smiley_neutral" />
         </LinearLayout>
 
@@ -72,14 +72,14 @@
             <TextView
                 android:id="@+id/text_view_score_bad"
                 style="@style/TextView.Title"
-                android:layout_marginEnd="@dimen/margin_ms"
-                android:layout_marginRight="@dimen/margin_ms"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
                 tools:text="@string/app_name" />
 
             <ImageView
                 android:id="@+id/image_view_smiley_bad"
-                android:layout_width="@dimen/image_width_xxs"
-                android:layout_height="@dimen/image_width_xxs"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
                 app:srcCompat="@drawable/ic_smiley_bad" />
         </LinearLayout>
     </LinearLayout>

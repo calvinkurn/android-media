@@ -20,7 +20,7 @@
     <com.tokopedia.design.text.DecimalInputView
         android:id="@+id/decimal_input_view_price"
         style="@style/LabelLayout.NoPadding"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         app:decimal_input_hint="@string/product_label_price_whole_sale" />
 
     <RelativeLayout

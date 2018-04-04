@@ -42,7 +42,7 @@
             android:paddingLeft="@dimen/space_avg_small"
             android:paddingRight="@dimen/space_med"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/font_title"
+            android:textSize="@dimen/sp_16"
             android:textStyle="normal"
             tools:text="2018 FIFA World Cup" />
 
@@ -59,7 +59,7 @@
             android:paddingLeft="@dimen/space_avg_small"
             android:paddingRight="@dimen/space_med"
             android:textColor="@color/black_55"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="normal"
             android:maxLines="2"
             android:ellipsize="end"
@@ -94,7 +94,7 @@
                 android:layout_toRightOf="@+id/prof_pict"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="normal"
                 tools:text="Darius Sinathrya" />
 

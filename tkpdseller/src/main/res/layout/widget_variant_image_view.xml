@@ -16,8 +16,8 @@
 
     <ImageView
         android:id="@+id/iv_plus"
-        android:layout_width="@dimen/image_width_s"
-        android:layout_height="@dimen/image_width_s"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
         android:layout_gravity="center"
         app:srcCompat="@drawable/ic_add_black_48dp" />
 
@@ -31,7 +31,7 @@
         android:id="@+id/tv_empty_stock"
         style="@style/TextView.Micro"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/image_width_xs"
+        android:layout_height="@dimen/dp_24"
         android:layout_gravity="bottom"
         android:background="@color/tkpd_yellow_status"
         android:gravity="center"
