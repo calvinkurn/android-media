@@ -1,5 +1,7 @@
 package com.tokopedia.gamification;
 
+import android.app.Activity;
+
 import okhttp3.Interceptor;
 
 /**
@@ -9,4 +11,7 @@ import okhttp3.Interceptor;
 public interface GamificationRouter {
 
     Interceptor getChuckInterceptor();
+
+    void actionApplink(Activity activity, String applink);
+
 }
