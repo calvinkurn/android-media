@@ -88,6 +88,8 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
             return new LoadingShimmeringGridViewHolder(parent);
         } else if (type == EmptyViewHolder.LAYOUT) {
             return new EmptyViewHolder(parent, emptyProductOnClickListener);
+        } else if (type == ShopProductLimitedEtalaseTitleViewHolder.LAYOUT) {
+            return new ShopProductLimitedEtalaseTitleViewHolder(parent);
         } else if (type == ShopProductLimitedPromoViewHolder.LAYOUT) {
             return new ShopProductLimitedPromoViewHolder(parent, promoViewHolderListener, promoWebViewListener);
         } else if (type == ShopProductFeaturedViewHolder.LAYOUT) {

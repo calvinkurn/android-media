@@ -93,6 +93,13 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
                             if (shopHasProduct) {
                                 for(int i = 0; i < shopProductBaseViewModelList.getList().size(); i++){
                                     ShopProductBaseViewModel shopProductBaseViewModel = shopProductBaseViewModelList.getList().get(i);
+                                    if(shopProductBaseViewModel instanceof ShopProductHomeViewModel) {
+                                        shopProductBaseViewModelList.getList().add(i, new ShopProductLimitedEtalaseTitleViewModel());
+                                        break;
+                                    }
+                                }
+                                for(int i = 0; i < shopProductBaseViewModelList.getList().size(); i++){
+                                    ShopProductBaseViewModel shopProductBaseViewModel = shopProductBaseViewModelList.getList().get(i);
                                     if(shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModel) {
                                         shopProductBaseViewModelList.getList().add(i, new ShopProductTitleFeaturedViewModel());
                                         break;
