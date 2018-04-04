@@ -29,19 +29,13 @@ public class FlightBookingDeletePassengerUseCase extends UseCase<Boolean> {
     @Override
     public Observable<Boolean> createObservable(final RequestParams requestParams) {
         return createRequest(requestParams)
-                .flatMap(new Func1<DeletePassengerRequest, Observable<Response<Object>>>() {
+                .flatMap(new Func1<DeletePassengerRequest, Observable<Boolean>>() {
                     @Override
-                    public Observable<Response<Object>> call(DeletePassengerRequest deletePassengerRequest) {
+                    public Observable<Boolean> call(DeletePassengerRequest deletePassengerRequest) {
                         return flightRepository.deletePassenger(
                                 deletePassengerRequest,
                                 requestParams.getString(PARAM_IDEMPOTENCY, DEFAULT_PARAM)
                         );
-                    }
-                })
-                .flatMap(new Func1<Response<Object>, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Response<Object> objectResponse) {
-                        return flightRepository.deleteAllListPassenger();
                     }
                 });
     }

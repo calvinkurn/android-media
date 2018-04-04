@@ -96,7 +96,7 @@ public interface FlightRepository {
 
     Observable<Boolean> deleteAllListPassenger();
 
-    Observable<Response<Object>> deletePassenger(DeletePassengerRequest request, String idempotencyKey);
+    Observable<Boolean> deletePassenger(DeletePassengerRequest request, String idempotencyKey);
 
     Observable<Boolean> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey);
 

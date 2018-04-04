@@ -397,7 +397,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<Response<Object>> deletePassenger(DeletePassengerRequest request, String idempotencyKey) {
+    public Observable<Boolean> deletePassenger(DeletePassengerRequest request, String idempotencyKey) {
         return flightPassengerFactorySource.deletePassenger(request, idempotencyKey);
     }
 

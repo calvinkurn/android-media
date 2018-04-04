@@ -62,8 +62,14 @@ public class FlightPassengerFactorySource {
         return flightPassengerDataListDbSource.deleteAll();
     }
 
-    public Observable<Response<Object>> deletePassenger(DeletePassengerRequest deletePassengerRequest, String idempotencyKey) {
-        return flightSavedPassengerDataListCloudSource.deletePassenger(deletePassengerRequest, idempotencyKey);
+    public Observable<Boolean> deletePassenger(final DeletePassengerRequest deletePassengerRequest, String idempotencyKey) {
+        return flightSavedPassengerDataListCloudSource.deletePassenger(deletePassengerRequest, idempotencyKey)
+                .flatMap(new Func1<Response<Object>, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Response<Object> objectResponse) {
+                        return flightPassengerDataListDbSource.deletePassenger(deletePassengerRequest.getId());
+                    }
+                });
     }
 
     public Observable<Boolean> updatePassenger(final UpdatePassengerRequest updatePassengerRequest, String idempotencyKey) {

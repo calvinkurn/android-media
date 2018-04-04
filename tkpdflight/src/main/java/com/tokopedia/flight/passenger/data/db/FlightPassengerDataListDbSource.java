@@ -151,6 +151,24 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
         });
     }
 
+    public Observable<Boolean> deletePassenger(String passengerId) {
+        final ConditionGroup conditions = ConditionGroup.clause();
+        conditions.and(FlightPassengerDb_Table.id.eq(passengerId));
+
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                FlightPassengerDb result = new Select().from(FlightPassengerDb.class)
+                        .where(conditions)
+                        .querySingle();
+
+                result.delete();
+
+                subscriber.onNext(true);
+            }
+        });
+    }
+
     public Observable<FlightPassengerDb> getSingleData(String passengerId) {
         final ConditionGroup conditions = ConditionGroup.clause();
         conditions.and(FlightPassengerDb_Table.id.eq(passengerId));
