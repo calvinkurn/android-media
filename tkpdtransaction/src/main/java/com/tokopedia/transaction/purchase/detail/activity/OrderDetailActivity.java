@@ -346,7 +346,8 @@ public class OrderDetailActivity extends TActivity
         LinearLayout timeLimitLayout = findViewById(R.id.time_limit_layout);
         TextView responseTime = findViewById(R.id.description_response_time);
         TextView labelResponseTime = findViewById(R.id.tv_time_limit_layout_label);
-        labelResponseTime.setText(data.getOrderCode().equals(String.valueOf(OrderShipmentTypeDef.ORDER_DELIVERED))
+        labelResponseTime.setText(data.getOrderCode().equalsIgnoreCase(String.valueOf(OrderShipmentTypeDef.ORDER_DELIVERED))
+                || data.getOrderCode().equalsIgnoreCase(String.valueOf(OrderShipmentTypeDef.ORDER_DELIVERED_DUE_LIMIT))
                 ? getString(R.string.label_response_auto_finish) : getString(R.string.label_response_limit));
 
         if (data.getResponseTimeLimit() == null || data.getResponseTimeLimit().isEmpty()) {
