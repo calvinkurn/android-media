@@ -578,8 +578,17 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void onItemClicked(ProductModel productModel, String curatedName) {
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                Integer.toString(productModel.getId()));
+        ProductItem data = new ProductItem();
+        data.setId(String.valueOf(productModel.getId()));
+        data.setName(productModel.getName());
+        data.setPrice(productModel.getPrice());
+        data.setImgUri(productModel.getImageUrl());
+        data.setTrackerListName(productModel.getTrackerListName());
+        data.setTrackerAttribution(productModel.getTrackerAttribution());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
         getActivity().startActivity(intent);
         UnifyTracking.eventCuratedIntermediary(departmentId,
                 curatedName, productModel.getName());
