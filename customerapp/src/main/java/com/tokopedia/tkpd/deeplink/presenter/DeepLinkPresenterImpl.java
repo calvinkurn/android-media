@@ -43,6 +43,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
+import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
 import com.tokopedia.tkpd.deeplink.WhitelistItem;
@@ -288,6 +289,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openGroupChat(linkSegment);
                     screenName = AppScreen.GROUP_CHAT;
                     break;
+                case DeepLinkChecker.PROMO:
+                    openPromo(linkSegment);
+                    screenName = "";
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -332,6 +337,18 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        context.finish();
+    }
+
+    private void openPromo(List<String> linkSegment) {
+        LoyaltyRouter router = ((LoyaltyRouter) context.getApplication());
+        Intent intent = router.getPromoDetailIntent(context, linkSegment.get(1));
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
         context.startActivity(intent);
         context.finish();
     }

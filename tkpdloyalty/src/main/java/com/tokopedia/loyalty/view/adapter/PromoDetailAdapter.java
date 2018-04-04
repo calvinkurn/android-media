@@ -51,7 +51,7 @@ public class PromoDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         } else if (viewType == ITEM_VIEW_SIMPLE_CODE) {
             return new PromoDetailSimpleCodeViewHolder(view, adapterActionListener);
         } else if (viewType == ITEM_VIEW_TNC) {
-            return new PromoDetailTnCViewHolder(view);
+            return new PromoDetailTnCViewHolder(view, adapterActionListener);
         }
 
         return null;
@@ -99,7 +99,7 @@ public class PromoDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.promoDetailObjectList = new ArrayList<>(promoDetailObjectList);
     }
 
-    public void setAdapterActionListener(OnAdapterActionListener adapterActionListener) {
+    public void setAdapterListener(OnAdapterActionListener adapterActionListener) {
         this.adapterActionListener = adapterActionListener;
     }
 
@@ -110,6 +110,8 @@ public class PromoDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         void onItemPromoCodeCopyClipboardClicked(String promoCode);
 
         void onItemPromoCodeTooltipClicked();
+
+        void onWebViewLinkClicked(String url);
 
     }
 }

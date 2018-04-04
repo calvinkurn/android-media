@@ -972,6 +972,5 @@ public class TkpdBaseURL {
     public class Promo {
         public static final String PATH_MENU_INDEX = "wp-json/wp/v2/hmenu";
         public static final String PATH_PROMO_LIST = "wp-json/wp/v2/posts";
-
     }
 }

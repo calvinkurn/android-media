@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -24,6 +23,7 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
         PromoDetailFragment.OnFragmentInteractionListener {
 
     private static final String EXTRA_PROMO_DATA = "promo_data";
+    private static final String EXTRA_PROMO_SLUG = "promo_slug";
 
     PromoDetailComponent component;
 
@@ -32,6 +32,17 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
         intent.putExtra(EXTRA_PROMO_DATA, promoData);
         return intent;
     }
+
+    public static Intent getCallingIntent(Context context, String slug) {
+        Intent intent = new Intent(context, PromoDetailActivity.class);
+        intent.putExtra(EXTRA_PROMO_SLUG, slug);
+        return intent;
+    }
+
+//    @DeepLink(LoyaltyAppLink.PROMO_NATIVE_DETAIL)
+//    public static Intent getAppLinkIntent(Context context, Bundle extras) {
+//        return PromoDetailActivity.getCallingIntent(context);
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +53,13 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
     @Override
     protected Fragment getNewFragment() {
         PromoData promoData = getIntent().getParcelableExtra(EXTRA_PROMO_DATA);
-        return PromoDetailFragment.newInstance(promoData);
+
+        if (promoData == null) {
+            String slug = getIntent().getStringExtra(EXTRA_PROMO_SLUG);
+            return PromoDetailFragment.newInstance(slug);
+        } else {
+            return PromoDetailFragment.newInstance(promoData);
+        }
     }
 
     @Override

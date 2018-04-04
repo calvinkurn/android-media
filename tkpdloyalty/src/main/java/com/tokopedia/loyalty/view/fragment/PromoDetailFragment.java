@@ -20,14 +20,15 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
 import com.tokopedia.loyalty.view.adapter.PromoDetailAdapter;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.mapper.PromoDataMapper;
-
-import java.util.List;
+import com.tokopedia.loyalty.view.presenter.PromoDetailPresenter;
+import com.tokopedia.loyalty.view.view.IPromoDetailView;
 
 import javax.inject.Inject;
 
@@ -35,9 +36,14 @@ import javax.inject.Inject;
  * @author Aghny A. Putra on 23/03/18
  */
 
-public class PromoDetailFragment extends BaseDaggerFragment {
+public class PromoDetailFragment extends BaseDaggerFragment implements IPromoDetailView {
 
+    private static final String ARG_EXTRA_PROMO_FLAG = "flag";
     private static final String ARG_EXTRA_PROMO_DATA = "promo_data";
+    private static final String ARG_EXTRA_PROMO_SLUG = "promo-slug";
+
+    private static final int DETAIL_PROMO_FROM_DATA = 0;
+    private static final int DETAIL_PROMO_FROM_SLUG = 1;
 
     private static final int REQUEST_CODE_PROMO_DETAIL = 118;
 
@@ -46,10 +52,10 @@ public class PromoDetailFragment extends BaseDaggerFragment {
     private LinearLayout llPromoDetailBottomLayout;
     private BottomSheetView bottomSheetInfoPromoCode;
 
-    private PromoData promoData;
-    private List<Object> promoDetailObjectList;
+    private String promoSlug;
     private PromoDetailFragment.OnFragmentInteractionListener actionListener;
 
+    @Inject PromoDetailPresenter promoDetailPresenter;
     @Inject PromoDetailAdapter promoDetailAdapter;
     @Inject PromoDataMapper promoDataMapper;
 
@@ -70,7 +76,17 @@ public class PromoDetailFragment extends BaseDaggerFragment {
     public static PromoDetailFragment newInstance(PromoData promoData) {
         PromoDetailFragment fragment = new PromoDetailFragment();
         Bundle args = new Bundle();
+        args.putInt(ARG_EXTRA_PROMO_FLAG, DETAIL_PROMO_FROM_DATA);
         args.putParcelable(ARG_EXTRA_PROMO_DATA, promoData);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static PromoDetailFragment newInstance(String slug) {
+        PromoDetailFragment fragment = new PromoDetailFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_EXTRA_PROMO_FLAG, DETAIL_PROMO_FROM_SLUG);
+        args.putString(ARG_EXTRA_PROMO_SLUG, slug);
         fragment.setArguments(args);
         return fragment;
     }
@@ -80,8 +96,14 @@ public class PromoDetailFragment extends BaseDaggerFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            this.promoData = getArguments().getParcelable(ARG_EXTRA_PROMO_DATA);
-            this.promoDetailObjectList = promoDataMapper.convert(this.promoData);
+            int flag = getArguments().getInt(ARG_EXTRA_PROMO_FLAG);
+
+            if (flag == DETAIL_PROMO_FROM_DATA) {
+                PromoData promoData = getArguments().getParcelable(ARG_EXTRA_PROMO_DATA);
+                if (promoData != null) this.promoSlug = promoData.getSlug();
+            } else if (flag == DETAIL_PROMO_FROM_SLUG) {
+                this.promoSlug = getArguments().getString(ARG_EXTRA_PROMO_SLUG);
+            }
         }
     }
 
@@ -107,21 +129,11 @@ public class PromoDetailFragment extends BaseDaggerFragment {
         this.rvPromoDetailView.setLayoutManager(new LinearLayoutManager(getActivity()));
         this.rvPromoDetailView.setHasFixedSize(true);
 
-        this.promoDetailAdapter.setPromoDetail(promoDetailObjectList);
-        this.promoDetailAdapter.setAdapterActionListener(getAdapterActionListener());
-        this.promoDetailAdapter.notifyDataSetChanged();
+        this.promoDetailAdapter.setAdapterListener(getAdapterActionListener());
 
-        this.tvPromoDetailAction.setText(this.promoData.getCtaText());
-        this.tvPromoDetailAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String uri = TextUtils.isEmpty(promoData.getAppLink()) ? promoData.getPromoLink()
-                        : promoData.getAppLink();
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-
-                startActivityForResult(browserIntent, REQUEST_CODE_PROMO_DETAIL);
-            }
-        });
+        //presenter
+        promoDetailPresenter.attachView(this);
+        promoDetailPresenter.getPromoDetail(promoSlug);
     }
 
     @Override
@@ -208,7 +220,36 @@ public class PromoDetailFragment extends BaseDaggerFragment {
 
                 bottomSheetInfoPromoCode.show();
             }
+
+            @Override
+            public void onWebViewLinkClicked(String url) {
+                if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+                    TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
+                    tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), url);
+                }
+            }
         };
+    }
+
+    @Override
+    public void renderPromoDetail(PromoData promoData) {
+        this.promoDetailAdapter.setPromoDetail(promoDataMapper.convert(promoData));
+        this.promoDetailAdapter.notifyDataSetChanged();
+        setFragmentLayout(promoData);
+    }
+
+    private void setFragmentLayout(final PromoData promoData) {
+        this.tvPromoDetailAction.setText(promoData.getCtaText());
+        this.tvPromoDetailAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String uri = TextUtils.isEmpty(promoData.getAppLink()) ? promoData.getPromoLink()
+                        : promoData.getAppLink();
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+
+                startActivityForResult(browserIntent, REQUEST_CODE_PROMO_DETAIL);
+            }
+        });
     }
 
     /**
