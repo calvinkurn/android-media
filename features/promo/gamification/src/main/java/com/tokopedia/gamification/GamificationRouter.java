@@ -1,5 +1,8 @@
 package com.tokopedia.gamification;
 
+import android.content.Context;
+import android.content.Intent;
+
 import okhttp3.Interceptor;
 
 /**
@@ -9,4 +12,6 @@ import okhttp3.Interceptor;
 public interface GamificationRouter {
 
     Interceptor getChuckInterceptor();
+
+    Intent getWebviewActivityWithIntent(Context context, String url, String title);
 }
