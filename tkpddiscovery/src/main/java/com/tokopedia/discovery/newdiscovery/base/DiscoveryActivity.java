@@ -72,6 +72,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         BottomNavigationListener {
 
     private static final double MIN_SCORE = 10.0;
+    private static final String FAILURE = "fail";
+    private static final String SUCCESS = "success";
     private Toolbar toolbar;
     private FrameLayout container;
     private AHBottomNavigation bottomNavigation;
@@ -235,6 +237,22 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                 !TextUtils.isEmpty(keyword)) {
             UnifyTracking.eventDiscoveryVoiceSearch(keyword);
         }
+    }
+
+    private void sendCameraImageSearchProductGTM() {
+        UnifyTracking.eventDiscoveryCameraImageSearch();
+    }
+
+    private void sendGalleryImageSearchProductGTM() {
+        UnifyTracking.eventDiscoveryGalleryImageSearch();
+    }
+
+    private void sendCameraImageSearchResultGTM(String label) {
+        UnifyTracking.eventDiscoveryCameraImageSearchResult(label);
+    }
+
+    private void sendGalleryImageSearchResultGTM(String label) {
+        UnifyTracking.eventDiscoveryGalleryImageSearchResult(label);
     }
 
     @Override
@@ -403,15 +421,17 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     public void showUploadDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.dialog_image_upload_option));
-        builder.setPositiveButton(getString(com.tokopedia.core.R.string.title_gallery), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                sendGalleryImageSearchProductGTM();
                 DiscoveryActivityPermissionsDispatcher.actionImagePickerWithCheck(DiscoveryActivity.this);
 
             }
-        }).setNegativeButton(getString(com.tokopedia.core.R.string.title_camera), new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getString(R.string.title_camera), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                sendCameraImageSearchProductGTM();
                 DiscoveryActivityPermissionsDispatcher.actionCameraWithCheck(DiscoveryActivity.this);
             }
         });
@@ -529,7 +549,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             if (tkpdProgressDialog != null) {
                 tkpdProgressDialog.dismiss();
             }
-            // TODO: 3/13/18 show appropriate error
+
+            if (fromCamera) {
+                sendCameraImageSearchResultGTM(FAILURE);
+            } else {
+                sendGalleryImageSearchResultGTM(FAILURE);
+            }
+
             Toast.makeText(this, "Invalid Response", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -550,6 +576,12 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
         if (StringUtils.isNotBlank(productIDs.toString())) {
 
+            if (fromCamera) {
+                sendCameraImageSearchResultGTM(SUCCESS);
+            } else {
+                sendGalleryImageSearchResultGTM(SUCCESS);
+            }
+
             SearchParameter imageSearchProductParameter = new SearchParameter();
             imageSearchProductParameter.setStartRow(productCount);
             imageSearchProductParameter.setQueryKey(String.valueOf(productIDs));
@@ -560,6 +592,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             if (tkpdProgressDialog != null) {
                 tkpdProgressDialog.dismiss();
             }
+
+            if (fromCamera) {
+                sendCameraImageSearchResultGTM(FAILURE);
+            } else {
+                sendGalleryImageSearchResultGTM(FAILURE);
+            }
+
             Toast.makeText(this, "No Results Found!", Toast.LENGTH_SHORT).show();
         }
     }
