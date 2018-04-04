@@ -437,6 +437,8 @@ public class LoginActivityTest {
             unregisterIdlingResources(webViewIdlingResource);
         webViewIdlingResource = null;
 
+        dialog.dismiss();
+
         snackbarAnyMatcher();
 
         ScreenShotter.takeScreenshot("testYahooReLogin_see_snackbar", mIntentsRule.getActivity());
@@ -467,7 +469,6 @@ public class LoginActivityTest {
             }
         }
 
-
         // set target fragment bundle
         bundle = new Bundle();
         bundle.putString("server", "accounts.tokopedia.com");
@@ -482,6 +483,8 @@ public class LoginActivityTest {
         if (webViewIdlingResource != null)
             unregisterIdlingResources(webViewIdlingResource);
         webViewIdlingResource = null;
+
+        dialog.dismiss();
 
         ScreenShotter.takeScreenshot("testYahooReLogin_second_attempt_click", mIntentsRule.getActivity());
 
