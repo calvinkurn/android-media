@@ -15,10 +15,10 @@ import java.util.List;
 
 public class PromoPagerAdapter extends FragmentStatePagerAdapter {
 
-    private final int autoSelectCategoryId;
+    private final String autoSelectCategoryId;
     private List<PromoMenuData> promoMenuDataList;
 
-    public PromoPagerAdapter(FragmentManager fm, List<PromoMenuData> promoMenuDataList, int autoSelectedCategoryId) {
+    public PromoPagerAdapter(FragmentManager fm, List<PromoMenuData> promoMenuDataList, String autoSelectedCategoryId) {
         super(fm);
         this.promoMenuDataList = promoMenuDataList;
         this.autoSelectCategoryId = autoSelectedCategoryId;

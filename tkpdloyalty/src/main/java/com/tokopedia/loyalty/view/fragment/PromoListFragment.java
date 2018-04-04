@@ -80,7 +80,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     private String filterSelected = "";
     private EndlessRecyclerviewListener endlessRecyclerviewListener;
 
-    private int autoSelectedCategoryId;
+    private String autoSelectedCategoryId;
 
     @Override
     protected void initInjector() {
@@ -270,7 +270,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     @Override
     protected void setupArguments(Bundle arguments) {
         this.promoMenuData = arguments.getParcelable(ARG_EXTRA_PROMO_MENU_DATA);
-        this.autoSelectedCategoryId = arguments.getInt(ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID, 0);
+        this.autoSelectedCategoryId = arguments.getString(ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID, "0");
     }
 
     @Override
@@ -307,7 +307,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         final List<QuickFilterItem> quickFilterItemList = setQuickFilterItems(promoMenuData.getPromoSubMenuDataList());
         for (int i = 0; i < quickFilterItemList.size(); i++) {
             QuickFilterItem item = quickFilterItemList.get(i);
-            if (String.valueOf(autoSelectedCategoryId).equalsIgnoreCase(item.getType()))
+            if (autoSelectedCategoryId.equalsIgnoreCase(item.getType()))
                 indexAutoSelectCategoryFilter = i;
         }
         quickSingleFilterView.renderFilter(quickFilterItemList);
@@ -350,11 +350,11 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     }
 
-    public static Fragment newInstance(PromoMenuData promoMenuData, int autoSelectCategoryId) {
+    public static Fragment newInstance(PromoMenuData promoMenuData, String autoSelectCategoryId) {
         Fragment fragment = new PromoListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_EXTRA_PROMO_MENU_DATA, promoMenuData);
-        bundle.putInt(ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID, autoSelectCategoryId);
+        bundle.putString(ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID, autoSelectCategoryId);
         fragment.setArguments(bundle);
         return fragment;
     }

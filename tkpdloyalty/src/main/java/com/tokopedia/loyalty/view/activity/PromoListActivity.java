@@ -54,13 +54,13 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
 
     private PromoPagerAdapter adapter;
 
-    private int autoSelectedMenuId;
-    private int autoSelectedCategoryId;
+    private String autoSelectedMenuId;
+    private String autoSelectedCategoryId;
 
     @Inject
     IPromoListActivityPresenter dPresenter;
 
-    public static Intent newInstance(Context context, int menuId, int categoryId) {
+    public static Intent newInstance(Context context, String menuId, String categoryId) {
         return new Intent(context, PromoListActivity.class)
                 .putExtra(EXTRA_AUTO_SELECTED_MENU_ID, menuId)
                 .putExtra(EXTRA_AUTO_SELECTED_CATEGORY_ID, categoryId);
@@ -69,8 +69,8 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
     @SuppressWarnings("unused")
     @DeepLink(LoyaltyAppLink.PROMO_NATIVE)
     public static Intent getAppLinkIntent(Context context, Bundle extras) {
-        int autoSelectedMenuId = extras.getInt(LoyaltyAppLink.PROMO_NATIVE_QUERY_MENU_ID, 0);
-        int autoSelectedCategoryId = extras.getInt(LoyaltyAppLink.PROMO_NATIVE_QUERY_CATEGORY_ID, 0);
+        String autoSelectedMenuId = extras.getString(LoyaltyAppLink.PROMO_NATIVE_QUERY_MENU_ID, "0");
+        String autoSelectedCategoryId = extras.getString(LoyaltyAppLink.PROMO_NATIVE_QUERY_CATEGORY_ID, "0");
         return PromoListActivity.newInstance(context, autoSelectedMenuId, autoSelectedCategoryId);
     }
 
@@ -86,8 +86,8 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        autoSelectedMenuId = extras.getInt(EXTRA_AUTO_SELECTED_MENU_ID);
-        autoSelectedCategoryId = extras.getInt(EXTRA_AUTO_SELECTED_CATEGORY_ID);
+        autoSelectedMenuId = extras.getString(EXTRA_AUTO_SELECTED_MENU_ID);
+        autoSelectedCategoryId = extras.getString(EXTRA_AUTO_SELECTED_CATEGORY_ID);
     }
 
     @Override
@@ -146,7 +146,7 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
             MenuPromoTab menuPromoTab = new MenuPromoTab(this);
             menuPromoTab.renderData(promoMenuDataList.get(i));
             tabLayout.getTabAt(i).setCustomView(menuPromoTab);
-            if (promoMenuDataList.get(i).getMenuId().equals(String.valueOf(autoSelectedMenuId))) {
+            if (promoMenuDataList.get(i).getMenuId().equalsIgnoreCase(autoSelectedMenuId)) {
                 indexMenuAutoSelected = i;
             }
         }
