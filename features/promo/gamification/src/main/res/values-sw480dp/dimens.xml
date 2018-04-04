@@ -10,14 +10,15 @@
     <integer name="translate_egg_to_y_delta">-50</integer>
 
     <integer name="reward_translate_y_axis">-200</integer>
-    <fraction name="to_x_scale_reward_anim">600%</fraction>
-    <fraction name="to_y_scale_reward_anim">600%</fraction>
-    <fraction name="to_x_scale_bg_reward_anim">600%</fraction>
-    <fraction name="to_y_scale_bg_reward_anim">600%</fraction>
+    <fraction name="to_x_scale_reward_anim">36000%</fraction>
+    <fraction name="to_y_scale_reward_anim">36000%</fraction>
+    <fraction name="to_x_scale_bg_reward_anim">36000%</fraction>
+    <fraction name="to_y_scale_bg_reward_anim">36000%</fraction>
 
     <dimen name="text_size_reward_large">58sp</dimen>
     <dimen name="text_size_reward_medium">48sp</dimen>
     <dimen name="text_size_reward_small">38sp</dimen>
     <dimen name="text_size_reward_label">20sp</dimen>
+    <dimen name="text_size_cta_button">24sp</dimen>
     <dimen name="margin_bottom_container_text_reward">132dp</dimen>
 </resources>
