@@ -521,8 +521,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             topAdsView.setAdsItemClickListener(this);
             topAdsView.loadTopAds();
             if(autoApply != null && autoApply.isSuccess()) {
-                if(autoApply.getIsCoupon() == 1)
-                    renderAutoApplyVoucherView(autoApply);
+                renderAutoApplyPromoView(autoApply);
             }
         }
     }
@@ -811,7 +810,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderAutoApplyVoucherView(AutoApply autoApply) {
+    public void renderAutoApplyPromoView(AutoApply autoApply) {
         if(autoApply.getIsCoupon() == 1)
             setCouponResultLayout(
                     autoApply.getCode(),

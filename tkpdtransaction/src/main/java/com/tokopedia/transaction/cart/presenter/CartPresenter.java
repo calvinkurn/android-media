@@ -42,8 +42,6 @@ import com.tokopedia.transaction.cart.services.TopPayIntentService;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
 
-import org.json.JSONArray;
-
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -794,7 +792,7 @@ public class CartPresenter implements ICartPresenter {
         view.renderInstantPromo(data.getCartPromo());
         view.renderPromoView(data.getIsCouponActive() == 1);
         if(promoAutoApplied(data)) {
-            view.renderAutoApplyVoucherView(data.getAutoApply());
+            view.renderAutoApplyPromoView(data.getAutoApply());
         }
     }
 
