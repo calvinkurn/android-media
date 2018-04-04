@@ -1,47 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root_container">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/iv_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        tools:src="@drawable/bg_special_egg"/>
+        tools:src="@drawable/bg_egg"/>
 
-    <TextView
-        android:id="@+id/text_countdown_timer"
+    <LinearLayout
+        android:id="@+id/layout_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_countdown_timer"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="8dp"
-        android:paddingLeft="32dp"
-        android:paddingRight="32dp"
-        android:paddingTop="8dp"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_countdown_timer"
-        android:textStyle="bold"
-        tools:text="12:00:00"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/text_info_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_info_crack_egg"
+            android:paddingBottom="8dp"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:paddingTop="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_info_crack_egg"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:text="Klik untuk pecahkan Lucky \nEgg dan raih hadiah menarik!" />
+
+        <TextView
+            android:id="@+id/text_countdown_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bg_countdown_timer"
+            android:paddingBottom="8dp"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:paddingTop="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_countdown_timer"
+            android:textStyle="bold"
+            tools:text="12:00:00" />
+
+    </LinearLayout>
 
     <com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView
         android:id="@+id/widget_token_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <com.tokopedia.gamification.cracktoken.compoundview.WidgetRemainingToken
         android:id="@+id/widget_remaining_token_view"
-        android:layout_marginBottom="16dp"
-        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"/>
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"/>
 
     <com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult
         android:id="@+id/widget_reward"
@@ -52,5 +77,12 @@
         android:id="@+id/widget_token_onboarding"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
 </FrameLayout>
