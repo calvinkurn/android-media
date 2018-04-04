@@ -268,8 +268,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
-        DigitalRouter, KolRouter, StreamModuleRouter, ITkpdLoyaltyModuleRouter, ICartCheckoutModuleRouter {
-        AbstractionRouter, FlightModuleRouter, LogisticRouter, ITkpdLoyaltyModuleRouter, ICartCheckoutModuleRouter,
+        DigitalRouter, KolRouter, StreamModuleRouter, ITkpdLoyaltyModuleRouter, ICartCheckoutModuleRouter,
         TransactionRouter.CartRouter {
 
     @Inject
