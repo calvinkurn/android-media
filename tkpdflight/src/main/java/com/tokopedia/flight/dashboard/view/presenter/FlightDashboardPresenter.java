@@ -3,7 +3,6 @@ package com.tokopedia.flight.dashboard.view.presenter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -614,7 +613,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 if (isViewAttached()) {
                     getView().hideBannerView();
                 }
-                Log.e("Error", throwable.getLocalizedMessage());
             }
 
             @Override
@@ -622,7 +620,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 if (isViewAttached()) {
                     getView().renderBannerView(bannerDetailList);
                 }
-                Log.i("Berhasil", bannerDetailList.size() + "");
             }
         });
     }

@@ -11,7 +11,6 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -498,9 +497,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         bannerView.setVisibility(View.VISIBLE);
         this.bannerList = bannerList;
         List<String> promoUrls = new ArrayList<>();
-        Log.i("UKURAN", bannerList.size() + "");
         for (BannerDetail bannerModel : bannerList) {
-            Log.d("DATADATA", bannerModel.toString());
             promoUrls.add(bannerModel.getAttributes().getFileName());
         }
         bannerView.setPromoList(promoUrls);
