@@ -603,10 +603,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private void bannerAllClickAction() {
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication())
-                .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK) != null) {
+                .getPromoListIntent(getActivity()) != null) {
 
             startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK));
+                    .getPromoListIntent(getActivity()));
         }
     }
 
