@@ -2,7 +2,9 @@ package com.tokopedia.loyalty.view.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
@@ -62,28 +64,37 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
     @Override
     public void processCheckFlightPromoCode(Activity activity, String voucherCode, String cartId) {
-        flightCheckVoucherUseCase.execute(flightCheckVoucherUseCase.createRequest(cartId, voucherCode, "0"),
-                new Subscriber<VoucherViewModel>() {
-                    @Override
-                    public void onCompleted() {
+        flightCheckVoucherUseCase.execute(
+                flightCheckVoucherUseCase.createVoucherRequest(cartId, voucherCode),
+                checkFlightVoucherSubscriber()
+        );
+    }
 
-                    }
+    @NonNull
+    private Subscriber<VoucherViewModel> checkFlightVoucherSubscriber() {
+        return new Subscriber<VoucherViewModel>() {
+            @Override
+            public void onCompleted() {
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        view.hideProgressLoading();
-                        if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
-                            view.onPromoCodeError(e.getMessage());
-                        } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                    }
+            }
 
-                    @Override
-                    public void onNext(VoucherViewModel voucherViewModel) {
-                        view.hideProgressLoading();
-                        view.checkDigitalVoucherSucessful(voucherViewModel);
-                    }
-                });
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                view.hideProgressLoading();
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                    view.onPromoCodeError(e.getMessage());
+                }else if (e instanceof MessageErrorException) {
+                    view.onGetGeneralError(e.getMessage());
+                } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+            }
+
+            @Override
+            public void onNext(VoucherViewModel voucherViewModel) {
+                view.hideProgressLoading();
+                view.checkDigitalVoucherSucessful(voucherViewModel);
+            }
+        };
     }
 
     private Subscriber<VoucherViewModel> makeVoucherViewModel() {

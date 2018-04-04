@@ -390,8 +390,13 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void onRefresh(View view) {
-        if (refreshHandler.isRefreshing())
-            dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
+        if (refreshHandler.isRefreshing()) {
+            String platformKey = getArguments().getString(PLATFORM_KEY, "");
+            if (platformKey.equalsIgnoreCase(FLIGHT_STRING)){
+                platformKey = DIGITAL_STRING;
+            }
+            dPresenter.processGetCouponList(platformKey);
+        }
     }
 
     @Override

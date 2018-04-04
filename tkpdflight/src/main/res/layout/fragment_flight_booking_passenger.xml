@@ -115,6 +115,9 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/flight_booking_passenger_firstname_secondary_hint"
                         android:singleLine="true"
+                        android:imeOptions="actionNext"
+                        android:imeActionLabel="@string/label_next"
+                        android:nextFocusForward="@+id/et_last_name"
                         android:textColor="@color/font_black_primary_70" />
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -134,6 +137,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/flight_booking_passenger_last_name_secondary_hint"
                         android:singleLine="true"
+                        android:imeOptions="actionDone"
                         android:textColor="@color/font_black_primary_70" />
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 

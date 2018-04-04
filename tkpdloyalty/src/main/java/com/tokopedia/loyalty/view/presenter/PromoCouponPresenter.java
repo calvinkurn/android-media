@@ -1,5 +1,8 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import android.support.annotation.NonNull;
+
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -148,38 +151,46 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     @Override
     public void submitFlightVoucher(final CouponData data, String cartId) {
         view.showProgressLoading();
-        flightCheckVoucherUseCase.execute(flightCheckVoucherUseCase.createRequest(cartId, data.getCode(), "1"),
-                new Subscriber<VoucherViewModel>() {
-                    @Override
-                    public void onCompleted() {
+        flightCheckVoucherUseCase.execute(flightCheckVoucherUseCase.createCouponRequest(cartId, data.getCode()),
+                checkFlightCouponSubscriber(data));
+    }
 
-                    }
+    @NonNull
+    private Subscriber<VoucherViewModel> checkFlightCouponSubscriber(final CouponData data) {
+        return new Subscriber<VoucherViewModel>() {
+            @Override
+            public void onCompleted() {
 
-                    @Override
-                    public void onError(Throwable e) {
-                        view.hideProgressLoading();
-                        if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
-                            data.setErrorMessage(e.getMessage());
-                            view.couponError();
-                        } else {
-                            view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                        }
-                    }
+            }
 
-                    @Override
-                    public void onNext(VoucherViewModel voucherViewModel) {
-                        CouponViewModel viewModel = new CouponViewModel();
-                        viewModel.setAmount(voucherViewModel.getAmount());
-                        viewModel.setCode(voucherViewModel.getCode());
-                        viewModel.setRawCashback(voucherViewModel.getRawCashback());
-                        viewModel.setRawDiscount(voucherViewModel.getRawDiscount());
-                        viewModel.setMessage(voucherViewModel.getMessage());
-                        viewModel.setTitle(voucherViewModel.getCode());
-                        viewModel.setSuccess(true);
-                        view.receiveResult(viewModel);
-                        view.hideProgressLoading();
-                    }
-                });
+            @Override
+            public void onError(Throwable e) {
+                view.hideProgressLoading();
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                    data.setErrorMessage(e.getMessage());
+                    view.couponError();
+                } else if (e instanceof MessageErrorException) {
+                    data.setErrorMessage(e.getMessage());
+                    view.showSnackbarError(e.getMessage());
+                } else {
+                    view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(VoucherViewModel voucherViewModel) {
+                CouponViewModel viewModel = new CouponViewModel();
+                viewModel.setAmount(voucherViewModel.getAmount());
+                viewModel.setCode(voucherViewModel.getCode());
+                viewModel.setRawCashback(voucherViewModel.getRawCashback());
+                viewModel.setRawDiscount(voucherViewModel.getRawDiscount());
+                viewModel.setMessage(voucherViewModel.getMessage());
+                viewModel.setTitle(voucherViewModel.getCode());
+                viewModel.setSuccess(true);
+                view.receiveResult(viewModel);
+                view.hideProgressLoading();
+            }
+        };
     }
 
     private Subscriber<CouponViewModel> makeCouponSubscriber(final CouponData couponData) {
