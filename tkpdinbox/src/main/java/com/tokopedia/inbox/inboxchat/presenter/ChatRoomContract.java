@@ -138,8 +138,6 @@ public class ChatRoomContract {
         void onSuccessSetRating(OppositeChatViewModel element);
 
         void onErrorSetRating();
-        
-        void onInvoiceSelected(SelectedInvoice selectedInvoice);
 
         void showSearchInvoiceScreen();
     }
