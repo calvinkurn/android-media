@@ -33,11 +33,23 @@
                 android:layout_height="3dp"
                 android:background="@drawable/variant_shadow" />
 
+            <TextView
+                android:id="@+id/text_variant_stock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_text_variant"
+                android:textColor="@color/black_70"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_marginLeft="@dimen/margin_sm"
+                android:visibility="gone"/>
+
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical" android:layout_width="match_parent"
                 android:layout_marginTop="@dimen/margin_sm"
-                android:layout_height="wrap_content" android:paddingLeft="@dimen/padding_detail"
-                android:paddingRight="@dimen/padding_detail" android:paddingBottom="@dimen/padding_detail">
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_detail"
+                android:paddingRight="@dimen/padding_detail"
+                android:paddingBottom="@dimen/padding_detail">
 
                 <LinearLayout
                     android:layout_width="match_parent"

@@ -1272,9 +1272,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
         int defaultChild =  productVariant.getParentId() == productData.getInfo().getProductId()
                 ?  productVariant.getDefaultChild() : productData.getInfo().getProductId();
-        productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
-        productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
-        headerInfoView.renderStockAvailability(productData.getInfo());
+        if(productVariant.getChildFromProductId(defaultChild).isEnabled()){
+            productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
+            productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
+            headerInfoView.renderStockAvailability(productData.getInfo());
+        }
 
         buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
                 defaultChild).isIsBuyable(),productData);
