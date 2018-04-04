@@ -7,18 +7,14 @@ import com.tokopedia.anals.ConsumerDrawerData;
 import com.tokopedia.anals.SellerDrawerData;
 import com.tokopedia.core.analytics.domain.usecase.GetSellerUserAttributesUseCase;
 import com.tokopedia.core.analytics.domain.usecase.GetUserAttributesUseCase;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
-import com.tokopedia.core.drawer2.domain.interactor.DepositUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
-import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
-import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.TokoCashSubscriber;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.GlobalConfig;
@@ -107,6 +103,10 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
 
             @Override
             public void onNext(ConsumerDrawerData.Data response) {
+                if(viewListener.getActivity() == null){
+                    return;
+                }
+
                 //update values in session handler
                 SessionHandler sessionHandler = new SessionHandler(viewListener.getActivity());
                 if (!sessionHandler.isV4Login()) {
@@ -139,7 +139,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
 
                 //render wallet data
                 if (response.wallet() != null) {
-                    viewListener.onGetTokoCash(TokoCashUtil.convertToViewModel(response.wallet()));
+                    viewListener.onGetTokoCash(TokoCashUtil.convertToViewModel(response.wallet(), viewListener.getActivity()));
                 } else {
                     viewListener.onErrorGetTokoCash(ErrorHandler.getErrorMessage(new IOException()));
                 }

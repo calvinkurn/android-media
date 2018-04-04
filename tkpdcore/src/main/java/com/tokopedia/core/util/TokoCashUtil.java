@@ -1,5 +1,7 @@
 package com.tokopedia.core.util;
 
+import android.content.Context;
+
 import com.tokopedia.anals.ConsumerDrawerData;
 import com.tokopedia.core.drawer2.data.pojo.topcash.Action;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
@@ -11,6 +13,8 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TokoCashTypeDef;
 
 import java.util.ArrayList;
+
+import static com.tokopedia.core.gcm.Constants.Applinks.WALLET_ACTIVATION;
 
 /**
  * Created by nabillasabbaha on 11/13/17.
@@ -95,15 +99,15 @@ public class TokoCashUtil {
         return drawerTokoCashAction;
     }
 
-    public static DrawerTokoCash convertToViewModel(ConsumerDrawerData.Data.Wallet tokoCashData) {
+    public static DrawerTokoCash convertToViewModel(ConsumerDrawerData.Data.Wallet tokoCashData, Context context) {
         DrawerTokoCash drawerTokoCash = new DrawerTokoCash();
         drawerTokoCash.setDrawerTokoCashAction(convertToActionViewModel(tokoCashData.action()));
-        drawerTokoCash.setHomeHeaderWalletAction(convertToActionHomeHeader(tokoCashData));
-        drawerTokoCash.setDrawerWalletAction(convertToActionDrawer(tokoCashData));
+        drawerTokoCash.setHomeHeaderWalletAction(convertToActionHomeHeader(tokoCashData, context));
+        drawerTokoCash.setDrawerWalletAction(convertToActionDrawer(tokoCashData, context));
         return drawerTokoCash;
     }
 
-    private static HomeHeaderWalletAction convertToActionHomeHeader(ConsumerDrawerData.Data.Wallet tokoCashData) {
+    private static HomeHeaderWalletAction convertToActionHomeHeader(ConsumerDrawerData.Data.Wallet tokoCashData, Context context) {
         HomeHeaderWalletAction data = new HomeHeaderWalletAction();
         String appLinkBalance = tokoCashData.applinks();
         if (appLinkBalance != null) {
@@ -126,8 +130,15 @@ public class TokoCashUtil {
                 && tokoCashData.action().visibility().equals("1"));
         data.setTypeAction(tokoCashData.linked() ? HomeHeaderWalletAction.TYPE_ACTION_TOP_UP
                 : HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION);
-        data.setAppLinkActionButton(tokoCashData.action().applinks() == null ? ""
-                : tokoCashData.action().applinks());
+
+        if(tokoCashData.linked()) {
+            data.setAppLinkActionButton(tokoCashData.action().applinks() == null ? ""
+                    : tokoCashData.action().applinks());
+        }else{
+            data.setAppLinkActionButton(WALLET_ACTIVATION);
+            data.setLabelActionButton(context.getString(R.string.title_activation));
+        }
+
         data.setRedirectUrlActionButton(tokoCashData.action().redirect_url() == null ? ""
                 : tokoCashData.action().redirect_url());
 
@@ -144,7 +155,7 @@ public class TokoCashUtil {
         return data;
     }
 
-    private static DrawerWalletAction convertToActionDrawer(ConsumerDrawerData.Data.Wallet tokoCashData) {
+    private static DrawerWalletAction convertToActionDrawer(ConsumerDrawerData.Data.Wallet tokoCashData, Context context) {
         String appLinkBalance = tokoCashData.applinks();
         if (appLinkBalance != null) {
             if (!appLinkBalance.contains(Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY)) {
@@ -171,6 +182,15 @@ public class TokoCashUtil {
                 : tokoCashData.action().applinks());
         data.setRedirectUrlActionButton(tokoCashData.action().redirect_url() == null ? ""
                 : tokoCashData.action().redirect_url());
+
+        if(tokoCashData.linked()) {
+            data.setAppLinkActionButton(tokoCashData.action().applinks() == null ? ""
+                    : tokoCashData.action().applinks());
+        }else{
+            data.setAppLinkActionButton(WALLET_ACTIVATION);
+            data.setLabelActionButton(context.getString(R.string.title_activation));
+        }
+
         return data;
     }
 

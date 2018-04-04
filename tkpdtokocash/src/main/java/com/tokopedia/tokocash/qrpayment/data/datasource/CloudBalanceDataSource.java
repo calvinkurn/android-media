@@ -7,7 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.tokocash.CacheUtil;
 import com.tokopedia.tokocash.anals.GetTokocashQuery;
-import com.tokopedia.tokocash.network.api.WalletApi;
+import com.tokopedia.tokocash.network.exception.UserInactivateTokoCashException;
 import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
@@ -40,11 +40,15 @@ public class CloudBalanceDataSource implements BalanceDataSource {
         return RxApollo.from(apolloWatcher).doOnNext(new Action1<GetTokocashQuery.Data>() {
             @Override
             public void call(GetTokocashQuery.Data dataResponseResponse) {
-                if (dataResponseResponse != null) {
-                    cacheManager.save(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE,
-                            CacheUtil.convertModelToString(dataResponseResponse,
-                                    new TypeToken<GetTokocashQuery.Data>() {
-                                    }.getType()), DURATION_SAVE_TO_CACHE);
+                if (dataResponseResponse != null && dataResponseResponse.wallet() != null) {
+                    if (dataResponseResponse.wallet().linked()) {
+                        cacheManager.save(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE,
+                                CacheUtil.convertModelToString(dataResponseResponse,
+                                        new TypeToken<GetTokocashQuery.Data>() {
+                                        }.getType()), DURATION_SAVE_TO_CACHE);
+                    } else {
+                        throw new UserInactivateTokoCashException("User is not activate tokocash yet");
+                    }
                 }
             }
         });

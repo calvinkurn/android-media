@@ -2,11 +2,10 @@ package com.tokopedia.tokocash.di;
 
 import android.content.Context;
 
-import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.accountsetting.data.AccountSettingRepository;
@@ -66,11 +65,13 @@ public class TokoCashModule {
 
     @Provides
     @OkHttpTokoCashQualifier
-    OkHttpClient provideOkHttpClient(TokoCashAuthInterceptor tokoCashAuthInterceptor, Gson gson) {
+    OkHttpClient provideOkHttpClient(TokoCashAuthInterceptor tokoCashAuthInterceptor, Gson gson, @ApplicationContext Context context) {
         return new OkHttpClient.Builder()
                 .addInterceptor(tokoCashAuthInterceptor)
                 .addInterceptor(new TokoCashErrorResponseInterceptor(TokoCashErrorResponse.class, gson))
                 .addInterceptor(new TokoCashErrorResponseInterceptor(ActivateTokoCashErrorResponse.class, gson))
+                .addInterceptor(new ChuckInterceptor(context).showNotification(true))
+                .addInterceptor(new DebugInterceptor())
                 .build();
     }
 
@@ -95,11 +96,13 @@ public class TokoCashModule {
     @Provides
     @OkHttpWalletQualifier
     OkHttpClient provideOkHttpClientWallet(WalletAuthInterceptor walletAuthInterceptor, Gson gson,
-                                           WalletTokenRefresh walletTokenRefresh, WalletUserSession walletUserSession) {
+                                           WalletTokenRefresh walletTokenRefresh, WalletUserSession walletUserSession, @ApplicationContext Context context) {
         return new OkHttpClient.Builder()
                 .addInterceptor(walletAuthInterceptor)
                 .addInterceptor(new WalletErrorResponseInterceptor(WalletErrorResponse.class, gson,
                         walletTokenRefresh, walletUserSession))
+                .addInterceptor(new ChuckInterceptor(context).showNotification(true))
+                .addInterceptor(new DebugInterceptor())
                 .build();
     }
 
@@ -184,13 +187,5 @@ public class TokoCashModule {
     @TokoCashScope
     PostUnlinkTokoCashUseCase providePostUnlinkTokoCashUseCase(AccountSettingRepository accountSettingRepository) {
         return new PostUnlinkTokoCashUseCase(accountSettingRepository);
-    }
-
-    @Provides
-    ApolloClient provideApolloClient() {
-        return ApolloClient.builder()
-                .okHttpClient(OkHttpFactory.create().buildClientDefaultAuth())
-                .serverUrl(TkpdBaseURL.HOME_DATA_BASE_URL)
-                .build();
     }
 }
