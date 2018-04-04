@@ -1,5 +1,6 @@
 package com.tokopedia.gamification.floating.view.fragment;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.app.Activity;
@@ -10,8 +11,10 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -34,6 +37,7 @@ import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenFloating;
+import com.tokopedia.gamification.floating.view.model.TokenHome;
 import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
 
 import javax.inject.Inject;
@@ -53,7 +57,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     public static final String COORD_EGG_PREF = "_egg.pref";
     public static final float SCALE_ON_DOWN = 0.95f;
     public static final float SCALE_NORMAL = 1f;
-    public static final int EGG_ANIM_TO_BOUND_DURATION = 300;
+    public static final int SHORT_ANIMATION_DURATION = 300;
+    public static final int LONG_ANIMATION_DURATION = 600;
 
     private View vgRoot;
     private View vgFloatingEgg;
@@ -67,9 +72,13 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private boolean isDraggable;
 
     private CountDownTimer countDownTimer;
+    private Handler visibilityHandler;
+    private Runnable visibilityRunnableToShow;
 
     @Inject
     public FloatingEggPresenter floatingEggPresenter;
+    private boolean isHideAnimating;
+    private boolean serverOffFlag;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -117,9 +126,84 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         a.recycle();
     }
 
-    public void setFloatingEggVisibility(boolean isVisible, int delayInMs) {
-        //TODO for animation and delay, set here
-        vgFloatingEgg.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    public void hideOnScrolling() {
+        hideFloatingEggAnimate();
+        showFloatingEggAnimate(true);
+    }
+
+    private void hideFloatingEggAnimate() {
+        if (vgFloatingEgg.getVisibility() == View.GONE || isHideAnimating) {
+            return;
+        }
+        isHideAnimating = true;
+        vgFloatingEgg.setVisibility(View.VISIBLE);
+        PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_NORMAL, 0);
+        PropertyValuesHolder pvhScaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_NORMAL, 0);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhScaleX, pvhScaleY);
+        objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
+        objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
+        objectAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                vgFloatingEgg.setVisibility(View.GONE);
+                isHideAnimating = false;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        objectAnimator.start();
+    }
+
+    private void showFloatingEggAnimate(boolean hasDelay) {
+        if (vgFloatingEgg.getVisibility() == View.VISIBLE && !isHideAnimating && !serverOffFlag) {
+            return;
+        }
+        if (hasDelay) {
+            if (visibilityHandler == null) {
+                visibilityHandler = new Handler();
+            }
+            if (visibilityRunnableToShow == null) {
+                visibilityRunnableToShow = new Runnable() {
+                    @Override
+                    public void run() {
+                        showFloatingEggAnimate(false);
+                    }
+                };
+            }
+            visibilityHandler.removeCallbacks(visibilityRunnableToShow);
+            visibilityHandler.postDelayed(visibilityRunnableToShow, LONG_ANIMATION_DURATION);
+        } else {
+            vgFloatingEgg.setVisibility(View.VISIBLE);
+            PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 0, SCALE_NORMAL);
+            PropertyValuesHolder pvhScaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0, SCALE_NORMAL);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhScaleX, pvhScaleY);
+            objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
+            objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
+            objectAnimator.start();
+        }
+    }
+
+    private void showFloatingEgg() {
+        vgFloatingEgg.setScaleX(SCALE_NORMAL);
+        vgFloatingEgg.setScaleY(SCALE_NORMAL);
+        vgFloatingEgg.setVisibility(View.VISIBLE);
+    }
+
+    private void hideFLoatingEgg() {
+        vgFloatingEgg.setVisibility(View.GONE);
     }
 
     @Override
@@ -138,12 +222,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         vgRoot.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                // TODO CHANGE THIS TRY CATCH
-                try {
-                    onInflateRoot();
-                } catch (Exception e) {
-                    Log.e(TAG, "onGlobalLayout: " + e.getMessage());
-                }
+                onInflateRoot();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     vgRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
@@ -245,36 +324,49 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         if (floatingEggPresenter != null) {
             floatingEggPresenter.detachView();
         }
+        removeShowAnimationCallback();
     }
 
-    // TODO load data to get egg/token data from server or cache here
-    private void loadEggData() {
-        floatingEggPresenter.attachView(this);
-        floatingEggPresenter.getGetTokenTokopoints();
+    private void removeShowAnimationCallback(){
+        if (visibilityRunnableToShow != null) {
+            visibilityHandler.removeCallbacks(visibilityRunnableToShow);
+            visibilityRunnableToShow = null;
+        }
+    }
+
+    public void loadEggData() {
+        if (floatingEggPresenter.isUserLogin()) {
+            removeShowAnimationCallback();
+            floatingEggPresenter.attachView(this);
+            floatingEggPresenter.getGetTokenTokopoints();
+        }
     }
 
     @Override
     public void onSuccessGetToken(final TokenData tokenData) {
-        boolean offFlag = tokenData.getOffFlag();
-        int sumToken = tokenData.getSumToken();
+        serverOffFlag = tokenData.getOffFlag();
         String sumTokenString = tokenData.getSumTokenStr();
-//        String pageUrl = "http://tokopedia.com";
-//        String appLink = "tokopedia://";
+
+        TokenHome tokenHome = tokenData.getHome();
+        String pageUrl = tokenHome.getButtonURL();
+        String appLink = tokenHome.getButtonApplink();
+
         TokenFloating tokenFloating = tokenData.getFloating();
-        if (tokenFloating == null) {
-            onErrorGetToken(new Throwable());
-            return;
-        }
         long timeRemainingSeconds = tokenFloating.getTimeRemainingSeconds();
         boolean isShowTime = tokenFloating.getShowTime();
-        String imageUrl = "https://user-images.githubusercontent.com/13778932/38075015-049430aa-335b-11e8-822e-ca662dc45b7f.png";
+        String imageUrl = tokenFloating.getTokenAsset().getSmallImgUrl();
 
-        setFloatingEggVisibility(!offFlag, 0);
+        if (serverOffFlag) {
+            hideFLoatingEgg();
+        } else {
+            showFloatingEgg();
+        }
 
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(CrackTokenActivity.getIntent(getActivity(), tokenData));
+                //TODO use applink/pageurl to launch the activity
+                startActivity(CrackTokenActivity.getIntent(getActivity()));
             }
         });
 
@@ -284,6 +376,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                         @Override
                         public void onDragStart(View view) {
                             vgFloatingEgg.setScaleX(SCALE_ON_DOWN);
+                            vgFloatingEgg.setScaleY(SCALE_ON_DOWN);
                         }
 
                         @Override
@@ -296,8 +389,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
 
         ImageHandler.loadImageAndCache(ivFloatingEgg, imageUrl);
-        tvFloatingCounter.setText(sumTokenString);
-        if (isShowTime) {
+        if (TextUtils.isEmpty(sumTokenString)) {
+            tvFloatingCounter.setVisibility(View.GONE);
+        } else {
+            tvFloatingCounter.setText(sumTokenString);
+            tvFloatingCounter.setVisibility(View.VISIBLE);
+        }
+
+        if (isShowTime && timeRemainingSeconds > 0) {
             setUIFloatingTimer(timeRemainingSeconds);
             tvFloatingTimer.setVisibility(View.VISIBLE);
         } else {
@@ -314,7 +413,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     @Override
     public void onErrorGetToken(Throwable throwable) {
-        //TODO on failed, need retry?
         stopCountdownTimer();
         vgFloatingEgg.setVisibility(View.GONE);
     }
@@ -370,9 +468,11 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                     PropertyValuesHolder.ofFloat(View.X, xEgg, targetX);
             PropertyValuesHolder pvhScaleX =
                     PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_ON_DOWN, SCALE_NORMAL);
-            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX);
+            PropertyValuesHolder pvhScaleY =
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_ON_DOWN, SCALE_NORMAL);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
-            objectAnimator.setDuration(EGG_ANIM_TO_BOUND_DURATION);
+            objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
             objectAnimator.start();
 
             saveCoordPreference(targetX, yEgg);
@@ -381,9 +481,11 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                     PropertyValuesHolder.ofFloat(View.X, xEgg, 0);
             PropertyValuesHolder pvhScaleX =
                     PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_ON_DOWN, SCALE_NORMAL);
-            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX);
+            PropertyValuesHolder pvhScaleY =
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_ON_DOWN, SCALE_NORMAL);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
-            objectAnimator.setDuration(EGG_ANIM_TO_BOUND_DURATION);
+            objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
             objectAnimator.start();
 
             saveCoordPreference(0, yEgg);

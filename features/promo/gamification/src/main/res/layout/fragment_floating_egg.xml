@@ -16,19 +16,19 @@
             android:adjustViewBounds="true"
             tools:src="@mipmap/ic_launcher"
             android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/new_margin_small"
             android:layout_marginBottom="@dimen/new_margin_small"/>
 
         <TextView
             android:id="@+id/tv_floating_counter"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
             tools:text="99+"
             android:layout_gravity="top|end"
             android:gravity="center"
-            style="@style/TextView.Small.Bold"
+            style="@style/TextView.Micro"
             android:background="@drawable/circle_red_shadow"
-            android:textColor="@color/white"
-            android:padding="@dimen/new_margin_small" />
+            android:textColor="@color/white"/>
 
         <TextView
             android:id="@+id/tv_floating_timer"

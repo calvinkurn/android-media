@@ -64,6 +64,9 @@ public class TokenData implements Parcelable{
         this.home = home;
     }
 
+    public boolean isShowCountDown(){
+        return home.getTokensUser().getShowTime();
+    }
 
     @Override
     public int describeContents() {

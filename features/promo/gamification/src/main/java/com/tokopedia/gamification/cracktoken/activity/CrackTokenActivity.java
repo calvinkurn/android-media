@@ -11,33 +11,23 @@ import com.tokopedia.gamification.floating.view.model.TokenData;
 
 public class CrackTokenActivity extends BaseSimpleActivity {
 
-    public static final String EXTRA_TOKEN_DATA = "extra_token_data";
-
-    private TokenData tokenData;
-
     public static Intent newInstance(Context context) {
         return new Intent(context, CrackTokenActivity.class);
     }
 
-    public static Intent getIntent(Context context, TokenData tokenData) {
-        Intent intent = new Intent(context, CrackTokenActivity.class);
-        intent.putExtra(EXTRA_TOKEN_DATA, tokenData);
-        return intent;
+    public static Intent getIntent(Context context) {
+        return new Intent(context, CrackTokenActivity.class);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra(EXTRA_TOKEN_DATA)) {
-            tokenData = intent.getParcelableExtra(EXTRA_TOKEN_DATA);
-        }
         super.onCreate(savedInstanceState);
         updateTitle("TokoPoints");
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return CrackTokenFragment.newInstance(tokenData);
+        return CrackTokenFragment.newInstance();
     }
 
 }

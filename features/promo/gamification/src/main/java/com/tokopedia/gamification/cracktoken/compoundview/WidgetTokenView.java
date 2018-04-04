@@ -188,6 +188,12 @@ public class WidgetTokenView extends FrameLayout {
         ImageHandler.loadImageAndCache(imageViewLeft, imageLeftUrl);
         shake();
         showLightAnimation();
+
+        this.setVisibility(View.VISIBLE);
+    }
+
+    public void hide() {
+        this.setVisibility(View.INVISIBLE);
     }
 
     private void showLightAnimation() {
