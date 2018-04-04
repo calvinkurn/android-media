@@ -11,6 +11,7 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.inbox.attachinvoice.data.source.api.GetTxInvoicesApi;
 import com.tokopedia.inbox.attachproduct.data.source.api.TomeGetShopProductAPI;
+import com.tokopedia.inbox.inboxchat.data.network.ChatBotUrl;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -30,7 +31,7 @@ public class GetTxInvoicesService extends AuthService<GetTxInvoicesApi>{
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.BASE_API_DOMAIN+CS_CHATBOT_PATH;
+        return ChatBotUrl.BASE_URL+CS_CHATBOT_PATH;
     }
 
     @Override
