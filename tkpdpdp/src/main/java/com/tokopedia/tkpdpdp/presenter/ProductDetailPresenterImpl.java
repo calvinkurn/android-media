@@ -672,11 +672,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
         if (productVariant != null) {
             viewListener.addProductVariant(productVariant);
-        } else if (productData.getInfo() != null && productData.getInfo().getHasVariant() && productVariant==null) {
+        } else if (productData != null && productData.getInfo() != null && productData.getInfo().getHasVariant()) {
             getProductVariant(context,Integer.toString(productData.getInfo().getProductId()));
         }
 
-        if (productData.getCampaign() != null) {
+        if (productData != null && productData.getCampaign() != null) {
             viewListener.showProductCampaign();
         }
 

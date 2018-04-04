@@ -121,10 +121,14 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
-        if (cacheManager != null)
-            passModel = cacheManager.getConvertObjData(InboxReputationDetailActivity.CACHE_PASS_DATA,
-                    InboxReputationDetailPassModel.class);
-
+        if (cacheManager != null) {
+            try {
+                passModel = cacheManager.getConvertObjData(InboxReputationDetailActivity.CACHE_PASS_DATA,
+                        InboxReputationDetailPassModel.class);
+            } catch (Exception e) {
+                // Ignore cache expired exception
+            }
+        }
         callbackManager = CallbackManager.Factory.create();
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         InboxReputationDetailTypeFactory typeFactory = new InboxReputationDetailTypeFactoryImpl
