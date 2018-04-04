@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.cracktoken.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -10,6 +11,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationComponentInstance;
+import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetRemainingToken;
@@ -190,9 +193,15 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
-            public void onClickCtaButton(String applink) {
-                // TODO: direct to the associated applink page
-
+            public void onClickCtaButton(String applink, String url) {
+                if (!TextUtils.isEmpty(applink)) {
+                    ((GamificationRouter) getActivity().getApplicationContext())
+                            .actionApplink(getActivity(), applink);
+                } else if (!TextUtils.isEmpty(url)) {
+                    Intent intent = ((GamificationRouter) getActivity().getApplicationContext())
+                            .getWebviewActivityWithIntent(getActivity(), url, "TokoPoints");
+                    startActivity(intent);
+                }
             }
 
             @Override
