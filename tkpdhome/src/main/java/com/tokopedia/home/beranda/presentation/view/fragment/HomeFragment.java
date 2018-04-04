@@ -149,11 +149,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void fetchRemoteConfig() {
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        showRecomendation = firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
-        showRecomendationButton(showRecomendation);
+        showRecomendation = true; //firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
     }
 
-    private void showRecomendationButton(boolean showRecomendation) {
+    @Override
+    public void showRecomendationButton() {
         if (showRecomendation && SessionHandler.isV4Login(getActivity())) {
             floatingTextButton.setVisibility(View.VISIBLE);
         } else {
@@ -205,12 +205,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     int firstVisibleItemPos = layoutManager.findFirstVisibleItemPosition();
                     Visitable visitable = adapter.getItem(firstVisibleItemPos);
                     if ((visitable instanceof InspirationViewModel || visitable instanceof TopAdsViewModel)) {
-                        floatingTextButton.hide();
+                        floatingTextButton.setVisibility(View.INVISIBLE);
                     } else {
-                        floatingTextButton.show();
+                        floatingTextButton.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    floatingTextButton.hide();
+                    floatingTextButton.setVisibility(View.GONE);
                 }
             }
         });

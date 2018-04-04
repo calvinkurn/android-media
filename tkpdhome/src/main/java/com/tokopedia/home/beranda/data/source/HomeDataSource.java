@@ -65,7 +65,7 @@ public class HomeDataSource {
 
     public Observable<List<Visitable>> getHomeData() {
         return homeDataApi.getHomeData(getRequestPayload())
-                .debounce(15, TimeUnit.SECONDS)
+                .debounce(200, TimeUnit.MILLISECONDS)
                 .map(saveToCache())
                 .map(homeMapper);
     }

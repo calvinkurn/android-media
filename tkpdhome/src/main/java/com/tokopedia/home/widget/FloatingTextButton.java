@@ -20,6 +20,7 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -46,7 +47,7 @@ public class FloatingTextButton extends FrameLayout {
     private Drawable rightIcon;
     private int background;
     private boolean titleAllCaps;
-
+    private static final String TAG = FloatingTextButton.class.getSimpleName();
     private static final Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
     private static final Long DURATION = 250L;
     private ViewPropertyAnimatorCompat animation = null;
@@ -221,13 +222,18 @@ public class FloatingTextButton extends FrameLayout {
     }
 
     public void show() {
-        if (getVisibility() != VISIBLE)
-            setVisibility(VISIBLE);
+        show(-1);
+    }
+
+    private void show(final int visibility) {
         animate().translationY(0).setInterpolator(new DecelerateInterpolator(2))
                 .setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animator) {
                         animationStart = true;
+                        if (visibility >= 0) {
+                            FloatingTextButton.super.setVisibility(visibility);
+                        }
                     }
 
                     @Override
@@ -250,6 +256,10 @@ public class FloatingTextButton extends FrameLayout {
     }
 
     public void hide() {
+        hide(-1);
+    }
+
+    private void hide(final int visibility) {
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) getLayoutParams();
         int fab_bottomMargin = layoutParams.bottomMargin;
         animate().translationY(getHeight() + fab_bottomMargin).setInterpolator(new AccelerateInterpolator(2))
@@ -262,7 +272,9 @@ public class FloatingTextButton extends FrameLayout {
                     @Override
                     public void onAnimationEnd(Animator animator) {
                         animationStart = false;
-                        setVisibility(INVISIBLE);
+                        if (visibility >= 0) {
+                            FloatingTextButton.super.setVisibility(visibility);
+                        }
                     }
 
                     @Override
@@ -281,5 +293,24 @@ public class FloatingTextButton extends FrameLayout {
 
     public boolean isAnimationStart() {
         return animationStart;
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        if (getVisibility() != visibility) {
+            if (visibility == VISIBLE) {
+                show(visibility);
+            } else if ((visibility == INVISIBLE) || (visibility == GONE)) {
+                hide(visibility);
+            }
+        }
+    }
+
+    @Override
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if(visibility==VISIBLE){
+            initViewRadius();
+        }
     }
 }

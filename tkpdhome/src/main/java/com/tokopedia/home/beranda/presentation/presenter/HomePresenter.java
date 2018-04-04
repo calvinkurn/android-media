@@ -411,6 +411,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     visitables.add(0, headerViewModel);
                 }
                 getView().setItems(visitables);
+                if(visitables.size()>0){
+                    getView().showRecomendationButton();
+                }
                 if (isDataValid(visitables)) {
                     getView().removeNetworkError();
                 } else {
