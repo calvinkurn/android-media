@@ -327,5 +327,7 @@ dependencies {
     androidTestCompile(rootProject.ext.testDependencies.dexMakerMockito) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
+    // Cloud testing
+    androidTestCompile (name:'cloudtestingscreenshotter_lib', ext:'aar')
     //[END] test and androidTest dependencies
 }

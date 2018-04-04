@@ -13,6 +13,8 @@ import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
+import android.support.test.uiautomator.UiObject;
+import android.support.test.uiautomator.UiSelector;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -45,6 +47,8 @@ import com.tokopedia.session.register.view.subscriber.registerinitial.GetFaceboo
 import com.tokopedia.tkpd.ConsumerMainApplication;
 import com.tokopedia.session.R;
 import com.tokopedia.usecase.RequestParams;
+
+import com.google.android.libraries.cloudtesting.screenshots.ScreenShotter;
 
 import org.junit.After;
 import org.junit.Before;
@@ -242,7 +246,67 @@ public class LoginActivityTest {
 
         startLoginActivity();
 
-        performClickYahoo(true);
+        ViewInteraction loginTextView = onView(
+                nthChildOf(
+                        withId(R.id.login_buttons_container),
+                        3));
+
+        ScreenShotter.takeScreenshot("screenshot_btn_load_more", mIntentsRule.getActivity());
+
+        UiObject plusButton = device.findObject(new UiSelector().resourceId("com.tokopedia.tkpd:id/btn_load_more"));
+        if(plusButton.exists())
+            onView(withId(R.id.btn_load_more)).perform(click());
+
+        Thread.sleep(3_000);
+
+        loginTextView.perform(click());
+
+        // necessary to make it wait.
+        Thread.sleep(10000);
+
+        ScreenShotter.takeScreenshot("testYahooReLogin_see_dialog", mIntentsRule.getActivity());
+
+        // waiting all url to be finished
+        DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+        final WebView webview = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
+        if (webview != null ) {
+            try {
+                mIntentsRule.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        webViewIdlingResource = new WebViewIdlingResource(webview);
+                        Espresso.registerIdlingResources(webViewIdlingResource);
+                    }
+                });
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }
+
+
+        // set target fragment bundle
+        Bundle bundle = new Bundle();
+        bundle.putString("server", "accounts.tokopedia.com");
+        bundle.putString("path", "/mappauth/code");
+        bundle.putString("NAME", "Yahoo");
+        bundle.putString("code", "v");
+        bundle.putString("state", "ad5d4603-7243-4e8e-85a2-d5ae4bcc8deb");
+        Intent intent = new Intent();
+        intent.putExtra("bundle", bundle);
+        dialog.getTargetFragment().onActivityResult(dialog.getTargetRequestCode(), Activity.RESULT_OK, intent);
+
+        if (webViewIdlingResource != null)
+            unregisterIdlingResources(webViewIdlingResource);
+        webViewIdlingResource = null;
+
+        // dismiss fragment or press back
+        dialog.dismiss();
+
+        ScreenShotter.takeScreenshot("dismiss_dialog", mIntentsRule.getActivity());
+
+
+
+        Thread.sleep(1_000);
 
         Thread.sleep(2000);
 
@@ -265,7 +329,9 @@ public class LoginActivityTest {
                         withId(R.id.login_buttons_container),
                         3));
 
-        onView(withId(R.id.btn_load_more)).perform(click());//.check(not(isVisible()));
+        UiObject plusButton = device.findObject(new UiSelector().resourceId("com.tokopedia.tkpd:id/btn_load_more"));
+        if(plusButton.exists())
+            onView(withId(R.id.btn_load_more)).perform(click());
 
 
         Thread.sleep(3_000);
@@ -318,24 +384,123 @@ public class LoginActivityTest {
 
         startLoginActivity();
 
-        performClickYahoo(true);
+        ViewInteraction loginTextView = onView(
+                nthChildOf(
+                        withId(R.id.login_buttons_container),
+                        3));
+
+        ScreenShotter.takeScreenshot("screenshot_btn_load_more", mIntentsRule.getActivity());
+
+        UiObject plusButton = device.findObject(new UiSelector().resourceId("com.tokopedia.tkpd:id/btn_load_more"));
+        if(plusButton.exists())
+            onView(withId(R.id.btn_load_more)).perform(click());
+
+        Thread.sleep(3_000);
+
+        loginTextView.perform(click());
+
+        // necessary to make it wait.
+        Thread.sleep(10000);
+
+        ScreenShotter.takeScreenshot("testYahooReLogin_see_dialog", mIntentsRule.getActivity());
+
+        // waiting all url to be finished
+        DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+        final WebView webview = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
+        if (webview != null ) {
+            try {
+                mIntentsRule.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        webViewIdlingResource = new WebViewIdlingResource(webview);
+                        Espresso.registerIdlingResources(webViewIdlingResource);
+                    }
+                });
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }
+
+
+        // set target fragment bundle
+        Bundle bundle = new Bundle();
+        bundle.putString("server", "accounts.tokopedia.com");
+        bundle.putString("path", "/mappauth/code");
+        bundle.putString("NAME", "Yahoo");
+        bundle.putString("code", "v");
+        bundle.putString("state", "ad5d4603-7243-4e8e-85a2-d5ae4bcc8deb");
+        Intent intent = new Intent();
+        intent.putExtra("bundle", bundle);
+        dialog.getTargetFragment().onActivityResult(dialog.getTargetRequestCode(), Activity.RESULT_OK, intent);
+
+        if (webViewIdlingResource != null)
+            unregisterIdlingResources(webViewIdlingResource);
+        webViewIdlingResource = null;
+
+        dialog.dismiss();
 
         snackbarAnyMatcher();
 
+        ScreenShotter.takeScreenshot("testYahooReLogin_see_snackbar", mIntentsRule.getActivity());
+
         Thread.sleep(2000);
 
-        performClickYahoo(false);
+        loginTextView.perform(click());
+
+        // necessary to make it wait.
+        Thread.sleep(10000);
+
+        ScreenShotter.takeScreenshot("testYahooReLogin_see_dialog", mIntentsRule.getActivity());
+
+        // waiting all url to be finished
+        dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+        final WebView webview2 = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
+        if (webview != null ) {
+            try {
+                mIntentsRule.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        webViewIdlingResource = new WebViewIdlingResource(webview2);
+                        Espresso.registerIdlingResources(webViewIdlingResource);
+                    }
+                });
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }
+
+        // set target fragment bundle
+        bundle = new Bundle();
+        bundle.putString("server", "accounts.tokopedia.com");
+        bundle.putString("path", "/mappauth/code");
+        bundle.putString("NAME", "Yahoo");
+        bundle.putString("code", "v");
+        bundle.putString("state", "ad5d4603-7243-4e8e-85a2-d5ae4bcc8deb");
+        intent = new Intent();
+        intent.putExtra("bundle", bundle);
+        dialog.getTargetFragment().onActivityResult(dialog.getTargetRequestCode(), Activity.RESULT_OK, intent);
+
+        if (webViewIdlingResource != null)
+            unregisterIdlingResources(webViewIdlingResource);
+        webViewIdlingResource = null;
+
+        dialog.dismiss();
+
+        ScreenShotter.takeScreenshot("testYahooReLogin_second_attempt_click", mIntentsRule.getActivity());
 
         Thread.sleep(2000);
 
         assertTrue(mIntentsRule.getActivity().isDestroyed());
     }
 
+    @Deprecated
     private void performClickYahoo(boolean isFirstTime) throws InterruptedException {
         ViewInteraction loginTextView = onView(
                 nthChildOf(
                         withId(R.id.login_buttons_container),
                         3));
+
+        ScreenShotter.takeScreenshot("screenshot_btn_load_more", mIntentsRule.getActivity());
 
         if(isFirstTime)
             onView(withId(R.id.btn_load_more)).perform(click());
@@ -348,20 +513,25 @@ public class LoginActivityTest {
         // necessary to make it wait.
         Thread.sleep(10000);
 
+        ScreenShotter.takeScreenshot("testYahooReLogin_see_dialog", mIntentsRule.getActivity());
+
         // waiting all url to be finished
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
-        final WebView webview = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
-        if (webview != null) {
-            try {
-                mIntentsRule.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        webViewIdlingResource = new WebViewIdlingResource(webview);
-                        Espresso.registerIdlingResources(webViewIdlingResource);
-                    }
-                });
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
+
+        if(isFirstTime){
+            final WebView webview = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
+            if (webview != null ) {
+                try {
+                    mIntentsRule.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            webViewIdlingResource = new WebViewIdlingResource(webview);
+                            Espresso.registerIdlingResources(webViewIdlingResource);
+                        }
+                    });
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
 
@@ -376,8 +546,16 @@ public class LoginActivityTest {
         intent.putExtra("bundle", bundle);
         dialog.getTargetFragment().onActivityResult(dialog.getTargetRequestCode(), Activity.RESULT_OK, intent);
 
+        if (webViewIdlingResource != null)
+            unregisterIdlingResources(webViewIdlingResource);
+        webViewIdlingResource = null;
+
         // dismiss fragment or press back
         dialog.dismiss();
+
+        ScreenShotter.takeScreenshot("dismiss_dialog", mIntentsRule.getActivity());
+
+
 
         Thread.sleep(1_000);
     }
@@ -599,7 +777,13 @@ public class LoginActivityTest {
 
         snackbarAnyMatcher();
 
+        ScreenShotter.takeScreenshot("222", mIntentsRule.getActivity());
+
         loginTextView.perform(click());
+
+        Thread.sleep(2000);
+
+        ScreenShotter.takeScreenshot("313", mIntentsRule.getActivity());
 
         assertTrue(mIntentsRule.getActivity().isDestroyed());
     }
@@ -715,6 +899,8 @@ public class LoginActivityTest {
         Thread.sleep(2000);
 
         loginTextView.perform(click());
+
+        Thread.sleep(2000);
 
         assertTrue(mIntentsRule.getActivity().isDestroyed());
     }
@@ -914,8 +1100,6 @@ public class LoginActivityTest {
     @After
     public void tearDown() throws Exception {
         RxJavaTestPlugins.resetJavaTestPlugins();
-        if (webViewIdlingResource != null)
-            unregisterIdlingResources(webViewIdlingResource);
 
         Intents.release();
         server.shutdown();
