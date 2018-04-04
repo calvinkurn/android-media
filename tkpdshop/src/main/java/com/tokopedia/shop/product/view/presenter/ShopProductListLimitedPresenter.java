@@ -109,9 +109,10 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
                                     }
                                 }
                             }
+                            getView().renderList(shopProductBaseViewModelList.getList(), PagingListUtils.checkNextPage(shopProductBaseViewModelList), shopHasProduct);
+                        } else {
+                            getView().renderList(shopProductBaseViewModelList.getList(), PagingListUtils.checkNextPage(shopProductBaseViewModelList));
                         }
-                        getView().renderList(shopProductBaseViewModelList.getList(), PagingListUtils.checkNextPage(shopProductBaseViewModelList));
-
                     }
 
                     private ShopProductLimitedPromoViewModel getProductPromoModel() {
