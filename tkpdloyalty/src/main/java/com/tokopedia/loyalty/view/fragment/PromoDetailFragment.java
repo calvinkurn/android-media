@@ -247,11 +247,20 @@ public class PromoDetailFragment extends BaseDaggerFragment implements IPromoDet
         this.tvPromoDetailAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String uri = TextUtils.isEmpty(promoData.getAppLink()) ? promoData.getPromoLink()
-                        : promoData.getAppLink();
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                String appLink = promoData.getAppLink();
+                String redirectUrl = promoData.getPromoLink();
 
-                startActivityForResult(browserIntent, REQUEST_CODE_PROMO_DETAIL);
+                if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+                    TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
+
+                    if (!TextUtils.isEmpty(appLink) && tkpdCoreRouter.isSupportedDelegateDeepLink(appLink)) {
+                        tkpdCoreRouter.actionApplinkFromActivity(getActivity(), appLink);
+                    } else {
+                        tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
+                    }
+                }
+
+//                dPresenter.sendClickItemPromoListTrackingData(promoData, position, promoMenuData.getTitle());
             }
         });
     }
