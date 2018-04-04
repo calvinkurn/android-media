@@ -6,6 +6,7 @@
     <dimen name="font_headline">34sp</dimen>
     <dimen name="font_sub_headline">24sp</dimen>
     <dimen name="font_title_big">20sp</dimen>
+    <dimen name="font_medium">20sp</dimen>
     <dimen name="font_title">16sp</dimen>
     <dimen name="font_small">14sp</dimen>
     <dimen name="font_smaller">13sp</dimen>
@@ -19,6 +20,8 @@
     <dimen name="font_line_spacing_title">22sp</dimen>
     <dimen name="font_line_spacing_small">18sp</dimen>
     <dimen name="font_line_spacing_micro">16sp</dimen>
+    <dimen name="font_line_spacing_nano">4sp</dimen>
+
 
     <dimen name="font_loading_height_display4">112dp</dimen>
     <dimen name="font_loading_height_display3">56dp</dimen>
@@ -52,6 +55,7 @@
     <dimen name="image_width_xl">72dp</dimen>
     <dimen name="image_width_xll">72dp</dimen>
     <dimen name="image_width_xxl">96dp</dimen>
+    <dimen name="image_width_xxll">102dp</dimen>
     <dimen name="image_width_xxxl">128dp</dimen>
 
     <dimen name="new_margin_tiny">4dp</dimen>

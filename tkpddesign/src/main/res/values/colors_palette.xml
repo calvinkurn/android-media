@@ -23,6 +23,7 @@
     <color name="red_500">#e51c23</color>
     <color name="red_600">#dd191d</color>
     <color name="red_a700">#e00032</color>
+    <color name="red_800">#ff5722</color>
 
     <color name="green_200">#72d572</color>
     <color name="green_250">#42B549</color>
@@ -46,5 +47,11 @@
     <color name="grey_button">#e6e6e6</color>
     <color name="preview_bg">#d3f0d4</color>
     <color name="grey_150">#4a4a4a</color>
+
+    <color name="black_38">#60000000</color>
+    <color name="black_39">#b3000000</color>
+    <color name="black_40">#8a000000</color>
+    <color name="medium_green">#42b549</color>
+    <color name="divider_color">#ededed</color>
 
 </resources>
