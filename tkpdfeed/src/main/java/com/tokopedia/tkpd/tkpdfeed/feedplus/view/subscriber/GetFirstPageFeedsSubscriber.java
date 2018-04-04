@@ -274,7 +274,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                             model.getTotalProduct()),
                                     String.valueOf(model.getTotalProduct()),
                                     currentPosition,
-                                    "-",
+                                    FeedEnhancedTracking.Promotion.TRACKING_EMPTY,
                                     model.getHeader().getShopId(),
                                     SHOP.replace(SHOP_ID_BRACKETS, shopId)
                             ));
@@ -333,7 +333,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                         Integer.valueOf(data.getId()),
                                         FeedEnhancedTracking.Promotion
                                                 .createContentNameTopadsProduct(),
-                                        (data.getAdRefKey().equals("") ? "none" : data.getAdRefKey()),
+                                        (data.getAdRefKey().equals("") ?
+                                                FeedEnhancedTracking.Promotion.TRACKING_NONE :
+                                                data.getAdRefKey()),
                                         currentPosition,
                                         String.valueOf(data.getProduct().getCategory()),
                                         Integer.valueOf(data.getId()),
@@ -373,11 +375,17 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                             kolViewModel.getTagsType(),
                                             kolViewModel.getCardType())
                                     ,
-                                    kolViewModel.getName().equals("") ? "-" : kolViewModel.getName(),
+                                    kolViewModel.getName().equals("") ?
+                                            FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
+                                            kolViewModel.getName(),
                                     listFeedView.size(),
-                                    kolViewModel.getLabel().equals("") ? "-" : kolViewModel.getLabel(),
+                                    kolViewModel.getLabel().equals("") ?
+                                            FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
+                                            kolViewModel.getLabel(),
                                     kolViewModel.getContentId(),
-                                    kolViewModel.getContentLink().equals("") ? "-" : kolViewModel.getContentLink()
+                                    kolViewModel.getContentLink().equals("") ?
+                                            FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
+                                            kolViewModel.getContentLink()
                             ));
                             TrackingUtils.eventTrackingEnhancedEcommerce(
                                     FeedEnhancedTracking.getImpressionTracking(list, loginIdInt));
@@ -399,11 +407,17 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                 list.add(new FeedEnhancedTracking.Promotion(
                                         recItem.getId(),
                                         FeedEnhancedTracking.Promotion.createContentNameRecommendation(),
-                                        recItem.getName().equals("") ? "-" : recItem.getName(),
+                                        recItem.getName().equals("") ?
+                                                FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
+                                                recItem.getName(),
                                         listFeedView.size(),
-                                        recItem.getLabel().equals("") ? "-" : recItem.getLabel(),
+                                        recItem.getLabel().equals("") ?
+                                                FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
+                                                recItem.getLabel(),
                                         recItem.getId(),
-                                        recItem.getUrl().equals("") ? "-" : recItem.getUrl()
+                                        recItem.getUrl().equals("") ?
+                                                FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
+                                                recItem.getUrl()
                                 ));
                             }
                             TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking
