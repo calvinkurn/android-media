@@ -8,4 +8,5 @@ import com.tokopedia.abstraction.constant.TkpdAppLink;
 
 public class LoyaltyAppLink extends TkpdAppLink {
     public static final String PROMO_NATIVE = "tokopedia://promoNative";
+    public static final String PROMO_NATIVE_DETAIL = "tokopedia://promoNative/{id}";
 }

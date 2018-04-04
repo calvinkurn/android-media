@@ -77,11 +77,11 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
     @Override
     public void onSharePromo(PromoData promoData) {
         ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.REFERRAL_TYPE)
-                .setId(promoData.getId())
+                .setType(ShareData.PROMO_TYPE)
+                .setId(promoData.get())
                 .setName(promoData.getTitle())
                 .setTextContent(promoData.getTitle() + " | Tokopedia")
-                .setUri(promoData.getPromoLink())
+                .setUri(promoData.getLink())
                 .build();
         this.startActivity(ShareActivity.createIntent(this, shareData));
     }
