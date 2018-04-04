@@ -33,7 +33,6 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
@@ -381,7 +380,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private boolean hasShop(DrawerProfile drawerProfile) {
-        return !drawerProfile.getShopName().equals("");
+        return !drawerProfile.getShopName().equals("") || !drawerProfile.getShopName().equals("0");
     }
 
     @Override
@@ -448,10 +447,10 @@ public class DrawerBuyerHelper extends DrawerHelper
     @Override
     public void onItemClicked(DrawerItem item) {
         if (item.getId() == selectedPosition) {
-                if (item.getId() == TkpdState.DrawerPosition.INDEX_HOME) {
-                    selectTabHome();
-                }
-                closeDrawer();
+            if (item.getId() == TkpdState.DrawerPosition.INDEX_HOME) {
+                selectTabHome();
+            }
+            closeDrawer();
         } else {
             Intent intent;
             switch (item.getId()) {
