@@ -76,6 +76,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     private static final int REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101;
     private static final int REQUEST_CODE_ETALASE = 200;
     private static final int REQUEST_CODE_SORT = 300;
+    private static final int ANIMATION_DURATION = 400;
     public static final int SPAN_COUNT = 2;
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
@@ -198,28 +199,28 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
 
     public void hideBottomView(final View view) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationY", 0, view.getHeight());
-        animator.setDuration(300);
+        animator.setDuration(ANIMATION_DURATION);
         animator.start();
         hideBottom = true;
     }
 
     public void showBottomView(final View view) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0);
-        animator.setDuration(300);
+        animator.setDuration(ANIMATION_DURATION);
         animator.start();
         hideBottom = false;
     }
 
     public void hideSearchView(final View parent, final View child) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(parent, "translationY", 0, -child.getHeight());
-        animator.setDuration(400);
+        animator.setDuration(ANIMATION_DURATION);
         animator.start();
         hideSearch = true;
     }
 
     public void showSearchView(final View parent, final View child) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(parent, "translationY", -child.getHeight(), 0);
-        animator.setDuration(400);
+        animator.setDuration(ANIMATION_DURATION);
         animator.start();
         hideSearch = false;
     }
