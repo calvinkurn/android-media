@@ -307,7 +307,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         final List<QuickFilterItem> quickFilterItemList = setQuickFilterItems(promoMenuData.getPromoSubMenuDataList());
         for (int i = 0; i < quickFilterItemList.size(); i++) {
             QuickFilterItem item = quickFilterItemList.get(i);
-            if (item.getId() == autoSelectedCategoryId)
+            if (String.valueOf(autoSelectedCategoryId).equalsIgnoreCase(item.getType()))
                 indexAutoSelectCategoryFilter = i;
         }
         quickSingleFilterView.renderFilter(quickFilterItemList);
