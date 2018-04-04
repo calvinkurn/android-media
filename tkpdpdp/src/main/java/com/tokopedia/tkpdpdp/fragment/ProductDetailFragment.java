@@ -1199,10 +1199,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 .setAction(context.getString(R.string.go_to_wishlist), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (context == null) {
-                            context = getActivity().getApplicationContext();
+                        if (!isAdded() || context == null) {
+                            return;
                         }
-
                         Intent intent = new Intent(context, SimpleHomeRouter.getSimpleHomeActivityClass());
                         intent.putExtra(
                                 SimpleHomeRouter.FRAGMENT_TYPE,
