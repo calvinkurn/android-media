@@ -224,6 +224,13 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Override
     public void navigateToGoogleMap(String generatedMap, LocationPass locationPass) {
+
+        if(!locationShippingViewHolder.getDistrictName().isEmpty()
+                && !locationShippingViewHolder.getCityName().isEmpty()) {
+            locationPass = new LocationPass();
+            locationPass.setDistrictName(locationShippingViewHolder.getDistrictName());
+            locationPass.setCityName(locationShippingViewHolder.getCityName());
+        }
         logisticRouter.navigateToGeoLocationActivityRequest(
                 ShopOpenMandatoryLocationFragment.this,
                 REQUEST_CODE_GOOGLE_MAP,
