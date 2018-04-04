@@ -3,47 +3,28 @@ package com.tokopedia.tkpd.home.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Created by ashwanityagi on 30/03/18.
+ * Created by ashwanityagi on 04/04/18.
  */
 
-public class InAppMessageModel implements Parcelable{
-   private String id;
-   private String imageUrl;
-   private String deeplink;
-   private String title;
+public class InAppMessageModel implements Parcelable {
 
-    public String getId() {
-        return id;
-    }
+    @SerializedName("title")
+    public String title;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    @SerializedName("description")
+    public String description;
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+    @SerializedName("type")
+    public String type;
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getDeeplink() {
-        return deeplink;
-    }
-
-    public void setDeeplink(String deeplink) {
-        this.deeplink = deeplink;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    @SerializedName("body")
+    public List<InAppMessageItemModel> messageList = new ArrayList<InAppMessageItemModel>();
 
 
     @Override
@@ -53,20 +34,20 @@ public class InAppMessageModel implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.imageUrl);
-        dest.writeString(this.deeplink);
         dest.writeString(this.title);
+        dest.writeString(this.description);
+        dest.writeString(this.type);
+        dest.writeTypedList(this.messageList);
     }
 
     public InAppMessageModel() {
     }
 
     protected InAppMessageModel(Parcel in) {
-        this.id = in.readString();
-        this.imageUrl = in.readString();
-        this.deeplink = in.readString();
         this.title = in.readString();
+        this.description = in.readString();
+        this.type = in.readString();
+        this.messageList = in.createTypedArrayList(InAppMessageItemModel.CREATOR);
     }
 
     public static final Creator<InAppMessageModel> CREATOR = new Creator<InAppMessageModel>() {

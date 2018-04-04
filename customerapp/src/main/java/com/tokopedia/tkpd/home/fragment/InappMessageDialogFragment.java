@@ -16,10 +16,10 @@ import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.InAppMessageAdapter;
+import com.tokopedia.tkpd.home.model.InAppMessageItemModel;
 import com.tokopedia.tkpd.home.model.InAppMessageModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by ashwanityagi on 30/03/18.
@@ -32,19 +32,14 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
     private static final String ARG_PARAM_EXTRA_MESSAGES_DESC = "ARG_PARAM_EXTRA_MESSAGES_DESC";
     private static final String ARG_PARAM_EXTRA_MESSAGES_TYPE = "ARG_PARAM_EXTRA_MESSAGES_TYPE";
 
-    private List<InAppMessageModel> messagesList;
-    private String title;
-    private String description;
-    private String type;
+    InAppMessageModel inAppMessageModel;
 
 
-    public static InappMessageDialogFragment newInstance(List<InAppMessageModel> messagesList, String title, String description, String type) {
+    public static InappMessageDialogFragment newInstance(InAppMessageModel inAppMessageModel) {
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(ARG_PARAM_EXTRA_MESSAGES_LIST,
-                (ArrayList<? extends Parcelable>) messagesList);
-        bundle.putString(ARG_PARAM_EXTRA_MESSAGES_TITLE, title);
-        bundle.putString(ARG_PARAM_EXTRA_MESSAGES_DESC, description);
-        bundle.putString(ARG_PARAM_EXTRA_MESSAGES_TYPE, type);
+        bundle.putParcelable(ARG_PARAM_EXTRA_MESSAGES_LIST,
+                (Parcelable) inAppMessageModel);
+
         InappMessageDialogFragment inappMessageDialogFragment = new InappMessageDialogFragment();
         inappMessageDialogFragment.setArguments(bundle);
 
@@ -53,11 +48,9 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(ARG_PARAM_EXTRA_MESSAGES_LIST,
-                (ArrayList<? extends Parcelable>) messagesList);
-        outState.putString(ARG_PARAM_EXTRA_MESSAGES_TITLE, title);
-        outState.putString(ARG_PARAM_EXTRA_MESSAGES_DESC, description);
-        outState.putString(ARG_PARAM_EXTRA_MESSAGES_TYPE, type);
+        outState.putParcelable(ARG_PARAM_EXTRA_MESSAGES_LIST,
+                (Parcelable)  inAppMessageModel);
+
         super.onSaveInstanceState(outState);
 
     }
@@ -67,10 +60,8 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            messagesList = getArguments().getParcelableArrayList(ARG_PARAM_EXTRA_MESSAGES_LIST);
-            title = getArguments().getString(ARG_PARAM_EXTRA_MESSAGES_TITLE);
-            description = getArguments().getString(ARG_PARAM_EXTRA_MESSAGES_DESC);
-            type = getArguments().getString(ARG_PARAM_EXTRA_MESSAGES_TYPE);
+            inAppMessageModel = getArguments().getParcelable(ARG_PARAM_EXTRA_MESSAGES_LIST);
+
         }
     }
 
@@ -88,8 +79,12 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (inAppMessageModel == null){
+            dismiss();
+        }
+
         RecyclerView rv = view.findViewById(R.id.rv_inapp);
-        if ("1".equalsIgnoreCase(type)) {
+        if ("1".equalsIgnoreCase(inAppMessageModel.type)) {
             GridLayoutManager gridLayoutManagerVertical =
                     new GridLayoutManager(getActivity(),
                             2, //The number of Columns in the grid
@@ -104,10 +99,10 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
 
         TextView tvTitle =  view.findViewById(R.id.tv_inapp_title);
         TextView tvDesc =  view.findViewById(R.id.tv_inapp_desc);
-        tvTitle.setText(title);
-        tvDesc.setText(description);
+        tvTitle.setText(inAppMessageModel.title);
+        tvDesc.setText(inAppMessageModel.description);
 
-        InAppMessageAdapter inAppMessageAdapter = new InAppMessageAdapter(getActivity(), (ArrayList<InAppMessageModel>) messagesList, this);
+        InAppMessageAdapter inAppMessageAdapter = new InAppMessageAdapter(getActivity(), (ArrayList<InAppMessageItemModel>) inAppMessageModel.messageList, this);
         rv.setAdapter(inAppMessageAdapter);
 
         view.findViewById(R.id.img_inapp_cross).setOnClickListener(new View.OnClickListener() {

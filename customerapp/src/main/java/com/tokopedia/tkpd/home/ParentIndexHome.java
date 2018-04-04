@@ -33,6 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.gson.GsonBuilder;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.tkpd.library.ui.widget.TouchViewPager;
@@ -94,12 +95,8 @@ import com.tokopedia.tkpd.home.model.InAppMessageModel;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -681,22 +678,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     public boolean showInAppMessage(InAppMessage inAppMessage) {
         try {
             Log.e("inaap message", inAppMessage.content);
-            JSONObject obj = new JSONObject(inAppMessage.content);
-            JSONArray messages = obj.getJSONArray("body");
-            List<InAppMessageModel> inAppMessageModels = new ArrayList<>();
-            InAppMessageModel inAppMessageModel;
-            for (int i = 0; i < messages.length(); i++) {
-                JSONObject jsonObject = messages.getJSONObject(i);
-                inAppMessageModel = new InAppMessageModel();
-                inAppMessageModel.setImageUrl(jsonObject.getString("image_url"));
-                inAppMessageModel.setDeeplink(jsonObject.getString("deeplink"));
-                inAppMessageModels.add(inAppMessageModel);
-            }
-            String title = obj.getString("title");
-            String desc = obj.getString("description");
-            String type = obj.getString("type");
-
-            InappMessageDialogFragment dialog = InappMessageDialogFragment.newInstance(inAppMessageModels, title, desc, type);
+            InAppMessageModel inAppMessageModel= new GsonBuilder().create().fromJson(inAppMessage.content, InAppMessageModel.class);
+            InappMessageDialogFragment dialog = InappMessageDialogFragment.newInstance(inAppMessageModel);
             dialog.show(getFragmentManager(), "inpp");
         } catch (Exception e) {
             e.printStackTrace();

@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.model.InAppMessageModel;
+import com.tokopedia.tkpd.home.model.InAppMessageItemModel;
 
 import java.util.ArrayList;
 
@@ -21,11 +21,11 @@ import java.util.ArrayList;
 
 public class InAppMessageAdapter extends RecyclerView.Adapter<InAppMessageAdapter.MessageHolder> {
 
-    private ArrayList<InAppMessageModel> messageList;
+    private ArrayList<InAppMessageItemModel> messageList;
     private Context context;
     private InappAdapterLisner inappAdapterLisner;
 
-    public InAppMessageAdapter(Context context, ArrayList<InAppMessageModel> messageList, InappAdapterLisner inappAdapterLisner) {
+    public InAppMessageAdapter(Context context, ArrayList<InAppMessageItemModel> messageList, InappAdapterLisner inappAdapterLisner) {
         this.messageList = messageList;
         this.context = context;
         this.inappAdapterLisner = inappAdapterLisner;
@@ -43,14 +43,14 @@ public class InAppMessageAdapter extends RecyclerView.Adapter<InAppMessageAdapte
      */
     @Override
     public void onBindViewHolder(MessageHolder holder, int position) {
-        final InAppMessageModel inAppMessageModel = messageList.get(position);
-        com.tokopedia.abstraction.common.utils.image.ImageHandler.LoadImage(holder.img, inAppMessageModel.getImageUrl());
+        final InAppMessageItemModel inAppMessageItemModel = messageList.get(position);
+        com.tokopedia.abstraction.common.utils.image.ImageHandler.LoadImage(holder.img, inAppMessageItemModel.getImageUrl());
         holder.img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "click on " + inAppMessageModel.getDeeplink(), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "click on " + inAppMessageItemModel.getDeeplink(), Toast.LENGTH_LONG).show();
                 Intent intent=new Intent();
-                Uri uri = Uri.parse(inAppMessageModel.getDeeplink());
+                Uri uri = Uri.parse(inAppMessageItemModel.getDeeplink());
                 intent.setData(uri);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
