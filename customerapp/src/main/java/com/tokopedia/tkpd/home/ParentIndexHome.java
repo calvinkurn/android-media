@@ -553,23 +553,26 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         HockeyAppHelper.checkForUpdate(this);
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
-        if (SessionHandler.isV4Login(this) && indicator.getTabCount() < 4) {
-            indicator.removeAllTabs();
-            content.clear();
-            String[] CONTENT = new String[]{
-                    getString(R.string.title_categories),
-                    getString(R.string.title_index_prod_shop),
-                    getString(R.string.title_index_favorite),
-                    getString(R.string.title_index_hot_list)
-            };
-            content = new ArrayList<>();
-            for (String content_ : CONTENT) {
-                indicator.addTab(indicator.newTab().setText(content_));
-                content.add(content_);
+        if (SessionHandler.isV4Login(this)) {
+            if (indicator.getTabCount() < 4) {
+                indicator.removeAllTabs();
+                content.clear();
+                String[] CONTENT = new String[]{
+                        getString(R.string.title_categories),
+                        getString(R.string.title_index_prod_shop),
+                        getString(R.string.title_index_favorite),
+                        getString(R.string.title_index_hot_list)
+                };
+                content = new ArrayList<>();
+                for (String content_ : CONTENT) {
+                    indicator.addTab(indicator.newTab().setText(content_));
+                    content.add(content_);
+                }
+                adapter = new PagerAdapter(getSupportFragmentManager());
+                mViewPager.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
-            adapter = new PagerAdapter(getSupportFragmentManager());
-            mViewPager.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+            updateCartNotification();
         }
 
         setScrollFeedListener();
@@ -581,18 +584,16 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         // Register to receive broadcast hockeyapp
         registerBroadcastHockeyApp();
-
-        updateCartNotification();
     }
 
     private void updateCartNotification() {
         ((TransactionRouter.CartRouter) getApplication()).updateMarketplaceCartCounter(
                 new TransactionRouter.CartNotificationListener() {
-            @Override
-            public void onDataReady() {
-                invalidateOptionsMenu();
-            }
-        });
+                    @Override
+                    public void onDataReady() {
+                        invalidateOptionsMenu();
+                    }
+                });
     }
 
     private void setScrollFeedListener() {
