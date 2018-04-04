@@ -32,6 +32,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.RegisterAnalytics;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -205,6 +206,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Override
     public void onStart() {
         super.onStart();
+        ScreenTracking.screen(getScreenName());
     }
 
     @Override

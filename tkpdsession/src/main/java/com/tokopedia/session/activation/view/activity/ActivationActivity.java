@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 
 import com.tokopedia.analytics.RegisterAnalytics;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.fragment.RegisterActivationFragment;
@@ -103,6 +104,12 @@ public class ActivationActivity extends BasePresenterActivity {
     @Override
     public String getScreenName() {
         return RegisterAnalytics.Screen.SCREEN_ACCOUNT_ACTIVATION;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ScreenTracking.screen(getScreenName());
     }
 
     public static Intent getCallingIntent(Context context, String email, String pw) {
