@@ -91,7 +91,6 @@ import com.tokopedia.inbox.inboxchat.util.Events;
 import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
 import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSingleViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
@@ -237,7 +236,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         if(isChatBot){
             attachButton.setVisibility(View.GONE);
-            pickerButton.setVisibility(View.GONE);
         }
     }
 
@@ -311,9 +309,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         presenter.setIsTyping(getArguments().getString(ChatRoomActivity
                                 .PARAM_MESSAGE_ID));
                         if(needCreateWebSocket()) {
-                            maximize.setVisibility(View.VISIBLE);
+                            maximize.setVisibility(isChatBot ? View.GONE : View.VISIBLE);
                         }
-                        pickerButton.setVisibility(View.GONE);
+                        pickerButton.setVisibility(isChatBot ? View.VISIBLE : View.GONE);
                         attachButton.setVisibility(View.GONE);
                     }
                 } catch (JSONException e) {
@@ -413,10 +411,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void setPickerButton() {
-        if (needCreateWebSocket() && !isChatBot) {
+        if (needCreateWebSocket()) {
             pickerButton.setVisibility(View.VISIBLE);
-            attachButton.setVisibility(View.VISIBLE);
-        }else{
+            attachButton.setVisibility(isChatBot ? View.GONE : View.VISIBLE);
+        } else {
             pickerButton.setVisibility(View.GONE);
             attachButton.setVisibility(View.GONE);
         }
