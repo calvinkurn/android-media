@@ -81,30 +81,11 @@ public class CuratedProductAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         itemViewHolder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                trackingClickEnhance(productModel);
                 onItemClickListener.onItemClicked(productModel,curatedName);
             }
         });
 
 
-    }
-
-    private void trackingClickEnhance(ProductModel product) {
-        Map<String, Object> map = DataLayer.mapOf("event", "productClick",
-                "eventCategory", "intermediary page",
-                "eventAction", "click product curation",
-                "eventLabel", "",
-                "ecommerce", DataLayer.mapOf(
-                        "currencyCode", "IDR",
-                        "click", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", product.getTrackerListName()),
-                                "products", DataLayer.listOf(
-                                        product.generateClickDataLayer()
-                                )
-                        )
-                )
-        );
-        CategoryPageTracking.eventEnhance(map);
     }
 
     @Override

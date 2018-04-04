@@ -3,7 +3,6 @@ package com.tokopedia.discovery.intermediary.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -41,7 +40,6 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -59,7 +57,6 @@ import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
 import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
-import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 import com.tokopedia.discovery.intermediary.domain.model.ProductModel;
 import com.tokopedia.discovery.intermediary.domain.model.VideoModel;
 import com.tokopedia.discovery.intermediary.view.adapter.BannerPagerAdapter;
@@ -578,11 +575,29 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void onItemClicked(ProductModel productModel, String curatedName) {
+        trackEventEnhance(createClickProductDataLayer(productModel));
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
                 Integer.toString(productModel.getId()));
         getActivity().startActivity(intent);
         UnifyTracking.eventCuratedIntermediary(departmentId,
                 curatedName, productModel.getName());
+    }
+
+    private Map<String, Object> createClickProductDataLayer(ProductModel product) {
+        return DataLayer.mapOf("event", "productClick",
+                "eventCategory", "intermediary page",
+                "eventAction", "click product curation",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "click", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", product.getTrackerListName()),
+                                "products", DataLayer.listOf(
+                                        product.generateClickDataLayer()
+                                )
+                        )
+                )
+        );
     }
 
     @Override
