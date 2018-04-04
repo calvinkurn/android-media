@@ -121,10 +121,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
                         @Override
                         public void onNext(List<Visitable> visitables) {
-                            if (isViewAttached()) {
+                            if (isViewAttached() && isDataValid(visitables)) {
                                 getView().updateListOnResume(visitables);
+                                lastRequestTime = System.currentTimeMillis();
                             }
-                            lastRequestTime = System.currentTimeMillis();
                         }
                     });
             compositeSubscription.add(subscription);
@@ -426,26 +426,25 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 }
                 if (isDataValid(visitables)) {
                     getView().removeNetworkError();
+                    lastRequestTime = System.currentTimeMillis();
                 } else {
                     getView().showNetworkError(context.getString(R.string.msg_network_error));
                 }
             }
-            lastRequestTime = System.currentTimeMillis();
-        }
-
-        private boolean isDataValid(List<Visitable> visitables) {
-            return containsInstance(visitables, BannerViewModel.class);
-        }
-
-        public <E> boolean containsInstance(List<E> list, Class<? extends E> clazz) {
-            for (E e : list) {
-                if (clazz.isInstance(e)) {
-                    return true;
-                }
-            }
-            return false;
         }
 
     }
 
+    private boolean isDataValid(List<Visitable> visitables) {
+        return containsInstance(visitables, BannerViewModel.class);
+    }
+
+    public <E> boolean containsInstance(List<E> list, Class<? extends E> clazz) {
+        for (E e : list) {
+            if (clazz.isInstance(e)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
