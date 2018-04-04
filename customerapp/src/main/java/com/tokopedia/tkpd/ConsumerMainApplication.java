@@ -149,6 +149,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
         WalletUrl.KeyHmac.HMAC_PENDING_CASHBACK = ConsumerAppNetworkKeys.HMAC_PENDING_CASHBACK;
+        SendbirdKey.APP_ID = ConsumerAppNetworkKeys.SENDBIRD_APP_ID;
+
     }
 
     public void initializeDatabase() {
