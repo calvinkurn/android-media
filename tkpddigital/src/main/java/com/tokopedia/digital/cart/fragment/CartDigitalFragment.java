@@ -350,14 +350,16 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             if (cartDigitalInfoData.getAttributes().isEnableVoucher() &&
                     cartDigitalInfoData.getAttributes().getAutoApplyVoucher() != null &&
                     cartDigitalInfoData.getAttributes().getAutoApplyVoucher().isSuccess()) {
-                CartAutoApplyVoucher cartAutoApplyVoucher = cartDigitalInfoData.getAttributes().getAutoApplyVoucher();
-                VoucherDigital voucherDigital = new VoucherDigital();
-                VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
-                voucherAttributeDigital.setVoucherCode(cartAutoApplyVoucher.getCode());
-                voucherAttributeDigital.setDiscountAmountPlain(cartAutoApplyVoucher.getDiscountAmount());
-                voucherAttributeDigital.setMessage(cartAutoApplyVoucher.getMessageSuccess());
-                voucherDigital.setAttributeVoucher(voucherAttributeDigital);
-                renderVoucherInfoData(voucherDigital);
+                if (!(cartDigitalInfoData.getAttributes().isCouponActive() == 0 && cartDigitalInfoData.getAttributes().getAutoApplyVoucher().getIsCoupon() == 1)){
+                    CartAutoApplyVoucher cartAutoApplyVoucher = cartDigitalInfoData.getAttributes().getAutoApplyVoucher();
+                    VoucherDigital voucherDigital = new VoucherDigital();
+                    VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+                    voucherAttributeDigital.setVoucherCode(cartAutoApplyVoucher.getCode());
+                    voucherAttributeDigital.setDiscountAmountPlain(cartAutoApplyVoucher.getDiscountAmount());
+                    voucherAttributeDigital.setMessage(cartAutoApplyVoucher.getMessageSuccess());
+                    voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+                    renderVoucherInfoData(voucherDigital);
+                }
             }
         }
         itemCartHolderView.renderAdditionalInfo(cartDigitalInfoData.getAdditionalInfos());

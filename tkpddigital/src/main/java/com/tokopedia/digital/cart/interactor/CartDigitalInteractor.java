@@ -4,6 +4,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
 import com.tokopedia.digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
+import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
 import com.tokopedia.digital.cart.domain.ICartDigitalRepository;
 import com.tokopedia.digital.cart.domain.ICheckoutRepository;
 import com.tokopedia.digital.cart.domain.IVoucherDigitalRepository;
@@ -114,9 +115,9 @@ public class CartDigitalInteractor implements ICartDigitalInteractor {
     }
 
     @Override
-    public void cancelVoucher(Subscriber<String> subscriber) {
+    public void cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher, Subscriber<String> subscriber) {
         compositeSubscription.add(
-                cartDigitalRepository.cancelVoucher()
+                cartDigitalRepository.cancelVoucher(requestBodyCancelVoucher)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())

@@ -75,5 +75,6 @@ public interface DigitalApi {
     Observable<Response<TkpdDigitalResponse>> parsePulsaMessage(@Body JsonObject requestBody);
 
     @POST(TkpdBaseURL.DigitalApi.PATH_CANCEL_VOUCHER)
-    Observable<Response<TkpdDigitalResponse>> cancelVoucher();
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<TkpdDigitalResponse>> cancelVoucher(@Body JsonObject requestBody);
 }
