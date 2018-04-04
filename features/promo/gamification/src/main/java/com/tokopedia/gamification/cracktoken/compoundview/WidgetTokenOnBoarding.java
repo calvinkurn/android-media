@@ -1,17 +1,24 @@
 package com.tokopedia.gamification.cracktoken.compoundview;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.tokopedia.gamification.R;
 
@@ -25,10 +32,14 @@ public class WidgetTokenOnBoarding extends FrameLayout {
 
     public static final String CRACK_TOKEN_ONBOARDING_PREF = "crack_token_onboarding.pref";
     public static final String HAS_SEEN = "has_seen";
+    public static final int SHORT_ANIM_DURATION = 600;
+    public static final int MEDIUM_ANIM_DURATION = 800;
 
     private View onboardingView;
+    private ImageView ivOnboardingCircle;
     private int rootWidth;
     private int rootHeight;
+    private AnimatorSet set;
 
     public WidgetTokenOnBoarding(@NonNull Context context) {
         super(context);
@@ -74,26 +85,105 @@ public class WidgetTokenOnBoarding extends FrameLayout {
     public void showHandOnboarding() {
         if (!hasSeenOnBoardingFromPref() && rootWidth > 0) {
             int imageWidth = (int) (0.5 * Math.min(rootWidth, rootHeight));
-            int initialXEgg = rootWidth / 2 + (int) (0.9 * imageWidth);
-            int initialYEgg = rootHeight / 2 + (int) (0.2 * imageWidth);
+            int initialXEgg = rootWidth / 2 + (int) (0.3 * imageWidth);
+            int initialYEgg = rootHeight / 2 + (int) (0.05 * imageWidth);
+            int delta = (int) (0.1 * imageWidth);
 
             onboardingView = LayoutInflater.from(getContext()).inflate(R.layout.image_view_hand, this, false);
+            ivOnboardingCircle = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.image_view_hand_circle,
+                    this, false);
             onboardingView.setX(initialXEgg);
             onboardingView.setY(initialYEgg);
+
+            int circleWidth = getContext().getResources().getDimensionPixelOffset(R.dimen.image_width_hand_circle);
+            ivOnboardingCircle.setX(initialXEgg - delta - circleWidth / 2);
+            ivOnboardingCircle.setY(initialYEgg - delta - circleWidth / 2);
+            ivOnboardingCircle.setVisibility(View.GONE);
+            onboardingView.setVisibility(GONE);
+
+            this.addView(ivOnboardingCircle);
             this.addView(onboardingView);
 
-            animateHandOnBoarding();
+            animateHandOnBoarding(initialXEgg, initialYEgg, delta);
         }
     }
 
-    private void animateHandOnBoarding() {
-        //TODO animate
+    private void animateHandOnBoarding(int initialXEgg, int initialYEgg, int delta) {
+        set = new AnimatorSet();
+        PropertyValuesHolder pvhX =
+                PropertyValuesHolder.ofFloat(View.X, initialXEgg, initialXEgg - delta);
+        PropertyValuesHolder pvhY =
+                PropertyValuesHolder.ofFloat(View.Y, initialYEgg, initialYEgg - delta);
+        ObjectAnimator translateAnimator = ObjectAnimator.ofPropertyValuesHolder(onboardingView, pvhX, pvhY);
+        translateAnimator.setDuration(SHORT_ANIM_DURATION);
+        translateAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                ivOnboardingCircle.setVisibility(View.GONE);
+                onboardingView.setVisibility(View.VISIBLE);
+            }
 
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                ivOnboardingCircle.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+        PropertyValuesHolder pvhScaleX =
+                PropertyValuesHolder.ofFloat(View.SCALE_X, 0, 1);
+        PropertyValuesHolder pvhScaleY =
+                PropertyValuesHolder.ofFloat(View.SCALE_Y, 0, 1);
+        PropertyValuesHolder pvhAlpha =
+                PropertyValuesHolder.ofFloat(View.ALPHA, 1, 0f);
+        ObjectAnimator scaleAnimator = ObjectAnimator.ofPropertyValuesHolder(ivOnboardingCircle, pvhScaleX, pvhScaleY);
+        scaleAnimator.setInterpolator(new AccelerateInterpolator());
+        scaleAnimator.setDuration(SHORT_ANIM_DURATION);
+        scaleAnimator.setRepeatCount(2);
+
+        set.playSequentially(translateAnimator, scaleAnimator);
+        set.setStartDelay(MEDIUM_ANIM_DURATION);
+        set.addListener(new Animator.AnimatorListener() {
+            private boolean mCanceled;
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mCanceled = false;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (!mCanceled) {
+                    set.start();
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mCanceled = true;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        set.start();
     }
 
     public void hideHandOnBoarding() {
         if (onboardingView != null) {
+            set.cancel();
             this.removeView(onboardingView);
+            this.removeView(ivOnboardingCircle);
             saveSeenOnboardingPreference();
         }
     }
@@ -104,9 +194,9 @@ public class WidgetTokenOnBoarding extends FrameLayout {
     }
 
     private void saveSeenOnboardingPreference() {
-        //SharedPreferences.Editor editor = getSharedPref().edit();
-        //editor.putBoolean(HAS_SEEN, true);
-        //editor.apply();
+        SharedPreferences.Editor editor = getSharedPref().edit();
+        editor.putBoolean(HAS_SEEN, true);
+        editor.apply();
     }
 
     private SharedPreferences getSharedPref() {
