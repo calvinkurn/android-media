@@ -37,7 +37,6 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.CallbackManager;
-import com.readystatesoftware.chuck.internal.ui.MainActivity;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.tokopedia.abstraction.AbstractionRouter;

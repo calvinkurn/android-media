@@ -334,7 +334,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 analytics.eventClickVote(
                         element.getType(),
                         ((GroupChatContract.View) getActivity()).
-                                getChannelInfoViewModel().getChannelUrl());
+                                getChannelInfoViewModel().getTitle());
             }
         }
     }
