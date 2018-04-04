@@ -125,6 +125,9 @@ public class EntityPackagesItem {
     @Expose
     private String vouchers = null;
 
+    @SerializedName("actual_seat_nos")
+    private List<String> actualSeatNos;
+
     public String getAddress() {
         return address;
     }
@@ -179,6 +182,14 @@ public class EntityPackagesItem {
 
     public void setCommision(float commision) {
         this.commision = commision;
+    }
+
+    public List<String> getActualSeatNos() {
+        return actualSeatNos;
+    }
+
+    public void setActualSeatNos(List<String> actualSeatNos) {
+        this.actualSeatNos = actualSeatNos;
     }
 
     public String getCommisionType() {

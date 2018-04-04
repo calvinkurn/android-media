@@ -83,4 +83,8 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
     void loadInitialData();
 
     void actionFetchFlightSearchData();
+
+    void setNeedRefreshAirline(boolean needRefresh);
+
+    boolean isNeedRefreshAirline();
 }

@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/topads_detail_padding_item"
         style="@style/LabelLayout"
-        app:switch_enable="false"
-        app:title="@string/label_top_ads_status"/>
+        app:ls_switch_enable="false"
+        app:ls_title="@string/label_top_ads_status"/>
 
 </merge>

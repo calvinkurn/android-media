@@ -28,10 +28,11 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -110,10 +111,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void onShopItemClicked(int position, Shop shop) {
-        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(bundle);
+    public void onShopItemClicked(Shop shop) {
+        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
         getActivity().startActivity(intent);
     }
 

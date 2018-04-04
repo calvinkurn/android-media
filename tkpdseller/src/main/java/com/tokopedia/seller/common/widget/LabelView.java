@@ -16,7 +16,7 @@ import com.tokopedia.seller.R;
 /**
  * Created by zulfikarrahman on 12/29/16.
  */
-
+@Deprecated
 public class LabelView extends BaseCustomView {
 
     private TextView titleTextView;

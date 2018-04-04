@@ -265,13 +265,12 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             defaultChild = productVariant.getChildFromProductId(productVariant.getDefaultChild());
         }
 
-        if (defaultChild.getOptionIds() != null && defaultChild.getOptionIds().size()>0) {
+        if (defaultChild!=null && defaultChild.getOptionIds() != null && defaultChild.getOptionIds().size()>0) {
             int option1 = defaultChild.getOptionIds().get(0);
             if (getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED) != null
                     && getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
                 option1 = ((Option) getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED)).getId();
             }
-
             for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
                 variantOptionAdapterLevel1.getVariantOptions().get(i).setEnabled(
                         productVariant.isOptionAvailable(variantOptionAdapterLevel1.getVariantOptions().get(i)));
@@ -281,7 +280,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             }
         }
 
-        if (productVariant.getVariant().size()==2) {
+        if (productVariant.getVariant().size()==2 && defaultChild.getOptionIds().size()>1) {
             int option2 = defaultChild.getOptionIds().get(1);
             if (getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED) != null
                     && getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option) {
@@ -392,6 +391,11 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         Child childSelected = getProductDatumSelected();
         if (childSelected!=null && childSelected.isIsBuyable() && productDetailData.getShopInfo().getShopStatus()==1) {
             setResult(VariantActivity.SELECTED_VARIANT_RESULT, generateExtraSelectedIntent());
+        } else {
+            Intent intent = new Intent();
+            intent.putExtra(KEY_PRODUCT_DETAIL_DATA, productDetailData);
+            intent.putExtra(KEY_VARIANT_DATA, productVariant);
+            setResult(VariantActivity.SELECTED_VARIANT_RESULT, intent);
         }
         finish();
         VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
