@@ -42,7 +42,8 @@
                         android:layout_height="wrap_content"
                         android:paddingBottom="@dimen/padding_small"
                         android:text="Anda dapat mengelola TokoCash dengan akun Tokopedia melalui halaman ini."
-                        android:textSize="@dimen/font_small" />
+                        android:textSize="@dimen/font_small"
+                        style="@style/TextView.Micro.Bold"/>
 
                     <TextView
                         android:layout_width="wrap_content"

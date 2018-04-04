@@ -1,9 +1,11 @@
 package com.tokopedia.shop.product.view.fragment;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,9 +13,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -25,6 +29,7 @@ import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -82,7 +87,14 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     private ShopModuleRouter shopModuleRouter;
     private ShopPagePromoWebView.Listener promoWebViewListener;
     private BottomActionView bottomActionView;
+    private SearchInputView searchInputView;
+    private LinearLayout linearHeaderSticky;
+    private LabelView etalaseButton;
     private String sortName = Integer.toString(Integer.MIN_VALUE);
+    private RecyclerView recyclerView;
+    protected boolean hideBottom = false;
+    protected boolean hideSearch = false;
+    protected int mTotalDyDistance;
 
     public static ShopProductListLimitedFragment createInstance() {
         ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
@@ -124,9 +136,94 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                 ShopProductListLimitedFragment.this.startActivityForResult(ShopProductSortActivity.createIntent(getActivity(), sortName, shopInfo.getInfo().getShopId()), REQUEST_CODE_SORT);
             }
         });
+        searchInputView = view.findViewById(R.id.search_input_view);
+        searchInputView.setListener(this);
+        searchInputView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (shopInfo != null) {
+                    shopPageTracking.eventClickSearchProduct(getString(R.string.shop_info_title_tab_product), shopInfo.getInfo().getShopId(),
+                            shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                }
+            }
+        });
+        etalaseButton = view.findViewById(R.id.label_view_etalase);
+        etalaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (shopInfo != null) {
+                    shopPageTracking.eventClickEtalaseShop(getString(R.string.shop_info_title_tab_product), true, shopInfo.getInfo().getShopId(),
+                            shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                }
+                startActivityForResult(ShopEtalaseActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), null), REQUEST_CODE_ETALASE);
+            }
+        });
+        linearHeaderSticky = view.findViewById(R.id.linear_header_sticky);
+
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        recyclerView = getRecyclerView(view);
+        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                int position = parent.getChildAdapterPosition(view);
+                if (position == 0) {
+                    outRect.set(0, linearHeaderSticky.getHeight(), 0, 0);
+                }
+            }
+        });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && mTotalDyDistance < 0 || dy < 0 && mTotalDyDistance > 0) {
+                    mTotalDyDistance = 0;
+                }
+                mTotalDyDistance += dy;
+                if (!hideBottom && mTotalDyDistance > bottomActionView.getHeight()) {
+                    hideBottomView(bottomActionView);
+                } else if (hideBottom && mTotalDyDistance < -bottomActionView.getHeight()) {
+                    showBottomView(bottomActionView);
+                }
+
+                if (!hideSearch && mTotalDyDistance > searchInputView.getHeight()) {
+                    hideSearchView(linearHeaderSticky, searchInputView);
+                } else if (hideSearch && mTotalDyDistance < -searchInputView.getHeight()) {
+                    showSearchView(linearHeaderSticky, searchInputView);
+                }
+            }
+        });
     }
+
+    public void hideBottomView(final View view) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationY", 0, view.getHeight());
+        animator.setDuration(300);
+        animator.start();
+        hideBottom = true;
+    }
+
+    public void showBottomView(final View view) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0);
+        animator.setDuration(300);
+        animator.start();
+        hideBottom = false;
+    }
+
+    public void hideSearchView(final View parent, final View child) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(parent, "translationY", 0, -child.getHeight());
+        animator.setDuration(400);
+        animator.start();
+        hideSearch = true;
+    }
+
+    public void showSearchView(final View parent, final View child) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(parent, "translationY", -child.getHeight(), 0);
+        animator.setDuration(400);
+        animator.start();
+        hideSearch = false;
+    }
+
 
     @Override
     protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
@@ -161,24 +258,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     @NonNull
     @Override
     protected ShopProductLimitedAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductLimitedAdapterTypeFactory(this, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (shopInfo != null) {
-                    shopPageTracking.eventClickSearchProduct(getString(R.string.shop_info_title_tab_product), shopInfo.getInfo().getShopId(),
-                            shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
-                }
-            }
-        }, this, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (shopInfo != null) {
-                    shopPageTracking.eventClickEtalaseShop(getString(R.string.shop_info_title_tab_product), true, shopInfo.getInfo().getShopId(),
-                            shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
-                }
-                startActivityForResult(ShopEtalaseActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), null), REQUEST_CODE_ETALASE);
-            }
-        }, this, this, promoWebViewListener, this);
+        return new ShopProductLimitedAdapterTypeFactory(this, this, this, promoWebViewListener, this);
     }
 
     @NonNull
