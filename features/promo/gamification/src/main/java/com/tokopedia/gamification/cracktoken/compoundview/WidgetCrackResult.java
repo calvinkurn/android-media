@@ -190,7 +190,6 @@ public class WidgetCrackResult extends RelativeLayout {
         if (returnButton != null) {
             buttonReturn.setVisibility(VISIBLE);
             buttonReturn.setText(returnButton.getTitle());
-
             buttonReturn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -206,7 +205,6 @@ public class WidgetCrackResult extends RelativeLayout {
         if (ctaButton != null) {
             buttonCta.setVisibility(VISIBLE);
             buttonCta.setText(ctaButton.getTitle());
-
             buttonCta.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

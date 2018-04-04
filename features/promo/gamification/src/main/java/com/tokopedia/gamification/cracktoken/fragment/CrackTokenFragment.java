@@ -140,7 +140,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     @Override
     public void onPause() {
         super.onPause();
-        // save the previous time to enable the the timer in onResume.
+        // save the previous time to enable the timer in onResume.
         if (tokenData.isShowCountDown() && countDownTimer!= null) {
             prevTimeStamp = System.currentTimeMillis();
         } else {
