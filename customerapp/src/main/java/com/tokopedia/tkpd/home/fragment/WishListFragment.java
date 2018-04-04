@@ -97,7 +97,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         ProductItem data = new ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
