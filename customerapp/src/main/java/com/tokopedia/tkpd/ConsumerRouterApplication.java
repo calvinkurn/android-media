@@ -689,7 +689,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getLoyaltyWithCoupon(FragmentActivity activity, String platform, String categoryId, String cartId) {
+    public Intent getLoyaltyWithCoupon(Activity activity, String platform, String categoryId, String cartId) {
         return LoyaltyActivity.newInstanceCouponActive(activity, platform, categoryId, cartId);
     }
 

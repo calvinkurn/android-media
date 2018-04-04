@@ -40,6 +40,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.CountdownTimeView;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
+import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightError;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -75,6 +76,7 @@ import javax.inject.Inject;
 
 public class FlightBookingReviewFragment extends BaseDaggerFragment implements FlightBookingReviewContract.View, OnBackActionListener, VoucherCartHachikoView.ActionListener {
 
+    public static final String HACHIKO_FLIGHT_KEY = "flight";
     public static final String EXTRA_NEED_TO_REFRESH = "EXTRA_NEED_TO_REFRESH";
     public static final String EXTRA_DATA_REVIEW = "EXTRA_DATA_REVIEW";
     public static final int RESULT_ERROR_VERIFY = 874;
@@ -317,22 +319,6 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         }
     }
 
-    /*   @Override
-       public void onErrorCheckVoucherCode(Throwable t) {
-           voucherCartView.setErrorVoucher(FlightErrorUtil.getMessageFromException(getActivity(), t));
-       }
-
-       @Override
-       public void onSuccessCheckVoucherCode(AttributesVoucher attributesVoucher) {
-           KeyboardHandler.hideSoftKeyboard(getActivity());
-           voucherCartView.setUsedVoucher(attributesVoucher.getVoucherCode(), attributesVoucher.getMessage());
-       }
-   */
-    @Override
-    public String getVoucherCode() {
-        return voucherCartView.getVoucherCode();
-    }
-
     @Override
     public void updateFinalTotal(AttributesVoucher attributesVoucher, FlightBookingReviewModel currentBookingReviewModel) {
 
@@ -357,38 +343,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     @Override
     public void onSuccessSubmitData() {
 
-    }/*
-
-    @Override
-    public void onVoucherCheckButtonClicked() {
-        flightBookingReviewPresenter.checkVoucherCode(flightBookingReviewModel.getId(), voucherCartView.getVoucherCode());
     }
-
-    @Override
-    public void forceHideSoftKeyboardVoucherInput() {
-        KeyboardHandler.hideSoftKeyboard(getActivity());
-    }
-
-    @Override
-    public void forceShowSoftKeyboardVoucherInput() {
-        KeyboardHandler.showSoftKeyboard(getActivity());
-    }
-
-    @Override
-    public void disableVoucherDiscount() {
-        KeyboardHandler.hideSoftKeyboard(getActivity());
-        updateFinalTotal(getCurrentBookingReviewModel());
-    }
-
-    @Override
-    public void trackingErrorVoucher(String errorMsg) {
-
-    }*/
 
     @Override
     public void onClickUseVoucher() {
         if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
-            Intent intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCoupon(getActivity(), "flight", "27", getCurrentCartData().getId());
+            Intent intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCoupon(getActivity(), HACHIKO_FLIGHT_KEY, FlightUrl.CATEGORY_ID, getCurrentCartData().getId());
             startActivityForResult(intent, REQUEST_CODE_LOYALTY);
         }
     }

@@ -36,22 +36,19 @@ import rx.schedulers.Schedulers;
 
 public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<FlightBookingReviewContract.View> implements FlightBookingReviewContract.Presenter {
 
-    private final FlightCheckVoucherCodeUseCase flightCheckVoucherCodeUseCase;
     private final FlightBookingCheckoutUseCase flightBookingCheckoutUseCase;
     private final FlightBookingVerifyUseCase flightBookingVerifyUseCase;
     private final FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase;
     private FlightAnalytics flightAnalytics;
 
     @Inject
-    public FlightBookingReviewPresenter(FlightCheckVoucherCodeUseCase flightCheckVoucherCodeUseCase,
-                                        FlightBookingCheckoutUseCase flightBookingCheckoutUseCase,
+    public FlightBookingReviewPresenter(FlightBookingCheckoutUseCase flightBookingCheckoutUseCase,
                                         FlightAddToCartUseCase flightAddToCartUseCase,
                                         FlightBookingCartDataMapper flightBookingCartDataMapper,
                                         FlightBookingVerifyUseCase flightBookingVerifyUseCase,
                                         FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase,
                                         FlightAnalytics flightAnalytics) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
-        this.flightCheckVoucherCodeUseCase = flightCheckVoucherCodeUseCase;
         this.flightBookingCheckoutUseCase = flightBookingCheckoutUseCase;
         this.flightBookingVerifyUseCase = flightBookingVerifyUseCase;
         this.flightBookingDeleteAllPassengerListUseCase = flightBookingDeleteAllPassengerListUseCase;
@@ -136,18 +133,6 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                         getView().navigateToTopPay(flightCheckoutViewModel);
                     }
                 });
-    }
-
-    @Override
-    public void checkVoucherCode(String cartId, String voucherCode) {
-        getView().showProgressDialog();
-        flightAnalytics.eventVoucherClick(voucherCode);
-//        flightCheckVoucherCodeUseCase.execute(flightCheckVoucherCodeUseCase.createRequestParams(cartId, voucherCode), getSubscriberCheckVoucherCode(voucherCode));
-    }
-
-    @Override
-    public void submitData() {
-        flightBookingCheckoutUseCase.execute(RequestParams.create(), getSubscriberSubmitData());
     }
 
     @Override
