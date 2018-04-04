@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.cracktoken.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -197,7 +198,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                     ((GamificationRouter) getActivity().getApplicationContext())
                             .actionApplink(getActivity(), applink);
                 } else if (!TextUtils.isEmpty(url)) {
-
+                    Intent intent = ((GamificationRouter) getActivity().getApplicationContext())
+                            .getWebviewActivityWithIntent(getActivity(), url, "TokoPoints");
+                    startActivity(intent);
                 }
             }
 
