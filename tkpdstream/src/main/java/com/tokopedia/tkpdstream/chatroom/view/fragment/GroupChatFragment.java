@@ -260,7 +260,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 public void onClick(View v) {
                     if (!TextUtils.isEmpty(replyEditText.getText().toString().trim())) {
                         PendingChatViewModel pendingChatViewModel = new PendingChatViewModel
-                                (replyEditText.getText().toString(),
+                                (presenter.checkText(replyEditText.getText().toString()),
                                         userSession.getUserId(),
                                         userSession.getName(),
                                         userSession.getProfilePicture(),
