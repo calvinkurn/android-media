@@ -31,21 +31,6 @@ public class AttachInvoicePresenter implements AttachInvoiceContract.Presenter {
     public void loadInvoiceData(String query, String userId, int page, int messageId ,Context context) {
         useCase.execute(AttachInvoicesUseCase.createRequestParam(query,userId,page,messageId,context),new AttachInvoicesLoadInvoiceDataSubscriber(view));
     }
-//
-//    @Override
-//    public void updateCheckedList(List<AttachProductItemViewModel> products) {
-//
-//    }
-//
-//    @Override
-//    public void resetCheckedList() {
-//
-//    }
-
-    @Override
-    public void invoiceSelected(InvoiceViewModel invoiceViewModel) {
-
-    }
 
     @Override
     public void attachView(AttachInvoiceContract.View view) {

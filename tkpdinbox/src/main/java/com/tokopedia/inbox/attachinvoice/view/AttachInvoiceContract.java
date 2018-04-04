@@ -19,19 +19,13 @@ public interface AttachInvoiceContract {
         void addInvoicesToList(List<InvoiceViewModel> invoices, boolean hasNextPage);
         void hideAllLoadingIndicator();
         void showErrorMessage(Throwable throwable);
-//        void updateButtonBasedOnChecked(int checkedCount);
     }
     interface Activity {
         String getUserId();
         int getMessageId();
-        void finishActivityWithResult(ArrayList<ResultProduct> products);
-//        void goToAddProduct(String shopId);
     }
     interface Presenter {
         void loadInvoiceData(String query,String userId, int page, int messageId ,Context context);
-//        void updateCheckedList(List<AttachProductItemViewModel> products);
-//        void resetCheckedList();
-        void invoiceSelected(InvoiceViewModel invoiceViewModel);
         void attachView(AttachInvoiceContract.View view);
         void attachActivityContract(AttachInvoiceContract.Activity activityContract);
     }

@@ -21,6 +21,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class GetTxInvoicesService extends AuthService<GetTxInvoicesApi>{
+    public static final String CS_CHATBOT_PATH = "/cs/chatbot/";
+
     @Override
     protected void initApiService(Retrofit retrofit) {
             api = retrofit.create(GetTxInvoicesApi.class);
@@ -28,7 +30,7 @@ public class GetTxInvoicesService extends AuthService<GetTxInvoicesApi>{
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.BASE_API_DOMAIN+"/cs/chatbot/";
+        return TkpdBaseURL.BASE_API_DOMAIN+CS_CHATBOT_PATH;
     }
 
     @Override
@@ -36,24 +38,4 @@ public class GetTxInvoicesService extends AuthService<GetTxInvoicesApi>{
         return api;
     }
 
-//    @Override
-//    protected Retrofit createRetrofitInstance(String processedBaseUrl) {
-//        return RetrofitFactory.createRetrofitDefaultConfig(processedBaseUrl)
-//                .client(buildClientDefaultAuth())
-//                .build();
-//    }
-//
-//    public OkHttpClient buildClientDefaultAuth() {
-//        OkHttpClient.Builder builder = getDefaultClient().newBuilder();
-//        return new TkpdOkHttpBuilder(builder)
-//                .addInterceptor(new FingerprintInterceptor())
-//                .addInterceptor(new CacheApiInterceptor())
-//                .addInterceptor(new TkpdAuthInterceptor())
-//                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-//                .addDebugInterceptor()
-//                .build();
-//    }
-//    private OkHttpClient getDefaultClient() {
-//        return new OkHttpClient.Builder().build();
-//    }
 }

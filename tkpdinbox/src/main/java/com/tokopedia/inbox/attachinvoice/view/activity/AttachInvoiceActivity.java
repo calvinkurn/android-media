@@ -50,11 +50,6 @@ public class AttachInvoiceActivity extends BaseSimpleActivity implements AttachI
     }
 
     @Override
-    public void finishActivityWithResult(ArrayList<ResultProduct> products) {
-
-    }
-
-    @Override
     public int getMessageId() {
         int msgId = 0;
         if(getIntent().hasExtra(TOKOPEDIA_ATTACH_INVOICE_MSG_ID_KEY))

@@ -40,18 +40,4 @@ public class AttachInvoicesRepositoryImpl implements AttachInvoicesRepository {
         params.remove(AttachInvoicesUseCase.PAGE_KEY);
         return body;
     }
-
-    /*
-    *  private final GetShopProductService shopService;
-    private final TkpdResponseToAttachProductDomainModelMapper mapper;
-    public AttachProductRepositoryImpl(GetShopProductService shopService, TkpdResponseToAttachProductDomainModelMapper mapper) {
-        this.shopService = shopService;
-        this.mapper = mapper;
-    }
-
-    @Override
-    public Observable<AttachProductDomainModel> loadProductFromShop(Map<String,String> params) {
-        return shopService.getApi().getShopProduct(params).map(mapper);
-    }
-    * */
 }

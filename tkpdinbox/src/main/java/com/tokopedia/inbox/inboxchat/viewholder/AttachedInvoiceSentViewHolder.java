@@ -63,7 +63,6 @@ public class AttachedInvoiceSentViewHolder extends AbstractViewHolder<AttachInvo
         if(element.getAttachment() != null && element.getAttachment().getAttributes() != null) {
             AttachmentInvoice invoice = element.getAttachment().getAttributes().getInvoiceLink();
             if(invoice != null && invoice.getAttributes() != null) {
-                processBaseUIForInvoice(invoice.getTypeString());
 
                 productName.setText(invoice.getAttributes().getTitle());
                 productDesc.setText(invoice.getAttributes().getDescription());
@@ -89,7 +88,6 @@ public class AttachedInvoiceSentViewHolder extends AbstractViewHolder<AttachInvo
             }
         });
 
-//        date.setVisibility(View.VISIBLE);
         String time;
 
         try {
@@ -137,10 +135,6 @@ public class AttachedInvoiceSentViewHolder extends AbstractViewHolder<AttachInvo
             imageResource = R.drawable.ic_chat_pending;
         }
         chatStatus.setImageResource(imageResource);
-    }
-
-    private void processBaseUIForInvoice(String invoiceTypeStr){
-
     }
 
     public void onViewRecycled() {

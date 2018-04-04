@@ -25,9 +25,6 @@ public class AttachInvoiceListAdapterTypeFactory extends BaseAdapterTypeFactory 
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
-//        if(type == InvoiceViewHolder.LAYOUT){
-
-//        }
         if (type == InvoiceViewHolder.LAYOUT) {
             return new InvoiceViewHolder(parent);
         } else if (type == EmptyResultViewHolder.LAYOUT) {
