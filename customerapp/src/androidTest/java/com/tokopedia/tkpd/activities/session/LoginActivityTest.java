@@ -244,6 +244,8 @@ public class LoginActivityTest {
 
         performClickYahoo(true);
 
+        Thread.sleep(2000);
+
         assertTrue(mIntentsRule.getActivity().isDestroyed());
     }
 
@@ -323,6 +325,8 @@ public class LoginActivityTest {
         Thread.sleep(2000);
 
         performClickYahoo(false);
+
+        Thread.sleep(2000);
 
         assertTrue(mIntentsRule.getActivity().isDestroyed());
     }
