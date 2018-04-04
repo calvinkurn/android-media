@@ -393,7 +393,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     @Override
-    public void showExpireTransactionDialog() {
+    public void showExpireTransactionDialog(String message) {
         if (isAdded()) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
             dialog.setMessage(R.string.flight_booking_expired_booking_label);

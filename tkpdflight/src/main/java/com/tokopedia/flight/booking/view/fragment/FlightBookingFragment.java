@@ -569,9 +569,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void showExpireTransactionDialog() {
+    public void showExpireTransactionDialog(String message) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setMessage(R.string.flight_booking_expired_booking_label);
+        dialog.setMessage(message);
         dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     @Override
