@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.loyalty.di.component.DaggerPromoDetailComponent;
@@ -39,10 +41,11 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
         return intent;
     }
 
-//    @DeepLink(LoyaltyAppLink.PROMO_NATIVE_DETAIL)
-//    public static Intent getAppLinkIntent(Context context, Bundle extras) {
-//        return PromoDetailActivity.getCallingIntent(context);
-//    }
+    @DeepLink(Constants.Applinks.PROMO_DETAIL)
+    public static Intent getAppLinkIntent(Context context, Bundle extras) {
+        String slug = extras.getString("slug");
+        return PromoDetailActivity.getCallingIntent(context, slug);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +81,7 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
     public void onSharePromo(PromoData promoData) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.PROMO_TYPE)
-                .setId(promoData.get())
+                .setId(promoData.getSlug())
                 .setName(promoData.getTitle())
                 .setTextContent(promoData.getTitle() + " | Tokopedia")
                 .setUri(promoData.getLink())

@@ -21,8 +21,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -48,7 +46,7 @@ public class PromoResponseMapper implements IPromoResponseMapper {
         promoData.setId(String.valueOf(promoResponse.getId()));
         promoData.setTitle(promoResponse.getTitle().getRendered());
         promoData.setTermsAndConditions(parseContent(promoResponse.getContent().getRendered()));
-        promoResponse.getSlug();
+        promoData.setSlug(promoResponse.getSlug());
 
         try {
             promoData.setPeriodFormatted(

@@ -125,9 +125,13 @@ public class PromoDetailFragment extends BaseDaggerFragment implements IPromoDet
         super.onViewCreated(view, savedInstanceState);
         this.llPromoDetailBottomLayout.setVisibility(View.VISIBLE);
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+
         this.rvPromoDetailView.setAdapter(promoDetailAdapter);
-        this.rvPromoDetailView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        this.rvPromoDetailView.setLayoutManager(layoutManager);
         this.rvPromoDetailView.setHasFixedSize(true);
+
+        layoutManager.smoothScrollToPosition(this.rvPromoDetailView, null, 0);
 
         this.promoDetailAdapter.setAdapterListener(getAdapterActionListener());
 
