@@ -48,11 +48,11 @@ public class VerticalLabelView extends BaseCustomView {
         try {
             titleText = styledAttributes.getString(R.styleable.VerticalLabelView_vlv_title);
             titleTextSize = styledAttributes.getDimension(R.styleable.VerticalLabelView_vlv_title_text_size,
-                    getContext().getResources().getDimension(R.dimen.font_small));
+                    getContext().getResources().getDimension(R.dimen.sp_14));
             titleTextColor = styledAttributes.getColor(R.styleable.VerticalLabelView_vlv_title_color,
                     getContext().getResources().getColor(R.color.font_black_secondary_54));
             contentTextSize = styledAttributes.getDimension(R.styleable.VerticalLabelView_vlv_content_text_size,
-                    getContext().getResources().getDimension(R.dimen.font_title));
+                    getContext().getResources().getDimension(R.dimen.sp_16));
             contentTextColor = styledAttributes.getColor(R.styleable.VerticalLabelView_vlv_content_color,
                     getContext().getResources().getColor(R.color.font_black_primary_70));
         } finally {
