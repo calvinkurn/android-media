@@ -68,7 +68,6 @@ import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -304,7 +303,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 if (shopID.equalsIgnoreCase(SessionHandler.DEFAULT_EMPTY_SHOP_ID)) {
                     shopIntent = ShopOpenDomainActivity.getIntent(this);
                 } else {
-                    shopIntent = ShopInfoActivity.getCallingIntent(this, shopID);
+                    shopIntent = ((TkpdCoreRouter) getApplication()).getShopPageIntent(this, shopID);
                 }
 
                 shopIntent.setAction(Intent.ACTION_VIEW);

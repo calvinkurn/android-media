@@ -21,7 +21,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter;
 import com.tokopedia.core.shopinfo.listener.ShopTalkFragmentView;
 import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
@@ -46,18 +46,22 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
     private static final String PARAM_FROM = "from";
     private static final String PARAM_MODEL = "talk";
     private static final String PARAM_POSITION = "position";
-    private boolean isViewShown;
+    protected boolean isViewShown;
 
     public static Fragment createInstance() {
         return new ShopTalkFragment();
     }
 
-    @BindView(R2.id.list)
-    RecyclerView list;
+    public static Fragment createInstance(boolean isLoadMoreEnabled) {
+        return new ShopTalkFragment();
+    }
 
-    ShopTalkAdapter adapter;
-    TkpdProgressDialog progressDialog;
-    LinearLayoutManager layoutManager;
+    @BindView(R2.id.list)
+    protected RecyclerView list;
+
+    protected ShopTalkAdapter adapter;
+    protected TkpdProgressDialog progressDialog;
+    protected LinearLayoutManager layoutManager;
 
     @Override
     protected boolean isRetainInstance() {
@@ -117,6 +121,10 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
         }
     }
 
+    protected boolean isEnableScroll(){
+        return true;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -124,6 +132,9 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
 
     @Override
     protected void setViewListener() {
+        if(!isEnableScroll()){
+            return;
+        }
         list.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -131,9 +142,13 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (lastItemPosition == visibleItem && !presenter.isRequesting() && !adapter.getList().isEmpty())
-                    presenter.loadMore();
+                    loadMore();
             }
         });
+    }
+
+    public void loadMore(){
+        presenter.loadMore();
     }
 
     @Override
@@ -263,12 +278,6 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         isViewShown = getView() != null;
-        if (isVisibleToUser) {
-            if (getActivity() != null &&
-                    getActivity() instanceof ShopInfoActivity) {
-                ((ShopInfoActivity) getActivity()).swipeAble(true);
-            }
-        }
     }
 
     @Override
@@ -415,7 +424,7 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
 
     }
 
-    private void fetchData() {
+    protected void fetchData() {
         if (presenter != null
                 && adapter != null
                 && !adapter.isEmpty()
