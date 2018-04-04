@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.design.loading.LoadingStateView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/loading_state_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:lsv_full_screen="true"
+    app:lsv_error_layout="@layout/partial_empty_page_error"
+    app:lsv_loading_layout="@layout/partial_shop_note_detail_loading_state">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginRight="@dimen/margin_sm"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_view_title"
+                style="@style/TextView.Title.Bold"
+                android:layout_marginTop="@dimen/margin_sm"
+                tools:text="@string/app_name" />
+
+            <TextView
+                android:id="@+id/text_view_date"
+                style="@style/TextView.Micro.BlackDisabled"
+                android:layout_marginTop="@dimen/margin_ms"
+                tools:text="@string/app_name" />
+
+            <TextView
+                android:id="@+id/text_view_desc"
+                style="@style/TextView.Small.BlackDisabled"
+                android:layout_marginTop="@dimen/margin_med"
+                tools:text="@string/app_name" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</com.tokopedia.design.loading.LoadingStateView>

@@ -28,6 +28,17 @@
         <item name="layout_anchorGravity">bottom|right|end</item>
     </style>
 
+    <style name="LabelLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:paddingTop">@dimen/margin_sm</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingBottom">@dimen/margin_sm</item>
+    </style>
+
     <style name="LabelLayout.Border">
         <item name="android:background">@drawable/border_background_view_topads</item>
     </style>
@@ -216,17 +227,6 @@
 
     <style name="successTextAppearance" parent="TextAppearance.Design.Error">
         <item name="android:textColor">@color/tkpd_main_green</item>
-    </style>
-
-    <style name="HintTextInputLayout" parent="TextInputLayout">
-        <item name="defaultTextColorLabel">@color/font_black_secondary_54</item>
-        <item name="focusedTextColorLabel">@color/font_black_secondary_54</item>
-        <item name="disabledTextColorLabel">@color/font_black_secondary_54</item>
-        <item name="android:theme">@style/HintTextInputLayoutColorLine</item>
-    </style>
-
-    <style name="HintTextInputLayoutColorLine" parent="TextInputLayoutColorLine">
-        <item name="android:textColorHint">@color/grey_300</item>
     </style>
 
 </resources>

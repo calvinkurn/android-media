@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:orientation="vertical"
+    tools:parentTag="LinearLayout">
+
+    <LinearLayout
+        style="@style/LabelLayout"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/TextView.Title.Bold"
+            android:text="@string/product_label_product_delivery" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/view_group_product_delivery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/line_divider"
+        android:orientation="vertical"
+        android:showDividers="middle|end">
+
+        <com.tokopedia.design.text.SpinnerCounterInputView
+            android:id="@+id/spinner_counter_input_view_weight"
+            style="@style/LabelLayout"
+            android:layout_marginLeft="@dimen/text_input_margin_offset"
+            android:layout_marginStart="@dimen/text_input_margin_offset"
+            app:spinner_decimal_entries="@array/product_weight_entries"
+            app:spinner_decimal_hint="@string/product_label_product_weight"
+            app:spinner_decimal_show_counter_button="false"
+            app:spinner_decimal_values="@array/product_weight_values" />
+
+        <com.tokopedia.seller.common.widget.LabelSwitch
+            android:id="@+id/label_switch_insurance"
+            style="@style/LabelLayout"
+            app:ls_title="@string/product_label_delivery_insurance" />
+
+        <com.tokopedia.seller.common.widget.LabelSwitch
+            android:id="@+id/label_switch_free_return"
+            style="@style/LabelLayout"
+            android:visibility="gone"
+            app:ls_title="@string/product_label_free_returns"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+    <com.tokopedia.seller.common.widget.LabelSwitch
+        android:id="@+id/label_switch_share"
+        style="@style/LabelLayout"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        app:ls_title="@string/product_label_share" />
+
+</merge>

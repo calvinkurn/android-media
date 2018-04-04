@@ -31,7 +31,7 @@
                 android:layout_marginEnd="@dimen/margin_vs"
                 android:layout_marginRight="@dimen/margin_vs"
                 android:layout_gravity="center_vertical"
-                tools:src="@drawable/icon_closed" />
+                tools:src="@drawable/ic_shop_label_closed" />
 
             <TextView
                 android:id="@+id/tv_title"

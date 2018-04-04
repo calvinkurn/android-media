@@ -13,7 +13,7 @@
         android:layout_width="@dimen/image_width_s"
         android:layout_height="@dimen/image_width_s"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/ic_smiley_positive" />
+        app:srcCompat="@drawable/ic_smiley_good" />
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
         android:id="@+id/text_input_layout"
