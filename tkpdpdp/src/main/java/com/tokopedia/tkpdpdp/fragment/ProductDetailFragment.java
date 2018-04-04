@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,8 +35,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -56,7 +59,6 @@ import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -112,6 +114,7 @@ import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import permissions.dispatcher.NeedsPermission;
@@ -236,10 +239,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     public ProductDetailFragment() {
+        /**
+         * uncomment this
+
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         if (remoteConfig.getBoolean(ENABLE_VARIANT)==false) {
             useVariant = false;
-        }
+        }*/
     }
 
     @Override
@@ -1482,4 +1488,76 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 .build();
     }
 
+    @Override
+    public void trackingEnhanceProductDetail() {
+        ProductPageTracking.eventEnhanceProductDetail(
+                DataLayer.mapOf(
+                        "event", "viewProduct",
+                        "eventCategory", "product page",
+                        "eventAction", "view product page",
+                        "eventLabel", String.format(
+                                Locale.getDefault(),
+                                "%s - %s - %s",
+                                getEnhanceShopType(), productData.getShopInfo().getShopName(), productData.getInfo().getProductName()
+                        ),
+                        "ecommerce", DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "detail", DataLayer.mapOf(
+                                        "actionField", DataLayer.mapOf("list", productPass.getTrackerListName()),
+                                        "products", DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        "name", productData.getInfo().getProductName(),
+                                                        "id", productData.getInfo().getProductId(),
+                                                        "price", productData.getInfo().getProductPriceUnformatted(),
+                                                        "brand", "none / other",
+                                                        "category", getEnhanceCategoryFormatted(),
+                                                        "variant", getEnhanceVariant(),
+                                                        "attribution", productPass.getTrackerAttribution()
+                                                )
+                                        )
+                                )
+                        ),
+                        "key", getEnhanceUrl(productData.getInfo().getProductUrl()),
+                        "shop_name", productData.getShopInfo().getShopName(),
+                        "shop_id", productData.getShopInfo().getShopId(),
+                        "shop_domain", productData.getShopInfo().getShopDomain(),
+                        "shop_location", productData.getShopInfo().getShopLocation(),
+                        "shop_is_gold", String.valueOf(productData.getShopInfo().shopIsGoldBadge() ? 1 : 0),
+                        "category_id", productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1).getDepartmentId(),
+                        "url", productData.getInfo().getProductUrl(),
+                        "shop_type", getEnhanceShopType()
+                )
+        );
+    }
+
+    private String getEnhanceVariant() {
+        if (productVariant != null) {
+            return "none / other";
+        } else {
+            return "none / other";
+        }
+    }
+
+    private String getEnhanceCategoryFormatted() {
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < productData.getBreadcrumb().size(); i++) {
+            list.add(productData.getBreadcrumb().get(i).getDepartmentName());
+        }
+        return TextUtils.join("/", list);
+    }
+
+    public String getEnhanceUrl(String url) {
+        Uri uri = Uri.parse(url);
+        return uri.getLastPathSegment();
+    }
+
+    public String getEnhanceShopType() {
+        if (productData.getShopInfo().getShopIsOfficial() == 1) {
+            return "official_store";
+        } else if (productData.getShopInfo().getShopIsGold() == 1) {
+            return "gold_merchant";
+        } else {
+            return "regular";
+        }
+    }
 }
