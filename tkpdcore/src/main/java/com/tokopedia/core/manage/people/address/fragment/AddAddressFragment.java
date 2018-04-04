@@ -362,8 +362,15 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 locationPass = null;
             } else {
                 locationPass = new LocationPass();
-                locationPass.setCityName((String)spinnerRegency.getSelectedItem());
-                locationPass.setDistrictName((String)spinnerSubDistrict.getSelectedItem());
+                locationPass.setCityName(regencyAdapter.getList()
+                        .get(spinnerRegency.getSelectedItemPosition() - 1)
+                        .getCityName()
+                );
+                locationPass.setDistrictName(
+                        subDistrictAdapter.getList()
+                                .get(spinnerSubDistrict.getSelectedItemPosition() - 1)
+                                .getDistrictName()
+                );
             }
             Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
             startActivityForResult(intent, REQUEST_CODE);
