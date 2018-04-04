@@ -32,7 +32,6 @@ public class LoginEmailUseCase extends UseCase<LoginEmailDomain> {
     public LoginEmailUseCase(GetTokenUseCase getTokenUseCase,
                              GetUserInfoUseCase getUserInfoUseCase,
                              MakeLoginUseCase makeLoginUseCase) {
-        super(threadExecutor, postExecutionThread);
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
