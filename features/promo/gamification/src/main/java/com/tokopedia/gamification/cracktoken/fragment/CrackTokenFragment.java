@@ -192,6 +192,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             @Override
             public void onClickCtaButton(String applink) {
                 // TODO: direct to the associated applink page
+
+            }
+
+            @Override
+            public void onClickReturnButton() {
                 widgetCrackResult.clearCrackResult();
 
                 crackTokenPresenter.getGetTokenTokopoints();
