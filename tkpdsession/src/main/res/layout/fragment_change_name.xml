@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_sm"
         app:counterEnabled="true"
+        app:errorTextAppearance="@style/error_appearance"
         app:counterMaxLength="128">
 
         <EditText

@@ -26,4 +26,9 @@
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
     </style>
+
+    <style name="error_appearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/red_500</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>

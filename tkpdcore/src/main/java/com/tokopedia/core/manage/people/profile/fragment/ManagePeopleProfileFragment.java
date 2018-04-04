@@ -404,6 +404,9 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public String getVerifiedPhone() {
+        if (contactSection.tvPhone.getVisibility() == View.VISIBLE) {
+            return String.valueOf(contactSection.tvPhone.getText());
+        }
         return String.valueOf(contactSection.phone.getText());
     }
 
