@@ -228,7 +228,7 @@ public class ManagePeople extends TkpdActivity {
     private void showNoPasswordDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getResources().getString(R.string.error_no_password_title));
-        builder.setMessage(getResources().getString(R.string.error_no_password_content));
+        builder.setMessage(getResources().getString(R.string.error_no_password_content_account));
         builder.setPositiveButton(getResources().getString(R.string.error_no_password_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
