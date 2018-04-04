@@ -12,16 +12,12 @@ import com.tokopedia.gamification.cracktoken.fragment.CrackTokenFragment;
 
 public class CrackTokenActivity extends BaseSimpleActivity implements CrackTokenFragment.ActionListener {
 
-    private static final String SUM_TOKEN = "sum_token";
-
     public static Intent newInstance(Context context) {
         return new Intent(context, CrackTokenActivity.class);
     }
 
-    public static Intent getIntent(int sumToken, Context context) {
-        Intent intent = new Intent(context, CrackTokenActivity.class);
-        intent.putExtra(SUM_TOKEN, sumToken);
-        return intent;
+    public static Intent getIntent(Context context) {
+        return new Intent(context, CrackTokenActivity.class);
     }
 
     @Override
@@ -32,11 +28,7 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
 
     @Override
     protected Fragment getNewFragment() {
-        if (getIntent().getIntExtra(SUM_TOKEN, 0) > 0) {
-            return CrackTokenFragment.newInstance();
-        } else {
-            return CrackEmptyTokenFragment.newInstance();
-        }
+        return CrackEmptyTokenFragment.newInstance();
     }
 
     @Override
