@@ -11,6 +11,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -498,6 +499,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         this.bannerList = bannerList;
         List<String> promoUrls = new ArrayList<>();
         for (BannerDetail bannerModel : bannerList) {
+            Log.d("DATADATA", bannerModel.toString());
             promoUrls.add(bannerModel.getAttributes().getFileName());
         }
         bannerView.setPromoList(promoUrls);

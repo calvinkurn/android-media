@@ -32,4 +32,13 @@ public class BannerDetail {
     public void setAttributes(BannerAttribute attributes) {
         this.attributes = attributes;
     }
+
+    @Override
+    public String toString() {
+        return "BannerDetail{" +
+                "type='" + type + '\'' +
+                ", id=" + id +
+                ", attributes=" + attributes.toString() +
+                '}';
+    }
 }

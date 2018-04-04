@@ -137,4 +137,22 @@ public class BannerAttribute {
     public void setPromocode(String promocode) {
         this.promocode = promocode;
     }
+
+    @Override
+    public String toString() {
+        return "BannerAttribute{" +
+                "rechargeCmsbannerId=" + rechargeCmsbannerId +
+                ", fileName='" + fileName + '\'' +
+                ", fileNameWebp='" + fileNameWebp + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", imgUrl='" + imgUrl + '\'' +
+                ", dataTitle='" + dataTitle + '\'' +
+                ", priority=" + priority +
+                ", status=" + status +
+                ", title='" + title + '\'' +
+                ", subtitle='" + subtitle + '\'' +
+                ", promocode='" + promocode + '\'' +
+                '}';
+    }
 }
