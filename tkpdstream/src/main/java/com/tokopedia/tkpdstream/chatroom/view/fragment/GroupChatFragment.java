@@ -318,13 +318,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
-        long currentTime = new Date().getTime() / MILIS_TO_SECOND;
+        long currentTime = new Date().getTime();
         if (currentTime < sprintSaleViewModel.getStartDate()) {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
                     R.drawable.bg_rounded_pink_label));
             sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
             sprintSaleText.setText(String.format("%s - %s", sprintSaleViewModel
                     .getFormattedStartDate(), sprintSaleViewModel.getFormattedEndDate()));
+            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
         } else {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
                     R.drawable.bg_rounded_red_label));
@@ -351,8 +352,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 @Override
                 public void run() {
                     SprintSaleAnnouncementViewModel sprintSaleAnnouncementViewModel = new SprintSaleAnnouncementViewModel(
-                            new Date().getTime() / MILIS_TO_SECOND,
-                            new Date().getTime() / MILIS_TO_SECOND,
+                            new Date().getTime(),
+                            new Date().getTime(),
                             "0",
                             "0",
                             channelInfoViewModel.getAdminName(),
@@ -413,7 +414,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private boolean isValidSprintSale(SprintSaleViewModel sprintSaleViewModel) {
-        long currentTime = new Date().getTime() / MILIS_TO_SECOND;
+        long currentTime = new Date().getTime();
         return sprintSaleViewModel != null
                 && sprintSaleViewModel.getStartDate() != 0
                 && sprintSaleViewModel.getEndDate() != 0
