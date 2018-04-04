@@ -19,7 +19,7 @@
             android:layout_width="@dimen/image_width_l"
             android:layout_height="@dimen/image_width_l"
             android:layout_margin="@dimen/new_margin_small"
-            tools:src="@drawable/special" />
+            tools:src="@mipmap/ic_launcher_round" />
 
         <TextView
             android:id="@+id/tv_floating_counter"

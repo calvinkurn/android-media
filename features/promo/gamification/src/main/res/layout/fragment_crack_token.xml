@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/iv_container"
@@ -70,7 +71,12 @@
     <com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult
         android:id="@+id/widget_reward"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
+
+    <com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenOnBoarding
+        android:id="@+id/widget_token_onboarding"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
