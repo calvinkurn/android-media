@@ -161,5 +161,4 @@
 
     <dimen name="widget_bottom_action_radius">20dp</dimen>
     <dimen name="widget_bottom_action_elevation">3dp</dimen>
-    <dimen name="size_labelview">56sp</dimen>
 </resources>
