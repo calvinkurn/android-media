@@ -49,7 +49,7 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             promoData.setId(String.valueOf(promoResponse.getId()));
             promoData.setTitle(promoResponse.getTitle().getRendered());
             promoData.setTermsAndConditions(parseContent(promoResponse.getContent().getRendered()));
-            promoData.setAppLink(promoResponse.getMeta().getAppLink());
+
             try {
                 promoData.setPeriodFormatted(
                         getDatePeriodPromo(
@@ -60,11 +60,10 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            String urlPromo = Uri.parse(promoResponse.getLink())
-                    .buildUpon()
-                    .appendQueryParameter(QUERY_FLAG_APP, DEFAULT_VALUE_QUERY_FLAG_APP)
-                    .build().toString();
-            promoData.setPromoLink(urlPromo);
+
+            promoData.setAppLink(promoResponse.getMeta().getAppLink());
+            promoData.setLink(getUrlWithFlag(promoResponse.getLink()));
+            promoData.setPromoLink(getUrlWithFlag(promoResponse.getMeta().getPromoLink()));
             promoData.setCtaText(promoResponse.getCtaText());
             promoData.setThumbnailImage(promoResponse.getMeta().getThumbnailImage());
             promoData.setMinTransaction(promoResponse.getMeta().getMinTransaction());
@@ -79,6 +78,13 @@ public class PromoResponseMapper implements IPromoResponseMapper {
         }
 
         return promoDataList;
+    }
+
+    private String getUrlWithFlag(String url) {
+        return Uri.parse(url)
+                .buildUpon()
+                .appendQueryParameter(QUERY_FLAG_APP, DEFAULT_VALUE_QUERY_FLAG_APP)
+                .build().toString();
     }
 
     private int getMultiplePromoCodeCount(List<PromoCodeViewModel> promoCodeViewModelList) {

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -33,6 +32,11 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
         return intent;
     }
 
+//    @DeepLink(LoyaltyAppLink.PROMO_NATIVE_DETAIL)
+//    public static Intent getAppLinkIntent(Context context, Bundle extras) {
+//        return PromoDetailActivity.getCallingIntent(context);
+//    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +64,11 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
     @Override
     public void onSharePromo(PromoData promoData) {
         ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.REFERRAL_TYPE)
-                .setId(promoData.getId())
+                .setType(ShareData.PROMO_TYPE)
+                .setId(promoData.get())
                 .setName(promoData.getTitle())
                 .setTextContent(promoData.getTitle() + " | Tokopedia")
-                .setUri(promoData.getPromoLink())
+                .setUri(promoData.getLink())
                 .build();
         this.startActivity(ShareActivity.createIntent(this, shareData));
     }

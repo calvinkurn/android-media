@@ -14,6 +14,7 @@ public class PromoData implements Parcelable {
     private String id;
     private String title;
     private String promoCode;
+    private String link;
     private String appLink;
     private String promoLink;
     private String minTransaction;
@@ -49,6 +50,14 @@ public class PromoData implements Parcelable {
 
     public void setPromoCode(String promoCode) {
         this.promoCode = promoCode;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 
     public String getAppLink() {
@@ -157,6 +166,7 @@ public class PromoData implements Parcelable {
         dest.writeString(this.id);
         dest.writeString(this.title);
         dest.writeString(this.promoCode);
+        dest.writeString(this.link);
         dest.writeString(this.appLink);
         dest.writeString(this.promoLink);
         dest.writeString(this.minTransaction);
@@ -178,6 +188,7 @@ public class PromoData implements Parcelable {
         this.id = in.readString();
         this.title = in.readString();
         this.promoCode = in.readString();
+        this.link = in.readString();
         this.appLink = in.readString();
         this.promoLink = in.readString();
         this.minTransaction = in.readString();

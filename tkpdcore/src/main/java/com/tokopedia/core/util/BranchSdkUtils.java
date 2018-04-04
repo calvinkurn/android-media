@@ -10,6 +10,7 @@ import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
@@ -98,6 +99,8 @@ public class BranchSdkUtils {
             deeplinkPath = getApplinkPath(Constants.Applinks.DISCOVERY_CATALOG, data.getId());
         }  else if (ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.GROUPCHAT, data.getId());
+        } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
         } else {
             deeplinkPath = getApplinkPath(data.renderShareUri(), "");
         }

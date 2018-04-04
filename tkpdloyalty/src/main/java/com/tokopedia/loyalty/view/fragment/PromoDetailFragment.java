@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
@@ -207,6 +208,14 @@ public class PromoDetailFragment extends BaseDaggerFragment {
                 }
 
                 bottomSheetInfoPromoCode.show();
+            }
+
+            @Override
+            public void onWebViewLinkClicked(String url) {
+                if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+                    TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
+                    tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), url);
+                }
             }
         };
     }
