@@ -49,7 +49,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
 
-    public static final double RATIO_MARGIN_TOP_TIMER = 0.15;
+    public static final double RATIO_MARGIN_TOP_TIMER = 0.05;
 
     @Inject
     CrackTokenPresenter crackTokenPresenter;
