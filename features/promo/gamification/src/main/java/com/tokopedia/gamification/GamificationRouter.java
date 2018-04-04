@@ -1,5 +1,6 @@
 package com.tokopedia.gamification;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -13,5 +14,8 @@ public interface GamificationRouter {
 
     Interceptor getChuckInterceptor();
 
+    void actionApplink(Activity activity, String applink);
+
     Intent getWebviewActivityWithIntent(Context context, String url, String title);
+
 }

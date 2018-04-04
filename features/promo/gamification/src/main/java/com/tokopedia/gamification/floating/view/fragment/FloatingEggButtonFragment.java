@@ -211,7 +211,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         if (floatingEggPresenter.isUserLogin()) {
             vgRoot.setVisibility(View.VISIBLE);
             initDragBound();
-            initEggCoordinate(savedInstanceState);
+            initEggCoordinate();
         } else {
             vgRoot.setVisibility(View.GONE);
         }
@@ -251,30 +251,23 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
     }
 
-    private void initEggCoordinate(@Nullable Bundle savedInstanceState) {
-        if (savedInstanceState == null ||
-                !savedInstanceState.containsKey(COORD_X)) {
-            if (isDraggable && hasCoordPreference()) {
-                int coordPref[] = getCoordPreference();
-                setCoordFloatingEgg(coordPref[0], coordPref[1]);
-            } else {
-                if (initialEggMarginRight != 0 || initialEggMarginBottom != 0) {
-                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
-                    layoutParams.gravity = Gravity.BOTTOM | Gravity.END;
-                    Resources r = getResources();
-                    int bottomPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                            initialEggMarginBottom, r.getDisplayMetrics());
-                    int rightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                            initialEggMarginRight, r.getDisplayMetrics());
-                    layoutParams.setMargins(0, 0, rightPx, bottomPx);
-                } else {
-                    setCoordFloatingEgg(0, 0);
-                }
-            }
+    private void initEggCoordinate() {
+        if (isDraggable && hasCoordPreference()) {
+            int coordPref[] = getCoordPreference();
+            setCoordFloatingEgg(coordPref[0], coordPref[1]);
         } else {
-            int coordX = savedInstanceState.getInt(COORD_X);
-            int coordY = savedInstanceState.getInt(COORD_Y);
-            setCoordFloatingEgg(coordX, coordY);
+            if (initialEggMarginRight != 0 || initialEggMarginBottom != 0) {
+                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
+                layoutParams.gravity = Gravity.BOTTOM | Gravity.END;
+                Resources r = getResources();
+                int bottomPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                        initialEggMarginBottom, r.getDisplayMetrics());
+                int rightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                        initialEggMarginRight, r.getDisplayMetrics());
+                layoutParams.setMargins(0, 0, rightPx, bottomPx);
+            } else {
+                setCoordFloatingEgg(0, 0);
+            }
         }
     }
 
@@ -494,15 +487,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     protected String getScreenName() {
         return null;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (floatingEggPresenter.isUserLogin() && vgFloatingEgg.getVisibility() == View.VISIBLE) {
-            outState.putInt(COORD_X, (int) vgFloatingEgg.getX());
-            outState.putInt(COORD_Y, (int) vgFloatingEgg.getY());
-        }
     }
 
 }

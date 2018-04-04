@@ -11,4 +11,6 @@
     <dimen name="text_size_info_crack_egg">12sp</dimen>
 
     <dimen name="floating_shadow_margin">1dp</dimen>
+    <dimen name="image_width_hand_circle">60dp</dimen>
+
 </resources>
