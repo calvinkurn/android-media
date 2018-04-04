@@ -66,13 +66,11 @@ buildscript {
 }
 
 
-
-
 android {
 
     project.ext {
-        defaultVersionCode = 113000400;
-        defaultVersionName = "1.13.0";
+        defaultVersionCode = 1000404;
+        defaultVersionName = "1.0.4";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -176,7 +174,8 @@ android {
 
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
+        keepRuntimeAnnotatedClasses false
     }
 
     compileOptions {
@@ -220,7 +219,9 @@ dependencies {
     compile project(rootProject.ext.features.transaction)
     compile project(rootProject.ext.features.reputation)
     compile project(rootProject.ext.features.mitraToppers)
-
+	compile(project(':tkpdshop')) {
+        exclude group: 'com.tokopedia.core'
+    }
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.core.gcm.base;
 
 import android.content.Context;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 
 import com.tokopedia.core.gcm.BuildAndShowNotification;
@@ -38,7 +39,7 @@ public abstract class BaseNotification implements Visitable {
     protected void buildDefaultConfiguration() {
         configuration.setBell(mFCMCacheManager.isAllowBell());
         configuration.setVibrate(mFCMCacheManager.isVibrate());
-        configuration.setSoundUri(mFCMCacheManager.getSoundUri());
+        configuration.setSoundUri(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
     }
 
     public NotificationPass getNotificationPassData(){

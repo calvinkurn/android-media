@@ -15,7 +15,7 @@
         android:layout_gravity="top"
         android:background="@color/white"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/margin_default"
+        android:paddingBottom="@dimen/dp_16"
         android:visibility="visible">
 
         <TextView
@@ -23,12 +23,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/keyline_1_minus_8dp"
-            android:layout_marginEnd="@dimen/margin_default"
-            android:layout_marginStart="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_default"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
             android:text="@string/data_pelanggan_tambahan"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
 
         <TextView
@@ -36,11 +36,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/keyline_1_minus_8dp"
-            android:layout_marginEnd="@dimen/margin_default"
-            android:layout_marginStart="@dimen/margin_default"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
             android:text="@string/additionallinfo_text"
             android:textColor="@color/black_54"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/sp_14" />
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
@@ -49,11 +49,11 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/additionalinfo"
             android:layout_gravity="bottom"
-            android:layout_marginEnd="@dimen/margin_default"
-            android:layout_marginStart="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_default"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
             app:cardBackgroundColor="@color/green_nob"
-            app:cardCornerRadius="@dimen/margin_padding_small"
+            app:cardCornerRadius="@dimen/dp_4"
             app:cardElevation="0dp">
 
             <TextView
@@ -63,7 +63,7 @@
                 android:gravity="center"
                 android:text="@string/title_ok"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/textsize_big"
+                android:textSize="@dimen/sp_18"
                 android:textStyle="bold" />
         </android.support.v7.widget.CardView>
     </LinearLayout>

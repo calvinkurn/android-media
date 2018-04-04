@@ -21,12 +21,11 @@ import rx.functions.Func1;
 public class LoginWebviewUseCase extends LoginWithSosmedUseCase {
 
     @Inject
-    public LoginWebviewUseCase(SessionHandler sessionHandler,
+    public LoginWebviewUseCase(
                                GetTokenUseCase getTokenUseCase,
                                GetUserInfoUseCase getUserInfoUseCase,
                                MakeLoginUseCase makeLoginUseCase) {
-        super(sessionHandler, getTokenUseCase,
-                getUserInfoUseCase, makeLoginUseCase);
+        super(getTokenUseCase, getUserInfoUseCase, makeLoginUseCase);
     }
 
     @Override

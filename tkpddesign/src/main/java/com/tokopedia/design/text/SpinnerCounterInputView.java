@@ -63,7 +63,7 @@ public class SpinnerCounterInputView extends BaseCustomView {
             values = styledAttributes.getTextArray(R.styleable.SpinnerCounterInputView_spinner_decimal_values);
             showCounterButton = styledAttributes.getBoolean(R.styleable.SpinnerCounterInputView_spinner_decimal_show_counter_button, true);
             enabled = styledAttributes.getBoolean(R.styleable.SpinnerCounterInputView_spinner_decimal_enabled, true);
-            spinnerWidth = styledAttributes.getDimensionPixelSize(R.styleable.SpinnerCounterInputView_spinner_decimal_spinner_width, (int) getResources().getDimension(R.dimen.spinner_decimal_spinner_width));
+            spinnerWidth = styledAttributes.getDimensionPixelSize(R.styleable.SpinnerCounterInputView_spinner_decimal_spinner_width, (int) getResources().getDimension(R.dimen.dp_80));
         } finally {
             styledAttributes.recycle();
         }
@@ -126,6 +126,14 @@ public class SpinnerCounterInputView extends BaseCustomView {
         requestLayout();
     }
 
+    public CounterInputView getCounterInputView() {
+        return counterInputView;
+    }
+
+    public SpinnerTextView getSpinnerTextView() {
+        return spinnerTextView;
+    }
+
     public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
         spinnerTextView.setOnItemClickListener(onItemClickListener);
     }
@@ -176,6 +184,10 @@ public class SpinnerCounterInputView extends BaseCustomView {
 
     public void removeTextChangedListener(TextWatcher watcher) {
         counterInputView.removeTextChangedListener(watcher);
+    }
+
+    public void removeDefaultTextWatcher(){
+        counterInputView.removeDefaultTextWatcher();
     }
 
     public int getSpinnerPosition(){
