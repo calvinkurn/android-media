@@ -54,6 +54,7 @@ public class LoyaltyActivity extends BasePresenterActivity
     public static final String EXTRA_PLATFORM = "EXTRA_PLATFORM";
     public static final String EXTRA_CATEGORY = "EXTRA_CATEGORY";
     public static final String EXTRA_CART_ID = "EXTRA_CART_ID";
+    public static final String DIGITAL_STRING = "digital";
     public static final String FLIGHT_STRING = "flight";
     public static final String VOUCHER_CODE = "voucher_code";
     public static final String VOUCHER_MESSAGE = "voucher_message";
