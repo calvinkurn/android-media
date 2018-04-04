@@ -196,6 +196,16 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
     }
 
+    private void showFloatingEgg() {
+        vgFloatingEgg.setScaleX(SCALE_NORMAL);
+        vgFloatingEgg.setScaleY(SCALE_NORMAL);
+        vgFloatingEgg.setVisibility(View.VISIBLE);
+    }
+
+    private void hideFLoatingEgg() {
+        vgFloatingEgg.setVisibility(View.GONE);
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -212,12 +222,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         vgRoot.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                // TODO CHANGE THIS TRY CATCH
-                try {
-                    onInflateRoot();
-                } catch (Exception e) {
-                    Log.e(TAG, "onGlobalLayout: " + e.getMessage());
-                }
+                onInflateRoot();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     vgRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
@@ -319,6 +324,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         if (floatingEggPresenter != null) {
             floatingEggPresenter.detachView();
         }
+        removeShowAnimationCallback();
+    }
+
+    private void removeShowAnimationCallback(){
         if (visibilityRunnableToShow != null) {
             visibilityHandler.removeCallbacks(visibilityRunnableToShow);
             visibilityRunnableToShow = null;
@@ -327,6 +336,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     public void loadEggData() {
         if (floatingEggPresenter.isUserLogin()) {
+            removeShowAnimationCallback();
             floatingEggPresenter.attachView(this);
             floatingEggPresenter.getGetTokenTokopoints();
         }
@@ -347,9 +357,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         String imageUrl = tokenFloating.getTokenAsset().getSmallImgUrl();
 
         if (serverOffFlag) {
-            vgFloatingEgg.setVisibility(View.GONE);
+            hideFLoatingEgg();
         } else {
-            vgFloatingEgg.setVisibility(View.VISIBLE);
+            showFloatingEgg();
         }
 
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
