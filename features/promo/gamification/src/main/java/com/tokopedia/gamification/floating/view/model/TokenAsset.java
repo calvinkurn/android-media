@@ -13,10 +13,10 @@ public class TokenAsset implements Parcelable{
 
     private String name;
     private int version;
-    private String backgroundImgUrl;
     private String smallImgUrl;
     private List<String> imageUrls;
     private String spriteUrl;
+    private String floatingImgUrl;
 
     protected TokenAsset(Parcel in) {
         name = in.readString();
@@ -24,7 +24,7 @@ public class TokenAsset implements Parcelable{
         smallImgUrl = in.readString();
         imageUrls = in.createStringArrayList();
         spriteUrl = in.readString();
-        backgroundImgUrl = in.readString();
+        floatingImgUrl = in.readString();
     }
 
     public static final Creator<TokenAsset> CREATOR = new Creator<TokenAsset>() {
@@ -79,12 +79,12 @@ public class TokenAsset implements Parcelable{
         this.version = version;
     }
 
-    public String getBackgroundImgUrl() {
-        return backgroundImgUrl;
+    public String getFloatingImgUrl() {
+        return floatingImgUrl;
     }
 
-    public void setBackgroundImgUrl(String backgroundImgUrl) {
-        this.backgroundImgUrl = backgroundImgUrl;
+    public void setFloatingImgUrl(String floatingImgUrl) {
+        this.floatingImgUrl = floatingImgUrl;
     }
 
     public TokenAsset() {
@@ -102,6 +102,6 @@ public class TokenAsset implements Parcelable{
         parcel.writeString(smallImgUrl);
         parcel.writeStringList(imageUrls);
         parcel.writeString(spriteUrl);
-        parcel.writeString(backgroundImgUrl);
+        parcel.writeString(floatingImgUrl);
     }
 }

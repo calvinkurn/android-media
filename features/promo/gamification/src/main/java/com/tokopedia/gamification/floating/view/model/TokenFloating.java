@@ -9,7 +9,6 @@ import android.os.Parcelable;
 
 public class TokenFloating implements Parcelable{
 
-    private String tokenClass;
     private Integer tokenId;
     private TokenAsset tokenAsset;
     private String pageUrl;
@@ -17,10 +16,6 @@ public class TokenFloating implements Parcelable{
     private Integer timeRemainingSeconds;
     private Boolean isShowTime;
     private Integer unixTimestamp;
-
-    public String getTokenClass() {
-        return tokenClass;
-    }
 
     public Integer getTokenId() {
         return tokenId;
@@ -48,10 +43,6 @@ public class TokenFloating implements Parcelable{
 
     public Integer getUnixTimestamp() {
         return unixTimestamp;
-    }
-
-    public void setTokenClass(String tokenClass) {
-        this.tokenClass = tokenClass;
     }
 
     public void setTokenId(Integer tokenId) {
@@ -90,7 +81,6 @@ public class TokenFloating implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.tokenClass);
         dest.writeValue(this.tokenId);
         dest.writeParcelable(this.tokenAsset, flags);
         dest.writeString(this.pageUrl);
@@ -104,7 +94,6 @@ public class TokenFloating implements Parcelable{
     }
 
     protected TokenFloating(Parcel in) {
-        this.tokenClass = in.readString();
         this.tokenId = (Integer) in.readValue(Integer.class.getClassLoader());
         this.tokenAsset = in.readParcelable(TokenAsset.class.getClassLoader());
         this.pageUrl = in.readString();

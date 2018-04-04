@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -26,6 +27,8 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
+import com.tokopedia.gamification.cracktoken.model.CrackButton;
+import com.tokopedia.gamification.cracktoken.model.CrackResult;
 
 import java.util.List;
 
@@ -35,19 +38,22 @@ import java.util.List;
 
 public class WidgetCrackResult extends RelativeLayout {
 
-    private ImageView imageViewBgReward;
-    private ImageView imageViewReward;
-    private View backgroundViewReward;
-    private LinearLayout containerTextReward;
+    private ImageView imageViewBgCrackResult;
+    private ImageView imageViewCrackResult;
+    private View backgroundViewCrackResult;
+    private LinearLayout containerTextCrackResult;
     private TextView textCrackResultLabel;
 
-    private LinearLayout listRewardText;
-    private Button buttonCta;
+    private LinearLayout listCrackResultText;
+    private Button buttonReturn;
+    private TextView buttonCta;
 
-    private WidgetRewardListener listener;
+    private WidgetCrackResultListener listener;
 
-    public interface WidgetRewardListener {
-        void onClickCtaButton(String applink);
+    public interface WidgetCrackResultListener {
+        void onClickCtaButton(String applink, String url);
+
+        void onClickReturnButton();
     }
 
     public WidgetCrackResult(Context context) {
@@ -66,37 +72,29 @@ public class WidgetCrackResult extends RelativeLayout {
     }
 
     private void init() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_reward, this, true);
-        imageViewBgReward = view.findViewById(R.id.image_bg_reward);
-        imageViewReward = view.findViewById(R.id.image_reward);
-        backgroundViewReward = view.findViewById(R.id.background_view_reward);
-        containerTextReward = view.findViewById(R.id.container_text_reward);
-        listRewardText = view.findViewById(R.id.view_list_reward_text);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_crack_result, this, true);
+        imageViewBgCrackResult = view.findViewById(R.id.image_bg_reward);
+        imageViewCrackResult = view.findViewById(R.id.image_reward);
+        backgroundViewCrackResult = view.findViewById(R.id.background_view_reward);
+        containerTextCrackResult = view.findViewById(R.id.container_text_reward);
+        listCrackResultText = view.findViewById(R.id.view_list_reward_text);
+        buttonReturn = view.findViewById(R.id.button_return);
         buttonCta = view.findViewById(R.id.button_cta);
         textCrackResultLabel = view.findViewById(R.id.text_crack_result_label);
     }
 
-    public void showCrackResult(String urlImageCrackResult, String labelCrackResult, List<CrackBenefit> listRewardText,
-                                String textCtaButton, String applink) {
-        showRewardImageAnimation(urlImageCrackResult);
-        showRewardBackgroundAnimation();
-        showListRewardText(listRewardText, labelCrackResult);
-        showCtaButton(textCtaButton, applink);
+    public void showCrackResult(CrackResult crackResult, String labelCrackResult) {
+        showCrackResultImageAnimation(crackResult);
+        showCrackResultBackgroundAnimation();
+        showListCrackResultText(crackResult.getBenefits(), labelCrackResult);
+        renderCtaButton(crackResult.getCtaButton());
+        renderReturnButton(crackResult.getReturnButton());
     }
 
-    public void showErrorCrackResult(Bitmap errorBitmap, String labelCrackResult, List<CrackBenefit> listRewardText,
-                                     String textCtaButton, String applink) {
-        showErrorImageAnimation(errorBitmap);
-        showRewardBackgroundAnimation();
-        showListRewardText(listRewardText, labelCrackResult);
-        showCtaButton(textCtaButton, applink);
-    }
-
-    private void showErrorImageAnimation(Bitmap errorBitmap) {
+    private void showCrackResultImageAnimation(CrackResult crackResult) {
         int actionBarHeight = 0;
         TypedValue tv = new TypedValue();
-        if (getContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-        {
+        if (getContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
             actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
         }
 
@@ -105,7 +103,7 @@ public class WidgetCrackResult extends RelativeLayout {
         float screenHeightQuarter = metrics.heightPixels/4;
         screenHeightQuarter = screenHeightQuarter - actionBarHeight;
 
-        AnimationSet animationCrackResult = new AnimationSet(true);
+        final AnimationSet animationCrackResult = new AnimationSet(true);
         Animation scaleAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_crack_result);
         animationCrackResult.addAnimation(scaleAnimationCrackResult);
         TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
@@ -113,80 +111,53 @@ public class WidgetCrackResult extends RelativeLayout {
         animationCrackResult.setFillAfter(true);
         animationCrackResult.setDuration(1000);
 
-        imageViewReward.setImageBitmap(errorBitmap);
-
-        imageViewReward.startAnimation(animationCrackResult);
-        imageViewReward.setVisibility(View.VISIBLE);
-
-        AnimationSet animationBgCrackResult = new AnimationSet(true);
-        Animation scaleAnimationBgCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_bg_reward);
-        animationBgCrackResult.addAnimation(scaleAnimationBgCrackResult);
-        TranslateAnimation translateAnimationBgCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
-        animationBgCrackResult.addAnimation(translateAnimationBgCrackResult);
-        animationBgCrackResult.setDuration(1000);
-        animationBgCrackResult.setFillAfter(true);
-
-        imageViewBgReward.startAnimation(animationBgCrackResult);
-        imageViewBgReward.setVisibility(View.VISIBLE);
-    }
-
-    private void showRewardImageAnimation(String urlImageCrackResult) {
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-        if (getContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-        {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        if (!TextUtils.isEmpty(crackResult.getImageUrl())) {
+            Glide.with(getContext())
+                    .load(crackResult.getImageUrl())
+                    .asBitmap()
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            imageViewCrackResult.setImageBitmap(resource);
+                            imageViewCrackResult.startAnimation(animationCrackResult);
+                            imageViewCrackResult.setVisibility(View.VISIBLE);
+                        }
+                    });
+        } else {
+            imageViewCrackResult.setImageBitmap(crackResult.getImageBitmap());
+            imageViewCrackResult.startAnimation(animationCrackResult);
+            imageViewCrackResult.setVisibility(View.VISIBLE);
         }
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        float screenHeightQuarter = metrics.heightPixels/4;
-        screenHeightQuarter = screenHeightQuarter - actionBarHeight;
-
-        AnimationSet animationCrackResult = new AnimationSet(true);
-        Animation scaleAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_crack_result);
-        animationCrackResult.addAnimation(scaleAnimationCrackResult);
-        TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
-        animationCrackResult.addAnimation(translateAnimationCrackResult);
-        animationCrackResult.setFillAfter(true);
-        animationCrackResult.setDuration(1000);
-
-        Glide.with(getContext())
-                .load(urlImageCrackResult)
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        imageViewReward.setImageBitmap(resource);
-                    }
-                });
-
-        imageViewReward.startAnimation(animationCrackResult);
-        imageViewReward.setVisibility(View.VISIBLE);
-
         AnimationSet animationBgCrackResult = new AnimationSet(true);
-        Animation scaleAnimationBgCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_bg_reward);
-        animationBgCrackResult.addAnimation(scaleAnimationBgCrackResult);
-        TranslateAnimation translateAnimationBgCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
-        animationBgCrackResult.addAnimation(translateAnimationBgCrackResult);
-        animationBgCrackResult.setDuration(1000);
-        animationBgCrackResult.setFillAfter(true);
 
-        imageViewBgReward.startAnimation(animationBgCrackResult);
-        imageViewBgReward.setVisibility(View.VISIBLE);
+        Animation rotateAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_bg_crack_result);
+        rotateAnimationCrackResult.setDuration(15000);
+        animationBgCrackResult.addAnimation(rotateAnimationCrackResult);
+
+        Animation scaleAnimationBgCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_bg_crack_result);
+        scaleAnimationBgCrackResult.setDuration(1000);
+        animationBgCrackResult.addAnimation(scaleAnimationBgCrackResult);
+
+        TranslateAnimation translateAnimationBgCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
+        translateAnimationBgCrackResult.setDuration(1000);
+        animationBgCrackResult.addAnimation(translateAnimationBgCrackResult);
+
+        imageViewBgCrackResult.startAnimation(animationBgCrackResult);
+        imageViewBgCrackResult.setVisibility(View.VISIBLE);
     }
 
-    private void showRewardBackgroundAnimation() {
+    private void showCrackResultBackgroundAnimation() {
         AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
         alphaAnimation.setFillAfter(true);
         alphaAnimation.setDuration(1500);
 
-        backgroundViewReward.setAnimation(alphaAnimation);
-        backgroundViewReward.setBackgroundColor(getResources().getColor(R.color.colorTransparent));
-        backgroundViewReward.setVisibility(View.VISIBLE);
+        backgroundViewCrackResult.setAnimation(alphaAnimation);
+        backgroundViewCrackResult.setBackgroundColor(getResources().getColor(R.color.colorTransparent));
+        backgroundViewCrackResult.setVisibility(View.VISIBLE);
     }
 
-    public void showListRewardText(List<CrackBenefit> rewardTexts, String labelCrackResult) {
+    public void showListCrackResultText(List<CrackBenefit> rewardTexts, String labelCrackResult) {
         textCrackResultLabel.setText(labelCrackResult);
         for (CrackBenefit rewardText : rewardTexts) {
             TextView textView = new TextView(getContext());
@@ -196,12 +167,12 @@ public class WidgetCrackResult extends RelativeLayout {
             int dimenTextSize = convertSize(rewardText.getSize());
             float textSizeInPx = getContext().getResources().getDimension(dimenTextSize);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx);
-            listRewardText.addView(textView);
+            listCrackResultText.addView(textView);
         }
         AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
         alphaAnimation.setDuration(500);
-        containerTextReward.setAnimation(alphaAnimation);
-        containerTextReward.setVisibility(VISIBLE);
+        containerTextCrackResult.setAnimation(alphaAnimation);
+        containerTextCrackResult.setVisibility(VISIBLE);
     }
 
     private int convertSize(String size) {
@@ -217,30 +188,49 @@ public class WidgetCrackResult extends RelativeLayout {
         }
     }
 
-    public void showCtaButton(String textCtaButton, final String applink) {
-        buttonCta.setText(textCtaButton);
-
-        buttonCta.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onClickCtaButton(applink);
-            }
-        });
+    public void renderReturnButton(final CrackButton returnButton) {
+        if (returnButton != null) {
+            buttonReturn.setVisibility(VISIBLE);
+            buttonReturn.setText(returnButton.getTitle());
+            buttonReturn.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onClickReturnButton();
+                }
+            });
+        } else {
+            buttonReturn.setVisibility(GONE);
+        }
     }
 
-    public void setListener(WidgetRewardListener listener) {
+    public void renderCtaButton(final CrackButton ctaButton) {
+        if (ctaButton != null) {
+            buttonCta.setVisibility(VISIBLE);
+            buttonCta.setText(ctaButton.getTitle());
+            buttonCta.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onClickCtaButton(ctaButton.getApplink(), ctaButton.getUrl());
+                }
+            });
+        } else {
+            buttonCta.setVisibility(GONE);
+        }
+    }
+
+    public void setListener(WidgetCrackResultListener listener) {
         this.listener = listener;
     }
 
-    public void clearReward() {
-        backgroundViewReward.clearAnimation();
-        backgroundViewReward.setVisibility(View.GONE);
-        imageViewReward.clearAnimation();
-        imageViewReward.setVisibility(View.GONE);
-        imageViewBgReward.clearAnimation();
-        imageViewBgReward.setVisibility(View.GONE);
-        listRewardText.removeAllViews();
-        containerTextReward.setVisibility(GONE);
+    public void clearCrackResult() {
+        backgroundViewCrackResult.clearAnimation();
+        backgroundViewCrackResult.setVisibility(View.GONE);
+        imageViewCrackResult.clearAnimation();
+        imageViewCrackResult.setVisibility(View.GONE);
+        imageViewBgCrackResult.clearAnimation();
+        imageViewBgCrackResult.setVisibility(View.GONE);
+        listCrackResultText.removeAllViews();
+        containerTextCrackResult.setVisibility(GONE);
     }
 
 }

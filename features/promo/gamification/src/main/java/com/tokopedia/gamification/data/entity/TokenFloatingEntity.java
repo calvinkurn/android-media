@@ -9,10 +9,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class TokenFloatingEntity {
 
-    @SerializedName("tokenClass")
-    @Expose
-    private String tokenClass;
-
     @SerializedName("tokenId")
     @Expose
     private Integer tokenId;
@@ -40,10 +36,6 @@ public class TokenFloatingEntity {
     @SerializedName("unixTimestamp")
     @Expose
     private Integer unixTimestamp;
-
-    public String getTokenClass() {
-        return tokenClass;
-    }
 
     public Integer getTokenId() {
         return tokenId;

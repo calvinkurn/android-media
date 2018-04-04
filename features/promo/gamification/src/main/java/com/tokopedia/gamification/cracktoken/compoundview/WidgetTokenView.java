@@ -7,8 +7,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -111,7 +109,7 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
-    public void initImageBound() {
+    private void initImageBound() {
         int rootWidth = rootView.getWidth();
         int rootHeight = rootView.getHeight();
         int imageWidth = (int) (0.5 * Math.min(rootWidth, rootHeight));
@@ -232,7 +230,7 @@ public class WidgetTokenView extends FrameLayout {
         imageViewCracked.clearAnimation();
     }
 
-    public void crack() {
+    private void crack() {
         ValueAnimator crackingEggValAnimator = ValueAnimator.ofInt(100, 0);
         crackingEggValAnimator.setInterpolator(new DecelerateInterpolator());
         crackingEggValAnimator.setDuration(1000);

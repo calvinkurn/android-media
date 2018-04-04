@@ -17,6 +17,10 @@ public class TokenHomeEntity {
     @Expose
     private String buttonURL;
 
+    @SerializedName("countingMessage")
+    @Expose
+    private String[] countingMessage;
+
     @SerializedName("tokensUser")
     @Expose
     private TokenUserEntity tokensUser;
@@ -31,5 +35,9 @@ public class TokenHomeEntity {
 
     public TokenUserEntity getTokensUser() {
         return tokensUser;
+    }
+
+    public String[] getCountingMessage() {
+        return countingMessage;
     }
 }
