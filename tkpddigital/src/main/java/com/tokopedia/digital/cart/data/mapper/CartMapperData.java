@@ -98,6 +98,8 @@ public class CartMapperData implements ICartMapperData {
                 applyVoucher.setMessageSuccess(entity.getMessageSuccess());
                 attributesDigital.setAutoApplyVoucher(applyVoucher);
             }
+            attributesDigital.setDefaultPromoTab(responseCartData.getAttributes().getDefaultPromoTab());
+
             attributesDigital.setUserId(responseCartData.getAttributes().getUserId());
 
             RelationshipsCart relationshipsResponse =

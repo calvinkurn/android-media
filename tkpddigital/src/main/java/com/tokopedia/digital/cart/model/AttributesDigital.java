@@ -39,6 +39,8 @@ public class AttributesDigital implements Parcelable {
 
     private CartAutoApplyVoucher autoApplyVoucher;
 
+    private String defaultPromoTab;
+
     protected AttributesDigital(Parcel in) {
         userId = in.readString();
         clientNumber = in.readString();
@@ -55,6 +57,7 @@ public class AttributesDigital implements Parcelable {
         isCouponActive = in.readInt();
         userInputPrice = in.readParcelable(UserInputPriceDigital.class.getClassLoader());
         autoApplyVoucher = in.readParcelable(CartAutoApplyVoucher.class.getClassLoader());
+        defaultPromoTab = in.readString();
     }
 
     public static final Creator<AttributesDigital> CREATOR = new Creator<AttributesDigital>() {
@@ -215,5 +218,14 @@ public class AttributesDigital implements Parcelable {
         parcel.writeInt(isCouponActive);
         parcel.writeParcelable(userInputPrice, i);
         parcel.writeParcelable(autoApplyVoucher, i);
+        parcel.writeString(defaultPromoTab);
+    }
+
+    public String getDefaultPromoTab() {
+        return defaultPromoTab;
+    }
+
+    public void setDefaultPromoTab(String defaultPromoTab) {
+        this.defaultPromoTab = defaultPromoTab;
     }
 }
