@@ -19,6 +19,10 @@ public interface CrackTokenContract {
         void onSuccessCrackToken(CrackResult crackResult);
 
         void onErrorCrackToken(Throwable throwable);
+
+        void showLoading();
+
+        void hideLoading();
     }
 
     interface Presenter extends CustomerPresenter<View> {

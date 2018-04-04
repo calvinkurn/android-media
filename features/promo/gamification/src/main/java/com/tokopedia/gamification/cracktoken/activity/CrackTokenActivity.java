@@ -6,17 +6,22 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.cracktoken.fragment.CrackEmptyTokenFragment;
 import com.tokopedia.gamification.cracktoken.fragment.CrackTokenFragment;
-import com.tokopedia.gamification.floating.view.model.TokenData;
 
-public class CrackTokenActivity extends BaseSimpleActivity {
+public class CrackTokenActivity extends BaseSimpleActivity implements CrackTokenFragment.ActionListener {
+
+    private static final String SUM_TOKEN = "sum_token";
 
     public static Intent newInstance(Context context) {
         return new Intent(context, CrackTokenActivity.class);
     }
 
-    public static Intent getIntent(Context context) {
-        return new Intent(context, CrackTokenActivity.class);
+    public static Intent getIntent(int sumToken, Context context) {
+        Intent intent = new Intent(context, CrackTokenActivity.class);
+        intent.putExtra(SUM_TOKEN, sumToken);
+        return intent;
     }
 
     @Override
@@ -27,7 +32,19 @@ public class CrackTokenActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return CrackTokenFragment.newInstance();
+        if (getIntent().getIntExtra(SUM_TOKEN, 0) > 0) {
+            return CrackTokenFragment.newInstance();
+        } else {
+            return CrackEmptyTokenFragment.newInstance();
+        }
+    }
+
+    @Override
+    public void directPageToCrackEmpty() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.parent_view);
+        if (fragment == null || !(fragment instanceof CrackEmptyTokenFragment))
+            getSupportFragmentManager().beginTransaction().replace(R.id.parent_view,
+                    CrackEmptyTokenFragment.newInstance()).commit();
     }
 
 }

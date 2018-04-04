@@ -8,14 +8,14 @@
         android:layout_height="@dimen/height_egg"
         android:scaleType="fitCenter"
         android:layout_gravity="center"
-        tools:srcCompat="@mipmap/ic_launcher" />
+        tools:srcCompat="@drawable/ic_empty_egg" />
 
     <com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView
         android:id="@+id/imagecracked"
         android:layout_width="@dimen/width_egg"
         android:layout_height="@dimen/height_egg"
         android:scaleType="fitCenter"
-        tools:srcCompat="@mipmap/ic_launcher"
+        tools:srcCompat="@drawable/ic_empty_egg"
         android:layout_gravity="center"/>
 
     <android.support.v7.widget.AppCompatImageView
@@ -37,7 +37,7 @@
         android:layout_marginRight="0dp"
         android:layout_marginEnd="0dp"
         android:scaleType="fitCenter"
-        tools:srcCompat="@mipmap/ic_launcher"
+        tools:srcCompat="@drawable/ic_empty_egg"
         android:layout_gravity="center"/>
 
     <android.support.v7.widget.AppCompatImageView
@@ -47,7 +47,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginStart="0dp"
         android:scaleType="fitCenter"
-        tools:srcCompat="@mipmap/ic_launcher"
+        tools:srcCompat="@drawable/ic_empty_egg"
         android:layout_gravity="center"/>
 
 </merge>

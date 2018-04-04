@@ -277,7 +277,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(CrackTokenActivity.getIntent(getActivity()));
+                startActivity(CrackTokenActivity.getIntent(tokenData.getSumToken(), getActivity()));
             }
         });
 

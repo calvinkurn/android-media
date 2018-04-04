@@ -1,5 +1,6 @@
 package com.tokopedia.gamification.cracktoken.fragment;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -13,6 +14,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -53,6 +56,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private WidgetTokenView widgetTokenView;
     private WidgetCrackResult widgetCrackResult;
     private WidgetRemainingToken widgetRemainingToken;
+    private LinearLayout layoutTimer;
+    private ProgressBar progressBar;
 
     private String backgroundImageUrl;
     private String smallImageUrl;
@@ -64,6 +69,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private TokenData tokenData;
     private View rootView;
+    private ActionListener listener;
 
     @Inject
     CrackTokenPresenter crackTokenPresenter;
@@ -106,6 +112,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetTokenView = rootView.findViewById(R.id.widget_token_view);
         widgetCrackResult = rootView.findViewById(R.id.widget_reward);
         widgetRemainingToken = rootView.findViewById(R.id.widget_remaining_token_view);
+        layoutTimer = rootView.findViewById(R.id.layout_timer);
+        progressBar = rootView.findViewById(R.id.progress_bar);
         return rootView;
     }
 
@@ -184,7 +192,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 crackTokenPresenter.getGetTokenTokopoints();
             }
         });
-
+        widgetRemainingToken.show();
         widgetRemainingToken.showRemainingToken(smallImageUrl, tokenData.getSumTokenStr(), tokenData.getTokenUnit());
 
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -212,11 +220,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         int rootHeight = rootView.getHeight();
         int imageMarginTop = (int) (RATIO_MARGIN_TOP_TIMER * rootHeight);
 
-        FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) textCountdownTimer.getLayoutParams();
+        FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) layoutTimer.getLayoutParams();
         ivFullLp.topMargin = imageMarginTop;
-        textCountdownTimer.requestLayout();
+        layoutTimer.requestLayout();
 
-        textCountdownTimer.setVisibility(View.VISIBLE);
+        layoutTimer.setVisibility(View.VISIBLE);
     }
 
     private void showCountdownTimer(final int timeRemainingSeconds) {
@@ -263,9 +271,27 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     @Override
+    public void showLoading() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void hideLoading() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void onSuccessGetToken(TokenData tokenData) {
-        initDataCrackEgg(tokenData);
-        renderViewCrackEgg();
+        if (tokenData.getSumToken() == 0) {
+            listener.directPageToCrackEmpty();
+        } else {
+            initDataCrackEgg(tokenData);
+            renderViewCrackEgg();
+        }
     }
 
     @Override
@@ -300,5 +326,18 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         if (tokenData.isShowCountDown()) {
             outState.putLong(SAVED_TIMESTAMP, System.currentTimeMillis());
         }
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        if (context instanceof ActionListener) {
+            listener = (ActionListener) context;
+        }
+
+    }
+
+    public interface ActionListener {
+        void directPageToCrackEmpty();
     }
 }
