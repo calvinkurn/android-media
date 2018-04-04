@@ -28,7 +28,7 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
 
     @Override
     protected Fragment getNewFragment() {
-        return CrackEmptyTokenFragment.newInstance();
+        return CrackTokenFragment.newInstance();
     }
 
     @Override
