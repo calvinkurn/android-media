@@ -11,6 +11,10 @@ import java.util.List;
 
 public class TokenAssetEntity {
 
+    @SerializedName("floatingImgUrl")
+    @Expose
+    private String floatingImgUrl;
+
     @SerializedName("smallImgUrl")
     @Expose
     private String smallImgUrl;
@@ -30,10 +34,6 @@ public class TokenAssetEntity {
     @SerializedName("version")
     @Expose
     private int version;
-
-    @SerializedName("backgroundImgUrl")
-    @Expose
-    private String backgroundImgUrl;
 
     public String getSmallImgUrl() {
         return smallImgUrl;
@@ -55,7 +55,7 @@ public class TokenAssetEntity {
         return version;
     }
 
-    public String getBackgroundImgUrl() {
-        return backgroundImgUrl;
+    public String getFloatingImgUrl() {
+        return floatingImgUrl;
     }
 }

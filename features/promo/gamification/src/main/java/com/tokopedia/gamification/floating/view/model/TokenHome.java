@@ -12,6 +12,29 @@ public class TokenHome implements Parcelable{
     private String buttonApplink;
     private String buttonURL;
     private TokenUser tokensUser;
+    private String[] countingMessage;
+
+    public TokenHome() {
+    }
+
+    protected TokenHome(Parcel in) {
+        buttonApplink = in.readString();
+        buttonURL = in.readString();
+        tokensUser = in.readParcelable(TokenUser.class.getClassLoader());
+        countingMessage = in.createStringArray();
+    }
+
+    public static final Creator<TokenHome> CREATOR = new Creator<TokenHome>() {
+        @Override
+        public TokenHome createFromParcel(Parcel in) {
+            return new TokenHome(in);
+        }
+
+        @Override
+        public TokenHome[] newArray(int size) {
+            return new TokenHome[size];
+        }
+    };
 
     public String getButtonApplink() {
         return buttonApplink;
@@ -37,36 +60,24 @@ public class TokenHome implements Parcelable{
         this.tokensUser = tokensUser;
     }
 
+    public String[] getCountingMessage() {
+        return countingMessage;
+    }
+
+    public void setCountingMessage(String[] countingMessage) {
+        this.countingMessage = countingMessage;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.buttonApplink);
-        dest.writeString(this.buttonURL);
-        dest.writeParcelable(this.tokensUser, flags);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(buttonApplink);
+        parcel.writeString(buttonURL);
+        parcel.writeParcelable(tokensUser, i);
+        parcel.writeStringArray(countingMessage);
     }
-
-    public TokenHome() {
-    }
-
-    protected TokenHome(Parcel in) {
-        this.buttonApplink = in.readString();
-        this.buttonURL = in.readString();
-        this.tokensUser = in.readParcelable(TokenUser.class.getClassLoader());
-    }
-
-    public static final Creator<TokenHome> CREATOR = new Creator<TokenHome>() {
-        @Override
-        public TokenHome createFromParcel(Parcel source) {
-            return new TokenHome(source);
-        }
-
-        @Override
-        public TokenHome[] newArray(int size) {
-            return new TokenHome[size];
-        }
-    };
 }
