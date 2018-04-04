@@ -576,8 +576,17 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void onItemClicked(ProductModel productModel, String curatedName) {
         trackEventEnhance(createClickProductDataLayer(productModel));
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                Integer.toString(productModel.getId()));
+        com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
+        data.setId(String.valueOf(productModel.getId()));
+        data.setName(productModel.getName());
+        data.setPrice(productModel.getPrice());
+        data.setImgUri(productModel.getImageUrl());
+        data.setTrackerAttribution(productModel.getTrackerAttribution());
+        data.setTrackerListName(productModel.getTrackerListName());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
         getActivity().startActivity(intent);
         UnifyTracking.eventCuratedIntermediary(departmentId,
                 curatedName, productModel.getName());

@@ -505,6 +505,8 @@ public class ProductFragment extends SearchSectionFragment
         data.setName(item.getProductName());
         data.setPrice(item.getPrice());
         data.setImgUri(item.getImageUrl());
+        data.setTrackerAttribution(item.getHomeAttribution());
+        data.setTrackerListName(item.getTrackerName());
         Bundle bundle = new Bundle();
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
