@@ -228,7 +228,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         if (listFeedDomain != null)
             for (DataFeedDomain domain : listFeedDomain) {
                 int currentPosition = viewListener.getAdapterListSize() + listFeedView.size();
-                if (viewListener.getAdapterListSize() > 1) {currentPosition-- ;}
+                excludeProgressBarOnCurrentPosition(viewListener, currentPosition);
                 switch (domain.getContent().getType() != null ? domain.getContent().getType() : "") {
                     case TYPE_OS_CAMPAIGN:
                         if (domain.getContent().getOfficialStores() != null
@@ -729,6 +729,12 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         }
     }
 
+    private void excludeProgressBarOnCurrentPosition(FeedPlus.View viewListener,
+                                                    int currentPosition) {
+        if (viewListener.getAdapterListSize() > 1) {
+            --currentPosition;
+        }
+    }
 
     protected String getCurrentCursor(FeedResult feedResult) {
         int lastIndex = feedResult.getFeedDomain().getListFeed().size() - 1;
