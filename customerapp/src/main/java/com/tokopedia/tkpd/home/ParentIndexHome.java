@@ -36,6 +36,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.gson.GsonBuilder;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
+import com.moengage.widgets.NudgeView;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -141,6 +142,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
 
     private BroadcastReceiver hockeyBroadcastReceiver;
+    private NudgeView nudgeView ;
 
     @DeepLink(Constants.Applinks.HOME)
     public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
@@ -231,6 +233,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         }
 
         InAppManager.getInstance().setInAppListener(this);
+
 
         setView();
 
@@ -458,6 +461,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         inflateView(R.layout.activity_index_home_4);
         mViewPager = findViewById(R.id.index_page);
         tabs = findViewById(R.id.tab);
+        nudgeView = (NudgeView)findViewById(R.id.nudge);
     }
 
     public ChangeTabListener changeTabListener() {
@@ -624,6 +628,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         NotificationModHandler.showDialogNotificationIfNotShowing(this);
 
         registerBroadcastHockeyApp();
+        nudgeView.initialiseNudgeView(this);
     }
 
     @Override
