@@ -17,6 +17,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.KolGlideRequestListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         label = (TextView) itemView.findViewById(R.id.label);
         followText = (TextView) itemView.findViewById(R.id.follow_text);
         followButton = itemView.findViewById(R.id.follow_button);
-        reviewImage = (ImageView) itemView.findViewById(R.id.image);
+        reviewImage = itemView.findViewById(R.id.image);
         tooltip = (TextView) itemView.findViewById(R.id.tooltip);
         tooltipClickArea = itemView.findViewById(R.id.tooltip_area);
         kolText = (TextView) itemView.findViewById(R.id.kol_text);
@@ -105,7 +106,9 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             topSeparator.setVisibility(View.VISIBLE);
         }
 
-        ImageHandler.LoadImage(reviewImage, element.getKolImage());
+        ImageHandler.loadImageChat(reviewImage,
+                element.getKolImage(),
+                new KolGlideRequestListener());
 
         if (TextUtils.isEmpty(element.getProductTooltip())) {
             tooltipClickArea.setVisibility(View.GONE);
