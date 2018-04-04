@@ -79,7 +79,7 @@
                     android:layout_marginTop="@dimen/margin_vvvs"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_vote"
+                    app:srcCompat="@drawable/ic_sprint_sale_inactive"
                     tools:layout_editor_absoluteX="12dp"/>
 
                 <TextView
@@ -94,7 +94,7 @@
                     android:textStyle="normal"
                     app:layout_constraintStart_toEndOf="@+id/sprintsale_icon"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="VOTE TELAH BERAKHIR"/>
+                    tools:text="SPRINT SALE TELAH DIMULAI"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/list_product"

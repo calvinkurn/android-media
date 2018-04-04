@@ -454,7 +454,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                 case CHANNEL_VOTE_FRAGMENT:
                     if (checkPollValid()) {
                         showChannelVoteFragment();
-                        setDummy();
                     } else {
                         showChannelInfoFragment();
                     }
@@ -924,7 +923,9 @@ public class GroupChatActivity extends BaseSimpleActivity
             notifReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    onGetNotif(intent.getExtras());
+                    if (intent.getExtras() != null) {
+                        onGetNotif(intent.getExtras());
+                    }
                 }
             };
         }
@@ -1417,21 +1418,15 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onGetNotif(Bundle data) {
         GroupChatPointsViewModel model = new GroupChatPointsViewModel(
-                "Selamat! Anda mendapatkan 20 poin dari channel ini. Cek sekarang!"
-                , "www.tokopedia.com"
+                data.getString("desc", ""),
+                data.getString("url", ""),
+                data.getString("tkp_code", "")
         );
+
         if (currentFragmentIsChat()) {
             showPushNotif(model);
         } else {
             viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(model);
         }
-    }
-
-    public void setDummy() {
-        GroupChatPointsViewModel model = new GroupChatPointsViewModel(
-                "Selamat! Anda mendapatkan 20 poin dari channel ini. Cek sekarang!"
-                , "www.tokopedia.com"
-        );
-        viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(model);
     }
 }

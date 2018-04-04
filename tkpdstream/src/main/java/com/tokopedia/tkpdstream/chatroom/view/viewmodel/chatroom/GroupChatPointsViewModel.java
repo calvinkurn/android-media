@@ -13,21 +13,47 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory.Group
 public class GroupChatPointsViewModel implements Parcelable,
         Visitable<GroupChatTypeFactory> {
 
+    public static final String TYPE_POINTS = "1401";
+    public static final String TYPE_LOYALTY = "1003";
+    public static final String TYPE_COUPON = "1403";
+
+
     String image;
     String text;
     String span;
     String url;
+    String type;
 
     public GroupChatPointsViewModel(String text, String url) {
         this.text = text;
         this.url = url;
     }
 
-    public GroupChatPointsViewModel(String text, String span, String url) {
+    public GroupChatPointsViewModel(String text, String url, String type) {
         this.text = text;
-        this.span = span;
         this.url = url;
+        this.type = type;
     }
+
+    protected GroupChatPointsViewModel(Parcel in) {
+        image = in.readString();
+        text = in.readString();
+        span = in.readString();
+        url = in.readString();
+        type = in.readString();
+    }
+
+    public static final Creator<GroupChatPointsViewModel> CREATOR = new Creator<GroupChatPointsViewModel>() {
+        @Override
+        public GroupChatPointsViewModel createFromParcel(Parcel in) {
+            return new GroupChatPointsViewModel(in);
+        }
+
+        @Override
+        public GroupChatPointsViewModel[] newArray(int size) {
+            return new GroupChatPointsViewModel[size];
+        }
+    };
 
     public String getImage() {
         return image;
@@ -61,6 +87,14 @@ public class GroupChatPointsViewModel implements Parcelable,
         this.url = url;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    @Override
+    public int type(GroupChatTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
 
     @Override
     public int describeContents() {
@@ -69,36 +103,10 @@ public class GroupChatPointsViewModel implements Parcelable,
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.image);
-        dest.writeString(this.text);
-        dest.writeString(this.span);
-        dest.writeString(this.url);
-    }
-
-    public GroupChatPointsViewModel() {
-    }
-
-    protected GroupChatPointsViewModel(Parcel in) {
-        this.image = in.readString();
-        this.text = in.readString();
-        this.span = in.readString();
-        this.url = in.readString();
-    }
-
-    public static final Creator<GroupChatPointsViewModel> CREATOR = new Creator<GroupChatPointsViewModel>() {
-        @Override
-        public GroupChatPointsViewModel createFromParcel(Parcel source) {
-            return new GroupChatPointsViewModel(source);
-        }
-
-        @Override
-        public GroupChatPointsViewModel[] newArray(int size) {
-            return new GroupChatPointsViewModel[size];
-        }
-    };
-
-    @Override
-    public int type(GroupChatTypeFactory typeFactory) {
-        return typeFactory.type(this);
+        dest.writeString(image);
+        dest.writeString(text);
+        dest.writeString(span);
+        dest.writeString(url);
+        dest.writeString(type);
     }
 }
