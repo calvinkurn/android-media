@@ -194,7 +194,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
             public void onClickCtaButton(String applink, String url) {
-                if (!TextUtils.isEmpty(applink)) {
+                if (!TextUtils.isEmpty(applink) && ((GamificationRouter) getActivity().getApplicationContext())
+                        .isSupportedDelegateDeepLink(applink)) {
                     ((GamificationRouter) getActivity().getApplicationContext())
                             .actionApplink(getActivity(), applink);
                 } else if (!TextUtils.isEmpty(url)) {
