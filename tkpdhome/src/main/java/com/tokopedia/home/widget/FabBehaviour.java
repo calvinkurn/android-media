@@ -28,7 +28,6 @@ public class FabBehaviour extends CoordinatorLayout.Behavior<FloatingTextButton>
     private ViewPropertyAnimatorCompat animation = null;
 
     Handler mHandler;
-    private boolean animationStart;
     public FabBehaviour(Context context, AttributeSet attrs) {
         super();
     }
@@ -46,7 +45,7 @@ public class FabBehaviour extends CoordinatorLayout.Behavior<FloatingTextButton>
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                showView(child);
+                child.show();
                 Log.d("FabAnim", "startHandler()");
             }
         }, 3000);
@@ -57,67 +56,11 @@ public class FabBehaviour extends CoordinatorLayout.Behavior<FloatingTextButton>
                                @NonNull FloatingTextButton child, @NonNull View target,
                                int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type) {
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type);
-        if (dyConsumed > 0 && !animationStart) {
-            hideView(child);
-        } else if (dyConsumed < 0 && !animationStart) {
-            showView(child);
+        if (dyConsumed > 0 && !child.isAnimationStart()) {
+            child.hide();
+        } else if (dyConsumed < 0 && !child.isAnimationStart()) {
+            child.show();
         }
-    }
-
-    private void showView(@NonNull FloatingTextButton child) {
-        child.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2))
-                .setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animator) {
-                        animationStart = true;
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        animationStart = false;
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-                        animationStart = false;
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
-
-                    }
-                })
-                .setDuration(DURATION)
-                .start();
-    }
-
-    private void hideView(@NonNull FloatingTextButton child) {
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) child.getLayoutParams();
-        int fab_bottomMargin = layoutParams.bottomMargin;
-        child.animate().translationY(child.getHeight() + fab_bottomMargin).setInterpolator(new AccelerateInterpolator(2))
-                .setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animator) {
-                        animationStart = true;
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        animationStart = false;
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-                        animationStart = false;
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
-
-                    }
-                })
-                .setDuration(DURATION)
-                .start();
     }
 
     @Override

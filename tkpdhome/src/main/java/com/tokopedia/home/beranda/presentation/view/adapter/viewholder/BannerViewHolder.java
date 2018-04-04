@@ -72,7 +72,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     @Override
     public void onPromoClick(int position) {
         HomePageTracking.eventPromoClick(getPromotion(position));
-        listener.onPromoClick(slidesList.get(position));
+        listener.onPromoClick(position, slidesList.get(position));
     }
 
     @Override

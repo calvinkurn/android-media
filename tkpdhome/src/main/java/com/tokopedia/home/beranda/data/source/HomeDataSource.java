@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -63,7 +64,10 @@ public class HomeDataSource {
     }
 
     public Observable<List<Visitable>> getHomeData() {
-        return homeDataApi.getHomeData(getRequestPayload()).map(saveToCache()).map(homeMapper);
+        return homeDataApi.getHomeData(getRequestPayload())
+                .debounce(15, TimeUnit.SECONDS)
+                .map(saveToCache())
+                .map(homeMapper);
     }
 
     private Func1<Response<GraphqlResponse<HomeData>>, Response<GraphqlResponse<HomeData>>> saveToCache() {

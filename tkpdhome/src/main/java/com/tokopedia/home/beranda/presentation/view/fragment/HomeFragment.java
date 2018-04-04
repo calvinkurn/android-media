@@ -205,12 +205,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     int firstVisibleItemPos = layoutManager.findFirstVisibleItemPosition();
                     Visitable visitable = adapter.getItem(firstVisibleItemPos);
                     if ((visitable instanceof InspirationViewModel || visitable instanceof TopAdsViewModel)) {
-                        floatingTextButton.setVisibility(View.INVISIBLE);
+                        floatingTextButton.hide();
                     } else {
-                        floatingTextButton.setVisibility(View.VISIBLE);
+                        floatingTextButton.show();
                     }
                 } else {
-                    floatingTextButton.setVisibility(View.GONE);
+                    floatingTextButton.hide();
                 }
             }
         });
@@ -423,11 +423,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onPromoClick(BannerSlidesModel slidesModel) {
+    public void onPromoClick(int position, BannerSlidesModel slidesModel) {
+        String promoAttribution = String.format("1 - sliderBanner - %d - %s", position, slidesModel.getCreativeName());
         if (getActivity() != null
                 && getActivity().getApplicationContext() instanceof TkpdCoreRouter
                 && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
-            openApplink(slidesModel.getApplink());
+            openApplink(slidesModel.getApplink(), promoAttribution);
         } else {
             openWebViewURL(slidesModel.getRedirectUrl(), getContext());
         }

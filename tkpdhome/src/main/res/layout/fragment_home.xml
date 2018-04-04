@@ -53,7 +53,7 @@
         android:visibility="gone"
         app:layout_behavior="com.tokopedia.home.widget.FabBehaviour"
         app:floating_title_allcaps="false"
-        app:floating_left_icon="@drawable/ic_info"
+        app:floating_left_icon="@drawable/ic_drop_down_arrow"
         app:floating_title="@string/cek_recomendasi" />
 
 </android.support.design.widget.CoordinatorLayout>

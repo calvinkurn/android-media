@@ -4,22 +4,31 @@ package com.tokopedia.home.widget;
  * Created by errysuprayogi on 3/16/18.
  */
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.view.ViewPropertyAnimatorCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.tokopedia.home.R;
 import com.tokopedia.home.util.DimensionUtils;
 
@@ -37,6 +46,12 @@ public class FloatingTextButton extends FrameLayout {
     private Drawable rightIcon;
     private int background;
     private boolean titleAllCaps;
+
+    private static final Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
+    private static final Long DURATION = 250L;
+    private ViewPropertyAnimatorCompat animation = null;
+
+    private boolean animationStart;
 
     public FloatingTextButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -79,7 +94,8 @@ public class FloatingTextButton extends FrameLayout {
         titleView.setTextColor(color);
     }
 
-    public @ColorInt int getTitleColor() {
+    public @ColorInt
+    int getTitleColor() {
         return titleColor;
     }
 
@@ -88,7 +104,8 @@ public class FloatingTextButton extends FrameLayout {
         container.setCardBackgroundColor(color);
     }
 
-    public @ColorInt int getBackgroundColor() {
+    public @ColorInt
+    int getBackgroundColor() {
         return background;
     }
 
@@ -161,7 +178,7 @@ public class FloatingTextButton extends FrameLayout {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             leftIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_left_icon);
             rightIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_right_icon);
-        } else{
+        } else {
             final int drawableLeftId = styleable.getResourceId(R.styleable.FloatingTextButton_floating_left_icon, -1);
             final int drawableRightId = styleable.getResourceId(R.styleable.FloatingTextButton_floating_right_icon, -1);
             if (drawableLeftId != -1)
@@ -201,5 +218,68 @@ public class FloatingTextButton extends FrameLayout {
     @SuppressWarnings("SameParameterValue")
     private int getHorizontalPaddingValue(int dp) {
         return DimensionUtils.convertDpToPixel(dp, getContext());
+    }
+
+    public void show() {
+        if (getVisibility() != VISIBLE)
+            setVisibility(VISIBLE);
+        animate().translationY(0).setInterpolator(new DecelerateInterpolator(2))
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+                        animationStart = true;
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        animationStart = false;
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+                        animationStart = false;
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+
+                    }
+                })
+                .setDuration(DURATION)
+                .start();
+    }
+
+    public void hide() {
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) getLayoutParams();
+        int fab_bottomMargin = layoutParams.bottomMargin;
+        animate().translationY(getHeight() + fab_bottomMargin).setInterpolator(new AccelerateInterpolator(2))
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+                        animationStart = true;
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        animationStart = false;
+                        setVisibility(INVISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+                        animationStart = false;
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+
+                    }
+                })
+                .setDuration(DURATION)
+                .start();
+    }
+
+    public boolean isAnimationStart() {
+        return animationStart;
     }
 }
