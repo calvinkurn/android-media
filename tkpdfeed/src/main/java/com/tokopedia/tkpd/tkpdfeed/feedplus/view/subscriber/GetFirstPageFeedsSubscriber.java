@@ -81,6 +81,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private static final String TYPE_KOL_RECOMMENDATION = "kolrecommendation";
     private static final String TYPE_FAVORITE_CTA = "favorite_cta";
     private static final String SHOP_ID_BRACKETS = "{shop_id}";
+    private static final int TOPADS_SIZE = 6;
 
     private final int page;
 
@@ -316,7 +317,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                     case TYPE_TOPADS:
                         if (domain.getContent() != null
                                 && domain.getContent().getTopAdsList() != null
-                                && domain.getContent().getTopAdsList().size() == 6) {
+                                && domain.getContent().getTopAdsList().size() == TOPADS_SIZE) {
                             FeedTopAdsViewModel feedTopAdsViewModel =
                                     new FeedTopAdsViewModel(domain.getContent().getTopAdsList());
                             listFeedView.add(feedTopAdsViewModel);
