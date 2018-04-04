@@ -316,7 +316,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                     case TYPE_TOPADS:
                         if (domain.getContent() != null
                                 && domain.getContent().getTopAdsList() != null
-                                && !domain.getContent().getTopAdsList().isEmpty()) {
+                                && domain.getContent().getTopAdsList().size() == 6) {
                             FeedTopAdsViewModel feedTopAdsViewModel =
                                     new FeedTopAdsViewModel(domain.getContent().getTopAdsList());
                             listFeedView.add(feedTopAdsViewModel);
