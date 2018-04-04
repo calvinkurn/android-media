@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsVi
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -112,13 +113,20 @@ public class HomeRecycleAdapter extends BaseAdapter {
     }
 
     public void updateItems(List<Visitable> visitables) {
-        int startIndex = 0;
+        List<Visitable> temporaryList = new ArrayList<>();
         if (getItems().get(0) instanceof HeaderViewModel) {
-            startIndex = 1;
+            temporaryList.add(getItems().get(0));
         }
-        for (int i = 0; i < visitables.size(); i++) {
-            this.visitables.set(startIndex + i, visitables.get(i));
+
+        temporaryList.addAll(visitables);
+
+        int firstInspirationPos = findFirstInspirationPosition();
+        if (firstInspirationPos < getItemCount()) {
+            temporaryList.addAll(getItems().subList(firstInspirationPos, getItemCount()));
         }
-        notifyItemRangeChanged(0, visitables.size() + startIndex);
+
+        clearItems();
+        getItems().addAll(temporaryList);
+        notifyDataSetChanged();
     }
 }

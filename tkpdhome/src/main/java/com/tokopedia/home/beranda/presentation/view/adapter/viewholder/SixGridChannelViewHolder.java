@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.home.R;
@@ -74,23 +75,29 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), "");
             }
         });
-        bindImageView(image1, element.getChannel().getGrids()[0]);
-        bindImageView(image2, element.getChannel().getGrids()[1]);
-        bindImageView(image3, element.getChannel().getGrids()[2]);
-        bindImageView(image4, element.getChannel().getGrids()[3]);
-        bindImageView(image5, element.getChannel().getGrids()[4]);
-        bindImageView(image6, element.getChannel().getGrids()[5]);
+        bindImageView(image1, element, 0);
+        bindImageView(image2, element, 1);
+        bindImageView(image3, element, 2);
+        bindImageView(image4, element, 3);
+        bindImageView(image5, element, 4);
+        bindImageView(image6, element, 5);
     }
 
-    private void bindImageView(SquareImageView imageView, final DynamicHomeChannel.Grid item) {
+    private void bindImageView(SquareImageView imageView, final DynamicChannelViewModel element, final int position) {
+        final DynamicHomeChannel.Grid item = element.getChannel().getGrids()[position];
+
         ImageHandler.loadImageFitCenter(context, imageView, item.getImageUrl());
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onSixGridItemClicked(getAvailableLink(item.getApplink(), item.getUrl()));
+                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                        element.getChannel().getEnhanceClickLegoBannerHomePage(item, position + 1)
+                );
+                listener.onSixGridItemClicked(getAvailableLink(item.getApplink(), item.getUrl()),
+                        element.getChannel().getHomeAttribution(position + 1, item.getAttribution()));
             }
         });
     }

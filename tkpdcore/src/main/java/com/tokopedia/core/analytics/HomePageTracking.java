@@ -80,6 +80,15 @@ public class HomePageTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickSeeAllProductSprintBackground() {
+        sendGTMEvent(new EventTracking(
+                STATIC_VALUE_CLICK_HOMEPAGE,
+                STATIC_VALUE_HOMEPAGE,
+                "sprint sale with backgroud click view all",
+                ""
+        ).getEvent());
+    }
+
     public static void eventEnhancedImpressionSprintSaleHomePage(Map<String, Object> data) {
         eventTrackingEnhancedEcommerce(data);
     }
