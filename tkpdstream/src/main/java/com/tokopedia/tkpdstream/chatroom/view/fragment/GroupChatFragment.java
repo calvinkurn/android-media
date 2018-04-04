@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
@@ -317,11 +318,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
-        long currentTime = new Date().getTime() / MILIS_TO_SECOND;
+        long currentTime = new Date().getTime();
         if (currentTime < sprintSaleViewModel.getStartDate()) {
             sprintSaleText.setText(String.format("%s - %s", sprintSaleViewModel
                     .getFormattedStartDate(), sprintSaleViewModel.getFormattedEndDate()));
+            sprintSaleText.setBackground(MethodChecker.getDrawable(getActivity(),R.drawable.bg_rounded_pink_label));
+            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
         } else {
+            sprintSaleText.setBackground(MethodChecker.getDrawable(getActivity(),R.drawable.bg_rounded_red_label));
+            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
             sprintSaleText.setText(getString(R.string.ongoing));
         }
     }
@@ -344,8 +349,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 @Override
                 public void run() {
                     SprintSaleAnnouncementViewModel sprintSaleAnnouncementViewModel = new SprintSaleAnnouncementViewModel(
-                            new Date().getTime() / MILIS_TO_SECOND,
-                            new Date().getTime() / MILIS_TO_SECOND,
+                            new Date().getTime(),
+                            new Date().getTime(),
                             "0",
                             "0",
                             channelInfoViewModel.getAdminName(),
@@ -406,7 +411,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private boolean isValidSprintSale(SprintSaleViewModel sprintSaleViewModel) {
-        long currentTime = new Date().getTime() / MILIS_TO_SECOND;
+        long currentTime = new Date().getTime();
         return sprintSaleViewModel != null
                 && sprintSaleViewModel.getStartDate() != 0
                 && sprintSaleViewModel.getEndDate() != 0
