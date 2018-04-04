@@ -1,5 +1,6 @@
 package com.tokopedia.gamification.cracktoken.fragment;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -22,6 +23,7 @@ import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetRemainingToken;
+import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenOnBoarding;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
 import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
@@ -35,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * @author Rizky on 28/03/18.
@@ -52,6 +56,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private WidgetTokenView widgetTokenView;
     private WidgetCrackResult widgetCrackResult;
     private WidgetRemainingToken widgetRemainingToken;
+    private WidgetTokenOnBoarding widgetTokenOnBoarding;
 
     private String backgroundImageUrl;
     private String smallImageUrl;
@@ -87,6 +92,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetTokenView = rootView.findViewById(R.id.widget_token_view);
         widgetCrackResult = rootView.findViewById(R.id.widget_reward);
         widgetRemainingToken = rootView.findViewById(R.id.widget_remaining_token_view);
+        widgetTokenOnBoarding = rootView.findViewById(R.id.widget_token_onboarding);
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -169,6 +175,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             @Override
             public void onClick() {
                 stopTimer();
+                hideHandOnBoarding();
                 TokenUser tokenUser = tokenData.getHome().getTokensUser();
                 crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
             }
@@ -179,7 +186,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             public void onClickCtaButton(String applink) {
                 // TODO: direct to the associated applink page
                 widgetCrackResult.clearReward();
-
                 crackTokenPresenter.getGetTokenTokopoints();
             }
         });
@@ -266,6 +272,15 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     public void onSuccessGetToken(TokenData tokenData) {
         initDataCrackEgg(tokenData);
         renderViewCrackEgg();
+        showHandOnBoarding();
+    }
+
+    private void showHandOnBoarding(){
+        widgetTokenOnBoarding.showHandOnboarding();
+    }
+
+    private void hideHandOnBoarding(){
+        widgetTokenOnBoarding.hideHandOnBoarding();
     }
 
     @Override

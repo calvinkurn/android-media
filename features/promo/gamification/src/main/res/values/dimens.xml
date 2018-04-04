@@ -10,4 +10,5 @@
     <dimen name="floating_egg_widget_height">116dp</dimen>
 
     <dimen name="floating_shadow_margin">1dp</dimen>
+
 </resources>

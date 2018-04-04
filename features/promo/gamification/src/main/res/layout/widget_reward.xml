@@ -35,7 +35,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="bottom|center"
-                tools:src="@drawable/coupon"
+                tools:src="@mipmap/ic_launcher_round"
                 android:visibility="gone"
                 tools:visibility="visible"/>
 
