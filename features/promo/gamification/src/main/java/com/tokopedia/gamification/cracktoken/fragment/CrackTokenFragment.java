@@ -48,6 +48,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     public static final double RATIO_MARGIN_TOP_TIMER = 0.15;
 
+    @Inject
+    CrackTokenPresenter crackTokenPresenter;
+
+    private View rootView;
+
     private CountDownTimer countDownTimer;
 
     private TextView textCountdownTimer;
@@ -63,10 +68,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private String leftCrackedEggImg;
 
     private TokenData tokenData;
-    private View rootView;
 
-    @Inject
-    CrackTokenPresenter crackTokenPresenter;
     private ImageView ivContainer;
     private long prevTimeStamp;
 
@@ -176,11 +178,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
         });
 
-        widgetCrackResult.setListener(new WidgetCrackResult.WidgetRewardListener() {
+        widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
             public void onClickCtaButton(String applink) {
                 // TODO: direct to the associated applink page
-                widgetCrackResult.clearReward();
+                widgetCrackResult.clearCrackResult();
 
                 crackTokenPresenter.getGetTokenTokopoints();
             }

@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.gamification.cracktoken.fragment.CrackTokenFragment;
-import com.tokopedia.gamification.floating.view.model.TokenData;
 
 public class CrackTokenActivity extends BaseSimpleActivity {
 
