@@ -671,4 +671,5 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     public void actionOnPromoScrolled(int position, BannerDetail bannerData) {
         flightAnalytics.eventPromoImpression(position, bannerData);
     }
+
 }
