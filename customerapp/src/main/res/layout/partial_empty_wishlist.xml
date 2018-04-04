@@ -4,12 +4,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/new_margin_big" android:paddingStart="@dimen/new_margin_big"
-    android:paddingEnd="@dimen/new_margin_big" android:paddingRight="@dimen/new_margin_big"
+    android:paddingLeft="@dimen/dp_32" android:paddingStart="@dimen/dp_32"
+    android:paddingEnd="@dimen/dp_32" android:paddingRight="@dimen/dp_32"
     android:background="@color/white"
     android:visibility="gone"
     android:id="@+id/partial_empty_wishlist"
-    android:layout_marginBottom="@dimen/new_margin_small">
+    android:layout_marginBottom="@dimen/dp_8">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -17,7 +17,7 @@
         app:srcCompat="@drawable/ic_no_wishlist"
         android:adjustViewBounds="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/new_margin_sm"/>
+        android:layout_marginTop="@dimen/dp_24"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
         android:textStyle="bold"
         android:gravity="center"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/new_margin_small"/>
+        android:layout_marginTop="@dimen/dp_8"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -37,19 +37,21 @@
         android:text="@string/wishlist_empty_message"
         android:fontFamily="sans-serif"
         android:textColor="@color/grey_450"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:gravity="center"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/new_margin_tiny"/>
+        android:layout_marginTop="@dimen/dp_4"/>
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_login"
         android:layout_width="@dimen/button_width"
-        style="@style/Button.Primary.Medium"
+        android:layout_height="wrap_content"
+        app:buttonCompatType="primary"
+        app:buttonCompatSize="medium"
         android:textAllCaps="false"
         android:text="@string/empty_button"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/new_margin_med"
-        android:layout_marginBottom="@dimen/new_margin_sm"/>
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_24"/>
 
 </LinearLayout>

@@ -2,6 +2,9 @@ package com.tokopedia.gm.statistic.data.source.db;
 
 import android.support.annotation.IntDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 import static com.tokopedia.gm.statistic.data.source.db.GMStatActionType.BUYER;
 import static com.tokopedia.gm.statistic.data.source.db.GMStatActionType.KEYWORD;
 import static com.tokopedia.gm.statistic.data.source.db.GMStatActionType.POPULAR_PRODUCT;
@@ -13,6 +16,7 @@ import static com.tokopedia.gm.statistic.data.source.db.GMStatActionType.TRANS_T
 /**
  * @author normansyahputa on 4/25/17.
  */
+@Retention(RetentionPolicy.SOURCE)
 @IntDef({BUYER, KEYWORD, POPULAR_PRODUCT, PROD_GRAPH, SHOP_CAT, TRANS_GRAPH, TRANS_TABLE})
 public @interface GMStatActionType {
     int BUYER = 1;

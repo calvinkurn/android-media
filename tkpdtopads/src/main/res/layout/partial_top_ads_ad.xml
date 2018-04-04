@@ -21,7 +21,7 @@
             style="@style/TopAdsProgressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"/>
+            android:layout_marginBottom="@dimen/dp_5"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,8 +41,8 @@
 
             <TextView
                 style="@style/TextView.Small"
-                android:layout_marginLeft="@dimen/padding_vs"
-                android:layout_marginRight="@dimen/padding_vs"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
                 android:text="@string/top_ads_spent_separator"/>
 
             <TextView
