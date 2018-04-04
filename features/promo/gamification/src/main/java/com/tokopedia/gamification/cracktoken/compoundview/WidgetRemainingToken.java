@@ -73,4 +73,12 @@ public class WidgetRemainingToken extends LinearLayout {
         }
     }
 
+    public void hide() {
+        this.setVisibility(INVISIBLE);
+    }
+
+    public void show() {
+        this.setVisibility(VISIBLE);
+    }
+
 }

@@ -49,6 +49,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
     }
 
     public void getGetTokenTokopoints() {
+        getView().showLoading();
         getTokenTokopointsUseCase.execute(new Subscriber<TokenData>() {
             @Override
             public void onCompleted() {
@@ -57,11 +58,13 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
             @Override
             public void onError(Throwable e) {
+                getView().hideLoading();
                 getView().onErrorGetToken(e);
             }
 
             @Override
             public void onNext(TokenData tokenData) {
+                getView().hideLoading();
                 getView().onSuccessGetToken(tokenData);
             }
         });
