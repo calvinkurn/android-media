@@ -32,4 +32,6 @@
     <color name="shadow_color_4">#20CCCCCC</color>
     <color name="shadow_color_5">#25CCCCCC</color>
 
+    <color name="pink">#ffd3d6</color>
+
 </resources>
