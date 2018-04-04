@@ -2181,5 +2181,6 @@ di Tokopedia Sekarang!</string>
 
     <!--QR CODE-->
     <string name="scan_qr">Scan Kode QR</string>
+    <string name="title_activation">Aktivasi TokoCash</string>
 </resources>
 

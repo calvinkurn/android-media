@@ -3,6 +3,7 @@ package com.tokopedia.core.util;
 import android.content.Context;
 
 import com.tokopedia.anals.ConsumerDrawerData;
+import com.tokopedia.core.R;
 import com.tokopedia.core.drawer2.data.pojo.topcash.Action;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
