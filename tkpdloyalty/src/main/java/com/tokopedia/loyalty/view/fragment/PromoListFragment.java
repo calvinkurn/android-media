@@ -366,19 +366,6 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void onItemPromoClicked(PromoData promoData, int position) {
-//        String redirectUrl = promoData.getPromoLink();
-//        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-//            TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
-//            tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
-//        }
-
-//        Fragment fragment = PromoDetailFragment.newInstance(promoData);
-//        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//        getFragmentManager().beginTransaction()
-//                .replace(R.id.container, fragment, fragment.getClass().getSimpleName())
-//                .addToBackStack(null)
-//                .commit();
-
         Intent intent = PromoDetailActivity.getCallingIntent(getActivity(), promoData);
         startActivityForResult(intent, PROMO_DETAIL_REQUEST_CODE);
         dPresenter.sendClickItemPromoListTrackingData(promoData, position, promoMenuData.getTitle());
