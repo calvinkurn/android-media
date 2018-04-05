@@ -6,27 +6,27 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:padding="@dimen/padding_detail"
-    android:layout_marginBottom="@dimen/margin_sm">
+    android:layout_marginBottom="@dimen/dp_15">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_tokocash_benefit"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/dp_15"
         android:layout_gravity="center_horizontal"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         android:text="@string/benefit_tokocash_title"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginTop="@dimen/dp_30"
         android:textSize="@dimen/fontvs"
         android:textStyle="bold"
         android:text="@string/benefit_tokocash_title_item_1"/>
@@ -34,14 +34,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/dp_5"
         android:textSize="@dimen/fontvs"
         android:text="@string/benefit_tokocash_detail_item_1"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         android:textSize="@dimen/fontvs"
         android:textStyle="bold"
         android:text="@string/benefit_tokocash_title_item_2"/>
@@ -49,14 +49,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/dp_5"
         android:textSize="@dimen/fontvs"
         android:text="@string/benefit_tokocash_detail_item_2" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         android:textSize="@dimen/fontvs"
         android:textStyle="bold"
         android:text="@string/benefit_tokocash_title_item_3"/>
@@ -64,14 +64,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/dp_5"
         android:textSize="@dimen/fontvs"
         android:text="@string/benefit_tokocash_detail_item_3"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         android:textSize="@dimen/fontvs"
         android:textStyle="bold"
         android:text="@string/benefit_tokocash_title_item_4"/>
@@ -79,8 +79,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vs"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginBottom="@dimen/dp_5"
         android:textSize="@dimen/fontvs"
         android:text="@string/benefit_tokocash_detail_item_4"/>
 

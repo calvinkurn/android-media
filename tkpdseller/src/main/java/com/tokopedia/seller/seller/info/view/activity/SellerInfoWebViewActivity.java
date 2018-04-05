@@ -59,10 +59,7 @@ public class SellerInfoWebViewActivity extends BaseSimpleActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Bundle extras = getIntent().getExtras();
-        if(savedInstanceState == null){
-            extraUrl = extras.getString(SellerInfoWebViewFragment.EXTRA_URL);
-        }
+        extraUrl = getIntent().getStringExtra(SellerInfoWebViewFragment.EXTRA_URL);
         super.onCreate(savedInstanceState);
     }
 

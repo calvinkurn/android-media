@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F7F6F6"
     android:orientation="vertical"
-    android:padding="@dimen/padding_small">
+    android:padding="@dimen/dp_10">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,8 +16,8 @@
             android:id="@id/iv_ava"
             android:layout_width="@dimen/img_thumb_m"
             android:layout_height="@dimen/img_thumb_m"
-            android:layout_marginEnd="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/border_circle"
             android:contentDescription="@string/image_product_desc"
             android:scaleType="centerCrop" />
@@ -40,32 +40,32 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:gravity="center_vertical"
                     android:orientation="vertical">
 
                     <ImageView
                         android:id="@id/iv_gold"
-                        android:layout_width="@dimen/large_dp"
-                        android:layout_height="@dimen/large_dp"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
                         app:srcCompat="@drawable/ic_shop_gold"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@id/iv_official"
-                        android:layout_width="@dimen/large_dp"
-                        android:layout_height="@dimen/large_dp"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
                         app:srcCompat="@drawable/ic_badge_official"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@id/iv_lucky"
-                        android:layout_width="@dimen/large_dp"
-                        android:layout_height="@dimen/large_dp"
-                        android:padding="@dimen/margin_vvs"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:padding="@dimen/dp_3"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
                 </LinearLayout>
@@ -79,7 +79,7 @@
                         android:id="@id/tv_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_vs"
+                        android:layout_marginTop="@dimen/dp_5"
                         android:background="@drawable/tab_selector"
                         android:lines="1"
                         android:singleLine="true"
@@ -111,8 +111,8 @@
                     android:id="@id/iv_fav"
                     android:layout_width="@dimen/icon_prod_size"
                     android:layout_height="@dimen/icon_prod_size"
-                    android:layout_marginEnd="@dimen/margin_med"
-                    android:layout_marginRight="@dimen/margin_med"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
                     android:background="@drawable/overflow_selected"
                     app:srcCompat="@drawable/ic_fav"
                     tools:ignore="ContentDescription" />
@@ -135,13 +135,13 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/margin_small">
+        android:paddingBottom="@dimen/dp_10">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padding_vs"
-            android:layout_marginTop="@dimen/padding_vs"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_5"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/title_reputation"
@@ -159,8 +159,8 @@
             android:id="@id/tv_reputation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padding_vs"
-            android:layout_marginTop="@dimen/padding_vs"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_5"
             android:layout_weight="1"
             android:gravity="center"
             android:text="0 Poin"
@@ -185,8 +185,8 @@
             android:animateLayoutChanges="true"
             android:baselineAligned="false"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/margin_small"
-            android:paddingTop="@dimen/margin_med"
+            android:paddingBottom="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_20"
             android:visibility="visible">
 
             <include
