@@ -51,16 +51,20 @@ public class WidgetRemainingToken extends LinearLayout {
 
     public void showRemainingToken(String smallImageUrl, String remainingTokenString, String[] countingMessage) {
         ImageHandler.loadImageAndCache(imageRemainingToken, smallImageUrl);
-        if (TextUtils.isEmpty(remainingTokenString)) {
+        if (countingMessage == null || countingMessage.length == 0) {
+            this.setVisibility(View.GONE);
+        } else if (TextUtils.isEmpty(remainingTokenString) ) {
             ivCounter.setVisibility(View.GONE);
             textRemainingToken.setVisibility(View.GONE);
+
+            this.setVisibility(View.VISIBLE);
         } else {
             ivCounter.setText(remainingTokenString);
             ivCounter.setVisibility(VISIBLE);
 
             String stringToShow = getContext().getString(R.string.egg_crack_x_token_left, countingMessage[0],
                     countingMessage[1], countingMessage[2]);
-            Spannable spannable = new SpannableString(stringToShow );
+            Spannable spannable = new SpannableString(stringToShow);
             int indexStart = countingMessage[0].length() + 1;
             int indexEnd = indexStart + countingMessage[1].length();
 
@@ -70,6 +74,8 @@ public class WidgetRemainingToken extends LinearLayout {
 
             textRemainingToken.setText(spannable);
             textRemainingToken.setVisibility(View.VISIBLE);
+
+            this.setVisibility(View.VISIBLE);
         }
     }
 
