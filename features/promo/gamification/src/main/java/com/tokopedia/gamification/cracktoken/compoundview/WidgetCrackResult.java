@@ -61,6 +61,8 @@ public class WidgetCrackResult extends RelativeLayout {
         void onTrackingCloseRewardButton(CrackResult crackResult);
 
         void onClickReturnButton(String type, String applink, String url);
+
+        void onClickCloseButton();
     }
 
     public WidgetCrackResult(Context context) {
@@ -235,7 +237,7 @@ public class WidgetCrackResult extends RelativeLayout {
         closeRewardBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onClickReturnButton();
+                listener.onClickCloseButton();
                 listener.onTrackingCloseRewardButton(crackResult);
             }
         });
