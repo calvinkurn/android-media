@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
     compile project(rootProject.ext.features.core)

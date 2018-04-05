@@ -220,12 +220,17 @@ ext {
             transaction     : ":tkpdtransaction",
             session         : ":tkpdsession",
             topAdsSdk       : ":tkpdtopadssdk",
-            payment         : ":features:payment:payment",
             productDetail   : ":tkpdpdp",
             seller          : ":tkpdseller",
-            topAdsManagement: ":tkpdtopads",
+            payment         : ":features:payment:payment",
+            wishlistCommon  : ":features:discovery:wishlist_common",
+            goldMerchantCommon: ":features:merchant:gold_merchant_common",
             goldMerchant    : ":features:merchant:gold_merchant",
+            reputationCommon: ":features:merchant:reputation_common",
             reputation      : ":features:merchant:reputation",
+            shopCommon      : ":features:merchant:shop_common",
+            shopPage        : ":features:merchant:shop_page",
+            topAdsManagement: ":features:top_ads:top_ads_management",
             tokoCash        : ":tkpdtokocash",
             useCase         : ":tkpdusecase",
             flight          : ":tkpdflight",
@@ -239,7 +244,7 @@ ext {
     libraries = [
             design          : ":tkpddesign",
             abstraction     : ":tkpdabstraction",
-            cacheApi        : ":tkpdcacheapi",
+            cacheApi        : ":libraries:cache_api",
             reactNative     : ":libraries:react_native"
     ]
 
