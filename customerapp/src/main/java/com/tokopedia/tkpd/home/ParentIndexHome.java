@@ -671,7 +671,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void updateCartNotification() {
-        ((TransactionRouter.CartRouter) getApplication()).updateMarketplaceCartCounter(
+        ((TransactionRouter) getApplication()).updateMarketplaceCartCounter(
                 new TransactionRouter.CartNotificationListener() {
                     @Override
                     public void onDataReady() {

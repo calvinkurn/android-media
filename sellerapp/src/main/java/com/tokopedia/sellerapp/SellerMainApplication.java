@@ -25,6 +25,7 @@ import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.GlobalConfig;
@@ -223,5 +224,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return null;
     }
 
+    @Override
+    public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
 
+    }
 }

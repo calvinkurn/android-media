@@ -1520,7 +1520,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     private void updateCartNotification() {
-        ((TransactionRouter.CartRouter) getActivity().getApplication())
+        ((TransactionRouter) getActivity().getApplication())
                 .updateMarketplaceCartCounter(new TransactionRouter.CartNotificationListener() {
                     @Override
                     public void onDataReady() {

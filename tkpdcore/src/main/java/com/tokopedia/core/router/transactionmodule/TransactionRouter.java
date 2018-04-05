@@ -34,9 +34,7 @@ public interface TransactionRouter {
 
     Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest);
 
-    interface CartRouter {
-        void updateMarketplaceCartCounter(CartNotificationListener listener);
-    }
+    void updateMarketplaceCartCounter(CartNotificationListener listener);
 
     interface CartNotificationListener {
         void onDataReady();
