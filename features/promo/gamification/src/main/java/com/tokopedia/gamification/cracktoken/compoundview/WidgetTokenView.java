@@ -39,6 +39,7 @@ import static android.view.Gravity.CENTER_HORIZONTAL;
 
 public class WidgetTokenView extends FrameLayout {
 
+    public static final float Y_PIVOT_PERCENT = 0.9f;
     private ImageView imageViewFull;
     private MaskedHeightImageView imageViewCracked;
     private ImageView imageViewLeft;
@@ -223,12 +224,28 @@ public class WidgetTokenView extends FrameLayout {
 
     private void shake() {
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                imageViewFull.setRotation(0);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
         imageViewFull.setAnimation(animation);
     }
 
     private void shakeHard() {
-        imageViewFull.setPivotY(0.9f * imageViewFull.getHeight());
-        imageViewCracked.setPivotY(0.9f * imageViewCracked.getHeight());
+        imageViewFull.setPivotY( Y_PIVOT_PERCENT * imageViewFull.getHeight());
+        imageViewCracked.setPivotY( Y_PIVOT_PERCENT * imageViewCracked.getHeight());
         imageViewCracked.setVisibility(VISIBLE);
 
         initCrackingAnimationSet();
@@ -255,11 +272,8 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     public void stopShaking() {
-        if (crackingAnimationSet != null) {
-            crackingAnimationSet.cancel();
-        }
         imageViewFull.clearAnimation();
-        imageViewCracked.clearAnimation();
+        imageViewFull.setRotation(0);
     }
 
     private void crack() {
