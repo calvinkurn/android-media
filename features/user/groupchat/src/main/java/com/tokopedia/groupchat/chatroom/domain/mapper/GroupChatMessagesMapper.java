@@ -60,9 +60,10 @@ public class GroupChatMessagesMapper {
         return listViewModel;
     }
 
-    private boolean shouldHideMessage(Visitable mappedMessage) {
+    public boolean shouldHideMessage(Visitable mappedMessage) {
         if (mappedMessage instanceof VoteAnnouncementViewModel
-                && ((VoteAnnouncementViewModel) mappedMessage).getVoteType().equals(VoteAnnouncementViewModel.POLLING_CANCEL)) {
+                && ((VoteAnnouncementViewModel) mappedMessage).getVoteType().equals(
+                        VoteAnnouncementViewModel.POLLING_CANCEL)) {
             return true;
         } else if (mappedMessage instanceof VoteAnnouncementViewModel
                 && ((VoteAnnouncementViewModel) mappedMessage).getVoteType().equals
@@ -107,8 +108,7 @@ public class GroupChatMessagesMapper {
             case VoteAnnouncementViewModel.POLLING_FINISHED:
             case VoteAnnouncementViewModel.POLLING_CANCEL:
             case VoteAnnouncementViewModel.POLLING_UPDATE:
-                return mapToPollingViewModel(message,
-                        message.getData());
+                return mapToPollingViewModel(message, message.getData());
             case ChatViewModel.ADMIN_MESSAGE:
                 return mapToAdminChat(message, message.getData());
             case ImageAnnouncementViewModel.ADMIN_ANNOUNCEMENT:
@@ -346,7 +346,7 @@ public class GroupChatMessagesMapper {
 
     @Nullable
     public Visitable map(BaseMessage baseMessage) {
-        if (mapMessage(baseMessage) != null && !shouldHideMessage(mapMessage(baseMessage))) {
+        if (mapMessage(baseMessage) != null) {
             return mapMessage(baseMessage);
         } else {
             return null;

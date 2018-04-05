@@ -347,6 +347,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     @Override
     public void showHasVoted() {
+        canVote = true;
         View view = getLayoutInflater().inflate(R.layout.has_voted_bottom_sheet_dialog, null);
         TextView title = view.findViewById(R.id.title);
         title.setText(R.string.has_voted);
@@ -356,7 +357,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     @Override
     public void showSuccessVoted() {
-
         View view = getLayoutInflater().inflate(R.layout.has_voted_bottom_sheet_dialog, null);
         channelInfoDialog.setContentView(view);
         new Handler().postDelayed(new Runnable() {
@@ -397,6 +397,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     @Override
     public void redirectToLogin() {
+        canVote = true;
         startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
                 .getLoginIntent(getActivity()), REQUEST_LOGIN);
     }

@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
+import com.tokopedia.groupchat.chatroom.domain.mapper.GroupChatMessagesMapper;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;
@@ -82,6 +83,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Inject
     GroupChatAnalytics analytics;
+
+    @Inject
+    GroupChatMessagesMapper groupChatMessagesMapper;
 
     private RecyclerView chatRecyclerView;
     private EditText replyEditText;
@@ -576,32 +580,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     public void onMessageReceived(Visitable messageItem) {
-        if (messageItem instanceof VoteAnnouncementViewModel) {
-            handleVoteAnnouncement((VoteAnnouncementViewModel) messageItem);
-        } else if (messageItem instanceof SprintSaleAnnouncementViewModel) {
+        if (messageItem instanceof SprintSaleAnnouncementViewModel) {
             setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
-            if (!((SprintSaleAnnouncementViewModel) messageItem).getSprintSaleType().equals
-                    (SprintSaleAnnouncementViewModel.SPRINT_SALE_UPCOMING)) {
-                addIncomingMessage(messageItem);
-            }
-        } else if (!(messageItem instanceof
-                VibrateViewModel)) {
+        }
+
+        if (!groupChatMessagesMapper.shouldHideMessage(messageItem)) {
             addIncomingMessage(messageItem);
         }
 
-    }
-
-    private void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem) {
-
-        switch (messageItem.getVoteType()) {
-            case VoteAnnouncementViewModel.POLLING_START:
-            case VoteAnnouncementViewModel.POLLING_FINISHED:
-                addIncomingMessage(messageItem);
-                break;
-            case VoteAnnouncementViewModel.POLLING_UPDATE:
-            case VoteAnnouncementViewModel.POLLING_CANCEL:
-                break;
-        }
     }
 
     private void addIncomingMessage(Visitable messageItem) {
