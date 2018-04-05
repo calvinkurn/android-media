@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
-    android:background="@color/white">
+    android:layout_marginTop="@dimen/margin_padding_large"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="@dimen/tnc_header_height"
         android:gravity="center"
-        android:textSize="18sp"
+        android:text="@string/syarat_amp_ketentuan"
         android:textColor="@color/black_70"
-        android:text="Syarat &amp; Ketentuan" />
+        android:textSize="@dimen/fontl" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="15dp"
+        android:layout_height="@dimen/thin_line"
+        android:layout_marginBottom="@dimen/margin_sm"
         android:background="@android:color/darker_gray" />
 
     <com.tokopedia.abstraction.base.view.webview.TkpdWebView

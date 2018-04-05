@@ -11,11 +11,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/margin_med"
         android:background="@color/white"
         android:baselineAligned="false"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:padding="@dimen/margin_default"
         android:weightSum="2">
 
         <LinearLayout
@@ -27,17 +27,17 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="@dimen/margin_layout_medium"
                 app:srcCompat="@drawable/ic_time_stopwatch"
                 tools:ignore="ContentDescription" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
+                android:layout_marginBottom="@dimen/margin_padding_small"
                 android:gravity="center"
-                android:textSize="14sp"
-                android:text="Periode Promo" />
+                android:text="@string/label_period_promo_loyalty_module"
+                android:textSize="@dimen/font_small" />
 
             <TextView
                 android:id="@+id/tv_promo_detail_period"
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/black_70"
-                android:textSize="16sp"
+                android:textSize="@dimen/font_medium"
                 tools:text="20 - 30 Juni 2017" />
 
         </LinearLayout>
@@ -59,17 +59,17 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="@dimen/margin_padding_large"
                 app:srcCompat="@drawable/ic_money_icon"
                 tools:ignore="ContentDescription" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
+                android:layout_marginBottom="@dimen/margin_padding_small"
                 android:gravity="center"
-                android:text="Minimum Transaksi"
-                android:textSize="14sp" />
+                android:text="@string/label_min_transaction_promo_loyalty_module"
+                android:textSize="@dimen/font_small" />
 
             <TextView
                 android:id="@+id/tv_promo_detail_min_transaction"
@@ -77,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/black_70"
-                android:textSize="16sp"
+                android:textSize="@dimen/font_medium"
                 tools:text="Rp. 200.000" />
 
         </LinearLayout>
@@ -85,6 +85,6 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/thin_line"
         android:background="@color/grey_200" />
 </LinearLayout>

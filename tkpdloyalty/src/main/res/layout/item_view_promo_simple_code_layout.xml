@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_detail">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,8 +15,8 @@
 
         <ImageView
             android:id="@+id/iv_promo_code_icon"
-            android:layout_width="35dp"
-            android:layout_height="18dp"
+            android:layout_width="@dimen/promo_code_icon_width"
+            android:layout_height="@dimen/promo_code_icon_height"
             android:layout_alignTop="@+id/tv_promo_code_label"
             app:srcCompat="@drawable/ic_coupon_promo"
             tools:ignore="ContentDescription" />
@@ -25,23 +25,23 @@
             android:id="@+id/tv_promo_code_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_promo_code_icon"
+            android:layout_marginLeft="@dimen/margin_ms"
+            android:layout_marginStart="@dimen/margin_ms"
             android:layout_toEndOf="@id/iv_promo_code_icon"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:textSize="14sp"
+            android:layout_toRightOf="@id/iv_promo_code_icon"
+            android:text="@string/label_promo_code_loyalty_module"
             android:textColor="@color/black_38"
-            android:text="Kode Promo"
+            android:textSize="@dimen/font_small"
             tools:ignore="SmallSp" />
 
         <ImageView
             android:id="@+id/iv_tooltip_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tv_promo_code_label"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginStart="@dimen/margin_vs"
             android:layout_toEndOf="@id/tv_promo_code_label"
-            android:layout_marginLeft="6dp"
-            android:layout_marginStart="6dp"
+            android:layout_toRightOf="@id/tv_promo_code_label"
             app:srcCompat="@drawable/info_icon"
             tools:ignore="ContentDescription" />
     </RelativeLayout>
@@ -54,27 +54,28 @@
 
         <RelativeLayout
             android:id="@+id/fl_single_code_group_layout"
-            android:layout_width="160dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="16dp"
+            android:layout_width="@dimen/code_container_width"
+            android:layout_height="@dimen/code_container_height"
+            android:layout_marginTop="@dimen/margin_sm"
             android:background="@drawable/round_button_left">
 
             <TextView
                 android:id="@+id/tv_single_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
                 android:textColor="@color/orange_red"
-                android:text="BRIG6P" />
+                tools:text="BRIG6P" />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rl_single_code_copy_layout"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="16dp"
+            android:layout_width="@dimen/code_container_width"
+            android:layout_height="@dimen/code_container_height"
+            android:layout_marginTop="@dimen/margin_default"
+            android:layout_toEndOf="@id/fl_single_code_group_layout"
             android:layout_toRightOf="@id/fl_single_code_group_layout"
             android:background="@drawable/round_button_right">
 
@@ -82,10 +83,10 @@
                 android:id="@+id/tv_promo_code_copy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
-                android:textColor="@color/black_38"
-                android:text="Salin Kode" />
+                android:layout_centerVertical="true"
+                android:text="@string/label_copy_promo_code_loyalty_module"
+                android:textColor="@color/black_38" />
 
         </RelativeLayout>
 

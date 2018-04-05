@@ -20,4 +20,6 @@
     <string name="voucher_code_copy_to_clipboard">Kode voucher telah tersalin</string>
     <string name="bottom_sheet_title_promo_tooltips">Kode Promo</string>
     <string name="bottom_sheet_body_promo_tooltips">Masukan Kode Promo di halaman pembayaran</string>
+    <string name="syarat_amp_ketentuan"><![CDATA[Syarat & Ketentuan]]></string>
+    <string name="label_min_transaction_promo_loyalty_module">Minimum Transaksi</string>
 </resources>
