@@ -6,6 +6,7 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchItemResponse;
@@ -32,8 +33,8 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     private GetImageSearchUseCase getImageSearchUseCase;
 
     private final String REGION_ID = "ap-southeast-1";
-    private final String ACCESS_KEY_ID = "LTAIUeEWSvia1KkW";
-    private final String SECRET_KEY = "eJLV3PJCCEn7sqf5vVrIzaESTfsNdm";
+    private final String ACCESS_KEY_ID = AuthUtil.KEY.ALIYUN_ACCESS_KEY_ID;
+    private final String SECRET_KEY = AuthUtil.KEY.ALIYUN_SECRET_KEY;
     private final String END_POINT_NAME = "ap-southeast-1";
     private final String PRODUCT = "ImageSearch";
     private final String IMAGE_SEARCH_ALIYUN_DOMAIN = "imagesearch.ap-southeast-1.aliyuncs.com";
