@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
@@ -36,6 +38,7 @@ import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.core.helper.KeyboardHelper;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
@@ -122,8 +125,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         trace = TrackingUtils.startTrace("beranda_trace");
         super.onCreate(savedInstanceState);
-
-
         homeFragmentBroadcastReceiver = new HomeFragmentBroadcastReceiver();
         getActivity().registerReceiver(
                 homeFragmentBroadcastReceiver,
@@ -213,6 +214,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 } else {
                     floatingTextButton.setVisibility(View.GONE);
                 }
+            }
+        });
+
+        KeyboardHelper.setKeyboardVisibilityChangedListener(root, new KeyboardHelper.OnKeyboardVisibilityChangedListener() {
+            @Override
+            public void onKeyboardShown() {
+                floatingTextButton.forceHide();
+            }
+
+            @Override
+            public void onKeyboardHide() {
+                floatingTextButton.resetState();
             }
         });
     }

@@ -1,6 +1,5 @@
 package com.tokopedia.home.widget;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -12,8 +11,6 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
 /**
@@ -28,6 +25,7 @@ public class FabBehaviour extends CoordinatorLayout.Behavior<FloatingTextButton>
     private ViewPropertyAnimatorCompat animation = null;
 
     Handler mHandler;
+
     public FabBehaviour(Context context, AttributeSet attrs) {
         super();
     }
@@ -46,7 +44,6 @@ public class FabBehaviour extends CoordinatorLayout.Behavior<FloatingTextButton>
             @Override
             public void run() {
                 child.show();
-                Log.d("FabAnim", "startHandler()");
             }
         }, 3000);
     }

@@ -10,7 +10,6 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Handler;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,7 +19,6 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -51,7 +49,7 @@ public class FloatingTextButton extends FrameLayout {
     private static final Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
     private static final Long DURATION = 250L;
     private ViewPropertyAnimatorCompat animation = null;
-
+    private boolean forceHide = false;
     private boolean animationStart;
 
     public FloatingTextButton(Context context, AttributeSet attrs) {
@@ -217,6 +215,8 @@ public class FloatingTextButton extends FrameLayout {
     }
 
     private void show(final int visibility) {
+        if (forceHide)
+            return;
         animate().translationY(0).setInterpolator(new DecelerateInterpolator(2))
                 .setListener(new Animator.AnimatorListener() {
                     @Override
@@ -297,4 +297,12 @@ public class FloatingTextButton extends FrameLayout {
         }
     }
 
+    public void forceHide() {
+        forceHide = true;
+        hide();
+    }
+
+    public void resetState() {
+        this.forceHide = false;
+    }
 }
