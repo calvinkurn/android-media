@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.groupchat.common.di.scope.GroupChatScope;
 import com.tokopedia.groupchat.common.network.StreamErrorInterceptor;
 import com.tokopedia.groupchat.common.network.StreamErrorResponse;
@@ -41,7 +42,7 @@ public class GroupChatNetModule {
     @GroupChatScope
     @Provides
     public ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context).showNotification(true);
+        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
     }
 
 
@@ -51,13 +52,17 @@ public class GroupChatNetModule {
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor,
                                             AccountsAuthorizationInterceptor accountsAuthorizationInterceptor) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(chuckInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(new ErrorResponseInterceptor(StreamErrorResponse.class))
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(accountsAuthorizationInterceptor)
-                .build();
+                .addInterceptor(accountsAuthorizationInterceptor);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(chuckInterceptor)
+                    .addInterceptor(httpLoggingInterceptor);
+        }
+        return builder.build();
     }
 
 

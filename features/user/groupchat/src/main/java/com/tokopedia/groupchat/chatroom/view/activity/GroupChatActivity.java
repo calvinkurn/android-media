@@ -39,6 +39,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.CallbackManager;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
+import com.sendbird.android.User;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -1241,8 +1242,12 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void onUserBanned() {
-        onUserBanned(getString(R.string.user_is_banned));
+    public void onUserBanned(User user) {
+        if (user != null
+                && !TextUtils.isEmpty(user.getUserId())
+                && userSession.getUserId().equals(user.getUserId())) {
+            onUserBanned(getString(R.string.user_is_banned));
+        }
     }
 
     @Override

@@ -39,20 +39,22 @@ public class ChannelHandlerUseCase {
 
         void onUserExited(UserActionViewModel userActionViewModel, String participantCount);
 
-        void onUserBanned();
+        void onUserBanned(User user);
 
         void onChannelDeleted();
 
         void onChannelFrozen();
     }
 
-    public void execute(final String mChannelUrl, String channelHandlerId, final ChannelHandlerListener listener) {
+    public void execute(final String mChannelUrl, final String channelHandlerId, final ChannelHandlerListener listener) {
         SendBird.addChannelHandler(channelHandlerId, new SendBird.ChannelHandler() {
 
             @Override
             public void onChannelFrozen(OpenChannel channel) {
                 super.onChannelFrozen(channel);
-                listener.onChannelFrozen();
+                if (channel.getUrl().equals(mChannelUrl)) {
+                    listener.onChannelFrozen();
+                }
             }
 
             @Override
@@ -69,13 +71,17 @@ public class ChannelHandlerUseCase {
             @Override
             public void onUserBanned(OpenChannel channel, User user) {
                 super.onUserBanned(channel, user);
-                listener.onUserBanned();
+                if (channel.getUrl().equals(mChannelUrl)) {
+                    listener.onUserBanned(user);
+                }
             }
 
             @Override
             public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
                 super.onChannelDeleted(channelUrl, channelType);
-                listener.onChannelDeleted();
+                if (channelUrl.equals(mChannelUrl)) {
+                    listener.onChannelDeleted();
+                }
             }
 
             @Override
