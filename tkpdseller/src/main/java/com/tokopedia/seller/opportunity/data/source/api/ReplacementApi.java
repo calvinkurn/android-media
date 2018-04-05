@@ -1,6 +1,8 @@
 package com.tokopedia.seller.opportunity.data.source.api;
 
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.OpportunityDetail;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.opportunity.data.constant.OpportunityConstant;
@@ -28,4 +30,7 @@ public interface ReplacementApi {
 
     @GET(OpportunityConstant.NEW_PRICE_INFO)
     Observable<Response<TkpdResponse>> getOpportunityPriceInfo(@QueryMap Map<String, String> param);
+
+    @GET(OpportunityConstant.PATH_GET_OPPORTUNITY_DETAIL)
+    Observable<Response<DataResponse<OpportunityDetail>>> getOpportunityDetail(@QueryMap Map<String, String> param);
 }
