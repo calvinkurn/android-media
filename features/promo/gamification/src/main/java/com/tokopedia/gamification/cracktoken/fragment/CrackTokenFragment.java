@@ -352,8 +352,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     @Override
-    public void onErrorGetToken(Throwable throwable) {
-
+    public void onErrorGetToken(CrackResult crackResult) {
+        widgetCrackResult.showCrackResult(crackResult);
     }
 
     @Override
@@ -365,7 +365,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 // Do something after 1s = 1000ms
                 widgetTokenView.split();
 
-                widgetCrackResult.showCrackResult(crackResult, "Selamat anda mendapatkan");
+                widgetCrackResult.showCrackResult(crackResult);
 
                 trackingRewardLuckyEggView(crackResult.getBenefits().get(0).getText());
             }
@@ -381,7 +381,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 // Do something after 1s = 1000ms
                 widgetTokenView.stopShaking();
 
-                widgetCrackResult.showCrackResult(crackResult, "Maaf, sayang sekali sepertinya");
+                widgetCrackResult.showCrackResult(crackResult);
             }
         }, 1000);
     }

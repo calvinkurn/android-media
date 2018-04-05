@@ -9,6 +9,7 @@ import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
 import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
 import com.tokopedia.gamification.cracktoken.model.CrackButton;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
+import com.tokopedia.gamification.cracktoken.model.CrackResultStatus;
 import com.tokopedia.gamification.domain.GetCrackResultEggUseCase;
 import com.tokopedia.gamification.domain.GetTokenTokopointsUseCase;
 import com.tokopedia.gamification.floating.view.model.TokenData;
@@ -65,17 +66,20 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
                                 crackResult.getResultStatus().getCode().equals("42503")) {
                             // token user expired or invalid
                             // show expired page
-                            CrackResult expiredCrackResult = createExpiredCrackResult();
+                            CrackResult expiredCrackResult = createExpiredCrackResult(crackResult.getResultStatus());
                             getView().onErrorCrackToken(expiredCrackResult);
                         }
                     }
                 });
     }
 
-    private CrackResult createExpiredCrackResult() {
+    private CrackResult createExpiredCrackResult(CrackResultStatus resultStatus) {
         CrackResult crackResult = new CrackResult();
+
+        crackResult.setBenefitLabel("Maaf, Anda kurang cepat");
+
         List<CrackBenefit> crackBenefits = new ArrayList<>();
-        crackBenefits.add(new CrackBenefit("Mohon maaf, anda kurang cepat", "#ffffff", "medium"));
+        crackBenefits.add(new CrackBenefit("Tunggu Kesempatan Lainnya", "#ffffff", "medium"));
 
         Bitmap errorBitmap = BitmapFactory.decodeResource(getView().getResources(), R.drawable.image_error_crack_result);
 
@@ -87,11 +91,16 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         crackResult.setImageBitmap(errorBitmap);
         crackResult.setReturnButton(returnButton);
 
+        crackResult.setResultStatus(resultStatus);
+
         return crackResult;
     }
 
     private CrackResult createGeneralErrorCrackResult() {
         CrackResult crackResult = new CrackResult();
+
+        crackResult.setBenefitLabel("Maaf, sayang sekali sepertinya");
+
         List<CrackBenefit> crackBenefits = new ArrayList<>();
         crackBenefits.add(new CrackBenefit("Terjadi Kesalahan Teknis", "#ffffff", "medium"));
 
@@ -104,6 +113,11 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         crackResult.setBenefits(crackBenefits);
         crackResult.setImageBitmap(errorBitmap);
         crackResult.setReturnButton(returnButton);
+
+        CrackResultStatus crackResultStatus = new CrackResultStatus();
+        crackResultStatus.setCode("500");
+
+        crackResult.setResultStatus(crackResultStatus);
 
         return crackResult;
     }
@@ -119,7 +133,10 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
             @Override
             public void onError(Throwable e) {
                 getView().hideLoading();
-                getView().onErrorGetToken(e);
+
+                CrackResult crackResult = createGeneralErrorCrackResult();
+
+                getView().onErrorGetToken(crackResult);
             }
 
             @Override

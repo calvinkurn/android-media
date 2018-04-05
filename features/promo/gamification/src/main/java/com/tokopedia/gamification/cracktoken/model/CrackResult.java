@@ -17,6 +17,7 @@ public class CrackResult {
     private List<CrackBenefit> benefits;
     private CrackButton ctaButton;
     private CrackButton returnButton;
+    private String benefitLabel;
 
     public CrackResultStatus getResultStatus() {
         return resultStatus;
@@ -72,5 +73,13 @@ public class CrackResult {
 
     public void setImageBitmap(Bitmap imageBitmap) {
         this.imageBitmap = imageBitmap;
+    }
+
+    public void setBenefitLabel(String benefitLabel) {
+        this.benefitLabel = benefitLabel;
+    }
+
+    public String getBenefitLabel() {
+        return benefitLabel;
     }
 }
