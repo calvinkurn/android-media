@@ -45,6 +45,8 @@ public interface HomeContract {
         Activity getActivity();
 
         void updateListOnResume(List<Visitable> visitables);
+
+        void showRecomendationButton();
     }
 
     interface Presenter extends CustomerPresenter<View> {

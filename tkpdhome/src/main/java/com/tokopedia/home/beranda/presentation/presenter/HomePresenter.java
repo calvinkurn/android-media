@@ -69,6 +69,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private HomeFeedListener feedListener;
     private HeaderViewModel headerViewModel;
     private boolean fetchFirstData;
+    private long REQUEST_DELAY = 15000;// 15s
+    private long lastRequestTime;
 
     public HomePresenter(Context context) {
         this.context = context;
@@ -101,7 +103,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void onResume() {
-        if(isViewAttached() && !this.fetchFirstData) {
+        boolean needRefresh = (lastRequestTime + REQUEST_DELAY > System.currentTimeMillis());
+        if (isViewAttached() && !this.fetchFirstData && needRefresh) {
             subscription = getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -118,8 +121,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
                         @Override
                         public void onNext(List<Visitable> visitables) {
-                            if(isViewAttached()){
+                            if (isViewAttached() && isDataValid(visitables)) {
                                 getView().updateListOnResume(visitables);
+                                lastRequestTime = System.currentTimeMillis();
                             }
                         }
                     });
@@ -129,14 +133,20 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void getHomeData() {
-        initHeaderViewModelData();
-        subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(refreshData())
-                .onErrorResumeNext(getDataFromNetwork())
-                .subscribe(new HomeDataSubscriber());
-        compositeSubscription.add(subscription);
+        if (lastRequestTime + REQUEST_DELAY > System.currentTimeMillis()){
+            if(isViewAttached()){
+                getView().hideLoading();
+            }
+        } else {
+            initHeaderViewModelData();
+            subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(refreshData())
+                    .onErrorResumeNext(getDataFromNetwork())
+                    .subscribe(new HomeDataSubscriber());
+            compositeSubscription.add(subscription);
+        }
     }
 
     private void initHeaderViewModelData() {
@@ -411,27 +421,30 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     visitables.add(0, headerViewModel);
                 }
                 getView().setItems(visitables);
+                if (visitables.size() > 0) {
+                    getView().showRecomendationButton();
+                }
                 if (isDataValid(visitables)) {
                     getView().removeNetworkError();
+                    lastRequestTime = System.currentTimeMillis();
                 } else {
                     getView().showNetworkError(context.getString(R.string.msg_network_error));
                 }
             }
         }
 
-        private boolean isDataValid(List<Visitable> visitables) {
-            return containsInstance(visitables, BannerViewModel.class);
-        }
-
-        public <E> boolean containsInstance(List<E> list, Class<? extends E> clazz) {
-            for (E e : list) {
-                if (clazz.isInstance(e)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
     }
 
+    private boolean isDataValid(List<Visitable> visitables) {
+        return containsInstance(visitables, BannerViewModel.class);
+    }
+
+    public <E> boolean containsInstance(List<E> list, Class<? extends E> clazz) {
+        for (E e : list) {
+            if (clazz.isInstance(e)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
