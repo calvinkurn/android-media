@@ -1,6 +1,6 @@
 package com.tokopedia.session.addchangeemail.view.subscriber;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.R;
 import com.tokopedia.session.addchangeemail.view.listener.AddEmailListener;
 import com.tokopedia.session.addchangeemail.view.viewmodel.CheckEmailViewModel;
@@ -27,7 +27,7 @@ public class CheckEmailSubscriber extends Subscriber<CheckEmailViewModel> {
     @Override
     public void onError(Throwable throwable) {
         mainView.dismissLoading();
-        mainView.onErrorCheckEmail(ErrorHandler.getErrorMessage(mainView.getContext(), throwable));
+        mainView.onErrorCheckEmail(ErrorHandler.getErrorMessage(throwable));
     }
 
     @Override

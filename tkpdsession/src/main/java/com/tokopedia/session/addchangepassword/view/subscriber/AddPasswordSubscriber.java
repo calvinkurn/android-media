@@ -1,6 +1,6 @@
 package com.tokopedia.session.addchangepassword.view.subscriber;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.addchangepassword.view.listener.AddPasswordListener;
 import com.tokopedia.session.addchangepassword.view.viewmodel.AddPasswordViewModel;
 
@@ -25,7 +25,7 @@ public class AddPasswordSubscriber extends Subscriber<AddPasswordViewModel> {
     @Override
     public void onError(Throwable throwable) {
         mainView.dismissLoading();
-        mainView.onErrorSubmitPassword(ErrorHandler.getErrorMessage(mainView.getContext(), throwable));
+        mainView.onErrorSubmitPassword(ErrorHandler.getErrorMessage(throwable));
     }
 
     @Override
@@ -34,6 +34,6 @@ public class AddPasswordSubscriber extends Subscriber<AddPasswordViewModel> {
         if (addPasswordViewModel.isSuccess())
             mainView.onSuccessSubmitPassword();
         else
-            mainView.onErrorSubmitPassword(ErrorHandler.getErrorMessage(mainView.getContext(), new Throwable()));
+            mainView.onErrorSubmitPassword(ErrorHandler.getErrorMessage(new Throwable()));
     }
 }
