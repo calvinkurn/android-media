@@ -583,4 +583,10 @@ public class TopProfileActivity extends BaseSimpleActivity
         if (topProfileViewModel.isFollowed()) presenter.unfollowKol(userId);
         else presenter.followKol(userId);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.getTopProfileData(userId);
+    }
 }

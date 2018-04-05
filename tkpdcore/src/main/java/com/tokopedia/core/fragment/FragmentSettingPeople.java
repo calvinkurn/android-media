@@ -27,6 +27,7 @@ import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActi
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.util.ArrayList;
@@ -223,8 +224,8 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
 
     private void showNoPasswordDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getResources().getString(R.string.error_no_password_title));
-        builder.setMessage(getResources().getString(R.string.error_no_password_content_account));
+        builder.setTitle(getResources().getString(R.string.error_bank_no_password_title));
+        builder.setMessage(getResources().getString(R.string.error_bank_no_password_content));
         builder.setPositiveButton(getResources().getString(R.string.error_no_password_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -238,6 +239,11 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
                 dialogInterface.dismiss();
             }
         });
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
     }
 }

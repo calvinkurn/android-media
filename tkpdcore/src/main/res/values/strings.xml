@@ -580,10 +580,12 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="success_change_phone_number">Nomor Ponsel Berhasil Diubah</string>
     <string name="check_email_change_phone_number">Segera konfirmasi perubahan nomor ponsel melalui email Anda.</string>
     <string name="string_verified">Terverifikasi</string>
-    <string name="error_no_password_title">Anda tidak memiliki kata sandi</string>
-    <string name="error_no_password_content_account">Silahkan buat kata sandi Tokopedia terlebih dahulu untuk menambahkan rekening</string>
+    <string name="error_bank_no_password_title">Anda tidak memiliki kata sandi</string>
+    <string name="error_bank_no_password_content">Silahkan buat kata sandi Tokopedia terlebih dahulu untuk menambah rekening.</string>
     <string name="error_no_password_no">Tutup</string>
     <string name="error_no_password_yes">Buat kata sandi</string>
+    <string name="error_changeemail_no_password_title">Anda tidak memiliki kata sandi</string>
+    <string name="error_changeemail_no_password_content">Silahkan buat kata sandi terlebih dahulu untuk mengubah email.</string>
     <!-- Strings related Manage People -->
 
 
@@ -1626,6 +1628,8 @@ di Tokopedia Sekarang!</string>
 
     <string name="error_invalid_date">Tanggal tidak valid</string>
     <string name="error_no_amount_deposit">Maaf, Anda tidak memiliki saldo pada akun Anda saat ini.</string>
+    <string name="error_deposit_no_password_title">Anda tidak memiliki kata sandi</string>
+    <string name="error_deposit_no_password_content">Silahkan buat kata sandi terlebih dahulu untuk melakukan penarikan dana.</string>
 
     <string name="reputation_system_sub_for_user">Nilai untuk Anda : </string>
     <string name="reputation_system_sub_for_buyer">Nilai untuk Pembeli</string>

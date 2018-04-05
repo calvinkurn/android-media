@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import android.view.Window;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -34,6 +37,7 @@ import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFra
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.NetworkErrorHelper.RetryClickedListener;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -288,16 +292,51 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void showEmailVerificationDialog(String userEmail) {
-        DialogFragment fragment = EmailVerificationDialogFragment.createInstance(userEmail,
-                new EmailVerificationDialogFragment.EmailChangeConfirmationListener() {
-                    @Override
-                    public void onEmailChanged() {
-                        presenter.setOnNotifiedEmailChanged(getActivity());
-                    }
-                });
-        fragment.show(getFragmentManager(), EmailVerificationDialogFragment.class.getSimpleName());
+        UserSession session = ((AbstractionRouter)getActivity().getApplicationContext()).getSession();
+        if (session.isHasPassword()) {
+            DialogFragment fragment = EmailVerificationDialogFragment.createInstance(userEmail,
+                    new EmailVerificationDialogFragment.EmailChangeConfirmationListener() {
+                        @Override
+                        public void onEmailChanged() {
+                            presenter.setOnNotifiedEmailChanged(getActivity());
+                        }
+                    });
+            fragment.show(getFragmentManager(), EmailVerificationDialogFragment.class.getSimpleName());
+        } else {
+            showChangeEmailNoPassword(getActivity());
+        }
     }
 
+    private void showChangeEmailNoPassword(final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(context.getResources().getString(R.string.error_changeemail_no_password_title));
+        builder.setMessage(context.getResources().getString(R.string.error_changeemail_no_password_content));
+        builder.setPositiveButton(context.getResources().getString(R.string.error_no_password_yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                intentToAddPassword(context);
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton(context.getResources().getString(R.string.error_no_password_no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(context, R.color.black_54));
+        dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
+        dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(context, R.color.tkpd_main_green));
+        dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+    }
+
+    private void intentToAddPassword(Context context) {
+        context.startActivity(
+                ((TkpdCoreRouter)context.getApplicationContext())
+                        .getAddPasswordIntent(context));
+    }
     @Override
     public void showPhoneVerificationDialog(String userPhone) {
         SessionHandler.setPhoneNumber(userPhone);
