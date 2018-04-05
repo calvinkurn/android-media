@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import com.apollographql.android.rx.RxApollo;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
-import com.apollographql.apollo.ApolloWatcher;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
@@ -391,7 +390,6 @@ public class CartDataInteractor implements ICartDataInteractor {
                                    final List<CartItem> cartItemList,
                                    KeroRatesListener listener) {
 
-        // TODO: 4/2/18 add shipment graphql
         List<Observable<CartRatesData>> cartItemObservableList = new ArrayList<>();
         for (int i = 0; i < cartItemList.size(); i++) {
             if (isValidated(cartItemList, i)) {
@@ -403,7 +401,6 @@ public class CartDataInteractor implements ICartDataInteractor {
         if (cartItemObservableList.size() > 0) {
 
             Observable<CartRatesData> multipleRequest = Observable.merge(cartItemObservableList);
-
             compositeSubscription.add(multipleRequest.subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(responseList(listener)));
@@ -458,8 +455,6 @@ public class CartDataInteractor implements ICartDataInteractor {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-//                keroRatesListener.onAllDataCompleted();
             }
 
             @Override
@@ -473,35 +468,14 @@ public class CartDataInteractor implements ICartDataInteractor {
 
         TKPDMapParam<String, String> params = KeroppiParam.paramsKeroCart(token, ut, cartItem);
 
-
-        OngkirRatesInput ongkirRatesInput = OngkirRatesInput.builder()
-                .cat_id(params.get("cat_id"))
-                .destination(params.get("destination"))
-                .from(params.get("from"))
-                .insurance(params.get("insurance"))
-                .names(params.get("names"))
-                .order_value(params.get("order_value"))
-                .origin(params.get("origin"))
-                .product_insurance(params.get("product_insurance"))
-                .token(params.get("token"))
-                .ut(params.get("ut"))
-                .weight(params.get("weight"))
-                .build();
-
         ApolloCall<LogisticsRateQuery.Data> apolloWatcher = apolloClient.newCall(LogisticsRateQuery.builder()
-                .input(ongkirRatesInput)
+                .input(getOngkirRatesInputFromParam(params))
                 .build()
         );
 
         return RxApollo.from(apolloWatcher).toObservable();
-
-
-        //return keroAuthService.getApi().calculateShippingRate(keroRatesCartParam(token, ut, cartItem));
     }
 
-    private TKPDMapParam<String, String> keroRatesCartParam(String token, String ut, CartItem cartItem) {
-        return KeroppiParam.paramsKeroCart(token, ut, cartItem);
-    }
 
     private boolean isProductUseInsurance(CartItem cartItem) {
         for (CartProduct cartProduct : cartItem.getCartProducts()) {
@@ -511,6 +485,23 @@ public class CartDataInteractor implements ICartDataInteractor {
             }
         }
         return false;
+    }
+
+    private OngkirRatesInput getOngkirRatesInputFromParam(TKPDMapParam<String, String> params) {
+
+        return OngkirRatesInput.builder()
+                .cat_id(params.get(KeroppiParam.CAT_ID))
+                .destination(params.get(KeroppiParam.DESTINATION))
+                .from(params.get(KeroppiParam.FROM))
+                .insurance(params.get(KeroppiParam.INSURANCE))
+                .names(params.get(KeroppiParam.NAMES))
+                .order_value(params.get(KeroppiParam.ORDER_VALUE))
+                .origin(params.get(KeroppiParam.ORIGIN))
+                .product_insurance(params.get(KeroppiParam.PRODUCT_INSURANCE))
+                .token(params.get(KeroppiParam.TOKEN))
+                .ut(params.get(KeroppiParam.UT))
+                .weight(params.get(KeroppiParam.WEIGHT))
+                .build();
     }
 
 }
