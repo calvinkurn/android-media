@@ -81,7 +81,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         List<CrackBenefit> crackBenefits = new ArrayList<>();
         crackBenefits.add(new CrackBenefit("Tunggu Kesempatan Lainnya", "#ffffff", "medium"));
 
-        Bitmap errorBitmap = BitmapFactory.decodeResource(getView().getResources(), R.drawable.image_error_crack_result);
+        Bitmap errorBitmap = BitmapFactory.decodeResource(getView().getResources(), R.drawable.image_error_crack_result_expired);
 
         CrackButton returnButton = new CrackButton();
         returnButton.setTitle("Ok");
