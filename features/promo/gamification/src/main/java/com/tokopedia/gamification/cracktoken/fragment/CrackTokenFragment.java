@@ -2,8 +2,6 @@ package com.tokopedia.gamification.cracktoken.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -32,20 +30,13 @@ import com.tokopedia.gamification.cracktoken.compoundview.WidgetRemainingToken;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenOnBoarding;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
-import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
-import com.tokopedia.gamification.cracktoken.model.CrackButton;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenUser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * @author Rizky on 28/03/18.
@@ -353,27 +344,13 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     @Override
-    public void onErrorCrackToken(Throwable throwable) {
+    public void onErrorCrackToken(final CrackResult crackResult) {
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 // Do something after 1s = 1000ms
                 widgetTokenView.stopShaking();
-
-                CrackResult crackResult = new CrackResult();
-                List<CrackBenefit> crackBenefits = new ArrayList<>();
-                crackBenefits.add(new CrackBenefit("Terjadi Kesalahan Teknis", "#ffffff", "medium"));
-
-                Bitmap errorBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image_error_crack_result);
-
-                CrackButton returnButton = new CrackButton();
-                returnButton.setApplink("");
-                returnButton.setTitle("Coba Lagi");
-
-                crackResult.setBenefits(crackBenefits);
-                crackResult.setImageBitmap(errorBitmap);
-                crackResult.setReturnButton(returnButton);
 
                 widgetCrackResult.showCrackResult(crackResult, "Maaf, sayang sekali sepertinya");
             }
