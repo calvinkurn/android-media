@@ -191,23 +191,25 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
-            public void onClickCtaButton(String applink, String url) {
-                if (!TextUtils.isEmpty(applink) && ((GamificationRouter) getActivity().getApplicationContext())
-                        .isSupportedDelegateDeepLink(applink)) {
-                    ((GamificationRouter) getActivity().getApplicationContext())
-                            .actionApplink(getActivity(), applink);
-                } else if (!TextUtils.isEmpty(url)) {
-                    Intent intent = ((GamificationRouter) getActivity().getApplicationContext())
-                            .getWebviewActivityWithIntent(getActivity(), url, "TokoPoints");
-                    startActivity(intent);
+            public void onClickCtaButton(String type, String applink, String url) {
+                if (type.equals("dismiss")) {
+                    widgetCrackResult.clearCrackResult();
+
+                    crackTokenPresenter.getGetTokenTokopoints();
+                } else if (type.equals("redirect")) {
+                    navigateToAssociatedPage(applink, url);
                 }
             }
 
             @Override
-            public void onClickReturnButton() {
-                widgetCrackResult.clearCrackResult();
+            public void onClickReturnButton(String type, String applink, String url) {
+                if (type.equals("dismiss")) {
+                    widgetCrackResult.clearCrackResult();
 
-                crackTokenPresenter.getGetTokenTokopoints();
+                    crackTokenPresenter.getGetTokenTokopoints();
+                } else if (type.equals("redirect")) {
+                    navigateToAssociatedPage(applink, url);
+                }
             }
         });
         widgetRemainingToken.show();
@@ -215,6 +217,18 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 tokenData.getHome().getCountingMessage());
 
         showTimer(tokenData);
+    }
+
+    private void navigateToAssociatedPage(String applink, String url) {
+        if (!TextUtils.isEmpty(applink) && ((GamificationRouter) getActivity().getApplicationContext())
+                .isSupportedDelegateDeepLink(applink)) {
+            ((GamificationRouter) getActivity().getApplicationContext())
+                    .actionApplink(getActivity(), applink);
+        } else if (!TextUtils.isEmpty(url)) {
+            Intent intent = ((GamificationRouter) getActivity().getApplicationContext())
+                    .getWebviewActivityWithIntent(getActivity(), url, "TokoPoints");
+            startActivity(intent);
+        }
     }
 
     private void stopTimer() {
