@@ -564,10 +564,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private String appendTrackerAttributionIfNeeded(String applink, String trackingAttribution) {
-        if (isDiscoveryPage(applink) && !TextUtils.isEmpty(trackingAttribution)) {
-            return applink + "?tracker_attribution=" + trackingAttribution;
-        } else {
+        if (TextUtils.isEmpty(trackingAttribution)) {
             return applink;
+        }
+
+        if (applink.contains("?")) {
+            return applink + "&tracker_attribution=" + trackingAttribution;
+        } else {
+            return applink + "?tracker_attribution=" + trackingAttribution;
         }
     }
 
