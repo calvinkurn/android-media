@@ -10,18 +10,17 @@
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     android:gravity="start|top"
-    android:orientation="vertical"
-    android:padding="1dp">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">
 
-        <ImageView
+        <com.tokopedia.core.customwidget.SquareImageView
             android:id="@+id/product_image"
-            android:layout_width="@dimen/recent_view_image_size"
-            android:layout_height="@dimen/recent_view_image_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
@@ -29,6 +28,8 @@
             android:contentDescription="@string/image_product_desc"
             android:gravity="center"
             android:scaleType="centerCrop"
+            android:background="@drawable/cards_ui_feed_new"
+            android:adjustViewBounds="true"
             tools:src="@tools:sample/avatars"/>
 
         <LinearLayout

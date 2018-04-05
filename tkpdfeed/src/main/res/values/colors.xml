@@ -7,4 +7,5 @@
     <color name="shadow_color_3">#15CCCCCC</color>
     <color name="shadow_color_4">#20CCCCCC</color>
     <color name="shadow_color_5">#25CCCCCC</color>
+    <color name="feed_new_cards_border">#e0e0e0</color>
 </resources>
