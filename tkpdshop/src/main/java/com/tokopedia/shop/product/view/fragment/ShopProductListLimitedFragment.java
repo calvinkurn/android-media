@@ -13,7 +13,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -247,9 +246,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         if (shopInfo != null) {
             String officialWebViewUrl = shopInfo.getInfo().getShopOfficialTop();
             officialWebViewUrl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? officialWebViewUrl : "";
-            if (!TextUtils.isEmpty(officialWebViewUrl)) {
-                
-            }
             shopProductListLimitedPresenter.getProductLimitedList(
                     shopInfo.getInfo().getShopId(),
                     TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsGold()),
@@ -376,7 +372,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     public void renderList(@NonNull List<ShopProductBaseViewModel> list, boolean hasNextPage, boolean hasProduct) {
         renderList(list, hasNextPage);
         if (hasProduct) {
-            showBottomActionView();
+            initialProductAttributes();
         }
     }
 
@@ -386,7 +382,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         super.renderList(list, hasNextPage);
     }
 
-    private void showBottomActionView() {
+    private void initialProductAttributes() {
+        linearHeaderSticky.setVisibility(View.VISIBLE);
         bottomActionView.setVisibility(View.VISIBLE);
     }
 
