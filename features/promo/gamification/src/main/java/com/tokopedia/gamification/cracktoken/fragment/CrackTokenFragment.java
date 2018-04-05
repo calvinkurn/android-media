@@ -45,8 +45,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static android.content.Context.MODE_PRIVATE;
-
 /**
  * @author Rizky on 28/03/18.
  */

@@ -167,7 +167,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     }
 
     private void showFloatingEggAnimate(boolean hasDelay) {
-        if (vgFloatingEgg.getVisibility() == View.VISIBLE && !isHideAnimating && !serverOffFlag) {
+        if (vgFloatingEgg.getVisibility() == View.VISIBLE && !isHideAnimating && serverOffFlag) {
             return;
         }
         if (hasDelay) {
