@@ -1,5 +1,8 @@
 package com.tokopedia.gamification.cracktoken.compoundview;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -44,13 +47,11 @@ public class WidgetTokenView extends FrameLayout {
     private ImageView imageViewLightLeft;
     private ImageView imageViewLightRight;
 
-    private String imageRightUrl;
-    private String imageLeftUrl;
-
     private boolean isTokenClicked;
 
     private WidgetTokenListener listener;
     private View rootView;
+    private AnimatorSet crackingAnimationSet;
 
     public interface WidgetTokenListener {
         void onClick();
@@ -177,8 +178,8 @@ public class WidgetTokenView extends FrameLayout {
         List<String> imageUrls = tokenAsset.getImageUrls();
         String full = imageUrls.get(0);
         String cracked = imageUrls.get(4);
-        imageRightUrl = imageUrls.get(5);
-        imageLeftUrl = imageUrls.get(6);
+        String imageRightUrl = imageUrls.get(5);
+        String imageLeftUrl = imageUrls.get(6);
 
         ImageHandler.loadImageAndCache(imageViewFull, full);
         Glide.with(getContext())
@@ -226,12 +227,37 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     private void shakeHard() {
-        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.shake_hard);
-        imageViewFull.setAnimation(animation);
-        imageViewCracked.setAnimation(animation);
+        imageViewFull.setPivotY( 0.9f * imageViewFull.getHeight());
+        imageViewCracked.setPivotY( 0.9f * imageViewCracked.getHeight());
+        imageViewCracked.setVisibility(VISIBLE);
+
+        initCrackingAnimationSet();
+        crackingAnimationSet.start();
+    }
+
+    private void initCrackingAnimationSet(){
+        if (crackingAnimationSet == null) {
+            crackingAnimationSet = new AnimatorSet();
+            PropertyValuesHolder pvhShake =
+                    PropertyValuesHolder.ofFloat(View.ROTATION, -4, 4);
+            ObjectAnimator shakeAnimatorFull = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
+            shakeAnimatorFull.setRepeatMode(ValueAnimator.REVERSE);
+            shakeAnimatorFull.setRepeatCount(ValueAnimator.INFINITE);
+            shakeAnimatorFull.setDuration(100);
+
+            ObjectAnimator shakeAnimatorCrack = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhShake);
+            shakeAnimatorCrack.setRepeatMode(ValueAnimator.REVERSE);
+            shakeAnimatorCrack.setRepeatCount(ValueAnimator.INFINITE);
+            shakeAnimatorCrack.setDuration(100);
+
+            crackingAnimationSet.playTogether(shakeAnimatorFull, shakeAnimatorCrack);
+        }
     }
 
     public void stopShaking() {
+        if (crackingAnimationSet!= null) {
+            crackingAnimationSet.cancel();
+        }
         imageViewFull.clearAnimation();
         imageViewCracked.clearAnimation();
     }
@@ -257,6 +283,9 @@ public class WidgetTokenView extends FrameLayout {
         imageViewLeft.setVisibility(View.VISIBLE);
         imageViewRight.setVisibility(View.VISIBLE);
 
+        if (crackingAnimationSet!= null) {
+            crackingAnimationSet.cancel();
+        }
         imageViewFull.clearAnimation();
         imageViewCracked.clearAnimation();
 
@@ -290,6 +319,9 @@ public class WidgetTokenView extends FrameLayout {
 
         imageViewFull.clearAnimation();
         imageViewCracked.clearAnimation();
+        if (crackingAnimationSet!= null) {
+            crackingAnimationSet.cancel();
+        }
     }
 
 }
