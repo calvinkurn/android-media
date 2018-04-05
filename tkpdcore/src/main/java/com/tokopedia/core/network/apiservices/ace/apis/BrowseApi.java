@@ -33,6 +33,7 @@ public interface BrowseApi {
     String DEFAULT_VALUE_SOURCE_PRODUCT = "search_product";
     String DEFAULT_VALUE_SOURCE_CATALOG = "search_catalog";
     String DEFAULT_VALUE_SOURCE_SHOP = "search_shop";
+    String DEFAULT_VALUE_SOURCE_QUICK_FILTER = "quick_filter";
     String DEFAULT_VALUE_OF_PARAMETER_TERM = "true";
     String DEFAULT_VALUE_OF_PARAMETER_BREADCRUMB = "false";
     String DEFAULT_VALUE_OF_PARAMETER_START = "0";

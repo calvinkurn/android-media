@@ -14,9 +14,9 @@
             android:id="@+id/action_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/dp_5"
             android:layout_centerInParent="true"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             android:layout_alignParentRight="true"
             android:text="@string/action_edit"
             android:textColor="@color/tkpd_main_green"
@@ -33,15 +33,15 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="@dimen/margin_vs">
+            android:layout_marginBottom="@dimen/dp_5">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:paddingTop="@dimen/padding_small"
-                android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_small"
+                android:layout_marginTop="@dimen/dp_5"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
                 android:text="@string/title_section_last_solution_v2"
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/text_size_s_medium"
@@ -50,9 +50,9 @@
             <View
                 android:layout_width="20dp"
                 android:layout_height="1dp"
-                android:layout_marginTop="@dimen/margin_small"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:background="@color/deep_orange_500"
                 />
         </LinearLayout>
@@ -64,7 +64,7 @@
             android:text="@string/string_change"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginRight="@dimen/dp_10"
             android:textSize="@dimen/text_size_small"
             android:textColor="@color/tkpd_main_green"/>
 
@@ -79,7 +79,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/dp_10">
 
         <TextView
             android:layout_width="wrap_content"
@@ -99,7 +99,7 @@
 
         <TextView
             android:id="@+id/tv_last_solution_title"
-            android:layout_marginTop="@dimen/margin_sm"
+            android:layout_marginTop="@dimen/dp_15"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size_xsmall"
@@ -116,7 +116,7 @@
             />
 
         <TextView
-            android:layout_marginTop="@dimen/margin_sm"
+            android:layout_marginTop="@dimen/dp_15"
 
             android:id="@+id/tv_last_solution_date"
             android:layout_width="match_parent"
@@ -132,10 +132,10 @@
         android:id="@+id/action_discuss"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:gravity="center_vertical"
         android:textColor="@color/tkpd_main_green"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         />
 </LinearLayout>

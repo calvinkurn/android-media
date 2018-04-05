@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="@dimen/margin_sm">
+    android:padding="@dimen/dp_15">
 
     <ImageView
         android:id="@+id/image_view"
@@ -17,7 +17,7 @@
     <TextView
         android:id="@+id/text_view_title"
         style="@style/TextView.Title"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/dp_15"
         android:gravity="center"
         android:visibility="gone"
         tools:text="@string/app_name" />
@@ -25,7 +25,7 @@
     <TextView
         android:id="@+id/text_view_content"
         style="@style/TextView.Title.BlackDisabled"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/dp_15"
         android:gravity="center"
         android:visibility="gone"
         tools:visibility="visible"
@@ -34,7 +34,7 @@
     <TextView
         android:id="@+id/text_view_description"
         style="@style/TextView.Micro.BlackSecondary"
-        android:layout_marginTop="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/dp_8"
         android:gravity="center"
         android:visibility="gone"
         tools:visibility="visible"
@@ -43,7 +43,7 @@
     <TextView
         android:id="@+id/text_view_action"
         style="@style/TextView.Title.Green"
-        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginTop="@dimen/dp_30"
         android:clickable="true"
         android:gravity="center"
         android:visibility="gone"

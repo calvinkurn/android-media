@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_med"
         android:text="@string/dialog_payment_cancellation_confirmation"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/sp_14" />
 
     <TextView
         android:id="@+id/voucher_number"
@@ -18,14 +18,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_vs"
         android:text="@string/dialog_payment_cancellation_confirmation_detil1"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/sp_14" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_vs"
         android:text="@string/dialog_payment_cancellation_confirmation_detil2"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/sp_14" />
 
     <ListView
         android:id="@+id/voucher_list"

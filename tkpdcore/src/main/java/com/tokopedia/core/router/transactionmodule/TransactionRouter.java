@@ -3,6 +3,7 @@ package com.tokopedia.core.router.transactionmodule;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
@@ -26,6 +27,10 @@ public interface TransactionRouter {
     Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName);
 
     Intent getResolutionCenterIntent(Context context);
+
+    Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 
     Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest);
 

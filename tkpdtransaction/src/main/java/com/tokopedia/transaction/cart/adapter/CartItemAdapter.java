@@ -39,6 +39,7 @@ import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.CartPartialDeliver;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
+import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartShop;
@@ -67,6 +68,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private List<Object> dataList = new ArrayList<>();
     private SparseBooleanArray expandState = new SparseBooleanArray();
+    private boolean enableCancelPartial;
 
     public CartItemAdapter(Fragment hostFragment, CartItemActionListener cartItemActionListener) {
         this.hostFragment = hostFragment;
@@ -106,6 +108,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             renderHolderViewListener(holderItemCart, cartData, adapterProduct, position);
             renderInsuranceOption(holderItemCart, cartItemEditable);
+            renderAcceptPartial(holderItemCart);
             renderPickupPoint(holderItemCart, cartData);
         }
     }
@@ -159,6 +162,10 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST) {
             cartItemEditable.setUseInsurance(true);
         }
+    }
+
+    public void setEnableCancelPartial(boolean enableCancelPartial) {
+        this.enableCancelPartial = enableCancelPartial;
     }
 
     private void removeCartErrors(CartItemEditable cartItemEditable) {
@@ -702,6 +709,16 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    private void renderAcceptPartial(ViewHolder viewHolder) {
+        if (enableCancelPartial) {
+            viewHolder.labelPartialOrder.setVisibility(View.VISIBLE);
+            viewHolder.spShipmentOptionChoosen.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.labelPartialOrder.setVisibility(View.GONE);
+            viewHolder.spShipmentOptionChoosen.setVisibility(View.GONE);
+        }
+    }
+
     @NonNull
     private TextWatcher getWatcherEtDropShipperPhone(final CartItemEditable data,
                                                      final CartItem cartData,
@@ -869,6 +886,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ProgressBar totalPriceProgressBar;
         @BindView(R2.id.img_insurance_info)
         ImageView imgInsuranceInfo;
+        @BindView(R2.id.label_partial_order)
+        TextView labelPartialOrder;
         @BindView(R2.id.pickup_point_layout)
         PickupPointLayout pickupPointLayout;
 

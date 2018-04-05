@@ -6,12 +6,12 @@
     android:background="@color/white"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/padding_small"
-    android:paddingEnd="@dimen/padding_med"
-    android:paddingLeft="@dimen/activity_vertical_margin"
-    android:paddingRight="@dimen/padding_med"
-    android:paddingStart="@dimen/activity_vertical_margin"
-    android:paddingTop="@dimen/padding_small">
+    android:paddingBottom="@dimen/dp_10"
+    android:paddingEnd="@dimen/dp_20"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_20"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_10">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -43,7 +43,7 @@
             android:id="@+id/buyer_description_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginTop="@dimen/dp_20"
             android:orientation="vertical"
             android:visibility="gone"
             tools:visibility="visible">
@@ -67,7 +67,7 @@
             android:id="@+id/seller_description_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginTop="@dimen/dp_20"
             android:orientation="vertical"
             android:visibility="gone"
             tools:visibility="visible">
@@ -90,7 +90,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginTop="@dimen/dp_20"
             android:orientation="vertical">
 
             <TextView
@@ -121,9 +121,9 @@
             android:id="@+id/time_limit_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginStart="@dimen/margin_med"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_10"
             android:orientation="vertical">
 
             <TextView
@@ -137,7 +137,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/dark_blue_rounded_label"
-                android:padding="@dimen/padding_vvs"
+                android:padding="@dimen/dp_3"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_small"
                 tools:text="3 hari lagi" />
@@ -147,8 +147,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginStart="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_20"
             android:orientation="vertical">
 
             <TextView
@@ -169,9 +169,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginStart="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_20"
             android:orientation="vertical">
 
             <TextView
@@ -193,9 +193,9 @@
             android:id="@+id/preorder_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginStart="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_20"
             android:orientation="vertical">
 
             <TextView
@@ -216,9 +216,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginStart="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_20"
             android:orientation="vertical">
 
             <TextView
@@ -240,9 +240,9 @@
             android:id="@+id/dropshipper_name_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginStart="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_20"
             android:orientation="vertical">
 
             <TextView
@@ -265,9 +265,9 @@
             android:id="@+id/dropshipper_phone_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginStart="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_20"
             android:orientation="vertical">
 
             <TextView

@@ -128,5 +128,7 @@ public interface ICartView extends IBaseView {
 
     void setListnerCancelPromoLayoutOnAutoApplyCode();
 
+    void renderPartialOrder(boolean useCancelPartial);
+
     Context getContext();
 }

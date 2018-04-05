@@ -26,7 +26,6 @@ import rx.functions.Func1;
 
 public class LoginEmailUseCase extends UseCase<LoginEmailDomain> {
 
-    private final SessionHandler sessionHandler;
     private final GetTokenUseCase getTokenUseCase;
     private final GetUserInfoUseCase getUserInfoUseCase;
     private final MakeLoginUseCase makeLoginUseCase;
@@ -36,13 +35,11 @@ public class LoginEmailUseCase extends UseCase<LoginEmailDomain> {
                              PostExecutionThread postExecutionThread,
                              GetTokenUseCase getTokenUseCase,
                              GetUserInfoUseCase getUserInfoUseCase,
-                             MakeLoginUseCase makeLoginUseCase,
-                             SessionHandler sessionHandler) {
+                             MakeLoginUseCase makeLoginUseCase) {
         super(threadExecutor, postExecutionThread);
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
-        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -50,17 +47,7 @@ public class LoginEmailUseCase extends UseCase<LoginEmailDomain> {
         LoginEmailDomain domain = new LoginEmailDomain();
         return getToken(domain, requestParams)
                 .flatMap(getInfo(domain))
-                .flatMap(makeLogin(domain))
-                .doOnError(resetToken());
-    }
-
-    private Action1<Throwable> resetToken() {
-        return new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                sessionHandler.clearToken();
-            }
-        };
+                .flatMap(makeLogin(domain));
     }
 
     private Func1<LoginEmailDomain, Observable<LoginEmailDomain>> makeLogin(final LoginEmailDomain domain) {

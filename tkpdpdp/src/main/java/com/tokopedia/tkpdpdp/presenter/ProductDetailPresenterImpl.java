@@ -138,10 +138,15 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToShopInfo(@NonNull Context context, @NonNull Bundle bundle) {
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        viewListener.navigateToActivityRequest(intent,
-                ProductDetailFragment.REQUEST_CODE_SHOP_INFO);
+        String etalaseName = bundle.getString("etalase_name");
+        String etalaseId = bundle.getString("etalase_id");
+        Intent intent = null;
+        if(!TextUtils.isEmpty(etalaseId)) {
+            intent = ((PdpRouter) context.getApplicationContext()).getShoProductListIntent(context, bundle.getString("shop_id"), "", etalaseId);
+        }else{
+            intent = ((PdpRouter) context.getApplicationContext()).getShopPageIntent(context, bundle.getString("shop_id"));
+        }
+        viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_SHOP_INFO);
     }
 
     @Override
@@ -286,8 +291,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToEditProduct(@NonNull Context context, @NonNull Bundle bundle) {
         boolean isEdit = bundle.getBoolean("is_edit");
-        String productId = bundle.getString("product_id");
-        viewListener.moveToEditFragment(isEdit, productId);
+        viewListener.moveToEditFragment(isEdit);
     }
 
     @Override
@@ -345,7 +349,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             }
                             if (productDetailData.getInfo().getHasVariant() && useVariant) {
                                 getProductVariant(context
-                                        ,Integer.toString(productDetailData.getInfo().getProductId()));
+                                        , Integer.toString(productDetailData.getInfo().getProductId()));
                             } else {
                                 productDetailData.getInfo().setHasVariant(false);
                             }
@@ -439,7 +443,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         if (success) {
                             viewListener.showToastMessage(context
                                     .getString(R.string.title_sold_out_action));
-                           viewListener.onProductHasEdited();
+                            viewListener.onProductHasEdited();
                         }
                     }
 
@@ -860,7 +864,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         }
                         if (data.getInfo().getHasVariant() && useVariant) {
                             getProductVariant(context
-                                    ,Integer.toString(data.getInfo().getProductId()));
+                                    , Integer.toString(data.getInfo().getProductId()));
                         } else {
                             data.getInfo().setHasVariant(false);
                         }
@@ -1078,7 +1082,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void updateRecentView(@NonNull Context context, int productId) {
-        retrofitInteractor.updateRecentView(context,Integer.toString(productId));
+        retrofitInteractor.updateRecentView(context, Integer.toString(productId));
     }
 
     private void openPromoteAds(Context context, String url) {
@@ -1105,7 +1109,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 new RetrofitInteractor.ProductVariantListener() {
                     @Override
                     public void onSucccess(final ProductVariant productVariant) {
-                        if (productVariant!=null && productVariant.getVariant()!=null && productVariant.getVariant().size()>0) {
+                        if (productVariant != null && productVariant.getVariant() != null && productVariant.getVariant().size() > 0) {
                             viewListener.addProductVariant(productVariant);
                         }
                         viewListener.updateButtonBuyListener();

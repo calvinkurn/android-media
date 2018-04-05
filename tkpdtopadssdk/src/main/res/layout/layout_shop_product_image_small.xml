@@ -4,7 +4,7 @@
     android:id="@+id/image_container"
     android:layout_width="54dp"
     android:layout_height="@dimen/shop_box"
-    android:padding="@dimen/padding_vs"
+    android:padding="@dimen/dp_5"
     app:cardUseCompatPadding="true">
 
     <com.tokopedia.topads.sdk.view.SquareImageView

@@ -24,7 +24,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         android:layout_toEndOf="@id/checkbox_top_ads_add_product_list_non_promoted"
         android:layout_toRightOf="@id/checkbox_top_ads_add_product_list_non_promoted"
         android:textColor="@color/font_black_primary_70"
