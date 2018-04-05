@@ -35,7 +35,7 @@ public class CacheGetFingerprintUseCase extends GetFingerprintUseCase {
 
         String cache =  localCacheHandler.getString(FINGERPRINT_USE_CASE);
         if(TextUtils.isEmpty(cache) || localCacheHandler.isExpired()){
-            super.createObservable(requestParams);
+            return super.createObservable(requestParams);
         }
 
         return Observable.just(cache);
