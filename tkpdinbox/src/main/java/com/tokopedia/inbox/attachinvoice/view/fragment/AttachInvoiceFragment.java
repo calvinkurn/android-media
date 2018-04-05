@@ -12,12 +12,13 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.attachinvoice.data.mapper.TkpdResponseToInvoicesDataModelMapper;
-import com.tokopedia.inbox.attachinvoice.data.repository.AttachInvoicesRepositoryImpl;
+import com.tokopedia.inbox.attachinvoice.data.repository.AttachInvoicesRepository;
 import com.tokopedia.inbox.attachinvoice.data.source.service.GetTxInvoicesService;
+import com.tokopedia.inbox.attachinvoice.di.DaggerAttachInvoiceComponent;
 import com.tokopedia.inbox.attachinvoice.domain.usecase.AttachInvoicesUseCase;
 import com.tokopedia.inbox.attachinvoice.view.AttachInvoiceContract;
 import com.tokopedia.inbox.attachinvoice.view.activity.AttachInvoiceActivity;
@@ -26,25 +27,27 @@ import com.tokopedia.inbox.attachinvoice.view.adapter.AttachInvoiceListAdapterTy
 import com.tokopedia.inbox.attachinvoice.view.model.InvoiceViewModel;
 import com.tokopedia.inbox.attachinvoice.view.presenter.AttachInvoicePresenter;
 import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
-import com.tokopedia.inbox.attachproduct.view.fragment.AttachProductFragment;
-import com.tokopedia.inbox.attachproduct.view.presenter.AttachProductContract;
+import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by Hendri on 22/03/18.
  */
 
 public class AttachInvoiceFragment extends BaseListFragment<InvoiceViewModel,AttachInvoiceListAdapterTypeFactory> implements AttachInvoiceContract.View {
-    AttachInvoiceContract.Presenter presenter;
+
+    @Inject
+    AttachInvoicePresenter presenter;
+
     AttachInvoiceContract.Activity activity;
     private SwipeRefreshLayout swipeRefreshLayout;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new AttachInvoicePresenter(new AttachInvoicesUseCase(new AttachInvoicesRepositoryImpl(new GetTxInvoicesService(), new TkpdResponseToInvoicesDataModelMapper())));
-        presenter.attachView(this);
-        presenter.attachActivityContract(activity);
+//        presenter = new AttachInvoicePresenter(new AttachInvoicesUseCase(new AttachInvoicesRepository(new GetTxInvoicesService(), new TkpdResponseToInvoicesDataModelMapper())));
     }
 
     @Nullable
@@ -79,7 +82,13 @@ public class AttachInvoiceFragment extends BaseListFragment<InvoiceViewModel,Att
 
     @Override
     protected void initInjector() {
-
+        AppComponent appComponent = getComponent(AppComponent.class);
+        DaggerAttachInvoiceComponent daggerInboxChatComponent =
+                (DaggerAttachInvoiceComponent) DaggerAttachInvoiceComponent.builder()
+                        .appComponent(appComponent).build();
+        daggerInboxChatComponent.inject(this);
+        presenter.attachView(this);
+        presenter.attachActivityContract(activity);
     }
 
     @Override

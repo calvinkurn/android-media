@@ -5,8 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.attachinvoice.di.DaggerAttachInvoiceComponent;
 import com.tokopedia.inbox.attachinvoice.view.AttachInvoiceContract;
 import com.tokopedia.inbox.attachinvoice.view.fragment.AttachInvoiceFragment;
 import com.tokopedia.inbox.attachproduct.view.activity.AttachProductActivity;
@@ -19,7 +24,7 @@ import java.util.ArrayList;
  * Created by Hendri on 22/03/18.
  */
 
-public class AttachInvoiceActivity extends BaseSimpleActivity implements AttachInvoiceContract.Activity {
+public class AttachInvoiceActivity extends BaseSimpleActivity implements AttachInvoiceContract.Activity, HasComponent {
     public static String TOKOPEDIA_ATTACH_INVOICE_USER_ID_KEY = "ATTACH_INVOICE_USER_ID";
     public static String TOKOPEDIA_ATTACH_INVOICE_MSG_ID_KEY = "ATTACH_INVOICE_MSG_ID";
     public static final int TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114;
@@ -67,5 +72,10 @@ public class AttachInvoiceActivity extends BaseSimpleActivity implements AttachI
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_close_default));
         toolbar.setSubtitleTextAppearance(this,R.style.AttachProductToolbarSubTitle_SansSerif);
         toolbar.setTitleTextAppearance(this,R.style.AttachProductToolbarTitle_SansSerif);
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return ((MainApplication)getApplication()).getAppComponent();
     }
 }

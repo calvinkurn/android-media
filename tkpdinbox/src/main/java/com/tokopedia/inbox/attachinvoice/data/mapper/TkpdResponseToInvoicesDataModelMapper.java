@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -27,6 +29,11 @@ import rx.functions.Func1;
  */
 
 public class TkpdResponseToInvoicesDataModelMapper implements Func1<Response<GetInvoicesResponseWrapper>, List<Invoice>> {
+
+    @Inject
+    public TkpdResponseToInvoicesDataModelMapper() {
+    }
+
     @Override
     public List<Invoice> call(Response<GetInvoicesResponseWrapper> getInvoicesResponseWrapperResponse) {
         GetInvoicesResponseWrapper responseWrapper = getInvoicesResponseWrapperResponse.body();

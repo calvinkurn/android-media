@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -30,6 +32,7 @@ public class AttachInvoicesUseCase extends UseCase<List<InvoiceViewModel>>{
     public static int DEFAULT_LIMIT = 10;
     AttachInvoicesRepository repository;
 
+    @Inject
     public AttachInvoicesUseCase(AttachInvoicesRepository repository) {
         this.repository = repository;
     }
