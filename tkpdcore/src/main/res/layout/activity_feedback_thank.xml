@@ -10,7 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="@dimen/toolbar_elevation"
+        android:elevation="@dimen/dp_4"
         android:theme="?toolbarTheme"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
@@ -48,12 +48,13 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"/>
 
-            <Button
+            <com.tokopedia.design.component.ButtonCompat
                 android:layout_marginTop="@dimen/new_icon_size"
                 android:id="@+id/btn_fb_action"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Button.Primary.Medium"
+                app:buttonCompatSize="medium"
+                app:buttonCompatType="primary"
                 android:textAllCaps="false"/>
 
         </LinearLayout>

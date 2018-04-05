@@ -10,7 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="@dimen/toolbar_elevation"
+        android:elevation="@dimen/dp_4"
         android:theme="?toolbarTheme"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
@@ -66,12 +66,13 @@
                 android:minLines="4"
                 android:scrollbars="vertical"  />
 
-            <Button
+            <com.tokopedia.design.component.ButtonCompat
                 android:layout_marginTop="@dimen/new_icon_size"
                 android:id="@+id/btn_fb_send"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Button.Primary.Medium"
+                app:buttonCompatType="primary"
+                app:buttonCompatSize="medium"
                 android:text="@string/fb_send"
                 android:textAllCaps="false"/>
 
