@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.topads.sdk.R;
@@ -31,6 +32,7 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
     private TopAdsItemClickListener itemClickListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
     private GridLayoutManager layoutManager;
+    private View promotedLayout;
 
     public TopAdsFeedWidgetView(Context context) {
         super(context);
@@ -48,7 +50,7 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
     }
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
-        inflate(getContext(), R.layout.layout_ads, this);
+        inflate(getContext(), R.layout.layout_ads_feed_new, this);
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new FeedNewAdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
@@ -61,6 +63,8 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        promotedLayout = findViewById(R.id.promoted_layout);
     }
 
     public void setData(List<Data> data) {
@@ -70,9 +74,13 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
             if (d.getProduct() != null) {
                 layoutManager.setSpanCount(data.size() == 4 ? 2 : 3);
                 visitables.add(ModelConverter.convertToProductFeedNewViewModel(d));
+
+                promotedLayout.setVisibility(View.VISIBLE);
             } else if (d.getShop() != null) {
                 layoutManager.setSpanCount(1);
                 visitables.add(ModelConverter.convertToShopFeedNewViewModel(d));
+
+                promotedLayout.setVisibility(View.GONE);
             }
         }
         adapter.setList(visitables);
