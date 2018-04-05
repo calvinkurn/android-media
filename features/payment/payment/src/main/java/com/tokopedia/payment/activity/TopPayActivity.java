@@ -10,8 +10,11 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -56,7 +59,7 @@ import javax.inject.Inject;
  * Created by kris on 3/9/17. Tokopedia
  */
 
-public class TopPayActivity extends Activity implements TopPayContract.View, FingerPrintUIHelper.Callback {
+public class TopPayActivity extends AppCompatActivity implements TopPayContract.View, FingerPrintUIHelper.Callback {
     private static final String TAG = TopPayActivity.class.getSimpleName();
 
     public static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
@@ -130,6 +133,13 @@ public class TopPayActivity extends Activity implements TopPayContract.View, Fin
         initVar();
         setViewListener();
         setActionVar();
+    }
+
+    @Override
+    protected void onResume() {
+        fingerPrintUIHelper = new FingerPrintUIHelper(this, "", presenter.getUserId(), "", "");
+        fingerPrintUIHelper.startListening(this);
+        super.onResume();
     }
 
     private void initInjector() {
@@ -306,13 +316,13 @@ public class TopPayActivity extends Activity implements TopPayContract.View, Fin
     }
 
     @Override
-    public void onRegisterFingerPrint(String transactionId, String publicKey, String date, String accountSignature, String userId) {
-        presenter.registerFingerPrint(transactionId, publicKey, date, accountSignature, userId);
+    public void onPaymentFingerPrint(String transactionId, String partner, String publicKey, String date, String accountSignature, String userId) {
+        presenter.paymentFingerPrint(transactionId, partner, publicKey, date, accountSignature, userId);
     }
 
     @Override
-    public void onPaymentFingerPrint(String transactionId, String partner, String publicKey, String date, String accountSignature, String userId) {
-        presenter.paymentFingerPrint(transactionId, partner, publicKey, date, accountSignature, userId);
+    public void onGoToOtpPage(String urlOtp) {
+        scroogeWebView.loadUrl(urlOtp);
     }
 
     private class TopPayWebViewClient extends WebViewClient {
@@ -326,9 +336,7 @@ public class TopPayActivity extends Activity implements TopPayContract.View, Fin
             if (!url.isEmpty() && url.contains(Constant.TempRedirectPayment.APP_LINK_FINGERPRINT)) {
                 Uri uri = Uri.parse(url);
                 String transactionId = uri.getQueryParameter(FingerprintConstant.TRANSACTION_ID);
-                String ccHashed = uri.getQueryParameter(FingerprintConstant.CC_HASHED);
-                fingerPrintUIHelper = new FingerPrintUIHelper(TopPayActivity.this, transactionId, ccHashed,
-                        FingerPrintUIHelper.Stage.REGISTER, presenter.getUserId(), "");
+                fingerPrintUIHelper = new FingerPrintUIHelper(TopPayActivity.this, transactionId, presenter.getUserId(), "", url);
                 fingerPrintUIHelper.startListening(TopPayActivity.this);
                 return true;
             }

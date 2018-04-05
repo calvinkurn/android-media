@@ -61,7 +61,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         return bottomSheetBehavior;
     }
 
-    private void configView(final View parentView) {
+    protected void configView(final View parentView) {
         TextView textViewTitle = parentView.findViewById(R.id.tv_title);
         textViewTitle.setText(title());
 

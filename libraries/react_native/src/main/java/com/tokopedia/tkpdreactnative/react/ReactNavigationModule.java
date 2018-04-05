@@ -108,6 +108,11 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void goToFingerprintThanks(String transactionId, String ccHashed){
+
+    }
+
+    @ReactMethod
     public void getFlavor(Promise promise) {
         if (getCurrentActivity() != null && getCurrentActivity().getApplication() instanceof TkpdCoreRouter){
             promise.resolve(((TkpdCoreRouter) getCurrentActivity().getApplication()).getFlavor());

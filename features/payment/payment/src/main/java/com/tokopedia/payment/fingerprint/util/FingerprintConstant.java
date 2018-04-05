@@ -14,4 +14,5 @@ public class FingerprintConstant {
     public static final String V2_PAYMENT_CC_FINGERPRINT = "/v2/payment/cc/fingerprint";
     public static final String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com";
     public static final String TOP_PAY_DOMAIN = "https://pay.tokopedia.id";
+    public static final String TAG_FINGERPRINT_DIALOG = "fingerprint_dialog";
 }

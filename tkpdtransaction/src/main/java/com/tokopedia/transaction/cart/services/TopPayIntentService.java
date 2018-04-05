@@ -13,6 +13,7 @@ import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
@@ -23,12 +24,18 @@ import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
 
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PublicKey;
+import java.security.cert.CertificateException;
+import java.security.spec.RSAKeyGenParameterSpec;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -48,7 +55,6 @@ public class TopPayIntentService extends IntentService {
     public static final int SERVICE_ACTION_GET_THANKS_TOP_PAY = 2;
     public static final String FINGERPRINT_PUBLICKEY = "fingerprint_publickey";
     public static final String FINGERPRINT_SUPPORT = "fingerprint_support";
-    public static final String FINGERPRINT_SUPPORT1 = "fingerprint_support";
     public static final String ANDROID_KEY_STORE = "AndroidKeyStore";
     public static final String FINGERPRINT = "fingerprint";
 
@@ -260,30 +266,16 @@ public class TopPayIntentService extends IntentService {
 
     private TKPDMapParam<String, Object> createParamFingerprint(TKPDMapParam<String, Object> params) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            FingerprintManagerCompat fingerprintManagerCompat = FingerprintManagerCompat.from(this);
-            if (fingerprintManagerCompat.isHardwareDetected() && fingerprintManagerCompat.hasEnrolledFingerprints()) {
-                String publicKey = "";
-                try {
-                    KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, ANDROID_KEY_STORE);
-                    KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder(FINGERPRINT,
-                            KeyProperties.PURPOSE_ENCRYPT |
-                                    KeyProperties.PURPOSE_DECRYPT)
-                            .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
-                            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_OAEP)
-                            .setBlockModes(KeyProperties.BLOCK_MODE_ECB);
-                    keyPairGenerator.initialize(builder.build());
-                    byte[] publicKeyBytes = Base64.encode(keyPairGenerator.generateKeyPair().getPublic().getEncoded(), 0);
-                    publicKey = new String(publicKeyBytes);
-                } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
-                    e.printStackTrace();
-                } catch (NoSuchProviderException e) {
-                    e.printStackTrace();
-                }
-                params.put(FINGERPRINT_PUBLICKEY, publicKey);
+            PublicKey publicKey = FingerPrintDialog.generatePublicKey(this);
+            if(publicKey != null){
+                byte[] publicKeyBytes = Base64.encode(publicKey.getEncoded(), 0);
+                params.put(FINGERPRINT_PUBLICKEY, new String(publicKeyBytes));
                 params.put(FINGERPRINT_SUPPORT, true);
             }else{
-                params.put(FINGERPRINT_SUPPORT1, false);
+                params.put(FINGERPRINT_SUPPORT, false);
             }
+        }else{
+            params.put(FINGERPRINT_SUPPORT, false);
         }
         return params;
 

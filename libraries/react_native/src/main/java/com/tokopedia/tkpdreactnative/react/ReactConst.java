@@ -27,6 +27,7 @@ public interface ReactConst {
     }
 
     interface EventEmitter{
+        String THANKS_FINGERPRINT_HIDE = "FingerprintHide";
         String WISHLIST_ADD = "WishlistAdd";
         String WISHLIST_REMOVE = "WishlistRemove";
         String FAVORITE_ADD = "FavoriteAdd";
