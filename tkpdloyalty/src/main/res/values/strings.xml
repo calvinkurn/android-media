@@ -15,4 +15,9 @@
     <string name="label_period_promo_loyalty_module">Periode Promo</string>
     <string name="message_error_data_empty_get_promo_list">Promo tidak tersedia</string>
     <string name="title_activity_promo_detail_tnc">PromoDetailTncActivity</string>
+    <string name="title_promo_detail">Promo Detail</string>
+    <string name="share_promo_additional_text">| Tokopedia</string>
+    <string name="voucher_code_copy_to_clipboard">Kode voucher telah tersalin</string>
+    <string name="bottom_sheet_title_promo_tooltips">Kode Promo</string>
+    <string name="bottom_sheet_body_promo_tooltips">Masukan Kode Promo di halaman pembayaran</string>
 </resources>

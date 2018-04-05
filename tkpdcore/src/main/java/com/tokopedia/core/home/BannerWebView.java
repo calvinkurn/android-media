@@ -37,7 +37,6 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
     private FragmentBannerWebView fragment;
     public static final String EXTRA_URL = "url";
 
-//    @DeepLink({Constants.Applinks.PROMO, Constants.Applinks.PROMO_CATEGORY, Constants.Applinks.PROMO_WITH_DASH})
     @DeepLink({Constants.Applinks.PROMO})
     public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
         String promoId = bundle.getString(ARGS_PROMO_ID, "");

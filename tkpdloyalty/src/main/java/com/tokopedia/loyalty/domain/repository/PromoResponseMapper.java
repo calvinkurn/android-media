@@ -220,32 +220,4 @@ public class PromoResponseMapper implements IPromoResponseMapper {
         return promoMenuDataList;
     }
 
-    private List<PromoCodeViewModel> getPromoCodeList() {
-        List<SingleCodeViewModel> singleCodeViewModelList = new ArrayList<>();
-        singleCodeViewModelList.add(getSingleCodeViewModel("PROMOABC"));
-        singleCodeViewModelList.add(getSingleCodeViewModel("PROMODEF"));
-        singleCodeViewModelList.add(getSingleCodeViewModel("PROMOGHI"));
-
-        List<PromoCodeViewModel> promoCodeViewModelList = new ArrayList<>();
-        promoCodeViewModelList.add(getPromoCodeViewModel("Promo Untuk Pelanggan BCA", singleCodeViewModelList));
-        promoCodeViewModelList.add(getPromoCodeViewModel("Promo Untuk Pelanggan BRI", singleCodeViewModelList));
-        promoCodeViewModelList.add(getPromoCodeViewModel("Promo Untuk Pelanggan Mandiri", singleCodeViewModelList));
-
-        return promoCodeViewModelList;
-    }
-
-    private SingleCodeViewModel getSingleCodeViewModel(String singleCode) {
-        SingleCodeViewModel singleCodeViewModel = new SingleCodeViewModel();
-        singleCodeViewModel.setSingleCode(singleCode);
-        return singleCodeViewModel;
-    }
-
-    private PromoCodeViewModel getPromoCodeViewModel(String title, List<SingleCodeViewModel> singleCodeViewModelList) {
-        PromoCodeViewModel promoCodeViewModel1 = new PromoCodeViewModel();
-        promoCodeViewModel1.setGroupCodeTitle(title);
-        promoCodeViewModel1.setGroupCodeDescription("Kode 1 untuk LG G6 Plus & Kode 2 untuk LG Q6 Plus");
-        promoCodeViewModel1.setGroupCode(singleCodeViewModelList);
-
-        return promoCodeViewModel1;
-    }
 }

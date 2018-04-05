@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoDetailComponent;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
 import com.tokopedia.loyalty.view.data.PromoData;
@@ -25,9 +26,9 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
         PromoDetailFragment.OnFragmentInteractionListener {
 
     private static final String EXTRA_PROMO_DATA = "promo_data";
-    private static final String EXTRA_PROMO_SLUG = "promo_slug";
+    private static final String EXTRA_PROMO_SLUG = "slug";
 
-    PromoDetailComponent component;
+    private PromoDetailComponent component;
 
     public static Intent getCallingIntent(Context context, PromoData promoData) {
         Intent intent = new Intent(context, PromoDetailActivity.class);
@@ -43,14 +44,14 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
 
     @DeepLink(Constants.Applinks.PROMO_DETAIL)
     public static Intent getAppLinkIntent(Context context, Bundle extras) {
-        String slug = extras.getString("slug");
+        String slug = extras.getString(EXTRA_PROMO_SLUG);
         return PromoDetailActivity.getCallingIntent(context, slug);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateTitle("Promo Detail");
+        updateTitle(getString(R.string.title_promo_detail));
     }
 
     @Override
@@ -67,14 +68,14 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
 
     @Override
     public PromoDetailComponent getComponent() {
-        if (this.component == null) initInjector();
-        return this.component;
-    }
+        if (this.component == null) {
+            BaseMainApplication application = ((BaseMainApplication) getApplication());
+            this.component = DaggerPromoDetailComponent.builder()
+                    .baseAppComponent(application.getBaseAppComponent())
+                    .build();
+        }
 
-    private void initInjector() {
-        this.component = DaggerPromoDetailComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                .build();
+        return this.component;
     }
 
     @Override
@@ -83,7 +84,8 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
                 .setType(ShareData.PROMO_TYPE)
                 .setId(promoData.getSlug())
                 .setName(promoData.getTitle())
-                .setTextContent(promoData.getTitle() + " | Tokopedia")
+                .setTextContent(promoData.getTitle()
+                        + getString(R.string.share_promo_additional_text))
                 .setUri(promoData.getLink())
                 .build();
         this.startActivity(ShareActivity.createIntent(this, shareData));

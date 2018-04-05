@@ -3,8 +3,6 @@ package com.tokopedia.loyalty.view.fragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -15,10 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -28,6 +29,7 @@ import com.tokopedia.loyalty.view.adapter.PromoDetailAdapter;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.mapper.PromoDataMapper;
 import com.tokopedia.loyalty.view.presenter.PromoDetailPresenter;
+import com.tokopedia.loyalty.view.analytics.PromoDetailAnalytics;
 import com.tokopedia.loyalty.view.view.IPromoDetailView;
 
 import javax.inject.Inject;
@@ -36,25 +38,28 @@ import javax.inject.Inject;
  * @author Aghny A. Putra on 23/03/18
  */
 
-public class PromoDetailFragment extends BaseDaggerFragment implements IPromoDetailView {
+public class PromoDetailFragment extends BaseDaggerFragment
+        implements IPromoDetailView, RefreshHandler.OnRefreshHandlerListener {
 
     private static final String ARG_EXTRA_PROMO_FLAG = "flag";
     private static final String ARG_EXTRA_PROMO_DATA = "promo_data";
-    private static final String ARG_EXTRA_PROMO_SLUG = "promo-slug";
+    private static final String ARG_EXTRA_PROMO_SLUG = "slug";
 
     private static final int DETAIL_PROMO_FROM_DATA = 0;
     private static final int DETAIL_PROMO_FROM_SLUG = 1;
 
-    private static final int REQUEST_CODE_PROMO_DETAIL = 118;
+    private RefreshHandler refreshHandler;
 
+    private RelativeLayout rlContainerLayout;
     private TextView tvPromoDetailAction;
     private RecyclerView rvPromoDetailView;
     private LinearLayout llPromoDetailBottomLayout;
     private BottomSheetView bottomSheetInfoPromoCode;
 
     private String promoSlug;
-    private PromoDetailFragment.OnFragmentInteractionListener actionListener;
+    private OnFragmentInteractionListener actionListener;
 
+    @Inject PromoDetailAnalytics promoDetailAnalytics;
     @Inject PromoDetailPresenter promoDetailPresenter;
     @Inject PromoDetailAdapter promoDetailAdapter;
     @Inject PromoDataMapper promoDataMapper;
@@ -110,9 +115,11 @@ public class PromoDetailFragment extends BaseDaggerFragment implements IPromoDet
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_promo_detail, container, false);
 
+        this.refreshHandler = new RefreshHandler(getActivity(), view, this);
+
+        this.rlContainerLayout = view.findViewById(R.id.container);
         this.llPromoDetailBottomLayout = view.findViewById(R.id.ll_promo_detail_bottom_layout);
         this.tvPromoDetailAction = view.findViewById(R.id.tv_promo_detail_action);
         this.rvPromoDetailView = view.findViewById(R.id.rv_promo_detail_view);
@@ -123,37 +130,18 @@ public class PromoDetailFragment extends BaseDaggerFragment implements IPromoDet
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         this.llPromoDetailBottomLayout.setVisibility(View.VISIBLE);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-
         this.rvPromoDetailView.setAdapter(promoDetailAdapter);
-        this.rvPromoDetailView.setLayoutManager(layoutManager);
+        this.rvPromoDetailView.setLayoutManager(new LinearLayoutManager(getActivity()));
         this.rvPromoDetailView.setHasFixedSize(true);
-
-        layoutManager.smoothScrollToPosition(this.rvPromoDetailView, null, 0);
 
         this.promoDetailAdapter.setAdapterListener(getAdapterActionListener());
 
-        //presenter
-        promoDetailPresenter.attachView(this);
-        promoDetailPresenter.getPromoDetail(promoSlug);
-    }
+        this.promoDetailPresenter.attachView(this);
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_PROMO_DETAIL) {
-
-        }
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(PromoData promoData) {
-        if (this.actionListener != null) {
-            this.actionListener.onSharePromo(promoData);
-        }
+        onRefresh(view);
     }
 
     @Override
@@ -170,7 +158,38 @@ public class PromoDetailFragment extends BaseDaggerFragment implements IPromoDet
     @Override
     public void onDetach() {
         super.onDetach();
+        this.promoDetailPresenter.detachView();
         this.actionListener = null;
+    }
+
+    @Override
+    public void renderPromoDetail(PromoData promoData) {
+        View errorView = this.rlContainerLayout.findViewById(com.tokopedia.core.R.id.main_retry);
+        if (errorView != null) errorView.setVisibility(View.GONE);
+
+        this.promoDetailAdapter.setPromoDetail(promoDataMapper.convert(promoData));
+        this.promoDetailAdapter.notifyDataSetChanged();
+        setFragmentLayout(promoData);
+    }
+
+    @Override
+    public void renderErrorShowingPromoDetail() {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionGetPromoDetail(String message) {
+        handleErrorEmptyState(message);
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionGetPromoDetail(String message) {
+        handleErrorEmptyState(message);
+    }
+
+    @Override
+    public void renderErrorHttpGetPromoDetail(String message) {
+        handleErrorEmptyState(message);
     }
 
     private PromoDetailAdapter.OnAdapterActionListener getAdapterActionListener() {
@@ -182,7 +201,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements IPromoDet
 
             @Override
             public void onItemPromoCodeCopyClipboardClicked(String promoCode) {
-                String message = "Kode Voucher telah tersalin";
+                String message = getString(R.string.voucher_code_copy_to_clipboard);
 
                 if (getView() != null) Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
                 else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
@@ -198,14 +217,13 @@ public class PromoDetailFragment extends BaseDaggerFragment implements IPromoDet
 
             @Override
             public void onItemPromoCodeTooltipClicked() {
-                UnifyTracking.eventPromoTooltipClickOpenTooltip();
                 if (bottomSheetInfoPromoCode == null) {
                     bottomSheetInfoPromoCode = new BottomSheetView(getActivity());
 
                     bottomSheetInfoPromoCode.renderBottomSheet(new BottomSheetView.BottomSheetField
                             .BottomSheetFieldBuilder()
-                            .setTitle("Kode Promo")
-                            .setBody("Masukan Kode Promo di halaman pembayaran")
+                            .setTitle(getString(R.string.bottom_sheet_title_promo_tooltips))
+                            .setBody(getString(R.string.bottom_sheet_body_promo_tooltips))
                             .setImg(R.drawable.ic_promo)
                             .build());
 
@@ -217,7 +235,6 @@ public class PromoDetailFragment extends BaseDaggerFragment implements IPromoDet
 
                         @Override
                         public void clickOnButton(String url, String appLink) {
-                            UnifyTracking.eventPromoTooltipClickCloseTooltip();
                         }
                     });
                 }
@@ -233,13 +250,6 @@ public class PromoDetailFragment extends BaseDaggerFragment implements IPromoDet
                 }
             }
         };
-    }
-
-    @Override
-    public void renderPromoDetail(PromoData promoData) {
-        this.promoDetailAdapter.setPromoDetail(promoDataMapper.convert(promoData));
-        this.promoDetailAdapter.notifyDataSetChanged();
-        setFragmentLayout(promoData);
     }
 
     private void setFragmentLayout(final PromoData promoData) {
@@ -259,10 +269,23 @@ public class PromoDetailFragment extends BaseDaggerFragment implements IPromoDet
                         tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
                     }
                 }
-
-//                dPresenter.sendClickItemPromoListTrackingData(promoData, position, promoMenuData.getTitle());
             }
         });
+    }
+
+    private void handleErrorEmptyState(String message) {
+        NetworkErrorHelper.showEmptyState(getActivity(), this.rlContainerLayout, message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        refreshHandler.startRefresh();
+                    }
+                });
+    }
+
+    @Override
+    public void onRefresh(View view) {
+        this.promoDetailPresenter.getPromoDetail(promoSlug);
     }
 
     /**

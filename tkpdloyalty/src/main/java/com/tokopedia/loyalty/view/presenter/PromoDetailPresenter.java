@@ -1,17 +1,30 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import com.tokopedia.core.network.exception.HttpErrorException;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
 import com.tokopedia.loyalty.view.view.IPromoDetailView;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
 
-public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView> {
+/**
+ * @author Aghny A. Putra on 4/4/18
+ */
+
+public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView>
+        implements IPromoDetailPresenter {
+
+    private static final String KEY_PARAM_SLUG = "slug";
+
     private final IPromoInteractor promoInteractor;
 
     @Inject
@@ -19,9 +32,12 @@ public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView> {
         this.promoInteractor = promoInteractor;
     }
 
+    @Override
     public void getPromoDetail(String slug) {
+
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("slug", slug);
+        param.put(KEY_PARAM_SLUG, slug);
+
         this.promoInteractor.getPromoList(param, new Subscriber<List<PromoData>>() {
             @Override
             public void onCompleted() {
@@ -30,12 +46,34 @@ public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView> {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
 
+                if (e instanceof UnknownHostException) {
+                    // No internet connection
+                    getMvpView().renderErrorNoConnectionGetPromoDetail(
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                    );
+                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                    // Timeout
+                    getMvpView().renderErrorTimeoutConnectionGetPromoDetail(
+                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                    );
+                } else if (e instanceof HttpErrorException) {
+                    // Http errors such as 4xx, 5xx
+                    getMvpView().renderErrorHttpGetPromoDetail(e.getMessage());
+                } else {
+                    // Undefined errors
+                    getMvpView().renderErrorHttpGetPromoDetail(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override
             public void onNext(List<PromoData> promoData) {
-                getMvpView().renderPromoDetail(promoData.get(0));
+                if (promoData != null && !promoData.isEmpty()) {
+                    getMvpView().renderPromoDetail(promoData.get(0));
+                } else {
+                    getMvpView().renderErrorShowingPromoDetail();
+                }
             }
         });
     }

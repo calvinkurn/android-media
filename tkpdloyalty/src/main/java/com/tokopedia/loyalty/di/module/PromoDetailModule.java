@@ -4,7 +4,9 @@ import com.tokopedia.loyalty.di.PromoDetailScope;
 import com.tokopedia.loyalty.domain.repository.IPromoRepository;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
 import com.tokopedia.loyalty.view.interactor.PromoInteractor;
+import com.tokopedia.loyalty.view.presenter.IPromoDetailPresenter;
 import com.tokopedia.loyalty.view.presenter.PromoDetailPresenter;
+import com.tokopedia.loyalty.view.analytics.PromoDetailAnalytics;
 
 import dagger.Module;
 import dagger.Provides;
@@ -32,7 +34,7 @@ public class PromoDetailModule {
 
     @Provides
     @PromoDetailScope
-    PromoDetailPresenter providePromoDetailPresenter(IPromoInteractor promoInteractor) {
+    IPromoDetailPresenter providePromoDetailPresenter(IPromoInteractor promoInteractor) {
         return new PromoDetailPresenter(promoInteractor);
     }
 }
