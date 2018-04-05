@@ -82,4 +82,12 @@ public class CrackResult {
     public String getBenefitLabel() {
         return benefitLabel;
     }
+
+    public boolean isCrackTokenSuccess() {
+        return resultStatus.getCode().equals("200");
+    }
+
+    public boolean isCrackTokenExpired() {
+        return resultStatus.getCode().equals("42503") || resultStatus.getCode().equals("42504");
+    }
 }
