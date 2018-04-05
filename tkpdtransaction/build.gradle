@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'com.apollographql.android'
 
 buildscript {
     repositories {
@@ -36,9 +35,6 @@ dependencies {
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
-    compile 'com.apollographql.apollo:apollo-runtime:0.3.0'
-    compile "com.apollographql.apollo:apollo-android-support:0.3.0"
 
     //compile rootProject.ext.miscDependencies.bcaOneClick
     compile(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
