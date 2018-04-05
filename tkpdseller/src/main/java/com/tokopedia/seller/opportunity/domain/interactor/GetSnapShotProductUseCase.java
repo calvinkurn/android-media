@@ -50,8 +50,8 @@ public class GetSnapShotProductUseCase extends UseCase<ProductDetailData> {
                     public ProductDetailData call(ProductDetailData productDetailData, OpportunityDetail opportunityDetail) {
                         String productPrice = opportunityDetail.getDetail().getProductPrice();
                         if (productPrice != null && !productPrice.isEmpty()) {
-                            productPrice = String.format("Rp %s", CurrencyFormatHelper
-                                    .ConvertToRupiah(productPrice).replaceAll(",","."));
+                            productPrice = CurrencyFormatHelper
+                                    .ConvertToRupiah(productPrice).replaceAll(",",".");
                             productDetailData.getInfo().setProductPrice(productPrice);
                         }
                         return productDetailData;
