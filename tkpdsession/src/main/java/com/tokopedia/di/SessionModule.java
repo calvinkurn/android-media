@@ -433,8 +433,9 @@ SessionModule {
     AddEmailSource provideAddEmailSource(@Named(BEARER_SERVICE) AccountsService service,
                                          AddEmailMapper addEmailMapper,
                                          CheckEmailMapper checkEmailMapper,
-                                         RequestVerificationMapper requestVerificationMapper) {
-        return new AddEmailSource(service, addEmailMapper, checkEmailMapper, requestVerificationMapper);
+                                         RequestVerificationMapper requestVerificationMapper,
+                                         GlobalCacheManager cacheManager) {
+        return new AddEmailSource(service, addEmailMapper, checkEmailMapper, requestVerificationMapper, cacheManager);
     }
 
     @SessionScope

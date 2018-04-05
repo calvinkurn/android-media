@@ -15,7 +15,7 @@ import rx.Observable;
 
 public class AddEmailUseCase extends UseCase<AddEmailViewModel> {
     private final static String PARAM_USER_ID = "user_id";
-    private final static String PARAM_EMAIL = "email";
+    public final static String PARAM_EMAIL = "email";
     private final static String PARAM_UNIQUE_CODE = "uc";
 
     private final AddEmailSource addEmailSource;
