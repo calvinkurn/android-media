@@ -18,8 +18,8 @@
             tools:text="additional"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_ms"
-            android:layout_marginStart="@dimen/margin_ms"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:paddingBottom="@dimen/digital_padding_2"/>
 
         <TextView
@@ -29,10 +29,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/product_price_no_addition"
-            android:layout_marginLeft="@dimen/margin_ms"
-            android:layout_marginStart="@dimen/margin_ms"
-            android:layout_marginRight="@dimen/margin_ms"
-            android:layout_marginEnd="@dimen/margin_ms"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
             android:paddingBottom="@dimen/digital_padding_2"
             android:paddingTop="@dimen/digital_padding_2"/>
 
@@ -43,9 +43,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/product_plain_description"
-            android:layout_marginBottom="@dimen/padding_vs"
-            android:layout_marginLeft="@dimen/margin_ms"
-            android:layout_marginStart="@dimen/margin_ms"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:paddingTop="@dimen/digital_padding_2"/>
 
         <TextView
@@ -55,13 +55,13 @@
             android:layout_alignBaseline="@+id/product_price_no_addition"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginEnd="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/digital_bg_out_of_stock"
-            android:paddingEnd="@dimen/padding_small"
-            android:paddingLeft="@dimen/padding_small"
-            android:paddingRight="@dimen/padding_small"
-            android:paddingStart="@dimen/padding_small"
+            android:paddingEnd="@dimen/dp_10"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:paddingStart="@dimen/dp_10"
             android:text="@string/title_empty_stock"
             android:textColor="@color/white"
             android:textStyle="bold"
@@ -74,7 +74,7 @@
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/padding_vs"
+        android:layout_marginTop="@dimen/dp_5"
         android:background="@color/digital_separator"/>
 
 </LinearLayout>

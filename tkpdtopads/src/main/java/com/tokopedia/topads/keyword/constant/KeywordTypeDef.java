@@ -2,6 +2,9 @@ package com.tokopedia.topads.keyword.constant;
 
 import android.support.annotation.IntDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 import static com.tokopedia.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_BROAD;
 import static com.tokopedia.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_EXACT;
 import static com.tokopedia.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_BROAD;
@@ -12,6 +15,7 @@ import static com.tokopedia.topads.keyword.constant.KeywordTypeDef.KEYWORD_TYPE_
 /**
  * @author normansyahputa on 4/25/17.
  */
+@Retention(RetentionPolicy.SOURCE)
 @IntDef({KEYWORD_TYPE_BROAD, KEYWORD_TYPE_PHRASE, KEYWORD_TYPE_EXACT,
         KEYWORD_TYPE_NEGATIVE_BROAD, KEYWORD_TYPE_NEGATIVE_PHRASE, KEYWORD_TYPE_NEGATIVE_EXACT})
 public @interface KeywordTypeDef {

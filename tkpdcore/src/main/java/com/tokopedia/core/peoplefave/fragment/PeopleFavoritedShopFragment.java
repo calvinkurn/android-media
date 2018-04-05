@@ -16,13 +16,13 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.peoplefave.customadapter.PeopleFavoritedShopAdapter;
 import com.tokopedia.core.peoplefave.listener.PeopleFavoritedShopFragmentView;
 import com.tokopedia.core.peoplefave.model.PeopleFavoritedShopData;
 import com.tokopedia.core.peoplefave.presenter.PeopleFavoritedShopFragmentPresenter;
 import com.tokopedia.core.peoplefave.presenter.PeopleFavoritedShopFramentImpl;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -186,9 +186,7 @@ public class PeopleFavoritedShopFragment extends BasePresenterFragment<PeopleFav
 
     @Override
     public void openShopPage(String shopID){
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        Bundle bundle = ShopInfoActivity.createBundle(shopID, "");
-        intent.putExtras(bundle);
+        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopID);
         startActivity(intent);
     }
 

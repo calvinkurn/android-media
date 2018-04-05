@@ -40,42 +40,42 @@
                 android:id="@+id/detail_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_10"
                 />
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.TimeView
                 android:id="@+id/time_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"/>
+                android:layout_marginBottom="@dimen/dp_10"/>
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.AddressReturView
                 android:id="@+id/address_retur_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 />
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView
                 android:id="@+id/awb_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 />
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.SolutionView
                 android:id="@+id/solution_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 />
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.ListProductView
                 android:id="@+id/product_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 />
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.ProveView
@@ -83,27 +83,27 @@
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"/>
+                android:layout_marginBottom="@dimen/dp_10"/>
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.HistoryView
                 android:id="@+id/history_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 />
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.FreeReturnView
                 android:id="@+id/free_return_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 />
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.CancelComplaintView
                 android:id="@+id/cancel_complaint_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 />
 
             <View
@@ -117,8 +117,8 @@
         android:id="@+id/cv_discussion"
         android:layout_width="130dp"
         android:layout_height="60dp"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginBottom="@dimen/margin_med"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_20"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_above="@id/button_view"
@@ -142,7 +142,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/dp_10"
                 android:gravity="center"
                 android:text="@string/string_ic_discussion"
                 android:textColor="@color/white" />

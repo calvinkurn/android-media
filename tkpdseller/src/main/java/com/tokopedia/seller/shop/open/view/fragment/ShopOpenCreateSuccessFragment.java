@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
@@ -39,6 +38,7 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
     private ImageView shopIconImageView;
     private LoadingStateView loadingStateView;
     private TextView tvShopName;
+    private String shopId = "";
 
     @Inject
     ShopOpenTracking trackingOpenShop;
@@ -77,7 +77,7 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
             @Override
             public void onClick(View v) {
                 trackingOpenShop.eventOpenShopThanksGoToMyShop();
-                Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+                Intent intent = ((SellerModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
                 startActivity(intent);
                 getActivity().finish();
             }
@@ -110,6 +110,7 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
     @Override
     public void onSuccessGetShopInfo(ShopModel shopModel) {
         hideLoading();
+        shopId = shopModel.getInfo().shopId;
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
             ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
         } else {

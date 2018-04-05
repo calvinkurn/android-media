@@ -9,8 +9,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/padding_ms"
-        android:paddingBottom="@dimen/padding_ms"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
         android:paddingLeft="@dimen/padding_detail"
         android:paddingRight="@dimen/padding_detail"
         android:text="@string/tokocash_label_received"
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/balance_tokocash"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/dp_5"
         android:background="@color/grey_300" />
 
     <RelativeLayout
@@ -32,8 +32,8 @@
             android:id="@+id/title_income_tokocash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/padding_ms"
-            android:paddingBottom="@dimen/padding_ms"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
             android:paddingLeft="@dimen/padding_detail"
             android:paddingRight="@dimen/padding_detail"
             android:layout_alignTop="@+id/income_tokocash"
@@ -45,8 +45,8 @@
             android:id="@+id/income_tokocash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/padding_ms"
-            android:paddingBottom="@dimen/padding_ms"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
             android:paddingLeft="@dimen/padding_detail"
             android:paddingRight="@dimen/padding_detail"
             tools:text="Rp 12.500.000"
@@ -65,22 +65,22 @@
         android:progressDrawable="@drawable/horizontal_progressbar"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="273dp"
-        android:paddingTop="@dimen/padding_ms"
-        android:paddingBottom="@dimen/padding_ms"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
         android:paddingLeft="@dimen/padding_detail"
         android:paddingRight="@dimen/padding_detail"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small">
+        android:layout_marginBottom="@dimen/dp_10">
 
         <TextView
             android:id="@+id/limit_tokocash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/padding_ms"
-            android:paddingBottom="@dimen/padding_ms"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
             android:paddingLeft="@dimen/padding_detail"
             android:paddingRight="@dimen/padding_detail"
             android:textSize="@dimen/fontvs"

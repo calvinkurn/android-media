@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/desc_summary_day_reso"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:gravity="fill_horizontal"
             android:visibility="visible"
             />
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/desc_summary_amount_reso"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:gravity="fill_horizontal"
             android:visibility="visible"
             />

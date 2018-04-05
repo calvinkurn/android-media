@@ -11,10 +11,10 @@
         android:id="@+id/layout_item_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_small"
+        android:paddingBottom="@dimen/dp_10"
         android:paddingLeft="@dimen/padding_detail"
         android:paddingRight="@dimen/padding_detail"
-        android:paddingTop="@dimen/padding_small">
+        android:paddingTop="@dimen/dp_10">
 
         <ImageView
             android:id="@+id/icon_item_history"
@@ -34,7 +34,7 @@
             android:maxLines="2"
             android:textColor="@color/black_70"
             android:textSize="@dimen/fonts"
-            android:layout_margin="@dimen/margin_vs"
+            android:layout_margin="@dimen/dp_5"
             tools:text="Admin Fee" />
 
         <TextView
@@ -69,8 +69,8 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/title_item_history"
             android:layout_below="@+id/desc_item_history"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_5"
             android:textColor="@color/black_54"
             android:textSize="@dimen/fontvs"
             tools:text="20 Agustus 2017" />
