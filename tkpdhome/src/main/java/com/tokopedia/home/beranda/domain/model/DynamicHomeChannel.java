@@ -144,45 +144,57 @@ public class DynamicHomeChannel {
                     "eventCategory", "homepage",
                     "eventAction", "sprint sale banner impression",
                     "eventLabel", "",
-                    "ecommerce", DataLayer.mapOf("promoView", DataLayer.mapOf("promotions", list))
+                    "ecommerce", DataLayer.mapOf(
+                            "promoView", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            list.toArray(new Object[list.size()])
+                                    )
+                            )
+                    )
             );
         }
 
         private List<Object> convertProductEnhanceSprintSaleDataLayer(Grid[] grids) {
             List<Object> list = new ArrayList<>();
-            for (int i = 0; i < grids.length; i++) {
-                Grid grid = grids[i];
-                list.add(
-                        DataLayer.mapOf(
-                                "name", grid.getName(),
-                                "id", grid.getId(),
-                                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
-                                        grid.getPrice()
-                                )),
-                                "brand", "none / other",
-                                "category", "none / other",
-                                "variant", "none / other",
-                                "list", "/ - p1 - sprint sale",
-                                "position", i + 1
-                        )
-                );
+
+            if (grids != null) {
+                for (int i = 0; i < grids.length; i++) {
+                    Grid grid = grids[i];
+                    list.add(
+                            DataLayer.mapOf(
+                                    "name", grid.getName(),
+                                    "id", grid.getId(),
+                                    "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                            grid.getPrice()
+                                    )),
+                                    "brand", "none / other",
+                                    "category", "none / other",
+                                    "variant", "none / other",
+                                    "list", "/ - p1 - sprint sale",
+                                    "position", String.valueOf(i + 1)
+                            )
+                    );
+                }
             }
             return list;
         }
 
         private List<Object> convertProductEnhanceSprintSaleCarouselDataLayer(Grid[] grids) {
             List<Object> list = new ArrayList<>();
-            for (int i = 0; i < grids.length; i++) {
-                Grid grid = grids[i];
-                list.add(
-                        DataLayer.mapOf(
-                                "id", grid.getId(),
-                                "name", "/ - p2 - sprint sale banner",
-                                "position", i + 1,
-                                "creative", grid.getAttribution(),
-                                "creative_url", grid.getImageUrl()
-                        )
-                );
+
+            if (grids != null) {
+                for (int i = 0; i < grids.length; i++) {
+                    Grid grid = grids[i];
+                    list.add(
+                            DataLayer.mapOf(
+                                    "id", grid.getId(),
+                                    "name", "/ - p2 - sprint sale banner",
+                                    "position", String.valueOf(i + 1),
+                                    "creative", grid.getAttribution(),
+                                    "creative_url", grid.getImageUrl()
+                            )
+                    );
+                }
             }
             return list;
         }
@@ -226,12 +238,14 @@ public class DynamicHomeChannel {
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
-                                            DataLayer.mapOf("id", getGrids()[position].getId(),
-                                                    "name", "/ - p2 - sprint sale banner"),
-                                            "position", position + 1,
-                                            "creative", getGrids()[position].getAttribution(),
-                                            "creative_url", getGrids()[position].getImageUrl(),
-                                            "attribution", getHomeAttribution(position + 1, "")
+                                            DataLayer.mapOf(
+                                                    "id", getGrids()[position].getId(),
+                                                    "name", "/ - p2 - sprint sale banner",
+                                                    "position", position + 1,
+                                                    "creative", getGrids()[position].getAttribution(),
+                                                    "creative_url", getGrids()[position].getImageUrl(),
+                                                    "attribution", getHomeAttribution(position + 1, "")
+                                            )
                                     )
                             )
                     )
