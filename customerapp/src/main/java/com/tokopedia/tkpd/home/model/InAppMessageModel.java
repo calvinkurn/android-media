@@ -23,6 +23,27 @@ public class InAppMessageModel implements Parcelable {
     @SerializedName("type")
     public String type;
 
+    @SerializedName("close_btn_show")
+    public String closeButtonShow;
+
+    @SerializedName("color_title")
+    public String colorTitle;
+
+    @SerializedName("color_desc")
+    public String colorDesc;
+
+    @SerializedName("action_btn_txt_1")
+    public String actionBtnText1;
+
+    @SerializedName("action_btn_txt_2")
+    public String actionBtnText2;
+
+    @SerializedName("action_deeplink_1")
+    public String actionDeeplink1;
+
+    @SerializedName("action_deeplink_2")
+    public String actionDeeplink2;
+
     @SerializedName("body")
     public List<InAppMessageItemModel> messageList = new ArrayList<InAppMessageItemModel>();
 

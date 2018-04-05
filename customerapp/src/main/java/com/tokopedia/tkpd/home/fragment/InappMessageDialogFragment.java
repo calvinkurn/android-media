@@ -1,17 +1,22 @@
 package com.tokopedia.tkpd.home.fragment;
 
 import android.app.DialogFragment;
+import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
@@ -28,12 +33,11 @@ import java.util.ArrayList;
 public class InappMessageDialogFragment extends DialogFragment implements InAppMessageAdapter.InappAdapterLisner {
 
     private static final String ARG_PARAM_EXTRA_MESSAGES_LIST = "ARG_PARAM_EXTRA_MESSAGES_LIST";
-    private static final String ARG_PARAM_EXTRA_MESSAGES_TITLE = "ARG_PARAM_EXTRA_MESSAGES_LIST_TITLE";
-    private static final String ARG_PARAM_EXTRA_MESSAGES_DESC = "ARG_PARAM_EXTRA_MESSAGES_DESC";
-    private static final String ARG_PARAM_EXTRA_MESSAGES_TYPE = "ARG_PARAM_EXTRA_MESSAGES_TYPE";
-
-    InAppMessageModel inAppMessageModel;
-
+    private InAppMessageModel inAppMessageModel;
+    private RecyclerView rv;
+    private ImageView closeBtn;
+    private TextView tvTitle;
+    private TextView tvDesc;
 
     public static InappMessageDialogFragment newInstance(InAppMessageModel inAppMessageModel) {
         Bundle bundle = new Bundle();
@@ -49,7 +53,7 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(ARG_PARAM_EXTRA_MESSAGES_LIST,
-                (Parcelable)  inAppMessageModel);
+                (Parcelable) inAppMessageModel);
 
         super.onSaveInstanceState(outState);
 
@@ -79,39 +83,103 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (inAppMessageModel == null){
+        if (inAppMessageModel == null) {
             dismiss();
         }
 
-        RecyclerView rv = view.findViewById(R.id.rv_inapp);
-        if ("1".equalsIgnoreCase(inAppMessageModel.type)) {
-            GridLayoutManager gridLayoutManagerVertical =
-                    new GridLayoutManager(getActivity(),
-                            2, //The number of Columns in the grid
-                            LinearLayoutManager.VERTICAL,
-                            false);
-            rv.setLayoutManager(gridLayoutManagerVertical);
-        } else {
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-            rv.setLayoutManager(layoutManager);
-        }
-
-        TextView tvTitle =  view.findViewById(R.id.tv_inapp_title);
-        TextView tvDesc =  view.findViewById(R.id.tv_inapp_desc);
+        rv = view.findViewById(R.id.rv_inapp);
+        tvTitle = view.findViewById(R.id.tv_inapp_title);
+        tvDesc = view.findViewById(R.id.tv_inapp_desc);
         tvTitle.setText(inAppMessageModel.title);
         tvDesc.setText(inAppMessageModel.description);
+        closeBtn = view.findViewById(R.id.img_inapp_cross);
+        if (!TextUtils.isEmpty(inAppMessageModel.colorTitle)) {
+            tvTitle.setTextColor(Color.parseColor(inAppMessageModel.colorTitle));
+        }
+        if (!TextUtils.isEmpty(inAppMessageModel.colorDesc)) {
+            tvDesc.setTextColor(Color.parseColor(inAppMessageModel.colorDesc));
+        }
+
+        renderView(view);
+
+    }
+
+    private void renderView(View view) {
+        if ("2".equalsIgnoreCase(inAppMessageModel.type)) {
+            renderGridViewLayout();
+        } else if ("3".equalsIgnoreCase(inAppMessageModel.type)) {
+            renderListAndButtonViewLayout(view);
+        } else {
+            renderListViewLayout();
+        }
+        if ("yes".equalsIgnoreCase(inAppMessageModel.closeButtonShow)) {
+            closeBtn.setVisibility(View.VISIBLE);
+            closeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                }
+            });
+        } else {
+            closeBtn.setVisibility(View.GONE);
+
+        }
 
         InAppMessageAdapter inAppMessageAdapter = new InAppMessageAdapter(getActivity(), (ArrayList<InAppMessageItemModel>) inAppMessageModel.messageList, this);
         rv.setAdapter(inAppMessageAdapter);
+    }
 
-        view.findViewById(R.id.img_inapp_cross).setOnClickListener(new View.OnClickListener() {
+    private void renderGridViewLayout() {
+        GridLayoutManager gridLayoutManagerVertical =
+                new GridLayoutManager(getActivity(),
+                        2,
+                        LinearLayoutManager.VERTICAL,
+                        false);
+        rv.setLayoutManager(gridLayoutManagerVertical);
+    }
+
+    private void renderListViewLayout() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rv.setLayoutManager(layoutManager);
+    }
+
+    private void renderListAndButtonViewLayout(View view) {
+        tvTitle.setVisibility(View.GONE);
+        tvDesc.setVisibility(View.GONE);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rv.setLayoutManager(layoutManager);
+        TextView btnAction1 = view.findViewById(R.id.btn_action_1);
+        TextView btnAction2 = view.findViewById(R.id.btn_action_2);
+        view.findViewById(R.id.ll_action_button).setVisibility(View.VISIBLE);
+
+        btnAction1.setText(inAppMessageModel.actionBtnText1);
+        btnAction2.setText(inAppMessageModel.actionBtnText2);
+
+        btnAction1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent();
+                Uri uri = Uri.parse(inAppMessageModel.actionDeeplink1);
+                intent.setData(uri);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getActivity().startActivity(intent);
                 dismiss();
             }
         });
 
+        btnAction2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                Uri uri = Uri.parse(inAppMessageModel.actionDeeplink2);
+                intent.setData(uri);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getActivity().startActivity(intent);
+                dismiss();
+            }
+        });
     }
 
     @Override

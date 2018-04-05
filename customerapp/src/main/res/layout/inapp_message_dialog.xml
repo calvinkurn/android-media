@@ -4,18 +4,19 @@
     android:layout_height="wrap_content"
     android:layout_gravity="top|center_horizontal"
     android:background="@color/transparent"
-    android:padding="@dimen/activity_horizontal_margin"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin">
 
     <LinearLayout
+        android:id="@+id/ll_message_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
-        android:orientation="vertical"
-        android:background="@color/white"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin">
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:background="@color/white"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_inapp_title"
@@ -23,13 +24,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_layout_medium"
             android:paddingLeft="@dimen/activity_horizontal_margin"
-           android:textColor="@color/black"
+            android:gravity="center_horizontal"
+            android:textColor="@color/black"
             android:textSize="@dimen/fonts" />
 
         <TextView
             android:id="@+id/tv_inapp_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin_vs"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:textSize="@dimen/font_small" />
@@ -39,6 +42,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_vs" />
+
+        <LinearLayout
+            android:id="@+id/ll_action_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray_background"
+            android:visibility="gone"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/btn_action_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="1dp"
+                android:text="kjdwkqjq"
+                android:paddingTop="@dimen/padding_vs"
+                android:paddingBottom="@dimen/padding_vs"
+                android:gravity="center_horizontal"
+                android:textColor="@color/black"
+                android:background="@color/white"
+                android:layout_weight="1" />
+            <TextView
+                android:id="@+id/btn_action_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:gravity="center_horizontal"
+                android:paddingTop="@dimen/padding_vs"
+                android:paddingBottom="@dimen/padding_vs"
+                android:background="@color/white"
+                android:text="kjdwkqjq"
+                android:layout_weight="1" />
+
+        </LinearLayout>
     </LinearLayout>
 
     <ImageView
@@ -46,9 +82,9 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_alignParentRight="true"
-        android:scaleType="fitXY"
-        android:background="@color/black"
-        android:layout_marginTop="@dimen/margin_ms"
         android:layout_marginRight="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/margin_ms"
+        android:background="@color/black"
+        android:scaleType="fitXY"
         android:src="@drawable/icon_close_white" />
 </RelativeLayout>

@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.model.InAppMessageItemModel;
@@ -48,7 +47,6 @@ public class InAppMessageAdapter extends RecyclerView.Adapter<InAppMessageAdapte
         holder.img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "click on " + inAppMessageItemModel.getDeeplink(), Toast.LENGTH_LONG).show();
                 Intent intent=new Intent();
                 Uri uri = Uri.parse(inAppMessageItemModel.getDeeplink());
                 intent.setData(uri);
