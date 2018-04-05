@@ -57,7 +57,7 @@
                 android:layout_marginRight="1dp"
                 android:text="kjdwkqjq"
                 android:paddingTop="@dimen/padding_vs"
-                android:paddingBottom="@dimen/padding_vs"
+                android:paddingBottom="@dimen/padding_small"
                 android:gravity="center_horizontal"
                 android:textColor="@color/black"
                 android:background="@color/white"
@@ -69,7 +69,7 @@
                 android:textColor="@color/black"
                 android:gravity="center_horizontal"
                 android:paddingTop="@dimen/padding_vs"
-                android:paddingBottom="@dimen/padding_vs"
+                android:paddingBottom="@dimen/padding_small"
                 android:background="@color/white"
                 android:text="kjdwkqjq"
                 android:layout_weight="1" />
