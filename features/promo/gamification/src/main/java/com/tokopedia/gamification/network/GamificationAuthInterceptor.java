@@ -12,8 +12,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import okhttp3.Request;
-
 /**
  * Created by nabillasabbaha on 3/29/18.
  */
