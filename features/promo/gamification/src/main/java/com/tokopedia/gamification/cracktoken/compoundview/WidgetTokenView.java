@@ -1,5 +1,6 @@
 package com.tokopedia.gamification.cracktoken.compoundview;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -9,6 +10,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +18,6 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -53,6 +54,9 @@ public class WidgetTokenView extends FrameLayout {
     private WidgetTokenListener listener;
     private View rootView;
     private AnimatorSet crackingAnimationSet;
+    private AnimatorSet crackingAnimationSet1;
+    private AnimatorSet crackingAnimationSet2;
+    private AnimatorSet crackingAnimationSet3;
 
     public interface WidgetTokenListener {
         void onClick();
@@ -91,8 +95,7 @@ public class WidgetTokenView extends FrameLayout {
             public void onClick(View v) {
                 if (!isTokenClicked) {
                     clearTokenAnimation();
-                    shakeHard();
-                    crack();
+                    shakeHardAndCrackAnimation();
                     listener.onClick();
                 }
                 isTokenClicked = true;
@@ -243,9 +246,10 @@ public class WidgetTokenView extends FrameLayout {
         imageViewFull.setAnimation(animation);
     }
 
-    private void shakeHard() {
-        imageViewFull.setPivotY( Y_PIVOT_PERCENT * imageViewFull.getHeight());
-        imageViewCracked.setPivotY( Y_PIVOT_PERCENT * imageViewCracked.getHeight());
+    private void shakeHardAndCrackAnimation() {
+        imageViewFull.setPivotY(Y_PIVOT_PERCENT * imageViewFull.getHeight());
+        imageViewCracked.setPivotY(Y_PIVOT_PERCENT * imageViewCracked.getHeight());
+
         imageViewCracked.setVisibility(VISIBLE);
 
         initCrackingAnimationSet();
@@ -255,8 +259,73 @@ public class WidgetTokenView extends FrameLayout {
     private void initCrackingAnimationSet() {
         if (crackingAnimationSet == null) {
             crackingAnimationSet = new AnimatorSet();
+            initCracking1();
+            initCracking2();
+            initCracking3();
+            crackingAnimationSet.playSequentially(crackingAnimationSet1, crackingAnimationSet2, crackingAnimationSet3);
+        }
+    }
+
+    public boolean isCrackPercentageFull(){
+        return imageViewCracked.getPercentMasked() >= 100;
+    }
+
+    private void initCracking1() {
+        if (crackingAnimationSet1 == null) {
+            crackingAnimationSet1 = new AnimatorSet();
+            PropertyValuesHolder pvhShake =
+                    PropertyValuesHolder.ofFloat(View.ROTATION, -2, 2);
+            ObjectAnimator shakeAnimatorFull = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
+            shakeAnimatorFull.setRepeatMode(ValueAnimator.REVERSE);
+            shakeAnimatorFull.setRepeatCount(600 / 200);
+            shakeAnimatorFull.setDuration(100);
+
+            ObjectAnimator shakeAnimatorCrack = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhShake);
+            shakeAnimatorCrack.setRepeatMode(ValueAnimator.REVERSE);
+            shakeAnimatorCrack.setRepeatCount(600 / 200);
+            shakeAnimatorCrack.setDuration(100);
+
+            PropertyValuesHolder pvhMaskedCrack =
+                    PropertyValuesHolder.ofInt(MaskedHeightImageView.MASKED_PERCENT, 100, 67);
+            ObjectAnimator maskCrackAnimator = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhMaskedCrack);
+            maskCrackAnimator.setInterpolator(new FastOutSlowInInterpolator());
+            maskCrackAnimator.setDuration(400);
+
+            crackingAnimationSet1.playTogether(shakeAnimatorFull, shakeAnimatorCrack, maskCrackAnimator);
+        }
+    }
+
+    private void initCracking2() {
+        if (crackingAnimationSet2 == null) {
+            crackingAnimationSet2 = new AnimatorSet();
             PropertyValuesHolder pvhShake =
                     PropertyValuesHolder.ofFloat(View.ROTATION, -4, 4);
+            ObjectAnimator shakeAnimatorFull = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
+            shakeAnimatorFull.setRepeatMode(ValueAnimator.REVERSE);
+            shakeAnimatorFull.setRepeatCount(600 / 160);
+            shakeAnimatorFull.setDuration(80);
+
+            ObjectAnimator shakeAnimatorCrack = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhShake);
+            shakeAnimatorCrack.setRepeatMode(ValueAnimator.REVERSE);
+            shakeAnimatorCrack.setRepeatCount(600 / 160);
+            shakeAnimatorCrack.setDuration(80);
+
+            PropertyValuesHolder pvhMaskedCrack =
+                    PropertyValuesHolder.ofInt(MaskedHeightImageView.MASKED_PERCENT, 67, 33);
+            ObjectAnimator maskCrackAnimator = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhMaskedCrack);
+            maskCrackAnimator.setInterpolator(new FastOutSlowInInterpolator());
+            maskCrackAnimator.setDuration(400);
+
+            crackingAnimationSet2.playTogether(shakeAnimatorFull, shakeAnimatorCrack, maskCrackAnimator);
+            crackingAnimationSet2.setStartDelay(200);
+        }
+    }
+
+    private void initCracking3() {
+        if (crackingAnimationSet3 == null) {
+            crackingAnimationSet3 = new AnimatorSet();
+            PropertyValuesHolder pvhShake =
+                    PropertyValuesHolder.ofFloat(View.ROTATION, -3, 3);
             ObjectAnimator shakeAnimatorFull = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
             shakeAnimatorFull.setRepeatMode(ValueAnimator.REVERSE);
             shakeAnimatorFull.setRepeatCount(ValueAnimator.INFINITE);
@@ -267,27 +336,23 @@ public class WidgetTokenView extends FrameLayout {
             shakeAnimatorCrack.setRepeatCount(ValueAnimator.INFINITE);
             shakeAnimatorCrack.setDuration(100);
 
-            crackingAnimationSet.playTogether(shakeAnimatorFull, shakeAnimatorCrack);
+            PropertyValuesHolder pvhMaskedCrack =
+                    PropertyValuesHolder.ofInt(MaskedHeightImageView.MASKED_PERCENT, 33, 0);
+            ObjectAnimator maskCrackAnimator = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhMaskedCrack);
+            maskCrackAnimator.setInterpolator(new FastOutSlowInInterpolator());
+            maskCrackAnimator.setDuration(400);
+
+            crackingAnimationSet3.playTogether(shakeAnimatorFull, shakeAnimatorCrack, maskCrackAnimator);
+            crackingAnimationSet3.setStartDelay(200);
         }
     }
 
     public void stopShaking() {
         imageViewFull.clearAnimation();
         imageViewFull.setRotation(0);
-    }
-
-    private void crack() {
-        ValueAnimator crackingEggValAnimator = ValueAnimator.ofInt(100, 0);
-        crackingEggValAnimator.setInterpolator(new DecelerateInterpolator());
-        crackingEggValAnimator.setDuration(1000);
-        crackingEggValAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int animatedValue = (int) animation.getAnimatedValue();
-                imageViewCracked.setPercentMasked(animatedValue);
-            }
-        });
-        crackingEggValAnimator.start();
+        if (crackingAnimationSet != null) {
+            crackingAnimationSet.cancel();
+        }
     }
 
     public void split() {

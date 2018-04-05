@@ -5,13 +5,17 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
+import android.util.IntProperty;
+import android.util.Property;
+import android.view.View;
 
 /**
  * Created by nakama on 23/03/18.
  */
 
 public class MaskedHeightImageView extends android.support.v7.widget.AppCompatImageView {
-    private double percentMasked;
+    private int percentMasked;
     private Rect maskedRect;
 
     Bitmap bitmap;
@@ -31,13 +35,29 @@ public class MaskedHeightImageView extends android.support.v7.widget.AppCompatIm
         init();
     }
 
+    public static final Property<MaskedHeightImageView, Integer> MASKED_PERCENT = new IntProperty<MaskedHeightImageView>("percentMasked") {
+        @Override
+        public void setValue(MaskedHeightImageView object, int value) {
+            object.setPercentMasked(value);
+        }
+
+        @Override
+        public Integer get(MaskedHeightImageView object) {
+            return object.getPercentMasked();
+        }
+    };
+
     private void init() {
         percentMasked = 100;
     }
 
-    public void setPercentMasked(double percentMasked) {
+    public void setPercentMasked(int percentMasked) {
         this.percentMasked = percentMasked;
         invalidate();
+    }
+
+    public int getPercentMasked() {
+        return percentMasked;
     }
 
     @Override
@@ -60,7 +80,7 @@ public class MaskedHeightImageView extends android.support.v7.widget.AppCompatIm
             if (maskedRect==null) {
                 maskedRect = new Rect();
             }
-            maskedRect.set(0, 0, bitmap.getWidth(), (int)( (1 - percentMasked / 100) * bitmap.getHeight()));
+            maskedRect.set(0, 0, bitmap.getWidth(), (int)((1f - percentMasked / 100f) * bitmap.getHeight()));
             canvas.drawBitmap(bitmap,maskedRect, maskedRect, null);
             canvas.restoreToCount(saveCount);
         } else {
