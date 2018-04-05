@@ -48,15 +48,12 @@ public class WidgetCrackResult extends RelativeLayout {
     private Button buttonReturn;
     private TextView buttonCta;
     private ImageView closeRewardBtn;
+    private String benefitType;
 
     private WidgetCrackResultListener listener;
 
     public interface WidgetCrackResultListener {
         void onClickCtaButton(String type, String applink, String url);
-
-        void onTrackingReturnButton();
-
-        void onTrackingCtaButton();
 
         void onTrackingCloseRewardButton(CrackResult crackResult);
 
@@ -94,6 +91,7 @@ public class WidgetCrackResult extends RelativeLayout {
     }
 
     public void showCrackResult(CrackResult crackResult, String labelCrackResult) {
+        this.benefitType = crackResult.getBenefitType();
         showCrackResultImageAnimation(crackResult);
         showCrackResultBackgroundAnimation();
         showListCrackResultText(crackResult.getBenefits(), labelCrackResult);
@@ -186,6 +184,10 @@ public class WidgetCrackResult extends RelativeLayout {
         containerTextCrackResult.setVisibility(VISIBLE);
     }
 
+    public String getBenefitType() {
+        return this.benefitType;
+    }
+
     private int convertSize(String size) {
         switch (size) {
             case "large":
@@ -206,7 +208,6 @@ public class WidgetCrackResult extends RelativeLayout {
             buttonReturn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onTrackingReturnButton();
                     listener.onClickReturnButton(returnButton.getType(), returnButton.getApplink(),
                             returnButton.getUrl());
                 }
@@ -223,7 +224,6 @@ public class WidgetCrackResult extends RelativeLayout {
             buttonCta.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onTrackingCtaButton();
                     listener.onClickCtaButton(ctaButton.getType(), ctaButton.getApplink(), ctaButton.getUrl());
                 }
             });

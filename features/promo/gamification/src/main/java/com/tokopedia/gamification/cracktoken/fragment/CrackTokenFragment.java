@@ -185,6 +185,10 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
                     crackTokenPresenter.getGetTokenTokopoints();
                 } else if (type.equals("redirect")) {
+                    trackingButtonClick(GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
+                            GamificationEventTracking.Action.CLICK_TO_TOKOPOINT,
+                            "");
+
                     navigateToAssociatedPage(applink, url);
                 }
             }
@@ -194,8 +198,16 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 if (type.equals("dismiss")) {
                     widgetCrackResult.clearCrackResult();
 
+                    trackingButtonClick(GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
+                            GamificationEventTracking.Action.CLICK_CRACK_OTHER_EGG,
+                            "");
+
                     crackTokenPresenter.getGetTokenTokopoints();
                 } else if (type.equals("redirect")) {
+                    trackingButtonClick(GamificationEventTracking.Category.COUPON_REWARD,
+                            GamificationEventTracking.Action.CLICK_USE_GIFT,
+                            widgetCrackResult.getBenefitType());
+
                     navigateToAssociatedPage(applink, url);
                 }
             }
@@ -205,16 +217,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 widgetCrackResult.clearCrackResult();
 
                 crackTokenPresenter.getGetTokenTokopoints();
-            }
-
-            @Override
-            public void onTrackingReturnButton() {
-                trackingReturnButtonClick();
-            }
-
-            @Override
-            public void onTrackingCtaButton() {
-                trackingCtaButtonClick();
             }
 
             @Override
@@ -434,28 +436,15 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }
     }
 
-    private void trackingReturnButtonClick() {
+    private void trackingButtonClick(String category, String action, String label) {
         if (getActivity().getApplication() instanceof AbstractionRouter) {
             abstractionRouter
                     .getAnalyticTracker()
                     .sendEventTracking(
                             GamificationEventTracking.Event.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
-                            GamificationEventTracking.Action.CLICK_RETURN_BUTTON,
-                            ""
-                    );
-        }
-    }
-
-    private void trackingCtaButtonClick() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            abstractionRouter
-                    .getAnalyticTracker()
-                    .sendEventTracking(
-                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
-                            GamificationEventTracking.Action.CLICK_CTA_BUTTON,
-                            ""
+                            category,
+                            action,
+                            label
                     );
         }
     }
