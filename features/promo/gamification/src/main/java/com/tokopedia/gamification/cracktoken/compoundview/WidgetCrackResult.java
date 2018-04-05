@@ -255,6 +255,7 @@ public class WidgetCrackResult extends RelativeLayout {
         imageViewBgCrackResult.setVisibility(View.GONE);
         listCrackResultText.removeAllViews();
         containerTextCrackResult.setVisibility(GONE);
+        closeRewardBtn.setVisibility(GONE);
     }
 
 }

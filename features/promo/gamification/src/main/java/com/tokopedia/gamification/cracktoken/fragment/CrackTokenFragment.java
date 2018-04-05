@@ -99,84 +99,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         abstractionRouter = (AbstractionRouter) getActivity().getApplication();
 
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                initTimerBound();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    //noinspection deprecation
-                    rootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-            }
-        });
-        return rootView;
-    }
-
-    @Override
-    protected void initInjector() {
-        GamificationComponent gamificationComponent =
-                GamificationComponentInstance.getComponent(getActivity().getApplication());
-        gamificationComponent.inject(this);
-        crackTokenPresenter.attachView(this);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        crackTokenPresenter.getGetTokenTokopoints();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // restart the timer (only if the timer was paused in onPaused)
-        if (tokenData != null && prevTimeStamp > 0) {
-            long currentTimeStamp = System.currentTimeMillis();
-            int diffSeconds = (int) ((currentTimeStamp - prevTimeStamp) / 1000L);
-            TokenUser tokenUser = tokenData.getHome().getTokensUser();
-            int prevTimeRemainingSecond = tokenUser.getTimeRemainingSeconds();
-            tokenUser.setTimeRemainingSeconds(prevTimeRemainingSecond - diffSeconds);
-
-            showTimer(tokenData);
-
-            prevTimeStamp = 0;
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        // save the previous time to enable the timer in onResume.
-        if (tokenData.isShowCountDown() && countDownTimer != null) {
-            prevTimeStamp = System.currentTimeMillis();
-        } else {
-            prevTimeStamp = 0;
-        }
-        stopTimer();
-    }
-
-    private void renderViewCrackEgg() {
-        widgetTokenView.reset();
-
-        TokenUser tokenUser = tokenData.getHome().getTokensUser();
-
-        ImageHandler.loadImageAndCache(ivContainer, tokenUser.getBackgroundAsset().getBackgroundImgUrl());
-
-        widgetTokenView.setToken(tokenUser.getTokenAsset());
-        widgetTokenView.setListener(new WidgetTokenView.WidgetTokenListener() {
-            @Override
-            public void onClick() {
-                stopTimer();
-                hideHandOnBoarding();
-                TokenUser tokenUser = tokenData.getHome().getTokensUser();
-                crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
-
-                trackingLuckyEggClick();
-            }
-        });
-
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
             public void onClickCtaButton(String type, String applink, String url) {
@@ -237,6 +159,76 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 trackingCloseRewardButtonClick(crackResult);
             }
         });
+
+
+        return rootView;
+    }
+
+    @Override
+    protected void initInjector() {
+        GamificationComponent gamificationComponent =
+                GamificationComponentInstance.getComponent(getActivity().getApplication());
+        gamificationComponent.inject(this);
+        crackTokenPresenter.attachView(this);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        crackTokenPresenter.getGetTokenTokopoints();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // restart the timer (only if the timer was paused in onPaused)
+        if (tokenData != null && prevTimeStamp > 0) {
+            long currentTimeStamp = System.currentTimeMillis();
+            int diffSeconds = (int) ((currentTimeStamp - prevTimeStamp) / 1000L);
+            TokenUser tokenUser = tokenData.getHome().getTokensUser();
+            int prevTimeRemainingSecond = tokenUser.getTimeRemainingSeconds();
+            tokenUser.setTimeRemainingSeconds(prevTimeRemainingSecond - diffSeconds);
+
+            showTimer(tokenData);
+
+            prevTimeStamp = 0;
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // save the previous time to enable the timer in onResume.
+        if (tokenData != null) {
+            if (tokenData.isShowCountDown() && countDownTimer != null) {
+                prevTimeStamp = System.currentTimeMillis();
+            } else {
+                prevTimeStamp = 0;
+            }
+            stopTimer();
+        }
+    }
+
+    private void renderViewCrackEgg() {
+        widgetTokenView.reset();
+
+        TokenUser tokenUser = tokenData.getHome().getTokensUser();
+
+        ImageHandler.loadImageAndCache(ivContainer, tokenUser.getBackgroundAsset().getBackgroundImgUrl());
+
+        widgetTokenView.setToken(tokenUser.getTokenAsset());
+        widgetTokenView.setListener(new WidgetTokenView.WidgetTokenListener() {
+            @Override
+            public void onClick() {
+                stopTimer();
+                hideHandOnBoarding();
+                TokenUser tokenUser = tokenData.getHome().getTokensUser();
+                crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
+
+                trackingLuckyEggClick();
+            }
+        });
+
         widgetRemainingToken.show();
         widgetRemainingToken.showRemainingToken(
                 tokenUser.getTokenAsset().getSmallImgUrl(),
@@ -277,6 +269,20 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void showTimer(@NonNull TokenData tokenData) {
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                initTimerBound();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    //noinspection deprecation
+                    rootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
+
+
         TokenUser tokenUser = tokenData.getHome().getTokensUser();
         if (tokenUser.getShowTime()) {
             textCountdownTimer.setVisibility(View.VISIBLE);
@@ -407,7 +413,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         if (context instanceof ActionListener) {
             listener = (ActionListener) context;
         }
-
     }
 
     private void trackingLuckyEggView() {

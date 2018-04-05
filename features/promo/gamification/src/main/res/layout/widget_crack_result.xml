@@ -16,7 +16,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         app:srcCompat="@drawable/ic_close_white"
+        android:layout_margin="16dp"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:visibility="gone"
         tools:visibility="visible"/>
 
