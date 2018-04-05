@@ -62,5 +62,8 @@
     <dimen name="feed_new_card_elevation">2dp</dimen>
     <dimen name="content_product_margin">6dp</dimen>
     <dimen name="feed_new_card_margin">16dp</dimen>
+    <dimen name="product_padding_medium">10dp</dimen>
+    <dimen name="product_padding_small">8dp</dimen>
+    <dimen name="product_padding_very_small">6dp</dimen>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -99,10 +100,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             });
         }
 
-        if (getItemCount() == 1) {
-            holder.productName.setMaxLines(1);
-        }
-
+        setProductNamePadding(holder);
     }
 
     @Override
@@ -194,6 +192,29 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         ));
         TrackingUtils.eventTrackingEnhancedEcommerce(
                 FeedEnhancedTracking.getClickTracking(list, loginIdInt));
+    }
+
+    private void setProductNamePadding(ViewHolder holder) {
+        int paddingSide, paddingTop, paddingBottom;
+        Resources resources = context.getResources();
+
+        if (getItemCount() == 1) {
+            paddingTop = (int) resources.getDimension(R.dimen.product_padding_medium);
+            paddingBottom = (int) resources.getDimension(R.dimen.product_padding_medium);
+
+            holder.productName.setMaxLines(1);
+        } else if (getItemCount() == MAX_FEED_SIZE_SMALL) {
+            paddingTop = (int) resources.getDimension(R.dimen.product_padding_small);
+            paddingBottom = (int) resources.getDimension(R.dimen.product_padding_small);
+
+        } else {
+            paddingTop = (int) resources.getDimension(R.dimen.product_padding_very_small);
+            paddingBottom = (int) resources.getDimension(R.dimen.new_margin_small);
+
+        }
+
+        paddingSide = (int) resources.getDimension(R.dimen.new_margin_small);
+        holder.productName.setPadding(paddingSide, paddingTop, paddingSide, paddingBottom);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
