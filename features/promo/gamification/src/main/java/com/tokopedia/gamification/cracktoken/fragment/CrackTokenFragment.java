@@ -65,6 +65,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private LinearLayout layoutTimer;
     private ProgressBar progressBar;
     private AbstractionRouter abstractionRouter;
+    private TextView infoTitlePage;
 
     private TokenData tokenData;
 
@@ -94,6 +95,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetRemainingToken = rootView.findViewById(R.id.widget_remaining_token_view);
         layoutTimer = rootView.findViewById(R.id.layout_timer);
         progressBar = rootView.findViewById(R.id.progress_bar);
+        infoTitlePage = rootView.findViewById(R.id.text_info_page);
 
         widgetTokenOnBoarding = rootView.findViewById(R.id.widget_token_onboarding);
 
@@ -162,6 +164,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         TokenUser tokenUser = tokenData.getHome().getTokensUser();
 
+        infoTitlePage.setText(tokenData.getHome().getTokensUser().getTitle());
         ImageHandler.loadImageAndCache(ivContainer, tokenUser.getBackgroundAsset().getBackgroundImgUrl());
 
         widgetTokenView.setToken(tokenUser.getTokenAsset());
@@ -353,7 +356,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             this.tokenData = tokenData;
             renderViewCrackEgg();
             showHandOnBoarding();
-
             trackingLuckyEggView();
         }
     }

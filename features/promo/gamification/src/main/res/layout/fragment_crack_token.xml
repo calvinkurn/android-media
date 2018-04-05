@@ -32,12 +32,14 @@
             android:paddingLeft="32dp"
             android:paddingRight="32dp"
             android:paddingTop="8dp"
+            android:layout_marginLeft="@dimen/margin_vl"
+            android:layout_marginRight="@dimen/margin_vl"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_size_info_crack_egg"
             android:textStyle="bold"
             android:gravity="center"
             android:layout_marginBottom="@dimen/margin_small"
-            android:text="Klik untuk pecahkan Lucky \nEgg dan raih hadiah menarik!" />
+            tools:text="@string/default_info_token_text_crack" />
 
         <TextView
             android:id="@+id/text_countdown_timer"
