@@ -100,7 +100,7 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
         Date newReturnDate = now.getTime();
 
         //max Date + 1 hari, karena pengecekan pakai before
-        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, +1);
+        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, PLUS_ONE);
 
         if (flightPassengerInfoValidator.validateDateNotBetween(minDate, maxDate, newReturnDate)) {
             if (isChildPassenger()) {
@@ -124,7 +124,7 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
         Date newReturnDate = now.getTime();
 
         //max Date + 1 hari, karena pengecekan pakai before
-        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, +1);
+        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, PLUS_ONE);
 
         if (flightPassengerInfoValidator.validateDateExceedMaxDate(maxDate, newReturnDate)) {
             getView().showPassengerAdultBirthdateShouldMoreThan12Years(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);

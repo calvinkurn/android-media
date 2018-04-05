@@ -12,6 +12,7 @@ public class FlightPassengerInfoValidator {
 
     private static final int MAX_PASSENGER_NAME_LENGTH = 48;
     private static final int MIN_PASSENGER_LAST_NAME = 2;
+    private static final String REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z\\s]*$";
 
     @Inject
     public FlightPassengerInfoValidator() {
@@ -66,7 +67,7 @@ public class FlightPassengerInfoValidator {
     }
 
     private boolean isAlphabetAndSpaceOnly(String expression) {
-        return expression.matches(new String("^[a-zA-Z\\s]*$"));
+        return expression.matches(new String(REGEX_IS_ALPHABET_AND_SPACE_ONLY));
     }
 
     private boolean isSingleWord(String passengerLastName) {
