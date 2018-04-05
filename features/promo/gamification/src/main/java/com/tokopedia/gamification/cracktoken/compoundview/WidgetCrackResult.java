@@ -57,7 +57,7 @@ public class WidgetCrackResult extends RelativeLayout {
 
         void onTrackingCloseRewardButton(CrackResult crackResult);
 
-        void onClickReturnButton(String crackResultCode, String type, String applink, String url);
+        void onClickReturnButton(CrackResult crackResult);
 
         void onClickCloseButton();
     }
@@ -208,10 +208,7 @@ public class WidgetCrackResult extends RelativeLayout {
             buttonReturn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClickReturnButton(crackResult.getResultStatus().getCode(),
-                            crackResult.getReturnButton().getType(),
-                            crackResult.getReturnButton().getApplink(),
-                            crackResult.getReturnButton().getUrl());
+                    listener.onClickReturnButton(crackResult);
                 }
             });
         } else {
@@ -258,6 +255,7 @@ public class WidgetCrackResult extends RelativeLayout {
         imageViewBgCrackResult.setVisibility(View.GONE);
         listCrackResultText.removeAllViews();
         containerTextCrackResult.setVisibility(GONE);
+        closeRewardBtn.setVisibility(GONE);
     }
 
 }

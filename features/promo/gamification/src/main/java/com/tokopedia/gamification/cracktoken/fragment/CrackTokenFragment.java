@@ -65,6 +65,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private LinearLayout layoutTimer;
     private ProgressBar progressBar;
     private AbstractionRouter abstractionRouter;
+    private TextView infoTitlePage;
 
     private TokenData tokenData;
 
@@ -94,23 +95,74 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetRemainingToken = rootView.findViewById(R.id.widget_remaining_token_view);
         layoutTimer = rootView.findViewById(R.id.layout_timer);
         progressBar = rootView.findViewById(R.id.progress_bar);
+        infoTitlePage = rootView.findViewById(R.id.text_info_page);
 
         widgetTokenOnBoarding = rootView.findViewById(R.id.widget_token_onboarding);
 
         abstractionRouter = (AbstractionRouter) getActivity().getApplication();
 
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
-            public void onGlobalLayout() {
-                initTimerBound();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    //noinspection deprecation
-                    rootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            public void onClickCtaButton(String type, String applink, String url) {
+                if (type.equals("dismiss")) {
+                    widgetCrackResult.clearCrackResult();
+
+                    crackTokenPresenter.getGetTokenTokopoints();
+                } else if (type.equals("redirect")) {
+                    trackingButtonClick(GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
+                            GamificationEventTracking.Action.CLICK_TO_TOKOPOINT,
+                            "");
+
+                    navigateToAssociatedPage(applink, url);
                 }
             }
+
+            @Override
+            public void onClickReturnButton(CrackResult crackResult) {
+                if (crackResult.getReturnButton().getType().equals("dismiss")) {
+                    widgetCrackResult.clearCrackResult();
+
+                    if (crackResult.isCrackTokenSuccess()) {
+                        trackingButtonClick(GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
+                                GamificationEventTracking.Action.CLICK_CRACK_OTHER_EGG,
+                                "");
+                    } else if (crackResult.isCrackTokenExpired()) {
+                        trackingButtonClick(GamificationEventTracking.Category.EXPIRED_TOKEN,
+                                GamificationEventTracking.Action.CLICK_OK,
+                                "");
+                    }
+
+                    crackTokenPresenter.getGetTokenTokopoints();
+                } else if (crackResult.getReturnButton().getType().equals("redirect")) {
+                    if (crackResult.isCrackTokenSuccess()) {
+                        trackingButtonClick(GamificationEventTracking.Category.COUPON_REWARD,
+                                GamificationEventTracking.Action.CLICK_USE_GIFT,
+                                widgetCrackResult.getBenefitType());
+                    } else {
+                        trackingButtonClick(GamificationEventTracking.Category.ERROR_PAGE,
+                                GamificationEventTracking.Action.CLICK_TRY_AGAIN,
+                                "");
+                    }
+
+                    navigateToAssociatedPage(crackResult.getReturnButton().getApplink(),
+                            crackResult.getReturnButton().getUrl());
+                }
+            }
+
+            @Override
+            public void onClickCloseButton() {
+                widgetCrackResult.clearCrackResult();
+
+                crackTokenPresenter.getGetTokenTokopoints();
+            }
+
+            @Override
+            public void onTrackingCloseRewardButton(CrackResult crackResult) {
+                trackingCloseRewardButtonClick(crackResult);
+            }
         });
+
+
         return rootView;
     }
 
@@ -149,12 +201,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     public void onPause() {
         super.onPause();
         // save the previous time to enable the timer in onResume.
-        if (tokenData.isShowCountDown() && countDownTimer != null) {
-            prevTimeStamp = System.currentTimeMillis();
-        } else {
-            prevTimeStamp = 0;
+        if (tokenData != null) {
+            if (tokenData.isShowCountDown() && countDownTimer != null) {
+                prevTimeStamp = System.currentTimeMillis();
+            } else {
+                prevTimeStamp = 0;
+            }
+            stopTimer();
         }
-        stopTimer();
     }
 
     private void renderViewCrackEgg() {
@@ -162,6 +216,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         TokenUser tokenUser = tokenData.getHome().getTokensUser();
 
+        infoTitlePage.setText(tokenData.getHome().getTokensUser().getTitle());
         ImageHandler.loadImageAndCache(ivContainer, tokenUser.getBackgroundAsset().getBackgroundImgUrl());
 
         widgetTokenView.setToken(tokenUser.getTokenAsset());
@@ -177,65 +232,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
         });
 
-        widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
-            @Override
-            public void onClickCtaButton(String type, String applink, String url) {
-                if (type.equals("dismiss")) {
-                    widgetCrackResult.clearCrackResult();
-
-                    crackTokenPresenter.getGetTokenTokopoints();
-                } else if (type.equals("redirect")) {
-                    trackingButtonClick(GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
-                            GamificationEventTracking.Action.CLICK_TO_TOKOPOINT,
-                            "");
-
-                    navigateToAssociatedPage(applink, url);
-                }
-            }
-
-            @Override
-            public void onClickReturnButton(String crackResultCode, String type, String applink, String url) {
-                if (type.equals("dismiss")) {
-                    widgetCrackResult.clearCrackResult();
-
-                    if (crackResultCode.equals("200")) {
-                        trackingButtonClick(GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
-                                GamificationEventTracking.Action.CLICK_CRACK_OTHER_EGG,
-                                "");
-                    } else if (crackResultCode.equals("42503") || crackResultCode.equals("42504")) {
-                        trackingButtonClick(GamificationEventTracking.Category.EXPIRED_TOKEN,
-                                GamificationEventTracking.Action.CLICK_OK,
-                                "");
-                    }
-
-                    crackTokenPresenter.getGetTokenTokopoints();
-                } else if (type.equals("redirect")) {
-                    if (crackResultCode.equals("200")) {
-                        trackingButtonClick(GamificationEventTracking.Category.COUPON_REWARD,
-                                GamificationEventTracking.Action.CLICK_USE_GIFT,
-                                widgetCrackResult.getBenefitType());
-                    } else {
-                        trackingButtonClick(GamificationEventTracking.Category.ERROR_PAGE,
-                                GamificationEventTracking.Action.CLICK_TRY_AGAIN,
-                               "");
-                    }
-
-                    navigateToAssociatedPage(applink, url);
-                }
-            }
-
-            @Override
-            public void onClickCloseButton() {
-                widgetCrackResult.clearCrackResult();
-
-                crackTokenPresenter.getGetTokenTokopoints();
-            }
-
-            @Override
-            public void onTrackingCloseRewardButton(CrackResult crackResult) {
-                trackingCloseRewardButtonClick(crackResult);
-            }
-        });
         widgetRemainingToken.show();
         widgetRemainingToken.showRemainingToken(
                 tokenUser.getTokenAsset().getSmallImgUrl(),
@@ -276,6 +272,20 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void showTimer(@NonNull TokenData tokenData) {
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                initTimerBound();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    //noinspection deprecation
+                    rootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
+
+
         TokenUser tokenUser = tokenData.getHome().getTokensUser();
         if (tokenUser.getShowTime()) {
             textCountdownTimer.setVisibility(View.VISIBLE);
@@ -352,7 +362,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             this.tokenData = tokenData;
             renderViewCrackEgg();
             showHandOnBoarding();
-
             trackingLuckyEggView();
         }
     }
@@ -406,7 +415,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         if (context instanceof ActionListener) {
             listener = (ActionListener) context;
         }
-
     }
 
     private void trackingLuckyEggView() {
@@ -464,15 +472,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private void trackingCloseRewardButtonClick(CrackResult crackResult) {
         if (getActivity().getApplication() instanceof AbstractionRouter) {
             String category = "";
-            if (crackResult.getResultStatus().getCode().equals("200")) {
+            if (crackResult.isCrackTokenSuccess()) {
                 if (crackResult.getBenefitType().equals("Coupon")) {
                     category = GamificationEventTracking.Category.COUPON_REWARD;
                 } else {
                     category = GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD;
                 }
             } else {
-                if (crackResult.getResultStatus().getCode().equals("42503") ||
-                        crackResult.getResultStatus().getCode().equals("42504")) {
+                if (crackResult.isCrackTokenExpired()) {
                     category = GamificationEventTracking.Category.EXPIRED_TOKEN;
                 } else {
                     category = GamificationEventTracking.Category.ERROR_PAGE;

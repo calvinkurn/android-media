@@ -252,7 +252,7 @@ public class WidgetTokenView extends FrameLayout {
         crackingAnimationSet.start();
     }
 
-    private void initCrackingAnimationSet(){
+    private void initCrackingAnimationSet() {
         if (crackingAnimationSet == null) {
             crackingAnimationSet = new AnimatorSet();
             PropertyValuesHolder pvhShake =
@@ -297,7 +297,7 @@ public class WidgetTokenView extends FrameLayout {
         imageViewLeft.setVisibility(View.VISIBLE);
         imageViewRight.setVisibility(View.VISIBLE);
 
-        if (crackingAnimationSet!= null) {
+        if (crackingAnimationSet != null) {
             crackingAnimationSet.cancel();
         }
         imageViewFull.clearAnimation();
@@ -333,7 +333,7 @@ public class WidgetTokenView extends FrameLayout {
 
         imageViewFull.clearAnimation();
         imageViewCracked.clearAnimation();
-        if (crackingAnimationSet!= null) {
+        if (crackingAnimationSet != null) {
             crackingAnimationSet.cancel();
         }
     }
