@@ -268,7 +268,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         @Override
-        public void onShopItemClicked(Shop shop) {
+        public void onShopItemClicked(int position, Shop shop) {
             Intent intent = ((DiscoveryRouter) MainApplication.getAppContext()).getShopPageIntent(context, shop.getId());
             context.startActivity(intent);
         }
