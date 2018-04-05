@@ -425,8 +425,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     @Override
     public void sendAddToCartCheckoutAnalytic(@NonNull Context context,
                                               @NonNull ProductCartPass productCartPass,
-                                              String quantity,
-                                              @NonNull Bundle addToCartBundle) {
+                                              String quantity) {
         com.tokopedia.core.analytics.nishikino.model.Product product =
                 new com.tokopedia.core.analytics.nishikino.model.Product();
         product.setProductName(productCartPass.getProductName());
@@ -440,8 +439,8 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         product.setShopType(productCartPass.getShopType());
         product.setShopName(productCartPass.getShopName());
         product.setCategoryId(productCartPass.getCategoryId());
-        /*product.setHomeAttribution(addToCartBundle.getString("home_attribution"));
-        product.setList(addToCartBundle.getString("list_name_product"));*/
+        product.setHomeAttribution(productCartPass.getTrackerAttribution());
+        product.setList(productCartPass.getListName());
         UnifyTracking.eventAddToCartPurchase(product);
     }
 

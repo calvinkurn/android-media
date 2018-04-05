@@ -46,8 +46,7 @@ public interface AddToCartPresenter {
 
     void sendAddToCartCheckoutAnalytic(@NonNull Context context,
                                        @NonNull ProductCartPass productCartPass,
-                                       String quantity,
-                                       @NonNull Bundle analyticBundle);
+                                       String quantity);
 
     void processAddToCartSuccess(@NonNull Context context, String message);
 
