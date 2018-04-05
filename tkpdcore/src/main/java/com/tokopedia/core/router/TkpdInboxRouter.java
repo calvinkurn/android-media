@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import android.support.v4.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ public interface TkpdInboxRouter {
     String PROFILE = "profile";
 
     String ENABLE_GROUPCHAT = "enable_groupchat";
+    String IS_CHAT_BOT = "is_chat_bot";
 
 
     Intent getAskBuyerIntent(Context context, String toUserId,
@@ -45,6 +47,10 @@ public interface TkpdInboxRouter {
     Intent getHomeIntent(Context context);
 
     Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd);
+
+    Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 
     Fragment getChannelFragment(Bundle bundle);
 

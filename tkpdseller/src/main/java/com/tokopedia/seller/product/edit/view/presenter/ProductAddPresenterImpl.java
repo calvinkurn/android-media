@@ -13,14 +13,12 @@ import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplay
 import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.edit.domain.model.AddProductShopInfoDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.CategoryRecommDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.edit.view.listener.ProductAddView;
 import com.tokopedia.seller.product.edit.view.mapper.CategoryRecommDomainToViewMapper;
-import com.tokopedia.seller.product.edit.view.mapper.UploadProductMapper;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
-import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantByCatUseCase;
 
@@ -99,7 +97,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
             @Override
             public void onNext(List<ProductVariantByCatModel> s) {
-                getView().onSuccessGetProductVariant(s);
+                getView().onSuccessGetProductVariantCat(s);
             }
         };
     }
@@ -125,15 +123,16 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         }
     }
 
+
     @Override
-    public void saveDraftAndAdd(UploadProductInputViewModel viewModel, boolean isUploading) {
-        RequestParams requestParam = generateRequestParamAddDraft(viewModel, isUploading);
-        saveDraftProductUseCase.execute(requestParam, new SaveDraftAndAddSubscriber());
+    public void saveDraftAndAdd(ProductViewModel viewModel) {
+        saveDraftProductUseCase.execute(generateRequestParamAddDraft(viewModel, true),
+                new SaveDraftAndAddSubscriber());
     }
 
-    private RequestParams generateRequestParamAddDraft(UploadProductInputViewModel viewModel, boolean isUploading) {
-        UploadProductInputDomainModel domainModel = UploadProductMapper.mapViewToDomain(viewModel);
-        return SaveDraftProductUseCase.generateUploadProductParam(domainModel, getProductDraftId(), isUploading);
+    private com.tokopedia.usecase.RequestParams generateRequestParamAddDraft(ProductViewModel viewModel, boolean isUploading) {
+        return SaveDraftProductUseCase.generateUploadProductParam(viewModel, getProductDraftId(),
+                isUploading);
     }
 
     private long getProductDraftId(){
@@ -294,7 +293,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         };
     }
 
-    private void getCatalogFromServer(String keyword, long departmentId, int start, int rows) {
+    private void getCatalogFromServer(final String keyword, final long departmentId, int start, int rows) {
         fetchCatalogDataUseCase.execute(
                 FetchCatalogDataUseCase.createRequestParams(keyword, departmentId, start, rows),
                 new Subscriber<CatalogDataModel>() {
@@ -313,7 +312,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
                     @Override
                     public void onNext(CatalogDataModel catalogDataModel) {
-                        getView().onSuccessLoadCatalog(catalogDataModel.getResult().getCatalogs());
+                        getView().onSuccessLoadCatalog( keyword, departmentId, catalogDataModel.getResult().getCatalogs());
                     }
                 });
     }
@@ -347,9 +346,9 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     @Override
-    public void saveDraft(UploadProductInputViewModel viewModel, boolean isUploading) {
-        RequestParams requestParam = generateRequestParamAddDraft(viewModel, isUploading);
-        saveDraftProductUseCase.execute(requestParam, new SaveDraftSubscriber(isUploading));
+    public void saveDraft(ProductViewModel viewModel, boolean isUploading) {
+        saveDraftProductUseCase.execute(generateRequestParamAddDraft(viewModel, isUploading),
+                new SaveDraftSubscriber(isUploading));
     }
 
     @Override

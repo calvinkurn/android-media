@@ -3,6 +3,7 @@ package com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,7 +53,12 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
                 break;
         }
 
-        voteQuestion.setText(MethodChecker.fromHtml(element.getMessage()));
+        if(TextUtils.isEmpty(element.getVoteInfoViewModel().getTitle())){
+            voteQuestion.setVisibility(View.GONE);
+        }else {
+            voteQuestion.setVisibility(View.VISIBLE);
+            voteQuestion.setText(MethodChecker.fromHtml(element.getVoteInfoViewModel().getTitle()));
+        }
         voteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,6 +87,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         }
         voteTitle.setText(R.string.title_poll_started);
         voteTitle.setTextColor(MethodChecker.getColor(voteTitle.getContext(), R.color.medium_green));
+
     }
 
 }

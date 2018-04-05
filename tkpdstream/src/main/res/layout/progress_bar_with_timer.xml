@@ -29,7 +29,7 @@
         android:paddingBottom="@dimen/space_tiny"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:fontFamily="sans-serif"
         android:textStyle="bold"
         android:textColor="@color/medium_green"

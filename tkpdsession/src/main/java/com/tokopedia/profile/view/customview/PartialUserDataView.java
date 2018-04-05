@@ -104,12 +104,6 @@ public class PartialUserDataView extends BaseCustomView {
         separatorPhone = view.findViewById(R.id.separator_phone_number);
         separatorEmail = view.findViewById(R.id.separator_email);
         separatorGender = view.findViewById(R.id.separator_gender);
-
-        bannerIncompleteProfile.setVisibility(GONE);
-        partialPhoneNumber.setVisibility(GONE);
-        partialEmail.setVisibility(GONE);
-        partialGender.setVisibility(GONE);
-        partialBirthDate.setVisibility(GONE);
     }
 
     @Override

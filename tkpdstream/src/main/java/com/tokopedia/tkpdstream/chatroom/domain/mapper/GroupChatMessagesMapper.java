@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdstream.chatroom.domain.mapper;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
@@ -59,15 +60,26 @@ public class GroupChatMessagesMapper {
     }
 
     private Visitable mapMessage(BaseMessage message) {
-        if (message instanceof UserMessage) {
-            return mapToUserMessage((UserMessage) message);
+        try {
+            if (message instanceof UserMessage) {
+                return mapToUserMessage((UserMessage) message);
 //        } else if (message instanceof AdminMessage) {
 //            return mapToAnnouncement((AdminMessage) message);
 //        } else if (message instanceof FileMessage
 //                && ((FileMessage) message).getType().toLowerCase().contains(IMAGE)
 //                && !TextUtils.isEmpty(((FileMessage) message).getUrl())) {
 //            return mapToImageMessage((FileMessage) message);
-        } else {
+            } else {
+                return null;
+            }
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+            return null;
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return null;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -93,11 +105,11 @@ public class GroupChatMessagesMapper {
             case VoteAnnouncementViewModel.POLLING_CANCEL:
             case VoteAnnouncementViewModel.POLLING_UPDATE:
                 return mapToPollingViewModel(message,
-                        message.getData().replace("\\", ""));
+                        message.getData());
             case ChatViewModel.ADMIN_MESSAGE:
                 return mapToAdminChat(message);
             case ImageViewModel.ADMIN_ANNOUNCEMENT:
-                return mapToAdminImageChat(message, message.getData().replace("\\", ""));
+                return mapToAdminImageChat(message, message.getData());
             default:
                 return mapToUserChat(message);
         }
@@ -167,6 +179,9 @@ public class GroupChatMessagesMapper {
                     true,
                     mappingToVoteInfoViewModel(pojo)
             );
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+            return null;
         } catch (NullPointerException e) {
             e.printStackTrace();
             return null;
@@ -187,6 +202,7 @@ public class GroupChatMessagesMapper {
         if (hasPoll(activePollPojo)) {
             return new VoteInfoViewModel(
                     String.valueOf(activePollPojo.getPollId()),
+                    activePollPojo.getTitle(),
                     activePollPojo.getQuestion(),
                     mapToListOptions(activePollPojo.isIsAnswered(),
                             activePollPojo.getOptionType(),

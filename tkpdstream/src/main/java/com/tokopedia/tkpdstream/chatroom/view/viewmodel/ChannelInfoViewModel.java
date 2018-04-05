@@ -65,11 +65,11 @@ public class ChannelInfoViewModel implements Parcelable{
         return title;
     }
 
-    public int getTotalParticipantsOnline() {
-        return channelViewModel != null ? channelViewModel.getParticipant() : 0;
+    public String getTotalParticipantsOnline() {
+        return channelViewModel != null ? channelViewModel.getParticipant() : "0";
     }
 
-    public void setTotalParticipant(int totalParticipant) {
+    public void setTotalParticipant(String totalParticipant) {
         if (channelViewModel != null) {
             channelViewModel.setParticipant(totalParticipant);
         }

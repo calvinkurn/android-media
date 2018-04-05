@@ -43,11 +43,11 @@
                     <com.tokopedia.events.view.customview.SearchInputView
                         android:id="@+id/search_input_view"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/searchview_height"
-                        android:layout_marginBottom="@dimen/margin_default"
-                        android:layout_marginLeft="@dimen/margin_default"
-                        android:layout_marginRight="@dimen/margin_default"
-                        android:layout_marginTop="@dimen/margin_default"
+                        android:layout_height="@dimen/dp_40"
+                        android:layout_marginBottom="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_16"
                         android:background="@color/white" />
 
 
@@ -78,11 +78,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center_vertical"
-                android:paddingEnd="@dimen/margin_default"
-                android:paddingStart="@dimen/margin_default"
+                android:paddingEnd="@dimen/dp_16"
+                android:paddingStart="@dimen/dp_16"
                 android:text="@string/top_events"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="bold"
                 android:visibility="gone" />
 
@@ -109,8 +109,8 @@
 
         <ProgressBar
             android:id="@+id/prog_bar"
-            android:layout_width="@dimen/progbar_height"
-            android:layout_height="@dimen/progbar_height"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
             android:layout_gravity="center" />
     </FrameLayout>
 </FrameLayout>

@@ -107,8 +107,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
             }
         })
                 .onBackpressureDrop()
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<FlightCheckoutViewModel>() {
                     @Override
@@ -249,7 +249,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     getView().getCurrentBookingReviewModel().getFlightClass().getId(),
                     getView().getDepartureTripId(),
                     getView().getReturnTripId(),
-                    getView().getIdEmpotencyKey(getView().getDepartureTripId() + "_" + getView().getReturnTripId())
+                    getView().getIdEmpotencyKey(getView().getDepartureTripId() + "_" + getView().getReturnTripId()),
+                    calculateTotalPassengerFare()
             );
         } else {
             requestParams = addToCartUseCase.createRequestParam(
@@ -258,7 +259,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     getView().getCurrentBookingReviewModel().getInfant(),
                     getView().getCurrentBookingReviewModel().getFlightClass().getId(),
                     getView().getDepartureTripId(),
-                    getView().getIdEmpotencyKey(getView().getDepartureTripId())
+                    getView().getIdEmpotencyKey(getView().getDepartureTripId()),
+                    calculateTotalPassengerFare()
             );
         }
         return requestParams;
@@ -275,7 +277,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     }
 
     @Override
-    protected void onCountDownTimestimeChanged(String timestamp) {
+    protected void onCountDownTimestampChanged(String timestamp) {
         getView().setTimeStamp(timestamp);
     }
 

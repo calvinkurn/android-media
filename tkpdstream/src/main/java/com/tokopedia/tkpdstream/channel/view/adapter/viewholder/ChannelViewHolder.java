@@ -16,7 +16,7 @@ import com.tokopedia.tkpdstream.common.util.TextFormatter;
  */
 
 
-public class ChannelViewHolder extends AbstractViewHolder<ChannelViewModel>{
+public class ChannelViewHolder extends AbstractViewHolder<ChannelViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.card_group_chat;
@@ -41,7 +41,7 @@ public class ChannelViewHolder extends AbstractViewHolder<ChannelViewModel>{
     @Override
     public void bind(ChannelViewModel element) {
 
-        participant.setText(TextFormatter.format(element.getParticipant()));
+        participant.setText(TextFormatter.format(String.valueOf(element.getParticipant())));
         name.setText(element.getAdminName());
         title.setText(element.getTitle());
         subtitle.setText(element.getDescription());

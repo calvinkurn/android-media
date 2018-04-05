@@ -1,10 +1,13 @@
 package com.tokopedia.profile.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author by alvinatin on 15/02/18.
  */
 
-public class TopProfileViewModel {
+public class TopProfileViewModel implements Parcelable {
 
     private int userId;
     private String name;
@@ -338,4 +341,100 @@ public class TopProfileViewModel {
     public void setIsUser(boolean user) {
         isUser = user;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.userId);
+        dest.writeString(this.name);
+        dest.writeString(this.title);
+        dest.writeString(this.biodata);
+        dest.writeString(this.following);
+        dest.writeString(this.followers);
+        dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
+        dest.writeString(this.favoritedShop);
+        dest.writeString(this.userPhoto);
+        dest.writeByte(this.isKol ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isPhoneVerified ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isEmailVerified ? (byte) 1 : (byte) 0);
+        dest.writeString(this.phoneNumber);
+        dest.writeString(this.email);
+        dest.writeString(this.gender);
+        dest.writeString(this.birthDate);
+        dest.writeInt(this.completion);
+        dest.writeString(this.summaryScore);
+        dest.writeString(this.positiveScore);
+        dest.writeString(this.netralScore);
+        dest.writeString(this.negativeScore);
+        dest.writeInt(this.shopId);
+        dest.writeString(this.shopName);
+        dest.writeByte(this.isGoldShop ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isGoldBadge ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isOfficialShop ? (byte) 1 : (byte) 0);
+        dest.writeString(this.shopLocation);
+        dest.writeString(this.shopLogo);
+        dest.writeString(this.shopBadge);
+        dest.writeString(this.shopTooltip);
+        dest.writeInt(this.shopScore);
+        dest.writeInt(this.shopBadgeLevel);
+        dest.writeString(this.shopLastOnline);
+        dest.writeString(this.shopAppLink);
+        dest.writeByte(this.isFavorite ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isUser ? (byte) 1 : (byte) 0);
+    }
+
+    protected TopProfileViewModel(Parcel in) {
+        this.userId = in.readInt();
+        this.name = in.readString();
+        this.title = in.readString();
+        this.biodata = in.readString();
+        this.following = in.readString();
+        this.followers = in.readString();
+        this.isFollowed = in.readByte() != 0;
+        this.favoritedShop = in.readString();
+        this.userPhoto = in.readString();
+        this.isKol = in.readByte() != 0;
+        this.isPhoneVerified = in.readByte() != 0;
+        this.isEmailVerified = in.readByte() != 0;
+        this.phoneNumber = in.readString();
+        this.email = in.readString();
+        this.gender = in.readString();
+        this.birthDate = in.readString();
+        this.completion = in.readInt();
+        this.summaryScore = in.readString();
+        this.positiveScore = in.readString();
+        this.netralScore = in.readString();
+        this.negativeScore = in.readString();
+        this.shopId = in.readInt();
+        this.shopName = in.readString();
+        this.isGoldShop = in.readByte() != 0;
+        this.isGoldBadge = in.readByte() != 0;
+        this.isOfficialShop = in.readByte() != 0;
+        this.shopLocation = in.readString();
+        this.shopLogo = in.readString();
+        this.shopBadge = in.readString();
+        this.shopTooltip = in.readString();
+        this.shopScore = in.readInt();
+        this.shopBadgeLevel = in.readInt();
+        this.shopLastOnline = in.readString();
+        this.shopAppLink = in.readString();
+        this.isFavorite = in.readByte() != 0;
+        this.isUser = in.readByte() != 0;
+    }
+
+    public static final Parcelable.Creator<TopProfileViewModel> CREATOR = new Parcelable.Creator<TopProfileViewModel>() {
+        @Override
+        public TopProfileViewModel createFromParcel(Parcel source) {
+            return new TopProfileViewModel(source);
+        }
+
+        @Override
+        public TopProfileViewModel[] newArray(int size) {
+            return new TopProfileViewModel[size];
+        }
+    };
 }

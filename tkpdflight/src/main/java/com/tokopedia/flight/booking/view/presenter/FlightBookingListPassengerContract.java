@@ -27,13 +27,13 @@ public interface FlightBookingListPassengerContract {
 
         String getSelectedPassengerId();
 
-        void showPassengerSelectedError(String passengerType);
-
         String getString(int resId);
 
         String getRequestId();
 
         void onGetListError(Throwable throwable);
+
+        String getDepartureDate();
     }
 
     interface Presenter {

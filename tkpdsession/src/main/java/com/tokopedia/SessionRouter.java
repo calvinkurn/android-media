@@ -6,6 +6,8 @@ import android.content.Intent;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
 
+import okhttp3.Interceptor;
+
 /**
  * @author by nisie on 10/19/17.
  */
@@ -20,4 +22,8 @@ public interface SessionRouter {
     void doUnfollowKolPost(int id, FollowKolSubscriber followKolPostSubscriber);
 
     Intent getTopProfileIntent(Context context, String userId);
+
+    Interceptor getChuckInterceptor();
+
+    Intent getShopPageIntent(Context context, String shopId);
 }

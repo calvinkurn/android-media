@@ -19,7 +19,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
     private String adminPicture;
     private String title;
     private String description;
-    private int participant;
+    private String participant;
 
     protected ChannelViewModel(Parcel in) {
         channelUrl = in.readString();
@@ -29,7 +29,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         adminPicture = in.readString();
         title = in.readString();
         description = in.readString();
-        participant = in.readInt();
+        participant = in.readString();
     }
 
     public static final Creator<ChannelViewModel> CREATOR = new Creator<ChannelViewModel>() {
@@ -53,7 +53,8 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
     }
 
     public ChannelViewModel(String id, String adminName, String image, String adminPicture,
-                            String title, String description, int participant, String channelUrl) {
+                            String title, String description, String participant, String
+                                    channelUrl) {
         this.id = id;
         this.adminName = adminName;
         this.image = image;
@@ -84,7 +85,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         return description;
     }
 
-    public int getParticipant() {
+    public String getParticipant() {
         return participant;
     }
 
@@ -92,7 +93,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         return adminPicture;
     }
 
-    public void setParticipant(int participant) {
+    public void setParticipant(String participant) {
         this.participant = participant;
     }
 
@@ -114,7 +115,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         dest.writeString(adminPicture);
         dest.writeString(title);
         dest.writeString(description);
-        dest.writeInt(participant);
+        dest.writeString(participant);
     }
 }
 
