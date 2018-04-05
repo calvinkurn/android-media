@@ -1,5 +1,7 @@
 package com.tokopedia.gamification.cracktoken.contract;
 
+import android.content.res.Resources;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
@@ -14,15 +16,17 @@ public interface CrackTokenContract {
     interface View extends CustomerView {
         void onSuccessGetToken(TokenData tokenData);
 
-        void onErrorGetToken(Throwable throwable);
+        void onErrorGetToken(CrackResult throwable);
 
         void onSuccessCrackToken(CrackResult crackResult);
 
-        void onErrorCrackToken(Throwable throwable);
+        void onErrorCrackToken(CrackResult crackResult);
 
         void showLoading();
 
         void hideLoading();
+
+        Resources getResources();
     }
 
     interface Presenter extends CustomerPresenter<View> {

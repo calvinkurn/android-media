@@ -47,13 +47,19 @@ public class WidgetCrackResult extends RelativeLayout {
     private LinearLayout listCrackResultText;
     private Button buttonReturn;
     private TextView buttonCta;
+    private ImageView closeRewardBtn;
+    private String benefitType;
 
     private WidgetCrackResultListener listener;
 
     public interface WidgetCrackResultListener {
-        void onClickCtaButton(String applink, String url);
+        void onClickCtaButton(String type, String applink, String url);
 
-        void onClickReturnButton();
+        void onTrackingCloseRewardButton(CrackResult crackResult);
+
+        void onClickReturnButton(String crackResultCode, String type, String applink, String url);
+
+        void onClickCloseButton();
     }
 
     public WidgetCrackResult(Context context) {
@@ -81,26 +87,29 @@ public class WidgetCrackResult extends RelativeLayout {
         buttonReturn = view.findViewById(R.id.button_return);
         buttonCta = view.findViewById(R.id.button_cta);
         textCrackResultLabel = view.findViewById(R.id.text_crack_result_label);
+        closeRewardBtn = view.findViewById(R.id.close_reward);
     }
 
-    public void showCrackResult(CrackResult crackResult, String labelCrackResult) {
+    public void showCrackResult(CrackResult crackResult) {
+        this.benefitType = crackResult.getBenefitType();
         showCrackResultImageAnimation(crackResult);
         showCrackResultBackgroundAnimation();
-        showListCrackResultText(crackResult.getBenefits(), labelCrackResult);
+        showListCrackResultText(crackResult.getBenefits(), crackResult.getBenefitLabel());
         renderCtaButton(crackResult.getCtaButton());
-        renderReturnButton(crackResult.getReturnButton());
+        renderReturnButton(crackResult);
+        renderCloseReward(crackResult);
     }
 
     private void showCrackResultImageAnimation(CrackResult crackResult) {
         int actionBarHeight = 0;
         TypedValue tv = new TypedValue();
         if (getContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
 
         DisplayMetrics metrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        float screenHeightQuarter = metrics.heightPixels/4;
+        float screenHeightQuarter = metrics.heightPixels / 4;
         screenHeightQuarter = screenHeightQuarter - actionBarHeight;
 
         final AnimationSet animationCrackResult = new AnimationSet(true);
@@ -175,6 +184,10 @@ public class WidgetCrackResult extends RelativeLayout {
         containerTextCrackResult.setVisibility(VISIBLE);
     }
 
+    public String getBenefitType() {
+        return this.benefitType;
+    }
+
     private int convertSize(String size) {
         switch (size) {
             case "large":
@@ -188,14 +201,17 @@ public class WidgetCrackResult extends RelativeLayout {
         }
     }
 
-    public void renderReturnButton(final CrackButton returnButton) {
-        if (returnButton != null) {
+    public void renderReturnButton(final CrackResult crackResult) {
+        if (crackResult.getReturnButton() != null) {
             buttonReturn.setVisibility(VISIBLE);
-            buttonReturn.setText(returnButton.getTitle());
+            buttonReturn.setText(crackResult.getReturnButton().getTitle());
             buttonReturn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClickReturnButton();
+                    listener.onClickReturnButton(crackResult.getResultStatus().getCode(),
+                            crackResult.getReturnButton().getType(),
+                            crackResult.getReturnButton().getApplink(),
+                            crackResult.getReturnButton().getUrl());
                 }
             });
         } else {
@@ -210,12 +226,23 @@ public class WidgetCrackResult extends RelativeLayout {
             buttonCta.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClickCtaButton(ctaButton.getApplink(), ctaButton.getUrl());
+                    listener.onClickCtaButton(ctaButton.getType(), ctaButton.getApplink(), ctaButton.getUrl());
                 }
             });
         } else {
             buttonCta.setVisibility(GONE);
         }
+    }
+
+    private void renderCloseReward(final CrackResult crackResult) {
+        closeRewardBtn.setVisibility(VISIBLE);
+        closeRewardBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onClickCloseButton();
+                listener.onTrackingCloseRewardButton(crackResult);
+            }
+        });
     }
 
     public void setListener(WidgetCrackResultListener listener) {
