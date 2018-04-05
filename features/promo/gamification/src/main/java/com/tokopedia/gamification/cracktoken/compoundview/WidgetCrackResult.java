@@ -47,11 +47,18 @@ public class WidgetCrackResult extends RelativeLayout {
     private LinearLayout listCrackResultText;
     private Button buttonReturn;
     private TextView buttonCta;
+    private ImageView closeRewardBtn;
 
     private WidgetCrackResultListener listener;
 
     public interface WidgetCrackResultListener {
         void onClickCtaButton(String type, String applink, String url);
+
+        void onTrackingReturnButton();
+
+        void onTrackingCtaButton();
+
+        void onTrackingCloseRewardButton(CrackResult crackResult);
 
         void onClickReturnButton(String type, String applink, String url);
     }
@@ -81,6 +88,7 @@ public class WidgetCrackResult extends RelativeLayout {
         buttonReturn = view.findViewById(R.id.button_return);
         buttonCta = view.findViewById(R.id.button_cta);
         textCrackResultLabel = view.findViewById(R.id.text_crack_result_label);
+        closeRewardBtn = view.findViewById(R.id.close_reward);
     }
 
     public void showCrackResult(CrackResult crackResult, String labelCrackResult) {
@@ -89,18 +97,19 @@ public class WidgetCrackResult extends RelativeLayout {
         showListCrackResultText(crackResult.getBenefits(), labelCrackResult);
         renderCtaButton(crackResult.getCtaButton());
         renderReturnButton(crackResult.getReturnButton());
+        renderCloseReward(crackResult);
     }
 
     private void showCrackResultImageAnimation(CrackResult crackResult) {
         int actionBarHeight = 0;
         TypedValue tv = new TypedValue();
         if (getContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
 
         DisplayMetrics metrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        float screenHeightQuarter = metrics.heightPixels/4;
+        float screenHeightQuarter = metrics.heightPixels / 4;
         screenHeightQuarter = screenHeightQuarter - actionBarHeight;
 
         final AnimationSet animationCrackResult = new AnimationSet(true);
@@ -195,6 +204,7 @@ public class WidgetCrackResult extends RelativeLayout {
             buttonReturn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    listener.onTrackingReturnButton();
                     listener.onClickReturnButton(returnButton.getType(), returnButton.getApplink(),
                             returnButton.getUrl());
                 }
@@ -211,12 +221,24 @@ public class WidgetCrackResult extends RelativeLayout {
             buttonCta.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    listener.onTrackingCtaButton();
                     listener.onClickCtaButton(ctaButton.getType(), ctaButton.getApplink(), ctaButton.getUrl());
                 }
             });
         } else {
             buttonCta.setVisibility(GONE);
         }
+    }
+
+    private void renderCloseReward(final CrackResult crackResult) {
+        closeRewardBtn.setVisibility(VISIBLE);
+        closeRewardBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onClickReturnButton();
+                listener.onTrackingCloseRewardButton(crackResult);
+            }
+        });
     }
 
     public void setListener(WidgetCrackResultListener listener) {

@@ -20,9 +20,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationComponentInstance;
+import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult;
@@ -62,6 +64,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private WidgetTokenOnBoarding widgetTokenOnBoarding;
     private LinearLayout layoutTimer;
     private ProgressBar progressBar;
+    private AbstractionRouter abstractionRouter;
 
     private TokenData tokenData;
 
@@ -93,6 +96,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         progressBar = rootView.findViewById(R.id.progress_bar);
 
         widgetTokenOnBoarding = rootView.findViewById(R.id.widget_token_onboarding);
+
+        abstractionRouter = (AbstractionRouter) getActivity().getApplication();
 
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -144,7 +149,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     public void onPause() {
         super.onPause();
         // save the previous time to enable the timer in onResume.
-        if (tokenData.isShowCountDown() && countDownTimer!= null) {
+        if (tokenData.isShowCountDown() && countDownTimer != null) {
             prevTimeStamp = System.currentTimeMillis();
         } else {
             prevTimeStamp = 0;
@@ -167,6 +172,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 hideHandOnBoarding();
                 TokenUser tokenUser = tokenData.getHome().getTokensUser();
                 crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
+
+                trackingLuckyEggClick();
             }
         });
 
@@ -191,6 +198,21 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 } else if (type.equals("redirect")) {
                     navigateToAssociatedPage(applink, url);
                 }
+            }
+
+            @Override
+            public void onTrackingReturnButton() {
+                trackingReturnButtonClick();
+            }
+
+            @Override
+            public void onTrackingCtaButton() {
+                trackingCtaButtonClick();
+            }
+
+            @Override
+            public void onTrackingCloseRewardButton(CrackResult crackResult) {
+                trackingCloseRewardButtonClick(crackResult);
             }
         });
         widgetRemainingToken.show();
@@ -309,14 +331,16 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             this.tokenData = tokenData;
             renderViewCrackEgg();
             showHandOnBoarding();
+
+            trackingLuckyEggView();
         }
     }
 
-    private void showHandOnBoarding(){
+    private void showHandOnBoarding() {
         widgetTokenOnBoarding.showHandOnboarding();
     }
 
-    private void hideHandOnBoarding(){
+    private void hideHandOnBoarding() {
         widgetTokenOnBoarding.hideHandOnBoarding();
     }
 
@@ -336,6 +360,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
                 widgetCrackResult.showCrackResult(crackResult, "Selamat anda mendapatkan");
 
+                trackingRewardLuckyEggView(crackResult.getBenefits().get(0).getText());
             }
         }, 1000);
     }
@@ -361,6 +386,99 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             listener = (ActionListener) context;
         }
 
+    }
+
+    private void trackingLuckyEggView() {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            abstractionRouter
+                    .getAnalyticTracker()
+                    .sendEventTracking(
+                            GamificationEventTracking.Event.VIEW_LUCKY_EGG,
+                            GamificationEventTracking.Category.CRACK_LUCKY_EGG,
+                            GamificationEventTracking.Action.IMPRESSION_LUCKY_EGG,
+                            tokenData.getFloating().getTokenAsset().getName()
+                    );
+        }
+    }
+
+    private void trackingLuckyEggClick() {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            abstractionRouter
+                    .getAnalyticTracker()
+                    .sendEventTracking(
+                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                            GamificationEventTracking.Category.CRACK_LUCKY_EGG,
+                            GamificationEventTracking.Action.CRACK_LUCKY_EGG,
+                            tokenData.getFloating().getTokenAsset().getName()
+                    );
+        }
+    }
+
+    private void trackingRewardLuckyEggView(String benefitName) {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            abstractionRouter
+                    .getAnalyticTracker()
+                    .sendEventTracking(
+                            GamificationEventTracking.Event.VIEW_LUCKY_EGG,
+                            GamificationEventTracking.Category.VIEW_REWARD,
+                            GamificationEventTracking.Action.IMPRESSION_LUCKY_EGG,
+                            benefitName
+                    );
+        }
+    }
+
+    private void trackingReturnButtonClick() {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            abstractionRouter
+                    .getAnalyticTracker()
+                    .sendEventTracking(
+                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                            GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
+                            GamificationEventTracking.Action.CLICK_RETURN_BUTTON,
+                            ""
+                    );
+        }
+    }
+
+    private void trackingCtaButtonClick() {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            abstractionRouter
+                    .getAnalyticTracker()
+                    .sendEventTracking(
+                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                            GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
+                            GamificationEventTracking.Action.CLICK_CTA_BUTTON,
+                            ""
+                    );
+        }
+    }
+
+    private void trackingCloseRewardButtonClick(CrackResult crackResult) {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            String category = "";
+            if (crackResult.getResultStatus().getCode().equals("200")) {
+                if (crackResult.getBenefitType().equals("Coupon")) {
+                    category = GamificationEventTracking.Category.COUPON_REWARD;
+                } else {
+                    category = GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD;
+                }
+            } else {
+                if (crackResult.getResultStatus().getCode().equals("42503") ||
+                        crackResult.getResultStatus().getCode().equals("42504")) {
+                    category = GamificationEventTracking.Category.EXPIRED_TOKEN;
+                } else {
+                    category = GamificationEventTracking.Category.ERROR_PAGE;
+                }
+            }
+            abstractionRouter
+                    .getAnalyticTracker()
+                    .sendEventTracking(
+                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                            category,
+                            GamificationEventTracking.Action.CLICK_CLOSE_BUTTON,
+                            ""
+                    );
+        }
     }
 
     public interface ActionListener {
