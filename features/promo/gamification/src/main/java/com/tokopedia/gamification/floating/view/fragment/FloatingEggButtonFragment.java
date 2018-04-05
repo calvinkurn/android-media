@@ -79,7 +79,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Inject
     public FloatingEggPresenter floatingEggPresenter;
     private boolean isHideAnimating;
-    private boolean serverOffFlag;
+    private boolean serverOffFlag = true;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -169,7 +169,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     }
 
     private void showFloatingEggAnimate(boolean hasDelay) {
-        if (vgFloatingEgg.getVisibility() == View.VISIBLE && !isHideAnimating && !serverOffFlag) {
+        if (serverOffFlag) {
+            return;
+        }
+        if (vgFloatingEgg.getVisibility() == View.VISIBLE && !isHideAnimating) {
             return;
         }
         if (hasDelay) {
@@ -403,13 +406,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         if (isShowTime && timeRemainingSeconds > 0) {
             setUIFloatingTimer(timeRemainingSeconds);
-            tvFloatingTimer.setVisibility(View.VISIBLE);
-        } else {
-            tvFloatingTimer.setVisibility(View.GONE);
-        }
-
-        if (timeRemainingSeconds > 0) {
             startCountdownTimer(timeRemainingSeconds);
+            tvFloatingTimer.setVisibility(View.VISIBLE);
         } else {
             stopCountdownTimer();
             tvFloatingTimer.setVisibility(View.GONE);
@@ -420,6 +418,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     public void onErrorGetToken(Throwable throwable) {
         stopCountdownTimer();
         vgFloatingEgg.setVisibility(View.GONE);
+        serverOffFlag = true;
     }
 
     private void startCountdownTimer(long timeRemainingSeconds) {

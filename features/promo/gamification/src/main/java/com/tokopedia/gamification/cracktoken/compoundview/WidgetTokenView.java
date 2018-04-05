@@ -24,6 +24,9 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView;
+import com.tokopedia.gamification.floating.view.model.TokenAsset;
+
+import java.util.List;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
 
@@ -170,9 +173,13 @@ public class WidgetTokenView extends FrameLayout {
         setVisibility(View.VISIBLE);
     }
 
-    public void setToken(String full, String cracked, String right, String left) {
-        imageRightUrl = right;
-        imageLeftUrl = left;
+    public void setToken(TokenAsset tokenAsset) {
+        List<String> imageUrls = tokenAsset.getImageUrls();
+        String full = imageUrls.get(0);
+        String cracked = imageUrls.get(4);
+        imageRightUrl = imageUrls.get(5);
+        imageLeftUrl = imageUrls.get(6);
+
         ImageHandler.loadImageAndCache(imageViewFull, full);
         Glide.with(getContext())
                 .load(cracked)
@@ -216,7 +223,6 @@ public class WidgetTokenView extends FrameLayout {
     private void shake() {
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
         imageViewFull.setAnimation(animation);
-        imageViewCracked.setAnimation(animation);
     }
 
     private void shakeHard() {

@@ -2,8 +2,6 @@ package com.tokopedia.gamification.cracktoken.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -34,16 +32,11 @@ import com.tokopedia.gamification.cracktoken.compoundview.WidgetRemainingToken;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenOnBoarding;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
-import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
-import com.tokopedia.gamification.cracktoken.model.CrackButton;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenUser;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -71,13 +64,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private WidgetTokenOnBoarding widgetTokenOnBoarding;
     private LinearLayout layoutTimer;
     private ProgressBar progressBar;
-
-    private String backgroundImageUrl;
-    private String smallImageUrl;
-    private String fullEggImg;
-    private String crackedEggImg;
-    private String rightCrackedEggImg;
-    private String leftCrackedEggImg;
     private AbstractionRouter abstractionRouter;
 
     private TokenData tokenData;
@@ -171,26 +157,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         stopTimer();
     }
 
-    /**
-     * copy the token data retrieved to field variable
-     */
-    private void initDataCrackEgg(TokenData tokenData) {
-        this.tokenData = tokenData;
-        TokenUser tokenUser = tokenData.getHome().getTokensUser();
-        backgroundImageUrl = tokenUser.getBackgroundAsset().getBackgroundImgUrl();
-        smallImageUrl = tokenUser.getTokenAsset().getSmallImgUrl();
-        fullEggImg = tokenUser.getTokenAsset().getImageUrls().get(0);
-        crackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(4);
-        rightCrackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(6);
-        leftCrackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(5);
-    }
-
     private void renderViewCrackEgg() {
         widgetTokenView.reset();
 
-        ImageHandler.loadImageAndCache(ivContainer, backgroundImageUrl);
+        TokenUser tokenUser = tokenData.getHome().getTokensUser();
 
-        widgetTokenView.setToken(fullEggImg, crackedEggImg, rightCrackedEggImg, leftCrackedEggImg);
+        ImageHandler.loadImageAndCache(ivContainer, tokenUser.getBackgroundAsset().getBackgroundImgUrl());
+
+        widgetTokenView.setToken(tokenUser.getTokenAsset());
         widgetTokenView.setListener(new WidgetTokenView.WidgetTokenListener() {
             @Override
             public void onClick() {
@@ -205,22 +179,25 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
-            public void onClickCtaButton(String applink, String url) {
-                if (!TextUtils.isEmpty(applink)) {
-                    ((GamificationRouter) getActivity().getApplicationContext())
-                            .actionApplink(getActivity(), applink);
-                } else if (!TextUtils.isEmpty(url)) {
-                    Intent intent = ((GamificationRouter) getActivity().getApplicationContext())
-                            .getWebviewActivityWithIntent(getActivity(), url, "TokoPoints");
-                    startActivity(intent);
+            public void onClickCtaButton(String type, String applink, String url) {
+                if (type.equals("dismiss")) {
+                    widgetCrackResult.clearCrackResult();
+
+                    crackTokenPresenter.getGetTokenTokopoints();
+                } else if (type.equals("redirect")) {
+                    navigateToAssociatedPage(applink, url);
                 }
             }
 
             @Override
-            public void onClickReturnButton() {
-                widgetCrackResult.clearCrackResult();
+            public void onClickReturnButton(String type, String applink, String url) {
+                if (type.equals("dismiss")) {
+                    widgetCrackResult.clearCrackResult();
 
-                crackTokenPresenter.getGetTokenTokopoints();
+                    crackTokenPresenter.getGetTokenTokopoints();
+                } else if (type.equals("redirect")) {
+                    navigateToAssociatedPage(applink, url);
+                }
             }
 
             @Override
@@ -239,10 +216,24 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
         });
         widgetRemainingToken.show();
-        widgetRemainingToken.showRemainingToken(smallImageUrl, tokenData.getSumTokenStr(),
+        widgetRemainingToken.showRemainingToken(
+                tokenUser.getTokenAsset().getSmallImgUrl(),
+                tokenData.getSumTokenStr(),
                 tokenData.getHome().getCountingMessage());
 
         showTimer(tokenData);
+    }
+
+    private void navigateToAssociatedPage(String applink, String url) {
+        if (!TextUtils.isEmpty(applink) && ((GamificationRouter) getActivity().getApplicationContext())
+                .isSupportedDelegateDeepLink(applink)) {
+            ((GamificationRouter) getActivity().getApplicationContext())
+                    .actionApplink(getActivity(), applink);
+        } else if (!TextUtils.isEmpty(url)) {
+            Intent intent = ((GamificationRouter) getActivity().getApplicationContext())
+                    .getWebviewActivityWithIntent(getActivity(), url, "TokoPoints");
+            startActivity(intent);
+        }
     }
 
     private void stopTimer() {
@@ -337,7 +328,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         if (tokenData.getSumToken() == 0) {
             listener.directPageToCrackEmpty();
         } else {
-            initDataCrackEgg(tokenData);
+            this.tokenData = tokenData;
             renderViewCrackEgg();
             showHandOnBoarding();
 
@@ -375,27 +366,13 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     @Override
-    public void onErrorCrackToken(Throwable throwable) {
+    public void onErrorCrackToken(final CrackResult crackResult) {
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 // Do something after 1s = 1000ms
                 widgetTokenView.stopShaking();
-
-                CrackResult crackResult = new CrackResult();
-                List<CrackBenefit> crackBenefits = new ArrayList<>();
-                crackBenefits.add(new CrackBenefit("Terjadi Kesalahan Teknis", "#ffffff", "medium"));
-
-                Bitmap errorBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image_error_crack_result);
-
-                CrackButton returnButton = new CrackButton();
-                returnButton.setApplink("");
-                returnButton.setTitle("Coba Lagi");
-
-                crackResult.setBenefits(crackBenefits);
-                crackResult.setImageBitmap(errorBitmap);
-                crackResult.setReturnButton(returnButton);
 
                 widgetCrackResult.showCrackResult(crackResult, "Maaf, sayang sekali sepertinya");
             }
@@ -486,7 +463,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                     category = GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD;
                 }
             } else {
-                if (crackResult.getResultStatus().getCode().equals(""))
+                if (crackResult.getResultStatus().getCode().equals("42503") ||
+                        crackResult.getResultStatus().getCode().equals("42504")) {
+                    category = GamificationEventTracking.Category.EXPIRED_TOKEN;
+                } else {
+                    category = GamificationEventTracking.Category.ERROR_PAGE;
+                }
             }
             abstractionRouter
                     .getAnalyticTracker()

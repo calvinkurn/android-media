@@ -233,13 +233,13 @@ android {
 
         }
     }
-
-    variantFilter { variant ->
-
-        if(variant.buildType.name.equals('release') && variant.getFlavors().get(0).name.equals('staging')) {
-            variant.setIgnore(true);
-        }
-    }
+    //TODO delete this after testing
+//    variantFilter { variant ->
+//
+//        if(variant.buildType.name.equals('release') && variant.getFlavors().get(0).name.equals('staging')) {
+//            variant.setIgnore(true);
+//        }
+//    }
 }
 
 dependencies {
