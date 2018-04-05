@@ -1,25 +1,11 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.IAcsClient;
-import com.aliyuncs.profile.DefaultProfile;
-import com.aliyuncs.profile.IClientProfile;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
-import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchItemResponse;
-import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchItemRequest;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-
-import java.util.concurrent.Callable;
-
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by hangnadi on 9/28/17.
@@ -31,14 +17,6 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
 
     private GetProductUseCase getProductUseCase;
     private GetImageSearchUseCase getImageSearchUseCase;
-
-    private final String REGION_ID = "ap-southeast-1";
-    private final String ACCESS_KEY_ID = AuthUtil.KEY.ALIYUN_ACCESS_KEY_ID;
-    private final String SECRET_KEY = AuthUtil.KEY.ALIYUN_SECRET_KEY;
-    private final String END_POINT_NAME = "ap-southeast-1";
-    private final String PRODUCT = "ImageSearch";
-    private final String IMAGE_SEARCH_ALIYUN_DOMAIN = "imagesearch.ap-southeast-1.aliyuncs.com";
-    private final String IMAGE_SEARCH_INSTANCE = "productsearch01";
 
     public DiscoveryPresenter(GetProductUseCase getProductUseCase) {
         this.getProductUseCase = getProductUseCase;
@@ -71,40 +49,7 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     @Override
     public void requestImageSearch(final byte[] imageByteArray) {
         super.requestImageSearch(imageByteArray);
-
-        Observable.fromCallable(new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-
-                IClientProfile profile = DefaultProfile.getProfile(REGION_ID, ACCESS_KEY_ID,
-                        SECRET_KEY);
-                DefaultProfile.addEndpoint(END_POINT_NAME, REGION_ID,
-                        PRODUCT, IMAGE_SEARCH_ALIYUN_DOMAIN);
-
-                IAcsClient client = new DefaultAcsClient(profile);
-
-                ImageSearchItemRequest request = new ImageSearchItemRequest();
-                request.setInstanceName(IMAGE_SEARCH_INSTANCE);
-                request.setSearchPicture(imageByteArray);
-
-                if (!request.buildPostContent()) {
-                    CommonUtils.dumper("Image Search build post content failed.");
-                    return new ImageSearchItemResponse();
-                }
-
-                ImageSearchItemResponse response = null;
-                try {
-                    response = client.getAcsResponse(request);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                return response;
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultImageSearchSubscriber(getBaseDiscoveryView()));
-
+        getImageSearchUseCase.requestImageSearch(imageByteArray, new DefaultImageSearchSubscriber(getBaseDiscoveryView()));
     }
 
     @Override
