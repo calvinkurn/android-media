@@ -2,7 +2,6 @@
 package com.tokopedia.discovery.imagesearch.domain.model;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -10,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-public class PicInfo implements Serializable, Parcelable {
+public class PicInfo implements Serializable {
 
     @SerializedName("Category")
     @Expose
@@ -24,21 +23,6 @@ public class PicInfo implements Serializable, Parcelable {
 
     private List<Category> categoryList;
 
-    public final static Creator<PicInfo> CREATOR = new Creator<PicInfo>() {
-
-
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public PicInfo createFromParcel(Parcel in) {
-            return new PicInfo(in);
-        }
-
-        public PicInfo[] newArray(int size) {
-            return (new PicInfo[size]);
-        }
-
-    };
     private final static long serialVersionUID = 3441251315256387694L;
 
     protected PicInfo(Parcel in) {

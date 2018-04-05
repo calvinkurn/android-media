@@ -38,7 +38,6 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
 
     public DefaultSearchSubscriber(D2 discoveryView) {
         this.searchParameter = null;
-//        this.forceSearch = forceSearch;
         this.discoveryView = discoveryView;
     }
 

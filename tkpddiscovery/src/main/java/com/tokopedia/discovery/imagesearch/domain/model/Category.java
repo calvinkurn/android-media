@@ -2,14 +2,13 @@
 package com.tokopedia.discovery.imagesearch.domain.model;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Category implements Serializable, Parcelable {
+public class Category implements Serializable {
 
     @SerializedName("Name")
     @Expose
@@ -17,21 +16,6 @@ public class Category implements Serializable, Parcelable {
     @SerializedName("Id")
     @Expose
     private String id;
-    public final static Creator<Category> CREATOR = new Creator<Category>() {
-
-
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public Category createFromParcel(Parcel in) {
-            return new Category(in);
-        }
-
-        public Category[] newArray(int size) {
-            return (new Category[size]);
-        }
-
-    };
     private final static long serialVersionUID = 8228745310289712239L;
 
     protected Category(Parcel in) {

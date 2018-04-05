@@ -2,14 +2,13 @@
 package com.tokopedia.discovery.imagesearch.domain.model;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Auction implements Serializable, Parcelable {
+public class Auction implements Serializable {
 
     @SerializedName("CustContent")
     @Expose
@@ -26,21 +25,7 @@ public class Auction implements Serializable, Parcelable {
     @SerializedName("SortExprValues")
     @Expose
     private String sortExprValues;
-    public final static Creator<Auction> CREATOR = new Creator<Auction>() {
 
-
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public Auction createFromParcel(Parcel in) {
-            return new Auction(in);
-        }
-
-        public Auction[] newArray(int size) {
-            return (new Auction[size]);
-        }
-
-    };
     private final static long serialVersionUID = -3142496252390364890L;
 
     protected Auction(Parcel in) {
