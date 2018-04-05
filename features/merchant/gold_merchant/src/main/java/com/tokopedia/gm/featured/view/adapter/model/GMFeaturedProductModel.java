@@ -61,8 +61,12 @@ public class GMFeaturedProductModel implements ItemIdType {
         this.imageUrl = imageUrl;
     }
 
-    @Override
     public String getId() {
+        return Long.toString(productId);
+    }
+
+    @Override
+    public String getItemId() {
         return Long.toString(productId);
     }
 

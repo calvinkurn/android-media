@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:padding="@dimen/margin_small"
+        android:padding="@dimen/dp_10"
         android:orientation="vertical">
 
         <ImageView
@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/string_accept_solution_title"
-            android:textSize="@dimen/font_title"
+            android:textSize="@dimen/sp_16"
             android:textColor="@color/black_70"
             android:gravity="center"
             />
@@ -35,12 +35,12 @@
             android:id="@+id/tv_solution"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_large"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginRight="@dimen/margin_med"
-            android:layout_marginBottom="@dimen/margin_sm"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_15"
             contect:text="@string/string_detail_create_complain"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textColor="@color/black_54"/>
 
 
@@ -48,7 +48,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="@dimen/margin_vl"
+            android:layout_marginTop="@dimen/dp_40"
             android:orientation="horizontal">
 
             <Button

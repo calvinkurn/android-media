@@ -1,9 +1,9 @@
 package com.tokopedia.seller.product.variant.data.cloud;
 
-import com.tokopedia.seller.common.data.response.DataResponse;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprdold.ProductVariantByPrdModel;
 
 import java.util.List;
 
@@ -18,19 +18,19 @@ import rx.Observable;
 
 public class ProductVariantCloud {
 
-    private TomeApi tomeApi;
+    private TomeProductApi tomeProductApi;
 
     @Inject
-    public ProductVariantCloud(TomeApi tomeApi) {
-        this.tomeApi = tomeApi;
+    public ProductVariantCloud(TomeProductApi tomeProductApi) {
+        this.tomeProductApi = tomeProductApi;
     }
 
     public Observable<Response<DataResponse<List<ProductVariantByCatModel>>>> fetchProductVariantByCat(long categoryId) {
-        return tomeApi.getProductVariantByCat(categoryId);
+        return tomeProductApi.getProductVariantByCat(categoryId);
     }
 
     public Observable<Response<DataResponse<ProductVariantByPrdModel>>> fetchProductVariantByPrd(long productId) {
-        return tomeApi.getProductVariantByPrd(productId);
+        return tomeProductApi.getProductVariantByPrd(productId);
     }
 
 }

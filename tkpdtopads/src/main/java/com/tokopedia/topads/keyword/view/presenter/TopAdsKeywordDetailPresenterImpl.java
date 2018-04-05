@@ -109,7 +109,7 @@ public class TopAdsKeywordDetailPresenterImpl extends TopadsKeywordDetailPresent
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().onTurnOnAdError();
+                    getView().onTurnOnAdError(e);
                 }
             }
 
@@ -118,7 +118,7 @@ public class TopAdsKeywordDetailPresenterImpl extends TopadsKeywordDetailPresent
                 if(isSuccess){
                     getView().onTurnOnAdSuccess(null);
                 }else {
-                    getView().onTurnOnAdError();
+                    getView().onTurnOnAdError(new RuntimeException());
                 }
             }
         };

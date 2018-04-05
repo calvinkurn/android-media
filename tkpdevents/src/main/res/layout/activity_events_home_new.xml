@@ -55,12 +55,12 @@
                         <com.tkpd.library.ui.widget.TouchViewPager
                             android:id="@+id/event_bannerpager"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/banner_height" />
+                            android:layout_height="@dimen/dp_180" />
 
                         <FrameLayout
                             android:id="@+id/indicator_promo_layout"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/promo_layout_height"
+                            android:layout_height="@dimen/dp_45"
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentLeft="true"
                             android:layout_below="@id/event_bannerpager"
@@ -71,16 +71,16 @@
                             <com.tokopedia.events.view.utils.CirclePageIndicator
                                 android:id="@+id/pager_indicator"
                                 android:layout_width="wrap_content"
-                                android:layout_height="@dimen/circle_indicator_height"
+                                android:layout_height="@dimen/dp_12"
                                 android:layout_gravity="center_vertical"
-                                android:layout_marginEnd="@dimen/margin_default"
-                                android:layout_marginLeft="@dimen/margin_default"
-                                android:layout_marginRight="@dimen/margin_default"
-                                android:layout_marginStart="@dimen/margin_default"
-                                android:padding="@dimen/divider_height_thin"
+                                android:layout_marginEnd="@dimen/dp_16"
+                                android:layout_marginLeft="@dimen/dp_16"
+                                android:layout_marginRight="@dimen/dp_16"
+                                android:layout_marginStart="@dimen/dp_16"
+                                android:padding="@dimen/dp_2"
                                 app:fillColor="@color/green_nob"
                                 app:pageColor="@color/grey_400"
-                                app:radius="@dimen/margin_padding_small"
+                                app:radius="@dimen/dp_4"
                                 app:centered="false"
                                 app:strokeColor="@color/grey_400" />
 
@@ -88,22 +88,22 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical|right"
-                                android:layout_marginRight="@dimen/new_margin_big"
+                                android:layout_marginRight="@dimen/dp_32"
                                 android:gravity="top"
                                 android:text="@string/promo_button_text"
                                 android:textColor="@color/green_nob"
                                 android:textStyle="normal"
                                 android:visibility="gone"
-                                android:layout_marginEnd="@dimen/new_margin_big" />
+                                android:layout_marginEnd="@dimen/dp_32" />
 
                             <ImageView
-                                android:layout_width="@dimen/margin_default"
-                                android:layout_height="@dimen/margin_default"
+                                android:layout_width="@dimen/dp_16"
+                                android:layout_height="@dimen/dp_16"
                                 android:layout_gravity="center_vertical|right"
-                                android:layout_marginRight="@dimen/margin_default"
+                                android:layout_marginRight="@dimen/dp_16"
                                 android:visibility="gone"
                                 app:srcCompat="@drawable/ic_arrow_right"
-                                android:layout_marginEnd="@dimen/margin_default" />
+                                android:layout_marginEnd="@dimen/dp_16" />
                         </FrameLayout>
                     </RelativeLayout>
 
@@ -148,8 +148,8 @@
 
         <ProgressBar
             android:id="@+id/prog_bar"
-            android:layout_width="@dimen/progbar_height"
-            android:layout_height="@dimen/progbar_height"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
             android:layout_gravity="center" />
     </FrameLayout>
 </FrameLayout>
