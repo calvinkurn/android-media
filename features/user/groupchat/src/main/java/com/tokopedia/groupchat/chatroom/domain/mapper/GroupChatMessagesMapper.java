@@ -24,7 +24,11 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncement
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -43,6 +47,7 @@ public class GroupChatMessagesMapper {
     private static final String OPTION_TEXT = "Text";
     private static final String OPTION_IMAGE = "Image";
     private static final String FORMAT_DISCOUNT_LABEL = "%d%% OFF";
+    private static final String FLASHSALE_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 
 
     @Inject
@@ -63,7 +68,7 @@ public class GroupChatMessagesMapper {
     public boolean shouldHideMessage(Visitable mappedMessage) {
         if (mappedMessage instanceof VoteAnnouncementViewModel
                 && ((VoteAnnouncementViewModel) mappedMessage).getVoteType().equals(
-                        VoteAnnouncementViewModel.POLLING_CANCEL)) {
+                VoteAnnouncementViewModel.POLLING_CANCEL)) {
             return true;
         } else if (mappedMessage instanceof VoteAnnouncementViewModel
                 && ((VoteAnnouncementViewModel) mappedMessage).getVoteType().equals
@@ -159,10 +164,23 @@ public class GroupChatMessagesMapper {
                 pojo.getAppLink() != null ? pojo.getAppLink() : "",
                 mapToListSprintSaleProducts(pojo.getProducts()),
                 pojo.getCampaignName() != null ? pojo.getCampaignName() : "",
-                pojo.getStartDate(),
-                pojo.getEndDate(),
+                convertToUnixTime(pojo.getStartDate()),
+                convertToUnixTime(pojo.getEndDate()),
                 message.getCustomType()
         );
+    }
+
+    private long convertToUnixTime(String dateStr) {
+        DateFormat formatter = new SimpleDateFormat(FLASHSALE_DATE_FORMAT, Locale.getDefault());
+        Date date = null;
+        try {
+            date = (Date) formatter.parse(dateStr);
+            return date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+
+        }
     }
 
     private ArrayList<SprintSaleProductViewModel> mapToListSprintSaleProducts(List<Product> pojo) {
