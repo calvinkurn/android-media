@@ -93,10 +93,10 @@ public class WidgetCrackResult extends RelativeLayout {
         closeRewardBtn = view.findViewById(R.id.close_reward);
     }
 
-    public void showCrackResult(CrackResult crackResult, String labelCrackResult) {
+    public void showCrackResult(CrackResult crackResult) {
         showCrackResultImageAnimation(crackResult);
         showCrackResultBackgroundAnimation();
-        showListCrackResultText(crackResult.getBenefits(), labelCrackResult);
+        showListCrackResultText(crackResult.getBenefits(), crackResult.getBenefitLabel());
         renderCtaButton(crackResult.getCtaButton());
         renderReturnButton(crackResult.getReturnButton());
         renderCloseReward(crackResult);

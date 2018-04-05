@@ -16,7 +16,7 @@ public interface CrackTokenContract {
     interface View extends CustomerView {
         void onSuccessGetToken(TokenData tokenData);
 
-        void onErrorGetToken(Throwable throwable);
+        void onErrorGetToken(CrackResult throwable);
 
         void onSuccessCrackToken(CrackResult crackResult);
 
