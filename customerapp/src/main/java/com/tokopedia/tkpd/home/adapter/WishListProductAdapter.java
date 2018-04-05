@@ -230,7 +230,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         @Override
-        public void onShopItemClicked(Shop shop) {
+        public void onShopItemClicked(int position, Shop shop) {
             Intent intent = ShopPageActivity.createIntent(context, shop.getId());
             context.startActivity(intent);
         }
