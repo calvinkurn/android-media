@@ -152,7 +152,12 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
                     /*Rates rates = new Gson().fromJson(response.body(), Rates.class);
                     listener.onSuccess(rates.getData().getAttributes());*/
 
-                    Data data = new Gson().fromJson(response.ongkir().rates().toString(), Data.class);
+                    Data data = new Gson().fromJson(CacheUtil.convertModelToString(response.ongkir().rates(),
+                            new TypeToken<LogisticsRateQuery.Data.Rates>() {
+                            }.getType()),
+
+                            Data.class);
+
                     listener.onSuccess(data.getAttributes());
                 } else {
                     listener.onFailure();

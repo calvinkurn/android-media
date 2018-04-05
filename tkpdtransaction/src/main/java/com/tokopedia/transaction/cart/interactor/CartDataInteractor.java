@@ -3,6 +3,7 @@ package com.tokopedia.transaction.cart.interactor;
 import android.support.annotation.NonNull;
 
 import com.apollographql.android.rx.RxApollo;
+import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloWatcher;
 import com.google.gson.reflect.TypeToken;
@@ -487,12 +488,12 @@ public class CartDataInteractor implements ICartDataInteractor {
                 .weight(params.get("weight"))
                 .build();
 
-        ApolloWatcher<LogisticsRateQuery.Data> apolloWatcher = apolloClient.newCall(LogisticsRateQuery.builder()
+        ApolloCall<LogisticsRateQuery.Data> apolloWatcher = apolloClient.newCall(LogisticsRateQuery.builder()
                 .input(ongkirRatesInput)
                 .build()
-        ).watcher();
+        );
 
-        return RxApollo.from(apolloWatcher);
+        return RxApollo.from(apolloWatcher).toObservable();
 
 
         //return keroAuthService.getApi().calculateShippingRate(keroRatesCartParam(token, ut, cartItem));
