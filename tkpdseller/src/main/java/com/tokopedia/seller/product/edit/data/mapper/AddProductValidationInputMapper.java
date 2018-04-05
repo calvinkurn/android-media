@@ -13,7 +13,7 @@ import javax.inject.Inject;
 /**
  * @author sebastianuskh on 4/26/17.
  */
-
+@Deprecated
 public class AddProductValidationInputMapper extends UploadProductPictureInputMapper{
 
     @Inject
@@ -36,7 +36,7 @@ public class AddProductValidationInputMapper extends UploadProductPictureInputMa
         serviceModel.setProductReturnable(domainModel.getProductReturnable());
         serviceModel.setProductUploadTo(domainModel.getProductUploadTo());
         serviceModel.setProductInvenageSwitch(domainModel.getProductInvenageSwitch());
-        serviceModel.setProductInvenageValue(domainModel.getProductInvenageValue());
+        serviceModel.setProductInvenageValue(domainModel.getProductStock());
         serviceModel.setProductWeight(domainModel.getProductWeight());
         serviceModel.setProductWeightUnit(domainModel.getProductWeightUnit());
         serviceModel.setPoProcessType(domainModel.getPoProcessType());

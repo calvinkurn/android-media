@@ -21,7 +21,9 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
@@ -70,12 +72,15 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     public static void loadImageWithId(ImageView imageview, int resId) {
-        Glide.with(imageview.getContext())
-                .load(resId)
-                .placeholder(R.drawable.loading_page)
-                .dontAnimate()
-                .error(resId)
-                .into(imageview);
+        if (imageview.getContext() != null) {
+            Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), resId);
+            Glide.with(imageview.getContext())
+                    .load("")
+                    .placeholder(R.drawable.loading_page)
+                    .dontAnimate()
+                    .error(drawable)
+                    .into(imageview);
+        }
     }
 
     public static void loadImageWithId(ImageView imageview, int resId, int placeholder) {
@@ -124,12 +129,12 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         final int width = options.outWidth;
         int inSampleSize = 1;
 
-        if (height > 960 || width > 1280) {
+        if (height > IMAGE_WIDTH_HD || width > IMAGE_WIDTH_HD) {
 
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
-            while ((halfHeight / inSampleSize) > 360
-                    && (halfWidth / inSampleSize) > 480) {
+            while ((halfHeight / inSampleSize) > IMAGE_WIDTH_MIN
+                    && (halfWidth / inSampleSize) > IMAGE_WIDTH_MIN) {
                 inSampleSize = inSampleSize * 2;
             }
         }
@@ -276,23 +281,25 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
-    public static void loadImageChat(ImageView imageview, String url) {
+    public static void loadImageChat(ImageView imageview, String url, RequestListener<String,GlideDrawable> requestListener) {
         if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
                     .dontAnimate()
+                    .listener(requestListener)
                     .fitCenter()
                     .placeholder(R.drawable.loading_page)
                     .into(imageview);
         }
     }
 
-    public static void loadImageChatBlurred(ImageView imageview, String url) {
+    public static void loadImageChatBlurred(ImageView imageview, String url, RequestListener<String,GlideDrawable> requestListener) {
         if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
                     .dontAnimate()
                     .override(30, 30)
+                    .listener(requestListener)
                     .fitCenter()
                     .placeholder(R.drawable.loading_page)
                     .into(imageview);

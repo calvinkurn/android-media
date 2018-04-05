@@ -168,7 +168,7 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
     @Override
     protected void setupToolbar() {
         super.setupToolbar();
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_x_black);
     }
 
     @Override

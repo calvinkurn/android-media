@@ -6,10 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.method.ArrowKeyMovementMethod;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
@@ -132,8 +129,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     TextView dismissTooltip;
     @BindView(R2.id.tv_ticket_cnt_type)
     TextView tvTicketCntType;
-    @BindView(R2.id.tv_someinfo)
-    TextView tvSomeInfo;
     @BindView(R2.id.selected_seats_layout)
     View selectedSeatLayout;
     @BindView(R2.id.seat_numbers)
@@ -240,9 +235,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         tvConvFees.setText("Rp " + CurrencyUtil.convertToCurrencyString(convFees));
         tvTotalPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(baseFare + convFees));
         buttonTextview.setText(getString(R.string.pay_button));
-        SpannableString someinfo = new SpannableString(getResources().getString(R.string.some_info));
-        someinfo.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.green_nob)), 54, 74, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        tvSomeInfo.setText(someinfo);
         tvTicketCntType.setText(String.format(getString(R.string.x_type),
                 packageViewModel.getSelectedQuantity(), packageViewModel.getDisplayName()));
         String baseBreak = String.format(getString(R.string.x_type),
@@ -425,6 +417,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvEmailID.setTextIsSelectable(false);
             tvEmailID.setFocusable(false);
             tvEmailID.setInputType(InputType.TYPE_NULL);
+            tvEmailID.clearFocus();
             mainContent.requestFocus();
         }
         mPresenter.updateEmail(tvEmailID.getText().toString());
@@ -454,6 +447,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvTelephone.setTextIsSelectable(false);
             tvTelephone.setFocusable(false);
             tvTelephone.setInputType(InputType.TYPE_NULL);
+            tvTelephone.clearFocus();
             mainContent.requestFocus();
         }
         mPresenter.updateNumber(tvTelephone.getText().toString());

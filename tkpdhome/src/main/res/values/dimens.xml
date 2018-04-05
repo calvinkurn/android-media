@@ -23,7 +23,7 @@
     <dimen name="margin_xl">45dp</dimen>
     <dimen name="keyline_1">16dp</dimen>
     <dimen name="fontvs">12sp</dimen>
-    <dimen name="margin_small_sm">12dp</dimen>
+    <dimen name="dp_10_sm">12dp</dimen>
     <dimen name="keyline_1_minus_8dp">8dp</dimen>
     <dimen name="card_view_margin">5dp</dimen>
     <dimen name="discount_background_radius">16dp</dimen>

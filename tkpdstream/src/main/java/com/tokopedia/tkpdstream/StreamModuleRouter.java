@@ -17,4 +17,13 @@ public interface StreamModuleRouter {
     void openRedirectUrl(Activity activity, String url);
 
     Intent getLoginIntent(Context context);
+
+    void generateBranchLink(String channelId, String title, String contentMessage, String imgUrl,
+                            String
+            shareUrl, Activity activity, final ShareListener
+                                    listener);
+
+    public interface ShareListener {
+        void onGenerateLink(String shareContents, String shareUri);
+    }
 }

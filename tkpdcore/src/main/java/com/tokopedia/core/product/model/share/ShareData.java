@@ -26,6 +26,7 @@ public class ShareData implements Parcelable {
     public static final String REFERRAL_TYPE = "Referral";
     private static final String ARG_UTM_SOURCE = "Android";
     public static final String FEED_TYPE = "feed";
+    public static final String GROUPCHAT_TYPE = "group_chat";
 
     private String type = "";
     private String name;

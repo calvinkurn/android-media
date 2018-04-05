@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.var.TkpdState;
@@ -93,6 +94,7 @@ public class GuidedSearchViewHolder extends AbstractViewHolder<GuidedSearchViewM
                 public void onClick(View view) {
                     Uri uri = Uri.parse(item.getUrl());
                     String query = uri.getQueryParameter(BrowseApi.Q);
+                    SearchTracking.eventClickGuidedSearch(item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
                     itemClickListener.onSearchGuideClicked(query);
                 }
             });
