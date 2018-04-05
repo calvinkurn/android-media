@@ -46,6 +46,8 @@ public class BaseListAdapter<T extends Visitable, F extends AdapterTypeFactory> 
                             onAdapterInteractionListener.onItemClicked(item);
                         } catch (ClassCastException e) {
                             e.printStackTrace();
+                        } catch (IndexOutOfBoundsException e){
+                            e.printStackTrace();
                         }
                     }
                 }
