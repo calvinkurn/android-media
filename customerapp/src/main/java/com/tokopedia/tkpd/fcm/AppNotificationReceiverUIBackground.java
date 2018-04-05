@@ -9,7 +9,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -26,7 +25,6 @@ import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
@@ -47,16 +45,8 @@ import com.tokopedia.tkpd.fcm.notification.PurchaseShippedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseVerifiedNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
-import com.tokopedia.tkpdstream.chatroom.GroupChatNotifInterface;
 
 import java.util.Map;
-
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Actions;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
@@ -122,6 +112,11 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void prepareAndExecuteApplinkNotification(Bundle data) {
+
+        if (canBroadcastPointReceived(data.getInt(Constants.ARG_NOTIFICATION_CODE, 0))) {
+            broadcastPointReceived(data);
+        }
+
         if (!isRefreshCart(data)) {
             String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
             String category = Uri.parse(applinks).getHost();
@@ -164,14 +159,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
                     }
                     break;
-                case Constants.ARG_NOTIFICATION_APPLINK_GROUPCHAT:
-                    Intent loyaltyGroupChat = new Intent(com.tokopedia.abstraction.constant
-                            .TkpdState
-                            .LOYALTY_GROUP_CHAT);
-                    loyaltyGroupChat.putExtras(data);
-                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(loyaltyGroupChat);
-                    buildNotifByData(data);
-                    break;
                 case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
                     if (SessionHandler.isUserHasShop(mContext)) {
                         buildNotifByData(data);
@@ -182,6 +169,19 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     break;
             }
         }
+    }
+
+    private boolean canBroadcastPointReceived(int tkpCode) {
+        return tkpCode == (TkpdState.GCMServiceState.GCM_GROUP_CHAT_POINTS)
+                || tkpCode == (TkpdState.GCMServiceState.GCM_GROUP_CHAT_LOYALTY)
+                || tkpCode == (TkpdState.GCMServiceState.GCM_GROUP_CHAT_COUPON);
+    }
+
+    private void broadcastPointReceived(Bundle data) {
+        Intent loyaltyGroupChat = new Intent(com.tokopedia.abstraction.constant
+                .TkpdState.LOYALTY_GROUP_CHAT);
+        loyaltyGroupChat.putExtras(data);
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(loyaltyGroupChat);
     }
 
     private void buildNotifByData(Bundle data) {

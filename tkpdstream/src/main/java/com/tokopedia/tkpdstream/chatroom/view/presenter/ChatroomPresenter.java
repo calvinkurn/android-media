@@ -148,6 +148,11 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
     }
 
     @Override
+    public String checkText(String replyText) {
+        return replyText.replace("<", "&lt;");
+    }
+
+    @Override
     public void detachView() {
         super.detachView();
         sendVoteUseCase.unsubscribe();

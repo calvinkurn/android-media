@@ -261,7 +261,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 public void onClick(View v) {
                     if (!TextUtils.isEmpty(replyEditText.getText().toString().trim())) {
                         PendingChatViewModel pendingChatViewModel = new PendingChatViewModel
-                                (replyEditText.getText().toString(),
+                                (presenter.checkText(replyEditText.getText().toString()),
                                         userSession.getUserId(),
                                         userSession.getName(),
                                         userSession.getProfilePicture(),
@@ -320,12 +320,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
         long currentTime = new Date().getTime();
         if (currentTime < sprintSaleViewModel.getStartDate()) {
+            MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
+                    R.drawable.bg_rounded_pink_label));
+            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
             sprintSaleText.setText(String.format("%s - %s", sprintSaleViewModel
                     .getFormattedStartDate(), sprintSaleViewModel.getFormattedEndDate()));
-            sprintSaleText.setBackground(MethodChecker.getDrawable(getActivity(),R.drawable.bg_rounded_pink_label));
             sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
         } else {
-            sprintSaleText.setBackground(MethodChecker.getDrawable(getActivity(),R.drawable.bg_rounded_red_label));
+            MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
+                    R.drawable.bg_rounded_red_label));
             sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
             sprintSaleText.setText(getString(R.string.ongoing));
         }
@@ -807,7 +810,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         if (getActivity() != null
                 && ((GroupChatActivity) getActivity()).getChannelInfoViewModel() != null
                 && ((GroupChatActivity) getActivity())
-                        .getChannelInfoViewModel().getTitle() != null) {
+                .getChannelInfoViewModel().getTitle() != null) {
             String channelName = ((GroupChatActivity) getActivity())
                     .getChannelInfoViewModel().getTitle();
             analytics.eventClickLoyaltyWidget(channelName);

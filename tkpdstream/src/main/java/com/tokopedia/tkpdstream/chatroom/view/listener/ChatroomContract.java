@@ -86,5 +86,7 @@ public interface ChatroomContract {
         void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery);
 
         void refreshDataAfterReconnect(OpenChannel mChannel);
+
+        String checkText(String replyText);
     }
 }

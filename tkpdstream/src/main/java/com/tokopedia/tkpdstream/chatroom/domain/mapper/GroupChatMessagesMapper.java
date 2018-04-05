@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /**
@@ -343,7 +344,12 @@ public class GroupChatMessagesMapper {
         );
     }
 
+    @Nullable
     public Visitable map(BaseMessage baseMessage) {
-        return mapMessage(baseMessage);
+        if (mapMessage(baseMessage) != null && !shouldHideMessage(mapMessage(baseMessage))) {
+            return mapMessage(baseMessage);
+        } else {
+            return null;
+        }
     }
 }
