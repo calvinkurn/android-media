@@ -146,8 +146,8 @@ public class WidgetTokenOnBoarding extends FrameLayout {
                 PropertyValuesHolder.ofFloat(View.ALPHA, 1, 0f);
         ObjectAnimator scaleAnimator = ObjectAnimator.ofPropertyValuesHolder(ivOnboardingCircle, pvhScaleX, pvhScaleY, pvhAlpha);
         scaleAnimator.setInterpolator(new AccelerateInterpolator());
-        scaleAnimator.setDuration(SHORT_ANIM_DURATION);
-        scaleAnimator.setRepeatCount(2);
+        scaleAnimator.setDuration(MEDIUM_ANIM_DURATION);
+        scaleAnimator.setRepeatCount(1);
 
         set.playSequentially(translateAnimator, scaleAnimator);
         set.addListener(new Animator.AnimatorListener() {
