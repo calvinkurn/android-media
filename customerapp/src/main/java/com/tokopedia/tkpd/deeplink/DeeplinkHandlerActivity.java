@@ -52,6 +52,8 @@ import com.tokopedia.tokocash.applink.TokoCashApplinkModule;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
+import com.tokopedia.shop.applink.ShopAppLinkModule;
+import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 
 import org.json.JSONObject;
 
@@ -76,6 +78,7 @@ import io.branch.referral.BranchError;
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
         LoyaltyAppLinkModule.class,
+        ShopAppLinkModule.class,
         StreamApplinkModule.class
 })
 
@@ -100,6 +103,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new TokoCashApplinkModuleLoader(),
                 new EventsDeepLinkModuleLoader(),
                 new LoyaltyAppLinkModuleLoader(),
+                new ShopAppLinkModuleLoader(),
                 new StreamApplinkModuleLoader()
         );
     }

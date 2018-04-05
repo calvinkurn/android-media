@@ -46,7 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_small"
-                    android:padding="@dimen/new_margin_med"
+                    android:padding="@dimen/dp_16"
                     android:background="@drawable/btn_green_3dp"
                     android:textColor="@color/white"
                     android:text="@string/os_view_all_product" />

@@ -27,10 +27,10 @@
                 app:spv_min_value="1"
                 app:spv_subtitle="@string/select_passenger_adult_subtitle"
                 app:spv_title="@string/select_passenger_adult_title"
-                android:layout_marginLeft="@dimen/margin_sm"
-                android:layout_marginRight="@dimen/margin_sm"
-                android:layout_marginTop="@dimen/padding_ms"
-                android:layout_marginBottom="@dimen/padding_ms"/>
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"/>
 
             <com.tokopedia.flight.dashboard.view.widget.SelectPassengerView
                 android:id="@+id/spv_passenger_children"
@@ -41,10 +41,10 @@
                 app:spv_min_value="0"
                 app:spv_subtitle="@string/select_passenger_children_subtitle"
                 app:spv_title="@string/select_passenger_children_title"
-                android:layout_marginLeft="@dimen/margin_sm"
-                android:layout_marginRight="@dimen/margin_sm"
-                android:layout_marginTop="@dimen/padding_ms"
-                android:layout_marginBottom="@dimen/padding_ms"/>
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"/>
 
             <com.tokopedia.flight.dashboard.view.widget.SelectPassengerView
                 android:id="@+id/spv_passenger_infant"
@@ -55,10 +55,10 @@
                 app:spv_min_value="0"
                 app:spv_subtitle="@string/select_passenger_infant_subtitle"
                 app:spv_title="@string/select_passenger_infant_title"
-                android:layout_marginLeft="@dimen/margin_sm"
-                android:layout_marginRight="@dimen/margin_sm"
-                android:layout_marginTop="@dimen/padding_ms"
-                android:layout_marginBottom="@dimen/padding_ms"/>
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"/>
         </LinearLayout>
 
 

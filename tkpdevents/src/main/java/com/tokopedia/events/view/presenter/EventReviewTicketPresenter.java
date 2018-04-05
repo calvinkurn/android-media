@@ -62,6 +62,7 @@ public class EventReviewTicketPresenter
     private ArrayList<String> hints = new ArrayList<>();
     private ArrayList<String> errors = new ArrayList<>();
     private RequestParams paymentparams;
+    private String INVALID_EMAIL = "Invalid Email";
 
     @Inject
     public EventReviewTicketPresenter(PostVerifyCartUseCase usecase, PostPaymentUseCase payment, ProfileUseCase profileUseCase) {
@@ -191,6 +192,7 @@ public class EventReviewTicketPresenter
             packageItem.setQuantity(selectedSeatViewModel.getQuantity());
             packageItem.setPricePerSeat(selectedSeatViewModel.getPrice());
             packageItem.setAreaId(selectedSeatViewModel.getAreaId());
+            packageItem.setActualSeatNos(selectedSeatViewModel.getActualSeatNos());
         } else {
             packageItem.setAreaCode(new ArrayList<String>());
             packageItem.setSeatId(new ArrayList<String>());
@@ -199,6 +201,7 @@ public class EventReviewTicketPresenter
             packageItem.setSeatPhysicalRowId(new ArrayList<String>());
             packageItem.setQuantity(packageViewModel.getSelectedQuantity());
             packageItem.setPricePerSeat(packageViewModel.getSalesPrice());
+            packageItem.setActualSeatNos(new ArrayList<String>());
         }
         packageItem.setDescription(packageViewModel.getDescription());
 
@@ -320,6 +323,7 @@ public class EventReviewTicketPresenter
                             entityPackagesItem.setSeatIds(selectedSeatViewModel.getSeatIds());
                             entityPackagesItem.setSeatPhysicalRowIds(selectedSeatViewModel.getPhysicalRowIds());
                             entityPackagesItem.setSeatRowIds(selectedSeatViewModel.getSeatRowIds());
+                            entityPackagesItem.setActualSeatNos(selectedSeatViewModel.getActualSeatNos());
                         }
                         paymentparams.putObject("verfiedcart", verifyCartResponse.getCart());
                         getPaymentLink();
@@ -356,16 +360,19 @@ public class EventReviewTicketPresenter
 
             @Override
             public void onError(Throwable throwable) {
-                Log.d("PaymentLinkUseCase", "ON ERROR");
                 throwable.printStackTrace();
                 getView().hideProgressBar();
-                NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                getPaymentLink();
-                            }
-                        });
+                if (throwable.getMessage().equalsIgnoreCase(INVALID_EMAIL))
+                    getView().showMessage(getView().getActivity().getString(R.string.please_enter_email));
+                else {
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                            getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    getPaymentLink();
+                                }
+                            });
+                }
             }
 
             @Override

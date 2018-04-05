@@ -19,19 +19,19 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:padding="@dimen/dp_16">
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="@dimen/image_width_l"
-                android:layout_height="@dimen/image_width_l"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="@dimen/dp_48"
                 app:srcCompat="@drawable/ic_icon_openshop_box" />
 
             <TextView
                 style="@style/TextView.TitleBig"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_med"
+                android:layout_marginTop="@dimen/dp_20"
                 android:text="@string/shop_open_label_logistic" />
 
             <TextView
@@ -39,10 +39,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/margin_ms"
-                android:layout_marginLeft="@dimen/margin_sm"
-                android:layout_marginRight="@dimen/margin_sm"
-                android:layout_marginTop="@dimen/margin_ms"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_8"
                 android:gravity="center"
                 android:text="@string/shop_open_description_shop_setting_logistic"
                 android:textAlignment="center" />
@@ -53,10 +53,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/margin_ms"
-                android:layout_marginLeft="@dimen/margin_sm"
-                android:layout_marginRight="@dimen/margin_sm"
-                android:layout_marginTop="@dimen/margin_ms"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_8"
                 android:gravity="center"
                 android:visibility="gone"
                 tools:visibility="visible"
@@ -66,7 +66,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/image_width_xxxl">
+                android:minHeight="@dimen/dp_128">
 
                 <LinearLayout
                     android:id="@+id/vg_content"
@@ -80,13 +80,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:paddingBottom="@dimen/padding_vs"
-                        android:paddingTop="@dimen/padding_vs" />
+                        android:paddingBottom="@dimen/dp_5"
+                        android:paddingTop="@dimen/dp_5" />
 
                     <Button
                         android:id="@+id/continue_button"
                         style="@style/Button.Submit.Green.Full"
-                        android:layout_marginTop="@dimen/margin_sm"
+                        android:layout_marginTop="@dimen/dp_15"
                         android:text="@string/title_next" />
                 </LinearLayout>
 

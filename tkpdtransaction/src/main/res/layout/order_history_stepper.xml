@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/margin_med"
+    android:layout_marginBottom="@dimen/dp_20"
     android:background="@color/white"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/padding_small">
+    android:paddingBottom="@dimen/dp_10">
 
     <ImageView
         android:id="@+id/stepper_image"
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:textColor="@color/medium_green"
         tools:text="Pesanan Sedang Diproses" />
 
