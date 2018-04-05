@@ -15,11 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.attachinvoice.data.mapper.TkpdResponseToInvoicesDataModelMapper;
-import com.tokopedia.inbox.attachinvoice.data.repository.AttachInvoicesRepository;
-import com.tokopedia.inbox.attachinvoice.data.source.service.GetTxInvoicesService;
 import com.tokopedia.inbox.attachinvoice.di.DaggerAttachInvoiceComponent;
-import com.tokopedia.inbox.attachinvoice.domain.usecase.AttachInvoicesUseCase;
 import com.tokopedia.inbox.attachinvoice.view.AttachInvoiceContract;
 import com.tokopedia.inbox.attachinvoice.view.activity.AttachInvoiceActivity;
 import com.tokopedia.inbox.attachinvoice.view.adapter.AttachInvoiceListAdapter;
@@ -27,7 +23,6 @@ import com.tokopedia.inbox.attachinvoice.view.adapter.AttachInvoiceListAdapterTy
 import com.tokopedia.inbox.attachinvoice.view.model.InvoiceViewModel;
 import com.tokopedia.inbox.attachinvoice.view.presenter.AttachInvoicePresenter;
 import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
-import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 
 import java.util.List;
 
@@ -47,7 +42,6 @@ public class AttachInvoiceFragment extends BaseListFragment<InvoiceViewModel,Att
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        presenter = new AttachInvoicePresenter(new AttachInvoicesUseCase(new AttachInvoicesRepository(new GetTxInvoicesService(), new TkpdResponseToInvoicesDataModelMapper())));
     }
 
     @Nullable
