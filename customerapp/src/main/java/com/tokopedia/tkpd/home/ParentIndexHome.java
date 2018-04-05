@@ -136,7 +136,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
 
-    boolean exit = false;
+    private boolean exit = false;
 
     private BroadcastReceiver hockeyBroadcastReceiver;
 
