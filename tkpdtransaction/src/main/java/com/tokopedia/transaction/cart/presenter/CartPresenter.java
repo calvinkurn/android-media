@@ -13,6 +13,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
@@ -255,6 +256,10 @@ public class CartPresenter implements ICartPresenter {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        for(int i = 0; i < canceledCartItem.getCartProducts().size(); i++) {
+                            cancelCartAnalytic(canceledCartItem.getCartProducts().get(i),
+                                    canceledCartItem);
+                        }
                         processRenderViewCartData(cartData);
                     }
                 });
@@ -300,6 +305,7 @@ public class CartPresenter implements ICartPresenter {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        cancelCartAnalytic(canceledCartProduct, canceledCartItem);
                         processRenderViewCartData(cartData);
                     }
                 });
@@ -352,52 +358,40 @@ public class CartPresenter implements ICartPresenter {
                             if (cartProductEditDataList.get(i).getOriginalQuantity()
                                     > cartProductEditDataList.get(i).getProductQuantity()) {
 
-                                Product analysisProduct = new Product();
-                                analysisProduct.setProductName(cartItem.getCartProducts()
-                                        .get(i)
-                                        .getProductName());
-                                analysisProduct.setProductID(cartItem.getCartProducts()
-                                        .get(i)
-                                        .getProductId());
-                                analysisProduct.setPrice(cartItem.getCartProducts()
-                                        .get(i)
-                                        .getProductPrice());
-                                analysisProduct.setQty(cartProductEditDataList
-                                        .get(i)
-                                        .getOriginalQuantity()
-                                        - cartProductEditDataList.get(i).getProductQuantity());
-                                /*GTMContainer.newInstance(context).
-                                        eventRemoveFromCartPurchase(analysisProduct);*/
+                                cancelCartAnalytic(cartItem.getCartProducts().get(i), cartItem);
 
                             } else if (cartProductEditDataList.get(i).getOriginalQuantity()
                                     < cartProductEditDataList.get(i).getProductQuantity()) {
 
-                                Product analysisProduct = new Product();
-                                analysisProduct.setProductName(cartItem.getCartProducts()
-                                        .get(i)
-                                        .getProductName());
-                                analysisProduct.setProductID(cartItem.getCartProducts()
-                                        .get(i)
-                                        .getProductId());
-                                analysisProduct.setPrice(cartItem.getCartProducts()
-                                        .get(i)
-                                        .getProductPrice());
-                                analysisProduct.setQty(
-                                        cartProductEditDataList
-                                        .get(i)
-                                        .getProductQuantity()
-                                        - cartProductEditDataList
-                                                .get(i)
-                                                .getOriginalQuantity());
-                                /*GTMContainer.newInstance(context).
-                                        eventAddToCartPurchase(analysisProduct);
-                                GTMContainer.newInstance(context).
-                                        eventAddToCartPurchase(analysisProduct);*/
+                                addToCartAnalytic(cartItem.getCartProducts().get(i), cartItem);
 
                             }
                         }
                     }
                 });
+
+    }
+
+    private void cancelCartAnalytic(CartProduct cartProduct, @NonNull CartItem canceledCartItem) {
+        Product analysisProduct = populateDataLayer(cartProduct);
+        UnifyTracking.eventRemoveFromCart(analysisProduct);
+    }
+
+    private void addToCartAnalytic(CartProduct cartProduct, @NonNull CartItem canceledCartItem) {
+        Product analysisProduct = populateDataLayer(cartProduct);
+        UnifyTracking.eventAddToCartPurchase(analysisProduct);
+    }
+
+    @NonNull
+    private Product populateDataLayer(CartProduct cartProduct) {
+        Product analysisProduct = new Product();
+        analysisProduct.setProductName(cartProduct.getProductName());
+        analysisProduct.setProductID(cartProduct.getProductId());
+        analysisProduct.setPrice(cartProduct.getProductPrice());
+        analysisProduct.setQty(cartProduct.getProductQuantity());
+        analysisProduct.setHomeAttribution(cartProduct.getProductTrackerData().getAttribution());
+        analysisProduct.setList(cartProduct.getProductTrackerData().getListDataName());
+        return analysisProduct;
     }
 
     @Override

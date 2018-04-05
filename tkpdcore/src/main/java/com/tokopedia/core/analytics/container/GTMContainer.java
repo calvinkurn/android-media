@@ -643,18 +643,18 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
-    public void eventRemoveFromCartPurchase(Product product) {
-        clearEnhanceEcommerce();
-        GTMDataLayer.pushGeneral(
-                context, DataLayer.mapOf(
-                        AppEventTracking.EVENT, "addToCart",
+    public GTMContainer eventRemoveFromCartPurchase(Product product) {
+        GTMDataLayer.pushEvent(
+                context, "removeFromCart",
+                DataLayer.mapOf(
                         AppEventTracking.ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
-                                "add", DataLayer.mapOf(
+                                "remove", DataLayer.mapOf(
                                         "products", product.getProduct())
                         )
                 )
         );
+        return this;
     }
 
     public void eventImpressionCategoryLifestyle(List<Object> list) {

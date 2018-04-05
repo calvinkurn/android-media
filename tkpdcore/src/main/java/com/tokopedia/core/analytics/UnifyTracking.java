@@ -3338,7 +3338,16 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventAddToCartPurchase(Product product) {
         getGTMEngine().eventAddToCartPurchase(product)
-        .sendScreen(AppScreen.SCREEN_ADD_TO_CART_SUCCESS).clearAddtoCartDataLayer(GTMCart.ADD_ACTION);
+        .sendScreen(AppScreen.SCREEN_ADD_TO_CART_SUCCESS)
+                .clearAddtoCartDataLayer(GTMCart.ADD_ACTION);
     }
+
+    public static void eventRemoveFromCart(Product product) {
+        getGTMEngine().eventRemoveFromCartPurchase(product)
+                .sendScreen(AppScreen.SCREEN_ADD_TO_CART_SUCCESS)
+                .clearAddtoCartDataLayer(GTMCart.REMOVE_ACTION);
+    }
+
+
 
 }

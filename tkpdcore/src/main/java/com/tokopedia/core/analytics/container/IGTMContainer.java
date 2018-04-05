@@ -130,7 +130,7 @@ public interface IGTMContainer {
 
     GTMContainer eventAddToCartPurchase(Product product);
 
-    void eventRemoveFromCartPurchase(Product product);
+    GTMContainer eventRemoveFromCartPurchase(Product product);
 
     void eventImpressionPromoList(List<Object> list, String promoName);
 
