@@ -82,4 +82,9 @@ public class AddPasswordActivity extends BasePresenterActivity implements HasCom
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }
