@@ -33,11 +33,11 @@ public class SprintSaleViewModel implements Parcelable {
         SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
         this.listProduct = listProduct;
         this.campaignName = campaignName;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.startDate = startDate * 1000L;
+        this.endDate = endDate * 1000L;
         this.redirectUrl = redirectUrl;
-        this.formattedStartDate = sdfHour.format(startDate);
-        this.formattedEndDate = sdfHour.format(endDate);
+        this.formattedStartDate = sdfHour.format(this.startDate);
+        this.formattedEndDate = sdfHour.format(this.endDate);
         this.sprintSaleType = sprintSaleType;
     }
 
