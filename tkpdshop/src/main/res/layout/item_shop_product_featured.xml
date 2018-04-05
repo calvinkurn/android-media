@@ -26,7 +26,7 @@
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
-            tools:src="@drawable/ic_kupon"
+            tools:srcCompat="@drawable/ic_kupon"
             tools:visibility="visible" />
 
         <LinearLayout

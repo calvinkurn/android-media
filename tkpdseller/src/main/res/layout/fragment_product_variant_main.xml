@@ -86,7 +86,7 @@
                             android:layout_margin="@dimen/padding_vvs"
                             android:background="@color/grey_200"
                             android:scaleType="centerInside"
-                            android:src="@drawable/ic_add_product"
+                            app:srcCompat="@drawable/ic_add_product"
                             android:clickable="true"
                             android:focusable="true"
                             android:foreground="?attr/selectableItemBackground"/>

@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -77,7 +76,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     private static final int REQUEST_CODE_ETALASE = 200;
     private static final int REQUEST_CODE_SORT = 300;
     private static final int ANIMATION_DURATION = 400;
-    public static final int SPAN_COUNT = 2;
+    private static final int LIST_SPAN_COUNT = 1;
+    private static final int GRID_SPAN_COUNT = 2;
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
     @Inject
@@ -228,14 +228,14 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
 
     @Override
     protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), GRID_SPAN_COUNT);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if(getAdapter().getItemViewType(position) == ShopProductViewHolder.LAYOUT){
-                    return  1;
-                }else{
-                    return SPAN_COUNT;
+                if (getAdapter().getItemViewType(position) == ShopProductViewHolder.LAYOUT) {
+                    return LIST_SPAN_COUNT;
+                } else {
+                    return GRID_SPAN_COUNT;
                 }
             }
         });
@@ -247,6 +247,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         if (shopInfo != null) {
             String officialWebViewUrl = shopInfo.getInfo().getShopOfficialTop();
             officialWebViewUrl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? officialWebViewUrl : "";
+            if (!TextUtils.isEmpty(officialWebViewUrl)) {
+                
+            }
             shopProductListLimitedPresenter.getProductLimitedList(
                     shopInfo.getInfo().getShopId(),
                     TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsGold()),
@@ -370,10 +373,16 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     }
 
     @Override
+    public void renderList(@NonNull List<ShopProductBaseViewModel> list, boolean hasNextPage, boolean hasProduct) {
+        renderList(list, hasNextPage);
+        if (hasProduct) {
+            showBottomActionView();
+        }
+    }
+
+    @Override
     public void renderList(@NonNull List<ShopProductBaseViewModel> list, boolean hasNextPage) {
         trackingImpressionFeatureProduct(list);
-        if(list.size()>0)
-            showBottomActionView();
         super.renderList(list, hasNextPage);
     }
 
@@ -387,7 +396,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         for (ShopProductBaseViewModel shopProductBaseViewModel : list) {
             if (shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModel) {
                 if (shopInfo != null) {
-                    featuredViewModelList.add((ShopProductLimitedFeaturedViewModel)shopProductBaseViewModel);
+                    featuredViewModelList.add((ShopProductLimitedFeaturedViewModel) shopProductBaseViewModel);
                 }
             } else if (shopProductBaseViewModel instanceof ShopProductHomeViewModel) {
                 if (shopInfo != null) {
@@ -401,12 +410,12 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                 }
             }
         }
-        if(featuredViewModelList.size() > 0){
+        if (featuredViewModelList.size() > 0) {
             shopPageTracking.eventViewProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
                     featuredViewModelList,
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
         }
-        if(productHomeViewModelList.size() > 0){
+        if (productHomeViewModelList.size() > 0) {
             shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
                     productHomeViewModelList,
                     true, shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
