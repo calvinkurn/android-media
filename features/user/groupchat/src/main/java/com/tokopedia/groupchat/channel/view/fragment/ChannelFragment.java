@@ -92,12 +92,6 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!isEnabledGroupChatRoom()) {
-            Intent intent = ((GroupChatModuleRouter) getApplicationContext()).getHomeIntent(getActivity());
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            getActivity().finish();
-        }
-
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         if (userSession != null && !userSession.isLoggedIn()) {
             startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
@@ -266,10 +260,6 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Override
     public void onSwipeRefresh() {
         presenter.refreshData();
-    }
-
-    public boolean isEnabledGroupChatRoom() {
-        return ((GroupChatModuleRouter) getApplicationContext()).isEnabledGroupChatRoom();
     }
 
     public class ItemDecoration extends RecyclerView.ItemDecoration {
