@@ -393,13 +393,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         if (isShowTime && timeRemainingSeconds > 0) {
             setUIFloatingTimer(timeRemainingSeconds);
-            tvFloatingTimer.setVisibility(View.VISIBLE);
-        } else {
-            tvFloatingTimer.setVisibility(View.GONE);
-        }
-
-        if (timeRemainingSeconds > 0) {
             startCountdownTimer(timeRemainingSeconds);
+            tvFloatingTimer.setVisibility(View.VISIBLE);
         } else {
             stopCountdownTimer();
             tvFloatingTimer.setVisibility(View.GONE);
