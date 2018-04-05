@@ -39,6 +39,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog {
         }else{
             containerOtp.setVisibility(View.GONE);
         }
+        updateHeight();
     }
 
     public void setClickListenerButtonOtp(View.OnClickListener listenerButtonOtp){

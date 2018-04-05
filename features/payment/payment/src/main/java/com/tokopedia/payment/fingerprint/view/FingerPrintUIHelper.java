@@ -1,7 +1,6 @@
 package com.tokopedia.payment.fingerprint.view;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.os.Build;
 import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -48,17 +47,20 @@ public class FingerPrintUIHelper implements FingerPrintDialog.Callback {
         this.callback = callback;
         FingerprintManagerCompat fingerprintManagerCompat = FingerprintManagerCompat.from(activity);
         if (fingerprintManagerCompat.isHardwareDetected() && fingerprintManagerCompat.hasEnrolledFingerprints()) {
-            fingerPrintDialogPayment = new FingerPrintDialogPayment();
-            fingerPrintDialogPayment.setTextToEncrypt(userId + date);
-            fingerPrintDialogPayment.setCallback(this);
-            fingerPrintDialogPayment.setContext(activity);
-            fingerPrintDialogPayment.setClickListenerButtonOtp(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    callback.onGoToOtpPage(urlOtp);
-                }
-            });
-            fingerPrintDialogPayment.show(activity.getSupportFragmentManager(), FingerprintConstant.TAG_FINGERPRINT_DIALOG);
+            if (fingerPrintDialogPayment == null) {
+                fingerPrintDialogPayment = new FingerPrintDialogPayment();
+                fingerPrintDialogPayment.setTextToEncrypt(userId + date);
+                fingerPrintDialogPayment.setCallback(this);
+                fingerPrintDialogPayment.setContext(activity);
+                fingerPrintDialogPayment.setClickListenerButtonOtp(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        callback.onGoToOtpPage(urlOtp);
+                    }
+                });
+                fingerPrintDialogPayment.show(activity.getSupportFragmentManager(), FingerprintConstant.TAG_FINGERPRINT_DIALOG);
+            }
+            fingerPrintDialogPayment.startListening();
         }
     }
 
@@ -75,12 +77,16 @@ public class FingerPrintUIHelper implements FingerPrintDialog.Callback {
         updateCounterError();
     }
 
-    private void updateCounterError() {
+    private boolean updateCounterError() {
         counterError++;
+        fingerPrintDialogPayment.updateTitle(activity.getString(R.string.fingerprint_label_failed_scan));
         fingerPrintDialogPayment.setVisibilityContainer(true);
-        if(counterError > MAX_ERROR){
+        if (counterError > MAX_ERROR) {
             closeBottomSheet();
             callback.onGoToOtpPage(urlOtp);
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -99,9 +105,10 @@ public class FingerPrintUIHelper implements FingerPrintDialog.Callback {
         updateCounterError();
     }
 
-    public void onErrorPaymentFingerPrint() {
-        updateCounterError();
-        fingerPrintDialogPayment.updateTitle(activity.getString(R.string.fingerprint_label_failed_scan));
+    public void onErrorNetworkPaymentFingerPrint() {
+        if (updateCounterError()) {
+            startListening(callback);
+        }
     }
 
     public void closeBottomSheet() {
@@ -114,6 +121,7 @@ public class FingerPrintUIHelper implements FingerPrintDialog.Callback {
 
     public interface Callback {
         void onPaymentFingerPrint(String transactionId, String partner, String publicKey, String date, String accountSignature, String userId);
+
         void onGoToOtpPage(String urlOtp);
     }
 }

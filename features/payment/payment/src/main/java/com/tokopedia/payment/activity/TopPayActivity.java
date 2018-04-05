@@ -1,7 +1,6 @@
 package com.tokopedia.payment.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,17 +9,14 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
-import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -50,7 +46,6 @@ import com.tokopedia.payment.utils.ErrorNetMessage;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -137,8 +132,8 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
     @Override
     protected void onResume() {
-        fingerPrintUIHelper = new FingerPrintUIHelper(this, "", presenter.getUserId(), "", "");
-        fingerPrintUIHelper.startListening(this);
+//        fingerPrintUIHelper = new FingerPrintUIHelper(this, "", presenter.getUserId(), "", "");
+//        fingerPrintUIHelper.startListening(this);
         super.onResume();
     }
 
@@ -585,7 +580,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
     @Override
     public void onErrorPaymentFingerPrint(Throwable e) {
-        fingerPrintUIHelper.onErrorPaymentFingerPrint();
+        fingerPrintUIHelper.onErrorNetworkPaymentFingerPrint();
     }
 
     @Override

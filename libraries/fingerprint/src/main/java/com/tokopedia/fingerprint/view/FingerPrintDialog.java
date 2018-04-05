@@ -88,6 +88,10 @@ public class FingerPrintDialog extends BottomSheets {
         textViewTitle.setText(title);
     }
 
+    public void updateDesc(String title){
+        descFingerprint.setText(title);
+    }
+
     public void setContext(Context context){
         this.context = context;
     }
@@ -97,19 +101,6 @@ public class FingerPrintDialog extends BottomSheets {
         initKeyStore();
         initCryptoObject();
         return super.onCreateDialog(savedInstanceState);
-    }
-
-    @Override
-    public void show(FragmentManager manager, String tag) {
-        super.show(manager, tag);
-        startListening();
-    }
-
-    @Override
-    public int show(FragmentTransaction transaction, String tag) {
-        int show = super.show(transaction, tag);
-        startListening();
-        return show;
     }
 
     public void startListening() {
@@ -241,7 +232,7 @@ public class FingerPrintDialog extends BottomSheets {
 
     protected static void generateKeyPair(KeyStore keyStore) throws KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
         //check if key is stored already, if null, create new key
-//        if (keyStore.getCertificate(FingerprintConstant.FINGERPRINT) == null || keyStore.getCertificate(FingerprintConstant.FINGERPRINT).getPublicKey() == null) {
+        if (keyStore.getCertificate(FingerprintConstant.FINGERPRINT) == null || keyStore.getCertificate(FingerprintConstant.FINGERPRINT).getPublicKey() == null) {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, FingerprintConstant.ANDROID_KEY_STORE);
             KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder(FingerprintConstant.FINGERPRINT,
                     KeyProperties.PURPOSE_SIGN)
@@ -250,7 +241,7 @@ public class FingerPrintDialog extends BottomSheets {
                     .setUserAuthenticationRequired(false);
             keyPairGenerator.initialize(builder.build());
             keyPairGenerator.generateKeyPair();
-//        }
+        }
     }
 
 
