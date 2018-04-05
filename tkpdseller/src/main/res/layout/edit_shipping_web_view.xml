@@ -7,9 +7,9 @@
     <com.tokopedia.core.util.TkpdWebView android:id="@+id/additional_option_dialog"
         android:orientation="vertical" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/padding_small"
-        android:layout_marginEnd="@dimen/padding_small"
-        android:layout_marginTop="@dimen/padding_small">
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10">
     </com.tokopedia.core.util.TkpdWebView>
 
     <LinearLayout

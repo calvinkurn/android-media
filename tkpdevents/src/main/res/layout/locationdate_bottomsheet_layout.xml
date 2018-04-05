@@ -13,27 +13,27 @@
 
         <ImageView
             android:id="@+id/iv_close_bts"
-            android:layout_width="@dimen/smallicon_size"
-            android:layout_height="@dimen/smallicon_size"
-            android:layout_marginBottom="@dimen/margin_default"
-            android:layout_marginEnd="@dimen/margin_padding_medium"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_padding_medium"
-            android:layout_marginStart="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_default"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
             app:srcCompat="@drawable/ic_black_x" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_default"
+            android:layout_marginTop="@dimen/dp_16"
             android:text="@string/ubah_lokasi"
             android:textSize="@dimen/font_medium" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_height_thin"
+        android:layout_height="@dimen/dp_2"
         android:background="@color/grey_100" />
 
     <android.support.v7.widget.RecyclerView

@@ -2,11 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_small"
+    android:layout_marginTop="@dimen/dp_10"
     android:paddingEnd="@dimen/chat_padding_large"
-    android:paddingLeft="@dimen/chat_padding_small"
+    android:paddingLeft="@dimen/chat_dp_10"
     android:paddingRight="@dimen/chat_padding_large"
-    android:paddingStart="@dimen/chat_padding_small">
+    android:paddingStart="@dimen/chat_dp_10">
 
     <LinearLayout
         android:id="@+id/main"
@@ -18,7 +18,7 @@
         android:gravity="end"
         android:minWidth="@dimen/min_chat_width"
         android:orientation="vertical"
-        android:padding="@dimen/padding_ms">
+        android:padding="@dimen/dp_8">
 
         <TextView
             android:id="@+id/message_text_view"

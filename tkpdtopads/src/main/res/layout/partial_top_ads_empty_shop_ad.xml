@@ -9,14 +9,14 @@
     <TextView
         android:id="@+id/text_view_empty_title_text"
         style="@style/TextView.Small"
-        android:layout_margin="@dimen/margin_vs"
+        android:layout_margin="@dimen/dp_5"
         android:gravity="center"
         android:text="@string/top_ads_empty_shop_title_text"/>
 
     <TextView
         android:id="@+id/text_view_empty_content_text"
         style="@style/TextView.Small.BlackSecondary"
-        android:layout_margin="@dimen/margin_vs"
+        android:layout_margin="@dimen/dp_5"
         android:gravity="center"
         android:maxLines="3"
         android:text="@string/top_ads_empty_shop_content_text"/>

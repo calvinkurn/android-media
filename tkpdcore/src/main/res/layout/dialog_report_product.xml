@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:text="Jenis Laporan"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:textColor="@color/grey_700"/>
 
             <TextView

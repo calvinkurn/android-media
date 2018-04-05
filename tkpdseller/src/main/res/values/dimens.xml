@@ -98,6 +98,7 @@
     <dimen name="seller_info_radius_image_view">2dp</dimen>
 
     <dimen name="opportunity_showcase_padding">12dp</dimen>
+    <dimen name="image_width_variant">80dp</dimen>
 
 
 </resources>
