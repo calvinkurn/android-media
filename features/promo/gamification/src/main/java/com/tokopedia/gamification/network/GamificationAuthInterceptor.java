@@ -1,7 +1,6 @@
 package com.tokopedia.gamification.network;
 
 import android.content.Context;
-import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -21,7 +20,8 @@ import okhttp3.Request;
 
 public class GamificationAuthInterceptor extends TkpdAuthInterceptor {
 
-    public static final String PARAM_TKPD_USER_ID = "Tkpd-UserId";
+    private static final String HEADER_ACCOUNTS_AUTHORIZATION = "Accounts-Authorization";
+    private static final String BEARER_SPACE = "Bearer ";
     @Inject
     public GamificationAuthInterceptor(@ApplicationContext Context context,
                                        AbstractionRouter abstractionRouter,
@@ -33,10 +33,10 @@ public class GamificationAuthInterceptor extends TkpdAuthInterceptor {
                                                String method, String authKey,
                                                String contentTypeHeader) {
         Map<String, String> headerMap = super.getHeaderMap(path, strParam, method, authKey, contentTypeHeader);
-        String userId = userSession.getUserId();
-        headerMap.remove(PARAM_TKPD_USER_ID);
-        if (!TextUtils.isEmpty(userId)) {
-            headerMap.put(PARAM_TKPD_USER_ID, userId);
+        String accessToken = userSession.getAccessToken();
+        headerMap.remove(HEADER_ACCOUNTS_AUTHORIZATION);
+        if (!TextUtils.isEmpty(accessToken)) {
+            headerMap.put(HEADER_ACCOUNTS_AUTHORIZATION, BEARER_SPACE + accessToken);
         }
         return headerMap;
     }
