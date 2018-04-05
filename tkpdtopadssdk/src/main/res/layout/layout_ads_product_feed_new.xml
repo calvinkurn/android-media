@@ -13,9 +13,7 @@
         android:id="@+id/product_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/feed_new_image_padding"
-        android:layout_marginRight="@dimen/feed_new_image_padding"
-        android:layout_marginTop="@dimen/feed_new_image_padding"
+        android:background="@drawable/bg_full_border"
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="centerCrop"
@@ -27,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/product_image"
         android:orientation="horizontal"
+        android:background="@drawable/bg_side_border"
         android:padding="@dimen/new_margin_small">
 
         <TextView
