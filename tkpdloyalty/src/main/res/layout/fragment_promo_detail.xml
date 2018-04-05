@@ -16,11 +16,11 @@
         <TextView
             android:id="@+id/tv_promo_detail_action"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="@dimen/call_to_action_button_height"
+            android:background="@color/green_250"
             android:gravity="center"
-            android:background="#42b549"
-            android:textSize="16sp"
             android:textColor="@color/white"
+            android:textSize="@dimen/font_medium"
             tools:text="Belanja Sekarang" />
     </LinearLayout>
 
@@ -29,13 +29,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:visibility="visible">
+        android:visibility="visible"
+        android:layout_above="@id/ll_promo_detail_bottom_layout">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_promo_detail_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/ll_promo_detail_bottom_layout" />
+            android:layout_height="match_parent" />
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 
 </RelativeLayout>

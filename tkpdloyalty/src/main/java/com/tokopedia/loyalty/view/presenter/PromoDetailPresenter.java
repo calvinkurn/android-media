@@ -72,7 +72,7 @@ public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView>
                 if (promoData != null && !promoData.isEmpty()) {
                     getMvpView().renderPromoDetail(promoData.get(0));
                 } else {
-                    getMvpView().renderErrorShowingPromoDetail();
+                    getMvpView().renderErrorShowingPromoDetail(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         });

@@ -11,4 +11,5 @@
     <dimen name="code_container_multiple_height">40dp</dimen>
     <dimen name="icon_sequence_circle_diameter">25dp</dimen>
     <dimen name="tnc_header_height">56dp</dimen>
+    <dimen name="call_to_action_button_height">56dp</dimen>
 </resources>

@@ -10,7 +10,7 @@ public interface IPromoDetailView extends IMvpView {
 
     void renderPromoDetail(PromoData promoData);
 
-    void renderErrorShowingPromoDetail();
+    void renderErrorShowingPromoDetail(String message);
 
     void renderErrorNoConnectionGetPromoDetail(String message);
 

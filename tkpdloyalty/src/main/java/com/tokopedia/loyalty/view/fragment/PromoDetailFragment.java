@@ -132,7 +132,6 @@ public class PromoDetailFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
 
         this.llPromoDetailBottomLayout.setVisibility(View.VISIBLE);
-
         this.rvPromoDetailView.setAdapter(promoDetailAdapter);
         this.rvPromoDetailView.setLayoutManager(new LinearLayoutManager(getActivity()));
         this.rvPromoDetailView.setHasFixedSize(true);
@@ -140,8 +139,7 @@ public class PromoDetailFragment extends BaseDaggerFragment
         this.promoDetailAdapter.setAdapterListener(getAdapterActionListener());
 
         this.promoDetailPresenter.attachView(this);
-
-        onRefresh(view);
+        this.refreshHandler.startRefresh();
     }
 
     @Override
@@ -164,6 +162,8 @@ public class PromoDetailFragment extends BaseDaggerFragment
 
     @Override
     public void renderPromoDetail(PromoData promoData) {
+        this.refreshHandler.finishRefresh();
+
         View errorView = this.rlContainerLayout.findViewById(com.tokopedia.core.R.id.main_retry);
         if (errorView != null) errorView.setVisibility(View.GONE);
 
@@ -173,8 +173,8 @@ public class PromoDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void renderErrorShowingPromoDetail() {
-
+    public void renderErrorShowingPromoDetail(String message) {
+        handleErrorEmptyState(message);
     }
 
     @Override
@@ -274,6 +274,8 @@ public class PromoDetailFragment extends BaseDaggerFragment
     }
 
     private void handleErrorEmptyState(String message) {
+        if (refreshHandler.isRefreshing()) refreshHandler.finishRefresh();
+
         NetworkErrorHelper.showEmptyState(getActivity(), this.rlContainerLayout, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
