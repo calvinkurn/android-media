@@ -7,7 +7,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingNewPassengerView
  * @author by furqan on 07/03/18.
  */
 
-public interface FlightBookingListPassengerTypeFactory extends FlightBookingPassengerTypeFactory {
+public interface FlightPassengerListTypeFactory extends FlightBookingPassengerTypeFactory {
 
     int type(FlightBookingNewPassengerViewModel viewModel);
 

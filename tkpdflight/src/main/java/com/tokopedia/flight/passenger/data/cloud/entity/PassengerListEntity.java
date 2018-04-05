@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * @author by furqan on 22/02/18.
  */
 
-public class SavedPassengerEntity {
+public class PassengerListEntity {
     @SerializedName("type")
     @Expose
     private String type;

@@ -10,32 +10,32 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.passenger.di.DaggerFlightPassengerComponent;
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent;
-import com.tokopedia.flight.passenger.view.fragment.FlightBookingListPassengerFragment;
+import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment;
 
 /**
  * @author by furqan on 23/02/18.
  */
 
-public class FlightBookingListPassengerActivity extends BaseFlightActivity implements HasComponent<FlightPassengerComponent> {
+public class FlightPassengerListActivity extends BaseFlightActivity implements HasComponent<FlightPassengerComponent> {
 
     public static Intent createIntent(Context context, FlightBookingPassengerViewModel selected,
                                       String requestId, String departureDate) {
-        Intent intent = new Intent(context, FlightBookingListPassengerActivity.class);
-        intent.putExtra(FlightBookingListPassengerFragment.EXTRA_SELECTED_PASSENGER, selected);
-        intent.putExtra(FlightBookingListPassengerFragment.EXTRA_REQUEST_ID, requestId);
-        intent.putExtra(FlightBookingListPassengerFragment.EXTRA_DEPARTURE_DATE, departureDate);
+        Intent intent = new Intent(context, FlightPassengerListActivity.class);
+        intent.putExtra(FlightPassengerListFragment.EXTRA_SELECTED_PASSENGER, selected);
+        intent.putExtra(FlightPassengerListFragment.EXTRA_REQUEST_ID, requestId);
+        intent.putExtra(FlightPassengerListFragment.EXTRA_DEPARTURE_DATE, departureDate);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
         FlightBookingPassengerViewModel flightBookingPassengerViewModel = getIntent()
-                .getParcelableExtra(FlightBookingListPassengerFragment.EXTRA_SELECTED_PASSENGER);
+                .getParcelableExtra(FlightPassengerListFragment.EXTRA_SELECTED_PASSENGER);
         String requestId = getIntent().getStringExtra(
-                FlightBookingListPassengerFragment.EXTRA_REQUEST_ID);
+                FlightPassengerListFragment.EXTRA_REQUEST_ID);
         String departureDate = getIntent().getStringExtra(
-                FlightBookingListPassengerFragment.EXTRA_DEPARTURE_DATE);
-        return FlightBookingListPassengerFragment.createInstance(flightBookingPassengerViewModel,
+                FlightPassengerListFragment.EXTRA_DEPARTURE_DATE);
+        return FlightPassengerListFragment.createInstance(flightBookingPassengerViewModel,
                 requestId, departureDate);
     }
 

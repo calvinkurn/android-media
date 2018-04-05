@@ -14,8 +14,8 @@ import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingPassengerFragment;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.passenger.domain.FlightBookingUpdateSelectedPassengerUseCase;
-import com.tokopedia.flight.passenger.view.fragment.FlightBookingListPassengerFragment;
+import com.tokopedia.flight.passenger.domain.FlightPassengerUpdateSelectedUseCase;
+import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
     FlightBookingPassengerFragment flightBookingPassengerFragment;
 
     @Inject
-    FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase;
+    FlightPassengerUpdateSelectedUseCase flightPassengerUpdateSelectedUseCase;
 
     public static Intent getCallingIntent(Activity activity,
                                           String departureId,
@@ -157,10 +157,10 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
     }
 
     private void unselectPassenger() {
-        flightBookingUpdateSelectedPassengerUseCase.execute(
-                flightBookingUpdateSelectedPassengerUseCase.createRequestParams(
+        flightPassengerUpdateSelectedUseCase.execute(
+                flightPassengerUpdateSelectedUseCase.createRequestParams(
                         viewModel.getPassengerId(),
-                        FlightBookingListPassengerFragment.IS_NOT_SELECTING
+                        FlightPassengerListFragment.IS_NOT_SELECTING
                 ),
                 new Subscriber<Boolean>() {
                     @Override

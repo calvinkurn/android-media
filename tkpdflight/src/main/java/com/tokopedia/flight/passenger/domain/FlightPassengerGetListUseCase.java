@@ -1,7 +1,7 @@
 package com.tokopedia.flight.passenger.domain;
 
 import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
-import com.tokopedia.flight.passenger.domain.model.SavedPassengerViewModelMapper;
+import com.tokopedia.flight.passenger.domain.model.ListPassengerViewModelMapper;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.usecase.RequestParams;
@@ -18,18 +18,18 @@ import rx.functions.Func1;
  * @author by furqan on 22/02/18.
  */
 
-public class FlightBookingGetSavedPassengerUseCase extends UseCase<List<FlightBookingPassengerViewModel>> {
+public class FlightPassengerGetListUseCase extends UseCase<List<FlightBookingPassengerViewModel>> {
 
     private static final String PARAM_PASSENGER_ID = "PARAM_PASSENGER_ID";
     private static final String DEFAULT_STRING_VALUE = "";
 
     private final FlightRepository flightRepository;
-    private final SavedPassengerViewModelMapper savedPassengerViewModelMapper;
+    private final ListPassengerViewModelMapper listPassengerViewModelMapper;
 
     @Inject
-    public FlightBookingGetSavedPassengerUseCase(FlightRepository flightRepository, SavedPassengerViewModelMapper savedPassengerViewModelMapper) {
+    public FlightPassengerGetListUseCase(FlightRepository flightRepository, ListPassengerViewModelMapper listPassengerViewModelMapper) {
         this.flightRepository = flightRepository;
-        this.savedPassengerViewModelMapper = savedPassengerViewModelMapper;
+        this.listPassengerViewModelMapper = listPassengerViewModelMapper;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class FlightBookingGetSavedPassengerUseCase extends UseCase<List<FlightBo
                 .map(new Func1<List<FlightPassengerDb>, List<FlightBookingPassengerViewModel>>() {
                     @Override
                     public List<FlightBookingPassengerViewModel> call(List<FlightPassengerDb> flightPassengerDbs) {
-                        return savedPassengerViewModelMapper.transform(flightPassengerDbs);
+                        return listPassengerViewModelMapper.transform(flightPassengerDbs);
                     }
                 });
     }

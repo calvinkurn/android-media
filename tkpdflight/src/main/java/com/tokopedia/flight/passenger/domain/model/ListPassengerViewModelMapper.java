@@ -13,10 +13,10 @@ import javax.inject.Inject;
  * @author by furqan on 23/02/18.
  */
 
-public class SavedPassengerViewModelMapper {
+public class ListPassengerViewModelMapper {
 
     @Inject
-    public SavedPassengerViewModelMapper() {
+    public ListPassengerViewModelMapper() {
     }
 
     public FlightBookingPassengerViewModel transform(FlightPassengerDb savedPassengerEntity) {

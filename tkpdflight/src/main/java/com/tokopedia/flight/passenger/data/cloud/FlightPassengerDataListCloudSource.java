@@ -3,7 +3,7 @@ package com.tokopedia.flight.passenger.data.cloud;
 import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
-import com.tokopedia.flight.passenger.data.cloud.entity.SavedPassengerEntity;
+import com.tokopedia.flight.passenger.data.cloud.entity.PassengerListEntity;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
@@ -21,20 +21,20 @@ import rx.functions.Func1;
  * @author by furqan on 22/02/18.
  */
 
-public class FlightSavedPassengerDataListCloudSource extends DataListCloudSource<SavedPassengerEntity> {
+public class FlightPassengerDataListCloudSource extends DataListCloudSource<PassengerListEntity> {
     private FlightApi flightApi;
 
     @Inject
-    public FlightSavedPassengerDataListCloudSource(FlightApi flightApi) {
+    public FlightPassengerDataListCloudSource(FlightApi flightApi) {
         this.flightApi = flightApi;
     }
 
     @Override
-    public Observable<List<SavedPassengerEntity>> getData(HashMap<String, Object> params) {
+    public Observable<List<PassengerListEntity>> getData(HashMap<String, Object> params) {
         return this.flightApi.getSavedPassengerData()
-                .flatMap(new Func1<Response<FlightDataResponse<List<SavedPassengerEntity>>>, Observable<List<SavedPassengerEntity>>>() {
+                .flatMap(new Func1<Response<FlightDataResponse<List<PassengerListEntity>>>, Observable<List<PassengerListEntity>>>() {
                     @Override
-                    public Observable<List<SavedPassengerEntity>> call(Response<FlightDataResponse<List<SavedPassengerEntity>>> flightDataResponseResponse) {
+                    public Observable<List<PassengerListEntity>> call(Response<FlightDataResponse<List<PassengerListEntity>>> flightDataResponseResponse) {
                         return Observable.just(flightDataResponseResponse.body().getData());
                     }
                 });
@@ -44,7 +44,7 @@ public class FlightSavedPassengerDataListCloudSource extends DataListCloudSource
         return this.flightApi.deleteSavedPassengerData(new DataRequest<>(request), idempotencyKey);
     }
 
-    public Observable<Response<FlightDataResponse<SavedPassengerEntity>>> updatePassenger(UpdatePassengerRequest request, String idempotencyKey) {
+    public Observable<Response<FlightDataResponse<PassengerListEntity>>> updatePassenger(UpdatePassengerRequest request, String idempotencyKey) {
         return this.flightApi.updatePassengerListData(new DataRequest<>(request), idempotencyKey);
     }
 }

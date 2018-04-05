@@ -6,9 +6,7 @@ import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
-import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.passenger.data.cloud.entity.SavedPassengerEntity;
-import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
+import com.tokopedia.flight.passenger.data.cloud.entity.PassengerListEntity;
 import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb_Table;
 
@@ -26,7 +24,7 @@ import rx.functions.Func1;
  * @author by furqan on 28/02/18.
  */
 
-public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedPassengerEntity, FlightPassengerDb> {
+public class FlightPassengerDataListDbSource extends BaseDataListDBSource<PassengerListEntity, FlightPassengerDb> {
 
     public static final String PASSENGER_ID = "PASSENGER_ID";
 
@@ -40,12 +38,12 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
     }
 
     @Override
-    public Observable<Boolean> insertAll(List<SavedPassengerEntity> list) {
+    public Observable<Boolean> insertAll(List<PassengerListEntity> list) {
         return Observable.from(list)
-                .flatMap(new Func1<SavedPassengerEntity, Observable<Boolean>>() {
+                .flatMap(new Func1<PassengerListEntity, Observable<Boolean>>() {
                     @Override
-                    public Observable<Boolean> call(SavedPassengerEntity savedPassengerEntity) {
-                        FlightPassengerDb flightPassengerDb = new FlightPassengerDb(savedPassengerEntity);
+                    public Observable<Boolean> call(PassengerListEntity passengerListEntity) {
+                        FlightPassengerDb flightPassengerDb = new FlightPassengerDb(passengerListEntity);
                         flightPassengerDb.insert();
                         return Observable.just(true);
                     }
@@ -84,7 +82,7 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
         });
     }
 
-    public Observable<Boolean> updatePassengerData(final String previousId, final SavedPassengerEntity savedPassengerEntity) {
+    public Observable<Boolean> updatePassengerData(final String previousId, final PassengerListEntity passengerListEntity) {
 
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
@@ -99,7 +97,7 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
                 if (result != null) {
                     result.delete();
 
-                    result = new FlightPassengerDb(savedPassengerEntity);
+                    result = new FlightPassengerDb(passengerListEntity);
                     result.insert();
                     subscriber.onNext(true);
                 } else {

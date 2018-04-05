@@ -15,14 +15,14 @@ import rx.functions.Func1;
  * @author by furqan on 05/03/18.
  */
 
-public class FlightBookingDeletePassengerUseCase extends UseCase<Boolean> {
+public class FlightPassengerDeleteUseCase extends UseCase<Boolean> {
     private static final String PARAM_PASSENGER_ID = "PARAM_PASSENGER_ID";
     private static final String PARAM_IDEMPOTENCY = "PARAM_IDEMPOTENCY";
     private static final String DEFAULT_PARAM = "";
     private FlightRepository flightRepository;
 
     @Inject
-    public FlightBookingDeletePassengerUseCase(FlightRepository flightRepository) {
+    public FlightPassengerDeleteUseCase(FlightRepository flightRepository) {
         this.flightRepository = flightRepository;
     }
 

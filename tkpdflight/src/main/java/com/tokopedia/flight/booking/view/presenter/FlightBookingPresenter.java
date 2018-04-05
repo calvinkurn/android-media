@@ -11,7 +11,6 @@ import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.passenger.domain.FlightBookingDeleteAllPassengerListUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetPhoneCodeUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;

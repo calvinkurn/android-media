@@ -9,8 +9,6 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerInfoValidator;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
-import com.tokopedia.flight.passenger.domain.FlightBookingUpdateSelectedPassengerUseCase;
-import com.tokopedia.flight.passenger.view.fragment.FlightBookingListPassengerFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,8 +16,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 /**
  * @author by alvarisi on 11/16/17.

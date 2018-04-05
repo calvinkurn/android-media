@@ -9,7 +9,7 @@ import java.util.List;
  * @author by furqan on 26/02/18.
  */
 
-public interface FlightBookingListPassengerContract {
+public interface FlightPassengerListContract {
     interface View extends CustomerView {
         List<FlightBookingPassengerViewModel> getPassengerViewModelList();
 

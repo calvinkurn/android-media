@@ -12,7 +12,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingNewPassengerView
  * @author by furqan on 07/03/18.
  */
 
-public class FlightBookingNewPassengerViewHolder extends AbstractViewHolder<FlightBookingNewPassengerViewModel> {
+public class FlightPassengerNewViewHolder extends AbstractViewHolder<FlightBookingNewPassengerViewModel> {
 
     @LayoutRes
     public static int LAYOUT = R.layout.item_flight_booking_new_passenger;
@@ -24,7 +24,7 @@ public class FlightBookingNewPassengerViewHolder extends AbstractViewHolder<Flig
     TextView txtTitle;
     private ListenerClickedNewPassenger listenerClickedNewPassenger;
 
-    public FlightBookingNewPassengerViewHolder(View itemView, ListenerClickedNewPassenger listenerClickedNewPassenger) {
+    public FlightPassengerNewViewHolder(View itemView, ListenerClickedNewPassenger listenerClickedNewPassenger) {
         super(itemView);
         txtTitle = itemView.findViewById(R.id.txt_new_passenger);
         this.listenerClickedNewPassenger = listenerClickedNewPassenger;

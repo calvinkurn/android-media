@@ -16,7 +16,7 @@ import com.tokopedia.flight.passenger.view.activity.FlightPassengerUpdateActivit
  * @author by furqan on 23/02/18.
  */
 
-public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<FlightBookingPassengerViewModel> {
+public class FlightPassengerListViewHolder extends AbstractViewHolder<FlightBookingPassengerViewModel> {
 
     @LayoutRes
     public static int LAYOUT = R.layout.item_flight_booking_saved_passenger;
@@ -33,7 +33,7 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
     private TextView txtPassengerName;
     private ImageView imgEdit, imgDelete;
 
-    public FlightBookingListPassengerViewHolder(View itemView, final ListenerCheckedSavedPassenger listenerCheckedSavedPassenger) {
+    public FlightPassengerListViewHolder(View itemView, final ListenerCheckedSavedPassenger listenerCheckedSavedPassenger) {
         super(itemView);
         txtPassengerName = itemView.findViewById(R.id.tv_passenger_name);
         imgDelete = itemView.findViewById(R.id.image_passenger_delete);

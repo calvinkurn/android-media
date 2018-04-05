@@ -12,7 +12,7 @@ import rx.Observable;
  * @author by furqan on 02/03/18.
  */
 
-public class FlightBookingUpdateSelectedPassengerUseCase extends UseCase<Boolean> {
+public class FlightPassengerUpdateSelectedUseCase extends UseCase<Boolean> {
 
     private final static String PARAM_PASSENGER_ID = "PARAM_PASSENGER_ID";
     private final static String PARAM_IS_SELECTED = "PARAM_IS_SELECTED";
@@ -22,7 +22,7 @@ public class FlightBookingUpdateSelectedPassengerUseCase extends UseCase<Boolean
     FlightRepository flightRepository;
 
     @Inject
-    public FlightBookingUpdateSelectedPassengerUseCase(FlightRepository flightRepository) {
+    public FlightPassengerUpdateSelectedUseCase(FlightRepository flightRepository) {
         this.flightRepository = flightRepository;
     }
 

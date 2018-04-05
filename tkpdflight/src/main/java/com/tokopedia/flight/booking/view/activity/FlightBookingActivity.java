@@ -3,8 +3,6 @@ package com.tokopedia.flight.booking.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -14,7 +12,7 @@ import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingFragment;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
-import com.tokopedia.flight.passenger.domain.FlightBookingDeleteAllPassengerListUseCase;
+import com.tokopedia.flight.passenger.domain.FlightPassengerDeleteAllListUseCase;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 import javax.inject.Inject;
@@ -33,7 +31,7 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
     private FlightBookingFragment flightBookingFragment;
 
     @Inject
-    FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase;
+    FlightPassengerDeleteAllListUseCase flightPassengerDeleteAllListUseCase;
 
     public static Intent getCallingIntent(Activity activity, FlightSearchPassDataViewModel passDataViewModel, String departureId) {
         Intent intent = new Intent(activity, FlightBookingActivity.class);
@@ -86,8 +84,8 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
     }
 
     private void deleteAllPassengerList() {
-        flightBookingDeleteAllPassengerListUseCase.execute(
-                flightBookingDeleteAllPassengerListUseCase.createEmptyRequestParams(),
+        flightPassengerDeleteAllListUseCase.execute(
+                flightPassengerDeleteAllListUseCase.createEmptyRequestParams(),
                 new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {

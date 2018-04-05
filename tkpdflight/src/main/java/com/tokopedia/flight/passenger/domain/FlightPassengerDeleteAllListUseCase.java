@@ -12,12 +12,12 @@ import rx.Observable;
  * @author by furqan on 05/03/18.
  */
 
-public class FlightBookingDeleteAllPassengerListUseCase extends UseCase<Boolean> {
+public class FlightPassengerDeleteAllListUseCase extends UseCase<Boolean> {
 
     FlightRepository flightRepository;
 
     @Inject
-    public FlightBookingDeleteAllPassengerListUseCase(FlightRepository flightRepository) {
+    public FlightPassengerDeleteAllListUseCase(FlightRepository flightRepository) {
         this.flightRepository = flightRepository;
     }
 

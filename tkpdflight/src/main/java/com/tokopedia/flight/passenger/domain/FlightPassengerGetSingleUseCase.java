@@ -3,7 +3,7 @@ package com.tokopedia.flight.passenger.domain;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
-import com.tokopedia.flight.passenger.domain.model.SavedPassengerViewModelMapper;
+import com.tokopedia.flight.passenger.domain.model.ListPassengerViewModelMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -22,13 +22,13 @@ public class FlightPassengerGetSingleUseCase extends UseCase<FlightBookingPassen
     private static final String DEFAULT_STRING_VALUE = "";
 
     private final FlightRepository flightRepository;
-    private final SavedPassengerViewModelMapper savedPassengerViewModelMapper;
+    private final ListPassengerViewModelMapper listPassengerViewModelMapper;
 
     @Inject
     public FlightPassengerGetSingleUseCase(FlightRepository flightRepository,
-                                           SavedPassengerViewModelMapper savedPassengerViewModelMapper) {
+                                           ListPassengerViewModelMapper listPassengerViewModelMapper) {
         this.flightRepository = flightRepository;
-        this.savedPassengerViewModelMapper = savedPassengerViewModelMapper;
+        this.listPassengerViewModelMapper = listPassengerViewModelMapper;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class FlightPassengerGetSingleUseCase extends UseCase<FlightBookingPassen
                 .map(new Func1<FlightPassengerDb, FlightBookingPassengerViewModel>() {
                     @Override
                     public FlightBookingPassengerViewModel call(FlightPassengerDb flightPassengerDb) {
-                        return savedPassengerViewModelMapper.transform(flightPassengerDb);
+                        return listPassengerViewModelMapper.transform(flightPassengerDb);
                     }
                 });
     }

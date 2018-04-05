@@ -8,7 +8,7 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.tokopedia.flight.passenger.data.cloud.entity.SavedPassengerEntity;
+import com.tokopedia.flight.passenger.data.cloud.entity.PassengerListEntity;
 import com.tokopedia.flight.common.database.TkpdFlightDatabase;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 
@@ -35,20 +35,20 @@ public class FlightPassengerDb extends BaseModel implements Parcelable {
     public FlightPassengerDb() {
     }
 
-    public FlightPassengerDb(SavedPassengerEntity savedPassengerEntity) {
-        this.passengerId = savedPassengerEntity.getId();
-        this.firstName = savedPassengerEntity.getPassengerAttribute().getFirstName();
-        this.lastName = savedPassengerEntity.getPassengerAttribute().getLastName();
+    public FlightPassengerDb(PassengerListEntity passengerListEntity) {
+        this.passengerId = passengerListEntity.getId();
+        this.firstName = passengerListEntity.getPassengerAttribute().getFirstName();
+        this.lastName = passengerListEntity.getPassengerAttribute().getLastName();
 
-        if (savedPassengerEntity.getPassengerAttribute().getDob() != null) {
+        if (passengerListEntity.getPassengerAttribute().getDob() != null) {
             this.birthdate = FlightDateUtil.formatDate(
                     FlightDateUtil.FORMAT_DATE_API,
                     FlightDateUtil.DEFAULT_FORMAT,
-                    savedPassengerEntity.getPassengerAttribute().getDob()
+                    passengerListEntity.getPassengerAttribute().getDob()
             );
         }
 
-        this.titleId = savedPassengerEntity.getPassengerAttribute().getTitle();
+        this.titleId = passengerListEntity.getPassengerAttribute().getTitle();
         this.isSelected = 0;
     }
 

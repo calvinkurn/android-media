@@ -16,11 +16,11 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingNewPassengerView
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent;
 import com.tokopedia.flight.passenger.view.activity.FlightPassengerUpdateActivity;
-import com.tokopedia.flight.passenger.view.adapter.FlightBookingListPassengerAdapterTypeFactory;
-import com.tokopedia.flight.passenger.view.adapter.viewholder.FlightBookingListPassengerViewHolder;
-import com.tokopedia.flight.passenger.view.adapter.viewholder.FlightBookingNewPassengerViewHolder;
-import com.tokopedia.flight.passenger.view.presenter.FlightBookingListPassengerContract;
-import com.tokopedia.flight.passenger.view.presenter.FlightBookingListPassengerPresenter;
+import com.tokopedia.flight.passenger.view.adapter.FlightPassengerListAdapterTypeFactory;
+import com.tokopedia.flight.passenger.view.adapter.viewholder.FlightPassengerListViewHolder;
+import com.tokopedia.flight.passenger.view.adapter.viewholder.FlightPassengerNewViewHolder;
+import com.tokopedia.flight.passenger.view.presenter.FlightPassengerListContract;
+import com.tokopedia.flight.passenger.view.presenter.FlightPassengerListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +33,9 @@ import static android.app.Activity.RESULT_OK;
  * @author by furqan on 26/02/18.
  */
 
-public class FlightBookingListPassengerFragment extends BaseListFragment<FlightBookingPassengerViewModel, FlightBookingListPassengerAdapterTypeFactory>
-        implements FlightBookingListPassengerViewHolder.ListenerCheckedSavedPassenger, FlightBookingNewPassengerViewHolder.ListenerClickedNewPassenger,
-        FlightBookingListPassengerContract.View {
+public class FlightPassengerListFragment extends BaseListFragment<FlightBookingPassengerViewModel, FlightPassengerListAdapterTypeFactory>
+        implements FlightPassengerListViewHolder.ListenerCheckedSavedPassenger, FlightPassengerNewViewHolder.ListenerClickedNewPassenger,
+        FlightPassengerListContract.View {
 
     public static final int REQUEST_EDIT_PASSENGER_CODE = 1;
     public static final String EXTRA_SELECTED_PASSENGER = "EXTRA_SELECTED_PASSENGER";
@@ -49,21 +49,21 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     private String departureDate;
     private FlightBookingPassengerViewModel selectedPassenger;
     @Inject
-    FlightBookingListPassengerPresenter presenter;
+    FlightPassengerListPresenter presenter;
     List<FlightBookingPassengerViewModel> flightBookingPassengerViewModelList;
 
-    public static FlightBookingListPassengerFragment createInstance(FlightBookingPassengerViewModel selectedPassenger,
-                                                                    String requestId, String departureDate) {
-        FlightBookingListPassengerFragment flightBookingListPassengerFragment = new FlightBookingListPassengerFragment();
+    public static FlightPassengerListFragment createInstance(FlightBookingPassengerViewModel selectedPassenger,
+                                                             String requestId, String departureDate) {
+        FlightPassengerListFragment flightPassengerListFragment = new FlightPassengerListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_SELECTED_PASSENGER, selectedPassenger);
         bundle.putString(EXTRA_REQUEST_ID, requestId);
         bundle.putString(EXTRA_DEPARTURE_DATE, departureDate);
-        flightBookingListPassengerFragment.setArguments(bundle);
-        return flightBookingListPassengerFragment;
+        flightPassengerListFragment.setArguments(bundle);
+        return flightPassengerListFragment;
     }
 
-    public FlightBookingListPassengerFragment() {
+    public FlightPassengerListFragment() {
     }
 
     @Override
@@ -79,7 +79,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_booking_list_passenger, container, false);
+        return inflater.inflate(R.layout.fragment_passenger_list, container, false);
     }
 
     @Override
@@ -116,8 +116,8 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     }
 
     @Override
-    protected FlightBookingListPassengerAdapterTypeFactory getAdapterTypeFactory() {
-        return new FlightBookingListPassengerAdapterTypeFactory(this, this);
+    protected FlightPassengerListAdapterTypeFactory getAdapterTypeFactory() {
+        return new FlightPassengerListAdapterTypeFactory(this, this);
     }
 
     @Override

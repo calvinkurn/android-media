@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.passenger.domain.FlightBookingDeletePassengerUseCase;
-import com.tokopedia.flight.passenger.domain.FlightBookingGetSavedPassengerUseCase;
-import com.tokopedia.flight.passenger.domain.FlightBookingUpdateSelectedPassengerUseCase;
-import com.tokopedia.flight.passenger.view.fragment.FlightBookingListPassengerFragment;
+import com.tokopedia.flight.passenger.domain.FlightPassengerDeleteUseCase;
+import com.tokopedia.flight.passenger.domain.FlightPassengerGetListUseCase;
+import com.tokopedia.flight.passenger.domain.FlightPassengerUpdateSelectedUseCase;
+import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.Date;
@@ -34,11 +34,11 @@ import static com.tokopedia.flight.common.util.FlightPassengerTitleType.TUAN;
  * @author by furqan on 26/02/18.
  */
 
-public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<FlightBookingListPassengerContract.View> implements FlightBookingListPassengerContract.Presenter {
+public class FlightPassengerListPresenter extends BaseDaggerPresenter<FlightPassengerListContract.View> implements FlightPassengerListContract.Presenter {
 
-    private FlightBookingGetSavedPassengerUseCase flightBookingGetSavedPassengerUseCase;
-    private FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase;
-    private FlightBookingDeletePassengerUseCase flightBookingDeletePassengerUseCase;
+    private FlightPassengerGetListUseCase flightPassengerGetListUseCase;
+    private FlightPassengerUpdateSelectedUseCase flightPassengerUpdateSelectedUseCase;
+    private FlightPassengerDeleteUseCase flightPassengerDeleteUseCase;
 
     private static long YEAR_IN_MILLIS = TimeUnit.DAYS.toMillis(365);
     private static long TWELVE_YEARS_IN_MILLIS = 12 * YEAR_IN_MILLIS;
@@ -48,12 +48,12 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
 
     @Inject
-    public FlightBookingListPassengerPresenter(FlightBookingGetSavedPassengerUseCase flightBookingGetSavedPassengerUseCase,
-                                               FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase,
-                                               FlightBookingDeletePassengerUseCase flightBookingDeletePassengerUseCase) {
-        this.flightBookingGetSavedPassengerUseCase = flightBookingGetSavedPassengerUseCase;
-        this.flightBookingUpdateSelectedPassengerUseCase = flightBookingUpdateSelectedPassengerUseCase;
-        this.flightBookingDeletePassengerUseCase = flightBookingDeletePassengerUseCase;
+    public FlightPassengerListPresenter(FlightPassengerGetListUseCase flightPassengerGetListUseCase,
+                                        FlightPassengerUpdateSelectedUseCase flightPassengerUpdateSelectedUseCase,
+                                        FlightPassengerDeleteUseCase flightPassengerDeleteUseCase) {
+        this.flightPassengerGetListUseCase = flightPassengerGetListUseCase;
+        this.flightPassengerUpdateSelectedUseCase = flightPassengerUpdateSelectedUseCase;
+        this.flightPassengerDeleteUseCase = flightPassengerDeleteUseCase;
         compositeSubscription = new CompositeSubscription();
     }
 
@@ -116,8 +116,8 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
     @Override
     public void deletePassenger(String passengerId) {
-        flightBookingDeletePassengerUseCase.execute(
-                flightBookingDeletePassengerUseCase.generateRequest(passengerId,
+        flightPassengerDeleteUseCase.execute(
+                flightPassengerDeleteUseCase.generateRequest(passengerId,
                         getView().getRequestId()),
                 new Subscriber<Boolean>() {
                     @Override
@@ -145,7 +145,7 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
     }
 
     private void getSavedPassengerList() {
-        flightBookingGetSavedPassengerUseCase.execute(
+        flightPassengerGetListUseCase.execute(
                 getSavedPassengerRequestParams(),
                 new Subscriber<List<FlightBookingPassengerViewModel>>() {
                     @Override
@@ -169,25 +169,25 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
     private RequestParams getSavedPassengerRequestParams() {
         if (getView().getCurrentPassenger().getPassengerId() != null) {
-            return flightBookingGetSavedPassengerUseCase.generateRequestParams(getView().getCurrentPassenger().getPassengerId());
+            return flightPassengerGetListUseCase.generateRequestParams(getView().getCurrentPassenger().getPassengerId());
         } else {
-            return flightBookingGetSavedPassengerUseCase.createEmptyRequestParams();
+            return flightPassengerGetListUseCase.createEmptyRequestParams();
         }
     }
 
     private void onSelectPassenger(final FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
         compositeSubscription.add(
                 Observable.zip(
-                        flightBookingUpdateSelectedPassengerUseCase.createObservable(
-                                flightBookingUpdateSelectedPassengerUseCase.createRequestParams(
+                        flightPassengerUpdateSelectedUseCase.createObservable(
+                                flightPassengerUpdateSelectedUseCase.createRequestParams(
                                         flightBookingPassengerViewModel.getPassengerId(),
-                                        FlightBookingListPassengerFragment.IS_SELECTING
+                                        FlightPassengerListFragment.IS_SELECTING
                                 )
                         ),
-                        flightBookingUpdateSelectedPassengerUseCase.createObservable(
-                                flightBookingUpdateSelectedPassengerUseCase.createRequestParams(
+                        flightPassengerUpdateSelectedUseCase.createObservable(
+                                flightPassengerUpdateSelectedUseCase.createRequestParams(
                                         getView().getSelectedPassengerId(),
-                                        FlightBookingListPassengerFragment.IS_NOT_SELECTING
+                                        FlightPassengerListFragment.IS_NOT_SELECTING
                                 )
                         ),
                         new Func2<Boolean, Boolean, Boolean>() {
@@ -220,10 +220,10 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
     }
 
     private void onUnselectPassenger(String passengerId) {
-        flightBookingUpdateSelectedPassengerUseCase.execute(
-                flightBookingUpdateSelectedPassengerUseCase.createRequestParams(
+        flightPassengerUpdateSelectedUseCase.execute(
+                flightPassengerUpdateSelectedUseCase.createRequestParams(
                         passengerId,
-                        FlightBookingListPassengerFragment.IS_NOT_SELECTING
+                        FlightPassengerListFragment.IS_NOT_SELECTING
                 ),
                 new Subscriber<Boolean>() {
                     @Override
