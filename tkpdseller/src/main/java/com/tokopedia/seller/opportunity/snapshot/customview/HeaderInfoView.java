@@ -74,7 +74,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, SnapShotFragment
         tvName.setText(MethodChecker.fromHtml(data.getInfo().getProductName()));
         String price = data.getInfo().getProductPrice();
         if (CurrencyFormatHelper.countPrefixCurrency(price) < 1){
-            price = getResources().getString(R.string.title_rupiah)+" "+price;
+            price = getResources().getString(R.string.format_rupiah_with_prefix, price);
         }
         tvPrice.setText(price);
         setVisibility(VISIBLE);
