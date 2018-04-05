@@ -14,6 +14,7 @@ import com.tokopedia.topads.sdk.data.ModelConverter;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.adapter.FeedNewAdsItemAdapter;
 
@@ -30,9 +31,11 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
     private FeedNewAdsItemAdapter adapter;
     private static final int DEFAULT_SPAN_COUNT = 3;
     private TopAdsItemClickListener itemClickListener;
+    private TopAdsInfoClickListener infoClickListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
     private GridLayoutManager layoutManager;
     private View promotedLayout;
+    private View.OnClickListener onInfoClickListener;
 
     public TopAdsFeedWidgetView(Context context) {
         super(context);
@@ -76,6 +79,7 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
                 visitables.add(ModelConverter.convertToProductFeedNewViewModel(d));
 
                 promotedLayout.setVisibility(View.VISIBLE);
+                promotedLayout.setOnClickListener(getOnInfoClickListener());
             } else if (d.getShop() != null) {
                 layoutManager.setSpanCount(1);
                 visitables.add(ModelConverter.convertToShopFeedNewViewModel(d));
@@ -113,11 +117,27 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
         this.itemClickListener = itemClickListener;
     }
 
+    public void setInfoClickListener(TopAdsInfoClickListener infoClickListener) {
+        this.infoClickListener = infoClickListener;
+    }
+
     public void notifyDataChange() {
         adapter.notifyDataSetChanged();
     }
 
     public void setAdapterPosition(int adapterPosition) {
         adapter.setAdapterPosition(adapterPosition);
+    }
+
+    private View.OnClickListener getOnInfoClickListener() {
+        if (onInfoClickListener == null) {
+            onInfoClickListener = new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    infoClickListener.onInfoClicked();
+                }
+            };
+        }
+        return onInfoClickListener;
     }
 }

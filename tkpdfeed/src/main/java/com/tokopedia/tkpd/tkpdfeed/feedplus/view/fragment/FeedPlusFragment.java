@@ -95,7 +95,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         FeedPlus.View.Toppicks,
         FeedPlus.View.Kol,
         SwipeRefreshLayout.OnRefreshListener,
-        TopAdsItemClickListener {
+        TopAdsItemClickListener, TopAdsInfoClickListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
