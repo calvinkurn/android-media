@@ -176,8 +176,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         smallImageUrl = tokenUser.getTokenAsset().getSmallImgUrl();
         fullEggImg = tokenUser.getTokenAsset().getImageUrls().get(0);
         crackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(4);
-        rightCrackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(6);
-        leftCrackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(5);
+        rightCrackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(5);
+        leftCrackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(6);
     }
 
     private void renderViewCrackEgg() {
