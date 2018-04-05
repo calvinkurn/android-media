@@ -1,4 +1,4 @@
-package com.tokopedia.core.analytics.data;
+package com.tokopedia.core.drawer2.data.repository;
 
 import com.tokopedia.anals.ConsumerDrawerData;
 import com.tokopedia.anals.SellerDrawerData;

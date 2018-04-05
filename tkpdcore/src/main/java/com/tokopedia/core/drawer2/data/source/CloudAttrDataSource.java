@@ -1,4 +1,4 @@
-package com.tokopedia.core.analytics.data.source;
+package com.tokopedia.core.drawer2.data.source;
 
 import com.apollographql.android.rx.RxApollo;
 import com.apollographql.apollo.ApolloClient;
@@ -6,9 +6,9 @@ import com.apollographql.apollo.ApolloWatcher;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.anals.ConsumerDrawerData;
 import com.tokopedia.anals.SellerDrawerData;
-import com.tokopedia.core.analytics.domain.usecase.GetUserAttributesUseCase;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.drawer2.domain.interactor.GetUserAttributesUseCase;
 
 import rx.Observable;
 import rx.functions.Action1;

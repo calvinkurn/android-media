@@ -1,8 +1,5 @@
 package com.tokopedia.tokocash.qrpayment.data.repository;
 
-import com.tokopedia.core.analytics.domain.usecase.GetUserAttributesUseCase;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tokocash.qrpayment.data.datasource.BalanceDataSourceFactory;
 import com.tokopedia.tokocash.qrpayment.data.mapper.BalanceTokoCashMapper;
 import com.tokopedia.tokocash.qrpayment.domain.IBalanceRepository;
@@ -18,7 +15,6 @@ import rx.Observable;
  */
 
 public class BalanceRepository implements IBalanceRepository {
-
     private BalanceDataSourceFactory balanceDataSourceFactory;
     private BalanceTokoCashMapper balanceTokoCashMapper;
 
@@ -31,13 +27,7 @@ public class BalanceRepository implements IBalanceRepository {
 
     @Override
     public Observable<BalanceTokoCash> getBalanceTokoCash() {
-        SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putInt(GetUserAttributesUseCase.PARAM_USER_ID,
-                Integer.parseInt(sessionHandler.getLoginID()));
-
-        return balanceDataSourceFactory.createBalanceTokoCashDataSource().getBalanceTokoCash(requestParams)
+        return balanceDataSourceFactory.createBalanceTokoCashDataSource().getBalanceTokoCash(RequestParams.EMPTY)
                 .map(balanceTokoCashMapper);
     }
 

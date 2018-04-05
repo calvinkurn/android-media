@@ -1,11 +1,11 @@
-package com.tokopedia.core.analytics.domain.usecase;
+package com.tokopedia.core.drawer2.domain.interactor;
 
 import com.tokopedia.anals.ConsumerDrawerData;
-import com.tokopedia.core.analytics.data.UserAttributesRepository;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.drawer2.data.repository.UserAttributesRepository;
 import com.tokopedia.core.util.SessionHandler;
 
 import rx.Observable;

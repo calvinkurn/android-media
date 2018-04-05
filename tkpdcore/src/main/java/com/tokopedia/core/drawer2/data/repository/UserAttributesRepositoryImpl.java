@@ -1,9 +1,9 @@
-package com.tokopedia.core.analytics.data;
+package com.tokopedia.core.drawer2.data.repository;
 
 import com.tokopedia.anals.ConsumerDrawerData;
 import com.tokopedia.anals.SellerDrawerData;
-import com.tokopedia.core.analytics.data.factory.UserAttributesFactory;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.drawer2.data.factory.UserAttributesFactory;
 
 import rx.Observable;
 

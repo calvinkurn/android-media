@@ -1,7 +1,7 @@
-package com.tokopedia.core.analytics.data.factory;
+package com.tokopedia.core.drawer2.data.factory;
 
 import com.apollographql.apollo.ApolloClient;
-import com.tokopedia.core.analytics.data.source.CloudAttrDataSource;
+import com.tokopedia.core.drawer2.data.source.CloudAttrDataSource;
 
 /**
  * Created by Herdi_WORK on 03.10.17.

@@ -5,11 +5,11 @@ import android.text.TextUtils;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.anals.ConsumerDrawerData;
 import com.tokopedia.anals.SellerDrawerData;
-import com.tokopedia.core.analytics.domain.usecase.GetSellerUserAttributesUseCase;
-import com.tokopedia.core.analytics.domain.usecase.GetUserAttributesUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
+import com.tokopedia.core.drawer2.domain.interactor.GetSellerUserAttributesUseCase;
+import com.tokopedia.core.drawer2.domain.interactor.GetUserAttributesUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
@@ -103,7 +103,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
 
             @Override
             public void onNext(ConsumerDrawerData.Data response) {
-                if(viewListener.getActivity() == null){
+                if (viewListener.getActivity() == null) {
                     return;
                 }
 
@@ -134,6 +134,8 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
                         DrawerDeposit drawerDeposit = new DrawerDeposit();
                         drawerDeposit.setDeposit(depositFormat);
                         viewListener.onGetDeposit(drawerDeposit);
+                    } else {
+                        viewListener.onErrorGetDeposit(depositFormat);
                     }
                 }
 
@@ -198,6 +200,8 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
                         DrawerDeposit drawerDeposit = new DrawerDeposit();
                         drawerDeposit.setDeposit(depositFormat);
                         viewListener.onGetDeposit(drawerDeposit);
+                    } else {
+                        viewListener.onErrorGetDeposit(depositFormat);
                     }
                 }
 
