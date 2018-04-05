@@ -5,6 +5,7 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
@@ -28,6 +29,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.util.EncoderDecoder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.network.ErrorCode;
@@ -37,6 +39,7 @@ import com.tokopedia.network.SessionUrl;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.tkpd.BaseJsonFactory;
 import com.tokopedia.sellerapp.RxJavaTestPlugins;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.Utils;
 import com.tokopedia.tkpd.WebViewIdlingResource;
 import com.tokopedia.tkpd.activities.session.modules.TestSessionModule;
@@ -118,9 +121,7 @@ public class LoginActivityTest {
 
     BaseJsonFactory baseJsonFactory;
 
-    Context context;
     private MockWebServer server, server2;
-    private String loginSuccessKainan;
 
     private UiDevice device;
     private WebViewIdlingResource webViewIdlingResource;
@@ -191,6 +192,20 @@ public class LoginActivityTest {
 
         // prevent auto complete textview in here
         new LocalCacheHandler(application, SessionModule.LOGIN_CACHE).clearCache( SessionModule.LOGIN_CACHE);
+
+
+        /**
+         * This cause bug "Terjadi kesalahan koneksi, because
+         * Terjadi kesalahan koneksi : different base64 implementation.
+         * EncoderDecoder.Decrypt(SessionHandler.getRefreshToken(context), SessionHandler.getRefreshTokenIV(context))
+         */
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            SessionHandler sessionHandler = new SessionHandler(application);
+            sessionHandler.setToken("lalala",
+                    "zzzzz",
+                    EncoderDecoder.Encrypt("xxxx",
+                            SessionHandler.getRefreshTokenIV(application)));
+        }
     }
 
     /**
@@ -373,6 +388,8 @@ public class LoginActivityTest {
     @Test
     public void testYahooReLogin() throws Exception {
 
+
+
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("relogin.json")));
         server3.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
@@ -389,7 +406,7 @@ public class LoginActivityTest {
                         withId(R.id.login_buttons_container),
                         3));
 
-        ScreenShotter.takeScreenshot("screenshot_btn_load_more", mIntentsRule.getActivity());
+        ScreenShotter.takeScreenshot("1", mIntentsRule.getActivity());
 
         UiObject plusButton = device.findObject(new UiSelector().resourceId("com.tokopedia.tkpd:id/btn_load_more"));
         if(plusButton.exists())
@@ -402,7 +419,7 @@ public class LoginActivityTest {
         // necessary to make it wait.
         Thread.sleep(10000);
 
-        ScreenShotter.takeScreenshot("testYahooReLogin_see_dialog", mIntentsRule.getActivity());
+        ScreenShotter.takeScreenshot("2", mIntentsRule.getActivity());
 
         // waiting all url to be finished
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
@@ -441,7 +458,7 @@ public class LoginActivityTest {
 
         snackbarAnyMatcher();
 
-        ScreenShotter.takeScreenshot("testYahooReLogin_see_snackbar", mIntentsRule.getActivity());
+        ScreenShotter.takeScreenshot("3", mIntentsRule.getActivity());
 
         Thread.sleep(2000);
 
@@ -450,7 +467,7 @@ public class LoginActivityTest {
         // necessary to make it wait.
         Thread.sleep(10000);
 
-        ScreenShotter.takeScreenshot("testYahooReLogin_see_dialog", mIntentsRule.getActivity());
+        ScreenShotter.takeScreenshot("4", mIntentsRule.getActivity());
 
         // waiting all url to be finished
         dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
@@ -486,7 +503,7 @@ public class LoginActivityTest {
 
         dialog.dismiss();
 
-        ScreenShotter.takeScreenshot("testYahooReLogin_second_attempt_click", mIntentsRule.getActivity());
+        ScreenShotter.takeScreenshot("5", mIntentsRule.getActivity());
 
         Thread.sleep(2000);
 
