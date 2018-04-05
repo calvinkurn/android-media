@@ -14,9 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingEnd="@null"
-        android:paddingLeft="@dimen/padding_vvs"
+        android:paddingLeft="@dimen/dp_3"
         android:paddingRight="@null"
-        android:paddingStart="@dimen/padding_vvs"
+        android:paddingStart="@dimen/dp_3"
         android:paddingBottom="@dimen/digital_padding_16"
         tools:text="Beli Pulsa"/>
 
@@ -24,14 +24,14 @@
         android:id="@+id/holder_chooser_operator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_5"
         android:orientation="vertical"/>
 
     <LinearLayout
         android:id="@+id/holder_client_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_5"
         android:orientation="vertical"/>
 
     <LinearLayout
@@ -73,7 +73,7 @@
             android:id="@+id/tooltip_instant_checkout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_10"
             android:layout_toRightOf="@+id/cb_instant_checkout"
             android:layout_centerVertical="true"
             app:srcCompat="@drawable/info_icon" />
@@ -85,7 +85,7 @@
         style="@style/DigitalButtonBuy"
         android:layout_height="@dimen/btn_height"
         android:layout_weight="0.40"
-        android:layout_marginBottom="@dimen/padding_med"
+        android:layout_marginBottom="@dimen/dp_20"
         android:layout_marginTop="@dimen/digital_padding_28"
         android:text="@string/label_btn_buy_digital"/>
 

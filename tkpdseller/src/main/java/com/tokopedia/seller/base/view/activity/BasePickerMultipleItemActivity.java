@@ -81,6 +81,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         bottomSheetContentTextView = (TextView) findViewById(R.id.text_view_bottom_sheet_content);
         arrowImageView = (ImageView) findViewById(R.id.image_view_arrow);
         submitButton = (Button) findViewById(R.id.button_submit);
+        submitButton.setText(getSubmitTextRes());
         bottomSheetHeaderView = findViewById(R.id.layout_bottom_sheet_header);
         bottomSheetHeaderView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,6 +129,10 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         });
     }
 
+    protected int getSubmitTextRes(){
+        return R.string.next;
+    }
+
     protected void expandBottomSheet() {
         CommonUtils.hideKeyboard(this, getWindow().getDecorView());
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -170,6 +175,18 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     public void addItemFromSearch(T t) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
         ((BasePickerItemCacheList<T>) fragment).addItem(t);
+    }
+
+    @java.lang.SuppressWarnings("unchecked")
+    public BasePickerItemSearchList<T> getSearchFragment() {
+        return (BasePickerItemSearchList<T>)
+                getSupportFragmentManager().findFragmentByTag(CONTAINER_SEARCH_LIST_TAG);
+    }
+
+    @java.lang.SuppressWarnings("unchecked")
+    public BasePickerItemCacheList<T> getCacheFragment() {
+        return (BasePickerItemCacheList<T>)
+                getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
     }
 
 

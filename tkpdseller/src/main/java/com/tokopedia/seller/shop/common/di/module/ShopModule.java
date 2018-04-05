@@ -2,6 +2,7 @@ package com.tokopedia.seller.shop.common.di.module;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -10,8 +11,8 @@ import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.exception.model.TomeErrorResponse;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.seller.shop.common.exception.model.ShopErrorResponse;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
@@ -90,11 +91,11 @@ public class ShopModule {
     @Provides
     public OkHttpClient provideOkHttpClientTomeBearerAuth(HttpLoggingInterceptor httpLoggingInterceptor,
                                                           BearerInterceptor bearerInterceptor,
-                                                          @ShopQualifier TkpdErrorResponseInterceptor tkpdErrorResponseInterceptor
+                                                          @ShopQualifier ErrorResponseInterceptor errorResponseInterceptor
                                                           ) {
         return new OkHttpClient.Builder()
                 .addInterceptor(bearerInterceptor)
-                .addInterceptor(tkpdErrorResponseInterceptor)
+                .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
     }
@@ -102,8 +103,8 @@ public class ShopModule {
     @ShopQualifier
     @ShopScope
     @Provides
-    public TkpdErrorResponseInterceptor provideTkpdErrorResponseInterceptor() {
-        return new HeaderErrorResponseInterceptor(ShopErrorResponse.class);
+    public ErrorResponseInterceptor provideErrorResponseInterceptor() {
+        return new HeaderErrorResponseInterceptor(TomeErrorResponse.class);
     }
 
     @ShopScope
