@@ -102,11 +102,11 @@ public interface FlightDashboardContract {
 
         void onDepartureDateButtonClicked();
 
-        void onDepartureDateChange(int year, int month, int dayOfMonth);
+        void onDepartureDateChange(int year, int month, int dayOfMonth, boolean showError);
 
         void onReturnDateButtonClicked();
 
-        void onReturnDateChange(int year, int month, int dayOfMonth);
+        void onReturnDateChange(int year, int month, int dayOfMonth, boolean showError);
 
         void onFlightClassesChange(FlightClassViewModel viewModel);
 
