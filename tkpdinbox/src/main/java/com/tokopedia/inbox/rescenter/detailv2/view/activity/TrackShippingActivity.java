@@ -9,11 +9,8 @@ import android.os.Bundle;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatActivityListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.TrackShippingActivityListener;
-import com.tokopedia.inbox.rescenter.detailv2.view.presenter.NextActionActivityPresenter;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.TrackShippingActivityPresenter;
-import com.tokopedia.inbox.rescenter.detailv2.view.presenter.TrackShippingFragmentPresenter;
 
 public class TrackShippingActivity extends BasePresenterActivity<TrackShippingActivityPresenter>
         implements TrackShippingActivityListener.View, HasComponent {
@@ -99,7 +96,7 @@ public class TrackShippingActivity extends BasePresenterActivity<TrackShippingAc
     @Override
     protected void setupToolbar() {
         super.setupToolbar();
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_x_black);
     }
 
     @Override

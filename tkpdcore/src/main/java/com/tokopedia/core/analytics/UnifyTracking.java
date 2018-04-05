@@ -2492,6 +2492,11 @@ public class UnifyTracking extends TrackingUtils {
                 event, category, action, "").getEvent());
     }
 
+    public static void eventAttachment(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
     public static void eventInsertAttachment(String category, String action, String event) {
         sendGTMEvent(new EventTracking(
                 event, category, action, "").getEvent());
@@ -3280,6 +3285,15 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FILTER_PRODUCT,
                 AppEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
                 generateFilterEventLabel(selectedFilter)
+        ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.FILTER_PRODUCT,
+                AppEventTracking.Action.QUICK_FILTER,
+                filterName + " - " + filterValue + " - " + Boolean.toString(isSelected)
         ).setUserId().getEvent());
     }
 

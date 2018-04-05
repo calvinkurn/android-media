@@ -63,6 +63,10 @@ public interface GroupChatContract {
 
         void onErrorVote(String errorMessage);
 
+        void onErrorRefreshChannelInfo(String errorMessage);
+
+        void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel);
+
         interface ImageViewHolderListener {
             void onRedirectUrl(String url);
         }

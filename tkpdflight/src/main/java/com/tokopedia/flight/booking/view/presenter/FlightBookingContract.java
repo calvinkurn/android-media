@@ -120,6 +120,7 @@ public interface FlightBookingContract {
 
         void setSameAsContactChecked(boolean isChecked);
 
+        Date getExpiredTransactionDate();
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View> {

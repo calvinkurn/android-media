@@ -2,7 +2,6 @@ package com.tokopedia.flight.booking.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.domain.FlightBookingDeletePassengerUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSavedPassengerUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingUpdateSelectedPassengerUseCase;
@@ -101,27 +100,8 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
     @Override
     public void selectPassenger(FlightBookingPassengerViewModel selectedPassenger) {
         if (getView().getCurrentPassenger() != null &&
-                selectedPassenger != null &&
-                getView().getCurrentPassenger().getType() == selectedPassenger.getType()) {
-            if (selectedPassenger != null) {
+                selectedPassenger != null) {
                 onSelectPassenger(selectedPassenger);
-            }
-        } else if (getView().getCurrentPassenger() != null &&
-                selectedPassenger != null &&
-                getView().getCurrentPassenger().getType() != selectedPassenger.getType()) {
-            String passengerType = "";
-            switch (getView().getCurrentPassenger().getType()) {
-                case FlightBookingPassenger.ADULT:
-                    passengerType = getView().getString(R.string.select_passenger_adult_title);
-                    break;
-                case FlightBookingPassenger.CHILDREN:
-                    passengerType = getView().getString(R.string.select_passenger_children_title);
-                    break;
-                case FlightBookingPassenger.INFANT:
-                    passengerType = getView().getString(R.string.select_passenger_infant_title);
-                    break;
-            }
-            getView().showPassengerSelectedError(passengerType);
         } else if (selectedPassenger == null) {
             onUnselectPassenger(getView().getCurrentPassenger().getPassengerId());
         }
@@ -267,12 +247,6 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
             flightBookingPassengerViewModel.setPassengerTitle(
                     getSalutationById(flightBookingPassengerViewModel.getPassengerTitleId())
             );
-            flightBookingPassengerViewModel.setPassengerDrawable(
-                    getImageRes(
-                            flightBookingPassengerViewModel.getPassengerBirthdate(),
-                            flightBookingPassengerViewModel.getPassengerTitleId()
-                    )
-            );
             flightBookingPassengerViewModel.setType(
                     getType(
                             flightBookingPassengerViewModel.getPassengerBirthdate()
@@ -288,16 +262,16 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
     private int getType(String birthdate) {
         if (birthdate != null) {
-            Date now = FlightDateUtil.getCurrentDate();
+            Date departureDate = FlightDateUtil.stringToDate(getView().getDepartureDate());
             Date birth = FlightDateUtil.stringToDate(birthdate);
-            long diff = birth.getTime() - now.getTime();
+            long diff = birth.getTime() - departureDate.getTime();
             if (diff < 0) {
                 diff *= -1;
             }
 
-            if (diff > TWELVE_YEARS_IN_MILLIS) {
+            if (diff >= TWELVE_YEARS_IN_MILLIS) {
                 return ADULT;
-            } else if (diff > TWO_YEARS_IN_MILLIS) {
+            } else if (diff >= TWO_YEARS_IN_MILLIS) {
                 return CHILDREN;
             } else if (diff < TWO_YEARS_IN_MILLIS) {
                 return INFANT;
@@ -318,28 +292,6 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
         }
 
         return "";
-    }
-
-    private int getImageRes(String birthdate, int salutationId) {
-        if (birthdate != null) {
-            Date now = FlightDateUtil.getCurrentDate();
-            Date birth = FlightDateUtil.stringToDate(birthdate);
-            long diff = now.getTime() - birth.getTime();
-
-            if (diff > (TWELVE_YEARS_IN_MILLIS)) {
-                if (salutationId == TUAN) {
-                    return R.drawable.ic_passenger_male;
-                } else {
-                    return R.drawable.ic_passenger_female;
-                }
-            } else if (diff > (TWO_YEARS_IN_MILLIS)) {
-                return R.drawable.ic_passenger_childreen;
-            } else if (diff < (TWO_YEARS_IN_MILLIS)) {
-                return R.drawable.ic_passenger_infant;
-            }
-        }
-
-        return R.drawable.ic_passenger_male;
     }
 
 }

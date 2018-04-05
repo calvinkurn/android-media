@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.contactus.fragment;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,13 +10,11 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -40,6 +37,8 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     private static final String TAGS = "tags";
     private static final String ORDER_ID = "order_id";
     private static final String APPLINK_SCHEME = "tokopedia://";
+    private static final String CHATBOT_SCHEME = "tokopedia://topchat";
+
 
     @BindView(R2.id.scroll_view)
     ScrollView mainView;
@@ -210,6 +209,14 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                         url.getQueryParameter("action").equals("return")) {
                     CommonUtils.UniversalToast(getActivity(), getString(R.string.finish_contact_us));
                     getActivity().finish();
+                    return true;
+                } else if (url.toString().contains(CHATBOT_SCHEME)
+                        && getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(TkpdInboxRouter.IS_CHAT_BOT, true);
+
+                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                            .actionNavigateByApplinksUrl(getActivity(), url.toString(), bundle);
                     return true;
                 } else if (url.toString().contains(APPLINK_SCHEME)
                         && getActivity().getApplicationContext() instanceof TkpdInboxRouter) {

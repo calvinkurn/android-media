@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/padding_vs"
-    android:layout_marginBottom="@dimen/padding_small"
-    android:layout_marginTop="@dimen/padding_small"
+    android:padding="@dimen/dp_5"
+    android:layout_marginBottom="@dimen/dp_10"
+    android:layout_marginTop="@dimen/dp_10"
     android:background="@drawable/cards_ui_2"
     android:orientation="vertical">
 
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/shop_phone_number_title"
-        android:layout_marginLeft="@dimen/padding_small"
+        android:layout_marginLeft="@dimen/dp_10"
         android:textSize="@dimen/fontl"
         android:visibility="gone" />
 
@@ -48,7 +48,7 @@
         android:layout_below="@id/shop_phone_number"
         android:text="@string/title_delivery_location"
         android:textColor="@color/label_color"
-        android:layout_marginStart="@dimen/margin_vs"
+        android:layout_marginStart="@dimen/dp_5"
         android:textSize="@dimen/fonts" />
 
     <android.support.design.widget.TextInputLayout
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/location_field_title"
         android:layout_below="@id/location_field_title"
-        android:layout_marginTop="@dimen/padding_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:hint="@string/title_activity_shop_address_form">
         <EditText
             android:id="@+id/address_text_field"

@@ -188,14 +188,19 @@ public class LoginFragment extends BaseDaggerFragment
         menu.add(Menu.NONE, R.id.action_register, 0, "");
         MenuItem menuItem = menu.findItem(R.id.action_register);
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menuItem.setIcon(getDraw());
+        if (getDraw() != null) {
+            menuItem.setIcon(getDraw());
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     private Drawable getDraw() {
-        TextDrawable drawable = new TextDrawable(getActivity());
-        drawable.setText(getResources().getString(R.string.register));
-        drawable.setTextColor(R.color.black_70b);
+        TextDrawable drawable = null;
+        if (getActivity() != null) {
+            drawable = new TextDrawable(getActivity());
+            drawable.setText(getResources().getString(R.string.register));
+            drawable.setTextColor(R.color.black_70b);
+        }
         return drawable;
     }
 
@@ -213,7 +218,6 @@ public class LoginFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
         UserAuthenticationAnalytics.setActiveLogin();
         callbackManager = CallbackManager.Factory.create();
-        sessionHandler.clearToken();
     }
 
     @Nullable
@@ -590,11 +594,6 @@ public class LoginFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void resetToken() {
-        presenter.resetToken();
-    }
-
-    @Override
     public void onErrorLogin(String errorMessage, int codeError) {
         onErrorLogin(errorMessage + getString(R.string.code_error) + " " + codeError);
     }
@@ -810,28 +809,24 @@ public class LoginFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else if (requestCode == REQUEST_VERIFY_PHONE) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
