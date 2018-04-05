@@ -15,6 +15,9 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.fragment.HotlistFragmen
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistContract;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistPresenter;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import javax.inject.Inject;
 
 /**
@@ -46,7 +49,12 @@ public class HotlistActivity extends DiscoveryActivity
         Intent intent = new Intent(context, HotlistActivity.class);
         Bundle extras = new Bundle();
         extras.putString(EXTRA_HOTLIST_PARAM_ALIAS, alias);
-        extras.putString(EXTRA_HOTLIST_PARAM_TRACKER, trackerAttribution);
+        try {
+            extras.putString(EXTRA_HOTLIST_PARAM_TRACKER, URLDecoder.decode(trackerAttribution, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            extras.putString(EXTRA_HOTLIST_PARAM_TRACKER, trackerAttribution.replaceAll("%20", " "));
+        }
         intent.putExtras(extras);
         return intent;
     }
