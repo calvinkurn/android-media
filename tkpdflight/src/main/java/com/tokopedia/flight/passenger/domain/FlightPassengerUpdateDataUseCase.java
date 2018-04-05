@@ -54,7 +54,7 @@ public class FlightPassengerUpdateDataUseCase extends UseCase<Boolean> {
         attributesRequest.setDob(requestParams.getString(PARAM_PASSENGER_BIRTHDATE, DEFAULT_STRING_VALUE));
 
         UpdatePassengerRequest updatePassengerRequest = new UpdatePassengerRequest(
-                requestParams.getString(PARAM_PASSENGER_ID, ""),
+                requestParams.getString(PARAM_PASSENGER_ID, DEFAULT_STRING_VALUE),
                 attributesRequest);
         return Observable.just(updatePassengerRequest);
     }

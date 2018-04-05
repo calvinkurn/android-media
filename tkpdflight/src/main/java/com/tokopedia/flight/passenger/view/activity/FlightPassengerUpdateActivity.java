@@ -65,19 +65,19 @@ public class FlightPassengerUpdateActivity extends BaseSimpleActivity
         final Dialog dialog = new Dialog(this, Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.flight_passenger_update_abort_dialog_title));
         dialog.setDesc(getString(R.string.flight_passenger_update_abort_dialog_description));
-        dialog.setBtnOk("Lanjut ubah");
+        dialog.setBtnOk(getString(R.string.flight_passenger_update_ok_button));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setBtnCancel(getString(R.string.flight_passenger_update_cancel_button));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
                 finish();
-            }
-        });
-        dialog.setBtnCancel("Ya, batalkan");
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
             }
         });
         dialog.show();

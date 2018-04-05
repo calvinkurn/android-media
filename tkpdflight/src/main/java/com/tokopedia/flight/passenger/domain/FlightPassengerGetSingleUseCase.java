@@ -19,6 +19,7 @@ import rx.functions.Func1;
 public class FlightPassengerGetSingleUseCase extends UseCase<FlightBookingPassengerViewModel> {
 
     private static final String PARAM_PASSENGER_ID = "PARAM_PASSENGER_ID";
+    private static final String DEFAULT_STRING_VALUE = "";
 
     private final FlightRepository flightRepository;
     private final SavedPassengerViewModelMapper savedPassengerViewModelMapper;
@@ -33,7 +34,7 @@ public class FlightPassengerGetSingleUseCase extends UseCase<FlightBookingPassen
     @Override
     public Observable<FlightBookingPassengerViewModel> createObservable(RequestParams requestParams) {
         return flightRepository.getSinglePassengerById(
-                requestParams.getString(PARAM_PASSENGER_ID, ""))
+                requestParams.getString(PARAM_PASSENGER_ID, DEFAULT_STRING_VALUE))
                 .map(new Func1<FlightPassengerDb, FlightBookingPassengerViewModel>() {
                     @Override
                     public FlightBookingPassengerViewModel call(FlightPassengerDb flightPassengerDb) {

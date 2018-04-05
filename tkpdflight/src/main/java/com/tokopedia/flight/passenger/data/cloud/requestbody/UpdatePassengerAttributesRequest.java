@@ -20,18 +20,6 @@ public class UpdatePassengerAttributesRequest {
     @SerializedName("dob")
     @Expose
     private String dob;
-//    @SerializedName("nationality")
-//    @Expose
-//    private String nationality;
-//    @SerializedName("passport_no")
-//    @Expose
-//    private String passportNumber;
-//    @SerializedName("passport_country")
-//    @Expose
-//    private String passportCountry;
-//    @SerializedName("passport_expiry")
-//    @Expose
-//    private String passportExpiry;
 
     public UpdatePassengerAttributesRequest() {
     }
