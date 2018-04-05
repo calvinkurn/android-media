@@ -225,7 +225,9 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     @Override
     public void navigateToGoogleMap(String generatedMap, LocationPass locationPass) {
 
-        if(!locationShippingViewHolder.getDistrictName().isEmpty()
+        if(locationShippingViewHolder.getDistrictName() != null
+                && !locationShippingViewHolder.getDistrictName().isEmpty()
+                && locationShippingViewHolder.getCityName() != null
                 && !locationShippingViewHolder.getCityName().isEmpty()) {
 
             if(locationPass == null)
