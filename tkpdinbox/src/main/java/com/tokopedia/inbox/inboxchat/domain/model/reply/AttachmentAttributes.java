@@ -29,9 +29,9 @@ public class AttachmentAttributes {
     @Expose
     private AttachmentInvoice invoiceLink;
 
-    @SerializedName("invoices")
+    @SerializedName("invoice_list")
     @Expose
-    private List<AttachmentInvoice> invoices;
+    private AttachmentInvoiceList invoiceList;
 
     public String getImageUrl() {
         return imageUrl;
@@ -82,10 +82,7 @@ public class AttachmentAttributes {
     }
 
     public List<AttachmentInvoice> getInvoices() {
-        return invoices;
+        return this.invoiceList.getInvoices();
     }
 
-    public void setInvoices(List<AttachmentInvoice> invoices) {
-        this.invoices = invoices;
-    }
 }
