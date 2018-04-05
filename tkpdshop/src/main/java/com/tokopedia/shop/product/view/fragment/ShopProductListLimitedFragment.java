@@ -95,6 +95,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     protected boolean hideBottom = false;
     protected boolean hideSearch = false;
     protected int mTotalDyDistance;
+    private int stickyHeight;
 
     public static ShopProductListLimitedFragment createInstance() {
         ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
@@ -159,20 +160,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
             }
         });
         linearHeaderSticky = view.findViewById(R.id.linear_header_sticky);
-
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         recyclerView = getRecyclerView(view);
-        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-                int position = parent.getChildAdapterPosition(view);
-                if (position == 0) {
-                    outRect.set(0, linearHeaderSticky.getHeight(), 0, 0);
-                }
-            }
-        });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -182,46 +172,27 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                 }
                 mTotalDyDistance += dy;
                 if (!hideBottom && mTotalDyDistance > bottomActionView.getHeight()) {
-                    hideBottomView(bottomActionView);
+                    moveView(bottomActionView, 0, bottomActionView.getHeight());
+                    hideBottom = true;
                 } else if (hideBottom && mTotalDyDistance < -bottomActionView.getHeight()) {
-                    showBottomView(bottomActionView);
+                    moveView(bottomActionView, bottomActionView.getHeight(), 0);
+                    hideBottom = false;
                 }
-
-                if (!hideSearch && mTotalDyDistance > searchInputView.getHeight()) {
-                    hideSearchView(linearHeaderSticky, searchInputView);
-                } else if (hideSearch && mTotalDyDistance < -searchInputView.getHeight()) {
-                    showSearchView(linearHeaderSticky, searchInputView);
+                if (!hideSearch && mTotalDyDistance > stickyHeight) {
+                    moveView(linearHeaderSticky, 0, -stickyHeight);
+                    hideSearch = true;
+                } else if (hideSearch && mTotalDyDistance < -stickyHeight) {
+                    moveView(linearHeaderSticky, -stickyHeight, 0);
+                    hideSearch = false;
                 }
             }
         });
     }
 
-    public void hideBottomView(final View view) {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationY", 0, view.getHeight());
+    public void moveView(final View view, int start, int end) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationY", start, end);
         animator.setDuration(ANIMATION_DURATION);
         animator.start();
-        hideBottom = true;
-    }
-
-    public void showBottomView(final View view) {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0);
-        animator.setDuration(ANIMATION_DURATION);
-        animator.start();
-        hideBottom = false;
-    }
-
-    public void hideSearchView(final View parent, final View child) {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(parent, "translationY", 0, -child.getHeight());
-        animator.setDuration(ANIMATION_DURATION);
-        animator.start();
-        hideSearch = true;
-    }
-
-    public void showSearchView(final View parent, final View child) {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(parent, "translationY", -child.getHeight(), 0);
-        animator.setDuration(ANIMATION_DURATION);
-        animator.start();
-        hideSearch = false;
     }
 
 
@@ -385,6 +356,22 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     private void initialProductAttributes() {
         linearHeaderSticky.setVisibility(View.VISIBLE);
         bottomActionView.setVisibility(View.VISIBLE);
+        linearHeaderSticky.post(new Runnable() {
+            @Override
+            public void run() {
+                stickyHeight = linearHeaderSticky.getHeight();
+                recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+                    @Override
+                    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                        super.getItemOffsets(outRect, view, parent, state);
+                        int position = parent.getChildAdapterPosition(view);
+                        if (position == 0) {
+                            outRect.top = stickyHeight;
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void trackingImpressionFeatureProduct(List<ShopProductBaseViewModel> list) {
