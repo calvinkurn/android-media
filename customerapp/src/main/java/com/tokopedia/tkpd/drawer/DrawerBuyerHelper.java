@@ -461,7 +461,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.CATEGORY_NAVIGATION:
-                    TrackingUtils.sendMoEngageOpenCategoryEvent();
                     UnifyTracking.eventCategoryDrawer();
                     context.startActivity(BrowseProductRouter.getCategoryNavigationIntent(context));
                     break;
