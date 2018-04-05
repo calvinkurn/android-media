@@ -62,6 +62,7 @@
         android:textColor="@color/black_54"
         android:textStyle="normal"
         android:textSize="@dimen/font_micro"
+        android:background="@drawable/cards_ui_feed_new_side"
         tools:text="Nexus 5X 32 ,awawdawdasdas pure white dan juga warna rose gold pure white dan juga warna rose gold pure white dan juga warna rose gold" />
 
     <TextView
