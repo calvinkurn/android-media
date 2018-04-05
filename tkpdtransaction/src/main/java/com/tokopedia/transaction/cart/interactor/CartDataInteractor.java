@@ -2,18 +2,21 @@ package com.tokopedia.transaction.cart.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.apollographql.android.rx.RxApollo;
+import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.ApolloWatcher;
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
 import com.tokopedia.core.network.apiservices.transaction.TXService;
 import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
 import com.tokopedia.transaction.cart.interactor.data.ShipmentCartDataRepository;
 import com.tokopedia.transaction.cart.interactor.domain.IShipmentCartRepository;
@@ -23,7 +26,6 @@ import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartRatesData;
-import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
 import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
@@ -31,12 +33,13 @@ import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
+import com.tokopedia.transaction.graphql.logistics.LogisticsRateQuery;
+import com.tokopedia.transaction.graphql.logistics.OngkirRatesInput;
 
 import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -63,6 +66,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     private final TXVoucherService txVoucherService;
     private final CompositeSubscription compositeSubscription;
     private final KeroAuthService keroAuthService;
+    private final ApolloClient apolloClient;
 
     private IShipmentCartRepository shipmentCartRepository;
 
@@ -74,6 +78,10 @@ public class CartDataInteractor implements ICartDataInteractor {
         this.txVoucherService = new TXVoucherService();
         this.shipmentCartRepository = new ShipmentCartDataRepository();
         this.keroAuthService = new KeroAuthService(3);
+        this.apolloClient = ApolloClient.builder()
+                .okHttpClient(OkHttpFactory.create().buildClientDefaultAuth())
+                .serverUrl(TkpdBaseURL.HOME_DATA_BASE_URL)
+                .build();
     }
 
     @Override
@@ -392,11 +400,15 @@ public class CartDataInteractor implements ICartDataInteractor {
             }
         }
         if (cartItemObservableList.size() > 0) {
+
             Observable<CartRatesData> multipleRequest = Observable.merge(cartItemObservableList);
+
             compositeSubscription.add(multipleRequest.subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(responseList(listener)));
-        } else listener.onRatesFailed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT_SHORT);
+        } else {
+            listener.onRatesFailed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT_SHORT);
+        }
     }
 
     private boolean isValidated(List<CartItem> cartItemList, int i) {
@@ -407,16 +419,18 @@ public class CartDataInteractor implements ICartDataInteractor {
                 || cartItemList.get(i).getCartErrorMessage2().equals("0"));
     }
 
-    private Func1<Response<String>, Observable<CartRatesData>> engineeredResposne(
+    private Func1<LogisticsRateQuery.Data, Observable<CartRatesData>> engineeredResposne(
             final int cartItemIndex,
             final List<CartItem> cartItemList) {
-        return new Func1<Response<String>, Observable<CartRatesData>>() {
+        return new Func1<LogisticsRateQuery.Data, Observable<CartRatesData>>() {
             @Override
-            public Observable<CartRatesData> call(Response<String> stringResponse) {
+            public Observable<CartRatesData> call(LogisticsRateQuery.Data logisticsData) {
                 CartRatesData cartRatesData = new CartRatesData();
                 cartRatesData.setRatesIndex(cartItemIndex);
                 setPreRatesData(cartRatesData, cartItemList.get(cartItemIndex));
-                cartRatesData.setRatesResponse(stringResponse.body());
+                cartRatesData.setRatesResponse(CacheUtil.convertModelToString(logisticsData.ongkir().rates(),
+                        new TypeToken<LogisticsRateQuery.Data.Rates>() {
+                        }.getType()));
                 return Observable.just(cartRatesData);
             }
         };
@@ -453,8 +467,34 @@ public class CartDataInteractor implements ICartDataInteractor {
         };
     }
 
-    private Observable<Response<String>> cartItemObservable(String token, String ut, CartItem cartItem) {
-        return keroAuthService.getApi().calculateShippingRate(keroRatesCartParam(token, ut, cartItem));
+    private Observable<LogisticsRateQuery.Data> cartItemObservable(String token, String ut, CartItem cartItem) {
+
+        TKPDMapParam<String, String> params = KeroppiParam.paramsKeroCart(token, ut, cartItem);
+
+
+        OngkirRatesInput ongkirRatesInput = OngkirRatesInput.builder()
+                .cat_id(params.get("cat_id"))
+                .destination(params.get("destination"))
+                .from(params.get("from"))
+                .insurance(params.get("insurance"))
+                .names(params.get("names"))
+                .order_value(params.get("order_value"))
+                .origin(params.get("origin"))
+                .product_insurance(params.get("product_insurance"))
+                .token(params.get("token"))
+                .ut(params.get("ut"))
+                .weight(params.get("weight"))
+                .build();
+
+        ApolloWatcher<LogisticsRateQuery.Data> apolloWatcher = apolloClient.newCall(LogisticsRateQuery.builder()
+                .input(ongkirRatesInput)
+                .build()
+        ).watcher();
+
+        return RxApollo.from(apolloWatcher);
+
+
+        //return keroAuthService.getApi().calculateShippingRate(keroRatesCartParam(token, ut, cartItem));
     }
 
     private TKPDMapParam<String, String> keroRatesCartParam(String token, String ut, CartItem cartItem) {
