@@ -77,6 +77,8 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewMod
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -580,6 +582,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private String appendTrackerAttributionIfNeeded(String applink, String trackingAttribution) {
         if (TextUtils.isEmpty(trackingAttribution)) {
             return applink;
+        }
+
+        try {
+            trackingAttribution = URLEncoder.encode(trackingAttribution, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            trackingAttribution = trackingAttribution.replaceAll(" ", "%20");
         }
 
         if (applink.contains("?")) {
