@@ -250,15 +250,15 @@ public class CartPresenter implements ICartPresenter {
                         if (!responseTransform.getMessageSuccess().isEmpty())
                             messageSuccess = responseTransform.getMessageSuccess();
                         view.showToastMessage(messageSuccess);
+                        for(int i = 0; i < canceledCartItem.getCartProducts().size(); i++) {
+                            cancelCartAnalytic(canceledCartItem.getCartProducts().get(i),
+                                    canceledCartItem);
+                        }
                         try {
                             processCartAnalytics(cartData);
                             trackCanceledCart(canceledCartItem);
                         } catch (Exception e) {
                             e.printStackTrace();
-                        }
-                        for(int i = 0; i < canceledCartItem.getCartProducts().size(); i++) {
-                            cancelCartAnalytic(canceledCartItem.getCartProducts().get(i),
-                                    canceledCartItem);
                         }
                         processRenderViewCartData(cartData);
                     }
@@ -299,13 +299,13 @@ public class CartPresenter implements ICartPresenter {
                         if (!responseTransform.getMessageSuccess().isEmpty())
                             messageSuccess = responseTransform.getMessageSuccess();
                         view.showToastMessage(messageSuccess);
+                        cancelCartAnalytic(canceledCartProduct, canceledCartItem);
                         try {
                             processCartAnalytics(cartData);
                             trackCanceledProduct(canceledCartItem, canceledCartProduct);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        cancelCartAnalytic(canceledCartProduct, canceledCartItem);
                         processRenderViewCartData(cartData);
                     }
                 });
@@ -366,6 +366,11 @@ public class CartPresenter implements ICartPresenter {
                                 addToCartAnalytic(cartItem.getCartProducts().get(i), cartItem);
 
                             }
+                        }
+                        try {
+                            processCartAnalytics(cartData);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 });
