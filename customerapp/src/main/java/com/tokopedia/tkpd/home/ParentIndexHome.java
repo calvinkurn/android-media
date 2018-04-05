@@ -79,6 +79,7 @@ import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
+import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
@@ -303,7 +304,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 if (shopID.equalsIgnoreCase(SessionHandler.DEFAULT_EMPTY_SHOP_ID)) {
                     shopIntent = ShopOpenDomainActivity.getIntent(this);
                 } else {
-                    shopIntent = ShopInfoActivity.getCallingIntent(this, shopID);
+                    shopIntent = ShopInfoActivity.createIntent(this, shopID);
                 }
 
                 shopIntent.setAction(Intent.ACTION_VIEW);
