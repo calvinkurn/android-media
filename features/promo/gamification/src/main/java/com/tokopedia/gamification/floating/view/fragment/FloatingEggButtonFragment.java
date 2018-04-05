@@ -26,9 +26,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationComponentInstance;
+import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.di.GamificationComponent;
@@ -359,6 +361,17 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             public void onClick(View v) {
                 //TODO use applink/pageurl to launch the activity
                 startActivity(CrackTokenActivity.getIntent(getActivity()));
+
+                if (getActivity().getApplication() instanceof AbstractionRouter) {
+                    ((AbstractionRouter) getActivity().getApplication())
+                            .getAnalyticTracker()
+                            .sendEventTracking(
+                                    GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                                    GamificationEventTracking.Category.CLICK_LUCKY_EGG,
+                                    GamificationEventTracking.Action.CLICK_LUCKY_EGG,
+                                    tokenData.getFloating().getTokenAsset().getName()
+                            );
+                }
             }
         });
 

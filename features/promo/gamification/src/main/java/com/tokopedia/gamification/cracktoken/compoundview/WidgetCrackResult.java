@@ -47,6 +47,7 @@ public class WidgetCrackResult extends RelativeLayout {
     private LinearLayout listCrackResultText;
     private Button buttonReturn;
     private TextView buttonCta;
+    private ImageView closeRewardBtn;
 
     private WidgetCrackResultListener listener;
 
@@ -54,6 +55,12 @@ public class WidgetCrackResult extends RelativeLayout {
         void onClickCtaButton(String applink, String url);
 
         void onClickReturnButton();
+
+        void onTrackingReturnButton();
+
+        void onTrackingCtaButton();
+
+        void onTrackingCloseRewardButton(CrackResult crackResult);
     }
 
     public WidgetCrackResult(Context context) {
@@ -81,6 +88,7 @@ public class WidgetCrackResult extends RelativeLayout {
         buttonReturn = view.findViewById(R.id.button_return);
         buttonCta = view.findViewById(R.id.button_cta);
         textCrackResultLabel = view.findViewById(R.id.text_crack_result_label);
+        closeRewardBtn = view.findViewById(R.id.close_reward);
     }
 
     public void showCrackResult(CrackResult crackResult, String labelCrackResult) {
@@ -89,6 +97,7 @@ public class WidgetCrackResult extends RelativeLayout {
         showListCrackResultText(crackResult.getBenefits(), labelCrackResult);
         renderCtaButton(crackResult.getCtaButton());
         renderReturnButton(crackResult.getReturnButton());
+        renderCloseReward(crackResult);
     }
 
     private void showCrackResultImageAnimation(CrackResult crackResult) {
@@ -196,6 +205,7 @@ public class WidgetCrackResult extends RelativeLayout {
                 @Override
                 public void onClick(View v) {
                     listener.onClickReturnButton();
+                    listener.onTrackingReturnButton();
                 }
             });
         } else {
@@ -211,11 +221,23 @@ public class WidgetCrackResult extends RelativeLayout {
                 @Override
                 public void onClick(View v) {
                     listener.onClickCtaButton(ctaButton.getApplink(), ctaButton.getUrl());
+                    listener.onTrackingCtaButton();
                 }
             });
         } else {
             buttonCta.setVisibility(GONE);
         }
+    }
+
+    private void renderCloseReward(final CrackResult crackResult) {
+        closeRewardBtn.setVisibility(VISIBLE);
+        closeRewardBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onClickReturnButton();
+                listener.onTrackingCloseRewardButton(crackResult);
+            }
+        });
     }
 
     public void setListener(WidgetCrackResultListener listener) {
