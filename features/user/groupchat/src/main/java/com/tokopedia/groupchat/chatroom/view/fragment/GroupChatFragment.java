@@ -30,8 +30,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
+import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter;
@@ -437,11 +437,25 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void onSuccessGetPreviousMessage(List<Visitable> listChat) {
+
+        trackImpression(listChat);
+
         try {
             adapter.addListPrevious(listChat);
             adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
         } catch (NullPointerException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void trackImpression(List<Visitable> listChat) {
+        SprintSaleViewModel sprintSaleViewModel = ((GroupChatContract.View) getActivity())
+                .getSprintSaleViewModel();
+        for (Visitable visitable : listChat) {
+            if (visitable instanceof SprintSaleAnnouncementViewModel && sprintSaleViewModel != null) {
+                trackViewSprintSaleComponent(sprintSaleViewModel);
+                break;
+            }
         }
     }
 
