@@ -216,7 +216,6 @@ public class WidgetTokenView extends FrameLayout {
     private void shake() {
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
         imageViewFull.setAnimation(animation);
-        imageViewCracked.setAnimation(animation);
     }
 
     private void shakeHard() {
