@@ -48,6 +48,7 @@ public class CacheGetFingerprintUseCase extends GetFingerprintUseCase {
             @Override
             public String call(String s) {
                 localCacheHandler.putString(FINGERPRINT_USE_CASE, s);
+                localCacheHandler.applyEditor();
                 return s;
             }
         };
