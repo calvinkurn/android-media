@@ -22,7 +22,7 @@ import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.addtocart.model.kero.Rates;
+import com.tokopedia.transaction.addtocart.model.kero.Data;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.ICartView;
@@ -41,8 +41,6 @@ import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.services.TopPayIntentService;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
-
-import org.json.JSONArray;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -104,7 +102,7 @@ public class CartPresenter implements ICartPresenter {
                 }
                 processRenderViewCartData(cartData);
                 view.renderVisibleMainCartContainer();
-                if(!cartData.getCartItemList().isEmpty()){
+                if (!cartData.getCartItemList().isEmpty()) {
                     autoApplyCouponIfAvailable(1);
 
                 }
@@ -787,19 +785,19 @@ public class CartPresenter implements ICartPresenter {
                 if (cartRatesData.getRatesResponse() == null) {
                     view.setCartError(cartRatesData.getRatesIndex());
                 } else {
-                    Rates ratesData = new Gson().fromJson(cartRatesData.getRatesResponse(),
-                            Rates.class);
+                    Data ratesData = new Gson().fromJson(cartRatesData.getRatesResponse(),
+                            Data.class);
                     CartCourierPrices cartCourierPrices = new CartCourierPrices();
                     cartCourierPrices.setKey(cartRatesData.getKeroRatesKey());
                     cartCourierPrices.setCartProductPrice(cartRatesData.getCartTotalProductPrice());
                     cartCourierPrices.setCartIndex(cartRatesData.getRatesIndex());
                     cartCourierPrices.setAdditionFee(cartRatesData.getCartAdditionalLogisticFee());
-                    cartCourierPrices.setKeroWeight(String.valueOf(ratesData.getData()
+                    cartCourierPrices.setKeroWeight(String.valueOf(ratesData
                             .getAttributes()
                             .get(0)
                             .getWeight()));
                     List<com.tokopedia.transaction.addtocart.model.kero.Product> shipmentServices =
-                            ratesData.getData().getAttributes().get(0).getProducts();
+                            ratesData.getAttributes().get(0).getProducts();
 
                     setSubTotalPrice(shipmentServices,
                             cartCourierPrices,

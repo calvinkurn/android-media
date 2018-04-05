@@ -457,7 +457,8 @@ public class CartDataInteractor implements ICartDataInteractor {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
+//                keroRatesListener.onAllDataCompleted();
             }
 
             @Override
