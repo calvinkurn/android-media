@@ -1,4 +1,4 @@
-package com.tokopedia.session;
+package com.tokopedia.user.session;
 
 import android.content.Context;
 import android.content.SharedPreferences;
