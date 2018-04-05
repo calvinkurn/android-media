@@ -25,7 +25,7 @@ public interface PosReactConst {
 
     interface CacheTable {
         String PRODUCT = "PRODUCT";
-        String CART = "KEY_CART";
+        String CART = "CART";
         String BANK = "BANK";
         String ETALASE = "ETALASE";
         String GLOBAL = "GLOBAL";

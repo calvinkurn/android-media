@@ -134,6 +134,7 @@ public class ReactProductCloudSource extends ReactDataSource {
                         }
                         requestParams.putString(ProductConstant.Key.PAGE, request.getPage().toString());
                         requestParams.putString(ProductConstant.Key.PER_PAGE, request.getLimit().toString());
+                        requestParams.putString(ProductConstant.Key.OUTLET_ID, sessionHandler.getOutletId());
                         return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
                     }
                 });

@@ -20,6 +20,7 @@ import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
 import com.tokopedia.posapp.product.management.view.adapter.ProductManagementAdapterTypeFactory;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -100,18 +101,20 @@ public class ProductManagementFragment
 
     @Override
     public void onReloadData(List<Visitable> list) {
-        loadInitialData();
+        isLoadingInitialData = true;
         list.add(0, new ProductHeaderViewModel());
         renderList(list);
     }
 
     @Override
     public void onLoadMore(List<Visitable> list) {
+        isLoadingInitialData = false;
         renderList(list);
     }
 
     @Override
     public void onError(Throwable e) {
+        showGetListError(e);
         e.printStackTrace();
     }
 

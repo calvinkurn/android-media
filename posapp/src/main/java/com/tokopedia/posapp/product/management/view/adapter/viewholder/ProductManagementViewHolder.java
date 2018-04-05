@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.text.DecimalInputView;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.product.management.view.adapter.ProductManagementTypeFactory;
@@ -43,8 +44,8 @@ public class ProductManagementViewHolder extends AbstractViewHolder<ProductViewM
     public void bind(final ProductViewModel element) {
         textProductName.setText(element.getName());
         ImageHandler.loadImage(itemView.getContext(), imageThumbnail, element.getImageUrl(), com.tokopedia.abstraction.R.drawable.loading_page);
-        editOnlinePrice.setText(CurrencyFormatUtil.getThousandSeparatorString(element.getOnlinePrice(), false, 0).getFormattedString());
-        editOutletPrice.setText(CurrencyFormatUtil.getThousandSeparatorString(element.getOutletPrice(), false, 0).getFormattedString());
+        editOnlinePrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(element.getOnlinePrice(), true));
+        editOutletPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(element.getOutletPrice(), true));
 
         switchStatus.setOnCheckedChangeListener(null);
         switchStatus.setChecked(element.isShown());
