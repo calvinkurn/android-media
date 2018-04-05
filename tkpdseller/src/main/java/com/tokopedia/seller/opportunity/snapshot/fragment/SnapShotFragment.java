@@ -12,12 +12,16 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.PreviewProductImage;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.di.component.DaggerOpportunityComponent;
+import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
+import com.tokopedia.seller.opportunity.di.module.OpportunityModule;
 import com.tokopedia.seller.opportunity.snapshot.customview.DescriptionView;
 import com.tokopedia.seller.opportunity.snapshot.customview.DetailInfoView;
 import com.tokopedia.seller.opportunity.snapshot.customview.FreeReturnView;
@@ -27,6 +31,8 @@ import com.tokopedia.seller.opportunity.snapshot.customview.ShopInfoView;
 import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 import com.tokopedia.seller.opportunity.snapshot.presenter.SnapShotFragmentImpl;
 import com.tokopedia.seller.opportunity.snapshot.presenter.SnapShotFragmentPresenter;
+
+import javax.inject.Inject;
 
 
 /**
@@ -54,6 +60,11 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
     private ProductPass productPass;
     private ProductDetailData productData;
     private String opportunityId;
+
+    private OpportunityComponent opportunityComponent;
+
+    @Inject
+    SnapShotFragmentPresenter presenter;
 
 
     public static Fragment newInstance(ProductPass productPass, String opportunityId) {
@@ -93,7 +104,7 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
             onProductDetailLoaded(productData);
         } else {
             presenter.processDataPass(productPass);
-            presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
+            presenter.requestProductDetail(opportunityId, productPass, INIT_REQUEST, false);
         }
     }
 
@@ -140,11 +151,18 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
 
     @Override
     protected void initialPresenter() {
-        presenter = new SnapShotFragmentImpl(this);
+        opportunityComponent.inject(this);
+        presenter.attachView(this);
     }
 
     @Override
     protected void initialListener(Activity activity) {
+        if (activity != null && activity instanceof BaseActivity){
+            opportunityComponent = DaggerOpportunityComponent.builder()
+                    .opportunityModule(new OpportunityModule())
+                    .appComponent(((BaseActivity) activity).getApplicationComponent())
+                    .build();
+        }
     }
 
     @Override
@@ -219,7 +237,7 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
+                presenter.requestProductDetail(opportunityId, productPass, INIT_REQUEST, false);
             }
         };
     }
