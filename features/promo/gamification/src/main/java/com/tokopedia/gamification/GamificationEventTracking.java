@@ -31,5 +31,7 @@ public interface GamificationEventTracking {
         String CLICK_CLOSE_BUTTON = "click close button";
         String EMPTY_PAGE = "click belanja dan dapatkan lucky egg";
         String CLICK_USE_GIFT = "click cek dan gunakan hadiah";
+        String CLICK_OK = "click ok";
+        String CLICK_TRY_AGAIN = "click coba lagi";
     }
 }

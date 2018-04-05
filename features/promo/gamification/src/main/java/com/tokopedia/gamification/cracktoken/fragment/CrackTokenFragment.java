@@ -194,19 +194,31 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
 
             @Override
-            public void onClickReturnButton(String type, String applink, String url) {
+            public void onClickReturnButton(String crackResultCode, String type, String applink, String url) {
                 if (type.equals("dismiss")) {
                     widgetCrackResult.clearCrackResult();
 
-                    trackingButtonClick(GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
-                            GamificationEventTracking.Action.CLICK_CRACK_OTHER_EGG,
-                            "");
+                    if (crackResultCode.equals("200")) {
+                        trackingButtonClick(GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
+                                GamificationEventTracking.Action.CLICK_CRACK_OTHER_EGG,
+                                "");
+                    } else if (crackResultCode.equals("42503") || crackResultCode.equals("42504")) {
+                        trackingButtonClick(GamificationEventTracking.Category.EXPIRED_TOKEN,
+                                GamificationEventTracking.Action.CLICK_OK,
+                                "");
+                    }
 
                     crackTokenPresenter.getGetTokenTokopoints();
                 } else if (type.equals("redirect")) {
-                    trackingButtonClick(GamificationEventTracking.Category.COUPON_REWARD,
-                            GamificationEventTracking.Action.CLICK_USE_GIFT,
-                            widgetCrackResult.getBenefitType());
+                    if (crackResultCode.equals("200")) {
+                        trackingButtonClick(GamificationEventTracking.Category.COUPON_REWARD,
+                                GamificationEventTracking.Action.CLICK_USE_GIFT,
+                                widgetCrackResult.getBenefitType());
+                    } else {
+                        trackingButtonClick(GamificationEventTracking.Category.ERROR_PAGE,
+                                GamificationEventTracking.Action.CLICK_TRY_AGAIN,
+                               "");
+                    }
 
                     navigateToAssociatedPage(applink, url);
                 }

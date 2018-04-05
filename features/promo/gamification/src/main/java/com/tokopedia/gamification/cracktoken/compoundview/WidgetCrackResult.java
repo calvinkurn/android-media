@@ -57,7 +57,7 @@ public class WidgetCrackResult extends RelativeLayout {
 
         void onTrackingCloseRewardButton(CrackResult crackResult);
 
-        void onClickReturnButton(String type, String applink, String url);
+        void onClickReturnButton(String crackResultCode, String type, String applink, String url);
 
         void onClickCloseButton();
     }
@@ -89,14 +89,14 @@ public class WidgetCrackResult extends RelativeLayout {
         textCrackResultLabel = view.findViewById(R.id.text_crack_result_label);
         closeRewardBtn = view.findViewById(R.id.close_reward);
     }
-    
+
     public void showCrackResult(CrackResult crackResult) {
         this.benefitType = crackResult.getBenefitType();
         showCrackResultImageAnimation(crackResult);
         showCrackResultBackgroundAnimation();
         showListCrackResultText(crackResult.getBenefits(), crackResult.getBenefitLabel());
         renderCtaButton(crackResult.getCtaButton());
-        renderReturnButton(crackResult.getReturnButton());
+        renderReturnButton(crackResult);
         renderCloseReward(crackResult);
     }
 
@@ -201,15 +201,17 @@ public class WidgetCrackResult extends RelativeLayout {
         }
     }
 
-    public void renderReturnButton(final CrackButton returnButton) {
-        if (returnButton != null) {
+    public void renderReturnButton(final CrackResult crackResult) {
+        if (crackResult.getReturnButton() != null) {
             buttonReturn.setVisibility(VISIBLE);
-            buttonReturn.setText(returnButton.getTitle());
+            buttonReturn.setText(crackResult.getReturnButton().getTitle());
             buttonReturn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClickReturnButton(returnButton.getType(), returnButton.getApplink(),
-                            returnButton.getUrl());
+                    listener.onClickReturnButton(crackResult.getResultStatus().getCode(),
+                            crackResult.getReturnButton().getType(),
+                            crackResult.getReturnButton().getApplink(),
+                            crackResult.getReturnButton().getUrl());
                 }
             });
         } else {
