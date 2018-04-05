@@ -51,9 +51,9 @@ public class WidgetCrackResult extends RelativeLayout {
     private WidgetCrackResultListener listener;
 
     public interface WidgetCrackResultListener {
-        void onClickCtaButton(String applink, String url);
+        void onClickCtaButton(String type, String applink, String url);
 
-        void onClickReturnButton();
+        void onClickReturnButton(String type, String applink, String url);
     }
 
     public WidgetCrackResult(Context context) {
@@ -195,7 +195,8 @@ public class WidgetCrackResult extends RelativeLayout {
             buttonReturn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClickReturnButton();
+                    listener.onClickReturnButton(returnButton.getType(), returnButton.getApplink(),
+                            returnButton.getUrl());
                 }
             });
         } else {
@@ -210,7 +211,7 @@ public class WidgetCrackResult extends RelativeLayout {
             buttonCta.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClickCtaButton(ctaButton.getApplink(), ctaButton.getUrl());
+                    listener.onClickCtaButton(ctaButton.getType(), ctaButton.getApplink(), ctaButton.getUrl());
                 }
             });
         } else {

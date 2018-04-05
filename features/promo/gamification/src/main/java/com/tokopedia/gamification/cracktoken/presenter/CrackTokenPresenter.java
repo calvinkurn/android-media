@@ -1,11 +1,20 @@
 package com.tokopedia.gamification.cracktoken.presenter;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
+import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
+import com.tokopedia.gamification.cracktoken.model.CrackButton;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.domain.GetCrackResultEggUseCase;
 import com.tokopedia.gamification.domain.GetTokenTokopointsUseCase;
 import com.tokopedia.gamification.floating.view.model.TokenData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,14 +47,63 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().onErrorCrackToken(e);
+                        CrackResult errorCrackResult = createGeneralErrorCrackResult();
+
+                        getView().onErrorCrackToken(errorCrackResult);
                     }
 
                     @Override
                     public void onNext(CrackResult crackResult) {
-                        getView().onSuccessCrackToken(crackResult);
+                        // check result status
+                        if (crackResult.getResultStatus().getCode().equals("200")) {
+                            // success
+                            getView().onSuccessCrackToken(crackResult);
+                        } else if (crackResult.getResultStatus().getCode().equals("42501")) {
+                            // token has been cracked
+                            getView().onSuccessCrackToken(crackResult);
+                        } else if (crackResult.getResultStatus().getCode().equals("42502") ||
+                                crackResult.getResultStatus().getCode().equals("42503")) {
+                            // token user expired or invalid
+                            // show expired page
+                            CrackResult expiredCrackResult = createExpiredCrackResult();
+                            getView().onErrorCrackToken(expiredCrackResult);
+                        }
                     }
                 });
+    }
+
+    private CrackResult createExpiredCrackResult() {
+        CrackResult crackResult = new CrackResult();
+        List<CrackBenefit> crackBenefits = new ArrayList<>();
+        crackBenefits.add(new CrackBenefit("Mohon maaf, anda kurang cepat", "#ffffff", "medium"));
+
+        Bitmap errorBitmap = BitmapFactory.decodeResource(getView().getResources(), R.drawable.image_error_crack_result);
+
+        CrackButton returnButton = new CrackButton();
+        returnButton.setTitle("Ok");
+
+        crackResult.setBenefits(crackBenefits);
+        crackResult.setImageBitmap(errorBitmap);
+        crackResult.setReturnButton(returnButton);
+
+        return crackResult;
+    }
+
+    private CrackResult createGeneralErrorCrackResult() {
+        CrackResult crackResult = new CrackResult();
+        List<CrackBenefit> crackBenefits = new ArrayList<>();
+        crackBenefits.add(new CrackBenefit("Terjadi Kesalahan Teknis", "#ffffff", "medium"));
+
+        Bitmap errorBitmap = BitmapFactory.decodeResource(getView().getResources(), R.drawable.image_error_crack_result);
+
+        CrackButton returnButton = new CrackButton();
+        returnButton.setTitle("Coba Lagi");
+
+        crackResult.setBenefits(crackBenefits);
+        crackResult.setImageBitmap(errorBitmap);
+        crackResult.setReturnButton(returnButton);
+
+        return crackResult;
     }
 
     public void getGetTokenTokopoints() {
