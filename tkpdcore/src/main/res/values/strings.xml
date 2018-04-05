@@ -1132,7 +1132,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_select_agency_error">Kurir harus dipilih</string>
     <string name="title_index_prod_shop">Feed</string>
     <string name="title_index_hot_list">Hot List</string>
-    <string name="title_index_favorite">FAVORIT</string>
+    <string name="title_index_favorite">Favorit</string>
 
     <string name="title_done">Selesai</string>
     <string name="title_understand">Mengerti</string>
@@ -1308,7 +1308,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_receive_name">Penerima</string>
     <string name="title_sender_city">Asal</string>
     <string name="title_receiver_city">Tujuan</string>
-    <!--string related to Android PlayStore Review Dialog -->
+    <!--string related to Android PlayStore RevBaseDialogalog -->
     <string name="label_find_own_product">Cari Produk </string>
     <string name="title_activity_buy_credit">BuyCredit</string>
     <!--string related to Security Question -->
@@ -2177,6 +2177,10 @@ di Tokopedia Sekarang!</string>
     <string name="copy_coupon_code_text">Kode voucher telah tersalin</string>
     <string name="cek_label"> Cek : </string>
     <string name="referral_welcome_desc" formatted="false" ><![CDATA[Hai %s, kamu mendapatkan kode referral dari %s. Gunakan kode ini saat transaksi pertamamu di Tokopedia & nikmati bonus cashback ke TokoCash.]]></string>
+
+	<string name="discussion_shop_label_show_more_discussion">Lihat Diskusi Selengkapnya</string>
+    <string name="discussion_shop_label_empty_list_title">Belum ada diskusi di toko ini</string>
+    <string name="discussion_shop_label_empty_list_content">Diskusi memberikan kesempatan tanya jawab oleh pembeli &amp; penjual sebelum melakukan transaksi</string>
 
     <!--QR CODE-->
     <string name="scan_qr">Scan Kode QR</string>

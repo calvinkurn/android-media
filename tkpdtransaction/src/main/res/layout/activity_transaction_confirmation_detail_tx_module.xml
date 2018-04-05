@@ -11,9 +11,9 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         android:paddingBottom="@dimen/padding_comment_area"
-        android:paddingLeft="@dimen/padding_small"
-        android:paddingRight="@dimen/padding_small"
-        android:paddingTop="@dimen/padding_small">
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_10">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".50"
                     android:orientation="vertical"
-                    android:padding="@dimen/padding_small">
+                    android:padding="@dimen/dp_10">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
                     android:layout_weight=".50"
                     android:gravity="end"
                     android:orientation="vertical"
-                    android:padding="@dimen/padding_small">
+                    android:padding="@dimen/dp_10">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -82,16 +82,16 @@
                 android:id="@+id/tx_total_payment_l"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_5"
                 android:background="@drawable/cards_ui_2"
-                android:padding="@dimen/padding_small">
+                android:padding="@dimen/dp_10">
 
                 <RelativeLayout
                     android:id="@+id/total_item_l"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs">
+                    android:layout_marginBottom="@dimen/dp_5">
 
                     <!-- total pembayaran -->
 
@@ -120,7 +120,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/total_item_l"
-                    android:layout_marginBottom="@dimen/margin_vs">
+                    android:layout_marginBottom="@dimen/dp_5">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -147,7 +147,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/total_price_item_l"
-                    android:layout_marginBottom="@dimen/margin_vs">
+                    android:layout_marginBottom="@dimen/dp_5">
 
                     <!-- total pembayaran -->
 
@@ -208,11 +208,11 @@
                 android:id="@+id/check_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:background="@drawable/cards_ui_2"
                 app:drawableRightCompat="@drawable/info_icon"
                 android:gravity="center_vertical"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 android:text="Nomor Rekening"
                 android:textColor="@color/tkpd_dark_green"
                 android:textStyle="bold"
@@ -241,7 +241,7 @@
             android:layout_weight="1"
             android:background="@color/grey_400"
             android:gravity="center"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             android:text="@string/title_cancel"
             android:textStyle="bold"/>
 
@@ -252,7 +252,7 @@
             android:layout_weight="1"
             android:background="@color/tkpd_btn_green_filter"
             android:gravity="center"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             android:text="@string/title_confirm"
             android:textColor="@color/white"
             android:textStyle="bold"/>

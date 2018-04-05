@@ -57,8 +57,6 @@ public interface Login {
 
         void setSmartLock();
 
-        void resetToken();
-
         void onErrorLogin(String errorMessage, int codeError);
 
         void onGoToActivationPage(String email);
@@ -94,6 +92,5 @@ public interface Login {
 
         void loginFacebook(AccessToken accessToken, String email);
 
-        void resetToken();
     }
 }

@@ -36,7 +36,7 @@
         android:minLines="1"
         android:paddingTop="@dimen/padding_vs"
         android:singleLine="true"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:textStyle="bold" />
 
     <TextView
