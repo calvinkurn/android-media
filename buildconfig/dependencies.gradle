@@ -234,7 +234,7 @@ ext {
             event           : ":tkpdevents",
             home            : ":tkpdhome",
             content         : ":tkpdcontent",
-            userSession     : ":features:user:session"
+            userSession     : ":libraries:user_session"
     ]
 
     libraries = [
