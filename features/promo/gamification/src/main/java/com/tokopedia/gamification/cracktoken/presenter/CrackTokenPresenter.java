@@ -81,6 +81,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
         CrackButton returnButton = new CrackButton();
         returnButton.setTitle("Ok");
+        returnButton.setType("dismiss");
 
         crackResult.setBenefits(crackBenefits);
         crackResult.setImageBitmap(errorBitmap);
@@ -98,6 +99,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
         CrackButton returnButton = new CrackButton();
         returnButton.setTitle("Coba Lagi");
+        returnButton.setType("dismiss");
 
         crackResult.setBenefits(crackBenefits);
         crackResult.setImageBitmap(errorBitmap);
