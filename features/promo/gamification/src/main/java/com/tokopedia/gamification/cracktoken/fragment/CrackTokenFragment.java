@@ -392,7 +392,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
                 trackingRewardLuckyEggView(crackResult.getBenefits().get(0).getText());
             }
-        }, 1000);
+        }, widgetTokenView.isCrackPercentageFull() ? 1 : 1500);
     }
 
     @Override
