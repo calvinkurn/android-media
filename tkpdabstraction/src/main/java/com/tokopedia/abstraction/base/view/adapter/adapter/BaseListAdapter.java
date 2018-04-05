@@ -42,18 +42,18 @@ public class BaseListAdapter<T extends Visitable, F extends AdapterTypeFactory> 
                 public void onClick(View view) {
                     if (onAdapterInteractionListener != null) {
                         try {
-                            T item = (T) visitables.get(holder.getAdapterPosition());
-                            onAdapterInteractionListener.onItemClicked(item);
+                            if (holder.getAdapterPosition() >= 0) {
+                                T item = (T) visitables.get(holder.getAdapterPosition());
+                                onAdapterInteractionListener.onItemClicked(item);
+                            }
                         } catch (ClassCastException e) {
-                            e.printStackTrace();
-                        } catch (IndexOutOfBoundsException e){
                             e.printStackTrace();
                         }
                     }
                 }
             });
         }
-        super.onBindViewHolder(holder,position);
+        super.onBindViewHolder(holder, position);
     }
 
     /**
@@ -85,7 +85,7 @@ public class BaseListAdapter<T extends Visitable, F extends AdapterTypeFactory> 
         return list;
     }
 
-    public int getDataSize(){
+    public int getDataSize() {
         return getData().size();
     }
 
