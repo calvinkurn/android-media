@@ -12,7 +12,9 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
@@ -62,6 +64,17 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
         getMoreTokenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (getActivity().getApplication() instanceof AbstractionRouter) {
+                    ((AbstractionRouter) getActivity().getApplication())
+                            .getAnalyticTracker()
+                            .sendEventTracking(
+                                    GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                                    GamificationEventTracking.Category.EMPTY_PAGE,
+                                    GamificationEventTracking.Action.EMPTY_PAGE,
+                                    ""
+                            );
+                }
+
                 getActivity().onBackPressed();
             }
         });
