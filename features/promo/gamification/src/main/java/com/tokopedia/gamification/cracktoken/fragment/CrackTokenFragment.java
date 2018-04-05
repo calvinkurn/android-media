@@ -70,13 +70,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private LinearLayout layoutTimer;
     private ProgressBar progressBar;
 
-    private String backgroundImageUrl;
-    private String smallImageUrl;
-    private String fullEggImg;
-    private String crackedEggImg;
-    private String rightCrackedEggImg;
-    private String leftCrackedEggImg;
-
     private TokenData tokenData;
 
     private ImageView ivContainer;
@@ -166,26 +159,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         stopTimer();
     }
 
-    /**
-     * copy the token data retrieved to field variable
-     */
-    private void initDataCrackEgg(TokenData tokenData) {
-        this.tokenData = tokenData;
-        TokenUser tokenUser = tokenData.getHome().getTokensUser();
-        backgroundImageUrl = tokenUser.getBackgroundAsset().getBackgroundImgUrl();
-        smallImageUrl = tokenUser.getTokenAsset().getSmallImgUrl();
-        fullEggImg = tokenUser.getTokenAsset().getImageUrls().get(0);
-        crackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(4);
-        rightCrackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(5);
-        leftCrackedEggImg = tokenUser.getTokenAsset().getImageUrls().get(6);
-    }
-
     private void renderViewCrackEgg() {
         widgetTokenView.reset();
 
-        ImageHandler.loadImageAndCache(ivContainer, backgroundImageUrl);
+        TokenUser tokenUser = tokenData.getHome().getTokensUser();
 
-        widgetTokenView.setToken(fullEggImg, crackedEggImg, rightCrackedEggImg, leftCrackedEggImg);
+        ImageHandler.loadImageAndCache(ivContainer, tokenUser.getBackgroundAsset().getBackgroundImgUrl());
+
+        widgetTokenView.setToken(tokenUser.getTokenAsset());
         widgetTokenView.setListener(new WidgetTokenView.WidgetTokenListener() {
             @Override
             public void onClick() {
@@ -218,7 +199,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
         });
         widgetRemainingToken.show();
-        widgetRemainingToken.showRemainingToken(smallImageUrl, tokenData.getSumTokenStr(),
+        widgetRemainingToken.showRemainingToken(
+                tokenUser.getTokenAsset().getSmallImgUrl(),
+                tokenData.getSumTokenStr(),
                 tokenData.getHome().getCountingMessage());
 
         showTimer(tokenData);
@@ -316,7 +299,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         if (tokenData.getSumToken() == 0) {
             listener.directPageToCrackEmpty();
         } else {
-            initDataCrackEgg(tokenData);
+            this.tokenData = tokenData;
             renderViewCrackEgg();
             showHandOnBoarding();
         }
