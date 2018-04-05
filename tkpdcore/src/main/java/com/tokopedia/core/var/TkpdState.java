@@ -241,6 +241,7 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final int FEATURED_PRODUCT = 99;
 
         public static final int APPSHARE = 58;
+
     }
 
     public class Application {

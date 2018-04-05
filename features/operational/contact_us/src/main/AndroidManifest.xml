@@ -1,2 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.contactus" />
+    package="com.tokopedia.contactus" >
+    <application android:label="@string/app_name">
+        <activity
+            android:name="com.tokopedia.tkpd.tkpdcontactus.home.view.ContactUsHomeActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"
+            android:theme="@style/Theme.White"/>
+
+
+    </application>
+</manifest>
