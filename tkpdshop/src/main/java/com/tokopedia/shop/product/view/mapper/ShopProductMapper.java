@@ -69,6 +69,7 @@ public class ShopProductMapper {
                 }
             }
         }
+        shopProductViewModel.setSoldOut(shopProduct.isSoldOutStatus());
         return shopProductViewModel;
     }
 

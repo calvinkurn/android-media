@@ -26,6 +26,7 @@ public abstract class ShopProductViewModel<T> implements Visitable<T> {
     private boolean wishList;
     private String productUrl;
     private boolean showWishList;
+    private boolean isSoldOut;
 
     public ShopProductViewModel() {
     }
@@ -166,4 +167,11 @@ public abstract class ShopProductViewModel<T> implements Visitable<T> {
         this.showWishList = showWishList;
     }
 
+    public boolean isSoldOut() {
+        return isSoldOut;
+    }
+
+    public void setSoldOut(boolean soldOut) {
+        isSoldOut = soldOut;
+    }
 }
