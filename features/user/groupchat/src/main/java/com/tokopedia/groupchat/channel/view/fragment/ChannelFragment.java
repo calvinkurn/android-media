@@ -21,8 +21,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
+import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.data.analytics.ChannelAnalytics;
 import com.tokopedia.groupchat.channel.di.DaggerChannelComponent;
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity;
@@ -32,11 +32,13 @@ import com.tokopedia.groupchat.channel.view.model.ChannelListViewModel;
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel;
 import com.tokopedia.groupchat.channel.view.presenter.ChannelPresenter;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
+import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
-import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 
 import javax.inject.Inject;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * @author by nisie on 2/1/18.
@@ -89,6 +91,13 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!isEnabledGroupChatRoom()) {
+            Intent intent = ((GroupChatModuleRouter) getApplicationContext()).getHomeIntent(getActivity());
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getActivity().finish();
+        }
+
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         if (userSession != null && !userSession.isLoggedIn()) {
             startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
@@ -259,6 +268,10 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
         presenter.refreshData();
     }
 
+    public boolean isEnabledGroupChatRoom() {
+        return ((GroupChatModuleRouter) getApplicationContext()).isEnabledGroupChatRoom();
+    }
+
     public class ItemDecoration extends RecyclerView.ItemDecoration {
 
         private int space;
@@ -272,7 +285,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
                                    RecyclerView.State state) {
             if (parent.getChildAdapterPosition(view) == 0) {
                 outRect.top = space;
-                outRect.bottom= space / 2;
+                outRect.bottom = space / 2;
             } else if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
                 outRect.bottom = space;
                 outRect.top = space / 2;

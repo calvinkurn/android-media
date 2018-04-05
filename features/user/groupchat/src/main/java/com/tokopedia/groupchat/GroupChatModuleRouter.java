@@ -10,6 +10,8 @@ import android.content.Intent;
 
 public interface GroupChatModuleRouter {
 
+    String ENABLE_GROUPCHAT_ROOM = "enable_groupchat_room";
+
     Intent getHomeIntent(Context context);
 
     Intent getInboxChannelsIntent(Context context);
@@ -24,6 +26,8 @@ public interface GroupChatModuleRouter {
                                     listener);
 
     String getNotificationPreferenceConstant();
+
+    boolean isEnabledGroupChatRoom();
 
     public interface ShareListener {
         void onGenerateLink(String shareContents, String shareUri);

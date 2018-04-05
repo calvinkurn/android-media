@@ -1602,6 +1602,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public boolean isEnabledGroupChatRoom() {
+//        return remoteConfig.getBoolean(GroupChatModuleRouter.ENABLE_GROUPCHAT_ROOM);
+        return true;
+    }
+
+    @Override
     public void sendTrackingGroupChatLeftNavigation() {
         getAnalyticTracker().sendEventTracking(GroupChatAnalytics.EVENT_NAME_CLICK_NAVIGATION_DRAWER,
                 GroupChatAnalytics.EVENT_CATEGORY_LEFT_NAVIGATION,

@@ -216,6 +216,12 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (!isEnabledGroupChatRoom()) {
+            Intent intent = ((GroupChatModuleRouter) getApplicationContext()).getHomeIntent(this);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            finish();
+        }
+
         if (savedInstanceState != null) {
             initialFragment = savedInstanceState.getInt(INITIAL_FRAGMENT, CHATROOM_FRAGMENT);
         } else if (getIntent().getExtras() != null) {
@@ -243,6 +249,10 @@ public class GroupChatActivity extends BaseSimpleActivity
         initInjector();
         initData();
         initPreference();
+    }
+
+    private boolean isEnabledGroupChatRoom() {
+        return ((GroupChatModuleRouter) getApplicationContext()).isEnabledGroupChatRoom();
     }
 
 
