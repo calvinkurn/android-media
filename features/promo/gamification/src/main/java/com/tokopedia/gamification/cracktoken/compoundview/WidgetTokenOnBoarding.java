@@ -166,7 +166,7 @@ public class WidgetTokenOnBoarding extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (!mCanceled) {
+                if (!mCanceled ) {
                     handler.postDelayed(runnable, MEDIUM_ANIM_DURATION);
                 }
             }
