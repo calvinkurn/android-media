@@ -201,6 +201,13 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
 
             @Override
+            public void onClickCloseButton() {
+                widgetCrackResult.clearCrackResult();
+
+                crackTokenPresenter.getGetTokenTokopoints();
+            }
+
+            @Override
             public void onTrackingReturnButton() {
                 trackingReturnButtonClick();
             }
