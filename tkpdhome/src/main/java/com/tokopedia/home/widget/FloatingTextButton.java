@@ -199,17 +199,8 @@ public class FloatingTextButton extends FrameLayout {
         setLeftIconDrawable(leftIcon);
         setRightIconDrawable(rightIcon);
         setBackgroundColor(background);
-        initViewRadius();
     }
 
-    private void initViewRadius() {
-        container.post(new Runnable() {
-            @Override
-            public void run() {
-                container.setRadius(container.getHeight() / 2);
-            }
-        });
-    }
 
     @SuppressWarnings("SameParameterValue")
     private int getVerticalPaddingValue(int dp) {
@@ -306,11 +297,4 @@ public class FloatingTextButton extends FrameLayout {
         }
     }
 
-    @Override
-    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
-        super.onVisibilityChanged(changedView, visibility);
-        if(visibility==VISIBLE){
-            initViewRadius();
-        }
-    }
 }

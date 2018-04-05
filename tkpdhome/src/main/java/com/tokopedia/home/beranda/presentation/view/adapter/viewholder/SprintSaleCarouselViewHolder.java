@@ -176,9 +176,11 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
                 }
                 if (grid.getSoldPercentage() >= 100) {
                     holder.stockProgress.setVisibility(View.INVISIBLE);
+                    holder.channelDiscount.setEnabled(false);
                 } else {
                     holder.stockProgress.setProgress(grid.getSoldPercentage());
                     holder.stockProgress.setVisibility(View.VISIBLE);
+                    holder.channelDiscount.setEnabled(true);
                 }
                 if (gridItemClickListener != null && grid != null) {
                     holder.countainer.setOnClickListener(new View.OnClickListener() {
