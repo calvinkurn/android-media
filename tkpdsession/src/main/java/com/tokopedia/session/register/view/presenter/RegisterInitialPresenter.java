@@ -118,11 +118,6 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
     }
 
     @Override
-    public void clearToken() {
-        sessionHandler.clearToken();
-    }
-
-    @Override
     public void registerGoogle(String accessToken) {
         getView().showProgressBar();
         loginSosmedUseCase.execute(

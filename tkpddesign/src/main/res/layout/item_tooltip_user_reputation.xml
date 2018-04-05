@@ -18,7 +18,7 @@
         <ImageView
             android:layout_width="@dimen/dp_35"
             android:layout_height="@dimen/dp_35"
-            app:srcCompat="@drawable/ic_smiley_positive" />
+            app:srcCompat="@drawable/ic_smiley_good" />
 
         <TextView
             android:id="@+id/text_view_positive"
@@ -58,7 +58,7 @@
         <ImageView
             android:layout_width="@dimen/dp_35"
             android:layout_height="@dimen/dp_35"
-            app:srcCompat="@drawable/ic_smiley_negative" />
+            app:srcCompat="@drawable/ic_smiley_bad" />
 
         <TextView
             android:id="@+id/text_view_negative"

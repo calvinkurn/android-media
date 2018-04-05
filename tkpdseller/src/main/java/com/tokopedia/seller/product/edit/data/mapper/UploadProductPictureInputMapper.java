@@ -7,7 +7,6 @@ import com.tokopedia.seller.product.edit.data.source.cloud.model.ProductPhotoSer
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ import javax.inject.Inject;
 /**
  * @author sebastianuskh on 4/26/17.
  */
-
+@Deprecated
 public class UploadProductPictureInputMapper {
 
     @Inject
