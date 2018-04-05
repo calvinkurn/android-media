@@ -44,6 +44,24 @@ public class HomePageTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickJumpRecomendation() {
+        sendGTMEvent(new EventTracking(
+                "",
+                STATIC_VALUE_HOMEPAGE,
+                "cek rekomendasi jumper click",
+                ""
+        ).getEvent());
+    }
+
+    public static void eventImpressionJumpRecomendation() {
+        sendGTMEvent(new EventTracking(
+                "",
+                STATIC_VALUE_HOMEPAGE,
+                "cek rekomendasi jumper impression",
+                ""
+        ).getEvent());
+    }
+
     public static void eventClickHomeUseCase(String title) {
         sendGTMEvent(new EventTracking(
                 STATIC_VALUE_CLICK_HOMEPAGE,

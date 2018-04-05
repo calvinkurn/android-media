@@ -23,6 +23,7 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -42,7 +43,6 @@ import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
@@ -68,7 +68,6 @@ import com.tokopedia.home.beranda.presentation.view.SectionContainer;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
@@ -156,6 +155,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void showRecomendationButton() {
         if (showRecomendation && SessionHandler.isV4Login(getActivity())) {
             floatingTextButton.setVisibility(View.VISIBLE);
+            HomePageTracking.eventImpressionJumpRecomendation();
         } else {
             floatingTextButton.setVisibility(View.GONE);
         }
@@ -196,6 +196,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onClick(View view) {
                 recyclerView.smoothScrollToPosition(adapter.findFirstInspirationPosition());
+                HomePageTracking.eventClickJumpRecomendation();
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
