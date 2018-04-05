@@ -15,10 +15,37 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_marginBottom="@dimen/margin_med"
+        android:paddingBottom="@dimen/padding_med"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         app:bav_1_display="true"
         app:bav_icon_1="@drawable/ic_icon"
         app:bav_label_1="@string/shop_info_sort_label" />
+
+    <LinearLayout
+        android:id="@+id/linear_header_sticky"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:elevation="@dimen/toolbar_elevation">
+        <com.tokopedia.design.text.SearchInputView
+            android:layout_width="match_parent"
+            android:id="@+id/search_input_view"
+            android:layout_height="wrap_content"
+            app:siv_search_hint="@string/shop_product_search_hint" />
+        <com.tokopedia.design.label.LabelView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/label_view_etalase"
+            style="@style/LabelLayout"
+            app:lv_content="@string/shop_info_label_choose_etalase"
+            app:lv_content_color="@color/tkpd_main_green"
+            app:lv_title="@string/shop_info_default_etalase_title"
+            app:lv_title_text_style="bold"
+            android:layout_height="@dimen/size_labelview"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@drawable/sticky_shadow" />
+    </LinearLayout>
 </RelativeLayout>

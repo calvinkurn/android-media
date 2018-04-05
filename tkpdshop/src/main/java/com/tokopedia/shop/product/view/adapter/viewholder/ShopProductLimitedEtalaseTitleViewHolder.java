@@ -18,17 +18,13 @@ public class ShopProductLimitedEtalaseTitleViewHolder extends AbstractViewHolder
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_product_limited_etalase_title_view;
-    private LabelView etalaseButton;
 
-    public ShopProductLimitedEtalaseTitleViewHolder(View itemView,
-                                                    View.OnClickListener showMoreEtalaseOnclickListener) {
+    public ShopProductLimitedEtalaseTitleViewHolder(View itemView) {
         super(itemView);
-        findViews(itemView, showMoreEtalaseOnclickListener);
+        findViews(itemView);
     }
 
-    private void findViews(View view, View.OnClickListener showMoreEtalaseOnclickListener) {
-        etalaseButton = view.findViewById(R.id.label_view_etalase);
-        etalaseButton.setOnClickListener(showMoreEtalaseOnclickListener);
+    private void findViews(View view) {
     }
 
     @Override

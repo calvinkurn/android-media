@@ -78,7 +78,6 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("error", e.getLocalizedMessage());
                         if (isViewAttached()) {
                             getView().showGetListError(e);
                         }
@@ -91,9 +90,7 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
                             if (!TextApiUtils.isTextEmpty(promotionWebViewUrl)) {
                                 shopProductBaseViewModelList.getList().add(0, getProductPromoModel());
                             }
-                            // There's at least 1 product, show search view
                             if (shopHasProduct) {
-                                shopProductBaseViewModelList.getList().add(0, new ShopProductLimitedSearchViewModel());
                                 for(int i = 0; i < shopProductBaseViewModelList.getList().size(); i++){
                                     ShopProductBaseViewModel shopProductBaseViewModel = shopProductBaseViewModelList.getList().get(i);
                                     if(shopProductBaseViewModel instanceof ShopProductHomeViewModel) {
