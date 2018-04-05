@@ -6,7 +6,7 @@
 
     <ImageView
         android:id="@+id/badge"
-        android:layout_width="9dp"
-        android:layout_height="9dp"/>
+        android:layout_width="@dimen/feed_new_badge_size"
+        android:layout_height="@dimen/feed_new_badge_size"/>
 
 </RelativeLayout>
