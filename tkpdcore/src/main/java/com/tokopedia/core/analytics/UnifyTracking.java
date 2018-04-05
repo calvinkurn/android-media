@@ -1,16 +1,12 @@
 package com.tokopedia.core.analytics;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventType;
-import com.google.android.gms.tagmanager.DataLayer;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.container.GTMDataLayer;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
-import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
@@ -3344,19 +3340,5 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.TAKE_TO_SHOP
         ).setUserId().getEvent());
     }
-
-    public static void eventAddToCartPurchase(Product product) {
-        getGTMEngine().eventAddToCartPurchase(product)
-        .sendScreen(AppScreen.SCREEN_ADD_TO_CART_SUCCESS)
-                .clearAddtoCartDataLayer(GTMCart.ADD_ACTION);
-    }
-
-    public static void eventRemoveFromCart(Product product) {
-        getGTMEngine().eventRemoveFromCartPurchase(product)
-                .sendScreen(AppScreen.SCREEN_ADD_TO_CART_SUCCESS)
-                .clearAddtoCartDataLayer(GTMCart.REMOVE_ACTION);
-    }
-
-
 
 }

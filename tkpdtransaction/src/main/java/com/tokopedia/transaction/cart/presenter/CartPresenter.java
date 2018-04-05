@@ -17,6 +17,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
+import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
@@ -348,15 +349,11 @@ public class CartPresenter implements ICartPresenter {
                             messageSuccess = responseTransform.getMessageSuccess();
                         }
                         view.showToastMessage(messageSuccess);
-                        try {
-                            processCartAnalytics(cartData);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
                         processRenderViewCartData(cartData);
                         for (int i = 0; i < cartProductEditDataList.size(); i++) {
                             if (cartProductEditDataList.get(i).getOriginalQuantity()
                                     > cartProductEditDataList.get(i).getProductQuantity()) {
+
 
                                 cancelCartAnalytic(cartItem.getCartProducts().get(i), cartItem);
 
@@ -379,12 +376,18 @@ public class CartPresenter implements ICartPresenter {
 
     private void cancelCartAnalytic(CartProduct cartProduct, @NonNull CartItem canceledCartItem) {
         Product analysisProduct = populateDataLayer(cartProduct);
-        UnifyTracking.eventRemoveFromCart(analysisProduct);
+        GTMCart gtmCart = new GTMCart();
+        gtmCart.addProduct(analysisProduct.getProduct());
+        gtmCart.setCurrencyCode("IDR");
+        gtmCart.setAddAction(GTMCart.REMOVE_ACTION);
     }
 
     private void addToCartAnalytic(CartProduct cartProduct, @NonNull CartItem canceledCartItem) {
         Product analysisProduct = populateDataLayer(cartProduct);
-        UnifyTracking.eventAddToCartPurchase(analysisProduct);
+        GTMCart gtmCart = new GTMCart();
+        gtmCart.addProduct(analysisProduct.getProduct());
+        gtmCart.setCurrencyCode("IDR");
+        gtmCart.setAddAction(GTMCart.ADD_ACTION);
     }
 
     @NonNull

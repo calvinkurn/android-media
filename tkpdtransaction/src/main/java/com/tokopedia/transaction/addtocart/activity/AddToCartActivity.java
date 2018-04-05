@@ -787,7 +787,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             presenter.addToCartService(this, atcReceiver, createFinalOrderData());
             presenter.sendAppsFlyerATC(this, orderData);
 
-            processCartAnalytics(mProductDetail);
+            //processCartAnalytics(mProductDetail);
         }
     }
 

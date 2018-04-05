@@ -441,7 +441,11 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         product.setCategoryId(productCartPass.getCategoryId());
         product.setHomeAttribution(productCartPass.getTrackerAttribution());
         product.setList(productCartPass.getListName());
-        UnifyTracking.eventAddToCartPurchase(product);
+        GTMCart gtmCart = new GTMCart();
+        gtmCart.addProduct(product.getProduct());
+        gtmCart.setCurrencyCode("IDR");
+        gtmCart.setAddAction(GTMCart.ADD_ACTION);
+        UnifyTracking.eventATCSuccess(gtmCart);
     }
 
     @Override
