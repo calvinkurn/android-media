@@ -17,6 +17,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.CacheGetFingerprintUseCase;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -34,10 +35,10 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
     private LocationRequest locationRequest;
     private Context context;
     boolean isConnected;
-    private GlobalCacheManager globalCacheManager;
+    private LocalCacheHandler localCacheHandler;
 
     public LocationUtils(Context ctx) {
-        globalCacheManager = new GlobalCacheManager();
+        localCacheHandler = new LocalCacheHandler(ctx, CacheGetFingerprintUseCase.FINGERPRINT_KEY_NAME);
         context = ctx;
     }
 
@@ -64,7 +65,7 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
-        globalCacheManager.delete(CacheGetFingerprintUseCase.FINGERPRINT_USE_CASE);
+        localCacheHandler.clearCache(CacheGetFingerprintUseCase.FINGERPRINT_USE_CASE);
         LocationCache.saveLocation(context, location);
         removeLocationUpdates();
     }
