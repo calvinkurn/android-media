@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.activities.session;
 
 import android.app.Activity;
 import android.app.Instrumentation;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -18,12 +17,12 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiSelector;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.webkit.WebView;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenSource;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.libraries.cloudtesting.screenshots.ScreenShotter;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -36,22 +35,19 @@ import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.network.SessionUrl;
-import com.tokopedia.session.google.GoogleSignInActivity;
-import com.tokopedia.tkpd.BaseJsonFactory;
 import com.tokopedia.sellerapp.RxJavaTestPlugins;
-import com.tokopedia.tkpd.BuildConfig;
-import com.tokopedia.tkpd.Utils;
-import com.tokopedia.tkpd.WebViewIdlingResource;
-import com.tokopedia.tkpd.activities.session.modules.TestSessionModule;
+import com.tokopedia.session.R;
+import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
+import com.tokopedia.tkpd.BaseJsonFactory;
 import com.tokopedia.tkpd.ConsumerMainApplication;
-import com.tokopedia.session.R;
+import com.tokopedia.tkpd.Utils;
+import com.tokopedia.tkpd.WebViewIdlingResource;
+import com.tokopedia.tkpd.activities.session.modules.TestSessionModule;
 import com.tokopedia.usecase.RequestParams;
-
-import com.google.android.libraries.cloudtesting.screenshots.ScreenShotter;
 
 import org.junit.After;
 import org.junit.Before;
@@ -86,17 +82,13 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasCom
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.tokopedia.tkpd.Utils.changeScreenOrientation;
-import static com.tokopedia.tkpd.Utils.childAtPosition;
 import static com.tokopedia.tkpd.Utils.matchToolbarTitle;
 import static com.tokopedia.tkpd.Utils.nthChildOf;
 import static com.tokopedia.tkpd.Utils.snackbarAnyMatcher;
 import static com.tokopedia.tkpd.Utils.snackbarMatcher;
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -191,7 +183,7 @@ public class LoginActivityTest {
         baseJsonFactory = new BaseJsonFactory(InstrumentationRegistry.getContext());
 
         // prevent auto complete textview in here
-        new LocalCacheHandler(application, SessionModule.LOGIN_CACHE).clearCache( SessionModule.LOGIN_CACHE);
+        new LocalCacheHandler(application, SessionModule.LOGIN_CACHE).clearCache(SessionModule.LOGIN_CACHE);
 
 
         /**
@@ -199,7 +191,7 @@ public class LoginActivityTest {
          * Terjadi kesalahan koneksi : different base64 implementation.
          * EncoderDecoder.Decrypt(SessionHandler.getRefreshToken(context), SessionHandler.getRefreshTokenIV(context))
          */
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             SessionHandler sessionHandler = new SessionHandler(application);
             sessionHandler.setToken("lalala",
                     "zzzzz",
@@ -269,7 +261,7 @@ public class LoginActivityTest {
         ScreenShotter.takeScreenshot("screenshot_btn_load_more", mIntentsRule.getActivity());
 
         UiObject plusButton = device.findObject(new UiSelector().resourceId("com.tokopedia.tkpd:id/btn_load_more"));
-        if(plusButton.exists())
+        if (plusButton.exists())
             onView(withId(R.id.btn_load_more)).perform(click());
 
         Thread.sleep(3_000);
@@ -284,7 +276,7 @@ public class LoginActivityTest {
         // waiting all url to be finished
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
         final WebView webview = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
-        if (webview != null ) {
+        if (webview != null) {
             try {
                 mIntentsRule.getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -320,7 +312,6 @@ public class LoginActivityTest {
         ScreenShotter.takeScreenshot("dismiss_dialog", mIntentsRule.getActivity());
 
 
-
         Thread.sleep(1_000);
 
         Thread.sleep(2000);
@@ -345,7 +336,7 @@ public class LoginActivityTest {
                         3));
 
         UiObject plusButton = device.findObject(new UiSelector().resourceId("com.tokopedia.tkpd:id/btn_load_more"));
-        if(plusButton.exists())
+        if (plusButton.exists())
             onView(withId(R.id.btn_load_more)).perform(click());
 
 
@@ -387,9 +378,6 @@ public class LoginActivityTest {
      */
     @Test
     public void testYahooReLogin() throws Exception {
-
-
-
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("relogin.json")));
         server3.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
@@ -409,7 +397,7 @@ public class LoginActivityTest {
         ScreenShotter.takeScreenshot("1", mIntentsRule.getActivity());
 
         UiObject plusButton = device.findObject(new UiSelector().resourceId("com.tokopedia.tkpd:id/btn_load_more"));
-        if(plusButton.exists())
+        if (plusButton.exists())
             onView(withId(R.id.btn_load_more)).perform(click());
 
         Thread.sleep(3_000);
@@ -424,7 +412,7 @@ public class LoginActivityTest {
         // waiting all url to be finished
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
         final WebView webview = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
-        if (webview != null ) {
+        if (webview != null) {
             try {
                 mIntentsRule.getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -472,7 +460,7 @@ public class LoginActivityTest {
         // waiting all url to be finished
         dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
         final WebView webview2 = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
-        if (webview != null ) {
+        if (webview != null) {
             try {
                 mIntentsRule.getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -519,7 +507,7 @@ public class LoginActivityTest {
 
         ScreenShotter.takeScreenshot("screenshot_btn_load_more", mIntentsRule.getActivity());
 
-        if(isFirstTime)
+        if (isFirstTime)
             onView(withId(R.id.btn_load_more)).perform(click());
 
 
@@ -535,9 +523,9 @@ public class LoginActivityTest {
         // waiting all url to be finished
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
 
-        if(isFirstTime){
+        if (isFirstTime) {
             final WebView webview = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
-            if (webview != null ) {
+            if (webview != null) {
                 try {
                     mIntentsRule.getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -573,16 +561,16 @@ public class LoginActivityTest {
         ScreenShotter.takeScreenshot("dismiss_dialog", mIntentsRule.getActivity());
 
 
-
         Thread.sleep(1_000);
     }
 
     /**
      * test_id : {"FB/002", "FB/003"}
+     *
      * @throws Exception
      */
     @Test
-    public void testFacebookLogin() throws Exception{
+    public void testFacebookLogin() throws Exception {
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("info.json")));
@@ -591,9 +579,9 @@ public class LoginActivityTest {
         startLoginActivity();
 
         Fragment fragment = mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
-        if(fragment != null && fragment.isVisible()){
+        if (fragment != null && fragment.isVisible()) {
             TestSessionModule testSessionModule = new TestSessionModule();
-            ((LoginFragment)fragment).initOuterInjector(testSessionModule);
+            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
 
             AccessTokenSource accessTokenSource = AccessTokenSource.CLIENT_TOKEN;
 
@@ -636,10 +624,11 @@ public class LoginActivityTest {
 
     /**
      * test_id : {"FB/009"}
+     *
      * @throws Exception
      */
     @Test
-    public void testFacebookLoginGoToRegisterPage() throws Exception{
+    public void testFacebookLoginGoToRegisterPage() throws Exception {
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("info_go_to_create_password.json")));
@@ -647,9 +636,9 @@ public class LoginActivityTest {
         startLoginActivity();
 
         Fragment fragment = mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
-        if(fragment != null && fragment.isVisible()){
+        if (fragment != null && fragment.isVisible()) {
             TestSessionModule testSessionModule = new TestSessionModule();
-            ((LoginFragment)fragment).initOuterInjector(testSessionModule);
+            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
 
             AccessTokenSource accessTokenSource = AccessTokenSource.CLIENT_TOKEN;
 
@@ -694,18 +683,19 @@ public class LoginActivityTest {
 
     /**
      * test_id : {"FB/004","FB/005","FB/007","FB/008",,"FB/013"}
+     *
      * @throws Exception
      */
     @Test
-    public void testFacebookLoginFailed() throws Exception{
+    public void testFacebookLoginFailed() throws Exception {
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
 
         startLoginActivity();
 
         Fragment fragment = mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
-        if(fragment != null && fragment.isVisible()){
+        if (fragment != null && fragment.isVisible()) {
             TestSessionModule testSessionModule = new TestSessionModule();
-            ((LoginFragment)fragment).initOuterInjector(testSessionModule);
+            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
 
             doAnswer(new Answer() {
                 @Override
@@ -736,10 +726,11 @@ public class LoginActivityTest {
      * test_id : {"FB/014"}
      * somehow this test require more hit than necessary codes.
      * expected : shouldn't evolved any UI.
+     *
      * @throws Exception
      */
     @Test
-    public void testFacebookReLogin() throws Exception{
+    public void testFacebookReLogin() throws Exception {
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("relogin.json")));
         server3.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
@@ -752,9 +743,9 @@ public class LoginActivityTest {
         startLoginActivity();
 
         Fragment fragment = mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
-        if(fragment != null && fragment.isVisible()){
+        if (fragment != null && fragment.isVisible()) {
             TestSessionModule testSessionModule = new TestSessionModule();
-            ((LoginFragment)fragment).initOuterInjector(testSessionModule);
+            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
 
             AccessTokenSource accessTokenSource = AccessTokenSource.CLIENT_TOKEN;
 
@@ -807,10 +798,11 @@ public class LoginActivityTest {
 
     /**
      * test_id : {"GP/001","GP/003","GP/004","GP/013","GP/014"}
+     *
      * @throws Exception
      */
     @Test
-    public void testGoogleLogin() throws Exception{
+    public void testGoogleLogin() throws Exception {
         Intent resultData = new Intent();
         Bundle bundle = new Bundle();
         GoogleSignInAccount account = mock(GoogleSignInAccount.class);
@@ -846,10 +838,11 @@ public class LoginActivityTest {
 
     /**
      * test_id {"GP/012", "GP/005"}
+     *
      * @throws Exception
      */
     @Test
-    public void testCancelGoogleLogin() throws Exception{
+    public void testCancelGoogleLogin() throws Exception {
         Instrumentation.ActivityResult result =
                 new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null);
 
@@ -873,10 +866,11 @@ public class LoginActivityTest {
 
     /**
      * test_id {"GP/017"}
+     *
      * @throws Exception
      */
     @Test
-    public void testGoogleRelogin() throws Exception{
+    public void testGoogleRelogin() throws Exception {
         Intent resultData = new Intent();
         Bundle bundle = new Bundle();
         GoogleSignInAccount account = mock(GoogleSignInAccount.class);
@@ -924,10 +918,11 @@ public class LoginActivityTest {
 
     /**
      * test_id {"TL/001","TL/002"}
+     *
      * @throws Exception
      */
     @Test
-    public void testTokopediaLoginEnterSecurityQuestion() throws Exception{
+    public void testTokopediaLoginEnterSecurityQuestion() throws Exception {
         preparePartialSmartLockBundle();
 
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
@@ -946,7 +941,7 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void testTokopediaLoginEmailNotActivated() throws Exception{
+    public void testTokopediaLoginEmailNotActivated() throws Exception {
         preparePartialSmartLockBundle();
 
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
@@ -966,10 +961,11 @@ public class LoginActivityTest {
 
     /**
      * test_id {"TL/003"}
+     *
      * @throws Exception
      */
     @Test
-    public void testFailedTokopediaLogin() throws Exception{
+    public void testFailedTokopediaLogin() throws Exception {
         preparePartialSmartLockBundle();
 
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
@@ -988,7 +984,7 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void testVerifyEmailTokopediaLogin() throws Exception{
+    public void testVerifyEmailTokopediaLogin() throws Exception {
         preparePartialSmartLockBundle();
 
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
@@ -1002,7 +998,7 @@ public class LoginActivityTest {
         ViewInteraction loginTextView = onView(
                 nthChildOf(nthChildOf(nthChildOf(nthChildOf(
                         withId(R.id.wrapper_email),
-                        0),2),0),1));
+                        0), 2), 0), 1));
         loginTextView.check(matches(withText(R.string.error_field_required)));
 
         onView(withId(R.id.email_auto)).perform(typeText("cincin.jati+47tokopedia.com"));
@@ -1013,7 +1009,7 @@ public class LoginActivityTest {
         ViewInteraction passwordTextView = onView(
                 nthChildOf(nthChildOf(nthChildOf(nthChildOf(
                         withId(R.id.wrapper_password),
-                        0),2),0),1));
+                        0), 2), 0), 1));
 
         onView(withId(R.id.password)).perform(clearText());
         onView(withId(R.id.accounts_sign_in)).check(matches(isDisplayed())).perform(click());
