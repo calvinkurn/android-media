@@ -15,7 +15,7 @@ import rx.Observable;
 
 public class ChangeNameUseCase extends UseCase<ChangeNameViewModel> {
     private final static String PARAM_USER_ID = "user_id";
-    private final static String PARAM_NAME = "fullname";
+    public final static String PARAM_NAME = "fullname";
 
     private final ChangeNameSource changeNameSource;
 

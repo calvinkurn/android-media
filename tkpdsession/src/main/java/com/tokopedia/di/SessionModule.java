@@ -464,8 +464,9 @@ SessionModule {
     @SessionScope
     @Provides
     ChangeNameSource provideChangeNameSource(@Named(BEARER_SERVICE) AccountsService service,
-                                             ChangeNameMapper changeNameMapper) {
-        return new ChangeNameSource(service, changeNameMapper);
+                                             ChangeNameMapper changeNameMapper,
+                                             GlobalCacheManager cacheManager) {
+        return new ChangeNameSource(service, changeNameMapper, cacheManager);
     }
 
     @SessionScope
