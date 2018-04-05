@@ -227,7 +227,9 @@ ext {
             mitraToppers    : ":features:fintech:mitra_toppers",
             event           : ":tkpdevents",
             home            : ":tkpdhome",
-            content         : ":tkpdcontent"
+            content         : ":tkpdcontent",
+            groupchat       : ":features:user:groupchat"
+
     ]
 
     libraries = [

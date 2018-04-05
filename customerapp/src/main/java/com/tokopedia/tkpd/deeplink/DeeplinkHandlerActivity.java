@@ -15,7 +15,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -46,8 +45,8 @@ import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
-import com.tokopedia.tkpdstream.common.applink.StreamApplinkModule;
-import com.tokopedia.tkpdstream.common.applink.StreamApplinkModuleLoader;
+import com.tokopedia.groupchat.common.applink.GroupChatApplinkModule;
+import com.tokopedia.groupchat.common.applink.GroupChatApplinkModuleLoader;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModule;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
@@ -76,7 +75,7 @@ import io.branch.referral.BranchError;
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
         LoyaltyAppLinkModule.class,
-        StreamApplinkModule.class
+        GroupChatApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -100,7 +99,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new TokoCashApplinkModuleLoader(),
                 new EventsDeepLinkModuleLoader(),
                 new LoyaltyAppLinkModuleLoader(),
-                new StreamApplinkModuleLoader()
+                new GroupChatApplinkModuleLoader()
         );
     }
 
