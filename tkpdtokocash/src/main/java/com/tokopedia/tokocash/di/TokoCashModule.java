@@ -4,8 +4,12 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.accountsetting.data.AccountSettingRepository;
@@ -66,13 +70,20 @@ public class TokoCashModule {
     @Provides
     @OkHttpTokoCashQualifier
     OkHttpClient provideOkHttpClient(TokoCashAuthInterceptor tokoCashAuthInterceptor, Gson gson, @ApplicationContext Context context) {
-        return new OkHttpClient.Builder()
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(tokoCashAuthInterceptor)
                 .addInterceptor(new TokoCashErrorResponseInterceptor(TokoCashErrorResponse.class, gson))
                 .addInterceptor(new TokoCashErrorResponseInterceptor(ActivateTokoCashErrorResponse.class, gson))
-                .addInterceptor(new ChuckInterceptor(context))
-                .addInterceptor(new DebugInterceptor())
-                .build();
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            LocalCacheHandler cache = new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
+            Boolean allowLogOnNotification = cache.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false);
+            builder.addInterceptor(new ChuckInterceptor(MainApplication.getAppContext())
+                    .showNotification(allowLogOnNotification));
+            builder.addInterceptor(new DebugInterceptor());
+        }
+
+        return builder.build();
     }
 
     @Provides
@@ -97,13 +108,20 @@ public class TokoCashModule {
     @OkHttpWalletQualifier
     OkHttpClient provideOkHttpClientWallet(WalletAuthInterceptor walletAuthInterceptor, Gson gson,
                                            WalletTokenRefresh walletTokenRefresh, WalletUserSession walletUserSession, @ApplicationContext Context context) {
-        return new OkHttpClient.Builder()
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(walletAuthInterceptor)
                 .addInterceptor(new WalletErrorResponseInterceptor(WalletErrorResponse.class, gson,
                         walletTokenRefresh, walletUserSession))
-                .addInterceptor(new ChuckInterceptor(context))
-                .addInterceptor(new DebugInterceptor())
-                .build();
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            LocalCacheHandler cache = new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
+            Boolean allowLogOnNotification = cache.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false);
+            builder.addInterceptor(new ChuckInterceptor(MainApplication.getAppContext())
+                    .showNotification(allowLogOnNotification));
+            builder.addInterceptor(new DebugInterceptor());
+        }
+
+        return builder.build();
     }
 
     @Provides
