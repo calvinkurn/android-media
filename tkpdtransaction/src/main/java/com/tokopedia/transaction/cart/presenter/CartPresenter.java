@@ -252,12 +252,20 @@ public class CartPresenter implements ICartPresenter {
                             messageSuccess = responseTransform.getMessageSuccess();
                         view.showToastMessage(messageSuccess);
                         for(int i = 0; i < canceledCartItem.getCartProducts().size(); i++) {
-                            cancelCartAnalytic(canceledCartItem.getCartProducts().get(i),
-                                    canceledCartItem);
+                            cancelCartAnalytic(
+                                    canceledCartItem.getCartProducts().get(i),
+                                    canceledCartItem,
+                                    String.valueOf(
+                                            canceledCartItem
+                                                    .getCartProducts()
+                                                    .get(i)
+                                                    .getProductQuantity())
+                            );
                         }
                         try {
                             processCartAnalytics(cartData);
                             trackCanceledCart(canceledCartItem);
+                            trackStep1CheckoutEE(getCheckoutTrackingData());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -300,10 +308,14 @@ public class CartPresenter implements ICartPresenter {
                         if (!responseTransform.getMessageSuccess().isEmpty())
                             messageSuccess = responseTransform.getMessageSuccess();
                         view.showToastMessage(messageSuccess);
-                        cancelCartAnalytic(canceledCartProduct, canceledCartItem);
+                        cancelCartAnalytic(
+                                canceledCartProduct,
+                                canceledCartItem,
+                                String.valueOf(canceledCartProduct.getProductQuantity()));
                         try {
                             processCartAnalytics(cartData);
                             trackCanceledProduct(canceledCartItem, canceledCartProduct);
+                            trackStep1CheckoutEE(getCheckoutTrackingData());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -354,18 +366,35 @@ public class CartPresenter implements ICartPresenter {
                             if (cartProductEditDataList.get(i).getOriginalQuantity()
                                     > cartProductEditDataList.get(i).getProductQuantity()) {
 
+                                String removedQuantity = String.valueOf(
+                                        cartProductEditDataList
+                                                .get(i)
+                                                .getOriginalQuantity()
+                                                - cartProductEditDataList
+                                                .get(i)
+                                                .getProductQuantity());
 
-                                cancelCartAnalytic(cartItem.getCartProducts().get(i), cartItem);
+                                cancelCartAnalytic(cartItem.getCartProducts().get(i),
+                                        cartItem,
+                                        removedQuantity);
 
                             } else if (cartProductEditDataList.get(i).getOriginalQuantity()
                                     < cartProductEditDataList.get(i).getProductQuantity()) {
 
-                                addToCartAnalytic(cartItem.getCartProducts().get(i), cartItem);
+                                String additionalQuantity = String.valueOf(
+                                        cartProductEditDataList.get(i).getProductQuantity()
+                                        - cartProductEditDataList.get(i).getOriginalQuantity());
+
+                                addToCartAnalytic(
+                                        cartItem.getCartProducts().get(i),
+                                        cartItem,
+                                        additionalQuantity);
 
                             }
                         }
                         try {
                             processCartAnalytics(cartData);
+                            trackStep1CheckoutEE(getCheckoutTrackingData());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -374,31 +403,37 @@ public class CartPresenter implements ICartPresenter {
 
     }
 
-    private void cancelCartAnalytic(CartProduct cartProduct, @NonNull CartItem canceledCartItem) {
-        Product analysisProduct = populateDataLayer(cartProduct);
+    private void cancelCartAnalytic(CartProduct cartProduct,
+                                    @NonNull CartItem canceledCartItem,
+                                    String removedQuantity) {
+        Product analysisProduct = populateDataLayer(cartProduct, removedQuantity);
         GTMCart gtmCart = new GTMCart();
         gtmCart.addProduct(analysisProduct.getProduct());
         gtmCart.setCurrencyCode("IDR");
         gtmCart.setAddAction(GTMCart.REMOVE_ACTION);
+        UnifyTracking.eventATCSuccess(gtmCart);
     }
 
-    private void addToCartAnalytic(CartProduct cartProduct, @NonNull CartItem canceledCartItem) {
-        Product analysisProduct = populateDataLayer(cartProduct);
+    private void addToCartAnalytic(CartProduct cartProduct,
+                                   @NonNull CartItem canceledCartItem,
+                                   String quantity) {
+        Product analysisProduct = populateDataLayer(cartProduct, quantity);
         GTMCart gtmCart = new GTMCart();
         gtmCart.addProduct(analysisProduct.getProduct());
         gtmCart.setCurrencyCode("IDR");
         gtmCart.setAddAction(GTMCart.ADD_ACTION);
+        UnifyTracking.eventATCSuccess(gtmCart);
     }
 
     @NonNull
-    private Product populateDataLayer(CartProduct cartProduct) {
+    private Product populateDataLayer(CartProduct cartProduct, String quantity) {
         Product analysisProduct = new Product();
         analysisProduct.setProductName(cartProduct.getProductName());
         analysisProduct.setProductID(cartProduct.getProductId());
         analysisProduct.setPrice(cartProduct.getProductPrice());
-        analysisProduct.setQty(cartProduct.getProductQuantity());
-        analysisProduct.setHomeAttribution(cartProduct.getProductTrackerData().getAttribution());
-        analysisProduct.setList(cartProduct.getProductTrackerData().getListDataName());
+        analysisProduct.setQty(quantity);
+        /*analysisProduct.setHomeAttribution(cartProduct.getProductTrackerData().getAttribution());
+        analysisProduct.setList(cartProduct.getProductTrackerData().getListDataName());*/
         return analysisProduct;
     }
 
@@ -440,6 +475,7 @@ public class CartPresenter implements ICartPresenter {
                         view.showToastMessage(messageSuccess);
                         try {
                             processCartAnalytics(cartData);
+                            trackStep1CheckoutEE(getCheckoutTrackingData());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
