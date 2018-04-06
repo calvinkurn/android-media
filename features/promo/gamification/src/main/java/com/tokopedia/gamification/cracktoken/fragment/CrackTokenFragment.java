@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.cracktoken.fragment;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -8,6 +9,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -210,7 +215,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 prevTimeStamp = 0;
             }
             stopTimer();
-            widgetTokenOnBoarding.hideHandOnBoarding();
+            widgetTokenOnBoarding.hideHandOnBoarding(false);
         }
     }
 
@@ -225,8 +230,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             @Override
             public void onClick() {
                 stopTimer();
-                widgetTokenOnBoarding.hideHandOnBoarding();
-                widgetTokenOnBoarding.saveSeenOnboardingPreference();
+                widgetTokenOnBoarding.hideHandOnBoarding(true);
                 TokenUser tokenUser = tokenData.getHome().getTokensUser();
                 crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
 
@@ -362,6 +366,24 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onSuccessCrackToken(final CrackResult crackResult) {
+        if ((crackResult.getImageBitmap() == null || crackResult.getImageBitmap().isRecycled()) &&
+                !TextUtils.isEmpty(crackResult.getImageUrl())) {
+            Glide.with(getContext())
+                    .load(crackResult.getImageUrl())
+                    .asBitmap()
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            crackResult.setImageBitmap(resource);
+                            showCrackWidgetSuccess(crackResult);
+                        }
+                    });
+        } else {
+            showCrackWidgetSuccess(crackResult);
+        }
+    }
+
+    private void showCrackWidgetSuccess(final CrackResult crackResult) {
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override

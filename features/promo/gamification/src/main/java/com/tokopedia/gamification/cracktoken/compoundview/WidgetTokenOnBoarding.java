@@ -185,11 +185,14 @@ public class WidgetTokenOnBoarding extends FrameLayout {
         set.start();
     }
 
-    public void hideHandOnBoarding() {
+    public void hideHandOnBoarding(boolean saveToPreference) {
         if (onboardingView != null) {
             set.cancel();
             this.removeView(onboardingView);
             this.removeView(ivOnboardingCircle);
+            if (saveToPreference) {
+                saveSeenOnboardingPreference();
+            }
         }
     }
 
@@ -198,7 +201,7 @@ public class WidgetTokenOnBoarding extends FrameLayout {
         return sharedPreferences.getBoolean(HAS_SEEN, false);
     }
 
-    public void saveSeenOnboardingPreference() {
+    private void saveSeenOnboardingPreference() {
         SharedPreferences.Editor editor = getSharedPref().edit();
         editor.putBoolean(HAS_SEEN, true);
         editor.apply();
