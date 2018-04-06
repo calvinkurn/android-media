@@ -59,8 +59,10 @@ import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -322,8 +324,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
-        long currentTime = new Date().getTime();
-        if (currentTime < sprintSaleViewModel.getStartDate()) {
+        if (getCurrentTime() < sprintSaleViewModel.getStartDate()) {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
                     R.drawable.bg_rounded_pink_label));
             sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
@@ -336,6 +337,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
             sprintSaleText.setText(getString(R.string.ongoing));
         }
+    }
+
+    private long getCurrentTime() {
+        Calendar cal = Calendar.getInstance();
+        TimeZone timeZone = cal.getTimeZone();
+        Date cals = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        long milliseconds = cals.getTime();
+        milliseconds = milliseconds + timeZone.getOffset(milliseconds);
+        long unixTimeStamp = milliseconds / 1000L;
+        return unixTimeStamp;
     }
 
     @Override
@@ -418,11 +429,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private boolean isValidSprintSale(SprintSaleViewModel sprintSaleViewModel) {
-        long currentTime = new Date().getTime();
         return sprintSaleViewModel != null
                 && sprintSaleViewModel.getStartDate() != 0
                 && sprintSaleViewModel.getEndDate() != 0
-                && sprintSaleViewModel.getEndDate() > currentTime;
+                && sprintSaleViewModel.getEndDate() > getCurrentTime();
     }
 
     @Override

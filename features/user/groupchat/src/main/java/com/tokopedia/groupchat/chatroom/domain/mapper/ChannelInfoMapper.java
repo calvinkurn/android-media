@@ -74,8 +74,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
             return new SprintSaleViewModel(
                     mapToListFlashSaleProducts(flashsale.getProducts()),
                     flashsale.getCampaignName() != null ? flashsale.getCampaignName() : "",
-                    flashsale.getStartDate(),
-                    flashsale.getEndDate(),
+                    flashsale.getStartDate() * 1000L,
+                    flashsale.getEndDate() * 1000L,
                     flashsale.getAppLink() != null ? flashsale.getAppLink() : "",
                     flashsale.getStatus() != null ? flashsale.getStatus() : ""
             );

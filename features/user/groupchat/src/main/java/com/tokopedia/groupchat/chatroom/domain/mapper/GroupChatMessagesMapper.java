@@ -47,7 +47,7 @@ public class GroupChatMessagesMapper {
     private static final String OPTION_TEXT = "Text";
     private static final String OPTION_IMAGE = "Image";
     private static final String FORMAT_DISCOUNT_LABEL = "%d%% OFF";
-    private static final String FLASHSALE_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
+    private static final String FLASHSALE_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
 
     @Inject
