@@ -31,7 +31,7 @@ def getAPKArchiveFolder(variant) {
 }
 
 def allowSplit() {
-    return gradle.startParameter.taskNames.contains("assembleRelease") &&
+    return gradle.startParameter.taskNames.contains("Release") &&
             (project.hasProperty('tkpdBuildType') && tkpdBuildType == "production");
 }
 
