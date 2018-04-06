@@ -132,7 +132,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         showFloatingEggAnimate(true);
     }
 
-    private void hideFloatingEggAnimate() {
+    public void hideFloatingEggAnimate() {
         if (vgFloatingEgg.getVisibility() == View.GONE || isHideAnimating) {
             return;
         }
@@ -168,7 +168,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         objectAnimator.start();
     }
 
-    private void showFloatingEggAnimate(boolean hasDelay) {
+    public void showFloatingEggAnimate(boolean hasDelay) {
         if (serverOffFlag) {
             return;
         }
