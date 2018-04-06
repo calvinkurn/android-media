@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/bg_white_outline_grey"
     android:orientation="vertical"
     android:padding="@dimen/padding_detail">
 
@@ -19,7 +19,7 @@
             android:layout_height="@dimen/promo_code_icon_height"
             android:layout_alignTop="@+id/tv_promo_code_label"
             app:srcCompat="@drawable/ic_coupon_promo"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription" /> />
 
         <TextView
             android:id="@+id/tv_promo_code_label"
@@ -30,16 +30,16 @@
             android:layout_toEndOf="@id/iv_promo_code_icon"
             android:layout_toRightOf="@id/iv_promo_code_icon"
             android:text="@string/label_promo_code_loyalty_module"
-            android:textColor="@color/black_38"
+            android:textColor="@color/grey_600"
             android:textSize="@dimen/font_small"
             tools:ignore="SmallSp" />
 
         <ImageView
             android:id="@+id/iv_tooltip_info"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:layout_marginStart="@dimen/margin_vs"
+            android:layout_height="@dimen/verified_icon_size"
+            android:layout_marginLeft="@dimen/padding_vs"
+            android:layout_marginStart="@dimen/padding_vs"
             android:layout_toEndOf="@id/tv_promo_code_label"
             android:layout_toRightOf="@id/tv_promo_code_label"
             app:srcCompat="@drawable/info_icon"
@@ -56,7 +56,7 @@
             android:id="@+id/fl_single_code_group_layout"
             android:layout_width="@dimen/code_container_width"
             android:layout_height="@dimen/code_container_height"
-            android:layout_marginTop="@dimen/margin_sm"
+            android:layout_marginTop="@dimen/margin_default"
             android:background="@drawable/round_button_left">
 
             <TextView

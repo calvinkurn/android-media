@@ -12,15 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_med"
-        android:background="@color/white"
+        android:background="@drawable/bg_white_outline_grey_except_bottom"
         android:baselineAligned="false"
         android:orientation="horizontal"
-        android:padding="@dimen/margin_default"
         android:weightSum="2">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_default"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -37,22 +37,29 @@
                 android:layout_marginBottom="@dimen/margin_padding_small"
                 android:gravity="center"
                 android:text="@string/label_period_promo_loyalty_module"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/font_small"
+                android:textColor="@color/grey_600" />
 
             <TextView
                 android:id="@+id/tv_promo_detail_period"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/font_medium"
+                android:textColor="@color/grey_800"
+                android:textSize="@dimen/font_small"
                 tools:text="20 - 30 Juni 2017" />
 
         </LinearLayout>
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@color/grey_200" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_default"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -69,22 +76,18 @@
                 android:layout_marginBottom="@dimen/margin_padding_small"
                 android:gravity="center"
                 android:text="@string/label_min_transaction_promo_loyalty_module"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/font_small"
+                android:textColor="@color/grey_600" />
 
             <TextView
                 android:id="@+id/tv_promo_detail_min_transaction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/font_medium"
+                android:textColor="@color/grey_800"
+                android:textSize="@dimen/font_small"
                 tools:text="Rp. 200.000" />
 
         </LinearLayout>
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/thin_line"
-        android:background="@color/grey_200" />
 </LinearLayout>

@@ -131,7 +131,6 @@ public class PromoDetailFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        this.llPromoDetailBottomLayout.setVisibility(View.VISIBLE);
         this.rvPromoDetailView.setAdapter(promoDetailAdapter);
         this.rvPromoDetailView.setLayoutManager(new LinearLayoutManager(getActivity()));
         this.rvPromoDetailView.setHasFixedSize(true);
@@ -253,6 +252,8 @@ public class PromoDetailFragment extends BaseDaggerFragment
     }
 
     private void setFragmentLayout(final PromoData promoData) {
+        this.llPromoDetailBottomLayout.setVisibility(View.VISIBLE);
+
         this.tvPromoDetailAction.setText(promoData.getCtaText());
         this.tvPromoDetailAction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -273,8 +274,12 @@ public class PromoDetailFragment extends BaseDaggerFragment
         });
     }
 
+    private void unsetFragmentLayout() {
+        this.llPromoDetailBottomLayout.setVisibility(View.GONE);
+    }
+
     private void handleErrorEmptyState(String message) {
-        if (refreshHandler.isRefreshing()) refreshHandler.finishRefresh();
+        if (this.refreshHandler.isRefreshing()) this.refreshHandler.finishRefresh();
 
         NetworkErrorHelper.showEmptyState(getActivity(), this.rlContainerLayout, message,
                 new NetworkErrorHelper.RetryClickedListener() {
@@ -288,6 +293,7 @@ public class PromoDetailFragment extends BaseDaggerFragment
     @Override
     public void onRefresh(View view) {
         this.promoDetailPresenter.getPromoDetail(promoSlug);
+        unsetFragmentLayout();
     }
 
     /**
