@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.gamification.ApplinkConstant;
+import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.fragment.CrackEmptyTokenFragment;
 import com.tokopedia.gamification.cracktoken.fragment.CrackTokenFragment;

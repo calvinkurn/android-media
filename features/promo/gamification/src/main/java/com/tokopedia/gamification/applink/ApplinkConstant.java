@@ -1,4 +1,4 @@
-package com.tokopedia.gamification;
+package com.tokopedia.gamification.applink;
 
 import com.tokopedia.abstraction.constant.TkpdAppLink;
 

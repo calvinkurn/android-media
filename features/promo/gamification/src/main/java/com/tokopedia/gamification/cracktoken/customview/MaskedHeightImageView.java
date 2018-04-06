@@ -60,6 +60,10 @@ public class MaskedHeightImageView extends android.support.v7.widget.AppCompatIm
         return percentMasked;
     }
 
+    public boolean isFullyHiddenByMask(){
+        return percentMasked == 0;
+    }
+
     @Override
     public void setImageBitmap(Bitmap bm) {
         super.setImageBitmap(bm);

@@ -38,9 +38,8 @@ import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenFloating;
-import com.tokopedia.gamification.floating.view.model.TokenHome;
 import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
-import com.tokopedia.gamification.util.ApplinkUtil;
+import com.tokopedia.gamification.applink.ApplinkUtil;
 
 import javax.inject.Inject;
 
@@ -345,11 +344,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         serverOffFlag = tokenData.getOffFlag();
         String sumTokenString = tokenData.getSumTokenStr();
 
-        TokenHome tokenHome = tokenData.getHome();
-        final String pageUrl = tokenHome.getButtonURL();
-        final String appLink = tokenHome.getButtonApplink();
-
         TokenFloating tokenFloating = tokenData.getFloating();
+        final String pageUrl = tokenFloating.getPageUrl();
+        final String appLink = tokenFloating.getApplink();
+
         long timeRemainingSeconds = tokenFloating.getTimeRemainingSeconds();
         boolean isShowTime = tokenFloating.getShowTime();
         String imageUrl = tokenFloating.getTokenAsset().getFloatingImgUrl();
