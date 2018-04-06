@@ -16,14 +16,14 @@
             android:id="@+id/date_picker_start_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margin_sm"
+            android:padding="@dimen/dp_15"
             app:date_picker_title="@string/label_date_picker_start_date"/>
 
         <com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView
             android:id="@+id/date_picker_end_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margin_sm"
+            android:padding="@dimen/dp_15"
             app:date_picker_title="@string/label_date_picker_end_date"/>
     </LinearLayout>
 

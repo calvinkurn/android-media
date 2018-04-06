@@ -791,6 +791,7 @@ public class CartPresenter implements ICartPresenter {
         view.renderButtonCheckVoucherListener();
         view.renderInstantPromo(data.getCartPromo());
         view.renderPromoView(data.getIsCouponActive() == 1);
+        view.renderPartialOrder(data.isEnableCancelPartial());
         if(promoAutoApplied(data)) {
             view.renderAutoApplyPromoView(data.getAutoApply());
         }

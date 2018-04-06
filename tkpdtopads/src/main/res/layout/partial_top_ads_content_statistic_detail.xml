@@ -16,28 +16,28 @@
         android:id="@+id/sent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:lv_font_size="@dimen/font_small"
+        app:lv_font_size="@dimen/sp_14"
         app:title="@string/label_top_ads_sent" />
 
     <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/impr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:lv_font_size="@dimen/font_small"
+        app:lv_font_size="@dimen/sp_14"
         app:title="@string/label_top_ads_impression" />
 
     <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/click"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:lv_font_size="@dimen/font_small"
+        app:lv_font_size="@dimen/sp_14"
         app:title="@string/label_top_ads_click" />
 
     <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/ctr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:lv_font_size="@dimen/font_small"
+        app:lv_font_size="@dimen/sp_14"
         app:title="@string/topads_label_title_percentation_detail" />
 
     <com.tokopedia.seller.common.widget.LabelView
@@ -45,6 +45,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/topads_detail_padding_item"
-        app:lv_font_size="@dimen/font_small"
+        app:lv_font_size="@dimen/sp_14"
         app:title="@string/label_top_ads_favorite" />
 </merge>

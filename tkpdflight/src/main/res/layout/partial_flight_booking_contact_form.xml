@@ -8,17 +8,17 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/padding_small"
+    android:paddingBottom="@dimen/dp_10"
     android:paddingLeft="@dimen/padding_16"
     android:paddingRight="@dimen/padding_16"
-    android:paddingTop="@dimen/padding_small">
+    android:paddingTop="@dimen/dp_10">
 
     <android.support.v7.widget.AppCompatTextView
         style="@style/TextView.TitleBig.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_sm"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_15"
         android:text="@string/flight_booking_contact_information" />
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -26,8 +26,8 @@
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_sm"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_5"
         android:hint="@string/flight_booking_contact_name_hint">
 
         <android.support.v7.widget.AppCompatEditText
@@ -49,8 +49,8 @@
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_sm"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_5"
         android:hint="@string/flight_booking_contact_email_hint">
 
         <android.support.v7.widget.AppCompatEditText
@@ -72,8 +72,8 @@
         android:id="@+id/contact_phone_number_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vs"
-        android:layout_marginTop="@dimen/margin_vs">
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_5">
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/contact_phone_number_label"
@@ -105,7 +105,7 @@
                     android:layout_marginTop="4dp"
                     android:background="@drawable/selectable_background_tokopedia"
                     app:drawableRightCompat="@drawable/ic_arrow_down_grey"
-                    android:drawablePadding="@dimen/padding_small"
+                    android:drawablePadding="@dimen/dp_10"
                     android:gravity="center_vertical"
                     android:includeFontPadding="false"
                     android:textAlignment="center"
@@ -125,9 +125,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="0dp"
-                android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_marginLeft="@dimen/dp_15"
                 android:layout_marginRight="0dp"
-                android:layout_marginStart="@dimen/margin_sm"
+                android:layout_marginStart="@dimen/dp_15"
                 android:digits="1234567890"
                 android:hint="@string/flight_booking_contact_telp_hint"
                 android:imeActionLabel="@string/label_done"
@@ -146,7 +146,7 @@
         style="@style/CardWarningStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_sm"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_15"
         android:text="@string/flight_booking_contact_information_card" />
 </LinearLayout>

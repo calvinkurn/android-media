@@ -128,6 +128,16 @@ public class CurrencyFormatUtil {
         return result.replace(",", ".");
     }
 
+    public static String convertPriceValue(double price, boolean useCommaForThousand) {
+        String formattedString;
+        if (useCommaForThousand) {
+            formattedString = commaFormat.format(price);
+        } else {
+            formattedString = dotFormat.format(price);
+        }
+        return formattedString;
+    }
+
     public static String convertPriceValueToIdrFormatNoSpace(int price) {
         return convertPriceValueToIdrFormat(price, false);
     }

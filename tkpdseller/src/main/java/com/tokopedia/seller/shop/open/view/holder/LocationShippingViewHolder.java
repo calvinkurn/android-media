@@ -10,8 +10,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
 import com.tokopedia.seller.shop.open.view.watcher.AfterTextWatcher;
 
 import java.util.ArrayList;

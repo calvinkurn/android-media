@@ -51,10 +51,10 @@ public class ReviewShopViewHolder extends ReviewProductContentViewHolder {
     }
 
     private void goToProductDetail(ReviewShopModelContent shopReviewModelContent) {
-        shopReviewHolderListener.onGoToDetailProduct(shopReviewModelContent.getProductId());
+        shopReviewHolderListener.onGoToDetailProduct(shopReviewModelContent.getProductId(), getAdapterPosition());
     }
 
     public interface ShopReviewHolderListener{
-        void onGoToDetailProduct(String productUrl);
+        void onGoToDetailProduct(String productUrl, int adapterPosition);
     }
 }

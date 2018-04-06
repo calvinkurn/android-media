@@ -90,6 +90,9 @@ public class CartData implements Parcelable {
     private int isCouponActive = 0;
     @SerializedName("autoapply")
     private AutoApply autoApply;
+    @SerializedName("enable_cancel_partial")
+    @Expose
+    private boolean enableCancelPartial;
 
     public String getGrandTotalWithoutLP() {
         return grandTotalWithoutLP;
@@ -307,6 +310,14 @@ public class CartData implements Parcelable {
         this.autoApply = autoApply;
     }
 
+    public boolean isEnableCancelPartial() {
+        return enableCancelPartial;
+    }
+
+    public void setEnableCancelPartial(boolean enableCancelPartial) {
+        this.enableCancelPartial = enableCancelPartial;
+    }
+
     public CartData() {
     }
 
@@ -345,6 +356,7 @@ public class CartData implements Parcelable {
         dest.writeParcelable(this.cartPromo, flags);
         dest.writeInt(this.isCouponActive);
         dest.writeParcelable(this.autoApply, flags);
+        dest.writeByte((byte) (enableCancelPartial ? 1 : 0));
     }
 
     protected CartData(Parcel in) {
@@ -375,6 +387,7 @@ public class CartData implements Parcelable {
         this.cartPromo = in.readParcelable(CartPromo.class.getClassLoader());
         this.isCouponActive = in.readInt();
         this.autoApply = in.readParcelable(AutoApply.class.getClassLoader());
+        this.enableCancelPartial = in.readByte() != 0;
     }
 
     public static final Creator<CartData> CREATOR = new Creator<CartData>() {
