@@ -24,7 +24,7 @@
     <string name="groupchat_action_exit">telah keluar dari chat</string>
     <string name="enter_event_group_chat">Masuk ke Event</string>
     <string name="thanks_voted_title">"Terima Kasih Telah Memilih!"</string>
-    <string name="has_voted">"Anda Telah Memilih!"</string>
+    <string name="has_voted">"Anda Hanya Bisa Vote 1 Kali"</string>
     <string name="wait_voting_winner_info">"Tunggu pengumuman pemenang setelah vote berakhir."</string>
 
     <string name="share_gplus">Google+</string>
