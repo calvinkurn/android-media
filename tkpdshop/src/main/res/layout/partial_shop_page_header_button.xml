@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="horizontal"
-    android:padding="@dimen/margin_ms"
-    android:layout_marginRight="@dimen/margin_ms"
+    android:padding="@dimen/dp_8"
+    android:layout_marginRight="@dimen/dp_8"
     android:showDividers="middle">
 
     <Button
@@ -17,8 +17,8 @@
         android:layout_weight="1"
         android:text="@string/shop_page_label_manage_shop"
         android:visibility="gone"
-        android:layout_marginEnd="@dimen/margin_ms"
-        android:layout_marginRight="@dimen/margin_ms"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
         tools:visibility="visible"/>
 
     <Button
@@ -36,8 +36,8 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:text="@string/shop_page_label_chat_to_seller"
-        android:layout_marginEnd="@dimen/margin_ms"
-        android:layout_marginRight="@dimen/margin_ms"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
         android:visibility="gone"/>
 
     <Button

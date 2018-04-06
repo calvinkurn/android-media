@@ -1,4 +1,4 @@
-package com.tokopedia.design.tab;
+package com.tokopedia.design.component;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,11 +10,6 @@ import com.tokopedia.design.R;
 
 /**
  * Created by meyta on 2/12/18.
- *
- * how to use?
- * xml : tabType=main (main, secondary)
- *
- * java : setTabType(Tabs.MAIN)
  *
  * important! please use app:tabTextAppearance="@style/Tabs.Main"
  * or @style/Tabs.Secondary

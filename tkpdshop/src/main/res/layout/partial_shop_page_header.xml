@@ -18,7 +18,7 @@
         <include
             layout="@layout/partial_shop_page_header_background"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/image_width_xxl" />
+            android:layout_height="@dimen/dp_96" />
 
         <include
             layout="@layout/partial_shop_page_header_title"

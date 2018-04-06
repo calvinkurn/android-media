@@ -9,22 +9,22 @@
         android:id="@+id/tv_location_bts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_default"
-        android:paddingEnd="@dimen/margin_default"
-        android:paddingStart="@dimen/margin_default"
+        android:layout_marginTop="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
         android:text="@string/rp_5980000"
         android:textColor="@color/black_70"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_day_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingEnd="@dimen/margin_default"
-        android:paddingStart="@dimen/margin_default"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
         android:text="@string/rp_5980000"
         android:textColor="@color/black_54"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/sp_14" />
 
 </LinearLayout>

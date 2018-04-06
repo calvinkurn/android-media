@@ -1,4 +1,4 @@
-package com.tokopedia.design.ticker;
+package com.tokopedia.design.component.ticker;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -14,9 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
