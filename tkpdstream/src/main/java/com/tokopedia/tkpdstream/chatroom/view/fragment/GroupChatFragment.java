@@ -20,7 +20,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +35,7 @@ import com.facebook.CallbackManager;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.PreviousMessageListQuery;
 import com.sendbird.android.SendBird;
+import com.sendbird.android.User;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -409,7 +409,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 public void onClick(View v) {
                     if (!TextUtils.isEmpty(replyEditText.getText().toString().trim())) {
                         PendingChatViewModel pendingChatViewModel = new PendingChatViewModel
-                                (replyEditText.getText().toString(),
+                                (presenter.checkText(replyEditText.getText().toString()),
                                         userSession.getUserId(),
                                         userSession.getName(),
                                         userSession.getProfilePicture(),
@@ -984,8 +984,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     @Override
-    public void onUserBanned() {
-        onUserBanned(getString(R.string.user_is_banned));
+    public void onUserBanned(User user) {
+        if (user != null
+                && !TextUtils.isEmpty(user.getUserId())
+                && userSession.getUserId().equals(user.getUserId())) {
+            onUserBanned(getString(R.string.user_is_banned));
+        }
     }
 
     @Override
