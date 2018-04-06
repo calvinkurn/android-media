@@ -9,15 +9,15 @@
         android:id="@+id/view_separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/large_icon_size"
+        android:layout_marginTop="@dimen/dp_48"
         android:background="@color/grey_300"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
         android:id="@+id/close_button"
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size"
+        android:layout_width="@dimen/dp_36"
+        android:layout_height="@dimen/dp_36"
         app:layout_constraintBottom_toTopOf="@+id/view_separator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

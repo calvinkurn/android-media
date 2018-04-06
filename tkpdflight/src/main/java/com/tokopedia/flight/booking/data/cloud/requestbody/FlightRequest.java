@@ -25,6 +25,12 @@ public class FlightRequest {
     @SerializedName("combo_key")
     @Expose
     private String comboKey;
+    @SerializedName("price")
+    @Expose
+    private int price;
+    @SerializedName("price_currency")
+    @Expose
+    private int priceCurrency;
     @SerializedName("destination")
     @Expose
     private List<CartAirportRequest> destinations;
@@ -78,5 +84,21 @@ public class FlightRequest {
 
     public void setDestinations(List<CartAirportRequest> destinations) {
         this.destinations = destinations;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public int getPriceCurrency() {
+        return priceCurrency;
+    }
+
+    public void setPriceCurrency(int priceCurrency) {
+        this.priceCurrency = priceCurrency;
     }
 }

@@ -28,7 +28,7 @@ public class TopAdsConstant {
     public static final int MAX_DATE_RANGE = 60;
 
     public static final int BUDGET_KEYWORD_MAX = 10_000;
-    public static final int BUDGET_MAX = 2000;
+    public static final int BUDGET_MAX = 5000;
     public static final int BUDGET_MULTIPLE_BY = 50;
     public static final int BUDGET_KEYWORD_MULTIPLE_BY = 1000;
     public static final int BUDGET_MIN_MULTIPLE_BY = 10;

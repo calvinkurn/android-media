@@ -7,8 +7,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -166,12 +164,18 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     @Override
     public void onShopItemClicked(int position, Data data) {
-        presenter.openShopTopAds(data.getShopClickUrl(), data.getShop());
+        Shop shop = data.getShop();
+        shop.setAdRefKey(data.getAdRefKey());
+        shop.setAdId(data.getId());
+        presenter.openShopTopAds(position, data.getShopClickUrl(), shop);
     }
 
     @Override
     public void onProductItemClicked(int position, Data data) {
-        presenter.openProductTopAds(data.getProductClickUrl(), data.getProduct());
+        Product product = data.getProduct();
+        product.setAdRefKey(data.getAdRefKey());
+        product.setAdId(data.getId());
+        presenter.openProductTopAds(position, data.getProductClickUrl(), product);
     }
 
     @Override
@@ -182,16 +186,16 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     }
 
     @Override
-    public void notifyProductClickListener(Product product) {
+    public void notifyProductClickListener(int position, Product product) {
         if (adsItemClickListener != null) {
-            adsItemClickListener.onProductItemClicked(product);
+            adsItemClickListener.onProductItemClicked(position, product);
         }
     }
 
     @Override
-    public void notifyShopClickListener(Shop shop) {
+    public void notifyShopClickListener(int position, Shop shop) {
         if (adsItemClickListener != null) {
-            adsItemClickListener.onShopItemClicked(shop);
+            adsItemClickListener.onShopItemClicked(position, shop);
         }
     }
 

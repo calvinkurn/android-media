@@ -11,7 +11,7 @@
         android:id="@+id/shop_avatar"
         android:layout_width="@dimen/feed_user_ava"
         android:layout_height="@dimen/feed_user_ava"
-        android:layout_margin="@dimen/margin_small"
+        android:layout_margin="@dimen/dp_10"
         android:background="@drawable/feed_container_rounded_corners_border"
         tools:src="@drawable/ic_check_green_24dp" />
 
@@ -20,7 +20,7 @@
         android:layout_width="@dimen/ic_badge_size"
         android:layout_height="@dimen/ic_badge_size"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginRight="@dimen/dp_10"
         android:layout_marginTop="12dp"
         android:layout_toEndOf="@+id/shop_avatar"
         android:layout_toRightOf="@+id/shop_avatar"
@@ -33,7 +33,7 @@
         android:layout_width="@dimen/ic_badge_size"
         android:layout_height="@dimen/ic_badge_size"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginRight="@dimen/dp_10"
         android:layout_marginTop="12dp"
         android:layout_toEndOf="@+id/shop_avatar"
         android:layout_toRightOf="@+id/shop_avatar"
