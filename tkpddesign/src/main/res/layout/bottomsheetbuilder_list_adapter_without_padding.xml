@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/bottomsheet_list_item_height"
+    android:layout_height="@dimen/dp_48"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:gravity="center_vertical"
@@ -21,6 +21,6 @@
         android:gravity="center_vertical"
         android:maxLines="1"
         android:textColor="@color/colorSheetText"
-        android:textSize="@dimen/bottomsheet_item_textsize" />
+        android:textSize="@dimen/sp_16" />
 
 </LinearLayout>

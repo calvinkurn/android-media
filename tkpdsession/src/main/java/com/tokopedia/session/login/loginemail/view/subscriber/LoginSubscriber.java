@@ -79,7 +79,6 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
                     loginEmailDomain.getInfo().getGetUserInfoDomainData().getPhone());
         } else {
             view.dismissLoadingLogin();
-            view.resetToken();
             view.onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
     }
