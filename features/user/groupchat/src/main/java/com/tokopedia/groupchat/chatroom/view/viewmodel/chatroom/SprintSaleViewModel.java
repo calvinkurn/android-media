@@ -5,9 +5,7 @@ import android.os.Parcelable;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * @author by nisie on 3/26/18.
@@ -33,9 +31,6 @@ public class SprintSaleViewModel implements Parcelable {
                                        redirectUrl, String sprintSaleType) {
         Locale localeID = new Locale("in", "ID");
         SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
-        Calendar cal = Calendar.getInstance();
-        TimeZone timeZone = cal.getTimeZone();
-        sdfHour.setTimeZone(timeZone);
         this.listProduct = listProduct;
         this.campaignName = campaignName;
         this.startDate = startDate;

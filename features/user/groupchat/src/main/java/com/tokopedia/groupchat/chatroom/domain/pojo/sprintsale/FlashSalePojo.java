@@ -19,10 +19,10 @@ public class FlashSalePojo {
     private String campaignShortName;
     @SerializedName("start_date")
     @Expose
-    private String startDate;
+    private long startDate;
     @SerializedName("end_date")
     @Expose
-    private String endDate;
+    private long endDate;
     @SerializedName("products")
     @Expose
     private List<Product> products = null;
@@ -39,11 +39,11 @@ public class FlashSalePojo {
         return campaignShortName;
     }
 
-    public String getStartDate() {
+    public long getStartDate() {
         return startDate;
     }
 
-    public String getEndDate() {
+    public long getEndDate() {
         return endDate;
     }
 

@@ -47,7 +47,7 @@ public class GroupChatMessagesMapper {
     private static final String OPTION_TEXT = "Text";
     private static final String OPTION_IMAGE = "Image";
     private static final String FORMAT_DISCOUNT_LABEL = "%d%% OFF";
-    private static final String FLASHSALE_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    private static final String FLASHSALE_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssX";
 
 
     @Inject
@@ -164,23 +164,10 @@ public class GroupChatMessagesMapper {
                 pojo.getAppLink() != null ? pojo.getAppLink() : "",
                 mapToListSprintSaleProducts(pojo.getProducts()),
                 pojo.getCampaignName() != null ? pojo.getCampaignName() : "",
-                convertToUnixTime(pojo.getStartDate()),
-                convertToUnixTime(pojo.getEndDate()),
+                pojo.getStartDate() * 1000L ,
+                pojo.getEndDate() * 1000L ,
                 message.getCustomType()
         );
-    }
-
-    private long convertToUnixTime(String dateStr) {
-        DateFormat formatter = new SimpleDateFormat(FLASHSALE_DATE_FORMAT, Locale.getDefault());
-        Date date = null;
-        try {
-            date = (Date) formatter.parse(dateStr);
-            return date.getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 0;
-
-        }
     }
 
     private ArrayList<SprintSaleProductViewModel> mapToListSprintSaleProducts(List<Product> pojo) {

@@ -49,8 +49,6 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnoun
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VibrateViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
@@ -59,10 +57,8 @@ import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -324,14 +320,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
-        if (getCurrentTime() < sprintSaleViewModel.getStartDate()) {
+        if (sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_UPCOMING)) {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
                     R.drawable.bg_rounded_pink_label));
             sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
             sprintSaleText.setText(String.format("%s - %s", sprintSaleViewModel
                     .getFormattedStartDate(), sprintSaleViewModel.getFormattedEndDate()));
             sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
-        } else {
+        } else if (sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_ACTIVE)) {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
                     R.drawable.bg_rounded_red_label));
             sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
@@ -340,13 +336,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private long getCurrentTime() {
-        Calendar cal = Calendar.getInstance();
-        TimeZone timeZone = cal.getTimeZone();
-        Date cals = Calendar.getInstance(TimeZone.getDefault()).getTime();
-        long milliseconds = cals.getTime();
-        milliseconds = milliseconds + timeZone.getOffset(milliseconds);
-        long unixTimeStamp = milliseconds / 1000L;
-        return unixTimeStamp;
+        return new Date().getTime() / 1000L;
     }
 
     @Override

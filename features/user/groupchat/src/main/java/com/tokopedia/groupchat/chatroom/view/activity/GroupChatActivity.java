@@ -27,6 +27,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,8 +50,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.design.card.ToolTipUtils;
-import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
+import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity;
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel;
 import com.tokopedia.groupchat.chatroom.GroupChatNotifInterface;
@@ -215,7 +216,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (!isEnabledGroupChatRoom()) {
             Intent intent = ((GroupChatModuleRouter) getApplicationContext()).getHomeIntent(this);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -1030,6 +1030,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     protected void onPause() {
+        if(viewModel!= null && viewModel.getChannelInfoViewModel() != null
+                && !TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getTitle()))
+        analytics.eventUserExit(viewModel.getChannelInfoViewModel().getTitle());
         if (tooltipHandler != null && runnable != null) {
             tooltipHandler.removeCallbacks(runnable);
         }

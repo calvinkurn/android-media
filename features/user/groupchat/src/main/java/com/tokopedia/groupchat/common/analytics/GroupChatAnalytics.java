@@ -45,6 +45,8 @@ public class GroupChatAnalytics {
     private static final String EVENT_ACTION_VIEW_COMPONENT = "view on component - ";
     public static final String EVENT_ACTION_CLICK_GROUP_CHAT = "click on groupchat";
     private static final String EVENT_ACTION_CLICK_LOYALTY_WIDGET = "click on loyalty widget";
+    private static final String EVENT_ACTION_LEAVE_ROOM = "leave room";
+
 
     private static final String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
     private static final String EVENT_NAME_CLICK_SHARE = "clickShare";
@@ -212,4 +214,11 @@ public class GroupChatAnalytics {
         return map;
     }
 
+    public void eventUserExit(String channelName) {
+        analyticTracker.sendEventTracking("",
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_LEAVE_ROOM,
+                ""
+        );
+    }
 }

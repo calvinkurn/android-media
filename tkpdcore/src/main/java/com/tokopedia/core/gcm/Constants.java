@@ -138,7 +138,7 @@ public interface Constants {
 
         String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
-        String GROUPCHAT = "tokopedia://group-chat/{channel_id}";
+        String GROUPCHAT = "tokopedia://groupchat/{channel_id}";
 
 
         interface SellerApp {
