@@ -25,6 +25,7 @@ import java.util.List;
  * modified by m.normansyah on 06/01/2015 - set item id to distinct items
  */
 public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<HistoryProductRecyclerViewAdapter.ViewHolder> {
+    private static final int MAX_PRODUCT = 3;
 
     private final FeedPlus.View viewListener;
     private List<RecentViewProductViewModel> data;
@@ -101,7 +102,7 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
 
     @Override
     public int getItemCount() {
-        if (data.size() > 3) return 3;
+        if (data.size() > MAX_PRODUCT) return MAX_PRODUCT;
         else return data.size();
     }
 

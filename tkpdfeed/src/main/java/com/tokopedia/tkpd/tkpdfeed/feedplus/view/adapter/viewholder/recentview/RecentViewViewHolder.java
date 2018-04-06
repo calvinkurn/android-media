@@ -17,6 +17,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentView
  */
 
 public class RecentViewViewHolder extends AbstractViewHolder<RecentViewViewModel> {
+    private static final int SPAN_COUNT = 3;
+
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_recent_view_product;
 
@@ -36,7 +38,9 @@ public class RecentViewViewHolder extends AbstractViewHolder<RecentViewViewModel
             }
         });
 
-        final LinearLayoutManager layoutManager = new GridLayoutManager(itemView.getContext(), 3);
+        final LinearLayoutManager layoutManager = new GridLayoutManager(
+                itemView.getContext(),
+                SPAN_COUNT);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new HistoryProductRecyclerViewAdapter(viewListener);
         recyclerView.setAdapter(adapter);

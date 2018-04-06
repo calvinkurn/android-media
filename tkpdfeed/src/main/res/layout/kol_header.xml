@@ -66,10 +66,10 @@
         android:layout_marginRight="@dimen/margin_sm"
         android:layout_marginEnd="@dimen/margin_sm"
         android:background="@drawable/bg_button_green"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_4"
+        android:paddingLeft="@dimen/dp_20"
+        android:paddingRight="@dimen/dp_20"
         android:gravity="center">
 
         <TextView
