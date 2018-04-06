@@ -1306,7 +1306,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
             viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
             tabAdapter.remove(CHANNEL_VOTE_FRAGMENT);
-            tabAdapter.notifyItemChanged(CHANNEL_VOTE_FRAGMENT);
+            tabAdapter.notifyItemRemoved(CHANNEL_VOTE_FRAGMENT);
             showFragment(CHATROOM_FRAGMENT);
         }
 
