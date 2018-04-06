@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/padding_vvs">
+    android:paddingBottom="@dimen/dp_3">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -22,8 +22,8 @@
         <TextView
             android:id="@+id/view_separator"
             style="@style/TextView.Micro.Bold"
-            android:layout_marginLeft="@dimen/margin_vvs"
-            android:layout_marginRight="@dimen/margin_vvs"
+            android:layout_marginLeft="@dimen/dp_3"
+            android:layout_marginRight="@dimen/dp_3"
             android:text=":" />
     </LinearLayout>
 

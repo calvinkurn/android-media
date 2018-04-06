@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,7 +11,7 @@
         android:id="@+id/shop_avatar"
         android:layout_width="@dimen/feed_user_ava"
         android:layout_height="@dimen/feed_user_ava"
-        android:layout_margin="@dimen/margin_small"
+        android:layout_margin="@dimen/dp_10"
         android:background="@drawable/feed_container_rounded_corners_border"
         tools:src="@drawable/ic_check_green_24dp" />
 
@@ -19,11 +20,11 @@
         android:layout_width="@dimen/ic_badge_size"
         android:layout_height="@dimen/ic_badge_size"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginRight="@dimen/dp_10"
         android:layout_marginTop="12dp"
         android:layout_toEndOf="@+id/shop_avatar"
         android:layout_toRightOf="@+id/shop_avatar"
-        android:src="@drawable/ic_gold"
+        app:srcCompat="@drawable/ic_gold"
         android:visibility="gone"
         tools:visibility="gone" />
 
@@ -32,11 +33,11 @@
         android:layout_width="@dimen/ic_badge_size"
         android:layout_height="@dimen/ic_badge_size"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginRight="@dimen/dp_10"
         android:layout_marginTop="12dp"
         android:layout_toEndOf="@+id/shop_avatar"
         android:layout_toRightOf="@+id/shop_avatar"
-        android:src="@drawable/ic_official"
+        app:srcCompat="@drawable/ic_official"
         android:visibility="gone"
         tools:visibility="gone" />
 

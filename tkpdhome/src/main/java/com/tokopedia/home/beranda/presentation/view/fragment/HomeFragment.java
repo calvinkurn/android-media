@@ -50,7 +50,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.tokocash.model.CashBackData;
@@ -83,11 +83,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         TokoCashUpdateListener, HomeFeedListener {
 
-    @Inject
-    HomePresenter presenter;
-
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
+    @Inject
+    HomePresenter presenter;
     private RecyclerView recyclerView;
     private TabLayout tabLayout;
     private CoordinatorLayout root;
@@ -283,8 +282,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void onGoToShop(String shopId) {
-        Intent intent = new Intent(getContext(), ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(shopId, ""));
+        Intent intent = ((IHomeRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
@@ -421,7 +419,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void resetFeedState() {
         presenter.resetPageFeed();
-        if (SessionHandler.isV4Login(getContext()) && feedLoadMoreTriggerListener != null) {
+        if (getContext() != null && SessionHandler.isV4Login(getContext()) && feedLoadMoreTriggerListener != null) {
             feedLoadMoreTriggerListener.resetState();
         }
     }
@@ -605,6 +603,44 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         Log.e(TAG, errorMessage);
     }
 
+    @Override
+    public void onRefreshTokoPointButtonClicked() {
+        presenter.onRefreshTokoPoint();
+    }
+
+    @Override
+    public void onRefreshTokoCashButtonClicked() {
+        presenter.onRefreshTokoCash();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        trackScreen(isVisibleToUser);
+        restartBanner(isVisibleToUser);
+    }
+
+    private void restartBanner(boolean isVisibleToUser) {
+        if ((isVisibleToUser && getView() != null) && adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void trackScreen(boolean isVisibleToUser) {
+        if (isVisibleToUser && isAdded() && getActivity() != null) {
+            ScreenTracking.screen(getScreenName());
+        }
+    }
+
+    @Override
+    public boolean isMainViewVisible() {
+        return getUserVisibleHint();
+    }
+
+    public void scrollToTop() {
+        if (recyclerView != null) recyclerView.scrollToPosition(0);
+    }
+
     public class HomeFragmentBroadcastReceiver extends BroadcastReceiver {
 
         @Override
@@ -634,42 +670,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         presenter.updateHeaderTokoCashPendingData(cashBackData);
                     break;
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA_ERROR:
-                    presenter.updateHeaderTokoCashData(null);
+                    presenter.onHeaderTokocashErrorFromBroadcast();
                     break;
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA_ERROR:
-                    presenter.updateHeaderTokoPointData(null);
+                    presenter.onHeaderTokopointErrorFromBroadcast();
                     break;
                 default:
                     break;
             }
         }
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        trackScreen(isVisibleToUser);
-        restartBanner(isVisibleToUser);
-    }
-
-    private void restartBanner(boolean isVisibleToUser) {
-        if ((isVisibleToUser && getView() != null) && adapter != null) {
-            adapter.notifyDataSetChanged();
-        }
-    }
-
-    private void trackScreen(boolean isVisibleToUser) {
-        if (isVisibleToUser && isAdded() && getActivity() != null) {
-            ScreenTracking.screen(getScreenName());
-        }
-    }
-
-    @Override
-    public boolean isMainViewVisible() {
-        return getUserVisibleHint();
-    }
-
-    public void scrollToTop() {
-        if (recyclerView != null) recyclerView.scrollToPosition(0);
     }
 }

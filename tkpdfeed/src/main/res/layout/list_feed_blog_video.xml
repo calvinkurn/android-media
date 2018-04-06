@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_vs"
-    android:layout_marginTop="@dimen/margin_vs"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="@dimen/dp_5"
+    android:layout_marginTop="@dimen/dp_5"
     android:background="@drawable/cards_ui_3"
     android:orientation="vertical">
 
@@ -14,7 +15,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:lineSpacingExtra="0sp"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:textColor="@color/black_70"
         android:textSize="16sp"
         android:textStyle="normal"
@@ -36,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:alpha="0.8"
-            android:src="@drawable/ic_play" />
+            app:srcCompat="@drawable/ic_play" />
 
     </RelativeLayout>
 
@@ -46,7 +47,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:lineSpacingExtra="7sp"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:textColor="@color/black_70"
         android:textSize="13sp"
         android:textStyle="normal"

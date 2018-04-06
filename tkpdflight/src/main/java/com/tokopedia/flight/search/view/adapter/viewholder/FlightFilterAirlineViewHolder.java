@@ -44,7 +44,7 @@ public class FlightFilterAirlineViewHolder extends BaseCheckableViewHolder<Airli
     @Override
     public void bind(AirlineStat airlineStat) {
         super.bind(airlineStat);
-        loadImageWithPlaceholder(ivLogo, airlineStat.getAirlineDB().getLogo(), R.drawable.ic_airline_default);
+        loadImageWithPlaceholder(ivLogo, airlineStat.getAirlineDB().getLogo(), VectorDrawableCompat.create(itemView.getResources(), R.drawable.ic_airline_default, itemView.getContext().getTheme()));
         tvTitle.setText(airlineStat.getAirlineDB().getName());
         tvDesc.setText(getString(R.string.start_from_x, airlineStat.getMinPriceString()));
         itemView.setOnClickListener(this);
@@ -60,18 +60,18 @@ public class FlightFilterAirlineViewHolder extends BaseCheckableViewHolder<Airli
         toggle();
     }
 
-    private void loadImageWithPlaceholder(ImageView imageview, String url, int resId) {
+    private void loadImageWithPlaceholder(ImageView imageview, String url, VectorDrawableCompat resId) {
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.getContext())
                     .load(url)
-                    .placeholder(VectorDrawableCompat.create(context.getResources(), resId, context.getTheme()))
+                    .placeholder(resId)
                     .dontAnimate()
                     .error(resId)
                     .into(imageview);
         } else {
             Glide.with(imageview.getContext())
                     .load(url)
-                    .placeholder(VectorDrawableCompat.create(context.getResources(), resId, context.getTheme()))
+                    .placeholder(resId)
                     .error(resId)
                     .into(imageview);
         }

@@ -207,6 +207,10 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                         tvTitle.setText(R.string.product_share_app);
                         subtitle.setText(R.string.product_share_app_subtitle);
                         break;
+                    case ShareData.REFERRAL_TYPE:
+                        tvTitle.setText(R.string.product_share_app);
+                        subtitle.setText(R.string.product_share_app_subtitle);
+                        break;
                 }
             }
         }

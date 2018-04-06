@@ -39,13 +39,13 @@ public interface RegisterInitial {
 
         void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData);
 
-        void clearToken();
-
         void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone);
 
         void onGoToPhoneVerification();
 
         GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener();
+
+        void onForbidden();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -57,8 +57,6 @@ public interface RegisterInitial {
         void getFacebookCredential(Fragment fragment, CallbackManager callbackManager);
 
         void registerFacebook(AccessToken accessToken);
-
-        void clearToken();
 
         void registerGoogle(String model);
     }

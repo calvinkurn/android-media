@@ -46,8 +46,14 @@ import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
+import com.tokopedia.tkpdstream.common.applink.StreamApplinkModule;
+import com.tokopedia.tkpdstream.common.applink.StreamApplinkModuleLoader;
+import com.tokopedia.tokocash.applink.TokoCashApplinkModule;
+import com.tokopedia.tokocash.applink.TokoCashApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
+import com.tokopedia.shop.applink.ShopAppLinkModule;
+import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 
 import org.json.JSONObject;
 
@@ -69,8 +75,11 @@ import io.branch.referral.BranchError;
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
         ReputationApplinkModule.class,
+        TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
-        LoyaltyAppLinkModule.class
+        LoyaltyAppLinkModule.class,
+        ShopAppLinkModule.class,
+        StreamApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -91,8 +100,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new FeedDeeplinkModuleLoader(),
                 new FlightApplinkModuleLoader(),
                 new ReputationApplinkModuleLoader(),
+                new TokoCashApplinkModuleLoader(),
                 new EventsDeepLinkModuleLoader(),
-                new LoyaltyAppLinkModuleLoader()
+                new LoyaltyAppLinkModuleLoader(),
+                new ShopAppLinkModuleLoader(),
+                new StreamApplinkModuleLoader()
         );
     }
 
@@ -129,21 +141,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         finish();
     }
 
-
-    @DeepLink(Constants.Applinks.SellerApp.SELLER_APP_HOME)
-    public static Intent getCallingIntentSellerAppHome(Context context, Bundle extras) {
-        Intent launchIntent = context.getPackageManager()
-                .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-
-        if (launchIntent == null) {
-            launchIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
-            );
-        }
-        return launchIntent;
-    }
-
-    @DeepLink({Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
+    @DeepLink({Constants.Applinks.SellerApp.SELLER_APP_HOME,
+            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
             Constants.Applinks.SellerApp.PRODUCT_ADD,
             Constants.Applinks.SellerApp.SALES,
             Constants.Applinks.SellerApp.TOPADS_CREDIT,
@@ -160,7 +159,10 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         if (launchIntent == null) {
             return RedirectCreateShopActivity.getCallingIntent(context);
         } else {
-            return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
+            launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
+            launchIntent.putExtras(extras);
+            launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+            return launchIntent;
         }
     }
 

@@ -32,6 +32,8 @@ public class Product {
     private static final String KEY_LABELS = "labels";
 
     private String id;
+    private String adRefKey;
+    private String adId;
     private String name;
     private ProductImage image;
     private String uri;
@@ -48,6 +50,9 @@ public class Product {
     private int productRating;
     private List<WholesalePrice> wholesalePrice = new ArrayList<>();
     private List<Label> labels = new ArrayList<>();
+
+    public Product() {
+    }
 
     public Product(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)){
@@ -243,5 +248,21 @@ public class Product {
 
     public void setProductRating(int productRating) {
         this.productRating = productRating;
+    }
+
+    public String getAdRefKey() {
+        return adRefKey;
+    }
+
+    public void setAdRefKey(String adRefKey) {
+        this.adRefKey = adRefKey;
+    }
+
+    public String getAdId() {
+        return adId;
+    }
+
+    public void setAdId(String adId) {
+        this.adId = adId;
     }
 }

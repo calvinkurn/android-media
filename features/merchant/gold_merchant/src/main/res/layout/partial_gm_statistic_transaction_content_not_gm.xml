@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/transaction_data_container_non_gold_merchant"
     android:layout_width="match_parent"
     android:layout_height="160dp"
     android:background="#CD000000"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/margin_med"
-    android:paddingLeft="@dimen/margin_vl"
-    android:paddingRight="@dimen/margin_vl"
-    android:paddingTop="@dimen/margin_med"
+    android:paddingBottom="@dimen/dp_20"
+    android:paddingLeft="@dimen/dp_40"
+    android:paddingRight="@dimen/dp_40"
+    android:paddingTop="@dimen/dp_20"
     android:visibility="gone">
 
     <LinearLayout
@@ -21,7 +22,7 @@
             android:layout_width="26dp"
             android:layout_height="32dp"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_lock_icon_again" />
+            app:srcCompat="@drawable/ic_lock_icon_again" />
 
         <TextView
             style="@style/TextView.Small.WhiteDisabled"

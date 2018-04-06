@@ -27,13 +27,13 @@ public interface ChooseTokocashAccount {
 
         void goToSecurityQuestion(AccountTokocash email, LoginTokoCashViewModel loginTokoCashViewModel);
 
+        void onForbidden();
+
         Context getContext();
     }
 
     interface Presenter extends CustomerPresenter<ChooseTokocashAccount.View> {
 
         void loginWithTokocash(String accessToken, AccountTokocash accountTokocash);
-
-        void clearToken();
     }
 }

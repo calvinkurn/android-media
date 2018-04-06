@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed;
 
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreDomain;
+import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.List;
 
@@ -43,6 +44,9 @@ public class ContentFeedDomain {
     private final List<InspirationDomain> inspirationDomains;
 
     @Nullable
+    private final List<Data> topAdsList;
+
+    @Nullable
     private final KolPostDomain kolPostDomain;
 
     @Nullable
@@ -61,6 +65,7 @@ public class ContentFeedDomain {
                              @Nullable List<OfficialStoreDomain> officialStores,
                              @Nullable List<TopPicksDomain> topPicksDomains,
                              @Nullable List<InspirationDomain> inspirationDomains,
+                             @Nullable List<Data> topAdsList,
                              @Nullable KolPostDomain kolPostDomain,
                              @Nullable KolRecommendationDomain kolRecommendations,
                              @Nullable FavoriteCtaDomain favoriteCtaDomain,
@@ -74,6 +79,7 @@ public class ContentFeedDomain {
         this.topPicksDomains = topPicksDomains;
         this.officialStores = officialStores;
         this.inspirationDomains = inspirationDomains;
+        this.topAdsList = topAdsList;
         this.kolPostDomain = kolPostDomain;
         this.kolRecommendations = kolRecommendations;
         this.favoriteCtaDomain = favoriteCtaDomain;
@@ -138,5 +144,10 @@ public class ContentFeedDomain {
     @Nullable
     public KolCtaDomain getKolCtaDomain() {
         return kolCtaDomain;
+    }
+
+    @Nullable
+    public List<Data> getTopAdsList() {
+        return topAdsList;
     }
 }

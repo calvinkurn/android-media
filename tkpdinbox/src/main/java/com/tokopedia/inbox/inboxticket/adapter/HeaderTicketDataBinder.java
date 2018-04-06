@@ -17,7 +17,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.customadapter.ImageUploadAdapter;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.LabelUtils;
@@ -155,9 +155,13 @@ public class HeaderTicketDataBinder extends DataBinder<HeaderTicketDataBinder.Vi
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, PeopleInfoNoDrawerActivity.class);
-                intent.putExtra("user_id", SessionHandler.getLoginID(context));
-                context.startActivity(intent);
+                if (context.getApplicationContext() instanceof TkpdInboxRouter) {
+                    context.startActivity(
+                            ((TkpdInboxRouter) context.getApplicationContext())
+                                    .getTopProfileIntent(context,
+                                            SessionHandler.getLoginID(context))
+                    );
+                }
             }
         };
     }

@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_small"
-    android:layout_marginLeft="@dimen/margin_vs"
-    android:layout_marginRight="@dimen/margin_vs"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="@dimen/dp_10"
+    android:layout_marginLeft="@dimen/dp_5"
+    android:layout_marginRight="@dimen/dp_5"
     android:background="@drawable/background_ads"
     android:orientation="vertical">
 
@@ -12,19 +13,19 @@
         android:id="@+id/container1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_vs"
+        android:layout_margin="@dimen/dp_5"
         android:background="@color/white"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_vs"
-        android:paddingRight="@dimen/padding_vs"
-        android:paddingTop="@dimen/padding_vs">
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_5"
+        android:paddingTop="@dimen/dp_5">
 
         <TextView
             android:id="@+id/title_most"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:paddingBottom="@dimen/padding_vs"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_5"
             android:text="Most Helpful Review"
             android:textSize="@dimen/font_medium"
             android:textStyle="bold" />
@@ -32,7 +33,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs">
+            android:layout_marginTop="@dimen/dp_5">
 
             <View
                 android:layout_width="3.3dp"
@@ -48,8 +49,8 @@
                 android:id="@+id/comment1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_vs"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_5"
                 android:ellipsize="end"
                 android:text="Comment Here\n\tComment Here\n\t\tComment There"
                 android:textSize="@dimen/font_medium" />
@@ -59,8 +60,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/img_thumb_holder"
                 android:layout_below="@id/comment1"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_vs"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_5"
                 android:scrollbars="horizontal"
                 android:visibility="visible" />
 
@@ -69,7 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/image_holder"
-                android:layout_marginTop="@dimen/margin_vs">
+                android:layout_marginTop="@dimen/dp_5">
 
                 <View
                     android:id="@+id/top_separator"
@@ -91,7 +92,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:layout_marginLeft="@dimen/dp_5"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
                         android:orientation="vertical">
@@ -101,7 +102,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginTop="@dimen/margin_vs"
+                            android:layout_marginTop="@dimen/dp_5"
                             android:gravity="center"
                             android:orientation="horizontal" />
 
@@ -109,19 +110,19 @@
                             android:id="@+id/label_quality"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_vs"
+                            android:layout_marginBottom="@dimen/dp_5"
                             android:gravity="center"
-                            android:paddingTop="@dimen/padding_vs"
+                            android:paddingTop="@dimen/dp_5"
                             android:text="@string/title_prod_quality"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
                     </LinearLayout>
 
                     <View
                         android:id="@+id/separator"
                         android:layout_width="0.5dp"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/margin_small"
-                        android:layout_marginRight="@dimen/margin_small"
+                        android:layout_marginLeft="@dimen/dp_10"
+                        android:layout_marginRight="@dimen/dp_10"
                         android:background="@color/grey_300" />
 
                     <LinearLayout
@@ -136,7 +137,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginTop="@dimen/margin_vs"
+                            android:layout_marginTop="@dimen/dp_5"
                             android:gravity="center"
                             android:orientation="horizontal" />
 
@@ -145,11 +146,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginBottom="@dimen/margin_vs"
+                            android:layout_marginBottom="@dimen/dp_5"
                             android:gravity="center"
-                            android:paddingTop="@dimen/padding_vs"
+                            android:paddingTop="@dimen/dp_5"
                             android:text="@string/title_accuracy"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
 
 
                     </LinearLayout>
@@ -169,9 +170,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_below="@id/footer"
-                android:layout_marginBottom="@dimen/margin_vs"
-                android:layout_marginLeft="@dimen/margin_vs"
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_5"
                 android:background="@color/label_color"
                 android:visibility="gone" />
 
@@ -182,7 +183,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <ImageView
                 android:id="@+id/user_avatar1"
@@ -199,7 +200,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/ic_new_action_overflow_black"
+                app:srcCompat="@drawable/ic_new_action_overflow_black"
                 android:visibility="gone" />
 
             <RelativeLayout
@@ -210,8 +211,8 @@
                 android:layout_toLeftOf="@+id/btn_overflow1"
                 android:layout_toRightOf="@+id/user_avatar1"
                 android:layout_toStartOf="@id/btn_overflow1"
-                android:paddingLeft="@dimen/padding_vs"
-                android:paddingRight="@dimen/padding_vs">
+                android:paddingLeft="@dimen/dp_5"
+                android:paddingRight="@dimen/dp_5">
 
                 <TextView
                     android:id="@+id/username1"
@@ -221,7 +222,7 @@
                     android:singleLine="true"
                     android:text="Username1"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
                 <TextView
                     android:id="@+id/date1"
@@ -237,7 +238,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/username1"
-                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:layout_marginBottom="@dimen/dp_5"
                     android:orientation="horizontal"
                     android:visibility="gone">
 
@@ -245,13 +246,13 @@
                         android:id="@+id/rep_icon1"
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
-                        android:src="@drawable/ic_icon_repsis_smile_active" />
+                        app:srcCompat="@drawable/ic_icon_repsis_smile_active" />
 
                     <TextView
                         android:id="@+id/rep_rating1"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:layout_marginLeft="@dimen/dp_5"
                         android:gravity="center_vertical"
                         android:text="40%"
                         android:textSize="@dimen/fontvs" />
@@ -269,7 +270,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/margin_vs"
+                        android:layout_marginRight="@dimen/dp_5"
                         android:text="@string/title_for" />
 
                     <TextView
@@ -292,20 +293,20 @@
         android:id="@+id/container2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vs"
-        android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_5"
         android:background="@color/white"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_vs"
-        android:paddingRight="@dimen/padding_vs"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_5"
         android:visibility="gone">
 
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small">
+            android:layout_marginTop="@dimen/dp_10">
 
             <View
                 android:layout_width="3.3dp"
@@ -321,9 +322,9 @@
                 android:id="@+id/comment2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/dp_10"
 
-                android:layout_marginRight="@dimen/margin_vs"
+                android:layout_marginRight="@dimen/dp_5"
                 android:ellipsize="end"
                 android:text="Comment Here\n\tComment Here\n\t\tComment There"
                 android:textSize="@dimen/font_medium" />
@@ -333,7 +334,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/comment2"
-                android:layout_marginTop="@dimen/margin_vs">
+                android:layout_marginTop="@dimen/dp_5">
 
                 <View
                     android:id="@+id/top_separator2"
@@ -355,7 +356,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:layout_marginLeft="@dimen/dp_5"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
                         android:orientation="vertical">
@@ -365,7 +366,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginTop="@dimen/margin_vs"
+                            android:layout_marginTop="@dimen/dp_5"
                             android:gravity="center"
                             android:orientation="horizontal" />
 
@@ -373,19 +374,19 @@
                             android:id="@+id/label_quality2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_vs"
+                            android:layout_marginBottom="@dimen/dp_5"
                             android:gravity="center"
-                            android:paddingTop="@dimen/padding_vs"
+                            android:paddingTop="@dimen/dp_5"
                             android:text="@string/title_prod_quality"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
                     </LinearLayout>
 
                     <View
                         android:id="@+id/separator2"
                         android:layout_width="0.5dp"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/margin_small"
-                        android:layout_marginRight="@dimen/margin_small"
+                        android:layout_marginLeft="@dimen/dp_10"
+                        android:layout_marginRight="@dimen/dp_10"
                         android:background="@color/grey_300" />
 
                     <LinearLayout
@@ -400,7 +401,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginTop="@dimen/margin_vs"
+                            android:layout_marginTop="@dimen/dp_5"
                             android:gravity="center"
                             android:orientation="horizontal" />
 
@@ -409,11 +410,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginBottom="@dimen/margin_vs"
+                            android:layout_marginBottom="@dimen/dp_5"
                             android:gravity="center"
-                            android:paddingTop="@dimen/padding_vs"
+                            android:paddingTop="@dimen/dp_5"
                             android:text="@string/title_accuracy"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
 
 
                     </LinearLayout>
@@ -433,9 +434,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_below="@id/footer2"
-                android:layout_marginBottom="@dimen/margin_vs"
-                android:layout_marginLeft="@dimen/margin_vs"
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_5"
                 android:background="@color/label_color"
                 android:visibility="gone" />
 
@@ -446,7 +447,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <ImageView
                 android:id="@+id/user_avatar2"
@@ -463,7 +464,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/ic_new_action_overflow_black"
+                app:srcCompat="@drawable/ic_new_action_overflow_black"
                 android:visibility="gone" />
 
             <RelativeLayout
@@ -474,8 +475,8 @@
                 android:layout_toLeftOf="@+id/btn_overflow2"
                 android:layout_toRightOf="@+id/user_avatar2"
                 android:layout_toStartOf="@id/btn_overflow2"
-                android:paddingLeft="@dimen/padding_vs"
-                android:paddingRight="@dimen/padding_vs">
+                android:paddingLeft="@dimen/dp_5"
+                android:paddingRight="@dimen/dp_5">
 
                 <TextView
                     android:id="@+id/username2"
@@ -485,7 +486,7 @@
                     android:singleLine="true"
                     android:text="Username2"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
                 <TextView
                     android:id="@+id/date2"
@@ -501,7 +502,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/username2"
-                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:layout_marginBottom="@dimen/dp_5"
                     android:orientation="horizontal"
                     android:visibility="gone">
 
@@ -509,13 +510,13 @@
                         android:id="@+id/rep_icon2"
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
-                        android:src="@drawable/ic_icon_repsis_smile_active" />
+                        app:srcCompat="@drawable/ic_icon_repsis_smile_active" />
 
                     <TextView
                         android:id="@+id/rep_rating2"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:layout_marginLeft="@dimen/dp_5"
                         android:gravity="center_vertical"
                         android:text="40%"
                         android:textSize="@dimen/fontvs" />
@@ -533,7 +534,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/margin_vs"
+                        android:layout_marginRight="@dimen/dp_5"
                         android:text="@string/title_for" />
 
                     <TextView
@@ -556,20 +557,20 @@
         android:id="@+id/container3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vs"
-        android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_5"
         android:background="@color/white"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_vs"
-        android:paddingRight="@dimen/padding_vs"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_5"
         android:visibility="gone">
 
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small">
+            android:layout_marginTop="@dimen/dp_10">
 
             <View
                 android:layout_width="3.3dp"
@@ -585,9 +586,9 @@
                 android:id="@+id/comment3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/dp_10"
 
-                android:layout_marginRight="@dimen/margin_vs"
+                android:layout_marginRight="@dimen/dp_5"
                 android:ellipsize="end"
                 android:text="Comment Here\n\tComment Here\n\t\tComment There"
                 android:textSize="@dimen/font_medium" />
@@ -597,7 +598,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/comment3"
-                android:layout_marginTop="@dimen/margin_vs">
+                android:layout_marginTop="@dimen/dp_5">
 
                 <View
                     android:id="@+id/top_separator3"
@@ -619,7 +620,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:layout_marginLeft="@dimen/dp_5"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
                         android:orientation="vertical">
@@ -629,7 +630,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginTop="@dimen/margin_vs"
+                            android:layout_marginTop="@dimen/dp_5"
                             android:gravity="center"
                             android:orientation="horizontal" />
 
@@ -637,19 +638,19 @@
                             android:id="@+id/label_quality3"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_vs"
+                            android:layout_marginBottom="@dimen/dp_5"
                             android:gravity="center"
-                            android:paddingTop="@dimen/padding_vs"
+                            android:paddingTop="@dimen/dp_5"
                             android:text="@string/title_prod_quality"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
                     </LinearLayout>
 
                     <View
                         android:id="@+id/separator3"
                         android:layout_width="0.5dp"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/margin_small"
-                        android:layout_marginRight="@dimen/margin_small"
+                        android:layout_marginLeft="@dimen/dp_10"
+                        android:layout_marginRight="@dimen/dp_10"
                         android:background="@color/grey_300" />
 
                     <LinearLayout
@@ -664,7 +665,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginTop="@dimen/margin_vs"
+                            android:layout_marginTop="@dimen/dp_5"
                             android:gravity="center"
                             android:orientation="horizontal" />
 
@@ -673,11 +674,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginBottom="@dimen/margin_vs"
+                            android:layout_marginBottom="@dimen/dp_5"
                             android:gravity="center"
-                            android:paddingTop="@dimen/padding_vs"
+                            android:paddingTop="@dimen/dp_5"
                             android:text="@string/title_accuracy"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
 
 
                     </LinearLayout>
@@ -697,9 +698,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_below="@id/footer3"
-                android:layout_marginBottom="@dimen/margin_vs"
-                android:layout_marginLeft="@dimen/margin_vs"
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_5"
                 android:background="@color/label_color"
                 android:visibility="gone" />
 
@@ -710,7 +711,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <ImageView
                 android:id="@+id/user_avatar3"
@@ -727,7 +728,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/ic_new_action_overflow_black"
+                app:srcCompat="@drawable/ic_new_action_overflow_black"
                 android:visibility="gone" />
 
             <RelativeLayout
@@ -738,8 +739,8 @@
                 android:layout_toLeftOf="@+id/btn_overflow3"
                 android:layout_toRightOf="@+id/user_avatar3"
                 android:layout_toStartOf="@id/btn_overflow3"
-                android:paddingLeft="@dimen/padding_vs"
-                android:paddingRight="@dimen/padding_vs">
+                android:paddingLeft="@dimen/dp_5"
+                android:paddingRight="@dimen/dp_5">
 
                 <TextView
                     android:id="@+id/username3"
@@ -749,7 +750,7 @@
                     android:singleLine="true"
                     android:text="Username3"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
                 <TextView
                     android:id="@+id/date3"
@@ -765,7 +766,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/username3"
-                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:layout_marginBottom="@dimen/dp_5"
                     android:orientation="horizontal"
                     android:visibility="gone">
 
@@ -773,13 +774,13 @@
                         android:id="@+id/rep_icon3"
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
-                        android:src="@drawable/ic_icon_repsis_smile_active" />
+                        app:srcCompat="@drawable/ic_icon_repsis_smile_active" />
 
                     <TextView
                         android:id="@+id/rep_rating3"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:layout_marginLeft="@dimen/dp_5"
                         android:gravity="center_vertical"
                         android:text="40%"
                         android:textSize="@dimen/fontvs" />
@@ -797,7 +798,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/margin_vs"
+                        android:layout_marginRight="@dimen/dp_5"
                         android:text="@string/title_for" />
 
                     <TextView
@@ -822,7 +823,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:paddingBottom="@dimen/padding_vs"
+        android:paddingBottom="@dimen/dp_5"
         android:text="Lihat Semua"
         android:textColor="@color/green_300" />
 
@@ -832,7 +833,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:paddingBottom="@dimen/padding_vs"
+        android:paddingBottom="@dimen/dp_5"
         android:text="Sembunyikan"
         android:textColor="@color/green_300"
         android:visibility="gone" />

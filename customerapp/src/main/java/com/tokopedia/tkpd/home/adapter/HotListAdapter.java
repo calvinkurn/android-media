@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -77,7 +78,7 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
                 ((ViewHolder) viewHolder).cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        UnifyTracking.eventHotlist(hotListModel.getHotListName());
+                        trackingEnhanceEccommerce(hotListModel);
                         TrackingUtils.sendMoEngageClickHotListEvent(hotListModel);
                         hotList.moveToOtherActivity(hotListModel);
                     }
@@ -87,6 +88,29 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
                 super.onBindViewHolder(viewHolder, position);
                 break;
         }
+    }
+
+    private void trackingEnhanceEccommerce(HotListModel model) {
+        UnifyTracking.eventTrackingEnhancedEcommerce(
+                DataLayer.mapOf(
+                        "event", "promoClick",
+                        "eventCategory", "homepage",
+                        "eventAction", "hotlist tab - banner click",
+                        "eventLabel", model.getHotListName(),
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        "id", model.getHotListId(),
+                                                        "name", model.getTrackerEnhanceName(),
+                                                        "creative", model.getHotListName(),
+                                                        "position", String.valueOf(model.getTrackerEnhancePosition())
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
     }
 
 

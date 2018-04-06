@@ -1,7 +1,8 @@
 apply from: "features/settings-features.gradle"
 apply from: "libraries/settings-libraries.gradle"
 
-include 'customerapp', 'tkpdhome'
+include 'customerapp'
+include 'tkpdhome'
 include 'tkpdloyalty'
 include 'tkpdride'
 include 'tkpdfeed'
@@ -23,3 +24,10 @@ include 'tkpdabstraction'
 include 'tkpdflight'
 include 'tkpdcacheapi'
 include 'tkpdevents'
+include 'tkpdcontent'
+include 'tkpdstream'
+include 'tkpdshop'
+include 'tkpdshop-common'
+include 'tkpdgm-common'
+include 'tkpdreputation-common'
+include 'tkpdwishlist-common'
