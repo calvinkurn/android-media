@@ -220,7 +220,7 @@ public class DynamicHomeChannel {
                                                     "category", "none / other",
                                                     "variant", "none / other",
                                                     "list", "/ - p1 - sprint sale",
-                                                    "position", position + 1,
+                                                    "position", String.valueOf(position + 1),
                                                     "attribution", getHomeAttribution(position + 1, getGrids()[position].getId())
                                             )
                                     )
@@ -241,7 +241,7 @@ public class DynamicHomeChannel {
                                             DataLayer.mapOf(
                                                     "id", getGrids()[position].getId(),
                                                     "name", "/ - p2 - sprint sale banner",
-                                                    "position", position + 1,
+                                                    "position", String.valueOf(position + 1),
                                                     "creative", getGrids()[position].getAttribution(),
                                                     "creative_url", getGrids()[position].getImageUrl(),
                                                     "attribution", getHomeAttribution(position + 1, "")
