@@ -10,6 +10,7 @@
     <dimen name="digital_padding_10">10dp</dimen>
     <dimen name="digital_padding_8">8dp</dimen>
     <dimen name="digital_padding_6">6dp</dimen>
+    <dimen name="digital_padding_5">5dp</dimen>
     <dimen name="digital_padding_4">4dp</dimen>
     <dimen name="digital_padding_2">2dp</dimen>
 
@@ -20,4 +21,7 @@
     <dimen name="digital_height_width_25">25dp</dimen>
 
     <dimen name="digital_height_60">60dp</dimen>
+    <dimen name="digital_margin_min_5">-5dp</dimen>
+    <dimen name="digital_margin_min_7">-7dp</dimen>
+
 </resources>

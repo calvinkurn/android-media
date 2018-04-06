@@ -59,7 +59,6 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.DeepLinkUtils;
@@ -136,10 +135,15 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToShopInfo(@NonNull Context context, @NonNull Bundle bundle) {
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        viewListener.navigateToActivityRequest(intent,
-                ProductDetailFragment.REQUEST_CODE_SHOP_INFO);
+        String etalaseName = bundle.getString("etalase_name");
+        String etalaseId = bundle.getString("etalase_id");
+        Intent intent = null;
+        if(!TextUtils.isEmpty(etalaseId)) {
+            intent = ((PdpRouter) context.getApplicationContext()).getShoProductListIntent(context, bundle.getString("shop_id"), "", etalaseId);
+        }else{
+            intent = ((PdpRouter) context.getApplicationContext()).getShopPageIntent(context, bundle.getString("shop_id"));
+        }
+        viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_SHOP_INFO);
     }
 
     @Override
@@ -171,7 +175,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         UnifyTracking.eventPDPReputation();
         if (context.getApplicationContext() instanceof PdpRouter) {
             Intent intent = ((PdpRouter) context.getApplicationContext())
-                    .getProductReputationIntent(context,productId, productName);
+                    .getProductReputationIntent(context, productId, productName);
             viewListener.navigateToActivity(intent);
         }
     }
@@ -250,8 +254,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToEditProduct(@NonNull Context context, @NonNull Bundle bundle) {
         boolean isEdit = bundle.getBoolean("is_edit");
-        String productId = bundle.getString("product_id");
-        viewListener.moveToEditFragment(isEdit, productId);
+        viewListener.moveToEditFragment(isEdit);
     }
 
     @Override
@@ -302,14 +305,14 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context, productDetailData.getInfo().getProductId
                                     ().toString(), productDetailData.getShopInfo().getShopId());
-                            String shopType = productDetailData.getShopInfo().getShopIsOfficial()== SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
+                            String shopType = productDetailData.getShopInfo().getShopIsOfficial() == SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
                             if (!GlobalConfig.isSellerApp()) {
                                 getPromoWidget(context, generatePromoTargetType(productDetailData, context),
                                         SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType);
                             }
                             if (productDetailData.getInfo().getHasVariant() && useVariant) {
                                 getProductVariant(context
-                                        ,Integer.toString(productDetailData.getInfo().getProductId()));
+                                        , Integer.toString(productDetailData.getInfo().getProductId()));
                             } else {
                                 productDetailData.getInfo().setHasVariant(false);
                                 getProductStock(context
@@ -405,7 +408,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         if (success) {
                             viewListener.showToastMessage(context
                                     .getString(R.string.title_sold_out_action));
-                           viewListener.onProductHasEdited();
+                            viewListener.onProductHasEdited();
                         }
                     }
 
@@ -674,11 +677,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
         if (productVariant != null) {
             viewListener.addProductVariant(productVariant);
-        } else if (productData.getInfo() != null && productData.getInfo().getHasVariant() && productVariant==null) {
+        } else if (productData != null && productData.getInfo() != null && productData.getInfo().getHasVariant() && productVariant==null) {
             getProductVariant(context,Integer.toString(productData.getInfo().getProductId()));
         }
 
-        if (productData.getCampaign() != null) {
+        if (productData != null && productData.getCampaign() != null) {
             viewListener.showProductCampaign();
         }
 
@@ -818,15 +821,15 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         getMostHelpfulReview(context, data.getInfo().getProductId().toString(),
                                 data.getShopInfo().getShopId());
                         getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
-                        String shopType = data.getShopInfo().getShopIsOfficial()==SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
+                        String shopType = data.getShopInfo().getShopIsOfficial() == SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
                         if (!GlobalConfig.isSellerApp()) {
                             getPromoWidget(context, generatePromoTargetType(data, context),
-                                    SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,shopType
-                                    );
+                                    SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType
+                            );
                         }
                         if (data.getInfo().getHasVariant() && useVariant) {
                             getProductVariant(context
-                                    ,Integer.toString(data.getInfo().getProductId()));
+                                    , Integer.toString(data.getInfo().getProductId()));
                         } else {
                             data.getInfo().setHasVariant(false);
                             getProductStock(context
@@ -1044,7 +1047,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void updateRecentView(@NonNull Context context, int productId) {
-        retrofitInteractor.updateRecentView(context,Integer.toString(productId));
+        retrofitInteractor.updateRecentView(context, Integer.toString(productId));
     }
 
     private void openPromoteAds(Context context, String url) {
@@ -1071,7 +1074,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 new RetrofitInteractor.ProductVariantListener() {
                     @Override
                     public void onSucccess(final ProductVariant productVariant) {
-                        if (productVariant!=null && productVariant.getVariant()!=null && productVariant.getVariant().size()>0) {
+                        if (productVariant != null && productVariant.getVariant() != null && productVariant.getVariant().size() > 0) {
                             viewListener.addProductVariant(productVariant);
                         }
                         viewListener.updateButtonBuyListener();

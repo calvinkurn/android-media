@@ -8,13 +8,13 @@
     android:layout_marginTop="@dimen/digital_padding_16"
     android:background="@drawable/digital_keterangan_card"
     android:orientation="vertical"
-    android:padding="@dimen/margin_small">
+    android:padding="@dimen/dp_10">
 
     <TextView
         android:id="@+id/tv_label_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_small"
+        android:paddingBottom="@dimen/dp_10"
         android:text="@string/label_title_desc_promo_digital"
         android:textColor="@color/tkpd_main_green"/>
 

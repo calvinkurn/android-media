@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.R;
+import com.tokopedia.abstraction.common.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.abstraction.common.network.constant.ResponseStatus;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 
@@ -14,7 +15,9 @@ import java.net.UnknownHostException;
 public class ErrorHandler {
 
     public static String getErrorMessage(final Context context, Throwable e) {
-        if (e instanceof UnknownHostException) {
+        if (e instanceof ResponseV4ErrorException) {
+            return ((ResponseV4ErrorException) e).getErrorList().get(0);
+        } else if (e instanceof UnknownHostException) {
             return context.getString(R.string.msg_no_connection);
         } else if (e instanceof SocketTimeoutException) {
             return context.getString(R.string.default_request_error_timeout);
@@ -38,8 +41,7 @@ public class ErrorHandler {
                 default:
                     return context.getString(R.string.default_request_error_unknown);
             }
-        } else if (e instanceof MessageErrorException &&
-                !TextUtils.isEmpty(e.getMessage())) {
+        } else if (e instanceof MessageErrorException && !TextUtils.isEmpty(e.getMessage())) {
             return e.getMessage();
         } else if (e instanceof IOException) {
             return context.getString(R.string.default_request_error_internal_server);
