@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.home.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -47,12 +46,7 @@ public class InAppMessageAdapter extends RecyclerView.Adapter<InAppMessageAdapte
         holder.img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent();
-                Uri uri = Uri.parse(inAppMessageItemModel.getDeeplink());
-                intent.setData(uri);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-                inappAdapterLisner.onRowItemClick();
+                inappAdapterLisner.onRowItemClick(Uri.parse(inAppMessageItemModel.getDeeplink()));
             }
         });
 
@@ -76,7 +70,7 @@ public class InAppMessageAdapter extends RecyclerView.Adapter<InAppMessageAdapte
         }
     }
 
-   public interface InappAdapterLisner {
-         void onRowItemClick();
+    public interface InappAdapterLisner {
+        void onRowItemClick(Uri deeplinkUri);
     }
 }

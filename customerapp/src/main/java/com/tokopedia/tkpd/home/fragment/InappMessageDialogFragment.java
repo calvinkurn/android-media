@@ -19,7 +19,10 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.home.adapter.InAppMessageAdapter;
 import com.tokopedia.tkpd.home.model.InAppMessageItemModel;
 import com.tokopedia.tkpd.home.model.InAppMessageModel;
@@ -160,11 +163,7 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
         btnAction1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                Uri uri = Uri.parse(inAppMessageModel.actionDeeplink1);
-                intent.setData(uri);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getActivity().startActivity(intent);
+                handleDeepLink(Uri.parse(inAppMessageModel.actionDeeplink1));
                 dismiss();
             }
         });
@@ -172,14 +171,25 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
         btnAction2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                Uri uri = Uri.parse(inAppMessageModel.actionDeeplink2);
-                intent.setData(uri);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getActivity().startActivity(intent);
+                handleDeepLink(Uri.parse(inAppMessageModel.actionDeeplink2));
                 dismiss();
             }
         });
+    }
+
+    private void handleDeepLink(Uri deepLinkUri) {
+        Intent intent;
+        if (deepLinkUri.getScheme().equals(Constants.Schemes.HTTP) || deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS)) {
+            intent = new Intent(getActivity(), DeepLinkActivity.class);
+            intent.setData(Uri.parse(deepLinkUri.toString()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getActivity().startActivity(intent);
+        } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)) {
+            intent = new Intent(getActivity(), DeeplinkHandlerActivity.class);
+            intent.setData(Uri.parse(deepLinkUri.toString()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getActivity().startActivity(intent);
+        }
     }
 
     @Override
@@ -197,7 +207,8 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
     }
 
     @Override
-    public void onRowItemClick() {
+    public void onRowItemClick(Uri deeplinkUri) {
+        handleDeepLink(deeplinkUri);
         dismiss();
     }
 }
