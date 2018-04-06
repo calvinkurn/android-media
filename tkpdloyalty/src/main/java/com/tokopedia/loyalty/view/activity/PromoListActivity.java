@@ -45,6 +45,9 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
     private static final String EXTRA_AUTO_SELECTED_MENU_ID = "EXTRA_AUTO_SELECTED_MENU_ID";
     private static final String EXTRA_AUTO_SELECTED_CATEGORY_ID = "EXTRA_AUTO_SELECTED_CATEGORY_ID";
 
+    public static final String DEFAULT_AUTO_SELECTED_CATEGORY_ID = "0";
+    public static final String DEFAULT_AUTO_SELECTED_MENU_ID = "0";
+
     @BindView(R2.id.view_pager)
     TouchViewPager viewPager;
     @BindView(R2.id.tab_layout)
@@ -69,8 +72,12 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
     @SuppressWarnings("unused")
     @DeepLink(LoyaltyAppLink.PROMO_NATIVE)
     public static Intent getAppLinkIntent(Context context, Bundle extras) {
-        String autoSelectedMenuId = extras.getString(LoyaltyAppLink.PROMO_NATIVE_QUERY_MENU_ID, "0");
-        String autoSelectedCategoryId = extras.getString(LoyaltyAppLink.PROMO_NATIVE_QUERY_CATEGORY_ID, "0");
+        String autoSelectedMenuId = extras.getString(
+                LoyaltyAppLink.PROMO_NATIVE_QUERY_MENU_ID, DEFAULT_AUTO_SELECTED_MENU_ID
+        );
+        String autoSelectedCategoryId = extras.getString(
+                LoyaltyAppLink.PROMO_NATIVE_QUERY_CATEGORY_ID, DEFAULT_AUTO_SELECTED_CATEGORY_ID
+        );
         return PromoListActivity.newInstance(context, autoSelectedMenuId, autoSelectedCategoryId);
     }
 
