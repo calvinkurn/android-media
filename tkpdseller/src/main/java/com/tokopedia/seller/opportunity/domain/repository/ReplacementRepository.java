@@ -1,7 +1,7 @@
 package com.tokopedia.seller.opportunity.domain.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.entity.replacement.opportunitydata.OpportunityDetail;
+import com.tokopedia.seller.opportunity.domain.entity.OpportunityDetail;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.opportunity.data.AcceptReplacementModel;
 import com.tokopedia.seller.opportunity.data.OpportunityFilterModel;

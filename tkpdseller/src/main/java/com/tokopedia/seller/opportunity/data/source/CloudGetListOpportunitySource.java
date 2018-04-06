@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.base.common.util.GetData;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.entity.replacement.opportunitydata.OpportunityDetail;
+import com.tokopedia.seller.opportunity.domain.entity.OpportunityDetail;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.seller.opportunity.data.OpportunityModel;
 import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;

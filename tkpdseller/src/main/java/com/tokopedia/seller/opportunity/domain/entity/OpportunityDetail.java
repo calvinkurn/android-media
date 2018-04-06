@@ -1,7 +1,8 @@
-package com.tokopedia.core.network.entity.replacement.opportunitydata;
+package com.tokopedia.seller.opportunity.domain.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderShipment;
 
 /**
  * Created by nakama on 27/03/18.
