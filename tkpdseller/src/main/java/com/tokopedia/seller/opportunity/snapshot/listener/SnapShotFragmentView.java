@@ -31,9 +31,9 @@ public interface SnapShotFragmentView extends CustomerView{
 
     void renderTempProductData(ProductPass productPass);
 
-    void onProductShopNameClicked(Bundle bundle);
+    void onProductShopNameClicked(String shopId);
 
-    void onProductShopRatingClicked(Bundle bundle);
+    void onProductShopRatingClicked(String shopId);
 
-    void onProductShopAvatarClicked(Bundle bundle);
+    void onProductShopAvatarClicked(String shopId);
 }

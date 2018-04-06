@@ -37,7 +37,7 @@
                     android:layout_marginBottom="@dimen/margin_vs"
                     android:imeOptions="actionNext"
                     android:inputType="text"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:inputType="text"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
@@ -80,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
@@ -210,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:inputType="number"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -225,7 +225,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:inputType="number"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -241,7 +241,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
@@ -294,7 +294,7 @@
                     android:clickable="true"
                     android:focusable="false"
                     android:hint="@string/choose_location"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
             </RelativeLayout>
 

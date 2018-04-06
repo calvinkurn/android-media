@@ -16,9 +16,9 @@
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/edit"
         android:layout_toStartOf="@+id/edit"
-        android:paddingLeft="@dimen/new_margin_med"
-        android:paddingBottom="@dimen/new_margin_sm"
-        android:paddingTop="@dimen/new_margin_sm"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_24"
+        android:paddingTop="@dimen/dp_24"
         android:textColor="@color/black_70"
         android:textSize="@dimen/text_size_medium"
         android:maxLines="2"
@@ -34,10 +34,10 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
-        android:paddingTop="@dimen/new_margin_sm"
-        android:paddingBottom="@dimen/new_margin_sm"
-        android:paddingRight="@dimen/new_margin_med"
-        android:paddingLeft="@dimen/new_margin_med"
+        android:paddingTop="@dimen/dp_24"
+        android:paddingBottom="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
         app:srcCompat="@drawable/ic_drag" />
 
 
@@ -48,10 +48,10 @@
         android:layout_toLeftOf="@+id/setting"
         android:layout_toStartOf="@+id/setting"
         android:layout_centerVertical="true"
-        android:paddingTop="@dimen/new_margin_sm"
-        android:paddingBottom="@dimen/new_margin_sm"
-        android:paddingRight="@dimen/new_margin_med"
-        android:paddingLeft="@dimen/new_margin_med"
+        android:paddingTop="@dimen/dp_24"
+        android:paddingBottom="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
         app:srcCompat="@drawable/ic_edit" />
 
     <View
@@ -69,7 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_alignBottom="@+id/caption"
-        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginLeft="@dimen/dp_16"
         android:background="#e0e0e0" />
 
 </RelativeLayout>

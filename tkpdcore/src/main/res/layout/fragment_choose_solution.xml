@@ -39,7 +39,7 @@
                     android:paddingBottom="@dimen/padding_vs"
                     android:paddingRight="@dimen/padding_small"
                     android:text="@string/title_invoice_no"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
                 <TextView
                     android:id="@+id/shop_name"
@@ -49,7 +49,7 @@
                     android:paddingBottom="@dimen/padding_vs"
                     android:paddingRight="@dimen/padding_small"
                     android:text="@string/title_shop"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
                 <com.tokopedia.inbox.rescenter.create.customview.AttachmentSectionCreateResCenterView
                     android:id="@+id/view_attachment_section"
