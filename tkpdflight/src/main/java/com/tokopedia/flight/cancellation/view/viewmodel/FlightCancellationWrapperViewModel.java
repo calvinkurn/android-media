@@ -10,10 +10,15 @@ import java.util.List;
  */
 
 public class FlightCancellationWrapperViewModel implements Parcelable {
+    private FlightCancellationReasonAndAttachmentViewModel cancellationReasonAndAttachment;
     private List<FlightCancellationViewModel> viewModels;
     private String invoice;
 
+    public FlightCancellationWrapperViewModel() {
+    }
+
     protected FlightCancellationWrapperViewModel(Parcel in) {
+        cancellationReasonAndAttachment = in.readParcelable(FlightCancellationReasonAndAttachmentViewModel.class.getClassLoader());
         viewModels = in.createTypedArrayList(FlightCancellationViewModel.CREATOR);
         invoice = in.readString();
     }
@@ -29,9 +34,6 @@ public class FlightCancellationWrapperViewModel implements Parcelable {
             return new FlightCancellationWrapperViewModel[size];
         }
     };
-
-    public FlightCancellationWrapperViewModel() {
-    }
 
     public List<FlightCancellationViewModel> getViewModels() {
         return viewModels;
@@ -49,6 +51,14 @@ public class FlightCancellationWrapperViewModel implements Parcelable {
         this.invoice = invoice;
     }
 
+    public FlightCancellationReasonAndAttachmentViewModel getCancellationReasonAndAttachment() {
+        return cancellationReasonAndAttachment;
+    }
+
+    public void setCancellationReasonAndAttachment(FlightCancellationReasonAndAttachmentViewModel cancellationReasonAndAttachment) {
+        this.cancellationReasonAndAttachment = cancellationReasonAndAttachment;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -56,6 +66,7 @@ public class FlightCancellationWrapperViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeParcelable(cancellationReasonAndAttachment, i);
         parcel.writeTypedList(viewModels);
         parcel.writeString(invoice);
     }

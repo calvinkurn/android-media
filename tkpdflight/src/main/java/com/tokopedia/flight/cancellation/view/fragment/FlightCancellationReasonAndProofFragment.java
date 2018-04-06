@@ -33,10 +33,8 @@ import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachme
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachmentTypeFactory;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationReasonAndProofPresenter;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentButtonViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationCameraPassData;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 
@@ -207,7 +205,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void navigateToNextStep(FlightCancellationViewModel viewModel) {
+    public void navigateToNextStep(FlightCancellationWrapperViewModel viewModel) {
         Toast.makeText(getActivity(), "Next Step", Toast.LENGTH_SHORT).show();
     }
 

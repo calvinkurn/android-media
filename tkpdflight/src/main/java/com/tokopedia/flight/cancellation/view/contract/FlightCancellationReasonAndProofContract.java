@@ -5,7 +5,6 @@ import android.app.Activity;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 
 import java.util.List;
@@ -39,7 +38,7 @@ public interface FlightCancellationReasonAndProofContract {
 
         void showFailedToNextStepErrorMessage(String errorMessage);
 
-        void navigateToNextStep(FlightCancellationViewModel viewModel);
+        void navigateToNextStep(FlightCancellationWrapperViewModel viewModel);
     }
 
     interface Presenter extends CustomerPresenter<View>{

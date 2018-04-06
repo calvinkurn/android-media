@@ -77,21 +77,21 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                         }
                     })
                     .toList()
-                    .map(new Func1<List<FlightCancellationAttachmentViewModel>, FlightCancellationViewModel>() {
+                    .map(new Func1<List<FlightCancellationAttachmentViewModel>, FlightCancellationWrapperViewModel>() {
                         @Override
-                        public FlightCancellationViewModel call(List<FlightCancellationAttachmentViewModel> flightCancellationAttachmentViewModels) {
-                            FlightCancellationViewModel viewModel = getView().getCancellationViewModel();
+                        public FlightCancellationWrapperViewModel call(List<FlightCancellationAttachmentViewModel> flightCancellationAttachmentViewModels) {
+                            FlightCancellationWrapperViewModel viewModel = getView().getCancellationViewModel();
                             FlightCancellationReasonAndAttachmentViewModel reasonAndAttachmentViewModel = new FlightCancellationReasonAndAttachmentViewModel();
                             reasonAndAttachmentViewModel.setReason(getView().getReason());
                             reasonAndAttachmentViewModel.setAttachments(flightCancellationAttachmentViewModels);
-                            viewModel.setReasonAndAttachments(reasonAndAttachmentViewModel);
+                            viewModel.setCancellationReasonAndAttachment(reasonAndAttachmentViewModel);
                             return viewModel;
                         }
                     })
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<FlightCancellationViewModel>() {
+                    .subscribe(new Subscriber<FlightCancellationWrapperViewModel>() {
                         @Override
                         public void onCompleted() {
 
@@ -106,7 +106,7 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                         }
 
                         @Override
-                        public void onNext(FlightCancellationViewModel viewModel) {
+                        public void onNext(FlightCancellationWrapperViewModel viewModel) {
                             getView().navigateToNextStep(viewModel);
                         }
                     })
