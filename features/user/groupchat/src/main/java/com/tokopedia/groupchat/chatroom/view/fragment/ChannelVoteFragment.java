@@ -164,6 +164,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         KeyboardHandler.DropKeyboard(getContext(), getView());
         Parcelable temp = getArguments().getParcelable(VOTE);
         showVoteLayout((VoteInfoViewModel) temp);
+        setVoteAdapter();
     }
 
     @Override
@@ -235,22 +236,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
         voteBody.setVisibility(View.VISIBLE);
         voteBar.setVisibility(View.VISIBLE);
-
-        LinearLayoutManager voteLayoutManager;
-        RecyclerView.ItemDecoration itemDecoration = null;
-        if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
-            voteLayoutManager = new GridLayoutManager(getActivity(), 2);
-            itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
-        } else {
-            voteLayoutManager = new LinearLayoutManager(getActivity());
-            itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_between), false);
-        }
-        voteRecyclerView.addItemDecoration(itemDecoration);
-        voteRecyclerView.setLayoutManager(voteLayoutManager);
-        voteRecyclerView.setAdapter(voteAdapter);
-        voteTitle.setText(voteInfoViewModel.getQuestion());
-
-        voteAdapter.addList(voteInfoViewModel.getListOption());
 
         if (voteInfoViewModel.isVoted()) {
             setVoted(true);
@@ -419,6 +404,24 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 && resultCode == Activity.RESULT_OK) {
             userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         }
+    }
+
+    private void setVoteAdapter(){
+        LinearLayoutManager voteLayoutManager;
+        RecyclerView.ItemDecoration itemDecoration = null;
+        if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
+            voteLayoutManager = new GridLayoutManager(getActivity(), 2);
+            itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
+        } else {
+            voteLayoutManager = new LinearLayoutManager(getActivity());
+            itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_between), false);
+        }
+        voteRecyclerView.addItemDecoration(itemDecoration);
+        voteRecyclerView.setLayoutManager(voteLayoutManager);
+        voteRecyclerView.setAdapter(voteAdapter);
+        voteTitle.setText(voteInfoViewModel.getQuestion());
+
+        voteAdapter.addList(voteInfoViewModel.getListOption());
     }
 
     public void refreshVote(VoteInfoViewModel voteInfoViewModel) {
