@@ -23,7 +23,7 @@
     <View
         android:id="@+id/separator2"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/dp_1"
         android:layout_below="@id/title"
         android:background="@color/grey_300" />
 
@@ -71,7 +71,7 @@
         <View
             android:id="@+id/separator_tooltip"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/dp_1"
             android:layout_below="@id/tooltip"
             android:layout_marginEnd="@dimen/margin_small"
             android:layout_marginLeft="@dimen/margin_small"
@@ -97,7 +97,7 @@
     <View
         android:id="@+id/separator3"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/dp_1"
         android:layout_below="@id/kol_text"
         android:background="@color/grey_300" />
 
@@ -111,7 +111,7 @@
 
         <RelativeLayout
             android:id="@+id/like_button"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
@@ -148,7 +148,7 @@
 
         <RelativeLayout
             android:id="@+id/comment_button"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
