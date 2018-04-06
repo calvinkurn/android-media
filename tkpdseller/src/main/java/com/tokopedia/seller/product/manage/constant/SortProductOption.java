@@ -2,6 +2,9 @@ package com.tokopedia.seller.product.manage.constant;
 
 import android.support.annotation.StringDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 import static com.tokopedia.seller.product.manage.constant.SortProductOption.HIGHEST_PRICE;
 import static com.tokopedia.seller.product.manage.constant.SortProductOption.LAST_UPDATE;
 import static com.tokopedia.seller.product.manage.constant.SortProductOption.LOWEST_PRICE;
@@ -16,7 +19,7 @@ import static com.tokopedia.seller.product.manage.constant.SortProductOption.PRO
 /**
  * Created by zulfikarrahman on 9/22/17.
  */
-
+@Retention(RetentionPolicy.SOURCE)
 @StringDef({POSITION, NEW_PRODUCT, LAST_UPDATE, PRODUCT_NAME, MOST_VIEW, MOST_TALK, MOST_REVIEW, MOST_BUY, LOWEST_PRICE, HIGHEST_PRICE})
 public @interface SortProductOption {
     String POSITION = "1";

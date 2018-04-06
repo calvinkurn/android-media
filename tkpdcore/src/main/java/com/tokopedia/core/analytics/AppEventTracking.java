@@ -493,6 +493,7 @@ public interface AppEventTracking {
 
         String LOGIN_NOW = "masuk sekarang";
         String CHECKOUT = "Checkout";
+        String QUICK_FILTER = "quick filter";
     }
 
     interface ImageEditor{

@@ -6,10 +6,10 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
-        android:paddingTop="@dimen/padding_vs"
-        android:paddingLeft="@dimen/padding_vs"
-        android:paddingRight="@dimen/padding_vs"
-        android:paddingBottom="@dimen/padding_ms"
+        android:paddingTop="@dimen/dp_5"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_5"
+        android:paddingBottom="@dimen/dp_8"
         android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
