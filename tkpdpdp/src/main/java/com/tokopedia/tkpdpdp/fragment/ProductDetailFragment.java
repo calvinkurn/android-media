@@ -975,7 +975,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onSaveState(Bundle outState) {
-        Log.d(TAG, "onSaveState");
         presenter.saveStateProductDetail(outState, STATE_DETAIL_PRODUCT, productData);
         presenter.saveStateProductVariant(outState, STATE_PRODUCT_VARIANT, productVariant);
         presenter.saveStateProductStockNonVariant(outState, STATE_PRODUCT_STOCK_NON_VARIANT, productStockNonVariant);
