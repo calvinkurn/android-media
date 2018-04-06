@@ -204,7 +204,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (SessionHandler.isV4Login(getActivity()) && showRecomendation) {
-                    int firstVisibleItemPos = layoutManager.findFirstVisibleItemPosition();
+                    int firstVisibleItemPos = layoutManager.findLastVisibleItemPosition();
                     Visitable visitable = adapter.getItem(firstVisibleItemPos);
                     if ((visitable instanceof InspirationViewModel || visitable instanceof TopAdsViewModel)) {
                         floatingTextButton.setVisibility(View.INVISIBLE);
