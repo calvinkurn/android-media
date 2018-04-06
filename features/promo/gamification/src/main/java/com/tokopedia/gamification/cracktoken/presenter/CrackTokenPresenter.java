@@ -68,6 +68,10 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
                             // show expired page
                             CrackResult expiredCrackResult = createExpiredCrackResult(crackResult.getResultStatus());
                             getView().onErrorCrackToken(expiredCrackResult);
+                        } else {
+                            CrackResult errorCrackResult = createGeneralErrorCrackResult();
+
+                            getView().onErrorCrackToken(errorCrackResult);
                         }
                     }
                 });
