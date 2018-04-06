@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReasonAndProofActivity;
+import com.tokopedia.flight.cancellation.view.activity.FlightReviewCancellationActivity;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.adapter.viewholder.FlightCancellationViewHolder;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationContract;
@@ -34,6 +35,8 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
+
+    public static final int REQUEST_REVIEW_CANCELLATION = 1;
 
     private String invoiceId;
     private List<FlightCancellationViewModel> flightCancellationViewModelList;
@@ -64,7 +67,8 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(FlightCancellationReasonAndProofActivity.getCallingIntent(getActivity(), selectedCancellationViewModelList));
+                navigateToReviewCancellationPage();
+//                startActivity(FlightCancellationReasonAndProofActivity.getCallingIntent(getActivity(), selectedCancellationViewModelList));
             }
         });
 
@@ -151,5 +155,13 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     @Override
     public void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
         flightCancellationPresenter.uncheckPassenger(passengerViewModel, position);
+    }
+
+    private void navigateToReviewCancellationPage() {
+        startActivityForResult(
+                FlightReviewCancellationActivity.createIntent(getContext(),
+                        invoiceId, selectedCancellationViewModelList),
+                REQUEST_REVIEW_CANCELLATION
+        );
     }
 }

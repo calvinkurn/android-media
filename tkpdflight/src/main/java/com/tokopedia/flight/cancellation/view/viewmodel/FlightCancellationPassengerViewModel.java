@@ -16,6 +16,9 @@ public class FlightCancellationPassengerViewModel implements Parcelable{
     private String firstName;
     private String lastName;
 
+    public FlightCancellationPassengerViewModel() {
+    }
+
     protected FlightCancellationPassengerViewModel(Parcel in) {
         passengerId = in.readString();
         type = in.readInt();
@@ -36,9 +39,6 @@ public class FlightCancellationPassengerViewModel implements Parcelable{
             return new FlightCancellationPassengerViewModel[size];
         }
     };
-
-    public FlightCancellationPassengerViewModel() {
-    }
 
     public String getPassengerId() {
         return passengerId;
@@ -94,12 +94,12 @@ public class FlightCancellationPassengerViewModel implements Parcelable{
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(passengerId);
-        parcel.writeInt(type);
-        parcel.writeInt(title);
-        parcel.writeString(titleString);
-        parcel.writeString(firstName);
-        parcel.writeString(lastName);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(passengerId);
+        dest.writeInt(type);
+        dest.writeInt(title);
+        dest.writeString(titleString);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
     }
 }
