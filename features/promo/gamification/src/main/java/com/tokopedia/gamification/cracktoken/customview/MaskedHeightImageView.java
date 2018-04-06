@@ -51,6 +51,10 @@ public class MaskedHeightImageView extends android.support.v7.widget.AppCompatIm
         percentMasked = 100;
     }
 
+    public void reset(){
+        init();
+        invalidate();
+    }
     public void setPercentMasked(int percentMasked) {
         this.percentMasked = percentMasked;
         invalidate();

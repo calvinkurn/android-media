@@ -10,11 +10,11 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -41,6 +41,23 @@ import static android.view.Gravity.CENTER_HORIZONTAL;
 public class WidgetTokenView extends FrameLayout {
 
     public static final float Y_PIVOT_PERCENT = 0.9f;
+    public static final int CRACK_STEP1_SHAKE_DURATION = 100;
+    public static final int CRACK_STEP1_DURATION = 350;
+    public static final int CRACK_STEP1_DEGREE = 3;
+    public static final int CRACK_STEP2_DEGREE = 5;
+    public static final int CRACK_STEP2_DURATION = 350;
+    public static final int CRACK_STEP2_SHAKE_DURATION = 80;
+    public static final int CRACK_STEP2_START_DELAY = 150;
+    public static final int CRACK_STEP3_START_DELAY = 100;
+    public static final int CRACK_STEP3_DURATION = 350;
+    public static final int CRACK_STEP3_SHAKE_DURATION = 100;
+    public static final int STEP2_END_MASKED_PERCENT = 33;
+    public static final int STEP1_END_MASKED_PERCENT = 67;
+    public static final double RATIO_IMAGE_WIDTH = 0.5;
+    public static final double RATIO_IMAGE_MARGIN_BOTTOM = 0.64;
+    public static final double RATIO_LIGHT_WIDTH = 0.8;
+    public static final int CRACK_STEP3_DEGREE = 4;
+
     private ImageView imageViewFull;
     private MaskedHeightImageView imageViewCracked;
     private ImageView imageViewLeft;
@@ -57,6 +74,7 @@ public class WidgetTokenView extends FrameLayout {
     private AnimatorSet crackingAnimationSet1;
     private AnimatorSet crackingAnimationSet2;
     private AnimatorSet crackingAnimationSet3;
+    private ObjectAnimator shakeAnimatorSlow;
 
     public interface WidgetTokenListener {
         void onClick();
@@ -120,11 +138,11 @@ public class WidgetTokenView extends FrameLayout {
     private void initImageBound() {
         int rootWidth = rootView.getWidth();
         int rootHeight = rootView.getHeight();
-        int imageWidth = (int) (0.5 * Math.min(rootWidth, rootHeight));
+        int imageWidth = (int) (RATIO_IMAGE_WIDTH * Math.min(rootWidth, rootHeight));
         int imageHeight = imageWidth;
-        int imageMarginTop = (int) (0.64 * (rootHeight)) - imageHeight;
+        int imageMarginTop = (int) (RATIO_IMAGE_MARGIN_BOTTOM * (rootHeight)) - imageHeight;
 
-        int lightImageWidth = (int) (0.8 * imageWidth);
+        int lightImageWidth = (int) (RATIO_LIGHT_WIDTH * imageWidth);
         int lightImageHeight = lightImageWidth;
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) imageViewFull.getLayoutParams();
@@ -156,7 +174,7 @@ public class WidgetTokenView extends FrameLayout {
         imageViewRight.requestLayout();
 
         // to show the light on the top left
-        int marginTopLightLeft = (int) (0.64 * (rootHeight)) - (int) (0.75 * imageHeight) - lightImageHeight / 2;
+        int marginTopLightLeft = (int) (RATIO_IMAGE_MARGIN_BOTTOM * (rootHeight)) - (int) (0.75 * imageHeight) - lightImageHeight / 2;
         int marginLeftLightLeft = (int) (0.5 * (rootWidth - (int) (0.65 * imageWidth) - lightImageWidth));
         FrameLayout.LayoutParams ivLightLeftLp = (FrameLayout.LayoutParams) imageViewLightLeft.getLayoutParams();
         ivLightLeftLp.width = lightImageWidth;
@@ -166,7 +184,7 @@ public class WidgetTokenView extends FrameLayout {
         imageViewLightLeft.requestLayout();
 
         // to show the light on the top right
-        int marginTopLightRight = (int) (0.64 * (rootHeight)) - (int) (0.95 * imageHeight) - lightImageHeight / 2;
+        int marginTopLightRight = (int) (RATIO_IMAGE_MARGIN_BOTTOM * (rootHeight)) - (int) (0.95 * imageHeight) - lightImageHeight / 2;
         int marginLeftLightRight = (int) (0.5 * (rootWidth + (int) (0.35 * imageWidth) - lightImageWidth));
         FrameLayout.LayoutParams ivLightRightLp = (FrameLayout.LayoutParams) imageViewLightRight.getLayoutParams();
         ivLightRightLp.width = lightImageWidth;
@@ -198,8 +216,8 @@ public class WidgetTokenView extends FrameLayout {
                 });
         ImageHandler.loadImageAndCache(imageViewRight, imageRightUrl);
         ImageHandler.loadImageAndCache(imageViewLeft, imageLeftUrl);
-        shake();
-        showLightAnimation();
+
+        reset();
 
         this.setVisibility(View.VISIBLE);
     }
@@ -226,24 +244,34 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     private void shake() {
-        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
-        animation.setAnimationListener(new Animation.AnimationListener() {
+        PropertyValuesHolder pvhShake =
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_X, -8, 8);
+        shakeAnimatorSlow = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
+        shakeAnimatorSlow.setRepeatMode(ValueAnimator.REVERSE);
+        shakeAnimatorSlow.setRepeatCount(5);
+        shakeAnimatorSlow.setDuration(500 / 5);
+        shakeAnimatorSlow.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
+            public void onAnimationStart(Animator animation) {
 
             }
 
             @Override
-            public void onAnimationEnd(Animation animation) {
-                imageViewFull.setRotation(0);
+            public void onAnimationEnd(Animator animation) {
+                imageViewFull.setTranslationX(0);
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
+            public void onAnimationCancel(Animator animation) {
+                imageViewFull.setTranslationX(0);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
 
             }
         });
-        imageViewFull.setAnimation(animation);
+        shakeAnimatorSlow.start();
     }
 
     private void shakeHardAndCrackAnimation() {
@@ -266,7 +294,7 @@ public class WidgetTokenView extends FrameLayout {
         }
     }
 
-    public boolean isCrackPercentageFull(){
+    public boolean isCrackPercentageFull() {
         return imageViewCracked.isFullyHiddenByMask();
     }
 
@@ -274,22 +302,22 @@ public class WidgetTokenView extends FrameLayout {
         if (crackingAnimationSet1 == null) {
             crackingAnimationSet1 = new AnimatorSet();
             PropertyValuesHolder pvhShake =
-                    PropertyValuesHolder.ofFloat(View.ROTATION, -2, 2);
+                    PropertyValuesHolder.ofFloat(View.ROTATION, 0, -CRACK_STEP1_DEGREE, 0, CRACK_STEP1_DEGREE, 0);
             ObjectAnimator shakeAnimatorFull = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
             shakeAnimatorFull.setRepeatMode(ValueAnimator.REVERSE);
-            shakeAnimatorFull.setRepeatCount(600 / 200);
-            shakeAnimatorFull.setDuration(100);
+            shakeAnimatorFull.setRepeatCount(CRACK_STEP1_DURATION / (2 * CRACK_STEP1_SHAKE_DURATION));
+            shakeAnimatorFull.setDuration(CRACK_STEP1_SHAKE_DURATION);
 
             ObjectAnimator shakeAnimatorCrack = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhShake);
             shakeAnimatorCrack.setRepeatMode(ValueAnimator.REVERSE);
-            shakeAnimatorCrack.setRepeatCount(600 / 200);
-            shakeAnimatorCrack.setDuration(100);
+            shakeAnimatorCrack.setRepeatCount(CRACK_STEP1_DURATION / (2 * CRACK_STEP1_SHAKE_DURATION));
+            shakeAnimatorCrack.setDuration(CRACK_STEP1_SHAKE_DURATION);
 
             PropertyValuesHolder pvhMaskedCrack =
-                    PropertyValuesHolder.ofInt(MaskedHeightImageView.MASKED_PERCENT, 100, 67);
+                    PropertyValuesHolder.ofInt(MaskedHeightImageView.MASKED_PERCENT, 100, STEP1_END_MASKED_PERCENT);
             ObjectAnimator maskCrackAnimator = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhMaskedCrack);
-            maskCrackAnimator.setInterpolator(new FastOutSlowInInterpolator());
-            maskCrackAnimator.setDuration(400);
+            maskCrackAnimator.setInterpolator(new AccelerateInterpolator());
+            maskCrackAnimator.setDuration(CRACK_STEP1_DURATION);
 
             crackingAnimationSet1.playTogether(shakeAnimatorFull, shakeAnimatorCrack, maskCrackAnimator);
         }
@@ -299,25 +327,25 @@ public class WidgetTokenView extends FrameLayout {
         if (crackingAnimationSet2 == null) {
             crackingAnimationSet2 = new AnimatorSet();
             PropertyValuesHolder pvhShake =
-                    PropertyValuesHolder.ofFloat(View.ROTATION, -4, 4);
+                    PropertyValuesHolder.ofFloat(View.ROTATION, 0, -CRACK_STEP2_DEGREE, 0, CRACK_STEP2_DEGREE, 0);
             ObjectAnimator shakeAnimatorFull = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
             shakeAnimatorFull.setRepeatMode(ValueAnimator.REVERSE);
-            shakeAnimatorFull.setRepeatCount(600 / 160);
-            shakeAnimatorFull.setDuration(80);
+            shakeAnimatorFull.setRepeatCount(CRACK_STEP2_DURATION / (2 * CRACK_STEP2_SHAKE_DURATION));
+            shakeAnimatorFull.setDuration(CRACK_STEP2_SHAKE_DURATION);
 
             ObjectAnimator shakeAnimatorCrack = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhShake);
             shakeAnimatorCrack.setRepeatMode(ValueAnimator.REVERSE);
-            shakeAnimatorCrack.setRepeatCount(600 / 160);
-            shakeAnimatorCrack.setDuration(80);
+            shakeAnimatorCrack.setRepeatCount(CRACK_STEP2_DURATION / (2 * CRACK_STEP2_SHAKE_DURATION));
+            shakeAnimatorCrack.setDuration(CRACK_STEP2_SHAKE_DURATION);
 
             PropertyValuesHolder pvhMaskedCrack =
-                    PropertyValuesHolder.ofInt(MaskedHeightImageView.MASKED_PERCENT, 67, 33);
+                    PropertyValuesHolder.ofInt(MaskedHeightImageView.MASKED_PERCENT, STEP1_END_MASKED_PERCENT, STEP2_END_MASKED_PERCENT);
             ObjectAnimator maskCrackAnimator = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhMaskedCrack);
-            maskCrackAnimator.setInterpolator(new FastOutSlowInInterpolator());
-            maskCrackAnimator.setDuration(400);
+            maskCrackAnimator.setInterpolator(new AccelerateInterpolator());
+            maskCrackAnimator.setDuration(CRACK_STEP2_DURATION);
 
             crackingAnimationSet2.playTogether(shakeAnimatorFull, shakeAnimatorCrack, maskCrackAnimator);
-            crackingAnimationSet2.setStartDelay(200);
+            crackingAnimationSet2.setStartDelay(CRACK_STEP2_START_DELAY);
         }
     }
 
@@ -325,31 +353,33 @@ public class WidgetTokenView extends FrameLayout {
         if (crackingAnimationSet3 == null) {
             crackingAnimationSet3 = new AnimatorSet();
             PropertyValuesHolder pvhShake =
-                    PropertyValuesHolder.ofFloat(View.ROTATION, -3, 3);
+                    PropertyValuesHolder.ofFloat(View.ROTATION, 0, -CRACK_STEP3_DEGREE, 0, CRACK_STEP3_DEGREE, 0);
             ObjectAnimator shakeAnimatorFull = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
             shakeAnimatorFull.setRepeatMode(ValueAnimator.REVERSE);
             shakeAnimatorFull.setRepeatCount(ValueAnimator.INFINITE);
-            shakeAnimatorFull.setDuration(100);
+            shakeAnimatorFull.setDuration(CRACK_STEP3_SHAKE_DURATION);
 
             ObjectAnimator shakeAnimatorCrack = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhShake);
             shakeAnimatorCrack.setRepeatMode(ValueAnimator.REVERSE);
             shakeAnimatorCrack.setRepeatCount(ValueAnimator.INFINITE);
-            shakeAnimatorCrack.setDuration(100);
+            shakeAnimatorCrack.setDuration(CRACK_STEP3_SHAKE_DURATION);
 
             PropertyValuesHolder pvhMaskedCrack =
-                    PropertyValuesHolder.ofInt(MaskedHeightImageView.MASKED_PERCENT, 33, 0);
+                    PropertyValuesHolder.ofInt(MaskedHeightImageView.MASKED_PERCENT, STEP2_END_MASKED_PERCENT, 0);
             ObjectAnimator maskCrackAnimator = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhMaskedCrack);
-            maskCrackAnimator.setInterpolator(new FastOutSlowInInterpolator());
-            maskCrackAnimator.setDuration(400);
+            maskCrackAnimator.setInterpolator(new AccelerateInterpolator());
+            maskCrackAnimator.setDuration(CRACK_STEP3_DURATION);
 
             crackingAnimationSet3.playTogether(shakeAnimatorFull, shakeAnimatorCrack, maskCrackAnimator);
-            crackingAnimationSet3.setStartDelay(200);
+            crackingAnimationSet3.setStartDelay(CRACK_STEP3_START_DELAY);
         }
     }
 
     public void stopShaking() {
-        imageViewFull.clearAnimation();
         imageViewFull.setRotation(0);
+        if (shakeAnimatorSlow != null) {
+            shakeAnimatorSlow.cancel();
+        }
         if (crackingAnimationSet != null) {
             crackingAnimationSet.cancel();
         }
@@ -365,8 +395,9 @@ public class WidgetTokenView extends FrameLayout {
         if (crackingAnimationSet != null) {
             crackingAnimationSet.cancel();
         }
-        imageViewFull.clearAnimation();
-        imageViewCracked.clearAnimation();
+        if (shakeAnimatorSlow != null) {
+            shakeAnimatorSlow.cancel();
+        }
 
         Animation rotateRightAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_right_and_translate);
         imageViewRight.setAnimation(rotateRightAnimation);
@@ -374,7 +405,7 @@ public class WidgetTokenView extends FrameLayout {
         imageViewLeft.setAnimation(rotateLeftAnimation);
     }
 
-    public void reset() {
+    private void reset() {
         isTokenClicked = false;
 
         imageViewRight.clearAnimation();
@@ -384,7 +415,7 @@ public class WidgetTokenView extends FrameLayout {
         imageViewLeft.setVisibility(View.GONE);
 
         imageViewFull.setVisibility(View.VISIBLE);
-        imageViewCracked.setPercentMasked(100);
+        imageViewCracked.reset();
 
         showLightAnimation();
         shake();
@@ -396,8 +427,9 @@ public class WidgetTokenView extends FrameLayout {
         imageViewLightRight.clearAnimation();
         imageViewLightRight.setVisibility(View.GONE);
 
-        imageViewFull.clearAnimation();
-        imageViewCracked.clearAnimation();
+        if (shakeAnimatorSlow != null) {
+            shakeAnimatorSlow.cancel();
+        }
         if (crackingAnimationSet != null) {
             crackingAnimationSet.cancel();
         }
