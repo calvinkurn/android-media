@@ -323,7 +323,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                 && !domain.getContent().getTopAdsList().isEmpty()) {
                             FeedTopAdsViewModel feedTopAdsViewModel =
                                     convertToTopadsViewModel(domain);
-                            listFeedView.add(feedTopAdsViewModel);
+                            if (!feedTopAdsViewModel.getList().isEmpty()) {
+                                listFeedView.add(feedTopAdsViewModel);
+                            }
 
                             List<FeedEnhancedTracking.Promotion> listTopAds = new ArrayList<>();
                             List<Data> listData = feedTopAdsViewModel.getList();
@@ -331,18 +333,18 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             for (int i = 0; i < listData.size(); i++) {
                                 Data data = listData.get(i);
                                 if (data.getProduct() != null){
-                                listTopAds.add(new FeedEnhancedTracking.Promotion(
-                                        Integer.valueOf(data.getId()),
-                                        FeedEnhancedTracking.Promotion
-                                                .createContentNameTopadsProduct(),
-                                        (data.getAdRefKey().equals("") ?
-                                                FeedEnhancedTracking.Promotion.TRACKING_NONE :
-                                                data.getAdRefKey()),
-                                        currentPosition,
-                                        String.valueOf(data.getProduct().getCategory()),
-                                        Integer.valueOf(data.getId()),
-                                        FeedEnhancedTracking.Promotion.TRACKING_EMPTY
-                                        ));
+                                    listTopAds.add(new FeedEnhancedTracking.Promotion(
+                                            Integer.valueOf(data.getId()),
+                                            FeedEnhancedTracking.Promotion
+                                                    .createContentNameTopadsProduct(),
+                                            (TextUtils.isEmpty(data.getAdRefKey()) ?
+                                                    FeedEnhancedTracking.Promotion.TRACKING_NONE :
+                                                    data.getAdRefKey()),
+                                            currentPosition,
+                                            String.valueOf(data.getProduct().getCategory()),
+                                            Integer.valueOf(data.getId()),
+                                            FeedEnhancedTracking.Promotion.TRACKING_EMPTY
+                                    ));
                                 }
                                 else if (data.getShop() != null){
                                     listTopAds.add(new FeedEnhancedTracking.Promotion(
