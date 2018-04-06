@@ -26,11 +26,9 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.OfficialStoreProductAdapter;
 import com.tokopedia.core.shopinfo.listener.OsHomeFragmentView;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
@@ -55,6 +53,7 @@ import butterknife.ButterKnife;
  *         modified by brilliant.oka
  */
 
+@Deprecated
 public class OfficialShopHomeFragment extends BasePresenterFragmentV4<OsHomePresenter>
         implements OsHomeFragmentView {
 
@@ -184,10 +183,7 @@ public class OfficialShopHomeFragment extends BasePresenterFragmentV4<OsHomePres
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getUserVisibleHint()) {
-            if (getActivity() != null &&
-                    getActivity() instanceof ShopInfoActivity) {
-                ((ShopInfoActivity) getActivity()).swipeAble(false);
-            }
+
         }
     }
 
@@ -276,10 +272,7 @@ public class OfficialShopHomeFragment extends BasePresenterFragmentV4<OsHomePres
         }
 
         if (isVisibleToUser) {
-            if (getActivity() != null &&
-                    getActivity() instanceof ShopInfoActivity) {
-                ((ShopInfoActivity) getActivity()).swipeAble(false);
-            }
+
         }
     }
 

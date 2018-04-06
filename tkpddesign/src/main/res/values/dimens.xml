@@ -48,6 +48,7 @@
     <dimen name="dp_300">300dp</dimen> <!-- not recommended -->
     <dimen name="dp_340">340dp</dimen> <!-- not recommended -->
     <dimen name="dp_350">350dp</dimen> <!-- not recommended -->
+    <dimen name="dp_500">500dp</dimen> <!-- not recommended -->
 
     <dimen name="sp_8">8sp</dimen> <!-- not recommended -->
     <dimen name="sp_10">10sp</dimen> <!-- not recommended -->
@@ -64,5 +65,7 @@
     <dimen name="sp_34">34sp</dimen> <!-- not recommended -->
     <dimen name="sp_45">45sp</dimen> <!-- not recommended -->
     <dimen name="sp_56">56sp</dimen>
+
+    <integer name="int_3">3</integer>
 
 </resources>

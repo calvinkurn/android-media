@@ -262,6 +262,7 @@
 
 
             <TextView
+                android:id="@+id/label_partial_order"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_left_stock"
