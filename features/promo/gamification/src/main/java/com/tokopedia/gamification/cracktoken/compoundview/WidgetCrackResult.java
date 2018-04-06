@@ -120,22 +120,24 @@ public class WidgetCrackResult extends RelativeLayout {
         animationCrackResult.setFillAfter(true);
         animationCrackResult.setDuration(1000);
 
-        if (!TextUtils.isEmpty(crackResult.getImageUrl())) {
-            Glide.with(getContext())
-                    .load(crackResult.getImageUrl())
-                    .asBitmap()
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            imageViewCrackResult.setImageBitmap(resource);
-                            imageViewCrackResult.startAnimation(animationCrackResult);
-                            imageViewCrackResult.setVisibility(View.VISIBLE);
-                        }
-                    });
-        } else {
+        if (crackResult.getImageBitmap() != null && !crackResult.getImageBitmap().isRecycled()) {
             imageViewCrackResult.setImageBitmap(crackResult.getImageBitmap());
             imageViewCrackResult.startAnimation(animationCrackResult);
             imageViewCrackResult.setVisibility(View.VISIBLE);
+        } else {
+            if (!TextUtils.isEmpty(crackResult.getImageUrl())) {
+                Glide.with(getContext())
+                        .load(crackResult.getImageUrl())
+                        .asBitmap()
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                imageViewCrackResult.setImageBitmap(resource);
+                                imageViewCrackResult.startAnimation(animationCrackResult);
+                                imageViewCrackResult.setVisibility(View.VISIBLE);
+                            }
+                        });
+            }
         }
 
         AnimationSet animationBgCrackResult = new AnimationSet(true);
