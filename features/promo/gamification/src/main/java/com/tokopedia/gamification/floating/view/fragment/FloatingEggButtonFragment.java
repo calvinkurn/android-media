@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -26,9 +27,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
@@ -341,15 +345,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     @Override
     public void onSuccessGetToken(final TokenData tokenData) {
-        serverOffFlag = tokenData.getOffFlag();
-        String sumTokenString = tokenData.getSumTokenStr();
+        final String sumTokenString = tokenData.getSumTokenStr();
 
         TokenFloating tokenFloating = tokenData.getFloating();
         final String pageUrl = tokenFloating.getPageUrl();
         final String appLink = tokenFloating.getApplink();
 
-        long timeRemainingSeconds = tokenFloating.getTimeRemainingSeconds();
-        boolean isShowTime = tokenFloating.getShowTime();
+        final long timeRemainingSeconds = tokenFloating.getTimeRemainingSeconds();
+        final boolean isShowTime = tokenFloating.getShowTime();
         String imageUrl = tokenFloating.getTokenAsset().getFloatingImgUrl();
 
         if (serverOffFlag) {
@@ -357,6 +360,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         } else {
             showFloatingEgg();
         }
+
+        serverOffFlag = tokenData.getOffFlag() || TextUtils.isEmpty(imageUrl);
 
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -393,21 +398,36 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             vgFloatingEgg.setOnTouchListener(null);
         }
 
-        ImageHandler.loadImageAndCache(ivFloatingEgg, imageUrl);
-        if (TextUtils.isEmpty(sumTokenString)) {
-            tvFloatingCounter.setVisibility(View.GONE);
-        } else {
-            tvFloatingCounter.setText(sumTokenString);
-            tvFloatingCounter.setVisibility(View.VISIBLE);
-        }
+        tvFloatingCounter.setVisibility(View.GONE);
+        tvFloatingTimer.setVisibility(View.GONE);
 
-        if (isShowTime && timeRemainingSeconds > 0) {
-            setUIFloatingTimer(timeRemainingSeconds);
-            startCountdownTimer(timeRemainingSeconds);
-            tvFloatingTimer.setVisibility(View.VISIBLE);
-        } else {
-            stopCountdownTimer();
-            tvFloatingTimer.setVisibility(View.GONE);
+        if (!TextUtils.isEmpty(imageUrl)) {
+            Glide.with(getContext())
+                .load(imageUrl)
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        ivFloatingEgg.setImageBitmap(resource);
+
+                        if (TextUtils.isEmpty(sumTokenString)) {
+                            tvFloatingCounter.setVisibility(View.GONE);
+                        } else {
+                            tvFloatingCounter.setText(sumTokenString);
+                            tvFloatingCounter.setVisibility(View.VISIBLE);
+                        }
+
+                        if (isShowTime && timeRemainingSeconds > 0) {
+                            setUIFloatingTimer(timeRemainingSeconds);
+                            startCountdownTimer(timeRemainingSeconds);
+                            tvFloatingTimer.setVisibility(View.VISIBLE);
+                        } else {
+                            stopCountdownTimer();
+                            tvFloatingTimer.setVisibility(View.GONE);
+                        }
+                    }
+                });
         }
     }
 
