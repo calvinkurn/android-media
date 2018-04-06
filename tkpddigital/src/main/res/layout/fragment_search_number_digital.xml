@@ -35,8 +35,8 @@
                 android:layout_width="@dimen/digital_height_width_25"
                 android:id="@+id/btn_clear_number"
                 android:layout_gravity="end|center"
-                android:layout_marginRight="@dimen/margin_small"
-                android:layout_marginEnd="@dimen/margin_small"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
                 android:background="@drawable/ic_clear_widget"
                 android:visibility="visible" />
 

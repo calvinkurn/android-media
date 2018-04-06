@@ -257,7 +257,7 @@ public class BottomSheetBuilder {
                 mIconTintColor, itemLayoutRes, mItemClickListener);
 
         ViewCompat.setElevation(sheet, mContext.getResources()
-                .getDimensionPixelSize(R.dimen.bottomsheet_elevation));
+                .getDimensionPixelSize(R.dimen.dp_16));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             sheet.findViewById(R.id.fakeShadow).setVisibility(View.GONE);
@@ -272,7 +272,7 @@ public class BottomSheetBuilder {
 
         if (mContext.getResources().getBoolean(R.bool.tablet_landscape)) {
             layoutParams.width = mContext.getResources()
-                    .getDimensionPixelSize(R.dimen.bottomsheet_width);
+                    .getDimensionPixelSize(R.dimen.dp_500);
         }
 
         mCoordinatorLayout.addView(sheet, layoutParams);
@@ -316,7 +316,7 @@ public class BottomSheetBuilder {
         if (mContext.getResources().getBoolean(R.bool.tablet_landscape)) {
             FrameLayout.LayoutParams layoutParams
                     = new FrameLayout.LayoutParams(mContext.getResources()
-                    .getDimensionPixelSize(R.dimen.bottomsheet_width),
+                    .getDimensionPixelSize(R.dimen.dp_500),
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             dialog.setContentView(sheet, layoutParams);
         } else {

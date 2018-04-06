@@ -150,7 +150,7 @@
 
     <style name="StyledTilEditTextFloatingLabel" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/grey_700</item>
-        <item name="android:textSize">@dimen/font_small</item>
+        <item name="android:textSize">@dimen/sp_14</item>
     </style>
 
 
@@ -232,10 +232,6 @@
     <style name="MediumText">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="Small.RatingBar" parent="style/Base.Widget.AppCompat.RatingBar.Small">
-        <item name="android:progressDrawable">@drawable/tkpd_rating_bar</item>
     </style>
 
     <style name="Medium.RatingBar" parent="@android:style/Widget.RatingBar">

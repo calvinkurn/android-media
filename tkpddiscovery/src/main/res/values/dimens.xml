@@ -23,4 +23,6 @@
     <dimen name="height_banner_category_lifestyle">120dp</dimen>
     <dimen name="guided_search_padding_vertical">12dp</dimen>
     <dimen name="guided_search_padding_horizontal">20dp</dimen>
+    <dimen name="quick_filter_padding_vertical">12dp</dimen>
+    <dimen name="quick_filter_padding_horizontal">20dp</dimen>
 </resources>

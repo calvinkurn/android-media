@@ -4,7 +4,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="60dp"
-                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/dp_10"
                 android:orientation="vertical">
 
     <LinearLayout
@@ -22,11 +22,11 @@
             android:id="@+id/ff_bubble_left_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/dp_5"
             android:background="@drawable/bg_bubble_left"
             android:minHeight="25dp"
             android:minWidth="120dp"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/string_buyer_problem2"
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/fontvs"
@@ -54,14 +54,14 @@
                     android:id="@+id/tv_buyer_problem"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_marginTop="@dimen/dp_5"
                     android:textSize="@dimen/fontvs"
                     android:textColor="@color/black_54"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/string_buyer_solution2"
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/fontvs"
@@ -71,7 +71,7 @@
                     android:id="@+id/tv_buyer_solution"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_marginTop="@dimen/dp_5"
                     android:textSize="@dimen/fontvs"
                     android:textColor="@color/black_54"/>
 
@@ -79,7 +79,7 @@
                     android:id="@+id/tv_buyer_text_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/string_buyer_text"
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/fontvs"
@@ -89,7 +89,7 @@
                     android:id="@+id/tv_buyer_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_marginTop="@dimen/dp_5"
                     android:textSize="@dimen/fontvs"
                     android:textColor="@color/black_54"/>
 
@@ -97,7 +97,7 @@
                     android:id="@+id/tv_prove"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/string_buyer_prove"
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/fontvs"
@@ -109,7 +109,7 @@
                     android:id="@+id/rv_prove"
                     android:layout_width="wrap_content"
                     android:layout_height="80dp"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:visibility="gone"
                     context:visibility="visible"/>
             </LinearLayout>
@@ -124,7 +124,7 @@
             android:id="@+id/ff_bubble_left_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/dp_5"
             android:background="@drawable/bg_bubble_left"
             android:minHeight="25dp"
             android:minWidth="120dp"
@@ -134,7 +134,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_small">
+                android:padding="@dimen/dp_10">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -148,7 +148,7 @@
                     android:id="@+id/rv_complained_product"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:visibility="visible"/>
 
             </LinearLayout>
@@ -183,11 +183,11 @@
             android:id="@+id/ff_bubble_left_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/dp_5"
             android:background="@drawable/bg_bubble_left"
             android:minHeight="25dp"
             android:minWidth="120dp"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -206,7 +206,7 @@
                     android:id="@+id/tv_seller_choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_marginTop="@dimen/dp_5"
                     android:textColor="@color/black_54"/>
             </LinearLayout>
 

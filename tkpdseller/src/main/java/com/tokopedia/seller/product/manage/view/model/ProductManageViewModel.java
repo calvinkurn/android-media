@@ -108,8 +108,12 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productStatus = productStatus;
     }
 
-    @Override
     public String getId() {
+        return productId;
+    }
+
+    @Override
+    public String getItemId() {
         return productId;
     }
 
@@ -186,6 +190,10 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
 
     public int getProductVariant() {
         return productVariant;
+    }
+
+    public boolean isProductVariant(){
+        return productVariant == 1;
     }
 
     public void setProductVariant(int productVariant) {
