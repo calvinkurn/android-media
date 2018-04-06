@@ -1091,6 +1091,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                     @Override
                     public void onError(String error) {
+                        viewListener.showErrorVariant();
                     }
                 }
         );
