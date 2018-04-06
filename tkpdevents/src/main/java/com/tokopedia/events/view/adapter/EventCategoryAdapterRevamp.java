@@ -90,6 +90,9 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 tvDisplayTag.setVisibility(View.GONE);
             }
 
+            tvAddToWishlist.setText(String.valueOf(data.getLikes()));
+            tvEventShare.setText(String.valueOf(data.getLikes()));
+
             ImageHandler.loadImageCover2(eventImage, categoryItems.get(position).getThumbnailApp());
 
         }
@@ -98,7 +101,8 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 R2.id.tv4_event_title,
                 R2.id.iv_event_thumb,
                 R2.id.tv4_location,
-                R2.id.tv4_date_time})
+                R2.id.tv4_date_time,
+                R2.id.tv3_sold_cnt})
         public void openEventDetails() {
             Intent detailsIntent = new Intent(context, EventDetailsActivity.class);
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);

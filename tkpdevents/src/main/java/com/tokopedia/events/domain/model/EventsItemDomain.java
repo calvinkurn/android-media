@@ -204,6 +204,9 @@ public class EventsItemDomain {
     @SerializedName("city_name")
     @Expose
     private String cityName;
+    @SerializedName("likes")
+    @Expose
+    private int likes;
     @SerializedName("schedules")
     @Expose
     private Object schedules;
@@ -729,6 +732,14 @@ public class EventsItemDomain {
 
     public void setCityName(String cityName) {
         this.cityName = cityName;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     public Object getSchedules() {

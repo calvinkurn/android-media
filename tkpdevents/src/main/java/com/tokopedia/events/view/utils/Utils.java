@@ -90,6 +90,7 @@ public class Utils {
                 CategoryItemsViewModel.setIsTop(categoryEntity.getIsTop());
                 CategoryItemsViewModel.setHasSeatLayout(categoryEntity.getHasSeatLayout());
                 CategoryItemsViewModel.setUrl(categoryEntity.getUrl());
+                CategoryItemsViewModel.setLikes(categoryEntity.getLikes());
                 categoryItemsViewModelList.add(CategoryItemsViewModel);
             }
         }

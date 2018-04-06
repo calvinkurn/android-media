@@ -2,8 +2,6 @@ package com.tokopedia.events.view.contractor;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -53,5 +51,12 @@ public class EventsContract {
         void onBannerSlide(int page);
 
         boolean onOptionMenuClick(int id);
+
+        void showEventDetails(CategoryItemsViewModel model);
+
+        void setEventLike(CategoryItemsViewModel model);
+
+        void shareEvent(CategoryItemsViewModel model);
+
     }
 }

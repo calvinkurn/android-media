@@ -27,6 +27,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
     private float mBaseElevation;
     private CardOnClickListener clickListener;
     private EventHomePresenter mPresenter;
+    private int currentDataIndex;
 
     public CardPagerAdapter(EventHomePresenter presenter) {
         mData = new ArrayList<>();
@@ -85,12 +86,20 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
         mViews.set(position, null);
     }
 
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        super.setPrimaryItem(container, position, object);
+        currentDataIndex = position;
+    }
+
     private void bind(CategoryItemsViewModel item, View view) {
         TextView tv1Price = view.findViewById(R.id.tv1_price);
         tv1Price.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(item.getSalesPrice()));
         TextView tvAddToWishlist = view.findViewById(R.id.tv_add_to_wishlist);
+        tvAddToWishlist.setText(String.valueOf(item.getLikes()));
         tvAddToWishlist.setOnClickListener(clickListener);
         TextView tvEventShare = view.findViewById(R.id.tv_event_share);
+        tvEventShare.setText(String.valueOf(item.getLikes()));
         tvEventShare.setOnClickListener(clickListener);
         ImageView ivEventThumb = view.findViewById(R.id.iv_event_thumb);
         ivEventThumb.setOnClickListener(clickListener);
@@ -127,13 +136,13 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
         public void onClick(View v) {
             int id = v.getId();
             if (id == R.id.tv_add_to_wishlist) {
-
+                mPresenter.setEventLike(mData.get(currentDataIndex));
             } else if (id == R.id.tv_event_share) {
 
             } else if (id == R.id.iv_event_thumb ||
                     id == R.id.tv4_event_title || id == R.id.tv4_location ||
                     id == R.id.tv4_date_time) {
-
+                mPresenter.showEventDetails(mData.get(currentDataIndex));
             }
         }
     }

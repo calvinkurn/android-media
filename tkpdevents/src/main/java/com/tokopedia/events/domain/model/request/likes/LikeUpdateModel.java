@@ -1,0 +1,27 @@
+package com.tokopedia.events.domain.model.request.likes;
+
+import javax.annotation.Generated;
+import com.google.gson.annotations.SerializedName;
+
+@Generated("com.robohorse.robopojogenerator")
+public class LikeUpdateModel{
+
+	@SerializedName("rating")
+	private Rating rating;
+
+	public void setRating(Rating rating){
+		this.rating = rating;
+	}
+
+	public Rating getRating(){
+		return rating;
+	}
+
+	@Override
+ 	public String toString(){
+		return 
+			"LikeUpdateModel{" + 
+			"rating = '" + rating + '\'' + 
+			"}";
+		}
+}

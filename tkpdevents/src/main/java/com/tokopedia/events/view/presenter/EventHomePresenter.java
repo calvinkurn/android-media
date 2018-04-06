@@ -9,10 +9,12 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.events.R;
-import com.tokopedia.events.domain.GetEventsListByLocationRequestUseCase;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
-import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
+import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
+import com.tokopedia.events.domain.model.request.likes.LikeUpdateModel;
+import com.tokopedia.events.domain.model.request.likes.Rating;
+import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventSearchActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
@@ -40,7 +42,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
         implements EventsContract.Presenter {
 
     private GetEventsListRequestUseCase getEventsListRequestUsecase;
-    private GetEventsListByLocationRequestUseCase getEventsListByLocationRequestUseCase;
+    private PostUpdateEventLikesUseCase postUpdateEventLikesUseCase;
     CategoryViewModel carousel;
     List<CategoryViewModel> categoryViewModels;
     TouchViewPager mTouchViewPager;
@@ -50,9 +52,9 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
 
     @Inject
-    public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase, GetEventsListByLocationRequestUseCase getEventsListByLocationRequestUseCase, GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase) {
+    public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase, PostUpdateEventLikesUseCase eventLikesUseCase) {
         this.getEventsListRequestUsecase = getEventsListRequestUsecase;
-        this.getEventsListByLocationRequestUseCase = getEventsListByLocationRequestUseCase;
+        this.postUpdateEventLikesUseCase = eventLikesUseCase;
     }
 
     @Override
@@ -128,6 +130,49 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             getView().getActivity().onBackPressed();
             return true;
         }
+    }
+
+    @Override
+    public void showEventDetails(CategoryItemsViewModel model) {
+        Intent detailsIntent = new Intent(getView().getActivity(), EventDetailsActivity.class);
+        detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
+        detailsIntent.putExtra("homedata", model);
+        getView().getActivity().startActivity(detailsIntent);
+    }
+
+    @Override
+    public void setEventLike(CategoryItemsViewModel model) {
+        LikeUpdateModel requestModel = new LikeUpdateModel();
+        //todo set requestmodel values
+        Rating rating = new Rating();
+        rating.setIsLiked("true");
+        rating.setUserId(12345);
+        rating.setProductId(model.getId());
+        rating.setFeedback("VEry good");
+        requestModel.setRating(rating);
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putObject("request_body", requestModel);
+        postUpdateEventLikesUseCase.createObservable(requestParams).subscribe(new Subscriber<LikeUpdateResultDomain>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(LikeUpdateResultDomain likeUpdateResultDomain) {
+
+            }
+        });
+    }
+
+    @Override
+    public void shareEvent(CategoryItemsViewModel model) {
+
     }
 
     public void getEventsList() {
@@ -226,5 +271,6 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                     .actionOpenGeneralWebView(getView().getActivity(), url);
         }
     }
+
 
 }

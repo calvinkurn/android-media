@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
+import com.tokopedia.events.data.entity.response.LikeUpdateResponse;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
@@ -14,7 +15,6 @@ import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartRespon
 
 import java.util.List;
 
-import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -49,4 +49,5 @@ public interface EventDataStore {
 
     Observable<List<SeatLayoutItem>> getEventSeatLayout(String url);
 
+    Observable<LikeUpdateResponse> updateLikes(JsonObject requestBody);
 }

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
+import com.tokopedia.events.data.entity.response.LikeUpdateResponse;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
@@ -13,6 +14,7 @@ import com.tokopedia.events.domain.EventRepository;
 import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.domain.model.EventLocationDomain;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
+import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 
 import java.util.List;
@@ -126,6 +128,21 @@ public class EventRepositoryData implements EventRepository {
         return eventsDataStoreFactory
                 .createCloudDataStore()
                 .getEventSeatLayout(url);
+    }
+
+    @Override
+    public Observable<LikeUpdateResultDomain> updateLikes(JsonObject requestBody) {
+        return eventsDataStoreFactory
+                .createCloudDataStore()
+                .updateLikes(requestBody).map(new Func1<LikeUpdateResponse, LikeUpdateResultDomain>() {
+                    @Override
+                    public LikeUpdateResultDomain call(LikeUpdateResponse likeUpdateResponse) {
+                        LikeUpdateResultDomain likeUpdateResultDomain = new LikeUpdateResultDomain();
+                        likeUpdateResultDomain.setMessage(likeUpdateResponse.getMessage());
+                        likeUpdateResultDomain.setStatus(likeUpdateResponse.getStatus());
+                        return likeUpdateResultDomain;
+                    }
+                });
     }
 
 

@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
+import com.tokopedia.events.data.entity.response.LikeUpdateResponse;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
@@ -87,6 +88,11 @@ public class CloudEventsDataStore implements EventDataStore {
     @Override
     public Observable<List<SeatLayoutItem>> getEventSeatLayout(String url) {
         return eventsApi.getEventSeatLayout(url);
+    }
+
+    @Override
+    public Observable<LikeUpdateResponse> updateLikes(JsonObject requestBody) {
+        return eventsApi.updateLikes(requestBody);
     }
 
 

@@ -74,6 +74,7 @@ public class CategoryItemsViewModel implements Parcelable {
     private String saleEndTime;
     private Boolean dateRange;
     private String cityName;
+    private int likes;
     private Object schedules;
     private Object forms;
 
@@ -254,6 +255,14 @@ public class CategoryItemsViewModel implements Parcelable {
 
     public void setTnc(String tnc) {
         this.tnc = tnc;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     public String getOfferText() {

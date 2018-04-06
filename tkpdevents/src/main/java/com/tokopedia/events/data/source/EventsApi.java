@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
+import com.tokopedia.events.data.entity.response.LikeUpdateResponse;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
@@ -69,5 +70,8 @@ public interface EventsApi {
     @GET()
     Observable<List<SeatLayoutItem>> getEventSeatLayout(@Url String url);
 
+    @POST(EventsUrl.EVENTS_LIKES)
+    @Headers({"Content-Type: application/json"})
+    Observable<LikeUpdateResponse> updateLikes(@Body JsonObject requestBody);
 
 }
