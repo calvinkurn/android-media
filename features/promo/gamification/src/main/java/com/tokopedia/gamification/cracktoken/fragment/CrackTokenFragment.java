@@ -210,12 +210,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 prevTimeStamp = 0;
             }
             stopTimer();
+            widgetTokenOnBoarding.hideHandOnBoarding();
         }
     }
 
     private void renderViewCrackEgg() {
-        widgetTokenView.reset();
-
         TokenUser tokenUser = tokenData.getHome().getTokensUser();
 
         infoTitlePage.setText(tokenData.getHome().getTokensUser().getTitle());
@@ -226,7 +225,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             @Override
             public void onClick() {
                 stopTimer();
-                hideHandOnBoarding();
+                widgetTokenOnBoarding.hideHandOnBoarding();
+                widgetTokenOnBoarding.saveSeenOnboardingPreference();
                 TokenUser tokenUser = tokenData.getHome().getTokensUser();
                 crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
 
@@ -350,17 +350,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         } else {
             this.tokenData = tokenData;
             renderViewCrackEgg();
-            showHandOnBoarding();
+            widgetTokenOnBoarding.showHandOnboarding();
             trackingLuckyEggView();
         }
-    }
-
-    private void showHandOnBoarding() {
-        widgetTokenOnBoarding.showHandOnboarding();
-    }
-
-    private void hideHandOnBoarding() {
-        widgetTokenOnBoarding.hideHandOnBoarding();
     }
 
     @Override
@@ -381,7 +373,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
                 trackingRewardLuckyEggView(crackResult.getBenefits().get(0).getText());
             }
-        }, widgetTokenView.isCrackPercentageFull() ? 1 : 1500);
+        }, widgetTokenView.isCrackPercentageFull() ? 1 : 1000);
     }
 
     @Override
