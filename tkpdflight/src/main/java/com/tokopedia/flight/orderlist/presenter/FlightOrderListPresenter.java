@@ -3,6 +3,7 @@ package com.tokopedia.flight.orderlist.presenter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
@@ -166,19 +167,32 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     }
 
     @Override
-    public List<FlightCancellationJourney> transformOrderToCancellation(FlightOrderJourney flightOrderJourney) {
-        return flightOrderToCancellationJourneyMapper.transform(flightOrderJourney);
-    }
-
-    @Override
     public void checkIfFlightCancellable(FlightOrderSuccessViewModel flightOrderSuccessViewModel) {
+        List<FlightCancellationJourney> items = transformOrderToCancellation(flightOrderSuccessViewModel.getOrderJourney());
+
+        boolean isRefundable = false;
+        for (FlightCancellationJourney item : items) {
+            if (item.isRefundable()) isRefundable = true;
+        }
+
         if (isDepartureDateMoreThan6Hours(
                 FlightDateUtil.stringToDate(flightOrderSuccessViewModel
-                        .getOrderJourney().getDepartureTime()))) {
-            getView().goToCancellationPage(flightOrderSuccessViewModel);
+                        .getOrderJourney().getDepartureTime())) &&
+            isRefundable) {
+            getView().showRefundableCancelDialog(flightOrderSuccessViewModel.getId(), items);
+
+        } else if (isDepartureDateMoreThan6Hours(
+                FlightDateUtil.stringToDate(flightOrderSuccessViewModel
+                        .getOrderJourney().getDepartureTime())) &&
+                !isRefundable) {
+            getView().showNonRefundableCancelDialog(flightOrderSuccessViewModel.getId(), items);
         } else {
             getView().showLessThan6HoursDialog();
         }
+    }
+
+    private List<FlightCancellationJourney> transformOrderToCancellation(FlightOrderJourney flightOrderJourney) {
+        return flightOrderToCancellationJourneyMapper.transform(flightOrderJourney);
     }
 
     private boolean isDepartureDateMoreThan6Hours(Date departureDate) {

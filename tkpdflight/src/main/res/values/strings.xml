@@ -352,5 +352,8 @@
     <string name="activity_label_flight_review_cancellation">Rincian Pembatalan Pesanan</string>
     <string name="flight_cancellation_review_description">Dengan menekan tombol di bawah, saya telah menyetujui <![CDATA[<font color="%1$s"><b>Syarat dan Ketentuan Pembatalan Pesanan</b></font>]]> untuk tiket dengan atas nama di atas, dan mengerti bahwa tiket yang telah diterbitkan oleh PT XYZ akan dibatalkan atas kehendak saya.</string>
     <string name="flight_cancellation_review_button">Ajukan Pembatalan</string>
+    <string name="flight_cancellation_dialog_title">Batalkan Pesanan</string>
+    <string name="flight_cancellation_dialog_non_refundable_description"><![CDATA[Dengan melakukan pembatalan pesanan, seluruh dana pembayaran Anda akan <b>hangus</b> karena pihak maskapai tidak menyediakan fitur pengembalian dana.]]></string>
+    <string name="flight_cancellation_dialog_back_button_text">Kembali</string>
 
 </resources>
