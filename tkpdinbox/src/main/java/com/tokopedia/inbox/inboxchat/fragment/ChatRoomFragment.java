@@ -782,7 +782,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         UserSession userSession = ((AbstractionRouter) getContext().
                 getApplicationContext()).getSession();
         int userId = 0;
-        if (userSession != null && TextUtils.isEmpty(userSession.getUserId())) {
+        if (userSession != null && !TextUtils.isEmpty(userSession.getUserId())) {
             userId = Integer.valueOf(userSession.getUserId());
         }
         presenter.setChatRating(element, userId, rating);
