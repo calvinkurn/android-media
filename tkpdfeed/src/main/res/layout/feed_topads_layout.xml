@@ -2,4 +2,4 @@
 <com.tokopedia.topads.sdk.widget.TopAdsWidgetView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_sm" />
+    android:layout_marginTop="@dimen/dp_15" />

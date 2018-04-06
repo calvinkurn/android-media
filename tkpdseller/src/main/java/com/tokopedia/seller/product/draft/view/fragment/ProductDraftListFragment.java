@@ -28,13 +28,9 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.core.instoped.model.InstagramMediaModel;
-import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -45,12 +41,6 @@ import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.instoped.InstopedSellerActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
-import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
-import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageFragment;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
-import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
@@ -64,6 +54,7 @@ import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
+import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +88,8 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     private MenuItem menuDelete;
 
     OnProductDraftListFragmentListener onProductDraftListFragmentListener;
-    public interface OnProductDraftListFragmentListener{
+
+    public interface OnProductDraftListFragmentListener {
         void saveValidImagesToDraft(ArrayList<String> localPaths, @NonNull ArrayList<String> imageDescriptionList);
     }
 
@@ -129,7 +121,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 adapter.confirmDelete(position);
-                                productDraftListPresenter.deleteProductDraft(draftViewModel.getProductId());
+                                productDraftListPresenter.deleteProductDraft(draftViewModel.getProductDraftId());
                                 // update total item value so scrolllistener won't retrieve next page.
                                 totalItem--;
                                 if (totalItem == 0) {
@@ -169,7 +161,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.menu_product_draft_list,menu);
+        inflater.inflate(R.menu.menu_product_draft_list, menu);
         menuDelete = menu.findItem(R.id.menu_delete);
         menuDelete.setVisible(totalItem > 0);
         super.onCreateOptionsMenu(menu, inflater);
@@ -178,7 +170,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     @Override
     public void onSearchLoaded(@NonNull List<ProductDraftViewModel> list, int totalItem) {
         super.onSearchLoaded(list, totalItem);
-        if (menuDelete!= null) {
+        if (menuDelete != null) {
             menuDelete.setVisible(totalItem > 0);
         }
     }
@@ -327,11 +319,9 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     public void onItemClicked(ProductDraftViewModel productDraftViewModel) {
         Intent intent;
         if (productDraftViewModel.isEdit()) {
-            intent = ProductDraftEditActivity.createInstance(getActivity(),
-                    String.valueOf(productDraftViewModel.getProductId()));
+            intent = ProductDraftEditActivity.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
         } else {
-            intent = ProductDraftAddActivity.createInstance(getActivity(),
-                    String.valueOf(productDraftViewModel.getProductId()));
+            intent = ProductDraftAddActivity.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
         }
         UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
         startActivityForResult(intent, ProductAddActivity.PRODUCT_REQUEST_CODE);
@@ -341,7 +331,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         switch (requestCode) {
             case INSTAGRAM_SELECT_REQUEST_CODE:
-                if (resultCode == Activity.RESULT_OK && intent!= null) {
+                if (resultCode == Activity.RESULT_OK && intent != null) {
                     ArrayList<String> imageUrls = intent.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
                     ArrayList<String> imageDescList = intent.getStringArrayListExtra(InstopedSellerActivity.EXTRA_IMAGE_DESC_LIST);
                     if (imageUrls != null) {
@@ -377,17 +367,17 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
         }
     }
 
-    private void showProgressDialog(){
+    private void showProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
             progressDialog.setCancelable(false);
         }
-        if (! progressDialog.isProgress()) {
+        if (!progressDialog.isProgress()) {
             progressDialog.showDialog();
         }
     }
 
-    private void hideProgressDialog(){
+    private void hideProgressDialog() {
         if (progressDialog != null && progressDialog.isProgress()) {
             progressDialog.dismiss();
         }
@@ -453,8 +443,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                     return true;
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return true;
         }
         return false;
@@ -497,16 +486,13 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     }
 
     @Override
-    public void onSaveBulkDraftSuccess(List<Long> productIds) {
+    public void onSaveBulkDraftSuccess(List<Long> draftProductIdList) {
         hideProgressDialog();
-        if (productIds.size() == 1) {
-            ProductDraftAddActivity.start(getContext(),
-                    ProductDraftListFragment.this,
-                    productIds.get(0).toString());
+        if (draftProductIdList.size() == 1) {
+            ProductDraftAddActivity.start(getContext(), this, draftProductIdList.get(0));
         } else {
             resetPageAndSearch();
-            CommonUtils.UniversalToast(getActivity(),
-                    getString(R.string.product_draft_instagram_save_success, productIds.size()));
+            CommonUtils.UniversalToast(getActivity(), getString(R.string.product_draft_instagram_save_success, draftProductIdList.size()));
         }
     }
 
@@ -514,11 +500,9 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     public void onErrorSaveBulkDraft(Throwable throwable) {
         hideProgressDialog();
         if (throwable instanceof ResolutionImageException) {
-            NetworkErrorHelper.showCloseSnackbar(getActivity(),
-                    getString(R.string.product_instagram_draft_error_save_resolution));
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.product_instagram_draft_error_save_resolution));
         } else {
-            NetworkErrorHelper.showCloseSnackbar(getActivity(),
-                    getString(R.string.product_instagram_draft_error_save_unknown));
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.product_instagram_draft_error_save_unknown));
         }
     }
 
@@ -529,13 +513,13 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onSuccessDeleteAllDraft() {
-        NetworkErrorHelper.showCloseSnackbar(getActivity(),getString(R.string.product_draft_success_delete_draft));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.product_draft_success_delete_draft));
         resetPageAndSearch();
     }
 
     @Override
     public void onErrorDeleteAllDraft() {
-        NetworkErrorHelper.showCloseSnackbar(getActivity(),getString(R.string.product_draft_error_delete_draft));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.product_draft_error_delete_draft));
     }
 
     @Override

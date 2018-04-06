@@ -74,12 +74,12 @@ public class CounterInputView extends BaseCustomView {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                updateButtonState();
+
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
+                updateButtonState();
             }
         });
         minusImageButton.setOnClickListener(new OnClickListener() {
@@ -173,6 +173,10 @@ public class CounterInputView extends BaseCustomView {
 
     public void removeTextChangedListener(TextWatcher watcher) {
         decimalInputView.removeTextChangedListener(watcher);
+    }
+
+    public void removeDefaultTextWatcher(){
+        decimalInputView.removeDefaultTextWatcher();
     }
 
     public void setError(String error) {

@@ -29,7 +29,7 @@ public class ReviewShopUseCase extends UseCase<DataResponseReviewShop> {
     public static final String SHOP_ID = "shop_id";
     public static final String PAGE = "page";
     public static final String PER_PAGE = "per_page";
-    public static final String DEFAULT_PER_PAGE = "10";
+    public static final String DEFAULT_PER_PAGE = "12";
     private static final String USER_ID = "user_id";
     private ReputationRepository reputationRepository;
     private GetLikeDislikeReviewUseCase getLikeDislikeReviewUseCase;

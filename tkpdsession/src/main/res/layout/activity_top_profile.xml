@@ -67,8 +67,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="@dimen/new_margin_med"
-                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
                         android:layout_weight="1"
                         android:drawablePadding="@dimen/title_kol_space"
                         android:background="?attr/selectableItemBackground"
@@ -89,7 +89,7 @@
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
-        <com.tokopedia.design.tab.Tabs
+        <com.tokopedia.design.component.Tabs
             android:id="@+id/tab_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/new_margin_small"
+            android:layout_marginBottom="@dimen/dp_8"
             android:fontFamily="sans-serif-medium"
             android:gravity="center_horizontal"
             android:text="@string/error_occured"
@@ -154,7 +154,7 @@
             android:id="@+id/error_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/new_margin_sm"
+            android:layout_marginBottom="@dimen/dp_24"
             android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
             android:text="@string/server_busy"
@@ -169,7 +169,7 @@
             android:background="@drawable/bg_button_green_enabled"
             android:fontFamily="sans-serif-medium"
             android:gravity="center_horizontal"
-            android:padding="@dimen/new_margin_med"
+            android:padding="@dimen/dp_16"
             android:text="@string/try_again_top_profile"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_13"

@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/image_holder_small"
-        android:layout_width="@dimen/margin_default"
-        android:layout_height="@dimen/margin_default"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
         android:scaleType="centerCrop"
         android:tint="@color/grey_500"
         app:srcCompat="@drawable/ic_time" />
@@ -20,11 +20,11 @@
         android:id="@+id/textview_holder_small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingEnd="@dimen/margin_default"
-        android:paddingStart="@dimen/margin_default"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
         android:text="25 Nov 2017 Pukul"
         android:textColor="@color/grey_500"
-        android:textSize="@dimen/font_micro"
+        android:textSize="@dimen/sp_12"
         android:textStyle="normal" />
 
 </LinearLayout>
