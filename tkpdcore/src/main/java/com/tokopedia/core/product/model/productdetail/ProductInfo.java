@@ -503,11 +503,11 @@ public class ProductInfo implements Parcelable {
         this.productStockWording = productStockWording;
     }
 
-    public Boolean getLimitedStock() {
+    public boolean getLimitedStock() {
         return limitedStock;
     }
 
-    public void setLimitedStock(Boolean limitedStock) {
+    public void setLimitedStock(boolean limitedStock) {
         this.limitedStock = limitedStock;
     }
 
@@ -535,7 +535,7 @@ public class ProductInfo implements Parcelable {
         private String productCatalogName;
         private String productCatalogUrl;
         private String productStockWording;
-        private Boolean limitedStock = false;
+        private boolean limitedStock = false;
 
         private Builder() {
         }
@@ -653,7 +653,7 @@ public class ProductInfo implements Parcelable {
             this.productStockWording = productStockWording;
         }
 
-        public void setLimitedStock(Boolean limitedStock) {
+        public void setLimitedStock(boolean limitedStock) {
             this.limitedStock = limitedStock;
         }
 

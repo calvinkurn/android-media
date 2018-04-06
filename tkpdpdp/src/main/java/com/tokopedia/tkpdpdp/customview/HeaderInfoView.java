@@ -10,12 +10,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.TintableBackgroundView;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -168,8 +166,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         if(data.getLimitedStock()){
             ivStockAvailable.setBackground(getContext().getResources().getDrawable(R.drawable.ic_available_stock_red));
             textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.tkpd_dark_red));
-        }
-        else{
+        } else {
             ivStockAvailable.setBackground(getContext().getResources().getDrawable(R.drawable.ic_available_stock));
             textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.black_70));
         }

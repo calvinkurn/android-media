@@ -34,7 +34,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
-import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -164,6 +163,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_PRODUCT_VARIANT = "STATE_PRODUCT_VARIANT";
+    public static final String STATE_PRODUCT_STOCK_NON_VARIANT = "STATE_PRODUCT_STOCK_NON_VARIANT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
     public static final String STATE_PROMO_WIDGET = "STATE_PROMO_WIDGET";
@@ -209,6 +209,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ProductDetailData productData;
     private boolean useVariant = true;
     private ProductVariant productVariant;
+    private Child productStockNonVariant;
     private List<ProductOther> productOthers;
     private VideoData videoData;
     private PromoAttributes promoAttributes;
@@ -792,11 +793,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void showErrorStock() {
-
-    }
-
-    @Override
     public void showProductOthersRetry() {
 
     }
@@ -982,6 +978,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Log.d(TAG, "onSaveState");
         presenter.saveStateProductDetail(outState, STATE_DETAIL_PRODUCT, productData);
         presenter.saveStateProductVariant(outState, STATE_PRODUCT_VARIANT, productVariant);
+        presenter.saveStateProductStockNonVariant(outState, STATE_PRODUCT_STOCK_NON_VARIANT, productStockNonVariant);
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
         presenter.saveStatePromoWidget(outState, STATE_PROMO_WIDGET, promoAttributes);
@@ -1287,9 +1284,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void addProductStock(Child productStock) {
+        productStockNonVariant = productStock;
         if(productStock.isEnabled()){
-            productData.getInfo().setProductStockWording(productStock.getStockWording());
-            productData.getInfo().setLimitedStock(productStock.isLimitedStock());
+            productData.getInfo().setProductStockWording(productStockNonVariant.getStockWording());
+            productData.getInfo().setLimitedStock(productStockNonVariant.isLimitedStock());
             headerInfoView.renderStockAvailability(productData.getInfo());
         }
     }

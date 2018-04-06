@@ -629,6 +629,13 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void saveStateProductStockNonVariant(Bundle outState, String key, Child value) {
+        if (value != null) {
+            outState.putParcelable(key, value);
+        }
+    }
+
+    @Override
     public void saveStateProductOthers(Bundle outState, String key, List<ProductOther> values) {
         if (values != null) outState.putParcelableArrayList(key, new ArrayList<Parcelable>(values));
     }
@@ -662,6 +669,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         VideoData videoData = savedInstanceState.getParcelable(ProductDetailFragment.STATE_VIDEO);
         PromoAttributes promoAttributes = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PROMO_WIDGET);
         ProductVariant productVariant = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PRODUCT_VARIANT);
+        Child productStockNonVariant = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PRODUCT_STOCK_NON_VARIANT);
         boolean isAppBarCollapsed = savedInstanceState.getBoolean(ProductDetailFragment.STATE_APP_BAR_COLLAPSED);
 
         if (productData != null & productOthers != null) {
@@ -676,6 +684,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             viewListener.addProductVariant(productVariant);
         } else if (productData.getInfo() != null && productData.getInfo().getHasVariant() && productVariant==null) {
             getProductVariant(context,Integer.toString(productData.getInfo().getProductId()));
+        } else if (productStockNonVariant != null ){
+            viewListener.addProductStock(productStockNonVariant);
+        } else {
+            getProductStock(context,Integer.toString(productData.getInfo().getProductId()));
         }
 
         if (productData.getCampaign() != null) {
