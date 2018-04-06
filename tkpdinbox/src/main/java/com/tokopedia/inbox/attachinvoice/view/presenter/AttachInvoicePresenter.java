@@ -4,12 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.inbox.attachinvoice.domain.usecase.AttachInvoicesUseCase;
 import com.tokopedia.inbox.attachinvoice.view.AttachInvoiceContract;
-import com.tokopedia.inbox.attachinvoice.view.model.InvoiceViewModel;
 import com.tokopedia.inbox.attachinvoice.view.subscriber.AttachInvoicesLoadInvoiceDataSubscriber;
-import com.tokopedia.inbox.attachproduct.view.presenter.AttachProductContract;
-import com.tokopedia.inbox.attachproduct.view.viewmodel.AttachProductItemViewModel;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -28,8 +23,10 @@ public class AttachInvoicePresenter implements AttachInvoiceContract.Presenter {
     }
 
     @Override
-    public void loadInvoiceData(String query, String userId, int page, int messageId ,Context context) {
-        useCase.execute(AttachInvoicesUseCase.createRequestParam(query,userId,page,messageId,context),new AttachInvoicesLoadInvoiceDataSubscriber(view));
+    public void loadInvoiceData(String query, String userId, int page, int messageId, Context
+            context) {
+        useCase.execute(AttachInvoicesUseCase.createRequestParam(query, userId, page, messageId,
+                context), new AttachInvoicesLoadInvoiceDataSubscriber(view));
     }
 
     @Override

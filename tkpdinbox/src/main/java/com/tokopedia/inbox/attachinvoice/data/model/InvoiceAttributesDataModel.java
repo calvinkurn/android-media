@@ -40,7 +40,9 @@ public class InvoiceAttributesDataModel {
     @Expose
     String url;
 
-    public InvoiceAttributesDataModel(Long invoiceId, String invoiceNo, String title, String description, String invoiceDate, String imageUrl, int statusId, String status, String amount, String url) {
+    public InvoiceAttributesDataModel(Long invoiceId, String invoiceNo, String title, String
+            description, String invoiceDate, String imageUrl, int statusId, String status, String
+            amount, String url) {
         this.invoiceId = invoiceId;
         this.invoiceNo = invoiceNo;
         this.title = title;

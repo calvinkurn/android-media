@@ -32,13 +32,15 @@ import javax.inject.Inject;
  * Created by Hendri on 22/03/18.
  */
 
-public class AttachInvoiceFragment extends BaseListFragment<InvoiceViewModel,AttachInvoiceListAdapterTypeFactory> implements AttachInvoiceContract.View {
+public class AttachInvoiceFragment extends BaseListFragment<InvoiceViewModel,
+        AttachInvoiceListAdapterTypeFactory> implements AttachInvoiceContract.View {
 
     @Inject
     AttachInvoicePresenter presenter;
 
     AttachInvoiceContract.Activity activity;
     private SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +48,13 @@ public class AttachInvoiceFragment extends BaseListFragment<InvoiceViewModel,Att
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
+            Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         RecyclerView recyclerView = super.getRecyclerView(view);
-        if(recyclerView instanceof VerticalRecyclerView){
-            VerticalRecyclerView verticalRecyclerView = (VerticalRecyclerView)recyclerView;
+        if (recyclerView instanceof VerticalRecyclerView) {
+            VerticalRecyclerView verticalRecyclerView = (VerticalRecyclerView) recyclerView;
             verticalRecyclerView.clearItemDecoration();
         }
         return view;
@@ -65,7 +68,7 @@ public class AttachInvoiceFragment extends BaseListFragment<InvoiceViewModel,Att
         return fragment;
     }
 
-    public void setActivityContract(AttachInvoiceContract.Activity activityContract){
+    public void setActivityContract(AttachInvoiceContract.Activity activityContract) {
         this.activity = activityContract;
     }
 
@@ -88,15 +91,18 @@ public class AttachInvoiceFragment extends BaseListFragment<InvoiceViewModel,Att
     @Override
     public void onItemClicked(InvoiceViewModel invoiceViewModel) {
         Intent data = new Intent();
-        data.putExtra(AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY,new SelectedInvoice(invoiceViewModel));
-        getActivity().setResult(AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_RESULT_CODE_OK,data);
+        data.putExtra(AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY, new
+                SelectedInvoice(invoiceViewModel));
+        getActivity().setResult(AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_RESULT_CODE_OK,
+                data);
         getActivity().finish();
     }
 
     @Override
     public void loadData(int page) {
         //Query search are disabled for this release therefore sending empty string
-        presenter.loadInvoiceData("",activity.getUserId(),page,activity.getMessageId(),getContext());
+        presenter.loadInvoiceData("", activity.getUserId(), page, activity.getMessageId(),
+                getContext());
     }
 
     @Override
@@ -106,13 +112,14 @@ public class AttachInvoiceFragment extends BaseListFragment<InvoiceViewModel,Att
 
     @NonNull
     @Override
-    protected BaseListAdapter<InvoiceViewModel, AttachInvoiceListAdapterTypeFactory> createAdapterInstance() {
-        return new AttachInvoiceListAdapter(getAdapterTypeFactory(),this);
+    protected BaseListAdapter<InvoiceViewModel, AttachInvoiceListAdapterTypeFactory>
+    createAdapterInstance() {
+        return new AttachInvoiceListAdapter(getAdapterTypeFactory(), this);
     }
 
     @Override
     public void addInvoicesToList(List<InvoiceViewModel> invoices, boolean hasNextPage) {
-        renderList(invoices,hasNextPage);
+        renderList(invoices, hasNextPage);
     }
 
     @Override

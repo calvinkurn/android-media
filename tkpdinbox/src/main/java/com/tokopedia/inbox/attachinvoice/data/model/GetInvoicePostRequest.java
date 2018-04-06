@@ -32,7 +32,8 @@ public class GetInvoicePostRequest {
     @Expose
     String startTime;
 
-    public GetInvoicePostRequest(int messageId, int userId, boolean isShowAll, int page, int limit) {
+    public GetInvoicePostRequest(int messageId, int userId, boolean isShowAll, int page, int
+            limit) {
         this.messageId = messageId;
         this.userId = userId;
         this.isShowAll = isShowAll;

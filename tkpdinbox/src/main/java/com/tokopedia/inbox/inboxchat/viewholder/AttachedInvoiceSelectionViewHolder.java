@@ -7,42 +7,40 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.attachinvoice.view.viewholder.InvoiceViewHolder;
-import com.tokopedia.inbox.inboxchat.listener.AttachedInvoiceOnSelectedListener;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSingleViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Hendri on 28/03/18.
  */
 
-public class AttachedInvoiceSelectionViewHolder  extends AbstractViewHolder<AttachInvoiceSelectionViewModel> {
-
+public class AttachedInvoiceSelectionViewHolder extends
+        AbstractViewHolder<AttachInvoiceSelectionViewModel> {
+    private static final int ADDITIONAL_GET_ALL_BUTTON = 1;
     @LayoutRes
     public static final int LAYOUT = R.layout.item_chat_invoice_attach_selection;
     private ChatRoomContract.View selectedListener;
     private AttachedInvoiceSelectionViewHolder.AttachedInvoicesItemsAdapter singleItemAdapter;
     private RecyclerView invoiceSelection;
-    public AttachedInvoiceSelectionViewHolder(View itemView,ChatRoomContract.View selectedListener) {
+
+    public AttachedInvoiceSelectionViewHolder(View itemView, ChatRoomContract.View
+            selectedListener) {
         super(itemView);
         this.selectedListener = selectedListener;
         singleItemAdapter = new AttachedInvoicesItemsAdapter();
         invoiceSelection = itemView.findViewById(R.id.attach_invoice_chat_invoice_selection);
-        invoiceSelection.setLayoutManager(new LinearLayoutManager(itemView.getContext(),LinearLayoutManager.HORIZONTAL,false));
+        invoiceSelection.setLayoutManager(new LinearLayoutManager(itemView.getContext(),
+                LinearLayoutManager.HORIZONTAL, false));
         invoiceSelection.setAdapter(singleItemAdapter);
     }
 
@@ -51,38 +49,41 @@ public class AttachedInvoiceSelectionViewHolder  extends AbstractViewHolder<Atta
         singleItemAdapter.setList(element.getList());
     }
 
-    private class AttachedInvoicesItemsAdapter extends RecyclerView.Adapter<AttachedInvoiceSingleItemViewHolder>{
+    private class AttachedInvoicesItemsAdapter extends RecyclerView
+            .Adapter<AttachedInvoiceSingleItemViewHolder> {
         List<AttachInvoiceSingleViewModel> list;
 
         @Override
-        public AttachedInvoiceSingleItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public AttachedInvoiceSingleItemViewHolder onCreateViewHolder(ViewGroup parent, int
+                viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_carousel_invoice_attach, parent, false);
             return new AttachedInvoiceSingleItemViewHolder(itemView);
         }
 
         @Override
-        public void onBindViewHolder(AttachedInvoiceSingleItemViewHolder holder, final int position) {
-            if(position < list.size()) {
+        public void onBindViewHolder(AttachedInvoiceSingleItemViewHolder holder, final int
+                position) {
+            if (position < list.size()) {
                 holder.bind(list.get(position));
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         selectedListener.onInvoiceSelected(
-                                AttachInvoiceMapper.selectedInvoiceViewModelToSelectedInvoice(list.get(position))
+                                AttachInvoiceMapper.selectedInvoiceViewModelToSelectedInvoice
+                                        (list.get(position))
                         );
                     }
                 });
-            }
-            else if(position == list.size()){
+            } else if (position == list.size()) {
                 holder.bind(new AttachInvoiceSingleViewModel(true));
             }
         }
 
         @Override
         public int getItemCount() {
-            if(list == null) return 0;
-            return list.size()+1;
+            if (list == null) return 0;
+            return list.size() + ADDITIONAL_GET_ALL_BUTTON;
         }
 
         public List<AttachInvoiceSingleViewModel> getList() {
@@ -95,7 +96,7 @@ public class AttachedInvoiceSelectionViewHolder  extends AbstractViewHolder<Atta
         }
     }
 
-    private class AttachedInvoiceSingleItemViewHolder extends RecyclerView.ViewHolder{
+    private class AttachedInvoiceSingleItemViewHolder extends RecyclerView.ViewHolder {
 
         private TextView invoiceNo;
         private TextView invoiceDate;
@@ -119,7 +120,8 @@ public class AttachedInvoiceSelectionViewHolder  extends AbstractViewHolder<Atta
             productImage = itemView.findViewById(R.id.attach_invoice_item_product_image);
             invoiceContainer = itemView.findViewById(R.id.container_all_invoice_attach);
             searchAllButton = itemView.findViewById(R.id.all_invoice_button);
-            buttonContainer = itemView.findViewById(R.id.container_invoice_attach_get_all_invoice_button);
+            buttonContainer = itemView.findViewById(R.id
+                    .container_invoice_attach_get_all_invoice_button);
             searchAllButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -128,13 +130,11 @@ public class AttachedInvoiceSelectionViewHolder  extends AbstractViewHolder<Atta
             });
         }
 
-        public void bind(AttachInvoiceSingleViewModel element){
-            if(element.isSearchAllButton()){
+        public void bind(AttachInvoiceSingleViewModel element) {
+            if (element.isSearchAllButton()) {
                 invoiceContainer.setVisibility(View.GONE);
                 buttonContainer.setVisibility(View.VISIBLE);
-            }
-            else
-            {
+            } else {
                 invoiceContainer.setVisibility(View.VISIBLE);
                 buttonContainer.setVisibility(View.GONE);
                 invoiceNo.setText(element.getCode());

@@ -23,6 +23,7 @@ public class InvoiceViewHolder extends AbstractViewHolder<InvoiceViewModel> {
     private TextView invoiceStatus;
     private TextView totalAmount;
     private ImageView productImage;
+
     public InvoiceViewHolder(View itemView) {
         super(itemView);
         invoiceNo = itemView.findViewById(R.id.attach_invoice_item_invoice_no);
@@ -35,15 +36,14 @@ public class InvoiceViewHolder extends AbstractViewHolder<InvoiceViewModel> {
     }
 
 
-
     @Override
     public void bind(InvoiceViewModel element) {
         invoiceNo.setText(element.getInvoiceNumber());
-        if(element.getProductTopImage() != null && !TextUtils.isEmpty(element.getProductTopImage())) {
+        if (element.getProductTopImage() != null && !TextUtils.isEmpty(element.getProductTopImage
+                ())) {
             productImage.setVisibility(View.VISIBLE);
             ImageHandler.loadImageAndCache(productImage, element.getProductTopImage());
-        }
-        else {
+        } else {
             productImage.setVisibility(View.GONE);
         }
         invoiceDate.setText(element.getDate());

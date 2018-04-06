@@ -11,20 +11,17 @@ import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSingleViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Hendri on 28/03/18.
  */
 
 public class AttachInvoiceMapper {
-    public static AttachInvoiceSelectionViewModel attachmentToAttachInvoiceSelectionModel(Attachment attachment) {
-        if(attachment.getType().equals(AttachmentChatHelper.INVOICE_LIST_ATTACHED)) {
-            AttachInvoiceSelectionViewModel invoiceSelectionViewModel = new AttachInvoiceSelectionViewModel(null, null);
+    public static AttachInvoiceSelectionViewModel attachmentToAttachInvoiceSelectionModel
+            (Attachment attachment) {
+        if (attachment.getType().equals(AttachmentChatHelper.INVOICE_LIST_ATTACHED)) {
             ArrayList<AttachInvoiceSingleViewModel> listSingleInvoice = new ArrayList<>();
-
-            for(AttachmentInvoice invoice:attachment.getAttributes().getInvoices()){
+            for (AttachmentInvoice invoice : attachment.getAttributes().getInvoices()) {
                 listSingleInvoice.add(new AttachInvoiceSingleViewModel(
                         invoice.getTypeString(),
                         invoice.getType(),
@@ -40,35 +37,15 @@ public class AttachInvoiceMapper {
                         invoice.getAttributes().getAmount()
                 ));
             }
-            invoiceSelectionViewModel.setList(listSingleInvoice);
+            AttachInvoiceSelectionViewModel invoiceSelectionViewModel = new
+                    AttachInvoiceSelectionViewModel(null, listSingleInvoice);
             return invoiceSelectionViewModel;
         }
         return null;
     }
 
-    public static AttachInvoiceSelectionViewModel webSocketResponseToAttachInvoiceSelectionModel(WebSocketResponseData webSocketData){
-
-        return new AttachInvoiceSelectionViewModel(null,null);
-        /*return new AttachInvoiceSingleViewModel(null,
-                0,
-                null,
-                null,
-                null,
-                null,
-                0,
-                null,
-                null,
-                0,
-                null,
-                null);
-                */
-    }
-
-    public static AttachInvoiceSentViewModel myChatViewModelToAttachInvoiceSentModel(MyChatViewModel myChatViewModel){
-        return new AttachInvoiceSentViewModel(myChatViewModel);
-    }
-
-    public static SelectedInvoice selectedInvoiceViewModelToSelectedInvoice(AttachInvoiceSingleViewModel viewModel){
+    public static SelectedInvoice selectedInvoiceViewModelToSelectedInvoice
+            (AttachInvoiceSingleViewModel viewModel) {
         return new SelectedInvoice(viewModel.getId(),
                 viewModel.getCode(),
                 viewModel.getTypeString(),

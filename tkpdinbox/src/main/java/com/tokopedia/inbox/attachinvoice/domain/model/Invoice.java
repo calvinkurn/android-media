@@ -1,10 +1,5 @@
 package com.tokopedia.inbox.attachinvoice.domain.model;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 /**
  * Created by Hendri on 21/03/18.
  */
@@ -22,7 +17,10 @@ public class Invoice {
     String imageUrl;
     int invoiceTypeInt;
     Long invoiceId;
-    public Invoice(int statusInt, String number, String type, String url, String title, String desc, String date, String status, String total, String imageUrl, int invoiceTypeInt, Long invoiceId) {
+
+    public Invoice(int statusInt, String number, String type, String url, String title, String
+            desc, String date, String status, String total, String imageUrl, int invoiceTypeInt,
+                   Long invoiceId) {
         this.statusInt = statusInt;
         this.number = number;
         this.type = type;

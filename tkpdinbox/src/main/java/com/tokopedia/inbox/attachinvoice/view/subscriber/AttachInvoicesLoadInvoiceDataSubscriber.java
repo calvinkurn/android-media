@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.attachinvoice.view.subscriber;
 
+import com.tokopedia.inbox.attachinvoice.domain.usecase.AttachInvoicesUseCase;
 import com.tokopedia.inbox.attachinvoice.view.AttachInvoiceContract;
 import com.tokopedia.inbox.attachinvoice.view.model.InvoiceViewModel;
 
@@ -30,6 +31,7 @@ public class AttachInvoicesLoadInvoiceDataSubscriber extends Subscriber<List<Inv
 
     @Override
     public void onNext(List<InvoiceViewModel> invoiceViewModels) {
-        view.addInvoicesToList(invoiceViewModels,(invoiceViewModels.size() >= 10));
+        view.addInvoicesToList(invoiceViewModels,
+                (invoiceViewModels.size() >= AttachInvoicesUseCase.DEFAULT_LIMIT));
     }
 }

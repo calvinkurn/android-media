@@ -28,6 +28,9 @@ import java.util.Date;
  */
 
 public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewModel> {
+    public static final int RATING_NONE = 0;
+    public static final int RATING_GOOD = 1;
+    public static final int RATING_BAD = -1;
 
     private int position;
     private View view;
@@ -84,7 +87,8 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
             message.setText(MethodChecker.fromHtml(element.getMsg()));
         } else {
             if (element.getSpanned() != null && viewListener.getKeyword() != null) {
-                message.setText(highlight(itemView.getContext(), element.getSpanned(), viewListener.getKeyword()));
+                message.setText(highlight(itemView.getContext(), element.getSpanned(),
+                        viewListener.getKeyword()));
             }
         }
 
@@ -120,7 +124,7 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
 
         if (element.isShowHour()) {
             hour.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             hour.setVisibility(View.GONE);
         }
 
@@ -142,7 +146,7 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
         String fullTime;
         try {
             fullTime = ChatTimeConverter.formatFullTime(Long.parseLong(element.getReplyTime()));
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             fullTime = "";
         }
 
@@ -154,31 +158,31 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
 
         if (element.isShowRating()) {
             switch (element.getRatingStatus()) {
-                case 0:
+                case RATING_NONE:
                     ratingHolder.setVisibility(View.VISIBLE);
                     ratingSelected.setVisibility(View.GONE);
                     ratingYes.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            viewListener.onClickRating(element, 1);
+                            viewListener.onClickRating(element, RATING_GOOD);
                         }
                     });
 
                     ratingNo.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            viewListener.onClickRating(element, -1);
+                            viewListener.onClickRating(element, RATING_BAD);
                         }
                     });
                     break;
 
-                case 1:
+                case RATING_GOOD:
                     ratingHolder.setVisibility(View.GONE);
                     ratingSelected.setSelected(true);
                     ratingSelected.setVisibility(View.VISIBLE);
                     break;
 
-                case -1:
+                case RATING_BAD:
                     ratingHolder.setVisibility(View.GONE);
                     ratingSelected.setSelected(false);
                     ratingSelected.setVisibility(View.VISIBLE);
@@ -215,10 +219,13 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
 
         while (indexOfKeyword < span.length() && indexOfKeyword >= 0) {
             //Create a background color span on the keyword
-            spannableString.setSpan(new BackgroundColorSpan(MethodChecker.getColor(context, R.color.orange_300)), indexOfKeyword, indexOfKeyword + keyword.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(new BackgroundColorSpan(MethodChecker.getColor(context, R
+                    .color.orange_300)), indexOfKeyword, indexOfKeyword + keyword.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             //Get the next index of the keyword
-            indexOfKeyword = spannableString.toString().indexOf(keyword, indexOfKeyword + keyword.length());
+            indexOfKeyword = spannableString.toString().indexOf(keyword, indexOfKeyword + keyword
+                    .length());
         }
 
         return spannableString;

@@ -22,7 +22,10 @@ public class SelectedInvoice implements Parcelable {
     private String status;
     private int statusId;
 
-    public SelectedInvoice(Long invoiceId, String invoiceNo, String invoiceTypeStr, Integer invoiceType, String topProductName, String topProductImage, String description, String amount, String date, String invoiceUrl, String status, int statusId) {
+    public SelectedInvoice(Long invoiceId, String invoiceNo, String invoiceTypeStr, Integer
+            invoiceType, String topProductName, String topProductImage, String description,
+                           String amount, String date, String invoiceUrl, String status, int
+                                   statusId) {
         this.invoiceId = invoiceId;
         this.invoiceNo = invoiceNo;
         this.invoiceTypeStr = invoiceTypeStr;
@@ -37,7 +40,7 @@ public class SelectedInvoice implements Parcelable {
         this.statusId = statusId;
     }
 
-    public SelectedInvoice(InvoiceViewModel viewModel){
+    public SelectedInvoice(InvoiceViewModel viewModel) {
         this.invoiceId = viewModel.getInvoiceId();
         this.invoiceNo = viewModel.getInvoiceNumber();
         this.invoiceTypeStr = viewModel.getInvoiceTypeStr();

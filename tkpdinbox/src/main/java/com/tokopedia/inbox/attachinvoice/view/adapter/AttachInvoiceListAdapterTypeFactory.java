@@ -9,8 +9,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewH
 import com.tokopedia.inbox.attachinvoice.view.model.InvoiceViewModel;
 import com.tokopedia.inbox.attachinvoice.view.viewholder.InvoiceViewHolder;
 import com.tokopedia.inbox.attachproduct.view.viewholder.AttachProductEmptyResultViewHolder;
-import com.tokopedia.inbox.attachproduct.view.viewholder.AttachProductListItemViewHolder;
-import com.tokopedia.inbox.attachproduct.view.viewmodel.AttachProductItemViewModel;
 
 /**
  * Created by Hendri on 22/03/18.

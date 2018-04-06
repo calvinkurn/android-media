@@ -2,7 +2,6 @@ package com.tokopedia.inbox.attachinvoice.view.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.attachinvoice.view.adapter.AttachInvoiceListAdapterTypeFactory;
-import com.tokopedia.inbox.attachinvoice.view.viewholder.InvoiceViewHolder;
 
 /**
  * Created by Hendri on 22/03/18.
@@ -23,7 +22,10 @@ public class InvoiceViewModel implements Visitable<AttachInvoiceListAdapterTypeF
     String description;
     String invoiceUrl;
 
-    public InvoiceViewModel(Long invoiceId, int invoiceType, int statusId, String invoiceNumber, String productTopName, String productTopImage, String status, String date, String total, String invoiceTypeStr, String description, String invoiceUrl) {
+    public InvoiceViewModel(Long invoiceId, int invoiceType, int statusId, String invoiceNumber,
+                            String productTopName, String productTopImage, String status, String
+                                    date, String total, String invoiceTypeStr, String
+                                    description, String invoiceUrl) {
         this.invoiceId = invoiceId;
         this.invoiceType = invoiceType;
         this.statusId = statusId;
