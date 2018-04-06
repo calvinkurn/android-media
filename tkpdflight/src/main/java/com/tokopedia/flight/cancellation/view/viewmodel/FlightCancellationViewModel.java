@@ -46,18 +46,6 @@ public class FlightCancellationViewModel implements Parcelable,
         return typeFactory.type(this);
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(flightCancellationJourney, flags);
-        dest.writeTypedList(passengerViewModelList);
-    }
-
     public FlightCancellationJourney getFlightCancellationJourney() {
         return flightCancellationJourney;
     }
