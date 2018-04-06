@@ -1,17 +1,16 @@
 package com.tokopedia.tokocash.qrpayment.data.datasource;
 
-import com.apollographql.android.rx.RxApollo;
-import com.apollographql.apollo.ApolloClient;
-import com.apollographql.apollo.ApolloWatcher;
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.tokocash.CacheUtil;
-import com.tokopedia.tokocash.anals.GetTokocashQuery;
-import com.tokopedia.tokocash.network.exception.UserInactivateTokoCashException;
-import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.tokocash.network.api.WalletApi;
+import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
 
+import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * Created by nabillasabbaha on 2/15/18.
@@ -22,36 +21,34 @@ public class CloudBalanceDataSource implements BalanceDataSource {
     private static final String TAG = CloudBalanceDataSource.class.getName();
     private static final int DURATION_SAVE_TO_CACHE = 60;
 
+    private WalletApi walletApi;
     private CacheManager cacheManager;
-    private ApolloClient apolloClient;
 
-    public CloudBalanceDataSource(CacheManager cacheManager, ApolloClient aplClient) {
+    public CloudBalanceDataSource(WalletApi walletApi, CacheManager cacheManager) {
+        this.walletApi = walletApi;
         this.cacheManager = cacheManager;
-        this.apolloClient = aplClient;
     }
 
     @Override
-    public Observable<GetTokocashQuery.Data> getBalanceTokoCash(RequestParams requestParams) {
-
-        //CommonUtils.dumper("rxapollo called userID " + requestParams.getInt(GetUserAttributesUseCase.PARAM_USER_ID, 0));
-
-        ApolloWatcher<GetTokocashQuery.Data> apolloWatcher = apolloClient.newCall(new GetTokocashQuery()).watcher();
-
-        return RxApollo.from(apolloWatcher).doOnNext(new Action1<GetTokocashQuery.Data>() {
-            @Override
-            public void call(GetTokocashQuery.Data dataResponseResponse) {
-                if (dataResponseResponse != null && dataResponseResponse.wallet() != null) {
-                    if (dataResponseResponse.wallet().linked()) {
-                        cacheManager.save(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE,
-                                CacheUtil.convertModelToString(dataResponseResponse,
-                                        new TypeToken<GetTokocashQuery.Data>() {
-                                        }.getType()), DURATION_SAVE_TO_CACHE);
-                    } else {
-                        throw new UserInactivateTokoCashException("User is not activate tokocash yet");
+    public Observable<BalanceTokoCashEntity> getBalanceTokoCash() {
+        return walletApi.getBalanceTokoCash()
+                .doOnNext(new Action1<Response<DataResponse<BalanceTokoCashEntity>>>() {
+                    @Override
+                    public void call(Response<DataResponse<BalanceTokoCashEntity>> dataResponseResponse) {
+                        if (dataResponseResponse.body().getData() != null) {
+                            cacheManager.save(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE,
+                                    CacheUtil.convertModelToString(dataResponseResponse.body().getData(),
+                                            new TypeToken<BalanceTokoCashEntity>() {
+                                            }.getType()), DURATION_SAVE_TO_CACHE);
+                        }
                     }
-                }
-            }
-        });
+                })
+                .map(new Func1<Response<DataResponse<BalanceTokoCashEntity>>, BalanceTokoCashEntity>() {
+                    @Override
+                    public BalanceTokoCashEntity call(Response<DataResponse<BalanceTokoCashEntity>> dataResponseResponse) {
+                        return dataResponseResponse.body().getData();
+                    }
+                });
     }
 
 }

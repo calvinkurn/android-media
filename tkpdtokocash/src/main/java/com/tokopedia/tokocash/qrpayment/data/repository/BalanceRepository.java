@@ -4,7 +4,6 @@ import com.tokopedia.tokocash.qrpayment.data.datasource.BalanceDataSourceFactory
 import com.tokopedia.tokocash.qrpayment.data.mapper.BalanceTokoCashMapper;
 import com.tokopedia.tokocash.qrpayment.domain.IBalanceRepository;
 import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
-import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -15,6 +14,7 @@ import rx.Observable;
  */
 
 public class BalanceRepository implements IBalanceRepository {
+
     private BalanceDataSourceFactory balanceDataSourceFactory;
     private BalanceTokoCashMapper balanceTokoCashMapper;
 
@@ -27,13 +27,13 @@ public class BalanceRepository implements IBalanceRepository {
 
     @Override
     public Observable<BalanceTokoCash> getBalanceTokoCash() {
-        return balanceDataSourceFactory.createBalanceTokoCashDataSource().getBalanceTokoCash(RequestParams.EMPTY)
+        return balanceDataSourceFactory.createBalanceTokoCashDataSource().getBalanceTokoCash()
                 .map(balanceTokoCashMapper);
     }
 
     @Override
     public Observable<BalanceTokoCash> getLocalBalanceTokoCash() {
-        return balanceDataSourceFactory.createLocalBalanceTokoCashDataSource().getBalanceTokoCash(RequestParams.EMPTY)
+        return balanceDataSourceFactory.createLocalBalanceTokoCashDataSource().getBalanceTokoCash()
                 .map(balanceTokoCashMapper);
     }
 

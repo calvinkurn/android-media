@@ -1,9 +1,9 @@
 package com.tokopedia.core.drawer2.data.repository;
 
-import com.tokopedia.anals.ConsumerDrawerData;
-import com.tokopedia.anals.SellerDrawerData;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.drawer2.data.factory.UserAttributesFactory;
+import com.tokopedia.core.drawer2.data.pojo.SellerDrawerData;
+import com.tokopedia.core.drawer2.data.pojo.UserDrawerData;
 
 import rx.Observable;
 
@@ -20,12 +20,12 @@ public class UserAttributesRepositoryImpl implements UserAttributesRepository {
     }
 
     @Override
-    public Observable<ConsumerDrawerData.Data> getConsumerUserAttributes(RequestParams parameters) {
+    public Observable<UserDrawerData> getConsumerUserAttributes(RequestParams parameters) {
         return userFactory.createCloudAttrDataSource().getConsumerUserAttributes(parameters);
     }
 
     @Override
-    public Observable<SellerDrawerData.Data> getSellerUserAttributes(RequestParams parameters) {
+    public Observable<SellerDrawerData> getSellerUserAttributes(RequestParams parameters) {
         return userFactory.createCloudAttrDataSource().getSellerUserAttributes(parameters);
     }
 }

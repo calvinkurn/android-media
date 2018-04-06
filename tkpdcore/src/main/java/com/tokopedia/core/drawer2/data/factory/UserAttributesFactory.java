@@ -1,7 +1,9 @@
 package com.tokopedia.core.drawer2.data.factory;
 
-import com.apollographql.apollo.ApolloClient;
+import android.content.Context;
+
 import com.tokopedia.core.drawer2.data.source.CloudAttrDataSource;
+import com.tokopedia.core.network.apiservices.drawer.DrawerService;
 
 /**
  * Created by Herdi_WORK on 03.10.17.
@@ -9,15 +11,15 @@ import com.tokopedia.core.drawer2.data.source.CloudAttrDataSource;
 
 public class UserAttributesFactory {
 
-    private ApolloClient apolloClient;
+    private DrawerService drawerService;
+    private Context context;
 
-    public UserAttributesFactory(ApolloClient aplClient){
-        apolloClient = aplClient;
+    public UserAttributesFactory(Context context, DrawerService drawerService) {
+        this.context = context;
+        this.drawerService = drawerService;
     }
 
-    public CloudAttrDataSource createCloudAttrDataSource(){
-        return new CloudAttrDataSource(apolloClient);
+    public CloudAttrDataSource createCloudAttrDataSource() {
+        return new CloudAttrDataSource(context, drawerService);
     }
-
-
 }

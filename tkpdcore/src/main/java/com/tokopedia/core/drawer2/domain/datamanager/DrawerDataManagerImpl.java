@@ -3,9 +3,9 @@ package com.tokopedia.core.drawer2.domain.datamanager;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.anals.ConsumerDrawerData;
-import com.tokopedia.anals.SellerDrawerData;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.drawer2.data.pojo.SellerDrawerData;
+import com.tokopedia.core.drawer2.data.pojo.UserDrawerData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.domain.interactor.GetSellerUserAttributesUseCase;
@@ -85,7 +85,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
 
     @Override
     public void getUserAttributes(SessionHandler sessionHandler) {
-        userAttributesUseCase.execute(userAttributesUseCase.getUserAttrParam(sessionHandler), new Subscriber<ConsumerDrawerData.Data>() {
+        userAttributesUseCase.execute(userAttributesUseCase.getUserAttrParam(sessionHandler), new Subscriber<UserDrawerData>() {
             @Override
             public void onCompleted() {
 
@@ -102,7 +102,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
             }
 
             @Override
-            public void onNext(ConsumerDrawerData.Data response) {
+            public void onNext(UserDrawerData response) {
                 if (viewListener.getActivity() == null) {
                     return;
                 }
@@ -110,26 +110,26 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
                 //update values in session handler
                 SessionHandler sessionHandler = new SessionHandler(viewListener.getActivity());
                 if (!sessionHandler.isV4Login()) {
-                    if (response.shopInfoMoengage() != null) {
-                        if (!TextUtils.isEmpty(response.shopInfoMoengage().info().shop_id()))
-                            sessionHandler.setShopId(response.shopInfoMoengage().info().shop_id());
-                        if (!TextUtils.isEmpty(response.shopInfoMoengage().info().shop_domain()))
-                            sessionHandler.setShopDomain(viewListener.getActivity(), response.shopInfoMoengage().info().shop_domain());
+                    if (response.getShopInfoMoengage() != null) {
+                        if (!TextUtils.isEmpty(response.getShopInfoMoengage().getInfo().getShopId()))
+                            sessionHandler.setShopId(response.getShopInfoMoengage().getInfo().getShopId());
+                        if (!TextUtils.isEmpty(response.getShopInfoMoengage().getInfo().getShopDomain()))
+                            sessionHandler.setShopDomain(viewListener.getActivity(), response.getShopInfoMoengage().getInfo().getShopDomain());
                     }
 
-                    if (response.profile() != null && response.profile().profile_picture() != null) {
-                        sessionHandler.setProfilePicture(response.profile().profile_picture());
+                    if (response.getProfile() != null && response.getProfile().getProfilePicture() != null) {
+                        sessionHandler.setProfilePicture(response.getProfile().getProfilePicture());
                     }
 
-                    sessionHandler.setTempLoginSession(response.profile().user_id());
-                    sessionHandler.setTempPhoneNumber(response.profile().phone());
-                    sessionHandler.setTempLoginName(response.profile().full_name());
-                    sessionHandler.setTempLoginEmail(response.profile().email().toString());
+                    sessionHandler.setTempLoginSession(response.getProfile().getUserId());
+                    sessionHandler.setTempPhoneNumber(response.getProfile().getUserId());
+                    sessionHandler.setTempLoginName(response.getProfile().getFullName());
+                    sessionHandler.setTempLoginEmail(response.getProfile().getEmail());
                 }
 
                 //render saldo
-                if (response.saldo() != null) {
-                    String depositFormat = response.saldo().deposit_fmt();
+                if (response.getSaldo() != null) {
+                    String depositFormat = response.getSaldo().getDepositFmt();
                     if (depositFormat != null && !depositFormat.equalsIgnoreCase("ERROR FAIL")) {
                         DrawerDeposit drawerDeposit = new DrawerDeposit();
                         drawerDeposit.setDeposit(depositFormat);
@@ -140,37 +140,37 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
                 }
 
                 //render wallet data
-                if (response.wallet() != null) {
-                    viewListener.onGetTokoCash(TokoCashUtil.convertToViewModel(response.wallet(), viewListener.getActivity()));
+                if (response.getWallet() != null) {
+                    viewListener.onGetTokoCash(TokoCashUtil.convertToViewModel(response.getWallet(), viewListener.getActivity()));
                 } else {
                     viewListener.onErrorGetTokoCash(ErrorHandler.getErrorMessage(new IOException()));
                 }
 
                 //render profile data
-                if (response.profile() != null) {
+                if (response.getProfile() != null) {
                     DrawerProfile drawerProfile = new DrawerProfile();
-                    if (response.shopInfoMoengage() != null) {
-                        if (response.shopInfoMoengage().info() != null && response.shopInfoMoengage().info().shop_avatar() != null)
-                            drawerProfile.setShopAvatar(response.shopInfoMoengage().info().shop_avatar());
-                        if (response.shopInfoMoengage().info() != null && response.shopInfoMoengage().info().shop_cover() != null)
-                            drawerProfile.setShopCover(response.shopInfoMoengage().info().shop_cover());
-                        if (response.shopInfoMoengage().info() != null && response.shopInfoMoengage().info().shop_name() != null)
+                    if (response.getShopInfoMoengage() != null) {
+                        if (response.getShopInfoMoengage().getInfo() != null && response.getShopInfoMoengage().getInfo().getShopAvatar() != null)
+                            drawerProfile.setShopAvatar(response.getShopInfoMoengage().getInfo().getShopAvatar());
+                        if (response.getShopInfoMoengage().getInfo() != null && response.getShopInfoMoengage().getInfo().getShopCover() != null)
+                            drawerProfile.setShopCover(response.getShopInfoMoengage().getInfo().getShopCover());
+                        if (response.getShopInfoMoengage().getInfo() != null && response.getShopInfoMoengage().getInfo().getShopName() != null)
                             drawerProfile.setShopName(String.valueOf(MethodChecker.fromHtml(
-                                    response.shopInfoMoengage().info().shop_name())));
+                                    response.getShopInfoMoengage().getInfo().getShopName())));
                     }
-                    if (response.profile() != null) {
-                        if (response.profile().profile_picture() != null)
-                            drawerProfile.setUserAvatar(response.profile().profile_picture());
-                        if (response.profile().full_name() != null)
+                    if (response.getProfile() != null) {
+                        if (response.getProfile().getProfilePicture() != null)
+                            drawerProfile.setUserAvatar(response.getProfile().getProfilePicture());
+                        if (response.getProfile().getFullName() != null)
                             drawerProfile.setUserName(String.valueOf(MethodChecker.fromHtml(
-                                    response.profile().full_name())));
+                                    response.getProfile().getFullName())));
                     }
                     viewListener.onGetProfile(drawerProfile);
                 }
 
                 //render profile completion
-                if (response.profile() != null) {
-                    viewListener.onSuccessGetProfileCompletion(response.profile().completion());
+                if (response.getProfile() != null) {
+                    viewListener.onSuccessGetProfileCompletion(response.getProfile().getCompletion());
                 }
             }
         });
@@ -178,7 +178,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
 
     @Override
     public void getSellerUserAttributes(SessionHandler sessionHandler) {
-        sellerUserAttributesUseCase.execute(sellerUserAttributesUseCase.getUserAttrParam(sessionHandler), new Subscriber<SellerDrawerData.Data>() {
+        sellerUserAttributesUseCase.execute(sellerUserAttributesUseCase.getUserAttrParam(sessionHandler), new Subscriber<SellerDrawerData>() {
             @Override
             public void onCompleted() {
 
@@ -190,12 +190,12 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
             }
 
             @Override
-            public void onNext(SellerDrawerData.Data response) {
+            public void onNext(SellerDrawerData response) {
                 CommonUtils.dumper("rxapollo string " + response.toString());
 
                 //render saldo
-                if (response.saldo() != null) {
-                    String depositFormat = response.saldo().deposit_fmt();
+                if (response.getSaldo() != null) {
+                    String depositFormat = response.getSaldo().getDepositFmt();
                     if (depositFormat != null && !depositFormat.equalsIgnoreCase("ERROR FAIL")) {
                         DrawerDeposit drawerDeposit = new DrawerDeposit();
                         drawerDeposit.setDeposit(depositFormat);
@@ -205,34 +205,33 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
                     }
                 }
 
-                //render profile
-                if (response.profile() != null) {
+                //render profile data
+                if (response.getProfile() != null) {
                     DrawerProfile drawerProfile = new DrawerProfile();
-                    if (response.shopInfoMoengage() != null) {
-                        if (response.shopInfoMoengage().info() != null && response.shopInfoMoengage().info().shop_avatar() != null)
-                            drawerProfile.setShopAvatar(response.shopInfoMoengage().info().shop_avatar());
-                        if (response.shopInfoMoengage().info() != null && response.shopInfoMoengage().info().shop_cover() != null)
-                            drawerProfile.setShopCover(response.shopInfoMoengage().info().shop_cover());
-                        if (response.shopInfoMoengage().info() != null && response.shopInfoMoengage().info().shop_name() != null)
+                    if (response.getShopInfoMoengage() != null) {
+                        if (response.getShopInfoMoengage().getInfo() != null && response.getShopInfoMoengage().getInfo().getShopAvatar() != null)
+                            drawerProfile.setShopAvatar(response.getShopInfoMoengage().getInfo().getShopAvatar());
+                        if (response.getShopInfoMoengage().getInfo() != null && response.getShopInfoMoengage().getInfo().getShopCover() != null)
+                            drawerProfile.setShopCover(response.getShopInfoMoengage().getInfo().getShopCover());
+                        if (response.getShopInfoMoengage().getInfo() != null && response.getShopInfoMoengage().getInfo().getShopName() != null)
                             drawerProfile.setShopName(String.valueOf(MethodChecker.fromHtml(
-                                    response.shopInfoMoengage().info().shop_name())));
+                                    response.getShopInfoMoengage().getInfo().getShopName())));
                     }
-                    if (response.profile() != null) {
-                        if (response.profile().profile_picture() != null)
-                            drawerProfile.setUserAvatar(response.profile().profile_picture());
-                        if (response.profile().full_name() != null)
+                    if (response.getProfile() != null) {
+                        if (response.getProfile().getProfilePicture() != null)
+                            drawerProfile.setUserAvatar(response.getProfile().getProfilePicture());
+                        if (response.getProfile().getFullName() != null)
                             drawerProfile.setUserName(String.valueOf(MethodChecker.fromHtml(
-                                    response.profile().full_name())));
+                                    response.getProfile().getFullName())));
                     }
-
                     viewListener.onGetProfile(drawerProfile);
                 }
 
 
                 //update values in session handler
                 SessionHandler sessionHandler = new SessionHandler(viewListener.getActivity());
-                if (response.profile() != null && response.profile().profile_picture() != null) {
-                    sessionHandler.setProfilePicture(response.profile().profile_picture());
+                if (response.getProfile() != null && response.getProfile().getProfilePicture() != null) {
+                    sessionHandler.setProfilePicture(response.getProfile().getProfilePicture());
                 }
             }
         });

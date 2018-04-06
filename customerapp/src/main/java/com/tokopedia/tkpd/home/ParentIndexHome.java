@@ -36,7 +36,6 @@ import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.anals.ConsumerDrawerData;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -51,6 +50,7 @@ import com.tokopedia.core.appupdate.ApplicationUpdate;
 import com.tokopedia.core.appupdate.model.DetailUpdate;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.drawer2.data.pojo.UserDrawerData;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
@@ -392,7 +392,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
 
             @Override
-            public void onSuccessGetUserAttr(ConsumerDrawerData.Data data) {
+            public void onSuccessGetUserAttr(UserDrawerData data) {
                 if (data != null)
                     TrackingUtils.setMoEUserAttributesOld(data);
                 TrackingUtils.setMoEUserAttributes(data);

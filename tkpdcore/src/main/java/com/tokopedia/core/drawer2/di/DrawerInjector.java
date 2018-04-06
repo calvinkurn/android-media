@@ -3,55 +3,41 @@ package com.tokopedia.core.drawer2.di;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
-import com.apollographql.apollo.ApolloClient;
-import com.apollographql.apollo.cache.http.DiskLruCacheStore;
-import com.apollographql.apollo.cache.http.ResponseCacheStore;
-import com.apollographql.apollo.cache.http.TimeoutEvictionStrategy;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.factory.DepositSourceFactory;
 import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.drawer2.data.factory.UserAttributesFactory;
-import com.tokopedia.core.drawer2.data.mapper.DepositMapper;
 import com.tokopedia.core.drawer2.data.mapper.NotificationMapper;
 import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
 import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.core.drawer2.data.repository.DepositRepositoryImpl;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
-import com.tokopedia.core.drawer2.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.core.drawer2.data.repository.UserAttributesRepository;
 import com.tokopedia.core.drawer2.data.repository.UserAttributesRepositoryImpl;
 import com.tokopedia.core.drawer2.data.source.TopChatNotificationSource;
-import com.tokopedia.core.drawer2.domain.DepositRepository;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
-import com.tokopedia.core.drawer2.domain.ProfileRepository;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManagerImpl;
-import com.tokopedia.core.drawer2.domain.interactor.DepositUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.GetSellerUserAttributesUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.GetUserAttributesUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
-import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TopChatNotificationUseCase;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
+import com.tokopedia.core.network.apiservices.drawer.DrawerService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 
@@ -87,22 +73,8 @@ public class DrawerInjector {
                 sessionHandler
         );
 
-        //Directory where cached responses will be stored
-        File file = new File("/cache/");
-
-        //Size in bytes of the cache
-        int size = 1024*1024;
-
-        //Create the http response cache store
-        ResponseCacheStore cacheStore = new DiskLruCacheStore(file, size);
-
         UserAttributesRepository userAttributesRepository = new UserAttributesRepositoryImpl(
-                new UserAttributesFactory(
-                        ApolloClient.builder()
-                                .okHttpClient(OkHttpFactory.create().buildClientDefaultAuth())
-                                .serverUrl(TkpdBaseURL.HOME_DATA_BASE_URL)
-                                .httpCache(cacheStore , new TimeoutEvictionStrategy(1, TimeUnit.MINUTES))
-                                .build())
+                new UserAttributesFactory(context, new DrawerService())
         );
 
         GetUserAttributesUseCase getUserAttributesUseCase = new GetUserAttributesUseCase(jobExecutor,

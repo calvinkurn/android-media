@@ -1,8 +1,8 @@
 package com.tokopedia.core.drawer2.data.repository;
 
-import com.tokopedia.anals.ConsumerDrawerData;
-import com.tokopedia.anals.SellerDrawerData;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.drawer2.data.pojo.SellerDrawerData;
+import com.tokopedia.core.drawer2.data.pojo.UserDrawerData;
 
 import rx.Observable;
 
@@ -12,8 +12,8 @@ import rx.Observable;
 
 public interface UserAttributesRepository {
 
-    Observable<ConsumerDrawerData.Data> getConsumerUserAttributes(RequestParams parameters);
+    Observable<UserDrawerData> getConsumerUserAttributes(RequestParams parameters);
 
-    Observable<SellerDrawerData.Data> getSellerUserAttributes(RequestParams parameters);
+    Observable<SellerDrawerData> getSellerUserAttributes(RequestParams parameters);
 
 }

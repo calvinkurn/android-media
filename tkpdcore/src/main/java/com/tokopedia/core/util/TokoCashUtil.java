@@ -2,8 +2,9 @@ package com.tokopedia.core.util;
 
 import android.content.Context;
 
-import com.tokopedia.anals.ConsumerDrawerData;
 import com.tokopedia.core.R;
+import com.tokopedia.core.drawer2.data.pojo.UserDrawerData;
+import com.tokopedia.core.drawer2.data.pojo.Wallet;
 import com.tokopedia.core.drawer2.data.pojo.topcash.Action;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
@@ -100,54 +101,54 @@ public class TokoCashUtil {
         return drawerTokoCashAction;
     }
 
-    public static DrawerTokoCash convertToViewModel(ConsumerDrawerData.Data.Wallet tokoCashData, Context context) {
+    public static DrawerTokoCash convertToViewModel(Wallet tokoCashData, Context context) {
         DrawerTokoCash drawerTokoCash = new DrawerTokoCash();
-        drawerTokoCash.setDrawerTokoCashAction(convertToActionViewModel(tokoCashData.action()));
+        drawerTokoCash.setDrawerTokoCashAction(convertToActionViewModel(tokoCashData.getAction()));
         drawerTokoCash.setHomeHeaderWalletAction(convertToActionHomeHeader(tokoCashData, context));
         drawerTokoCash.setDrawerWalletAction(convertToActionDrawer(tokoCashData, context));
         return drawerTokoCash;
     }
 
-    private static HomeHeaderWalletAction convertToActionHomeHeader(ConsumerDrawerData.Data.Wallet tokoCashData, Context context) {
+    private static HomeHeaderWalletAction convertToActionHomeHeader(Wallet tokoCashData, Context context) {
         HomeHeaderWalletAction data = new HomeHeaderWalletAction();
-        String appLinkBalance = tokoCashData.applinks();
+        String appLinkBalance = tokoCashData.getApplinks();
         if (appLinkBalance != null) {
             if (!appLinkBalance.contains(Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY)) {
-                appLinkBalance = tokoCashData.action().visibility() != null
-                        && tokoCashData.action().visibility().equals("1")
+                appLinkBalance = tokoCashData.getAction().getVisibility() != null
+                        && tokoCashData.getAction().getVisibility().equals("1")
                         ? appLinkBalance + "?"
                         + Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=true"
                         : appLinkBalance + "?"
                         + Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=false";
             }
         }
-        data.setLabelTitle(tokoCashData.text());
+        data.setLabelTitle(tokoCashData.getText());
 
         data.setAppLinkBalance(appLinkBalance == null ? "" : appLinkBalance);
-        data.setRedirectUrlBalance(tokoCashData.redirect_url() == null ? "" : tokoCashData.redirect_url());
-        data.setBalance(tokoCashData.balance());
-        data.setLabelActionButton(tokoCashData.action().text());
-        data.setVisibleActionButton(tokoCashData.action().visibility() != null
-                && tokoCashData.action().visibility().equals("1"));
-        data.setTypeAction(tokoCashData.linked() ? HomeHeaderWalletAction.TYPE_ACTION_TOP_UP
+        data.setRedirectUrlBalance(tokoCashData.getRedirectUrl() == null ? "" : tokoCashData.getRedirectUrl());
+        data.setBalance(tokoCashData.getBalance());
+        data.setLabelActionButton(tokoCashData.getAction().getText());
+        data.setVisibleActionButton(tokoCashData.getAction().getVisibility() != null
+                && tokoCashData.getAction().getVisibility().equals("1"));
+        data.setTypeAction(tokoCashData.getLinked() ? HomeHeaderWalletAction.TYPE_ACTION_TOP_UP
                 : HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION);
 
-        if(tokoCashData.linked()) {
-            data.setAppLinkActionButton(tokoCashData.action().applinks() == null ? ""
-                    : tokoCashData.action().applinks());
+        if(tokoCashData.getLinked()) {
+            data.setAppLinkActionButton(tokoCashData.getAction().getApplinks() == null ? ""
+                    : tokoCashData.getAction().getApplinks());
         }else{
             data.setAppLinkActionButton(WALLET_ACTIVATION);
             data.setLabelActionButton(context.getString(R.string.title_activation));
         }
 
-        data.setRedirectUrlActionButton(tokoCashData.action().redirect_url() == null ? ""
-                : tokoCashData.action().redirect_url());
+        data.setRedirectUrlActionButton(tokoCashData.getAction().getRedirectUrl() == null ? ""
+                : tokoCashData.getAction().getRedirectUrl());
 
 
         ArrayList<String> abTags = new ArrayList<>();
-        if (tokoCashData.ab_tags() != null) {
+        if (tokoCashData.getAbTags() != null) {
             int index = 0;
-            for (ConsumerDrawerData.Data.Ab_tag abtag : tokoCashData.ab_tags()) {
+            for (Object abtag : tokoCashData.getAbTags()) {
                 abTags.add(abtag.toString());
                 index++;
             }
@@ -156,12 +157,12 @@ public class TokoCashUtil {
         return data;
     }
 
-    private static DrawerWalletAction convertToActionDrawer(ConsumerDrawerData.Data.Wallet tokoCashData, Context context) {
-        String appLinkBalance = tokoCashData.applinks();
+    private static DrawerWalletAction convertToActionDrawer(Wallet tokoCashData, Context context) {
+        String appLinkBalance = tokoCashData.getApplinks();
         if (appLinkBalance != null) {
             if (!appLinkBalance.contains(Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY)) {
-                appLinkBalance = tokoCashData.action().visibility() != null
-                        && tokoCashData.action().visibility().equals("1")
+                appLinkBalance = tokoCashData.getAction().getVisibility() != null
+                        && tokoCashData.getAction().getVisibility().equals("1")
                         ? appLinkBalance + "?" +
                         Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=true"
                         : appLinkBalance + "?" +
@@ -169,24 +170,24 @@ public class TokoCashUtil {
             }
         }
         DrawerWalletAction data = new DrawerWalletAction();
-        data.setLabelTitle(tokoCashData.text());
+        data.setLabelTitle(tokoCashData.getText());
 
         data.setAppLinkBalance(appLinkBalance == null ? "" : appLinkBalance);
-        data.setRedirectUrlBalance(tokoCashData.redirect_url() == null ? "" : tokoCashData.redirect_url());
-        data.setBalance(tokoCashData.balance());
-        data.setLabelActionButton(tokoCashData.action().text());
-        data.setVisibleActionButton(tokoCashData.action().visibility() != null
-                && tokoCashData.action().visibility().equals("1"));
-        data.setTypeAction(tokoCashData.linked() ? DrawerWalletAction.TYPE_ACTION_BALANCE
+        data.setRedirectUrlBalance(tokoCashData.getRedirectUrl() == null ? "" : tokoCashData.getRedirectUrl());
+        data.setBalance(tokoCashData.getBalance());
+        data.setLabelActionButton(tokoCashData.getAction().getText());
+        data.setVisibleActionButton(tokoCashData.getAction().getVisibility() != null
+                && tokoCashData.getAction().getVisibility().equals("1"));
+        data.setTypeAction(tokoCashData.getLinked() ? DrawerWalletAction.TYPE_ACTION_BALANCE
                 : DrawerWalletAction.TYPE_ACTION_ACTIVATION);
-        data.setAppLinkActionButton(tokoCashData.action().applinks() == null ? ""
-                : tokoCashData.action().applinks());
-        data.setRedirectUrlActionButton(tokoCashData.action().redirect_url() == null ? ""
-                : tokoCashData.action().redirect_url());
+        data.setAppLinkActionButton(tokoCashData.getAction().getApplinks() == null ? ""
+                : tokoCashData.getAction().getApplinks());
+        data.setRedirectUrlActionButton(tokoCashData.getAction().getRedirectUrl() == null ? ""
+                : tokoCashData.getAction().getRedirectUrl());
 
-        if(tokoCashData.linked()) {
-            data.setAppLinkActionButton(tokoCashData.action().applinks() == null ? ""
-                    : tokoCashData.action().applinks());
+        if(tokoCashData.getLinked()) {
+            data.setAppLinkActionButton(tokoCashData.getAction().getApplinks() == null ? ""
+                    : tokoCashData.getAction().getApplinks());
         }else{
             data.setAppLinkActionButton(WALLET_ACTIVATION);
             data.setLabelActionButton(context.getString(R.string.title_activation));
@@ -195,14 +196,14 @@ public class TokoCashUtil {
         return data;
     }
 
-    private static DrawerTokoCashAction convertToActionViewModel(ConsumerDrawerData.Data.Action action) {
+    private static DrawerTokoCashAction convertToActionViewModel(com.tokopedia.core.drawer2.data.pojo.Action action) {
         if (action == null) {
             return null;
         }
 
         DrawerTokoCashAction drawerTokoCashAction = new DrawerTokoCashAction();
-        drawerTokoCashAction.setText(action.text());
-        drawerTokoCashAction.setRedirectUrl(action.redirect_url());
+        drawerTokoCashAction.setText(action.getText());
+        drawerTokoCashAction.setRedirectUrl(action.getRedirectUrl());
         return drawerTokoCashAction;
     }
 }

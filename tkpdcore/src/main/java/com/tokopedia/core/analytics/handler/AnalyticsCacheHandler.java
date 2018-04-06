@@ -3,9 +3,9 @@ package com.tokopedia.core.analytics.handler;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.anals.ConsumerDrawerData;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.UserDrawerData;
 
 import rx.Single;
 import rx.SingleSubscriber;
@@ -33,17 +33,17 @@ public class AnalyticsCacheHandler {
 
     public void getUserAttrGraphQLCache(final GetUserDataListener listener) {
 
-        Single<ConsumerDrawerData.Data> getData = Single.just(USER_ATTR)
-                .map(new Func1<String, ConsumerDrawerData.Data>() {
+        Single<UserDrawerData> getData = Single.just(USER_ATTR)
+                .map(new Func1<String, UserDrawerData>() {
                     @Override
-                    public ConsumerDrawerData.Data call(String s) {
-                        return cacheManager.getConvertObjData(USER_ATTR, ConsumerDrawerData.Data.class);
+                    public UserDrawerData call(String s) {
+                        return cacheManager.getConvertObjData(USER_ATTR, UserDrawerData.class);
                     }
                 });
-        executor(getData, new SingleSubscriber<ConsumerDrawerData.Data>() {
+        executor(getData, new SingleSubscriber<UserDrawerData>() {
 
             @Override
-            public void onSuccess(ConsumerDrawerData.Data data) {
+            public void onSuccess(UserDrawerData data) {
                 listener.onSuccessGetUserAttr(data);
             }
 
@@ -94,15 +94,15 @@ public class AnalyticsCacheHandler {
 
     }
 
-    public void setUserDataGraphQLCache(ConsumerDrawerData.Data data) {
-        Single<ConsumerDrawerData.Data> saveData = Single.just(data);
-        executor(saveData, new SingleSubscriber<ConsumerDrawerData.Data>() {
+    public void setUserDataGraphQLCache(UserDrawerData data) {
+        Single<UserDrawerData> saveData = Single.just(data);
+        executor(saveData, new SingleSubscriber<UserDrawerData>() {
             @Override
-            public void onSuccess(ConsumerDrawerData.Data value) {
+            public void onSuccess(UserDrawerData value) {
 
                 cacheManager.setKey(USER_ATTR);
                 cacheManager.setValue(CacheUtil.convertModelToString(value,
-                        new TypeToken<ConsumerDrawerData.Data>() {
+                        new TypeToken<UserDrawerData>() {
                         }.getType()));
                 cacheManager.store();
             }
@@ -120,7 +120,7 @@ public class AnalyticsCacheHandler {
 
 
     public interface GetUserDataListener {
-        void onSuccessGetUserAttr(ConsumerDrawerData.Data data);
+        void onSuccessGetUserAttr(UserDrawerData data);
 
         void onError(Throwable e);
     }
