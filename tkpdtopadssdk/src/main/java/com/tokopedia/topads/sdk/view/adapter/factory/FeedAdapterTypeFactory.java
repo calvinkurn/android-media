@@ -16,13 +16,13 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.feednew.ShopFeedNewViewMo
  * @author by milhamj on 29/03/18.
  */
 
-public class FeedNewAdapterTypeFactory implements FeedNewTypeFactory {
+public class FeedAdapterTypeFactory implements FeedTypeFactory {
 
     private int clickPosition;
     private LocalAdsClickListener itemClickListener;
     private ImageLoader imageLoader;
 
-    public FeedNewAdapterTypeFactory(Context context, int clickPosition) {
+    public FeedAdapterTypeFactory(Context context, int clickPosition) {
         imageLoader = new ImageLoader(context);
         this.clickPosition = clickPosition;
     }

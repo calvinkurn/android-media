@@ -28,7 +28,7 @@
             android:contentDescription="@string/image_product_desc"
             android:gravity="center"
             android:scaleType="centerCrop"
-            android:background="@drawable/cards_ui_feed_new"
+            android:background="@drawable/cards_ui_thin_border"
             android:adjustViewBounds="true"
             tools:src="@tools:sample/avatars"/>
 

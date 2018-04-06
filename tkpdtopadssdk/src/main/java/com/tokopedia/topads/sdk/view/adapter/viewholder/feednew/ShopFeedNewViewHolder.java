@@ -20,7 +20,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.RoundedCornerImageView;
-import com.tokopedia.topads.sdk.view.adapter.FeedNewShopAdapter;
+import com.tokopedia.topads.sdk.view.adapter.FeedShopAdapter;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feednew.ShopFeedNewViewModel;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
     private TextView shopSubtitle;
     private TextView favoriteText;
     private View favoriteButton;
-    private FeedNewShopAdapter adapter;
+    private FeedShopAdapter adapter;
     private View.OnClickListener shopItemClickListener;
 
     private Data data;
@@ -68,7 +68,7 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
                 SPAN_COUNT,
                 GridLayoutManager.VERTICAL,
                 false);
-        adapter = new FeedNewShopAdapter(onShopItemClicked());
+        adapter = new FeedShopAdapter(onShopItemClicked());
 
         RecyclerView recyclerView = itemView.findViewById(R.id.product_list);
         recyclerView.setLayoutManager(gridLayoutManager);

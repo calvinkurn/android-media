@@ -18,7 +18,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.view.adapter.FeedNewAdsItemAdapter;
+import com.tokopedia.topads.sdk.view.adapter.FeedAdsItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.List;
 public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickListener {
 
     private static final String TAG = TopAdsFeedWidgetView.class.getSimpleName();
-    private FeedNewAdsItemAdapter adapter;
+    private FeedAdsItemAdapter adapter;
     private static final int DEFAULT_SPAN_COUNT = 3;
     private TopAdsItemClickListener itemClickListener;
     private TopAdsInfoClickListener infoClickListener;
@@ -55,9 +55,9 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
     }
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
-        inflate(getContext(), R.layout.layout_ads_feed_new, this);
+        inflate(getContext(), R.layout.layout_ads_feed, this);
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
-        adapter = new FeedNewAdsItemAdapter(getContext());
+        adapter = new FeedAdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
         layoutManager = new GridLayoutManager(getContext(),
                 DEFAULT_SPAN_COUNT,

@@ -21,7 +21,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
-            android:background="@drawable/cards_ui_feed_new"
+            android:background="@drawable/cards_ui_thin_border"
             android:contentDescription="@string/image_product_desc"
             android:scaleType="fitCenter"
             app:layout_constraintDimensionRatio="1:1"

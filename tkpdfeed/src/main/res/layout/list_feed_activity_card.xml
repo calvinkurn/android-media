@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/background_shadow_feed_new" >
+    android:background="@drawable/background_shadow_feed" >
 
     <include layout="@layout/feed_product_header" />
 

@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/dp_10"
     android:paddingBottom="@dimen/dp_10"
-    android:background="@drawable/background_shadow_feed_new">
+    android:background="@drawable/background_shadow_feed">
 
 
     <include

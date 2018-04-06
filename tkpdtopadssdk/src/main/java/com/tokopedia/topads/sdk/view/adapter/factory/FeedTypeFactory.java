@@ -10,7 +10,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.feednew.ShopFeedNewViewMo
  * @author by milhamj on 29/03/18.
  */
 
-public interface FeedNewTypeFactory {
+public interface FeedTypeFactory {
 
     int type(ShopFeedNewViewModel viewModel);
 

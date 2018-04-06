@@ -17,7 +17,7 @@ import java.util.List;
  * @author by milhamj on 29/03/18.
  */
 
-public class FeedNewShopAdapter extends RecyclerView.Adapter<FeedNewShopAdapter.ViewHolder> {
+public class FeedShopAdapter extends RecyclerView.Adapter<FeedShopAdapter.ViewHolder> {
 
     private static final int MAX_SIZE = 3;
 
@@ -25,20 +25,20 @@ public class FeedNewShopAdapter extends RecyclerView.Adapter<FeedNewShopAdapter.
     private ImageLoader imageLoader;
     private View.OnClickListener itemClickListener;
 
-    public FeedNewShopAdapter(View.OnClickListener itemClickListener) {
+    public FeedShopAdapter(View.OnClickListener itemClickListener) {
         this.list = new ArrayList<>();
         this.itemClickListener = itemClickListener;
     }
 
     @Override
-    public FeedNewShopAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public FeedShopAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.feed_new_shop_product_image, parent, false);
-        return new FeedNewShopAdapter.ViewHolder(view);
+                .inflate(R.layout.topads_shop_product_image_feed, parent, false);
+        return new FeedShopAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final FeedNewShopAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final FeedShopAdapter.ViewHolder holder, int position) {
         if (imageLoader == null) {
             imageLoader = new ImageLoader(holder.imageView.getContext());
         }
