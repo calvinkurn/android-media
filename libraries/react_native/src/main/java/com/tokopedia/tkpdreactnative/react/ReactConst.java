@@ -24,9 +24,11 @@ public interface ReactConst {
         String PROMO_TERMS = "promo-terms";
         String THANK_YOU_PAGE = "thankyou-page";
         String DISCOVERY_PAGE = "discovery-page";
+        String BRANDLIST_PAGE = "brandlist-page";
     }
 
     interface EventEmitter{
+        String THANKS_FINGERPRINT_HIDE = "FingerprintHide";
         String WISHLIST_ADD = "WishlistAdd";
         String WISHLIST_REMOVE = "WishlistRemove";
         String FAVORITE_ADD = "FavoriteAdd";

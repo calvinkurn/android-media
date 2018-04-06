@@ -149,7 +149,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void getParameterTopPay(TKPDMapParam<String, String> params, Scheduler scheduler,
+    public void getParameterTopPay(TKPDMapParam<String, Object> params, Scheduler scheduler,
                                    Subscriber<TopPayParameterData> subscriber) {
         Observable<Response<TkpdResponse>> observable
                 = txActService.getApi().getParameterDynamicPayment(params);

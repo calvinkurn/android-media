@@ -19,6 +19,8 @@ import com.tokopedia.design.R;
 
 public abstract class BottomSheets extends BottomSheetDialogFragment {
 
+    private View inflatedView;
+
     public abstract int getLayoutResourceId();
 
     public abstract void initView(View view);
@@ -41,7 +43,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        View inflatedView = View.inflate(getContext(), R.layout.widget_bottomsheet, null);
+        inflatedView = View.inflate(getContext(), R.layout.widget_bottomsheet, null);
 
         configView(inflatedView);
 
@@ -75,7 +77,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         return bottomSheetBehavior;
     }
 
-    private void configView(final View parentView) {
+    protected void configView(final View parentView) {
         TextView textViewTitle = parentView.findViewById(R.id.tv_title);
         textViewTitle.setText(title());
 
@@ -95,5 +97,11 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         View subView = View.inflate(getContext(), getLayoutResourceId(), null);
         initView(subView);
         frameParent.addView(subView);
+    }
+
+    protected void updateHeight() {
+        inflatedView.invalidate();
+        inflatedView.measure(0, 0);
+        bottomSheetBehavior.setPeekHeight(inflatedView.getMeasuredHeight());
     }
 }

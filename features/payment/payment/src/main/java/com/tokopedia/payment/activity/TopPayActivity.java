@@ -1,7 +1,7 @@
 package com.tokopedia.payment.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -28,10 +29,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent;
 import com.tokopedia.payment.BuildConfig;
 import com.tokopedia.payment.R;
-import com.tokopedia.payment.listener.ITopPayView;
+import com.tokopedia.payment.fingerprint.di.FingerprintModule;
+import com.tokopedia.payment.fingerprint.util.FingerprintConstant;
+import com.tokopedia.payment.fingerprint.view.FingerPrintUIHelper;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.payment.presenter.TopPayContract;
 import com.tokopedia.payment.presenter.TopPayPresenter;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.utils.Constant;
@@ -40,12 +47,14 @@ import com.tokopedia.payment.utils.ErrorNetMessage;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import javax.inject.Inject;
+
 
 /**
  * Created by kris on 3/9/17. Tokopedia
  */
 
-public class TopPayActivity extends Activity implements ITopPayView {
+public class TopPayActivity extends AppCompatActivity implements TopPayContract.View, FingerPrintUIHelper.Callback {
     private static final String TAG = TopPayActivity.class.getSimpleName();
 
     public static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
@@ -62,7 +71,8 @@ public class TopPayActivity extends Activity implements ITopPayView {
     public static final int PAYMENT_FAILED = 7;
     public static final long FORCE_TIMEOUT = 90000L;
 
-    private TopPayPresenter presenter;
+    @Inject
+    TopPayPresenter presenter;
     private WebView scroogeWebView;
     private ProgressBar progressBar;
     private PaymentPassData paymentPassData;
@@ -71,8 +81,10 @@ public class TopPayActivity extends Activity implements ITopPayView {
     private View btnBack;
     private View btnClose;
     private TextView tvTitle;
+    private ProgressDialog progressDialog;
 
     public static final int REQUEST_CODE = TopPayActivity.class.hashCode();
+    private FingerPrintUIHelper fingerPrintUIHelper;
 
     public static Intent createInstance(Context context, PaymentPassData paymentPassData) {
         Intent intent = new Intent(context, TopPayActivity.class);
@@ -102,6 +114,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
                 }
             }
         }
+        initInjector();
         if (getIntent().getExtras() != null) {
             setupBundlePass(getIntent().getExtras());
         }
@@ -111,11 +124,27 @@ public class TopPayActivity extends Activity implements ITopPayView {
         if (getApplication() instanceof IPaymentModuleRouter) {
             paymentModuleRouter = (IPaymentModuleRouter) getApplication();
         }
-        initialPresenter();
         initView();
         initVar();
         setViewListener();
         setActionVar();
+    }
+
+    @Override
+    protected void onResume() {
+//        fingerPrintUIHelper = new FingerPrintUIHelper(this, "", presenter.getUserId(), "", "");
+//        fingerPrintUIHelper.startListening(this);
+        super.onResume();
+    }
+
+    private void initInjector() {
+        DaggerFingerprintComponent
+                .builder()
+                .fingerprintModule(new FingerprintModule())
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
+                .build()
+                .inject(this);
+        presenter.attachView(this);
     }
 
     private void setActionVar() {
@@ -170,10 +199,8 @@ public class TopPayActivity extends Activity implements ITopPayView {
         btnClose = findViewById(R.id.btn_close);
         scroogeWebView = (WebView) findViewById(R.id.scrooge_webview);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
-    }
-
-    private void initialPresenter() {
-        presenter = new TopPayPresenter(this);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.title_loading));
     }
 
     private void setupURIPass(Uri data) {
@@ -255,6 +282,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
 
     @Override
     protected void onDestroy() {
+        presenter.detachView();
         super.onDestroy();
     }
 
@@ -282,6 +310,16 @@ public class TopPayActivity extends Activity implements ITopPayView {
         finish();
     }
 
+    @Override
+    public void onPaymentFingerPrint(String transactionId, String partner, String publicKey, String date, String accountSignature, String userId) {
+        presenter.paymentFingerPrint(transactionId, partner, publicKey, date, accountSignature, userId);
+    }
+
+    @Override
+    public void onGoToOtpPage(String urlOtp) {
+        scroogeWebView.loadUrl(urlOtp);
+    }
+
     private class TopPayWebViewClient extends WebViewClient {
         private boolean timeout = true;
 
@@ -289,6 +327,14 @@ public class TopPayActivity extends Activity implements ITopPayView {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             //Log.d(TAG, "redirect url = " + url);
+
+            if (!url.isEmpty() && url.contains(Constant.TempRedirectPayment.APP_LINK_FINGERPRINT)) {
+                Uri uri = Uri.parse(url);
+                String transactionId = uri.getQueryParameter(FingerprintConstant.TRANSACTION_ID);
+                fingerPrintUIHelper = new FingerPrintUIHelper(TopPayActivity.this, transactionId, presenter.getUserId(), "", url);
+                fingerPrintUIHelper.startListening(TopPayActivity.this);
+                return true;
+            }
 
             /*
               HANYA SEMENTARA HARCODE, NANTI PAKAI APPLINK
@@ -359,7 +405,6 @@ public class TopPayActivity extends Activity implements ITopPayView {
                 }
             }
         }
-
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -449,6 +494,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
     }
 
     private class TopPayWebViewChromeClient extends WebChromeClient {
+
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             if (newProgress == 100) {
@@ -494,11 +540,52 @@ public class TopPayActivity extends Activity implements ITopPayView {
         };
     }
 
-    private void hideProgressLoading() {
+    @Override
+    protected void onPause() {
+        if (fingerPrintUIHelper != null) {
+            fingerPrintUIHelper.stopListening();
+        }
+        super.onPause();
+    }
+
+    public void hideProgressLoading() {
         progressBar.setVisibility(View.GONE);
     }
 
-    private void showProgressLoading() {
+    public void showProgressLoading() {
         progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onSuccessRegisterFingerPrint() {
+        fingerPrintUIHelper.closeBottomSheet();
+        NetworkErrorHelper.showGreenCloseSnackbar(this, getString(R.string.fingerprint_label_successed_fingerprint));
+    }
+
+    @Override
+    public void hideProgressBarDialog() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void onErrorRegisterFingerPrint(Throwable e) {
+        fingerPrintUIHelper.closeBottomSheet();
+        NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.fingerprint_label_failed_fingerprint));
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void onErrorPaymentFingerPrint(Throwable e) {
+        fingerPrintUIHelper.onErrorNetworkPaymentFingerPrint();
+    }
+
+    @Override
+    public void onSuccessPaymentFingerprint(String url, String paramEncode) {
+        fingerPrintUIHelper.closeBottomSheet();
+        scroogeWebView.loadUrl(String.format("%1$s ? %2$s", url, paramEncode));
     }
 }
