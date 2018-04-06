@@ -293,7 +293,6 @@ public class PromoDetailFragment extends BaseDaggerFragment
     @Override
     public void onRefresh(View view) {
         this.promoDetailPresenter.getPromoDetail(promoSlug);
-        unsetFragmentLayout();
     }
 
     /**

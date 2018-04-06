@@ -55,6 +55,11 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
     }
 
     @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_promo_detail;
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         PromoData promoData = getIntent().getParcelableExtra(EXTRA_PROMO_DATA);
 
