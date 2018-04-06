@@ -4,14 +4,12 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.entity.replacement.opportunitydata.OpportunityDetail;
+import com.tokopedia.seller.opportunity.domain.entity.OpportunityDetail;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.seller.opportunity.domain.repository.ProductRepository;
 import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepository;
-
-import java.text.DecimalFormat;
 
 import javax.inject.Inject;
 
