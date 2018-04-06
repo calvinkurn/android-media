@@ -227,9 +227,8 @@ dependencies {
     compile project(rootProject.ext.features.transaction)
     compile project(rootProject.ext.features.reputation)
     compile project(rootProject.ext.features.mitraToppers)
-	compile(project(':tkpdshop')) {
-        exclude group: 'com.tokopedia.core'
-    }
+    compile project(rootProject.ext.features.shopPage)
+
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
     }
