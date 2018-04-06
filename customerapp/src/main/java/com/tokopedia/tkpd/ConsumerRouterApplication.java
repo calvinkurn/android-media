@@ -720,8 +720,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Observable<String> uploadImage(String destinationFolderPath, String localFilePath) {
         UploadImageUseCase<UploadShopImageModel> uploadImageUseCase = getFlightConsumerComponent().uploadImageUseCase();
-        uploadImageUseCase.createObservable(uploadImageUseCase.createRequestParams(destinationFolderPath, localFilePath));
-        return uploadImageUseCase.createObservable(uploadImageUseCase.createRequestParams(destinationFolderPath, localFilePath)).map(new Func1<ImageUploadDomainModel<UploadShopImageModel>, String>() {
+        return uploadImageUseCase.createObservable(uploadImageUseCase.createRequestParams(destinationFolderPath, localFilePath, "", ""))
+                .map(new Func1<ImageUploadDomainModel<UploadShopImageModel>, String>() {
             @Override
             public String call(ImageUploadDomainModel<UploadShopImageModel> uploadShopImageModelImageUploadDomainModel) {
                 return uploadShopImageModelImageUploadDomainModel.getDataResultImageUpload().getResult();
