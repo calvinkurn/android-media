@@ -31,7 +31,7 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateTitle("TokoPoints");
+        updateTitle(getString(R.string.toko_points_title));
     }
 
     @Override

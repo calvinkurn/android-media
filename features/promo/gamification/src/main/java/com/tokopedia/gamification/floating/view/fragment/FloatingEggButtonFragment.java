@@ -40,6 +40,7 @@ import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenFloating;
 import com.tokopedia.gamification.floating.view.model.TokenHome;
 import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
+import com.tokopedia.gamification.util.ApplinkUtil;
 
 import javax.inject.Inject;
 
@@ -345,8 +346,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         String sumTokenString = tokenData.getSumTokenStr();
 
         TokenHome tokenHome = tokenData.getHome();
-        String pageUrl = tokenHome.getButtonURL();
-        String appLink = tokenHome.getButtonApplink();
+        final String pageUrl = tokenHome.getButtonURL();
+        final String appLink = tokenHome.getButtonApplink();
 
         TokenFloating tokenFloating = tokenData.getFloating();
         long timeRemainingSeconds = tokenFloating.getTimeRemainingSeconds();
@@ -362,9 +363,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO use applink/pageurl to launch the activity
-                startActivity(CrackTokenActivity.getIntent(getActivity()));
-
+                ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, CrackTokenActivity.class);
                 if (getActivity().getApplication() instanceof AbstractionRouter) {
                     ((AbstractionRouter) getActivity().getApplication())
                             .getAnalyticTracker()
