@@ -14,7 +14,7 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:lineSpacingExtra="2sp"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:textColor="@color/black_70"
         android:textSize="14sp"
         android:textStyle="normal"

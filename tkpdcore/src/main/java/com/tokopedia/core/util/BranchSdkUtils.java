@@ -96,6 +96,8 @@ public class BranchSdkUtils {
             deeplinkPath = getApplinkPath(Constants.Applinks.DISCOVERY_HOTLIST_DETAIL, data.getId());//"hot/" + data.getId();
         } else if (ShareData.CATALOG_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.DISCOVERY_CATALOG, data.getId());
+        }  else if (ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(Constants.Applinks.GROUPCHAT, data.getId());
         } else {
             deeplinkPath = getApplinkPath(data.renderShareUri(), "");
         }
@@ -114,7 +116,9 @@ public class BranchSdkUtils {
     }
 
     private static boolean isBranchUrlActivated(Activity activity, String type) {
-        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type) || ShareData.REFERRAL_TYPE.equalsIgnoreCase(type) ) {
+        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type)
+                || ShareData.REFERRAL_TYPE.equalsIgnoreCase(type)
+                || ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(type)) {
             return true;
         } else {
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);

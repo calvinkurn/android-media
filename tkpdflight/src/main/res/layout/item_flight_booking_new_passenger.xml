@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical">
 
     <View
         android:layout_width="match_parent"
@@ -14,9 +15,8 @@
         style="@style/TextView.Title.Green"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_med"
+        android:padding="@dimen/dp_20"
         android:text="@string/flight_list_passenger_add_passenger_label" />
-
 
     <View
         android:layout_width="match_parent"

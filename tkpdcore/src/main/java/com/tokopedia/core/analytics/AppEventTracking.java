@@ -523,7 +523,7 @@ public interface AppEventTracking {
         String EVENT_CHECKOUT = "checkout";
         String EVENT_SEARCH_CLICK = "search result click";
         String EVENT_SEARCH_IMPRESSION = "search result impression";
-
+        String QUICK_FILTER = "quick filter";
     }
 
     interface ImageEditor {

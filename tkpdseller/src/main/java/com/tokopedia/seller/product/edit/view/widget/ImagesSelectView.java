@@ -55,7 +55,6 @@ public class ImagesSelectView extends BaseCustomView {
     private String primaryImageString;
     private int imageLimit;
     private String titleString;
-    private String addImageString;
 
     private OnCheckResolutionListener onCheckResolutionListener;
     private OnImageChanged onImageChanged;
@@ -99,7 +98,6 @@ public class ImagesSelectView extends BaseCustomView {
         primaryImageString = a.getString(R.styleable.ImagesSelectView_primaryImageString);
         imageLimit = a.getInt(R.styleable.ImagesSelectView_imageLimit, DEFAULT_LIMIT);
         titleString = a.getString(R.styleable.ImagesSelectView_titleString);
-        addImageString = a.getString(R.styleable.ImagesSelectView_addImageString);
         a.recycle();
     }
 
@@ -107,7 +105,7 @@ public class ImagesSelectView extends BaseCustomView {
         View view = inflate(getContext(), R.layout.widget_images_select_view, this);
 
         imageSelectorAdapter = new ImageSelectorAdapter(new ArrayList<ImageSelectModel>(),
-                imageLimit, addPictureDrawableRes, null, primaryImageString, addImageString);
+                imageLimit, addPictureDrawableRes, null, primaryImageString);
 
         TextView textViewTitle = (TextView) view.findViewById(R.id.textViewTitle);
         if (TextUtils.isEmpty(titleString)) {
@@ -251,10 +249,6 @@ public class ImagesSelectView extends BaseCustomView {
 
     public ImageSelectModel getPrimaryImage() {
         return imageSelectorAdapter.getPrimaryImage();
-    }
-
-    public int getPrimaryImageIndex() {
-        return imageSelectorAdapter.getPrimaryImageIndex();
     }
 
     public ImageSelectModel getSelectedImage() {

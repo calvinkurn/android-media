@@ -18,22 +18,18 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.DepositSourceFactory;
 import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
-import com.tokopedia.core.drawer2.data.factory.TopPointsSourceFactory;
 import com.tokopedia.core.drawer2.data.mapper.DepositMapper;
 import com.tokopedia.core.drawer2.data.mapper.NotificationMapper;
 import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
 import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
-import com.tokopedia.core.drawer2.data.mapper.TopPointsMapper;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.repository.DepositRepositoryImpl;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
 import com.tokopedia.core.drawer2.data.repository.ProfileRepositoryImpl;
-import com.tokopedia.core.drawer2.data.repository.TopPointsRepositoryImpl;
 import com.tokopedia.core.drawer2.data.source.TopChatNotificationSource;
 import com.tokopedia.core.drawer2.domain.DepositRepository;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
 import com.tokopedia.core.drawer2.domain.ProfileRepository;
-import com.tokopedia.core.drawer2.domain.TopPointsRepository;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManagerImpl;
 import com.tokopedia.core.drawer2.domain.interactor.DepositUseCase;
@@ -42,11 +38,9 @@ import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TopChatNotificationUseCase;
-import com.tokopedia.core.drawer2.domain.interactor.TopPointsUseCase;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
-import com.tokopedia.core.network.apiservices.clover.CloverService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
@@ -106,22 +100,6 @@ public class DrawerInjector {
                 jobExecutor,
                 uiThread,
                 profileRepository
-        );
-
-        GlobalCacheManager topPointsCache = new GlobalCacheManager();
-
-        TopPointsSourceFactory topPointsSourceFactory = new TopPointsSourceFactory(
-                context,
-                new CloverService(),
-                new TopPointsMapper(),
-                topPointsCache);
-
-        TopPointsRepository topPointsRepository = new TopPointsRepositoryImpl(topPointsSourceFactory);
-
-        TopPointsUseCase topPointsUseCase = new TopPointsUseCase(
-                jobExecutor,
-                uiThread,
-                topPointsRepository
         );
 
         Observable<TokoCashData> tokoCashModelObservable = ((TkpdCoreRouter) context.getApplicationContext()).getTokoCashBalance();
@@ -184,7 +162,6 @@ public class DrawerInjector {
                 depositUseCase,
                 newNotificationUseCase,
                 tokoCashUseCase,
-                topPointsUseCase,
                 getUserAttributesUseCase);
     }
 

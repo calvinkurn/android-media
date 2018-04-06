@@ -26,8 +26,8 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingLeft="@dimen/margin_med"
-                android:paddingRight="@dimen/margin_med">
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20">
 
                 <android.support.v4.widget.Space
                     android:layout_width="match_parent"
@@ -37,8 +37,8 @@
                     android:id="@+id/tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:paddingBottom="@dimen/margin_med"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_20"
                     android:text="@string/label_otp_verification_digital_module"
                     android:textColor="@color/body_text_5_inverse"
                     android:textSize="@dimen/font_medium"
@@ -49,11 +49,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/dp_10"
                     android:gravity="center"
-                    android:paddingBottom="@dimen/margin_med"
+                    android:paddingBottom="@dimen/dp_20"
                     android:textColor="@color/body_text_5_inverse"
-                    android:textSize="@dimen/font_small"
+                    android:textSize="@dimen/sp_14"
                     tools:text="Kode verifikasi telah dikirimkan ke nomor 08788574394534"/>
 
                 <TextView
@@ -61,27 +61,27 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/dp_10"
                     android:gravity="center"
-                    android:paddingBottom="@dimen/margin_med"
+                    android:paddingBottom="@dimen/dp_20"
                     android:text="@string/label_hint_input_otp_digital_module"
                     android:textColor="@color/body_text_5_inverse"
-                    android:textSize="@dimen/font_small"/>
+                    android:textSize="@dimen/sp_14"/>
 
                 <com.tkpd.library.ui.widget.PinEntryEditText
                     android:id="@+id/et_input_otp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
-                    android:layout_marginLeft="@dimen/margin_vl"
-                    android:layout_marginRight="@dimen/margin_vl"
+                    android:layout_marginBottom="@dimen/dp_5"
+                    android:layout_marginLeft="@dimen/dp_40"
+                    android:layout_marginRight="@dimen/dp_40"
                     android:background="@null"
                     android:cursorVisible="false"
                     android:digits="1234567890"
                     android:imeOptions="actionDone"
                     android:inputType="number"
                     android:maxLength="6"
-                    android:paddingBottom="@dimen/margin_small"
+                    android:paddingBottom="@dimen/dp_10"
                     android:textIsSelectable="false"
                     android:textSize="20sp"
                     android:visibility="visible"
@@ -108,16 +108,16 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/margin_med">
+            android:paddingBottom="@dimen/dp_20">
 
             <TextView
                 android:id="@+id/btn_verify_otp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_height"
-                android:layout_marginBottom="@dimen/margin_vs"
-                android:layout_marginLeft="@dimen/margin_large"
-                android:layout_marginRight="@dimen/margin_large"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_marginLeft="@dimen/dp_30"
+                android:layout_marginRight="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/bg_grey_border_black"
                 android:gravity="center"
                 android:text="@string/title_confirm_otp"
@@ -130,9 +130,9 @@
                 android:id="@+id/btn_request_otp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_height"
-                android:layout_marginBottom="@dimen/margin_vs"
-                android:layout_marginLeft="@dimen/margin_large"
-                android:layout_marginRight="@dimen/margin_large"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_marginLeft="@dimen/dp_30"
+                android:layout_marginRight="@dimen/dp_30"
                 android:background="@drawable/btn_share_transaparent"
                 android:gravity="center"
                 android:text="@string/label_btn_re_request_otp_digital_module"
@@ -150,20 +150,20 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:text="@string/label_or_call_otp_digital_module"
-                    android:textSize="@dimen/font_small"/>
+                    android:textSize="@dimen/sp_14"/>
 
                 <TextView
                     android:id="@+id/btn_request_otp_call"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:text="@string/label_btn_call_otp_digital_module"
                     android:textColor="@color/tkpd_main_green"
-                    android:textSize="@dimen/font_small"/>
+                    android:textSize="@dimen/sp_14"/>
 
             </LinearLayout>
         </LinearLayout>

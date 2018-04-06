@@ -171,6 +171,33 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                     }
                 }
             });
+
+            getChannelInfoUseCase.execute(GetChannelInfoUseCase.createParams(mChannel.getUrl()),
+                    new Subscriber<ChannelInfoViewModel>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            if (getView() != null) {
+                                getView().dismissReconnectingMessage();
+                                getView().onErrorRefreshChannelInfo(GroupChatErrorHandler.getErrorMessage(
+                                        getView().getContext(), e, true
+                                ));
+                            }
+                        }
+
+                        @Override
+                        public void onNext(ChannelInfoViewModel channelInfoViewModel) {
+                            if (getView() != null) {
+                                getView().dismissReconnectingMessage();
+                                getView().onSuccessRefreshChannelInfo(channelInfoViewModel);
+                            }
+                        }
+                    });
+
         }
 
 
