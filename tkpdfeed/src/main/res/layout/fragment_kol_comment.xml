@@ -28,7 +28,7 @@
             android:paddingLeft="@dimen/padding_small_sm"
             android:paddingRight="@dimen/padding_small_sm"
             android:paddingStart="@dimen/padding_small_sm"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="normal"/>
 
         <ImageView
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             app:srcCompat="@drawable/ic_send_24dp_green"/>
 
     </LinearLayout>

@@ -18,6 +18,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
@@ -116,16 +117,18 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
     }
 
     @Override
-    public void onTurnOnAdError() {
+    public void onTurnOnAdError(Throwable e) {
         setStatusSwitch(!status.isChecked());
         hideLoading();
-        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                setStatusSwitch(true);
-                turnOnAd();
-            }
-        });
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                ViewUtils.getErrorMessage(getActivity(), e),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        setStatusSwitch(true);
+                        turnOnAd();
+                    }
+                });
         snackbarRetry.showRetrySnackbar();
     }
 
@@ -173,9 +176,9 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
 
     protected void updateMainView(V ad) {
         name.setContent(ad.getName());
-        Log.d(TAG, "status -> "+ad.getStatus());
+        Log.d(TAG, "status -> " + ad.getStatus());
 
-        CommonUtils.dumper("status -> "+ad.getStatus());
+        CommonUtils.dumper("status -> " + ad.getStatus());
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
             case TopAdsConstant.STATUS_AD_NOT_SENT:

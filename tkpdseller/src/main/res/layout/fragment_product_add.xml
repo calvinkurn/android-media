@@ -22,40 +22,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingTop="@dimen/activity_vertical_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/linearLayout">
 
             <include layout="@layout/partial_product_info" />
 
-            <include layout="@layout/partial_product_image" />
+            <include layout="@layout/partial_product_price" />
 
-            <include layout="@layout/partial_product_detail" />
+            <include layout="@layout/partial_product_manage" />
 
-            <include layout="@layout/partial_product_additional_info" />
+            <include layout="@layout/partial_product_description" />
+
+            <include layout="@layout/partial_product_delivery" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_med" />
 
             <Button
                 android:id="@+id/button_save_and_add"
-                style="@style/Button.Submit.White"
+                style="@style/Button.Submit.White.Border"
                 android:foreground="?attr/selectableItemBackground"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_med"
-                android:text="@string/product_label_save_and_add"
+                android:text="@string/product_label_upload_and_add_new_product"
                 android:textColor="@color/font_black_secondary_54" />
 
             <Button
                 android:id="@+id/button_save"
                 style="@style/Button.Submit.Green"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:foreground="?attr/selectableItemBackground"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:text="@string/product_label_save" />
+                android:text="@string/product_label_upload_this_product" />
 
         </LinearLayout>
 

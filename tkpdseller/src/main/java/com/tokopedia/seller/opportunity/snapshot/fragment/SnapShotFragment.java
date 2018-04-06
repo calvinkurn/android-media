@@ -16,8 +16,8 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.opportunity.snapshot.customview.DescriptionView;
 import com.tokopedia.seller.opportunity.snapshot.customview.DetailInfoView;
 import com.tokopedia.seller.opportunity.snapshot.customview.FreeReturnView;
@@ -247,25 +247,24 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
                 initializationErrorListener());
     }
 
-    private void navigateShopActivity(Bundle bundle) {
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
+    private void navigateShopActivity(String shopId) {
+        Intent intent = ((SellerModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
+        context.startActivity(intent);
     }
 
     @Override
-    public void onProductShopNameClicked(Bundle bundle) {
-        navigateShopActivity(bundle);
+    public void onProductShopNameClicked(String shopId) {
+        navigateShopActivity(shopId);
     }
 
     @Override
-    public void onProductShopRatingClicked(Bundle bundle) {
-        navigateShopActivity(bundle);
+    public void onProductShopRatingClicked(String shopId) {
+        navigateShopActivity(shopId);
     }
 
     @Override
-    public void onProductShopAvatarClicked(Bundle bundle) {
-        navigateShopActivity(bundle);
+    public void onProductShopAvatarClicked(String shopId) {
+        navigateShopActivity(shopId);
     }
 
 }

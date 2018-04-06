@@ -30,7 +30,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:padding="@dimen/small_dp"
-            android:textColor="@color/black"
             tools:text="Operator"/>
     </LinearLayout>
 

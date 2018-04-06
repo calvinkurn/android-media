@@ -43,7 +43,7 @@
                 android:textAllCaps="true"
 
                 android:textColor="@color/medium_green"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="normal" />
 
             <Space
@@ -89,7 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Sudah\nMemilih"
-                    android:textSize="@dimen/font_micro" />
+                    android:textSize="@dimen/sp_12" />
 
             </LinearLayout>
 
@@ -134,7 +134,7 @@
             android:paddingRight="@dimen/space_med"
             android:text="Menurut Toppers, siapa ya yang akan jadi pemain MVP di Piala Dunia Tahun Ini?"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/font_title"
+            android:textSize="@dimen/sp_16"
             android:textStyle="normal" />
 
         <android.support.v4.widget.Space
@@ -173,7 +173,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/badge"
                 android:fontFamily="sans-serif-medium"
-                android:paddingLeft="@dimen/padding_small"
+                android:paddingLeft="@dimen/dp_10"
                 android:text="Info Hadiah"
                 android:textColor="@color/medium_green"
                 android:textSize="12sp"

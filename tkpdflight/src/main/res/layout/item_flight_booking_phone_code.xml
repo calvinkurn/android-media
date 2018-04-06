@@ -5,11 +5,11 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/padding_med">
+    android:padding="@dimen/dp_20">
 
     <TextView
         android:id="@+id/country_name"
-        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/dp_5"
         style="@style/TextView.Small"
         tools:text="Indonesia" />
 

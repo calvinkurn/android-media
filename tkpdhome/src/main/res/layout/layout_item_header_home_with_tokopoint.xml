@@ -37,8 +37,8 @@
                 android:layout_centerInParent="true"
                 android:layout_marginTop="@dimen/card_view_margin"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/padding_ms"
-                android:paddingTop="@dimen/padding_ms"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_8"
                 android:visibility="visible"
                 tools:visibility="gone" />
 
@@ -48,8 +48,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/card_view_margin"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/padding_vs"
-                android:paddingTop="@dimen/padding_vs"
+                android:paddingBottom="@dimen/dp_5"
+                android:paddingTop="@dimen/dp_5"
                 android:visibility="gone"
                 tools:visibility="visible">
 
@@ -137,8 +137,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/padding_ms"
-                    android:paddingTop="@dimen/padding_ms"
+                    android:paddingBottom="@dimen/dp_8"
+                    android:paddingTop="@dimen/dp_8"
                     android:visibility="visible" />
 
             </LinearLayout>
@@ -147,9 +147,9 @@
                 style="@style/TokoPointHeaderNewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/new_margin_med"
-                android:layout_marginRight="@dimen/new_margin_med"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_10"
                 android:lines="1"
                 android:singleLine="true"
                 android:text="@string/home_header_tokopoint_new_label" />
@@ -169,8 +169,8 @@
                 android:layout_marginTop="@dimen/card_view_margin"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/padding_vs"
-                android:paddingTop="@dimen/padding_vs"
+                android:paddingBottom="@dimen/dp_5"
+                android:paddingTop="@dimen/dp_5"
                 android:visibility="visible">
 
                 <LinearLayout
@@ -200,10 +200,10 @@
                         style="@style/TokoPointHeaderNewLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginEnd="@dimen/new_margin_med"
-                        android:layout_marginLeft="@dimen/margin_vs"
-                        android:layout_marginRight="@dimen/new_margin_med"
-                        android:layout_marginStart="@dimen/margin_vs"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_5"
                         android:layout_marginBottom="2dp"
                         android:gravity="center"
                         android:text="@string/home_header_tokopoint_new_label" />

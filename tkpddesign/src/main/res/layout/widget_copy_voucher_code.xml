@@ -13,13 +13,13 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:gravity="center"
-        android:minHeight="@dimen/height_button_voucher"
+        android:minHeight="@dimen/dp_44"
         android:background="@drawable/shape_copy_voucher_code_right_default">
 
         <ImageView
             android:id="@+id/icon_copy_code"
-            android:layout_width="@dimen/image_width_xxs"
-            android:layout_height="@dimen/image_width_xxs"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
             android:layout_centerHorizontal="true"
             app:srcCompat="@drawable/ic_check_orange_24dp"
             />
@@ -28,8 +28,8 @@
             android:id="@+id/text_copy_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/padding_small"
-            android:layout_marginLeft="@dimen/padding_small"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:textColor="@color/font_black_disabled_38"
@@ -48,7 +48,7 @@
         android:layout_toLeftOf="@+id/button_copy"
         android:layout_toStartOf="@+id/button_copy"
         android:background="@drawable/shape_copy_voucher_code_left_default"
-        android:minHeight="@dimen/height_button_voucher"
+        android:minHeight="@dimen/dp_44"
         android:textAlignment="center"
         android:gravity="center"
         android:textColor="@color/tkpd_main_orange"
