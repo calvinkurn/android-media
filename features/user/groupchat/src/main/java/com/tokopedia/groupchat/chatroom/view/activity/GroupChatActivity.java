@@ -27,7 +27,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -917,18 +916,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         kickIfIdleForTooLong();
 
-        ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), getConnectionHandlerId(), new
-                ConnectionManager.ConnectionManagementHandler() {
-                    @Override
-                    public void onConnected(boolean reconnect) {
-                        if (loading != null
-                                && loading.getVisibility() != View.VISIBLE
-                                && (reconnect
-                                || (viewModel != null && viewModel.getChannelInfoViewModel() != null))) {
-                            presenter.refreshChannelInfo(viewModel.getChannelUuid());
-                        }
-                    }
-                });
+        if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
+            setChannelConnectionHandler();
+        }
 
         if (notifReceiver == null) {
             notifReceiver = new BroadcastReceiver() {
@@ -1030,9 +1020,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     protected void onPause() {
-        if(viewModel!= null && viewModel.getChannelInfoViewModel() != null
+        if (viewModel != null && viewModel.getChannelInfoViewModel() != null
                 && !TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getTitle()))
-        analytics.eventUserExit(viewModel.getChannelInfoViewModel().getTitle());
+            analytics.eventUserExit(viewModel.getChannelInfoViewModel().getTitle());
         if (tooltipHandler != null && runnable != null) {
             tooltipHandler.removeCallbacks(runnable);
         }
@@ -1107,11 +1097,27 @@ public class GroupChatActivity extends BaseSimpleActivity
             mChannel = openChannel;
             setupViewPager();
             showFragment(initialFragment);
+            setChannelConnectionHandler();
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setChannelConnectionHandler() {
+        ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), getConnectionHandlerId(), new
+                ConnectionManager.ConnectionManagementHandler() {
+                    @Override
+                    public void onConnected(boolean reconnect) {
+                        if (loading != null
+                                && loading.getVisibility() != View.VISIBLE
+                                && (reconnect
+                                || (viewModel != null && viewModel.getChannelInfoViewModel() != null))) {
+                            presenter.refreshChannelInfo(viewModel.getChannelUuid());
+                        }
+                    }
+                });
     }
 
     @Override
