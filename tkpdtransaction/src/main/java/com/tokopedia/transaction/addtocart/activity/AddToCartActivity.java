@@ -35,6 +35,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
@@ -942,6 +943,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GTMContainer gtmContainer = new GTMContainer(this);
+        gtmContainer.clearEnhanceEcommerce();
         if (savedInstanceState != null) {
             this.orderData = savedInstanceState.getParcelable(EXTRA_STATE_ORDER_DATA);
             this.mDestination = savedInstanceState.getParcelable(EXTRA_STATE_DESTINATION_DATA);

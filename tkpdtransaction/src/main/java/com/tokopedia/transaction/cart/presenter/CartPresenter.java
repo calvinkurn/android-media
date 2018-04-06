@@ -101,6 +101,8 @@ public class CartPresenter implements ICartPresenter {
             public void onNext(ResponseTransform<CartData> responseTransform) {
                 CartData cartData = responseTransform.getData();
                 try {
+                    GTMContainer gtmContainer = new GTMContainer(view.getActivity());
+                    gtmContainer.clearEnhanceEcommerce();
                     processCartAnalytics(cartData);
                     trackStep1CheckoutEE(getCheckoutTrackingData());
                 } catch (Exception e) {
