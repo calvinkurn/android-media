@@ -855,7 +855,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             ImageHandler.LoadImage(channelBanner, blurredBannerUrl);
         }
 
-        setToolbarParticipantCount(totalParticipant);
+        setToolbarParticipantCount(TextFormatter.format(totalParticipant));
         setVisibilityHeader(View.VISIBLE);
 
     }
