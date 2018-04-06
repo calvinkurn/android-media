@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetRemainingToken;
@@ -35,7 +36,6 @@ import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenUser;
-import com.tokopedia.gamification.applink.ApplinkUtil;
 
 import javax.inject.Inject;
 
@@ -164,7 +164,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 trackingCloseRewardButtonClick(crackResult);
             }
         });
-
 
         return rootView;
     }
