@@ -39,7 +39,7 @@
             android:hint="@string/title_messenger"
             android:gravity="left|start"
             android:inputType="text"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/fonts" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -56,7 +56,7 @@
             android:layout_alignParentEnd="true"
             android:text="@string/string_change"
             android:background="@drawable/tab_selector"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/fonts"
             android:textColor="@color/tkpd_main_green"
             android:layout_centerVertical="true" />
 
@@ -125,7 +125,7 @@
             android:layout_alignParentEnd="true"
             android:text="@string/string_change"
             android:background="@drawable/tab_selector"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/fonts"
             android:textColor="@color/tkpd_main_green"
             android:layout_centerVertical="true" />
 
@@ -137,7 +137,7 @@
             android:layout_alignParentEnd="true"
             android:text="@string/button_verify"
             android:background="@drawable/tab_selector"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/fonts"
             android:textColor="@color/tkpd_main_green"
             android:layout_centerVertical="true" />
 
