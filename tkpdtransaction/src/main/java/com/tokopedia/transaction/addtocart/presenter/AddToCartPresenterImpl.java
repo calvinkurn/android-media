@@ -41,6 +41,7 @@ import com.tokopedia.transaction.addtocart.model.OrderData;
 import com.tokopedia.transaction.addtocart.model.kero.Attribute;
 import com.tokopedia.transaction.addtocart.model.kero.Data;
 import com.tokopedia.transaction.addtocart.model.kero.Product;
+import com.tokopedia.transaction.addtocart.model.kero.Rates;
 import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Shipment;
@@ -141,9 +142,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 atcFormData.getForm().getDestination(), atcFormData.getForm().getProductDetail()),
                 new KeroNetInteractor.CalculationListener() {
                     @Override
-                    public void onSuccess(Data rates) {
+                    public void onSuccess(Data data) {
                         viewListener.renderFormShipmentRates(filterAvailableKeroShipment(
-                                rates.getAttributes(), atcFormData.getForm().getShipment())
+                                data.getAttributes(), atcFormData.getForm().getShipment())
                         );
                         viewListener.enableBuyButton();
                     }

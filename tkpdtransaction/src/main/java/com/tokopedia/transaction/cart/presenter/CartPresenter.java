@@ -775,7 +775,7 @@ public class CartPresenter implements ICartPresenter {
 
     @Override
     public void processCartRates(String token, String ut, final List<CartItem> cartItemList) {
-        cartDataInteractor.calculateKeroRates(token, ut, cartItemList, keroRatesListener());
+        cartDataInteractor.calculateKeroRates(token, ut, cartItemList, keroRatesListener(), view.getActivity());
     }
 
     private ICartDataInteractor.KeroRatesListener keroRatesListener() {

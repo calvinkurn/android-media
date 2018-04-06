@@ -1,22 +1,23 @@
 package com.tokopedia.transaction.addtocart.interactor;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 
-import com.apollographql.android.rx.RxApollo;
-import com.apollographql.apollo.ApolloClient;
-import com.apollographql.apollo.ApolloWatcher;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.apiservices.logistics.LogisticsAuthService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.addtocart.model.kero.Data;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.addtocart.model.kero.LogisticsData;
 import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
-import com.tokopedia.transaction.graphql.logistics.LogisticsRateQuery;
-import com.tokopedia.transaction.graphql.logistics.OngkirRatesInput;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import retrofit2.Response;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -27,18 +28,12 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class KeroNetInteractorImpl implements KeroNetInteractor {
 
-    //    private final KeroAuthService keroService;
+    private final LogisticsAuthService logisticsAuthService;
     private CompositeSubscription compositeSubscription;
-    private ApolloClient apolloClient;
 
     public KeroNetInteractorImpl() {
-//        keroService = new KeroAuthService(0);
         compositeSubscription = new CompositeSubscription();
-
-        apolloClient = ApolloClient.builder()
-                .okHttpClient(OkHttpFactory.create().buildClientDefaultAuth())
-                .serverUrl(TkpdBaseURL.HOME_DATA_BASE_URL)
-                .build();
+        logisticsAuthService = new LogisticsAuthService();
     }
 
     @Override
@@ -46,12 +41,11 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
                                   @NonNull TKPDMapParam<String, String> params,
                                   @NonNull final CalculationListener listener) {
 
-        ApolloWatcher<LogisticsRateQuery.Data> apolloWatcher = apolloClient.newCall(LogisticsRateQuery.builder()
-                .input(getOngkirRatesInputFromParam(params))
-                .build()
-        ).watcher();
+        Observable<Response<String>> observable = logisticsAuthService.getApi()
+                .getLogisticsData(getRequestPayload(context, params));
 
-        Subscriber<LogisticsRateQuery.Data> subscriber = new Subscriber<LogisticsRateQuery.Data>() {
+
+        Subscriber<Response<String>> subscriber = new Subscriber<Response<String>>() {
             @Override
             public void onCompleted() {
 
@@ -63,14 +57,10 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             }
 
             @Override
-            public void onNext(LogisticsRateQuery.Data stringResponse) {
-                if (stringResponse.ongkir().rates() != null) {
-                    Data data = new Gson().fromJson(CacheUtil.convertModelToString(stringResponse.ongkir().rates(),
-                            new TypeToken<LogisticsRateQuery.Data.Rates>() {
-                            }.getType()),
-
-                            Data.class);
-                    listener.onSuccess(data);
+            public void onNext(Response<String> stringResponse) {
+                if (stringResponse.isSuccessful()) {
+                    LogisticsData logisticsData = new Gson().fromJson(stringResponse.body(), LogisticsData.class);
+                    listener.onSuccess(logisticsData.getOngkirData().getOngkir().getData());
 
                 } else {
                     throw new RuntimeException("Empty Response");
@@ -78,7 +68,7 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             }
         };
 
-        compositeSubscription.add(RxApollo.from(apolloWatcher)
+        compositeSubscription.add(observable
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -90,12 +80,11 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             @NonNull final Context context, @NonNull final TKPDMapParam<String, String> params,
             @NonNull final OnCalculateKeroAddressShipping listener) {
 
-        ApolloWatcher<LogisticsRateQuery.Data> apolloWatcher = apolloClient.newCall(LogisticsRateQuery.builder()
-                .input(getOngkirRatesInputFromParam(params))
-                .build()
-        ).watcher();
 
-        Subscriber<LogisticsRateQuery.Data> subscriber = new Subscriber<LogisticsRateQuery.Data>() {
+        Observable<Response<String>> observable = logisticsAuthService.getApi()
+                .getLogisticsData(getRequestPayload(context, params));
+
+        Subscriber<Response<String>> subscriber = new Subscriber<Response<String>>() {
             @Override
             public void onCompleted() {
 
@@ -108,23 +97,61 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             }
 
             @Override
-            public void onNext(LogisticsRateQuery.Data response) {
-                if (response != null &&
-                        response.ongkir().rates() != null) {
-                    Data data = new Gson().fromJson(CacheUtil.convertModelToString(response.ongkir().rates(),
-                            new TypeToken<LogisticsRateQuery.Data.Rates>() {
-                            }.getType()), Data.class);
-
-                    listener.onSuccess(data.getAttributes());
+            public void onNext(Response<String> response) {
+                if (response.isSuccessful()) {
+                    LogisticsData logisticsData = new Gson().fromJson(response.body(), LogisticsData.class);
+                    listener.onSuccess(logisticsData.getOngkirData().getOngkir().getData().getAttributes());
                 } else {
                     listener.onFailure();
                 }
             }
         };
-        compositeSubscription.add(RxApollo.from(apolloWatcher).subscribeOn(Schedulers.newThread())
+        compositeSubscription.add(observable
+                .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
+    }
+
+
+    private String getRequestPayload(Context context, TKPDMapParam<String, String> params) {
+
+        return String.format(
+                loadRawString(context.getResources(), R.raw.logistics_get_courier_query),
+                params.get(KeroppiParam.CAT_ID),
+                params.get(KeroppiParam.DESTINATION),
+                params.get(KeroppiParam.FROM),
+                params.get(KeroppiParam.INSURANCE),
+                params.get(KeroppiParam.NAMES),
+                params.get(KeroppiParam.ORDER_VALUE),
+                params.get(KeroppiParam.ORIGIN),
+                params.get(KeroppiParam.PRODUCT_INSURANCE),
+                params.get(KeroppiParam.TOKEN),
+                params.get(KeroppiParam.UT),
+                params.get(KeroppiParam.WEIGHT));
+    }
+
+    private String loadRawString(Resources resources, int resId) {
+        InputStream rawResource = resources.openRawResource(resId);
+        String content = streamToString(rawResource);
+        try {
+            rawResource.close();
+        } catch (IOException e) {
+        }
+        return content;
+    }
+
+    private String streamToString(InputStream in) {
+        String temp;
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            while ((temp = bufferedReader.readLine()) != null) {
+                stringBuilder.append(temp + "\n");
+            }
+        } catch (IOException e) {
+        }
+        return stringBuilder.toString();
     }
 
     @Override
@@ -132,20 +159,4 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
         compositeSubscription.unsubscribe();
     }
 
-    private OngkirRatesInput getOngkirRatesInputFromParam(TKPDMapParam<String, String> params) {
-
-        return OngkirRatesInput.builder()
-                .cat_id(params.get(KeroppiParam.CAT_ID))
-                .destination(params.get(KeroppiParam.DESTINATION))
-                .from(params.get(KeroppiParam.FROM))
-                .insurance(params.get(KeroppiParam.INSURANCE))
-                .names(params.get(KeroppiParam.NAMES))
-                .order_value(params.get(KeroppiParam.ORDER_VALUE))
-                .origin(params.get(KeroppiParam.ORIGIN))
-                .product_insurance(params.get(KeroppiParam.PRODUCT_INSURANCE))
-                .token(params.get(KeroppiParam.TOKEN))
-                .ut(params.get(KeroppiParam.UT))
-                .weight(params.get(KeroppiParam.WEIGHT))
-                .build();
-    }
 }
