@@ -496,6 +496,7 @@ public interface AppEventTracking {
 
         String LOGIN_NOW = "masuk sekarang";
         String CHECKOUT = "Checkout";
+        String QUICK_FILTER = "quick filter";
         String CLICK_BAR = "click - bar - ";
         String CLICK_CHANGE_GRID = "click - ";
         String FAVORITE_SHOP_CLICK = "click - favoritkan";
