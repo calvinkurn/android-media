@@ -3247,16 +3247,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSearchResultShopItemClick(String keyword, String shopName,
-                                                      int page, int position) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH_RESULT,
-                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                AppEventTracking.Action.CLICK_SHOP,
-                keyword + " - " + shopName + " - " + Integer.toString(page) + " - " + Integer.toString(position)
-        ).setUserId().getEvent());
-    }
-
     public static void eventSearchResultProductWishlistClick(boolean isWishlisted, String keyword) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.PRODUCT_VIEW,
@@ -3339,52 +3329,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.LONG_PRESS,
                 AppEventTracking.Action.CLICK_JUAL,
                 AppEventTracking.EventLabel.TAKE_TO_SHOP
-        ).setUserId().getEvent());
-    }
-
-    public static void eventSearchResultShare(String screenName) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH_RESULT,
-                AppEventTracking.Category.SEARCH_SHARE,
-                AppEventTracking.Action.CLICK_BAR + screenName,
-                ""
-        ).setUserId().getEvent());
-    }
-
-    public static void eventSearchResultChangeGrid(String gridName, String screenName) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH_RESULT,
-                AppEventTracking.Category.GRID_MENU,
-                AppEventTracking.Action.CLICK_CHANGE_GRID + gridName,
-                screenName
-        ).setUserId().getEvent());
-    }
-
-    public static void eventSearchResultFavoriteShopClick(String keyword, String shopName,
-                                                          int page, int position) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH_RESULT,
-                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                AppEventTracking.Action.FAVORITE_SHOP_CLICK,
-                keyword + " - " + shopName + " - " + Integer.toString(page) + " - " + Integer.toString(position)
-        ).setUserId().getEvent());
-    }
-
-    public static void eventSearchResultCatalogClick(String keyword, String catalogName) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH_RESULT,
-                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                AppEventTracking.Action.CLICK_CATALOG,
-                keyword + " - " + catalogName
-        ).setUserId().getEvent());
-    }
-
-    public static void eventSearchResultTabClick(String tabTitle) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH_RESULT,
-                AppEventTracking.Category.SEARCH_TAB,
-                AppEventTracking.Action.CLICK_TAB,
-                tabTitle
         ).setUserId().getEvent());
     }
 }

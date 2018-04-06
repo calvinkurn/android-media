@@ -12,6 +12,7 @@ import android.view.ViewTreeObserver;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
@@ -226,13 +227,13 @@ public class SearchActivity extends DiscoveryActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case TAB_PRODUCT:
-                        UnifyTracking.eventSearchResultTabClick(productTabTitle);
+                        SearchTracking.eventSearchResultTabClick(productTabTitle);
                         break;
                     case TAB_SECOND_POSITION:
-                        UnifyTracking.eventSearchResultTabClick(catalogTabTitle);
+                        SearchTracking.eventSearchResultTabClick(catalogTabTitle);
                         break;
                     case TAB_THIRD_POSITION:
-                        UnifyTracking.eventSearchResultTabClick(shopTabTitle);
+                        SearchTracking.eventSearchResultTabClick(shopTabTitle);
                         break;
                 }
             }
@@ -278,10 +279,10 @@ public class SearchActivity extends DiscoveryActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case TAB_PRODUCT:
-                        UnifyTracking.eventSearchResultTabClick(productTabTitle);
+                        SearchTracking.eventSearchResultTabClick(productTabTitle);
                         break;
                     case TAB_SECOND_POSITION:
-                        UnifyTracking.eventSearchResultTabClick(shopTabTitle);
+                        SearchTracking.eventSearchResultTabClick(shopTabTitle);
                         break;
                 }
             }

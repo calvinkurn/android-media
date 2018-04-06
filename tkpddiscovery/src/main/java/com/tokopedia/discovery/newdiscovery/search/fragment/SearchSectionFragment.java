@@ -16,6 +16,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -208,18 +209,18 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
-                UnifyTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
-                UnifyTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
                 break;
             case GRID_3:
                 setSpanCount(1);
                 getAdapter().changeListView();
-                UnifyTracking.eventSearchResultChangeGrid("list", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid("list", getScreenName());
                 break;
         }
         refreshBottomBarGridIcon();
@@ -243,7 +244,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             return;
         }
 
-        UnifyTracking.eventSearchResultShare(getScreenName());
+        SearchTracking.eventSearchResultShare(getScreenName());
 
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.DISCOVERY_TYPE)
