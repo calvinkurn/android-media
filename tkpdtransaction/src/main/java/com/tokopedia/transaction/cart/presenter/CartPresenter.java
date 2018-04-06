@@ -23,6 +23,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.addtocart.model.kero.Data;
+import com.tokopedia.transaction.addtocart.model.kero.RatesError;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.ICartView;
@@ -784,6 +785,14 @@ public class CartPresenter implements ICartPresenter {
             public void onSuccess(CartRatesData cartRatesData) {
                 if (cartRatesData.getRatesResponse() == null) {
                     view.setCartError(cartRatesData.getRatesIndex());
+                } else if (!cartRatesData.getErrorResponse().isEmpty()
+                        && cartRatesData.getRatesResponse().isEmpty()) {
+                    RatesError ratesError = new Gson().fromJson(cartRatesData.getErrorResponse(),
+                            RatesError.class);
+                    view.setCartErrorWithMessage(
+                            cartRatesData.getRatesIndex(),
+                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT_SHORT,
+                            ratesError.getErrors().get(0).getTitle());
                 } else {
                     Data ratesData = new Gson().fromJson(cartRatesData.getRatesResponse(),
                             Data.class);
@@ -876,9 +885,11 @@ public class CartPresenter implements ICartPresenter {
     private void removeBranchPromo() {
         BranchSdkUtils.removeCouponCode(view.getActivity());
     }
+
     private Checkout getCheckoutTrackingData() {
         return gson.fromJson(
                 cartCache.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
-                new TypeToken<Checkout>() {}.getType());
+                new TypeToken<Checkout>() {
+                }.getType());
     }
 }

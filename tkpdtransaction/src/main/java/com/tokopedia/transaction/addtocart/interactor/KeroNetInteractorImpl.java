@@ -9,6 +9,7 @@ import com.tokopedia.core.network.apiservices.logistics.LogisticsAuthService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.addtocart.model.kero.LogisticsData;
+import com.tokopedia.transaction.addtocart.model.kero.RatesError;
 import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
 
 import java.io.BufferedReader;
@@ -60,10 +61,22 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             public void onNext(Response<String> stringResponse) {
                 if (stringResponse.isSuccessful()) {
                     LogisticsData logisticsData = new Gson().fromJson(stringResponse.body(), LogisticsData.class);
-                    listener.onSuccess(logisticsData.getOngkirData().getOngkir().getData());
+
+                    if (logisticsData.getLogisticsError() != null && !logisticsData.getLogisticsError().get(0).getMessage().isEmpty()) {
+                        listener.onFailed(logisticsData.getLogisticsError().get(0).getMessage());
+                    } else {
+                        listener.onSuccess(logisticsData.getOngkirData().getOngkir().getData());
+                    }
 
                 } else {
-                    throw new RuntimeException("Empty Response");
+                    RatesError error = null;
+                    try {
+                        error = new Gson()
+                                .fromJson(stringResponse.errorBody().string(), RatesError.class);
+                        listener.onFailed(error.getErrors().get(0).getTitle());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         };

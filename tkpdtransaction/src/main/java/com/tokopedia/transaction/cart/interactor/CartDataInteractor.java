@@ -425,20 +425,29 @@ public class CartDataInteractor implements ICartDataInteractor {
             @Override
             public Observable<CartRatesData> call(Response<String> stringResponse) {
 
-                LogisticsData logisticsData = new LogisticsData();
-                if (stringResponse.isSuccessful()) {
-                    logisticsData = new Gson().fromJson(stringResponse.body(), LogisticsData.class);
-                } else {
-                    // TODO: 4/6/18 errorhandling
-                }
-
-
                 CartRatesData cartRatesData = new CartRatesData();
                 cartRatesData.setRatesIndex(cartItemIndex);
                 setPreRatesData(cartRatesData, cartItemList.get(cartItemIndex));
-                cartRatesData.setRatesResponse(CacheUtil.convertModelToString(logisticsData.getOngkirData().getOngkir().getData(),
-                        new TypeToken<Data>() {
-                        }.getType()));
+                LogisticsData logisticsData = new LogisticsData();
+                if (stringResponse.isSuccessful()) {
+                    logisticsData = new Gson().fromJson(stringResponse.body(), LogisticsData.class);
+
+                    if (logisticsData.getOngkirData() != null)
+                        cartRatesData.setRatesResponse(CacheUtil.convertModelToString(logisticsData.getOngkirData().getOngkir().getData(),
+                                new TypeToken<Data>() {
+                                }.getType()));
+                    cartRatesData.setErrorResponse("");
+                } else {
+                    // TODO: 4/6/18 errorhandling
+                    try {
+                        cartRatesData.setErrorResponse(stringResponse.errorBody().string());
+                        cartRatesData.setRatesResponse("");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
                 return Observable.just(cartRatesData);
             }
         };
@@ -465,6 +474,7 @@ public class CartDataInteractor implements ICartDataInteractor {
 
             @Override
             public void onError(Throwable e) {
+                keroRatesListener.onRatesFailed(e.getMessage());
             }
 
             @Override

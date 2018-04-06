@@ -3,9 +3,8 @@ package com.tokopedia.transaction.addtocart.model.kero;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by sachinbansal on 4/6/18.
- */
+import java.util.List;
+
 
 public class LogisticsData {
 
@@ -13,6 +12,17 @@ public class LogisticsData {
     @Expose
     private OngkirData ongkirData;
 
+    @SerializedName("errors")
+    @Expose
+    private List<LogisticsError> logisticsError;
+
+    public List<LogisticsError> getLogisticsError() {
+        return logisticsError;
+    }
+
+    public void setLogisticsError(List<LogisticsError> logisticsError) {
+        this.logisticsError = logisticsError;
+    }
 
     public OngkirData getOngkirData() {
         return ongkirData;

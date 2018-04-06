@@ -743,6 +743,16 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void setCartErrorWithMessage(int cartIndex, String errorTitle, String errorMessage) {
+        cartItemAdapter.setCartItemError(cartIndex,
+                errorTitle,
+                errorMessage);
+        holderError.setVisibility(View.VISIBLE);
+        tvError1.setText(getActivity().getString(R.string.label_title_error_default_initial_cart_data));
+        tvError2.setText(getActivity().getString(R.string.error_check_cart));
+    }
+
+    @Override
     public void showRatesCompletion() {
         refreshCartList();
     }
