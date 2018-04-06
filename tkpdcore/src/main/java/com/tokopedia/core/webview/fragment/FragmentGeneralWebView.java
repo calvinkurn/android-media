@@ -228,7 +228,11 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     private boolean overrideUrl(String url) {
-        if (((!TextUtils.isEmpty(Uri.parse(url).getHost()) && Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
+        if (TextUtils.isEmpty(Uri.parse(url).getHost())) {
+            return false;
+        }
+
+        if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
                 || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
                 && !url.endsWith(".pl")) {
             CommonUtils.dumper(DeepLinkChecker.getDeepLinkType(url));
