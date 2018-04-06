@@ -90,8 +90,8 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
         changeEmailBtn.setVisibility(GONE);
         int emailCase  = 0;
         //case 0, phone not verified and email is empty, thus show edit text email (email) and hint
-        //case 1, phone not verified and email available, this not showing any button
-        //case 2, phone verified and email is empty, thus show edit text email (email) and hint
+        //case 1, phone not verified and email available, this not showing any button, but show email
+        //case 2, phone verified and email is empty, thus show tv email
         //case 3, phone verified and email is available, thus show change button and text view email (tvEmail)
         if (!SessionHandler.isMsisdnVerified() && TextUtils.isEmpty(userEmail)) emailCase = 0;
         else if (!SessionHandler.isMsisdnVerified() && !TextUtils.isEmpty(userEmail)) emailCase = 1;
@@ -107,9 +107,10 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
                 tvEmailHint.setVisibility(VISIBLE);
                 break;
             case 1:
+                tvEmail.setVisibility(VISIBLE);
                 break;
             case 3:
-                tvEmail.setVisibility(GONE);
+                tvEmail.setVisibility(VISIBLE);
                 changeEmailBtn.setVisibility(VISIBLE);
                 changeEmailBtn.setOnClickListener(new ChangeEmailButtonClick(userEmail));
                 break;
