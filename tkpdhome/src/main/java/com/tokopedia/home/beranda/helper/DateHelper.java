@@ -14,7 +14,7 @@ public class DateHelper {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZZZZ");
         try {
             return format.parse(expiredTimeString);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new Date();
         }
