@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -21,7 +20,6 @@ import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.network.entity.variant.Variant;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
 
 import java.util.ArrayList;
@@ -371,8 +369,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             if(child.isEnabled()){
                 if(child.isLimitedStock()){
                     textStock.setTextColor(ContextCompat.getColor(VariantActivity.this, R.color.tkpd_dark_red));
-                }
-                else{
+                } else {
                     textStock.setTextColor(ContextCompat.getColor(VariantActivity.this, R.color.black_70));
                 }
                 textStock.setText(child.getStockWording());
