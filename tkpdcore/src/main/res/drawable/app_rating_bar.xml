@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@android:color/white"/>
     <item
-        android:id="@android:id/background"
-        android:drawable="@drawable/ic_rating_empty" />
+        android:id="@android:id/background">
+        <bitmap android:src="@drawable/ic_app_rating_empty"/>
+    </item>
     <item
-        android:id="@android:id/secondaryProgress"
-        android:drawable="@drawable/ic_rating_empty" />
-    <item
-        android:id="@android:id/progress"
-        android:drawable="@drawable/ic_rating_filled" />
+        android:id="@android:id/secondaryProgress">
+        <bitmap android:src="@drawable/ic_app_rating_empty"/>
+    </item>
+    <item android:id="@android:id/progress">
+        <bitmap android:src="@drawable/ic_app_rating_filled" />
+    </item>
 </layer-list>

@@ -4,15 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingEnd="@dimen/activity_horizontal_margin"
-    android:paddingStart="@dimen/activity_horizontal_margin"
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingStart="@dimen/dp_16"
     android:layout_gravity="center"
-    android:paddingTop="@dimen/padding_small" >
+    android:paddingTop="@dimen/dp_10" >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_5"
         android:orientation="horizontal">
 
         <TextView
@@ -24,7 +24,7 @@
             android:id="@+id/nominal_tag_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/dp_5"
             tools:text="Diskon 10%"
             android:layout_toRightOf="@id/nominal_description_textview" />
 
@@ -40,7 +40,7 @@
         android:id="@+id/lin_normal_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_5"
         android:orientation="horizontal">
 
         <TextView
@@ -60,7 +60,7 @@
             android:layout_toRightOf="@id/real_price_textview"
             android:textSize="@dimen/fonts"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/dp_16"
             tools:text="10000" />
 
         <TextView
@@ -74,9 +74,9 @@
             android:textColor="@color/white"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
-            android:paddingLeft="@dimen/padding_small"
-            android:paddingRight="@dimen/padding_small"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin" />
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_16" />
     </RelativeLayout>
 
     <View

@@ -147,8 +147,8 @@
 
                     <ImageView
                         android:id="@+id/close_image"
-                        android:layout_width="@dimen/icon_size"
-                        android:layout_height="@dimen/icon_size"
+                        android:layout_width="@dimen/dp_48"
+                        android:layout_height="@dimen/dp_48"
                         android:padding="5dp"
                         app:srcCompat="@drawable/icon_closed" />
 
@@ -206,8 +206,8 @@
 
                     <ImageButton
                         android:id="@+id/edit_shop_schedule"
-                        android:layout_width="@dimen/icon_size"
-                        android:layout_height="@dimen/icon_size"
+                        android:layout_width="@dimen/dp_48"
+                        android:layout_height="@dimen/dp_48"
                         android:background="@android:color/transparent"
                         app:srcCompat="@drawable/ic_edit_pencil" />
                 </LinearLayout>
@@ -240,8 +240,8 @@
 
                     <ImageView
                         android:id="@+id/icon_gold_merchant"
-                        android:layout_width="@dimen/icon_size"
-                        android:layout_height="@dimen/icon_size"
+                        android:layout_width="@dimen/dp_48"
+                        android:layout_height="@dimen/dp_48"
                         android:visibility="gone"
                         app:srcCompat="@drawable/ic_shop_gold" />
 

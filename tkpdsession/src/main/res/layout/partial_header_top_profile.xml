@@ -46,7 +46,7 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_title"
+                android:textSize="@dimen/sp_16"
                 android:textStyle="normal"
                 tools:drawableLeft="@drawable/ic_kol_badge"
                 tools:text="Benny Alexandra Dia Dan Aku Selalu Bersama Huahahahaha" />
@@ -55,7 +55,7 @@
                 android:id="@+id/button_manage_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/background_button_border_gray"
                 android:gravity="center"
                 android:orientation="horizontal"
@@ -87,7 +87,7 @@
                 android:id="@+id/button_follow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/bg_button_green_enabled"
                 android:gravity="center"
                 android:orientation="horizontal"
@@ -100,8 +100,8 @@
                     android:id="@+id/button_follow_image"
                     android:layout_width="@dimen/action_icon_size"
                     android:layout_height="@dimen/action_icon_size"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:gravity="center_horizontal"
                     app:srcCompat="@drawable/ic_new_action_plus" />
 
@@ -177,7 +177,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_title"
+                android:textSize="@dimen/sp_16"
                 android:textStyle="normal"
                 tools:text="364" />
 
@@ -187,7 +187,7 @@
                 android:fontFamily="sans-serif"
                 android:text="@string/following"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="normal" />
         </LinearLayout>
 
@@ -213,7 +213,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_title"
+                android:textSize="@dimen/sp_16"
                 android:textStyle="normal"
                 tools:text="1M" />
 
@@ -223,7 +223,7 @@
                 android:fontFamily="sans-serif"
                 android:text="@string/followers"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="normal" />
         </LinearLayout>
 
@@ -250,7 +250,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_title"
+                android:textSize="@dimen/sp_16"
                 android:textStyle="normal"
                 tools:text="1.532" />
 
@@ -260,7 +260,7 @@
                 android:fontFamily="sans-serif"
                 android:text="@string/favorite_shop"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="normal" />
         </LinearLayout>
     </LinearLayout>
