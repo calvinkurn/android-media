@@ -1,8 +1,9 @@
-package com.tokopedia.gamification.util;
+package com.tokopedia.gamification.applink;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.webkit.URLUtil;
 
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
@@ -20,7 +21,7 @@ public class ApplinkUtil {
                 .isSupportedDelegateDeepLink(applink)) {
             ((GamificationRouter) activity.getApplicationContext())
                     .actionApplink(activity, applink);
-        } else if (!TextUtils.isEmpty(url)) {
+        } else if (!TextUtils.isEmpty(url) && URLUtil.isNetworkUrl(url)) {
             String defaultTitle =  activity.getResources().getString(R.string.app_name);
             Intent intent = ((GamificationRouter) activity.getApplicationContext())
                     .getWebviewActivityWithIntent(activity, url, defaultTitle);

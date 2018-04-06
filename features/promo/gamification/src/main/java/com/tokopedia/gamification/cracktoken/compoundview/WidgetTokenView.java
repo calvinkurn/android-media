@@ -267,7 +267,7 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     public boolean isCrackPercentageFull(){
-        return imageViewCracked.getPercentMasked() >= 100;
+        return imageViewCracked.isFullyHiddenByMask();
     }
 
     private void initCracking1() {
