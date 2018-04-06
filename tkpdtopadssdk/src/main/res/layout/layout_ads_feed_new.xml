@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingLeft="@dimen/new_margin_small"
-        android:paddingRight="@dimen/new_margin_small"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
@@ -31,12 +31,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/title_promote"
-            android:layout_marginStart="@dimen/new_margin_small"
-            android:layout_marginLeft="@dimen/new_margin_small"
-            android:paddingTop="@dimen/new_margin_small"
-            android:paddingBottom="@dimen/new_margin_small"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/font_micro"/>
+            android:textSize="@dimen/sp_12"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
