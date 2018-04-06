@@ -53,7 +53,7 @@ public class WidgetCrackResult extends RelativeLayout {
     private WidgetCrackResultListener listener;
 
     public interface WidgetCrackResultListener {
-        void onClickCtaButton(String type, String applink, String url);
+        void onClickCtaButton(CrackResult crackResult);
 
         void onTrackingCloseRewardButton(CrackResult crackResult);
 
@@ -95,7 +95,7 @@ public class WidgetCrackResult extends RelativeLayout {
         showCrackResultImageAnimation(crackResult);
         showCrackResultBackgroundAnimation();
         showListCrackResultText(crackResult.getBenefits(), crackResult.getBenefitLabel());
-        renderCtaButton(crackResult.getCtaButton());
+        renderCtaButton(crackResult);
         renderReturnButton(crackResult);
         renderCloseReward(crackResult);
     }
@@ -216,14 +216,14 @@ public class WidgetCrackResult extends RelativeLayout {
         }
     }
 
-    public void renderCtaButton(final CrackButton ctaButton) {
-        if (ctaButton != null) {
+    public void renderCtaButton(final CrackResult crackResult) {
+        if (crackResult.getCtaButton() != null) {
             buttonCta.setVisibility(VISIBLE);
-            buttonCta.setText(ctaButton.getTitle());
+            buttonCta.setText(crackResult.getCtaButton().getTitle());
             buttonCta.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClickCtaButton(ctaButton.getType(), ctaButton.getApplink(), ctaButton.getUrl());
+                    listener.onClickCtaButton(crackResult);
                 }
             });
         } else {

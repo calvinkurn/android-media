@@ -103,23 +103,24 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
-            public void onClickCtaButton(String type, String applink, String url) {
-                if (type.equals("dismiss")) {
+            public void onClickCtaButton(CrackResult crackResult) {
+                if (crackResult.isCrackButtonDismiss(crackResult.getCtaButton())) {
                     widgetCrackResult.clearCrackResult();
 
                     crackTokenPresenter.getGetTokenTokopoints();
-                } else if (type.equals("redirect")) {
+                } else if (crackResult.isCrackButtonRedirect(crackResult.getCtaButton())) {
                     trackingButtonClick(GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
                             GamificationEventTracking.Action.CLICK_TO_TOKOPOINT,
                             "");
 
-                    navigateToAssociatedPage(applink, url);
+                    navigateToAssociatedPage(crackResult.getCtaButton().getApplink(),
+                            crackResult.getCtaButton().getUrl());
                 }
             }
 
             @Override
             public void onClickReturnButton(CrackResult crackResult) {
-                if (crackResult.getReturnButton().getType().equals("dismiss")) {
+                if (crackResult.isCrackButtonDismiss(crackResult.getReturnButton())) {
                     widgetCrackResult.clearCrackResult();
 
                     if (crackResult.isCrackTokenSuccess()) {
@@ -133,7 +134,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                     }
 
                     crackTokenPresenter.getGetTokenTokopoints();
-                } else if (crackResult.getReturnButton().getType().equals("redirect")) {
+                } else if (crackResult.isCrackButtonRedirect(crackResult.getReturnButton())) {
                     if (crackResult.isCrackTokenSuccess()) {
                         trackingButtonClick(GamificationEventTracking.Category.COUPON_REWARD,
                                 GamificationEventTracking.Action.CLICK_USE_GIFT,
@@ -248,7 +249,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                     .actionApplink(getActivity(), applink);
         } else if (!TextUtils.isEmpty(url)) {
             Intent intent = ((GamificationRouter) getActivity().getApplicationContext())
-                    .getWebviewActivityWithIntent(getActivity(), url, "TokoPoints");
+                    .getWebviewActivityWithIntent(getActivity(), url, getString(R.string.app_name));
             startActivity(intent);
         }
     }
@@ -473,7 +474,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         if (getActivity().getApplication() instanceof AbstractionRouter) {
             String category = "";
             if (crackResult.isCrackTokenSuccess()) {
-                if (crackResult.getBenefitType().equals("Coupon")) {
+                if (crackResult.isBenefitTypeCoupon()) {
                     category = GamificationEventTracking.Category.COUPON_REWARD;
                 } else {
                     category = GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD;
