@@ -38,7 +38,7 @@
                 android:layout_alignParentTop="true"
                 android:ellipsize="end"
                 android:drawablePadding="@dimen/padding_vs"
-                android:fontFamily="sans-serif"
+                android:fontFamily="sans-serif-medium"
                 android:maxLines="1"
                 android:paddingBottom="@dimen/space_average"
                 android:paddingLeft="@dimen/space_med"
@@ -46,7 +46,6 @@
                 android:paddingTop="@dimen/space_average"
                 android:textColor="@color/font_black_secondary_54"
                 android:textSize="@dimen/font_small"
-                android:textStyle="bold"
                 tools:text="Donald Duck "/>
 
         </RelativeLayout>
@@ -62,7 +61,7 @@
             android:paddingRight="@dimen/space_small"
             android:paddingTop="@dimen/space_average"
             android:textColor="@color/black_26"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/font_micro"
             android:textStyle="bold"
             tools:text="90%"
             />
