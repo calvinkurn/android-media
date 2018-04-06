@@ -7,7 +7,6 @@ dependencies {
     compile project(rootProject.ext.libraries.design)
     compile project(rootProject.ext.features.useCase)
 
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
