@@ -164,6 +164,12 @@ public interface TkpdCoreRouter {
 
     Intent getLoginWebviewIntent(Context context, String name, String url);
 
+    Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getShopPageIntentByDomain(Context context, String domain);
+
+    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
+
     Observable<TokoCashData> getTokoCashBalance();
 
     Intent getAddEmailIntent(Context context);
@@ -181,4 +187,5 @@ public interface TkpdCoreRouter {
     Intent getInboxMessageIntent(Context context);
 
     void sendTrackingGroupChatLeftNavigation();
+
 }
