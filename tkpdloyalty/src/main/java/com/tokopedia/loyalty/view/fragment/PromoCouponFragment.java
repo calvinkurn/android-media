@@ -334,6 +334,11 @@ public class PromoCouponFragment extends BasePresenterFragment
         refreshHandler.setPullEnabled(true);
     }
 
+    @Override
+    public String getCategoryId() {
+        return getArguments().getString(CATEGORY_KEY);
+    }
+
     public static PromoCouponFragment newInstance(String platform, String categoryKey) {
         PromoCouponFragment fragment = new PromoCouponFragment();
         Bundle bundle = new Bundle();
@@ -391,11 +396,7 @@ public class PromoCouponFragment extends BasePresenterFragment
     @Override
     public void onRefresh(View view) {
         if (refreshHandler.isRefreshing()) {
-            String platformKey = getArguments().getString(PLATFORM_KEY, "");
-            if (platformKey.equalsIgnoreCase(FLIGHT_STRING)){
-                platformKey = DIGITAL_STRING;
-            }
-            dPresenter.processGetCouponList(platformKey);
+            dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
         }
     }
 

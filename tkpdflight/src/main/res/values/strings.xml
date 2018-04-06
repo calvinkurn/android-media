@@ -34,9 +34,9 @@
     <string name="select_passenger_adult_atleast_one_error_message">Penumpang dewasa harus ada</string>
     <string name="select_passenger_submit_button">Simpan</string>
     <string name="select_passenger_toolbar_title">Pilih Penumpang</string>
-    <string name="flight_label">Penerbangan</string>
-    <string name="flight_label_facility">Fasilitas</string>
-    <string name="flight_label_price">Harga</string>
+    <string name="flight_label">PENERBANGAN</string>
+    <string name="flight_label_facility">FASILITAS</string>
+    <string name="flight_label_price">HARGA</string>
 
     <string name="flight_search_filter_price_min_label">Harga Minimum</string>
     <string name="flight_search_filter_price_max_label">Harga Maksimum</string>

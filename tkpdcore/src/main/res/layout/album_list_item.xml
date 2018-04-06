@@ -19,7 +19,7 @@
         android:layout_toRightOf="@id/album_cover"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textSize="@dimen/font_small"/>
+        android:textSize="@dimen/sp_14"/>
 
     <TextView
         android:id="@+id/album_media_count"
@@ -31,6 +31,6 @@
         android:layout_toRightOf="@id/album_cover"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textSize="@dimen/font_small"/>
+        android:textSize="@dimen/sp_14"/>
 
 </RelativeLayout>
