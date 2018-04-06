@@ -167,7 +167,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     }
 
     @Override
-    public void checkIfFlightCancellable(FlightOrderSuccessViewModel flightOrderSuccessViewModel) {
+    public void onCancelButtonClicked(FlightOrderSuccessViewModel flightOrderSuccessViewModel) {
         List<FlightCancellationJourney> items = transformOrderToCancellation(flightOrderSuccessViewModel.getOrderJourney());
 
         boolean isRefundable = false;
@@ -175,17 +175,18 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
             if (item.isRefundable()) isRefundable = true;
         }
 
-        if (isDepartureDateMoreThan6Hours(
-                FlightDateUtil.stringToDate(flightOrderSuccessViewModel
-                        .getOrderJourney().getDepartureTime())) &&
-            isRefundable) {
-            getView().showRefundableCancelDialog(flightOrderSuccessViewModel.getId(), items);
+        if (isRefundable) {
+            getView().showRefundableCancelDialog(flightOrderSuccessViewModel.getId(), items, flightOrderSuccessViewModel.getOrderJourney().getDepartureTime());
+        } else {
+            getView().showNonRefundableCancelDialog(flightOrderSuccessViewModel.getId(), items, flightOrderSuccessViewModel.getOrderJourney().getDepartureTime());
+        }
+    }
 
-        } else if (isDepartureDateMoreThan6Hours(
-                FlightDateUtil.stringToDate(flightOrderSuccessViewModel
-                        .getOrderJourney().getDepartureTime())) &&
-                !isRefundable) {
-            getView().showNonRefundableCancelDialog(flightOrderSuccessViewModel.getId(), items);
+    @Override
+    public void checkIfFlightCancellable(String departureTime, String invoiceId, List<FlightCancellationJourney> item) {
+        if (isDepartureDateMoreThan6Hours(
+                FlightDateUtil.stringToDate(departureTime))) {
+            getView().goToCancellationPage(invoiceId, item);
         } else {
             getView().showLessThan6HoursDialog();
         }
