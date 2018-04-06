@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -225,10 +226,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     @Override
     public void navigateToGoogleMap(String generatedMap, LocationPass locationPass) {
 
-        if(locationShippingViewHolder.getDistrictName() != null
-                && !locationShippingViewHolder.getDistrictName().isEmpty()
-                && locationShippingViewHolder.getCityName() != null
-                && !locationShippingViewHolder.getCityName().isEmpty()) {
+        if(TextUtils.isEmpty(locationShippingViewHolder.getDistrictName())
+                && TextUtils.isEmpty(locationShippingViewHolder.getCityName())) {
 
             if(locationPass == null)
                 locationPass = new LocationPass();
