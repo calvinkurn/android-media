@@ -16,8 +16,8 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
-        android:paddingTop="@dimen/padding_small"
-        android:paddingBottom="@dimen/padding_small">
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10">
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_description"
@@ -25,8 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
             tools:text="@string/flight_cancellation_review_description" />
 
         <android.support.v7.widget.AppCompatButton

@@ -6,15 +6,15 @@
     android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/padding_ms"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/padding_ms">
+    android:paddingBottom="@dimen/dp_8"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_8">
 
     <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/checkbox"
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size"
+        android:layout_width="@dimen/dp_36"
+        android:layout_height="@dimen/dp_36"
         android:layout_gravity="center"
         android:theme="@style/checkBoxStyle" />
 
@@ -27,13 +27,13 @@
         <TextView
             android:id="@+id/tv_passenger_name"
             style="@style/TextView.Small.Bold"
-            android:padding="@dimen/padding_vvvs"
+            android:padding="@dimen/dp_2"
             tools:text="@string/flight_label_departure_flight" />
 
         <TextView
             android:id="@+id/tv_passenger_type"
             style="@style/TextView.Small"
-            android:padding="@dimen/padding_vvvs"
+            android:padding="@dimen/dp_2"
             tools:text="@string/flight_label_departure_flight" />
 
     </LinearLayout>
