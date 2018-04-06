@@ -1,0 +1,33 @@
+package com.tokopedia.gamification.util;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.text.TextUtils;
+
+import com.tokopedia.gamification.GamificationRouter;
+import com.tokopedia.gamification.R;
+
+/**
+ * Created by hendry on 06/04/18.
+ */
+
+public class ApplinkUtil {
+
+    public static void navigateToAssociatedPage(Activity activity, String applink, String url,
+                                                Class<?> defaultClassToNavigate) {
+
+        if (!TextUtils.isEmpty(applink) && ((GamificationRouter) activity.getApplicationContext())
+                .isSupportedDelegateDeepLink(applink)) {
+            ((GamificationRouter) activity.getApplicationContext())
+                    .actionApplink(activity, applink);
+        } else if (!TextUtils.isEmpty(url)) {
+            String defaultTitle =  activity.getResources().getString(R.string.app_name);
+            Intent intent = ((GamificationRouter) activity.getApplicationContext())
+                    .getWebviewActivityWithIntent(activity, url, defaultTitle);
+            activity.startActivity(intent);
+        } else {
+            Intent intent = new Intent(activity, defaultClassToNavigate);
+            activity.startActivity(intent);
+        }
+    }
+}
