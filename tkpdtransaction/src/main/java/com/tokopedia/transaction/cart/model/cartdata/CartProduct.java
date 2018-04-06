@@ -89,6 +89,9 @@ public class CartProduct implements Parcelable {
     @SerializedName("product_min_order")
     @Expose
     private String productMinOrder;
+    @SerializedName("product_cat_id")
+    @Expose
+    private String productCatId;
 
     public String getProductTotalWeight() {
         return productTotalWeight;
@@ -306,6 +309,13 @@ public class CartProduct implements Parcelable {
         this.productMinOrder = productMinOrder;
     }
 
+    public String getProductCatId() {
+        return productCatId;
+    }
+
+    public void setProductCatId(String productCatId) {
+        this.productCatId = productCatId;
+    }
 
     @Override
     public int describeContents() {
@@ -341,6 +351,7 @@ public class CartProduct implements Parcelable {
         dest.writeValue(this.productUseInsurance);
         dest.writeString(this.productTotalPriceIdr);
         dest.writeString(this.productMinOrder);
+        dest.writeString(this.productCatId);
     }
 
     public CartProduct() {
@@ -374,6 +385,7 @@ public class CartProduct implements Parcelable {
         this.productUseInsurance = (Integer) in.readValue(Integer.class.getClassLoader());
         this.productTotalPriceIdr = in.readString();
         this.productMinOrder = in.readString();
+        this.productCatId = in.readString();
     }
 
     public static final Creator<CartProduct> CREATOR = new Creator<CartProduct>() {

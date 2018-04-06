@@ -143,6 +143,13 @@ public class CartPresenter implements ICartPresenter {
                 product.setProductID(cartProduct.getProductId());
                 product.setPrice(cartProduct.getProductPrice());
                 product.setQty(String.valueOf(cartProduct.getProductQuantity()));
+                product.setShopId(cartItem.getCartShop().getShopId());
+                product.setShopType(cartItem.getCartShop().getShopType());
+                product.setShopName(cartItem.getCartShop().getShopName());
+                product.setCartId(cartProduct.getProductCartId());
+                product.setCategoryId(cartProduct.getProductCatId());
+                product.setHomeAttribution(cartProduct.getProductTrackerData().getAttribution());
+                product.setList(cartProduct.getProductTrackerData().getListDataName());
                 product.setProductName(MethodChecker.fromHtml(cartProduct.getProductName()).toString());
 
                 com.tokopedia.core.analytics.model.Product locaProduct
@@ -432,8 +439,8 @@ public class CartPresenter implements ICartPresenter {
         analysisProduct.setProductID(cartProduct.getProductId());
         analysisProduct.setPrice(cartProduct.getProductPrice());
         analysisProduct.setQty(quantity);
-        /*analysisProduct.setHomeAttribution(cartProduct.getProductTrackerData().getAttribution());
-        analysisProduct.setList(cartProduct.getProductTrackerData().getListDataName());*/
+        analysisProduct.setHomeAttribution(cartProduct.getProductTrackerData().getAttribution());
+        analysisProduct.setList(cartProduct.getProductTrackerData().getListDataName());
         return analysisProduct;
     }
 
