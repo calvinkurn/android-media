@@ -13,11 +13,11 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/close_reward"
-        android:layout_width="@dimen/image_width_s"
-        android:layout_height="@dimen/image_width_s"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
         android:layout_gravity="top|end"
         app:srcCompat="@drawable/ic_close_white"
-        android:layout_margin="@dimen/new_margin_small"
+        android:layout_margin="@dimen/dp_8"
         android:visibility="gone"
         tools:visibility="visible"/>
 

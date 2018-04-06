@@ -4,6 +4,6 @@
     <string name="countdown_format" formatted="false">%02d:%02d:%02d</string>
     <string name="egg_crack_x_token_left">%1$s %2$s %3$s</string>
     <string name="default_info_token_text_crack">Klik untuk pecahkan Lucky Egg dan raih hadiah menarik!</string>
-    <string name="empty_token_text_crack">Dapatkan telur dengan \nbertransaksi di Tokopedia</string>
+    <string name="empty_token_text_crack">Dapatkan telur dengan bertransaksi di Tokopedia</string>
     <string name="get_more_token_btn_text">Belanja dan Dapatkan Lucky Egg</string>
 </resources>

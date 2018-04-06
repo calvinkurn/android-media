@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="vertical"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/dp_16"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -31,13 +31,13 @@
             android:paddingLeft="32dp"
             android:paddingRight="32dp"
             android:paddingTop="8dp"
-            android:layout_marginLeft="@dimen/margin_vl"
-            android:layout_marginRight="@dimen/margin_vl"
+            android:layout_marginLeft="@dimen/dp_40"
+            android:layout_marginRight="@dimen/dp_40"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_size_info_crack_egg"
             android:textStyle="bold"
             android:gravity="center"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
             tools:text="@string/default_info_token_text_crack" />
 
         <TextView
