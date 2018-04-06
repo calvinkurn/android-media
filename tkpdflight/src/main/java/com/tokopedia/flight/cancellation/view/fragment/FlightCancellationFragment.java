@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
+import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReasonAndProofActivity;
 import com.tokopedia.flight.cancellation.view.activity.FlightReviewCancellationActivity;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.adapter.viewholder.FlightCancellationViewHolder;
@@ -67,6 +68,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
             @Override
             public void onClick(View v) {
                 navigateToReviewCancellationPage();
+//                startActivity(FlightCancellationReasonAndProofActivity.getCallingIntent(getActivity(), selectedCancellationViewModelList));
             }
         });
 

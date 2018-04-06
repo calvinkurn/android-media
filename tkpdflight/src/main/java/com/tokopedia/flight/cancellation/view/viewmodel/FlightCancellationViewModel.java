@@ -16,6 +16,7 @@ import java.util.List;
 public class FlightCancellationViewModel implements Parcelable,
         Visitable<FlightCancellationTypeFactory> {
 
+    private String invoiceId;
     private FlightCancellationJourney flightCancellationJourney;
     private List<FlightCancellationPassengerViewModel> passengerViewModelList;
 
@@ -23,6 +24,7 @@ public class FlightCancellationViewModel implements Parcelable,
     }
 
     protected FlightCancellationViewModel(Parcel in) {
+        invoiceId = in.readString();
         flightCancellationJourney = in.readParcelable(FlightCancellationJourney.class.getClassLoader());
         passengerViewModelList = in.createTypedArrayList(FlightCancellationPassengerViewModel.CREATOR);
     }
@@ -71,4 +73,25 @@ public class FlightCancellationViewModel implements Parcelable,
     public void setPassengerViewModelList(List<FlightCancellationPassengerViewModel> passengerViewModelList) {
         this.passengerViewModelList = passengerViewModelList;
     }
+
+    public String getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(String invoiceId) {
+        this.invoiceId = invoiceId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(invoiceId);
+        parcel.writeParcelable(flightCancellationJourney, i);
+        parcel.writeTypedList(passengerViewModelList);
+    }
+
 }

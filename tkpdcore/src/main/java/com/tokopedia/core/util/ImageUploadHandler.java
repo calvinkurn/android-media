@@ -78,6 +78,12 @@ public class ImageUploadHandler {
         return model.cameraFileLoc;
     }
 
+    public Intent getCameraIntent() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, getOutputMediaFileUri());
+        return intent;
+    }
+
     private void startActivity(Intent intent, int code) {
         if (activity != null)
             activity.startActivityForResult(intent, code);
@@ -85,7 +91,7 @@ public class ImageUploadHandler {
             fragment.startActivityForResult(intent, code);
     }
 
-    private Uri getOutputMediaFileUri() {
+    public Uri getOutputMediaFileUri() {
         return MethodChecker.getUri(context, getOutputMediaFile());
     }
 

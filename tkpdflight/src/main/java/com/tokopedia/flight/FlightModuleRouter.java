@@ -3,8 +3,10 @@ package com.tokopedia.flight;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationCameraPassData;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 
@@ -44,4 +46,14 @@ public interface FlightModuleRouter {
     Observable<ProfileInfo> getProfile();
 
     Interceptor getChuckInterceptor();
+
+    Intent getGalleryIntent(Activity activity);
+
+    String getGalleryExtraSelectionPathResultKey();
+
+    FlightCancellationCameraPassData startCaptureWithCamera(FragmentActivity activity);
+
+    int getCameraRequestCode();
+
+    Observable<String> uploadImage(String destinationFolderPath, String localFilePath);
 }

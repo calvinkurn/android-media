@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * @author by furqan on 23/03/18.
  */
 
-public class FlightCancellationPassengerViewModel implements Parcelable {
+public class FlightCancellationPassengerViewModel implements Parcelable{
 
     private String passengerId;
     private int type;
