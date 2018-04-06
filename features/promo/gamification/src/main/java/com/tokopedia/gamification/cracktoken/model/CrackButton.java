@@ -1,21 +1,10 @@
 package com.tokopedia.gamification.cracktoken.model;
 
-import android.support.annotation.StringDef;
-
-import static com.tokopedia.gamification.cracktoken.model.CrackButton.CrackButtonTypeDef.REDIRECT_TYPE;
-import static com.tokopedia.gamification.cracktoken.model.CrackButton.CrackButtonTypeDef.DISMISS_TYPE;
-
 /**
  * Created by nabillasabbaha on 3/28/18.
  */
 
 public class CrackButton {
-
-    @StringDef({DISMISS_TYPE, REDIRECT_TYPE})
-    public @interface CrackButtonTypeDef {
-        String DISMISS_TYPE = "dismiss"; // from api
-        String REDIRECT_TYPE = "redirect"; // from api
-    }
 
     private String title;
     private String url;

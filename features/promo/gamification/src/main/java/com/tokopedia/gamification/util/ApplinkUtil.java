@@ -21,7 +21,7 @@ public class ApplinkUtil {
             ((GamificationRouter) activity.getApplicationContext())
                     .actionApplink(activity, applink);
         } else if (!TextUtils.isEmpty(url)) {
-            String defaultTitle =  activity.getResources().getString(R.string.toko_points_title);
+            String defaultTitle =  activity.getResources().getString(R.string.app_name);
             Intent intent = ((GamificationRouter) activity.getApplicationContext())
                     .getWebviewActivityWithIntent(activity, url, defaultTitle);
             activity.startActivity(intent);
