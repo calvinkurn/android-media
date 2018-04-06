@@ -106,24 +106,25 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
-            public void onClickCtaButton(String type, String applink, String url) {
-                if (type.equals(CrackButton.CrackButtonTypeDef.REDIRECT_TYPE)) {
+            public void onClickCtaButton(CrackResult crackResult) {
+                if (crackResult.isCrackButtonDismiss(crackResult.getCtaButton())) {
+                    widgetCrackResult.clearCrackResult();
+
+                    crackTokenPresenter.getGetTokenTokopoints();
+                } else if (crackResult.isCrackButtonRedirect(crackResult.getCtaButton())) {
                     trackingButtonClick(GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
                             GamificationEventTracking.Action.CLICK_TO_TOKOPOINT,
                             "");
 
-                    ApplinkUtil.navigateToAssociatedPage(getActivity(), applink, url,
+                    ApplinkUtil.navigateToAssociatedPage(getActivity(), crackResult.getCtaButton().getApplink(),
+                            crackResult.getCtaButton().getUrl(),
                             CrackTokenActivity.class);
-                } else { // default is dismiss type
-                    widgetCrackResult.clearCrackResult();
-                    crackTokenPresenter.getGetTokenTokopoints();
                 }
             }
 
             @Override
             public void onClickReturnButton(CrackResult crackResult) {
-                String type = crackResult.getReturnButton().getType();
-                if (type.equals(CrackButton.CrackButtonTypeDef.DISMISS_TYPE)) {
+                if (crackResult.isCrackButtonDismiss(crackResult.getReturnButton())) {
                     widgetCrackResult.clearCrackResult();
 
                     if (crackResult.isCrackTokenSuccess()) {
@@ -137,7 +138,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                     }
 
                     crackTokenPresenter.getGetTokenTokopoints();
-                } else if (type.equals(CrackButton.CrackButtonTypeDef.REDIRECT_TYPE)) {
+                } else if (crackResult.isCrackButtonRedirect(crackResult.getReturnButton())) {
                     if (crackResult.isCrackTokenSuccess()) {
                         trackingButtonClick(GamificationEventTracking.Category.COUPON_REWARD,
                                 GamificationEventTracking.Action.CLICK_USE_GIFT,
@@ -466,7 +467,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         if (getActivity().getApplication() instanceof AbstractionRouter) {
             String category = "";
             if (crackResult.isCrackTokenSuccess()) {
-                if (crackResult.getBenefitType().equals("Coupon")) {
+                if (crackResult.isBenefitTypeCoupon()) {
                     category = GamificationEventTracking.Category.COUPON_REWARD;
                 } else {
                     category = GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD;
