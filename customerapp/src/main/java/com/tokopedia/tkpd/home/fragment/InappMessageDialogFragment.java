@@ -96,11 +96,16 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
         tvTitle.setText(inAppMessageModel.title);
         tvDesc.setText(inAppMessageModel.description);
         closeBtn = view.findViewById(R.id.img_inapp_cross);
-        if (!TextUtils.isEmpty(inAppMessageModel.colorTitle)) {
-            tvTitle.setTextColor(Color.parseColor(inAppMessageModel.colorTitle));
-        }
-        if (!TextUtils.isEmpty(inAppMessageModel.colorDesc)) {
-            tvDesc.setTextColor(Color.parseColor(inAppMessageModel.colorDesc));
+        try {
+            if (!TextUtils.isEmpty(inAppMessageModel.colorTitle)) {
+                tvTitle.setTextColor(Color.parseColor(inAppMessageModel.colorTitle));
+            }
+            if (!TextUtils.isEmpty(inAppMessageModel.colorDesc)) {
+                tvDesc.setTextColor(Color.parseColor(inAppMessageModel.colorDesc));
+            }
+        } catch (Exception e) {
+            tvTitle.setTextColor(Color.BLACK);
+            tvDesc.setTextColor(Color.BLACK);
         }
 
         renderView(view);
