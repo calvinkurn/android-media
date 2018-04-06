@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/padding_small"
+    android:padding="@dimen/dp_10"
     android:background="@drawable/background_shadow_feed_new">
 
     <include
         layout="@layout/header_title"
-        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/dp_10"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content" />
 

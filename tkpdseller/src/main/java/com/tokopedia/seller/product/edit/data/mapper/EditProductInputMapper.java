@@ -12,7 +12,7 @@ import javax.inject.Inject;
 /**
  * @author sebastianuskh on 4/26/17.
  */
-
+@Deprecated
 public class EditProductInputMapper extends AddProductValidationInputMapper{
 
     @Inject

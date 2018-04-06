@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="@dimen/margin_small">
+                android:layout_marginBottom="@dimen/dp_10">
 
                 <com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView
                     android:id="@+id/date_picker_show_time_start_date"

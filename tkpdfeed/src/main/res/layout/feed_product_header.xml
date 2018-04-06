@@ -6,14 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="@dimen/padding_small"
+    android:padding="@dimen/dp_10"
     tools:background="@color/white">
 
     <ImageView
         android:id="@+id/shop_avatar"
         android:layout_width="@dimen/feed_new_avatar_size"
         android:layout_height="@dimen/feed_new_avatar_size"
-        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginRight="@dimen/dp_10"
         android:background="@drawable/feed_container_rounded_corners_border"
         android:layout_centerVertical="true"
         tools:src="@tools:sample/avatars" />
@@ -23,7 +23,7 @@
         android:layout_marginTop="3dp"
         android:layout_width="@dimen/feed_new_badge_size"
         android:layout_height="@dimen/feed_new_badge_size"
-        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginRight="@dimen/dp_10"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/shop_avatar"
         android:layout_toRightOf="@+id/shop_avatar"
@@ -36,7 +36,7 @@
         android:layout_marginTop="3dp"
         android:layout_width="@dimen/feed_new_badge_size"
         android:layout_height="@dimen/feed_new_badge_size"
-        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginRight="@dimen/dp_10"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/shop_avatar"
         android:layout_toRightOf="@+id/shop_avatar"
