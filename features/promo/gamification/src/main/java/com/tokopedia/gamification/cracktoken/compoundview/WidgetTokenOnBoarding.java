@@ -190,16 +190,15 @@ public class WidgetTokenOnBoarding extends FrameLayout {
             set.cancel();
             this.removeView(onboardingView);
             this.removeView(ivOnboardingCircle);
-            saveSeenOnboardingPreference();
         }
     }
 
-    private boolean hasSeenOnBoardingFromPref() {
+    public boolean hasSeenOnBoardingFromPref() {
         SharedPreferences sharedPreferences = getSharedPref();
         return sharedPreferences.getBoolean(HAS_SEEN, false);
     }
 
-    private void saveSeenOnboardingPreference() {
+    public void saveSeenOnboardingPreference() {
         SharedPreferences.Editor editor = getSharedPref().edit();
         editor.putBoolean(HAS_SEEN, true);
         editor.apply();
