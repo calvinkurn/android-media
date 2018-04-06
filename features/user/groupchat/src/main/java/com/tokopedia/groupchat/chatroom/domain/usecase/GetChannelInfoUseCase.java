@@ -5,6 +5,8 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.HashMap;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -31,7 +33,14 @@ public class GetChannelInfoUseCase extends UseCase<ChannelInfoViewModel> {
     @Override
     public Observable<ChannelInfoViewModel> createObservable(RequestParams requestParams) {
         return channelInfoSource.getChannelInfo(requestParams.getString(
-                GetChannelInfoUseCase.PARAM_CHANNEL_UUID, ""));
+                GetChannelInfoUseCase.PARAM_CHANNEL_UUID, ""),
+                getRequestParamsWithoutPath(requestParams));
+    }
+
+    private HashMap<String, Object> getRequestParamsWithoutPath(RequestParams requestParams) {
+        HashMap<String, Object> params = requestParams.getParameters();
+        params.remove(PARAM_CHANNEL_UUID);
+        return params;
     }
 
     public static RequestParams createParams(String channelUuid) {

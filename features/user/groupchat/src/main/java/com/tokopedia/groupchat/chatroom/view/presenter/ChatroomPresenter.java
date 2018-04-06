@@ -1,9 +1,12 @@
 package com.tokopedia.groupchat.chatroom.view.presenter;
 
+import android.text.TextUtils;
+
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.PreviousMessageListQuery;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.LoadPreviousChatMessagesUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.RefreshMessageUseCase;
@@ -24,6 +27,7 @@ import javax.inject.Inject;
 public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View> implements
         ChatroomContract.Presenter {
 
+    private static final int MAX_CHARACTER_LENGTH = 200;
     private final SendVoteUseCase sendVoteUseCase;
 
     private final GetGroupChatMessagesFirstTimeUseCase getGroupChatMessagesFirstTimeUseCase;
@@ -69,24 +73,35 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
 
     @Override
     public void sendReply(final PendingChatViewModel pendingChatViewModel, OpenChannel mChannel) {
-        sendMessageUseCase.execute(getView().getContext(), pendingChatViewModel, mChannel,
-                new SendGroupChatMessageUseCase.SendGroupChatMessageListener() {
+        if (isValidReply(pendingChatViewModel)) {
+            sendMessageUseCase.execute(getView().getContext(), pendingChatViewModel, mChannel,
+                    new SendGroupChatMessageUseCase.SendGroupChatMessageListener() {
 
-                    @Override
-                    public void onSuccessSendMessage(ChatViewModel viewModel) {
-                        if (getView() != null) {
-                            getView().onSuccessSendMessage(pendingChatViewModel, viewModel);
+                        @Override
+                        public void onSuccessSendMessage(ChatViewModel viewModel) {
+                            if (getView() != null) {
+                                getView().onSuccessSendMessage(pendingChatViewModel, viewModel);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel,
-                                                   String errorMessage) {
-                        if (getView() != null) {
-                            getView().onErrorSendMessage(pendingChatViewModel, errorMessage);
+                        @Override
+                        public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel,
+                                                       String errorMessage) {
+                            if (getView() != null) {
+                                getView().onErrorSendMessage(pendingChatViewModel, errorMessage);
+                            }
                         }
-                    }
-                });
+                    });
+        }
+    }
+
+    private boolean isValidReply(PendingChatViewModel pendingChatViewModel) {
+        if (!TextUtils.isEmpty(pendingChatViewModel.getMessage()) && pendingChatViewModel
+                .getMessage().length() > MAX_CHARACTER_LENGTH) {
+            getView().showWarningSendMessage(getView().getContext().getString(R.string
+                    .error_max_characters_reached));
+        }
+        return false;
     }
 
     @Override

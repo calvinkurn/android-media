@@ -49,6 +49,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     private static final int REQUEST_OPEN_GROUPCHAT = 111;
     private static final int REQUEST_LOGIN = 101;
+    private static final int DEFAULT_NO_POSITION = -1;
 
     @Inject
     ChannelPresenter presenter;
@@ -220,12 +221,13 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Override
     public void onItemClicked(ChannelViewModel channelViewModel) {
-        goToChannel(channelViewModel);
+        goToChannel(channelViewModel, getAdapter().getData().indexOf(channelViewModel));
     }
 
-    private void goToChannel(ChannelViewModel channelViewModel) {
+    private void goToChannel(ChannelViewModel channelViewModel, int position) {
         analytics.eventClickGroupChatList(channelViewModel.getChannelUrl());
-        startActivityForResult(GroupChatActivity.getCallingIntent(getActivity(), channelViewModel),
+        startActivityForResult(GroupChatActivity.getCallingIntent(getActivity(),
+                channelViewModel, position),
                 REQUEST_OPEN_GROUPCHAT);
     }
 
@@ -243,6 +245,13 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
             } else {
                 presenter.refreshData();
             }
+            updateTotalView(data.getExtras().getInt(GroupChatActivity.EXTRA_POSITION, -1),
+                    data.getExtras().getString(GroupChatActivity.TOTAL_VIEW, ""));
+        } else if (requestCode == REQUEST_OPEN_GROUPCHAT
+                && data != null
+                && data.getExtras() != null) {
+            updateTotalView(data.getExtras().getInt(GroupChatActivity.EXTRA_POSITION, -1),
+                    data.getExtras().getString(GroupChatActivity.TOTAL_VIEW, ""));
         } else if (requestCode == REQUEST_LOGIN
                 && resultCode == Activity.RESULT_CANCELED) {
             Intent intent = ((GroupChatModuleRouter) getActivity().getApplicationContext())
@@ -254,6 +263,13 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
                 && resultCode == Activity.RESULT_OK) {
             NetworkErrorHelper.removeEmptyState(getView());
             loadInitialData();
+        }
+    }
+
+    private void updateTotalView(int position, String totalView) {
+        if (position != DEFAULT_NO_POSITION && !TextUtils.isEmpty(totalView)) {
+            getAdapter().getData().get(position).setTotalView(totalView);
+            getAdapter().notifyItemChanged(position);
         }
     }
 

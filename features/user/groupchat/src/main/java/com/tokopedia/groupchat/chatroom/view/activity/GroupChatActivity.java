@@ -104,32 +104,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         LoginGroupChatUseCase.LoginGroupChatListener, ChannelHandlerUseCase.ChannelHandlerListener
         , ToolTipUtils.ToolTipListener, GroupChatNotifInterface {
 
-    private static final long VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1);
-    private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
-    private static final long TOOLTIP_DELAY = 1500L;
-
-    private static final int KEYBOARD_TRESHOLD = 100;
-    private static final int CHATROOM_FRAGMENT = 0;
-    private static final int CHANNEL_VOTE_FRAGMENT = 1;
-    private static final int CHANNEL_INFO_FRAGMENT = 2;
-
-    public static final String EXTRA_CHANNEL_UUID = "CHANNEL_UUID";
-    public static final String EXTRA_CHANNEL_INFO = "CHANNEL_INFO";
-    public static final String EXTRA_SHOW_BOTTOM_DIALOG = "SHOW_BOTTOM";
-    public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
-    public static final String INITIAL_FRAGMENT = "init_fragment";
-    private static final int REQUEST_LOGIN = 101;
-    public static final String VOTE = "vote";
-    public static final String VOTE_ANNOUNCEMENT = "vote_announcement";
-    public static final String VOTE_TYPE = "vote_type";
-    private static final String TOTAL_VIEW = "total_view";
-    private String voteType;
-    private Runnable runnable;
-    private Handler tooltipHandler;
-    private boolean canShowDialog = true;
-    private boolean isFirstTime;
-    private BroadcastReceiver notifReceiver;
-
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
         UserSession userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
@@ -184,6 +158,33 @@ public class GroupChatActivity extends BaseSimpleActivity
         return taskStackBuilder;
     }
 
+    private static final long VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1);
+    private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
+    private static final long TOOLTIP_DELAY = 1500L;
+
+    private static final int KEYBOARD_TRESHOLD = 100;
+    private static final int CHATROOM_FRAGMENT = 0;
+    private static final int CHANNEL_VOTE_FRAGMENT = 1;
+    private static final int CHANNEL_INFO_FRAGMENT = 2;
+
+    public static final String EXTRA_CHANNEL_UUID = "CHANNEL_UUID";
+    public static final String EXTRA_CHANNEL_INFO = "CHANNEL_INFO";
+    public static final String EXTRA_SHOW_BOTTOM_DIALOG = "SHOW_BOTTOM";
+    public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
+    public static final String INITIAL_FRAGMENT = "init_fragment";
+    private static final int REQUEST_LOGIN = 101;
+    public static final String VOTE = "vote";
+    public static final String VOTE_ANNOUNCEMENT = "vote_announcement";
+    public static final String VOTE_TYPE = "vote_type";
+    public static final String TOTAL_VIEW = "total_view";
+    public static final String EXTRA_POSITION = "position";
+    private String voteType;
+    private Runnable runnable;
+    private Handler tooltipHandler;
+    private boolean canShowDialog = true;
+    private boolean isFirstTime;
+    private BroadcastReceiver notifReceiver;
+
     public View rootView, loading, main;
     private Toolbar toolbar;
     private ImageView channelBanner;
@@ -233,10 +234,15 @@ public class GroupChatActivity extends BaseSimpleActivity
             viewModel = savedInstanceState.getParcelable(ARGS_VIEW_MODEL);
         } else if (getIntent().getExtras() != null) {
             viewModel = new GroupChatViewModel(getIntent().getExtras().getString(GroupChatActivity
-                    .EXTRA_CHANNEL_UUID, ""));
+                    .EXTRA_CHANNEL_UUID, ""), getIntent().getExtras().getInt(GroupChatActivity
+                    .EXTRA_POSITION, -1));
         } else {
             Intent intent = new Intent();
             intent.putExtra(ChannelActivity.RESULT_MESSAGE, getString(R.string.default_request_error_unknown));
+            if (viewModel != null) {
+                intent.putExtra(TOTAL_VIEW, viewModel.getTotalView());
+                intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
+            }
             setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent);
             finish();
         }
@@ -617,14 +623,16 @@ public class GroupChatActivity extends BaseSimpleActivity
     /**
      * @param context          activity context
      * @param channelViewModel only to be used from channel list.
+     * @param position
      * @return Intent
      */
-    public static Intent getCallingIntent(Context context, ChannelViewModel channelViewModel) {
+    public static Intent getCallingIntent(Context context, ChannelViewModel channelViewModel, int position) {
         Intent intent = new Intent(context, GroupChatActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_CHANNEL_INFO, channelViewModel);
         bundle.putString(EXTRA_CHANNEL_UUID, channelViewModel.getChannelUrl());
         bundle.putBoolean(EXTRA_SHOW_BOTTOM_DIALOG, false);
+        bundle.putInt(EXTRA_POSITION, position);
         intent.putExtras(bundle);
         return intent;
     }
@@ -683,6 +691,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
             Intent intent = new Intent();
             intent.putExtra(TOTAL_VIEW, channelInfoViewModel.getTotalView());
+            intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
             setResult(Activity.RESULT_OK, intent);
         } catch (Exception e) {
             e.printStackTrace();
@@ -1081,7 +1090,12 @@ public class GroupChatActivity extends BaseSimpleActivity
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
-                setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL);
+                Intent intent = new Intent();
+                if (viewModel != null) {
+                    intent.putExtra(TOTAL_VIEW, viewModel.getTotalView());
+                    intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
+                }
+                setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent);
                 finish();
             }
         });
@@ -1097,7 +1111,13 @@ public class GroupChatActivity extends BaseSimpleActivity
             mChannel = openChannel;
             setupViewPager();
             showFragment(initialFragment);
-            setChannelConnectionHandler();
+            ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), getConnectionHandlerId(), new
+                    ConnectionManager.ConnectionManagementHandler() {
+                        @Override
+                        public void onConnected(boolean reconnect) {
+
+                        }
+                    });
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (NullPointerException e) {
@@ -1143,7 +1163,12 @@ public class GroupChatActivity extends BaseSimpleActivity
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
-                setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL);
+                Intent intent = new Intent();
+                if (viewModel != null) {
+                    intent.putExtra(TOTAL_VIEW, viewModel.getTotalView());
+                    intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
+                }
+                setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent);
                 finish();
             }
         });
@@ -1161,7 +1186,12 @@ public class GroupChatActivity extends BaseSimpleActivity
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
-                setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL);
+                Intent intent = new Intent();
+                if (viewModel != null) {
+                    intent.putExtra(TOTAL_VIEW, viewModel.getTotalView());
+                    intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
+                }
+                setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent);
                 finish();
             }
         });

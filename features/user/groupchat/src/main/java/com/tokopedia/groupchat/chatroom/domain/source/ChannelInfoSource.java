@@ -4,6 +4,8 @@ import com.tokopedia.groupchat.chatroom.data.ChatroomApi;
 import com.tokopedia.groupchat.chatroom.domain.mapper.ChannelInfoMapper;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 
+import java.util.HashMap;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -23,8 +25,9 @@ public class ChannelInfoSource {
         this.mapper = mapper;
     }
 
-    public Observable<ChannelInfoViewModel> getChannelInfo(String channelUuid) {
-        return chatroomApi.getChannelInfo(channelUuid)
+    public Observable<ChannelInfoViewModel> getChannelInfo(String channelUuid,
+                                                           HashMap<String, Object> requestParam) {
+        return chatroomApi.getChannelInfo(channelUuid, requestParam)
                 .map(mapper);
     }
 }

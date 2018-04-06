@@ -3,9 +3,12 @@ package com.tokopedia.groupchat.chatroom.data;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.ChannelInfoPojo;
 
+import java.util.HashMap;
+
 import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -16,6 +19,7 @@ public interface ChatroomApi {
 
     @GET(ChatroomUrl.GET_CHANNEL_INFO)
     Observable<Response<DataResponse<ChannelInfoPojo>>> getChannelInfo(
-            @Path(ChatroomUrl.PATH_CHANNEL_UUID) String channelUuid);
+            @Path(ChatroomUrl.PATH_CHANNEL_UUID) String channelUuid,
+            @QueryMap HashMap<String, Object> requestParam);
 
 }

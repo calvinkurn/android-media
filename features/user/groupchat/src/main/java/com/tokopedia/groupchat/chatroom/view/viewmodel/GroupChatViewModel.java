@@ -7,22 +7,25 @@ import android.os.Parcelable;
  * @author by nisie on 2/14/18.
  */
 
-public class GroupChatViewModel implements Parcelable{
+public class GroupChatViewModel implements Parcelable {
 
     private String channelUuid;
     private ChannelInfoViewModel channelInfoViewModel;
     private long timeStampBeforePause = 0;
+    private int channelPosition;
 
-    public GroupChatViewModel(String channelUuid) {
+    public GroupChatViewModel(String channelUuid, int channelPosition) {
         this.channelUuid = channelUuid;
         this.channelInfoViewModel = null;
         this.timeStampBeforePause = 0;
+        this.channelPosition = channelPosition;
     }
 
     protected GroupChatViewModel(Parcel in) {
         channelUuid = in.readString();
         channelInfoViewModel = in.readParcelable(ChannelInfoViewModel.class.getClassLoader());
         timeStampBeforePause = in.readLong();
+        channelPosition = in.readInt();
     }
 
     public static final Creator<GroupChatViewModel> CREATOR = new Creator<GroupChatViewModel>() {
@@ -48,8 +51,7 @@ public class GroupChatViewModel implements Parcelable{
     }
 
     public String getTotalView() {
-        return channelInfoViewModel != null ? channelInfoViewModel.getTotalView() :
-                "0";
+        return channelInfoViewModel != null ? channelInfoViewModel.getTotalView() : "0";
     }
 
     public String getChannelName() {
@@ -86,6 +88,10 @@ public class GroupChatViewModel implements Parcelable{
         this.timeStampBeforePause = timeStampBeforePause;
     }
 
+    public int getChannelPosition() {
+        return channelPosition;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -96,6 +102,6 @@ public class GroupChatViewModel implements Parcelable{
         dest.writeString(channelUuid);
         dest.writeParcelable(channelInfoViewModel, flags);
         dest.writeLong(timeStampBeforePause);
+        dest.writeInt(channelPosition);
     }
-
 }

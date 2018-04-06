@@ -186,7 +186,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         layoutManager.setStackFromEnd(true);
         chatRecyclerView.setLayoutManager(layoutManager);
         chatRecyclerView.setAdapter(adapter);
-        SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med));
+        SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity()
+                .getResources().getDimension(R.dimen.space_chat));
         chatRecyclerView.addItemDecoration(itemDecoration);
 
         chatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -815,6 +816,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                     .getChannelInfoViewModel().getTitle();
             analytics.eventClickLoyaltyWidget(channelName);
         }
+    }
 
+    @Override
+    public void showWarningSendMessage(String errorMessage) {
+        replyEditText.setError(errorMessage);
     }
 }

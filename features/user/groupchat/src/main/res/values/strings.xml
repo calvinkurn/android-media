@@ -69,5 +69,6 @@
     <string name="ongoing">Berlangsung</string>
     <string name="anonymous">Anonymous</string>
     <string name="check_now">Cek sekarang!</string>
+    <string name="error_max_characters_reached">Maaf, anda hanya bisa mengirim kurang dari 200 karakter</string>
 
 </resources>

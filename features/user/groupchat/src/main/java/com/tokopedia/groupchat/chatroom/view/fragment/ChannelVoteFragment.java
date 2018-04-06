@@ -164,7 +164,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         KeyboardHandler.DropKeyboard(getContext(), getView());
         Parcelable temp = getArguments().getParcelable(VOTE);
         showVoteLayout((VoteInfoViewModel) temp);
-        setVoteAdapter();
     }
 
     @Override
@@ -231,6 +230,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         if (rootView == null || model == null) {
             return;
         }
+
+        setVoteAdapter();
 
         loading.setVisibility(View.GONE);
 
@@ -409,6 +410,13 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     private void setVoteAdapter(){
         LinearLayoutManager voteLayoutManager;
         RecyclerView.ItemDecoration itemDecoration = null;
+
+        if(voteRecyclerView!= null && voteRecyclerView.getAdapter() !=null) {
+            for (int i = 0; i < voteRecyclerView.getAdapter().getItemCount(); i++) {
+                voteRecyclerView.removeItemDecoration(voteRecyclerView.getItemDecorationAt(i));
+            }
+        }
+
         if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
             voteLayoutManager = new GridLayoutManager(getActivity(), 2);
             itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);

@@ -47,4 +47,6 @@
     <dimen name="vote_indicator_space">-5dp</dimen>
     <dimen name="sprint_sale_icon_size">64dp</dimen>
     <dimen name="font_tinier">10sp</dimen>
+
+    <dimen name="space_chat">14dp</dimen>
 </resources>
