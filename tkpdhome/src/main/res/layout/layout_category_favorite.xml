@@ -24,9 +24,9 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/margin_small_sm"
-        android:paddingLeft="@dimen/margin_small_sm"
-        android:paddingRight="@dimen/margin_small_sm"
+        android:paddingBottom="@dimen/dp_10_sm"
+        android:paddingLeft="@dimen/dp_10_sm"
+        android:paddingRight="@dimen/dp_10_sm"
         android:descendantFocusability="blocksDescendants"
         android:clipToPadding="false" />
 

@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
 
-    compile project(rootProject.ext.features.useCase)
+    compile project(rootProject.ext.libraries.useCase)
     compile project(rootProject.ext.libraries.abstraction)
 
     compile rootProject.ext.supportLibDependencies.supportV4
