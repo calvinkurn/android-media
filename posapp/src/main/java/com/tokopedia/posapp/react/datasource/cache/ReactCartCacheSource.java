@@ -1,6 +1,7 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.posapp.cart.data.pojo.CartResponse;
 import com.tokopedia.posapp.cart.data.source.CartLocalSource;
 import com.tokopedia.posapp.cart.domain.model.ATCStatusDomain;
@@ -62,8 +63,21 @@ public class ReactCartCacheSource extends ReactDataSource {
 
     @Override
     public Observable<String> update(String data) {
-        CartResponse cartResponse = gson.fromJson(data, CartResponse.class);
-        return cartLocalSource.updateCartProduct(mapToDomain(cartResponse)).map(getDbOperationMapper());
+        List<CartResponse> cartResponse = gson.fromJson(data, new TypeToken<List<CartResponse>>(){}.getType());
+        return Observable.just(cartResponse)
+                .flatMapIterable(
+                    new Func1<List<CartResponse>, Iterable<CartResponse>>() {
+                        @Override
+                        public Iterable<CartResponse> call(List<CartResponse> cartResponses) {
+                            return cartResponses;
+                        }
+                    }
+                ).flatMap(new Func1<CartResponse, Observable<ATCStatusDomain>>() {
+                    @Override
+                    public Observable<ATCStatusDomain> call(CartResponse cartResponse) {
+                        return cartLocalSource.updateCartProduct(mapToDomain(cartResponse));
+                    }
+                }).toList().map(getUpdateMapper());
     }
 
     @Override
@@ -76,6 +90,12 @@ public class ReactCartCacheSource extends ReactDataSource {
         cartDomain.setId(cartResponse.getId());
         cartDomain.setProductId(cartResponse.getProductId());
         cartDomain.setQuantity(cartResponse.getQuantity());
+        cartDomain.setProductName(cartResponse.getProduct().getProductName());
+        cartDomain.setProductPrice(cartResponse.getProduct().getProductPrice());
+        cartDomain.setProductImage(cartResponse.getProduct().getProductImage());
+        cartDomain.setProductImage300(cartResponse.getProduct().getProductImage300());
+        cartDomain.setProductImageFull(cartResponse.getProduct().getProductImageFull());
+        cartDomain.setProductPriceUnformatted(cartResponse.getProduct().getProductPriceUnformatted());
         return cartDomain;
     }
 
@@ -106,6 +126,25 @@ public class ReactCartCacheSource extends ReactDataSource {
                 result.setData(list);
 
                 return gson.toJson(result);
+            }
+        };
+    }
+
+    private Func1<List<ATCStatusDomain>, String> getUpdateMapper() {
+        return new Func1<List<ATCStatusDomain>, String>() {
+            @Override
+            public String call(List<ATCStatusDomain> atcStatusDomain) {
+                CacheResult<StatusResult> response = new CacheResult<>();
+                StatusResult statusResult = new StatusResult();
+//                if (atcStatusDomain.getStatus() == ATCStatusDomain.RESULT_ADD_TO_CART_SUCCESS) {
+                    statusResult.setStatus(true);
+                    statusResult.setMessage("");
+//                } else {
+//                    statusResult.setStatus(false);
+//                    statusResult.setMessage(atcStatusDomain.getMessage());
+//                }
+                response.setData(statusResult);
+                return gson.toJson(response);
             }
         };
     }
