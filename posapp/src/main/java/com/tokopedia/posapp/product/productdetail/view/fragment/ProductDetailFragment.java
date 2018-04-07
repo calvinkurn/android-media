@@ -181,7 +181,6 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     private void goToPaymentCheckout() {
         startActivity(new Intent(getContext(), LocalCartActivity.class));
-        getActivity().finish();
     }
 
     @Override

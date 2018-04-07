@@ -47,17 +47,15 @@ public class ProductCloudSource {
     }
 
     public Observable<ProductDetailData> getProduct(RequestParams params) {
-        return Observable.just(mockPdp)
-                .map(new Func1<String, ProductDetailData>() {
-                    @Override
-                    public ProductDetailData call(String s) {
-                        DataResponse<ProductDetailData> response = gson.fromJson(mockPdp, new TypeToken<DataResponse<ProductDetailData>>(){}.getType());
-                        return response.getData();
-                    }
-                });
-//        DataResponse<ProductDetailData> response = gson.fromJson(mockPdp, new TypeToken<DataResponse<ProductDetailData>>(){}.getType());
-//        return Observable.just(response.getData());
-//        return productApi.getProductDetail(params.getParamsAllValueInString()).map(getProductMapper);
+//        return Observable.just(mockPdp)
+//                .map(new Func1<String, ProductDetailData>() {
+//                    @Override
+//                    public ProductDetailData call(String s) {
+//                        DataResponse<ProductDetailData> response = gson.fromJson(mockPdp, new TypeToken<DataResponse<ProductDetailData>>(){}.getType());
+//                        return response.getData();
+//                    }
+//                });
+        return productApi.getProductDetail(params.getParamsAllValueInString()).map(getProductMapper);
     }
 
     public Observable<List<ProductDomain>> getProductList(RequestParams params) {
