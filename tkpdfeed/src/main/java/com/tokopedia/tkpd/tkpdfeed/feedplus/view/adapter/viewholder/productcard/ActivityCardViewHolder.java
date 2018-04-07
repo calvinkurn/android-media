@@ -31,6 +31,10 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_activity_card;
 
+    private static final int SPAN_SIZE_FULL = 6;
+    private static final int SPAN_SIZE_HALF = 3;
+    private static final int SPAN_SIZE_SINGLE = 2;
+
     private TextView title;
     private View header;
     private ImageView shopAvatar;
@@ -59,7 +63,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         this.viewListener = viewListener;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
                 itemView.getContext(),
-                6,
+                SPAN_SIZE_FULL,
                 LinearLayoutManager.VERTICAL,
                 false);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -67,11 +71,11 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             public int getSpanSize(int position) {
                 switch (adapter.getData().getListProduct().size()) {
                     case 1:
-                        return 6;
+                        return SPAN_SIZE_FULL;
                     case 2:
-                        return 3;
+                        return SPAN_SIZE_HALF;
                     default:
-                        return 2;
+                        return SPAN_SIZE_SINGLE;
                 }
             }
         });
