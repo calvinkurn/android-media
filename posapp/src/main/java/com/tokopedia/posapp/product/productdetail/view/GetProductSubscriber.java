@@ -9,7 +9,7 @@ import rx.Subscriber;
  */
 
 public class GetProductSubscriber extends Subscriber<ProductDetailData> {
-    Product.View viewListener;
+    private Product.View viewListener;
 
     public GetProductSubscriber(Product.View view) {
         this.viewListener = view;
@@ -23,7 +23,7 @@ public class GetProductSubscriber extends Subscriber<ProductDetailData> {
 
     @Override
     public void onError(Throwable e) {
-
+        e.printStackTrace();
     }
 
     @Override

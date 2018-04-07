@@ -1,5 +1,6 @@
 package com.tokopedia.posapp.product.productdetail.data.mapper;
 
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
@@ -12,21 +13,22 @@ import rx.functions.Func1;
  * Created by okasurya on 8/10/17.
  */
 
-public class GetProductMapper implements Func1<Response<TkpdResponse>, ProductDetailData>{
+public class GetProductMapper implements Func1<Response<DataResponse<ProductDetailData>>, ProductDetailData>{
     @Inject
     public GetProductMapper() {
 
     }
 
     @Override
-    public ProductDetailData call(Response<TkpdResponse> tkpdResponse) {
-        if(tkpdResponse.isSuccessful() && tkpdResponse.body() != null) {
-            ProductDetailData productDetailData =
-                    tkpdResponse.body().convertDataObj(ProductDetailData.class);
-
-            if(productDetailData != null) {
-                return productDetailData;
-            }
+    public ProductDetailData call(Response<DataResponse<ProductDetailData>> tkpdResponse) {
+        if(tkpdResponse.isSuccessful() && tkpdResponse.body() != null && tkpdResponse.body().getData() != null) {
+            return tkpdResponse.body().getData();
+//            ProductDetailData productDetailData =
+//                    tkpdResponse.body().convertDataObj(ProductDetailData.class);
+//
+//            if(productDetailData != null) {
+//                return productDetailData;
+//            }
         }
         return null;
     }

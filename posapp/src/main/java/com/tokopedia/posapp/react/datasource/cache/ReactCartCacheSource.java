@@ -1,7 +1,6 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
-import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.posapp.cart.data.pojo.CartResponse;
 import com.tokopedia.posapp.cart.data.source.CartLocalSource;
 import com.tokopedia.posapp.cart.domain.model.ATCStatusDomain;
@@ -138,13 +137,13 @@ public class ReactCartCacheSource extends ReactDataSource {
 
         ProductDetail product = new ProductDetail();
         product.setProductId(cartDomain.getProductId());
-        product.setProductName(cartDomain.getProduct().getProductName());
-        product.setProductPrice(cartDomain.getProduct().getProductPrice());
-        product.setProductUrl(cartDomain.getProduct().getProductUrl());
-        product.setProductImage(cartDomain.getProduct().getProductImage());
-        product.setProductImage300(cartDomain.getProduct().getProductImage300());
-        product.setProductImageFull(cartDomain.getProduct().getProductImageFull());
-        product.setProductPriceUnformatted(CurrencyFormatHelper.convertRupiahToInt(cartDomain.getProduct().getProductPrice()));
+        product.setProductName(cartDomain.getProductName());
+        product.setProductPrice(cartDomain.getProductPrice());
+        product.setProductUrl(cartDomain.getProductUrl());
+        product.setProductImage(cartDomain.getProductImage());
+        product.setProductImage300(cartDomain.getProductImage300());
+        product.setProductImageFull(cartDomain.getProductImageFull());
+        product.setProductPriceUnformatted(cartDomain.getProductPriceUnformatted());
         cartResponse.setProduct(product);
 
         return cartResponse;

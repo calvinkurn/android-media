@@ -40,8 +40,8 @@ public class ProductPresenter extends BaseDaggerPresenter<Product.View>
     public void getProduct(ProductPass productPass) {
         RequestParams params = AuthUtil.generateRequestParamsNetwork(context);
         params.putString(PARAM_PRODUCT_ID, productPass.getProductId());
-        params.putString(PARAM_PRODUCT_KEY, productPass.getProductKey());
-        params.putString(PARAM_SHOP_DOMAIN, productPass.getShopDomain());
+//        params.putString(PARAM_PRODUCT_KEY, productPass.getProductKey());
+//        params.putString(PARAM_SHOP_DOMAIN, productPass.getShopDomain());
         getProductUseCase.execute(params, new GetProductSubscriber(getView()));
     }
 

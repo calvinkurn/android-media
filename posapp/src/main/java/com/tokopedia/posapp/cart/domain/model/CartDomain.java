@@ -10,21 +10,17 @@ import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
  */
 
 public class CartDomain implements DefaultParams {
-    @SerializedName("id")
-    @Expose
     private Long id;
-    @SerializedName("productId")
-    @Expose
     private long productId;
-    @SerializedName("product")
-    @Expose
-    private ProductDomain product;
-    @SerializedName("outletId")
-    @Expose
     private String outletId;
-    @SerializedName("quantity")
-    @Expose
     private int quantity;
+    private String productName;
+    private String productPrice;
+    private double productPriceUnformatted;
+    private String productUrl;
+    private String productImage;
+    private String productImage300;
+    private String productImageFull;
 
     public Long getId() {
         return id;
@@ -58,11 +54,59 @@ public class CartDomain implements DefaultParams {
         this.quantity = quantity;
     }
 
-    public ProductDomain getProduct() {
-        return product;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setProduct(ProductDomain product) {
-        this.product = product;
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(String productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public double getProductPriceUnformatted() {
+        return productPriceUnformatted;
+    }
+
+    public void setProductPriceUnformatted(double productPriceUnformatted) {
+        this.productPriceUnformatted = productPriceUnformatted;
+    }
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
+    }
+
+    public String getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(String productImage) {
+        this.productImage = productImage;
+    }
+
+    public String getProductImage300() {
+        return productImage300;
+    }
+
+    public void setProductImage300(String productImage300) {
+        this.productImage300 = productImage300;
+    }
+
+    public String getProductImageFull() {
+        return productImageFull;
+    }
+
+    public void setProductImageFull(String productImageFull) {
+        this.productImageFull = productImageFull;
     }
 }

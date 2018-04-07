@@ -262,11 +262,9 @@ public class OTPPresenter implements OTP.Presenter {
                                 PaymentStatusItemDomain paymentItem = new PaymentStatusItemDomain();
                                 paymentItem.setId(cartItem.getProductId());
                                 paymentItem.setQuantity(cartItem.getQuantity());
-                                if(cartItem.getProduct() != null) {
-                                    paymentItem.setPrice(cartItem.getProduct().getProductPriceUnformatted());
-                                    paymentItem.setName(cartItem.getProduct().getProductName());
-                                    paymentItem.setImageUrl(cartItem.getProduct().getProductImage());
-                                }
+                                paymentItem.setPrice(cartItem.getProductPriceUnformatted());
+                                paymentItem.setName(cartItem.getProductName());
+                                paymentItem.setImageUrl(cartItem.getProductImage());
                                 items.add(paymentItem);
                             }
                             paymentStatusDomain.setItems(items);

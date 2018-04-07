@@ -105,6 +105,7 @@ public class PosCacheRNModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 promise.reject(e);
             }
 
