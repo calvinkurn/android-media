@@ -11,16 +11,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.base.fragment.PosBaseListFragment;
-import com.tokopedia.posapp.product.management.di.component.ProductManagementComponent;
 import com.tokopedia.posapp.product.management.di.component.DaggerProductManagementComponent;
+import com.tokopedia.posapp.product.management.di.component.ProductManagementComponent;
 import com.tokopedia.posapp.product.management.view.ProductManagement;
+import com.tokopedia.posapp.product.management.view.adapter.ProductManagementAdapterTypeFactory;
 import com.tokopedia.posapp.product.management.view.adapter.ProductManagementTypeFactory;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductHeaderViewModel;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
-import com.tokopedia.posapp.product.management.view.adapter.ProductManagementAdapterTypeFactory;
-import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,10 +32,9 @@ public class ProductManagementFragment
         implements ProductManagementTypeFactory.Listener, ProductManagement.View {
 
     public static final String TAG = ProductManagementFragment.class.getSimpleName();
-    private String selectedEtalaseId = "";
-
     @Inject
     ProductManagement.Presenter presenter;
+    private String selectedEtalaseId = "";
 
     public static Fragment newInstance() {
         return new ProductManagementFragment();
@@ -70,7 +67,7 @@ public class ProductManagementFragment
 
     @Override
     public void loadData(int page) {
-        presenter.loadMore(selectedEtalaseId);
+        presenter.loadMore();
     }
 
     @Override
@@ -90,13 +87,6 @@ public class ProductManagementFragment
 
     @Override
     public void onItemClicked(Visitable visitable) {
-    }
-
-    @Override
-    public void onGetEtalaseCompleted(List<EtalaseDomain> etalaseDomains) {
-        selectedEtalaseId = etalaseDomains.get(0).getEtalaseId();
-        renderEtalaseSpinner(etalaseDomains);
-        presenter.load(selectedEtalaseId);
     }
 
     @Override
@@ -122,9 +112,5 @@ public class ProductManagementFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_product_management, container, false);
-    }
-
-    private void renderEtalaseSpinner(List<EtalaseDomain> etalaseDomains) {
-
     }
 }

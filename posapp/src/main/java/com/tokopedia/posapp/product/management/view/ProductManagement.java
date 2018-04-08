@@ -16,14 +16,10 @@ public interface ProductManagement {
     interface Presenter extends CustomerPresenter<View> {
         void reload();
 
-        void load(String etalaseId);
-
-        void loadMore(String etalaseId);
+        void loadMore();
     }
 
     interface View extends CustomerView {
-        void onGetEtalaseCompleted(List<EtalaseDomain> etalaseDomains);
-
         void onReloadData(List<Visitable> list);
 
         void onLoadMore(List<Visitable> list);

@@ -40,9 +40,8 @@ public class ProductManagementModule {
     @Provides
     @ProductManagementScope
     ProductManagement.Presenter providePresenter(GetProductListManagementUseCase getProductListManagementUseCase,
-                                                 GetEtalaseCacheUseCase getEtalaseCacheUseCase,
                                                  UserSession userSession,
                                                  PosSessionHandler posSessionHandler) {
-        return new ProductManagementPresenter(getProductListManagementUseCase, getEtalaseCacheUseCase, userSession, posSessionHandler);
+        return new ProductManagementPresenter(getProductListManagementUseCase, userSession, posSessionHandler);
     }
 }

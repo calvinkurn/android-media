@@ -116,28 +116,20 @@ public class ReactProductCloudSource extends ReactDataSource {
     }
 
     public Observable<String> search(final ProductSearchRequest request) {
-        return etalaseRepository
-                .getEtalaseCache()
-                .flatMap(new Func1<java.util.List<EtalaseDomain>, Observable<String>>() {
-                    @Override
-                    public Observable<String> call(java.util.List<EtalaseDomain> etalaseDomains) {
-                        RequestParams requestParams = RequestParams.EMPTY;
-                        requestParams.putString(ProductConstant.Key.KEYWORD, request.getKeyword());
-                        requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
-                        if (TextUtils.isEmpty(request.getEtalaseId())) {
-                            request.setEtalaseId(etalaseDomains.get(0).getEtalaseId());
-                        }
-                        requestParams.putString(ProductConstant.Key.ETALASE, request.getEtalaseId());
-                        if (request.getPage() == null || request.getLimit() == null) {
-                            request.setPage(1);
-                            request.setLimit(20);
-                        }
-                        requestParams.putString(ProductConstant.Key.PAGE, request.getPage().toString());
-                        requestParams.putString(ProductConstant.Key.PER_PAGE, request.getLimit().toString());
-                        requestParams.putString(ProductConstant.Key.OUTLET_ID, sessionHandler.getOutletId());
-                        return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
-                    }
-                });
+        RequestParams requestParams = RequestParams.EMPTY;
+        requestParams.putString(ProductConstant.Key.KEYWORD, request.getKeyword());
+        requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
+        if (!TextUtils.isEmpty(request.getEtalaseId())) {
+            requestParams.putString(ProductConstant.Key.ETALASE, request.getEtalaseId());
+        }
+        if (request.getPage() == null || request.getLimit() == null) {
+            request.setPage(1);
+            request.setLimit(20);
+        }
+        requestParams.putString(ProductConstant.Key.PAGE, request.getPage().toString());
+        requestParams.putString(ProductConstant.Key.PER_PAGE, request.getLimit().toString());
+        requestParams.putString(ProductConstant.Key.OUTLET_ID, sessionHandler.getOutletId());
+        return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
     }
 
     private ProductDetail domainToResponse(ProductDomain productDomain) {

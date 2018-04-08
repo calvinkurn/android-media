@@ -3,14 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <com.tokopedia.design.text.SpinnerTextView
-        android:id="@+id/spinner_etalase"
-        android:layout_height="20dp"
-        android:layout_width="100dp"
-        android:paddingBottom="@dimen/margin_ms"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/new_margin_big"
-        android:layout_marginRight="@dimen/new_margin_big"/>
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/recycler_view"
         android:background="@color/white"

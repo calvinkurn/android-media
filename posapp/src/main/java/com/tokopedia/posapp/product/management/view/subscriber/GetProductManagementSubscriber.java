@@ -16,10 +16,10 @@ import rx.Subscriber;
  * @author okasurya on 3/14/18.
  */
 
-public class GetProductManagementSubsrciber extends Subscriber<List<ProductDomain>> {
-    private ProductManagement.View view;
+public class GetProductManagementSubscriber extends Subscriber<List<ProductDomain>> {
+    protected ProductManagement.View view;
 
-    public GetProductManagementSubsrciber(ProductManagement.View view) {
+    public GetProductManagementSubscriber(ProductManagement.View view) {
         this.view = view;
     }
 
@@ -38,7 +38,7 @@ public class GetProductManagementSubsrciber extends Subscriber<List<ProductDomai
         view.onReloadData(mapData(productList));
     }
 
-    private List<Visitable> mapData(List<ProductDomain> productList) {
+    protected List<Visitable> mapData(List<ProductDomain> productList) {
         List<Visitable> visitables = new ArrayList<>();
         for(ProductDomain productDomain : productList) {
             ProductViewModel productViewModel = new ProductViewModel();
