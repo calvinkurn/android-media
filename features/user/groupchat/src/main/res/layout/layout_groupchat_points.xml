@@ -28,8 +28,8 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
                 android:background="@drawable/circle_white"
                 android:padding="@dimen/space_med" />
 

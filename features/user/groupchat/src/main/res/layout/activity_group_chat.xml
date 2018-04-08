@@ -67,10 +67,10 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_ms"
-                android:layout_marginLeft="@dimen/new_margin_med"
-                android:layout_marginRight="@dimen/new_margin_med"
-                android:layout_marginTop="@dimen/new_margin_small"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
                 android:background="@color/white"
                 android:foreground="@drawable/bg_sponsor_border"
                 app:cardCornerRadius="@dimen/card_channel_elevation"
@@ -92,7 +92,7 @@
             <android.support.v4.widget.Space
 
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_ms"/>
+                android:layout_height="@dimen/dp_8"/>
         </LinearLayout>
 
         <android.support.v7.widget.CardView

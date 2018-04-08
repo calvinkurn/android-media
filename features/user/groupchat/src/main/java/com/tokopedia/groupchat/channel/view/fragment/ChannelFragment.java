@@ -47,6 +47,8 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelTypeFactory> implements ChannelContract.View {
 
+    private static final int DEFAULT_INITIAL_PAGE = 1;
+
     private static final int REQUEST_OPEN_GROUPCHAT = 111;
     private static final int REQUEST_LOGIN = 101;
     private static final int DEFAULT_NO_POSITION = -1;
@@ -127,13 +129,22 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     }
 
     @Override
+    protected boolean callInitialLoadAutomatically() {
+        return true;
+    }
+
+    @Override
     protected void loadInitialData() {
         presenter.getChannelListFirstTime();
     }
 
     @Override
     public void loadData(int page) {
-        presenter.getChannelList(lastCursor);
+        if (page == DEFAULT_INITIAL_PAGE) {
+            presenter.getChannelListFirstTime();
+        } else {
+            presenter.getChannelList(lastCursor);
+        }
     }
 
     @Override

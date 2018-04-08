@@ -462,7 +462,6 @@ public class GroupChatActivity extends BaseSimpleActivity
             isFirstTime = false;
             this.initialFragment = fragmentPosition;
             tabAdapter.setActiveFragment(fragmentPosition);
-            tabAdapter.change(fragmentPosition, false);
             switch (fragmentPosition) {
                 case CHATROOM_FRAGMENT:
                     showChatroomFragment(mChannel);
@@ -777,18 +776,13 @@ public class GroupChatActivity extends BaseSimpleActivity
                 channelInfoViewModel.getTotalView(),
                 channelInfoViewModel.getBlurredBannerUrl());
         setSponsorData();
-
-        if (channelInfoViewModel.getVoteInfoViewModel() != null
-                && (channelInfoViewModel.getVoteInfoViewModel().getStatusId() ==
-                VoteInfoViewModel.STATUS_ACTIVE
-                || channelInfoViewModel.getVoteInfoViewModel().getStatusId() == VoteInfoViewModel
-                .STATUS_FORCE_ACTIVE)) {
-            setTooltip();
-        }
     }
 
-    private void setTooltip() {
-        if (checkPollValid()) {
+    private void setTooltip(VoteInfoViewModel voteInfoViewModel) {
+        if (!currentFragmentIsVote()
+                && checkPollValid()
+                && (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE
+                || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE)) {
             tooltipHandler = new Handler();
             tooltipHandler.postDelayed(runnable, TOOLTIP_DELAY);
         }
@@ -1118,10 +1112,17 @@ public class GroupChatActivity extends BaseSimpleActivity
 
                         }
                     });
+
+            if (viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null) {
+                setGreenIndicator(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+                setTooltip(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+            }
         } catch (NumberFormatException e) {
             e.printStackTrace();
+            onErrorEnterChannel(getString(R.string.default_request_error_unknown));
         } catch (NullPointerException e) {
             e.printStackTrace();
+            onErrorEnterChannel(getString(R.string.default_request_error_unknown));
         }
     }
 
@@ -1331,7 +1332,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && tabAdapter.getItemCount() < 3) {
             tabAdapter.add(CHANNEL_VOTE_FRAGMENT, new TabViewModel(getString(R.string
                     .title_vote)));
-            setTooltip();
             tabAdapter.notifyItemInserted(CHANNEL_VOTE_FRAGMENT);
         } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
             viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
@@ -1340,20 +1340,31 @@ public class GroupChatActivity extends BaseSimpleActivity
             showFragment(CHATROOM_FRAGMENT);
         }
 
-        if (!currentFragmentIsVote() && voteInfoViewModel.getStatusId() !=
-                VoteInfoViewModel.STATUS_CANCELED) {
-            tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
-            if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE
-                    && voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE) {
-                setTooltip();
-            }
-        } else if (currentFragmentIsVote() && (voteInfoViewModel.getStatusId() !=
-                VoteInfoViewModel.STATUS_CANCELED)) {
+        setTooltip(voteInfoViewModel);
+        setGreenIndicator(voteInfoViewModel);
+
+        if (currentFragmentIsVote()
+                && voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
             ((ChannelVoteFragment) getSupportFragmentManager().findFragmentByTag
                     (ChannelVoteFragment.class.getSimpleName())).showVoteLayout(viewModel
                     .getChannelInfoViewModel().getVoteInfoViewModel());
         }
 
+
+    }
+
+    private void setGreenIndicator(VoteInfoViewModel voteInfoViewModel) {
+        if (tabAdapter != null && voteInfoViewModel != null) {
+            if ((voteInfoViewModel.getStatusId() ==
+                    VoteInfoViewModel
+                            .STATUS_ACTIVE
+                    || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE)
+                    && tabAdapter.getItemCount() > 2) {
+                tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
+            } else {
+                tabAdapter.change(CHANNEL_VOTE_FRAGMENT, false);
+            }
+        }
     }
 
     public void moveToVoteFragment() {

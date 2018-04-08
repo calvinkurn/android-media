@@ -4,8 +4,8 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/new_margin_med"
-                android:layout_marginStart="@dimen/new_margin_med"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
     >
 
     <LinearLayout
@@ -30,7 +30,7 @@
                       android:paddingBottom="@dimen/space_between"
                       android:textAllCaps="true"
                       android:textColor="@color/font_black_disabled_38"
-                      android:textSize="@dimen/font_micro"
+                      android:textSize="@dimen/sp_12"
                       android:textStyle="normal"
                       app:layout_constraintHorizontal_bias="0.5"
                       app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +69,7 @@
                 android:fontFamily="sans-serif"
                 android:textColor="@color/font_black_primary_70"
                 android:textColorLink="@color/font_black_primary_70"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:textStyle="normal"
                 android:visibility="visible"
                 tools:text="Wuuu baik om! Go Brazil go!"/>
