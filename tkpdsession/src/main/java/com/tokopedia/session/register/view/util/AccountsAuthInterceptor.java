@@ -1,12 +1,15 @@
 package com.tokopedia.session.register.view.util;
 
-import android.util.Base64;
+
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 
 import java.io.IOException;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static com.tokopedia.abstraction.common.utils.network.AuthUtil.HEADER_AUTHORIZATION;
 
 /**
  * @author by yfsx on 19/03/18.
@@ -15,7 +18,6 @@ import okhttp3.Response;
 public class AccountsAuthInterceptor implements Interceptor {
 
     private static final String KEY_ACCOUNTS_AUTHORIZATION = "Accounts-Authorization";
-    private static final String BEARER = "Bearer";
 
     public AccountsAuthInterceptor() {
     }
@@ -28,10 +30,6 @@ public class AccountsAuthInterceptor implements Interceptor {
     }
 
     private String generateHeadersAccount() {
-        String clientID = "7ea919182ff";
-        String clientSecret = "b36cbf904d14bbf90e7f25431595a364";
-        String encodeString = clientID + ":" + clientSecret;
-        String asB64 = Base64.encodeToString(encodeString.getBytes(), Base64.NO_WRAP);
-        return "Basic " + asB64;
+        return AuthUtil.generateHeadersAccount("").get(HEADER_AUTHORIZATION);
     }
 }
