@@ -27,6 +27,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.registerphonenumber.view.activity.VerificationActivity;
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.MethodItem;
@@ -55,8 +56,8 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     EditText phoneNumber;
     TextView nextButton;
     TextView message;
-    TextView errorText;
     TextView bottomInfo;
+    TkpdHintTextInputLayout phoneNumberLayout;
 
     TkpdProgressDialog progressDialog;
 
@@ -101,15 +102,14 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         phoneNumber = view.findViewById(R.id.phone_number);
         message = view.findViewById(R.id.message);
         nextButton = view.findViewById(R.id.next_btn);
-        errorText = view.findViewById(R.id.error);
         bottomInfo = view.findViewById(R.id.botton_info);
+        phoneNumberLayout = view.findViewById(R.id.wrapper_name);
         prepareView();
         presenter.attachView(this);
         return view;
     }
 
     private void prepareView() {
-        errorText.setVisibility(View.GONE);
         phoneNumber.requestFocus();
         phoneNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -117,10 +117,9 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
                     message.setVisibility(View.VISIBLE);
-                    errorText.setVisibility(View.GONE);
-                    errorText.setText("");
                     presenter.checkPhoneNumber(phoneNumber.getText().toString());
                     handled = true;
+                    phoneNumberLayout.setErrorEnabled(false);
                 }
                 return handled;
             }
@@ -129,9 +128,8 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                phoneNumberLayout.setErrorEnabled(false);
                 message.setVisibility(View.VISIBLE);
-                errorText.setVisibility(View.GONE);
-                errorText.setText("");
                 presenter.checkPhoneNumber(phoneNumber.getText().toString());
             }
         });
@@ -210,8 +208,8 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     public void showErrorPhoneNumber(String errorMessage) {
         dismissLoading();
         message.setVisibility(View.GONE);
-        errorText.setVisibility(View.VISIBLE);
-        errorText.setText(errorMessage);
+        phoneNumberLayout.setErrorEnabled(true);
+        phoneNumberLayout.setError(errorMessage);
     }
 
     @Override
@@ -302,6 +300,11 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     public void showErrorRegisterPhoneNumber(String message) {
         dismissLoading();
         showSnackbar(message);
+    }
+
+    @Override
+    public void dismissFocus() {
+        phoneNumber.clearFocus();
     }
 
     private void showSnackbarErrorWithAction(String message) {

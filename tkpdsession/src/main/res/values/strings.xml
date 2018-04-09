@@ -226,7 +226,8 @@
     <string name="subtitle_disabled_post">Anda dapat melihat post ini melalui Tokopedia App</string>
 
     <!--REGISTER PHONE NUMBER-->
-    <string name="register_with_phone_number">Nomor Ponsel</string>
+    <string name="register_with_phone_number">Daftar dengan Nomor Ponsel</string>
+    <string name="register_with_phone_number_button">Nomor Ponsel</string>
     <string name="register_with_email">Email</string>
     <string name="register_we_will_send_verification_code">Kami akan mengirimkan kode melalui SMS</string>
     <string name="error_field_required_phone">Masukkan nomor ponsel untuk mendaftar.</string>

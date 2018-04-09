@@ -176,7 +176,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     protected void prepareView(View view) {
         UserAuthenticationAnalytics.setActiveRegister();
-        registerPhoneNumberButton.setVisibility(View.GONE);
+        registerPhoneNumberButton.setVisibility(View.VISIBLE);
 
         registerButton.setColor(Color.WHITE);
         registerButton.setBorderColor(Color.BLACK);
@@ -329,7 +329,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 getResources().getDimensionPixelSize(R.dimen.btn_login_height));
-        int topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+        int topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
 
         layoutParams.setMargins(0, topMargin, 0, 0);
 

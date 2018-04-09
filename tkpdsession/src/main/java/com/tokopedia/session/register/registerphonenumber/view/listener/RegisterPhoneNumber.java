@@ -35,6 +35,8 @@ public interface RegisterPhoneNumber {
 
         void showErrorRegisterPhoneNumber(String message);
 
+        void dismissFocus();
+
         Context getContext();
 
     }
