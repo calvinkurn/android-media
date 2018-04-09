@@ -14,6 +14,7 @@ import com.tokopedia.tkpdreactnative.react.fingerprint.view.presenter.SaveFinger
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -67,9 +68,10 @@ public class FingerprintModule {
 
     @FingerprintScope
     @Provides
-    public OkHttpClient provideOkHttpClient(TkpdAuthInterceptor tkpdAuthInterceptor){
+    public OkHttpClient provideOkHttpClient(TkpdAuthInterceptor tkpdAuthInterceptor, HttpLoggingInterceptor httpLoggingInterceptor){
         return new OkHttpClient.Builder()
                 .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
                 .build();
     }
 }

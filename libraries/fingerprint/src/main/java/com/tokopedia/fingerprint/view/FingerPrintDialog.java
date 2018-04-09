@@ -68,6 +68,10 @@ public class FingerPrintDialog extends BottomSheets {
         this.callback = callback;
     }
 
+    public Callback getCallback(){
+        return callback;
+    }
+
     @Override
     protected void configView(View parentView) {
         super.configView(parentView);
@@ -113,22 +117,22 @@ public class FingerPrintDialog extends BottomSheets {
         return new FingerprintManagerCompat.AuthenticationCallback() {
             @Override
             public void onAuthenticationError(int errMsgId, CharSequence errString) {
-                callback.onAuthenticationError(errMsgId, errString);
+                getCallback().onAuthenticationError(errMsgId, errString);
             }
 
             @Override
             public void onAuthenticationHelp(int helpMsgId, CharSequence helpString) {
-                callback.onAuthenticationHelp(helpMsgId, helpString);
+                getCallback().onAuthenticationHelp(helpMsgId, helpString);
             }
 
             @Override
             public void onAuthenticationSucceeded(FingerprintManagerCompat.AuthenticationResult result) {
-                callback.onAuthenticationSucceeded(getPublicKey(), getSignature());
+                getCallback().onAuthenticationSucceeded(getPublicKey(), getSignature());
             }
 
             @Override
             public void onAuthenticationFailed() {
-                callback.onAuthenticationFailed();
+                getCallback().onAuthenticationFailed();
                 super.onAuthenticationFailed();
             }
         };

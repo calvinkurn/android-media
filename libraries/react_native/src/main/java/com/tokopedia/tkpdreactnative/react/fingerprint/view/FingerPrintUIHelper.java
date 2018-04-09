@@ -9,10 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.tkpdreactnative.R;
+import com.tokopedia.tkpdreactnative.react.fingerprint.di.DaggerFingerprintComponent;
 import com.tokopedia.tkpdreactnative.react.fingerprint.di.FingerprintModule;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.presenter.SaveFingerPrintContract;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.presenter.SaveFingerPrintPresenter;
-import com.tokopedia.tkpdreactnative.react.fingerprint.di.DaggerFingerprintComponent;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,13 +37,12 @@ public class FingerPrintUIHelper implements FingerPrintDialog.Callback, Fingerpr
     private FingerprintDialogRegister fingerprintDialog;
     private String date;
     private int counterError = 0;
-    private ProgressDialog progressDialog;
+    private Callback callback;
 
-    public FingerPrintUIHelper(AppCompatActivity activity, String transactionId) {
+    public FingerPrintUIHelper(AppCompatActivity activity, String transactionId, Callback callback) {
         this.activity = activity;
         this.transactionId = transactionId;
-        progressDialog = new ProgressDialog(activity);
-        progressDialog.setMessage(activity.getString(R.string.title_loading));
+        this.callback = callback;
         generateDate();
     }
 
@@ -51,9 +50,9 @@ public class FingerPrintUIHelper implements FingerPrintDialog.Callback, Fingerpr
     public void startListening() {
         FingerprintManagerCompat fingerprintManagerCompat = FingerprintManagerCompat.from(activity);
         if (fingerprintManagerCompat.isHardwareDetected() && fingerprintManagerCompat.hasEnrolledFingerprints()) {
-            if (fingerprintDialog == null) {
+            if(fingerprintDialog == null) {
                 fingerprintDialog = new FingerprintDialogRegister();
-                if(fingerPrintPresenter != null) {
+                if (fingerPrintPresenter != null) {
                     fingerprintDialog.setTextToEncrypt(fingerPrintPresenter.getUserId() + date);
                 }
                 fingerprintDialog.setCallback(this);
@@ -75,8 +74,10 @@ public class FingerPrintUIHelper implements FingerPrintDialog.Callback, Fingerpr
 
     private boolean updateCounterError() {
         counterError++;
-        fingerprintDialog.updateDesc(activity.getString(R.string.fingerprint_label_desc_default));
-        fingerprintDialog.updateTitle(activity.getString(R.string.fingerprint_label_try_again));
+        if (fingerprintDialog.isVisible()) {
+            fingerprintDialog.updateDesc(activity.getString(R.string.fingerprint_label_desc_default));
+            fingerprintDialog.updateTitle(activity.getString(R.string.fingerprint_label_try_again));
+        }
         if (counterError > MAX_ERROR) {
             closeBottomSheet();
             return false;
@@ -124,20 +125,19 @@ public class FingerPrintUIHelper implements FingerPrintDialog.Callback, Fingerpr
                 .build()
                 .inject(this);
         fingerPrintPresenter.attachView(this);
-
-        if(fingerprintDialog != null) {
-            fingerprintDialog.setTextToEncrypt("" + date);
+        if (fingerprintDialog != null) {
+            fingerprintDialog.setTextToEncrypt(fingerPrintPresenter.getUserId() + date);
         }
     }
 
     @Override
     public void hideProgressLoading() {
-        progressDialog.dismiss();
+        callback.hideProgressDialog();
     }
 
     @Override
     public void showProgressLoading() {
-        progressDialog.show();
+        callback.showProgressDialog();
     }
 
     @Override
@@ -149,6 +149,14 @@ public class FingerPrintUIHelper implements FingerPrintDialog.Callback, Fingerpr
 
     @Override
     public void onSuccessRegisterFingerPrint() {
+        callback.onSuccessRegisterFingerprint();
+    }
 
+    public interface Callback {
+        void showProgressDialog();
+
+        void hideProgressDialog();
+
+        void onSuccessRegisterFingerprint();
     }
 }
