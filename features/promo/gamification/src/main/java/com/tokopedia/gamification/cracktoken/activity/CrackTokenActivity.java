@@ -2,6 +2,7 @@ package com.tokopedia.gamification.cracktoken.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -33,6 +34,8 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.toko_points_title));
+
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 
     @Override
