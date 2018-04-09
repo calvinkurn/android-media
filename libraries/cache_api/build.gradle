@@ -8,7 +8,7 @@ apt {
 }
 
 dependencies {
-    compile project(rootProject.ext.features.useCase)
+    compile project(rootProject.ext.libraries.useCase)
 
     compile rootProject.ext.networkDependencies.retrofit
 

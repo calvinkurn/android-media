@@ -6,11 +6,6 @@ def getTkpdAbstraction() {
             rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction');
 }
 
-def getTkpdUseCase() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase');
-}
-
 def getTkpdDesign() {
     return project.hasProperty('isArtifact') ?
             rootProject.ext.tkpdDependencies.usecase : project(':tkpddesign');
@@ -58,7 +53,7 @@ apt {
 dependencies {
 
     compile getTkpdAbstraction()
-    compile getTkpdUseCase()
+    compile project(rootProject.ext.libraries.useCase)
     compile getTkpdDesign()
 
     compile(rootProject.ext.tkpdLibDependencies.expandableOption) {
