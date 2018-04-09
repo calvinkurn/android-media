@@ -356,7 +356,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         String imageUrl = tokenFloating.getTokenAsset().getFloatingImgUrl();
 
         serverOffFlag = tokenData.getOffFlag() || TextUtils.isEmpty(imageUrl);
-        
+
         if (serverOffFlag) {
             hideFLoatingEgg();
         } else {
