@@ -243,14 +243,6 @@ public class SearchActivity extends DiscoveryActivity
         });
     }
 
-    public boolean isForImageSearch() {
-        return forImageSearch;
-    }
-
-    public void setForImageSearch(boolean forImageSearch) {
-        this.forImageSearch = forImageSearch;
-    }
-
     private CatalogFragment getCatalogFragment(String query) {
         return CatalogFragment.createInstanceByQuery(query);
     }
