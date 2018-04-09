@@ -74,7 +74,8 @@
             android:layout_height="4dp"
             android:layout_marginBottom="3dp"
             android:progress="80"
-            android:progressBackgroundTint="#e0e0e0"
+            android:progressBackgroundTintMode="src_in"
+            android:progressBackgroundTint="@color/grey_hint_full"
             android:progressDrawable="@drawable/gradient_progress" />
 
         <com.tokopedia.design.component.TextViewCompat

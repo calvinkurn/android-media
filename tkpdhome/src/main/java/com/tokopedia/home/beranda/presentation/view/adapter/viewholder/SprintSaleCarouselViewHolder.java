@@ -1,10 +1,18 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -222,6 +230,12 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             price2 = itemView.findViewById(R.id.price2);
             stockStatus = itemView.findViewById(R.id.stock_status);
             stockProgress = itemView.findViewById(R.id.stock_progress);
+
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+                ViewCompat.setBackgroundTintList(stockProgress, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.grey_hint_full)));
+            } else {
+                stockProgress.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.grey_hint_full)));
+            }
         }
     }
 
