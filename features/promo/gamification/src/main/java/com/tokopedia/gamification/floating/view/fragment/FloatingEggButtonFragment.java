@@ -36,6 +36,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
@@ -43,7 +44,6 @@ import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenFloating;
 import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
-import com.tokopedia.gamification.applink.ApplinkUtil;
 
 import javax.inject.Inject;
 

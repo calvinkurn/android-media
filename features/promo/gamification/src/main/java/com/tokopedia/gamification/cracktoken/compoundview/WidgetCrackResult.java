@@ -27,7 +27,6 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
-import com.tokopedia.gamification.cracktoken.model.CrackButton;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
 
 import java.util.List;
