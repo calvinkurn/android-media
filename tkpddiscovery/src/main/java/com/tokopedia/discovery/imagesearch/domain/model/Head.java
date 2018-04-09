@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Head implements Serializable, Parcelable {
+public class Head implements Serializable {
 
     @SerializedName("DocsReturn")
     @Expose
@@ -20,21 +20,7 @@ public class Head implements Serializable, Parcelable {
     @SerializedName("SearchTime")
     @Expose
     private int searchTime;
-    public final static Creator<Head> CREATOR = new Creator<Head>() {
 
-
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public Head createFromParcel(Parcel in) {
-            return new Head(in);
-        }
-
-        public Head[] newArray(int size) {
-            return (new Head[size]);
-        }
-
-    };
     private final static long serialVersionUID = -2772717694563315620L;
 
     protected Head(Parcel in) {
