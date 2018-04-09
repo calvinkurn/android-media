@@ -29,6 +29,9 @@ import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener,YoutubeViewHolder.YouTubeThumbnailLoadInProcess{
 
     private FragmentManager fragmentManager;
@@ -50,7 +53,18 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         Intent intent = new Intent(context, IntermediaryActivity.class);
         Bundle newBundle = new Bundle();
         newBundle.putString(BrowseProductRouter.DEPARTMENT_ID, bundle.getString(BrowseProductRouter.DEPARTMENT_ID));
-        newBundle.putString(EXTRA_TRACKER_ATTRIBUTION, bundle.getString("tracker_attribution"));
+        try {
+            newBundle.putString(
+                    EXTRA_TRACKER_ATTRIBUTION,
+                    URLDecoder.decode(bundle.getString("tracker_attribution", ""), "UTF-8")
+            );
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            newBundle.putString(
+                    EXTRA_TRACKER_ATTRIBUTION,
+                    bundle.getString("tracker_attribution", "").replaceAll("%20", " ")
+            );
+        }
         return intent.putExtras(newBundle);
     }
 
