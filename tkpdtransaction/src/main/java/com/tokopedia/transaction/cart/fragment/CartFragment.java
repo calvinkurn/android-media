@@ -520,10 +520,40 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             topAdsView.setMaxItems(4);
             topAdsView.setAdsItemClickListener(this);
             topAdsView.loadTopAds();
-            if(autoApply != null && autoApply.isSuccess()) {
-                renderAutoApplyPromoView(autoApply);
+            if (autoApply != null && autoApply.isSuccess()) {
+                renderAutoApplyPromoViewOnEmptyCart(emptyState, autoApply);
+            } else {
+                emptyState.findViewById(R.id.promo_result).setVisibility(View.GONE);
             }
         }
+    }
+
+    private void renderAutoApplyPromoViewOnEmptyCart(View emptyStateView, AutoApply autoApply) {
+        final View rootView = emptyStateView.findViewById(R.id.promo_result);
+        TextView labelPromoType = emptyStateView.findViewById(R.id.label_promo_type);
+        TextView promoVoucherCode = emptyStateView.findViewById(R.id.voucher_code);
+        TextView voucherDescription = emptyStateView.findViewById(R.id.voucher_description);
+        View cancelPromoLayout = emptyStateView.findViewById(R.id.cancel_promo_layout);
+
+        rootView.setVisibility(View.VISIBLE);
+
+
+        if (autoApply.getIsCoupon() == 1) {
+            labelPromoType.setText(String.format("%s : ", getString(R.string.title_coupon_code)));
+            promoVoucherCode.setText(autoApply.getTitleDescription());
+            voucherDescription.setText(autoApply.getMessageSuccess());
+        } else {
+            labelPromoType.setText(String.format("%s : ", getString(R.string.title_promo_code)));
+            promoVoucherCode.setText(autoApply.getCode());
+            voucherDescription.setText(autoApply.getMessageSuccess());
+        }
+
+        cancelPromoLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rootView.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -809,7 +839,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderAutoApplyPromoView(AutoApply autoApply) {
-        if(autoApply.getIsCoupon() == 1)
+        if (autoApply.getIsCoupon() == 1)
             setCouponResultLayout(
                     autoApply.getCode(),
                     autoApply.getTitleDescription(),
@@ -1042,8 +1072,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     private void setCouponResultLayout(String couponCode,
-                                        String couponTitle,
-                                        String description) {
+                                       String couponTitle,
+                                       String description) {
         promoResultLayout.setVisibility(View.VISIBLE);
         labelPromoType.setText(getString(R.string.title_coupon_code) + " : ");
         promoVoucherCode.setText(couponCode);
