@@ -27,18 +27,22 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
     private ShopComponent component;
     private String etalaseId;
     private String sort;
+    private String attribution;
 
-    public static Intent createIntent(Context context, String shopId, String keyword, String etalaseId, String sortId) {
-        Intent intent = createIntent(context, shopId, keyword, etalaseId);
+    public static Intent createIntent(Context context, String shopId, String keyword,
+                                      String etalaseId, String attribution, String sortId) {
+        Intent intent = createIntent(context, shopId, keyword, etalaseId, attribution);
         intent.putExtra(ShopParamConstant.EXTRA_SORT_ID, sortId);
         return intent;
     }
 
-    public static Intent createIntent(Context context, String shopId, String keyword, String etalaseId) {
+    public static Intent createIntent(Context context, String shopId, String keyword,
+                                      String etalaseId, String attribution) {
         Intent intent = new Intent(context, ShopProductListActivity.class);
         intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         intent.putExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, keyword);
         intent.putExtra(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId);
+        intent.putExtra(ShopParamConstant.EXTRA_ATTRIBUTION, attribution);
         return intent;
     }
 
@@ -63,12 +67,13 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
         keyword = getIntent().getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD);
         etalaseId = getIntent().getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
         sort = getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID);
+        attribution = getIntent().getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopProductListFragment.createInstance(shopId, keyword, etalaseId, sort);
+        return ShopProductListFragment.createInstance(shopId, keyword, etalaseId, sort, attribution);
     }
 
     @Override

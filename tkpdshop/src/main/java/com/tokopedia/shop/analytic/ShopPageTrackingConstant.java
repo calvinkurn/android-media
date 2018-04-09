@@ -103,6 +103,7 @@ public class ShopPageTrackingConstant {
     public static final String CATEGORY = "category";
     public static final String VARIANT = "variant";
     public static final String POSITION = "position";
+    public static final String ATTRIBUTION = "attribution";
     public static final String NONE_OTHER = "none / other";
     public static final String CURRENCY_CODE = "currencyCode";
     public static final String IDR = "IDR";

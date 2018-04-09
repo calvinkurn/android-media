@@ -1665,7 +1665,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId);
+        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
 	}
 	
     public void showForceHockeyAppDialog() {

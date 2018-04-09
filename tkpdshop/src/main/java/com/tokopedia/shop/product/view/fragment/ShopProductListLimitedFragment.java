@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -34,6 +35,7 @@ import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
+import com.tokopedia.shop.product.util.ShopUtil;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
@@ -64,18 +66,25 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101;
     private static final int REQUEST_CODE_ETALASE = 200;
+
+    private static final String SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION";
+
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
     @Inject
     ShopPageTracking shopPageTracking;
     private ProgressDialog progressDialog;
     private String urlNeedTobBeProceed;
+    private String attribution;
     private ShopInfo shopInfo;
     private ShopModuleRouter shopModuleRouter;
     private ShopPagePromoWebView.Listener promoWebViewListener;
 
-    public static ShopProductListLimitedFragment createInstance() {
+    public static ShopProductListLimitedFragment createInstance(String shopAttribution) {
         ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(SHOP_ATTRIBUTION, shopAttribution);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -95,6 +104,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        attribution = getArguments().getString(SHOP_ATTRIBUTION, "");
         shopProductListLimitedPresenter.attachView(this);
     }
 
@@ -258,7 +268,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
             shopPageTracking.eventTypeKeywordSearchProduct(getString(R.string.shop_info_title_tab_product), text, shopInfo.getInfo().getShopId(),
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
-        startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), text, ""));
+        startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), text, "", attribution));
     }
 
     @Override
@@ -278,13 +288,15 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                 if (shopInfo != null) {
                     shopPageTracking.eventViewProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
                             ((ShopProductLimitedFeaturedViewModel) shopProductBaseViewModel).getShopProductViewModelList(),
-                            shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
+                            attribution, shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
+                            ShopPageTracking.getShopType(shopInfo.getInfo()), false);
                 }
             } else if (shopProductBaseViewModel instanceof ShopProductLimitedProductViewModel) {
                 if (shopInfo != null) {
                     shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
                             ((ShopProductLimitedProductViewModel) shopProductBaseViewModel).getShopProductViewModelList(),
-                            true, shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()),
+                            attribution, true, shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
+                            ShopPageTracking.getShopType(shopInfo.getInfo()),
                             false);
                 }
             } else if (shopProductBaseViewModel instanceof ShopProductLimitedPromoViewModel) {
@@ -302,7 +314,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         if (shopInfo != null) {
             shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product), shopProductViewModel.isWishList(),
                     true, shopProductViewModel.getId(),
-                    shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                    shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
+                    ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
         if (shopProductViewModel.isWishList()) {
             shopProductListLimitedPresenter.removeFromWishList(shopProductViewModel.getId());
@@ -315,10 +328,13 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     public void onProductClicked(ShopProductViewModel shopProductViewModel, int adapterPosition) {
         if (shopInfo != null) {
             shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
-                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), adapterPosition, true,
-                    shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
+                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(),
+                    attribution, adapterPosition, true,
+                    shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
+                    ShopPageTracking.getShopType(shopInfo.getInfo()), false);
         }
-        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
+        String productUrl = ShopUtil.appendTrackerAttributionIfNeeded(shopProductViewModel.getProductUrl(), attribution);
+        shopModuleRouter.goToProductDetail(getActivity(), productUrl);
     }
 
     @Override
@@ -361,7 +377,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                     shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product),
                             true, etalaseName, shopInfo.getInfo().getShopId(),
                             shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
-                    startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), "", etalaseId));
+                    startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), "", etalaseId, attribution));
                 }
                 break;
             case REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW:
@@ -406,7 +422,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     public void onProductImageFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
         if (shopInfo != null) {
             shopPageTracking.eventClickProductPictureFeaturedImpression(getString(R.string.shop_info_title_tab_product), shopProductViewModel.getName(),
-                    shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), adapterPosition,
+                    shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), attribution, adapterPosition,
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
     }
@@ -415,7 +431,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     public void onProductTitleFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
         if (shopInfo != null) {
             shopPageTracking.eventClickProductTitleFeaturedImpression(getString(R.string.shop_info_title_tab_product), shopProductViewModel.getName(),
-                    shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), adapterPosition,
+                    shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), attribution, adapterPosition,
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
     }
