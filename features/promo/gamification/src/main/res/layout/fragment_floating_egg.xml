@@ -27,7 +27,7 @@
             android:layout_gravity="top|end"
             android:gravity="center"
             style="@style/TextView.Micro"
-            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_16"
             android:background="@drawable/circle_red_shadow"
             android:textColor="@color/white"/>
 
