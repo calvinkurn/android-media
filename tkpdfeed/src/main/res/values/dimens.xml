@@ -63,6 +63,6 @@
     <dimen name="product_padding_medium">10dp</dimen>
     <dimen name="product_padding_small">8dp</dimen>
     <dimen name="product_padding_very_small">6dp</dimen>
-    <dimen name="image_padding_for_border">0dp</dimen>
+    <dimen name="image_padding_for_border">0.5dp</dimen>
 
 </resources>

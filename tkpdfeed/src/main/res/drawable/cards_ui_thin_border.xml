@@ -10,10 +10,10 @@
                 android:color="@color/feed_new_cards_border" />
 
             <padding
-                android:bottom="0.5dp"
-                android:left="0.5dp"
-                android:right="0.5dp"
-                android:top="0.5dp" />
+                android:bottom="@dimen/image_padding_for_border"
+                android:left="@dimen/image_padding_for_border"
+                android:right="@dimen/image_padding_for_border"
+                android:top="@dimen/image_padding_for_border" />
         </shape>
     </item>
 

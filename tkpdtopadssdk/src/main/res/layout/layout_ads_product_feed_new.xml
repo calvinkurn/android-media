@@ -14,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_full_border"
-        android:padding="@dimen/feed_image_padding"
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="centerCrop"
