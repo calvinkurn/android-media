@@ -727,7 +727,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .map(new Func1<ImageUploadDomainModel<UploadShopImageModel>, String>() {
             @Override
             public String call(ImageUploadDomainModel<UploadShopImageModel> uploadShopImageModelImageUploadDomainModel) {
-                return uploadShopImageModelImageUploadDomainModel.getDataResultImageUpload().getResult();
+                return uploadShopImageModelImageUploadDomainModel.getDataResultImageUpload().getData().getImage().getPicSrc();
             }
         });
     }
