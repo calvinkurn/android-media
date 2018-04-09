@@ -355,14 +355,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         final boolean isShowTime = tokenFloating.getShowTime();
         String imageUrl = tokenFloating.getTokenAsset().getFloatingImgUrl();
 
+        serverOffFlag = tokenData.getOffFlag() || TextUtils.isEmpty(imageUrl);
+
         if (serverOffFlag) {
             hideFLoatingEgg();
         } else {
             showFloatingEgg();
             trackingEggImpression(String.valueOf(tokenData.getFloating().getTokenId()));
         }
-
-        serverOffFlag = tokenData.getOffFlag() || TextUtils.isEmpty(imageUrl);
 
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -397,7 +397,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             Glide.with(getContext())
                 .load(imageUrl)
                 .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
