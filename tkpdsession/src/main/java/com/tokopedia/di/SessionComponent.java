@@ -11,10 +11,6 @@ import com.tokopedia.otp.tokocashotp.view.fragment.ChooseTokocashVerificationMet
 import com.tokopedia.otp.tokocashotp.view.fragment.TokoCashVerificationFragment;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionPhoneVerificationFragment;
-import com.tokopedia.session.addchangeemail.view.fragment.AddEmailFragment;
-import com.tokopedia.session.addchangeemail.view.fragment.AddEmailVerificationFragment;
-import com.tokopedia.session.addchangepassword.view.fragment.AddPasswordFragment;
-import com.tokopedia.session.changename.view.fragment.ChangeNameFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberEmailVerificationFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
@@ -80,14 +76,6 @@ public interface SessionComponent {
     void inject(com.tokopedia.otp.registerphonenumber.view.fragment.VerificationFragment verificationFragment);
 
     void inject(com.tokopedia.otp.registerphonenumber.view.fragment.VerificationMethodFragment verificationMethodFragment);
-
-    void inject(AddEmailFragment addEmailFragment);
-
-    void inject(AddEmailVerificationFragment addEmailVerificationFragment);
-
-    void inject(ChangeNameFragment changeNameFragment);
-
-    void inject(AddPasswordFragment addPasswordFragment);
 
     GetUserInfoUseCase getUserInfoUseCase();
 

@@ -1,11 +1,9 @@
 package com.tokopedia.session.addchangeemail.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.session.addchangeemail.data.source.AddEmailSource;
 import com.tokopedia.session.addchangeemail.view.viewmodel.AddEmailViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -20,10 +18,7 @@ public class AddEmailUseCase extends UseCase<AddEmailViewModel> {
 
     private final AddEmailSource addEmailSource;
 
-    public AddEmailUseCase(ThreadExecutor threadExecutor,
-                           PostExecutionThread postExecutionThread,
-                           AddEmailSource addEmailSource) {
-        super(threadExecutor, postExecutionThread);
+    public AddEmailUseCase(AddEmailSource addEmailSource) {
         this.addEmailSource = addEmailSource;
     }
 

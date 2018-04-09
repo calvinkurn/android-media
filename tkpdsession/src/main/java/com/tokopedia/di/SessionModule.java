@@ -34,19 +34,6 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.session.addchangeemail.data.mapper.AddEmailMapper;
-import com.tokopedia.session.addchangeemail.data.mapper.CheckEmailMapper;
-import com.tokopedia.session.addchangeemail.data.mapper.RequestVerificationMapper;
-import com.tokopedia.session.addchangeemail.data.source.AddEmailSource;
-import com.tokopedia.session.addchangeemail.domain.usecase.AddEmailUseCase;
-import com.tokopedia.session.addchangeemail.domain.usecase.CheckEmailUseCase;
-import com.tokopedia.session.addchangeemail.domain.usecase.RequestVerificationUseCase;
-import com.tokopedia.session.addchangepassword.data.mapper.AddPasswordMapper;
-import com.tokopedia.session.addchangepassword.data.source.AddPasswordSource;
-import com.tokopedia.session.addchangepassword.domain.usecase.AddPasswordUseCase;
-import com.tokopedia.session.changename.data.mapper.ChangeNameMapper;
-import com.tokopedia.session.changename.data.source.ChangeNameSource;
-import com.tokopedia.session.changename.domain.usecase.ChangeNameUseCase;
 import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
 import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
@@ -428,70 +415,4 @@ SessionModule {
         return new VerifyOtpUseCase(threadExecutor, postExecutionThread, source);
     }
 
-    @SessionScope
-    @Provides
-    AddEmailSource provideAddEmailSource(@Named(BEARER_SERVICE) AccountsService service,
-                                         AddEmailMapper addEmailMapper,
-                                         CheckEmailMapper checkEmailMapper,
-                                         RequestVerificationMapper requestVerificationMapper,
-                                         GlobalCacheManager cacheManager) {
-        return new AddEmailSource(service, addEmailMapper, checkEmailMapper, requestVerificationMapper, cacheManager);
-    }
-
-    @SessionScope
-    @Provides
-    RequestVerificationUseCase provideRequestVerificationUseCase(ThreadExecutor threadExecutor,
-                                                      PostExecutionThread postExecutionThread,
-                                                      AddEmailSource source) {
-        return new RequestVerificationUseCase(threadExecutor, postExecutionThread, source);
-    }
-
-    @SessionScope
-    @Provides
-    CheckEmailUseCase provideCheckEmailUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutionThread,
-                                                 AddEmailSource source) {
-        return new CheckEmailUseCase(threadExecutor, postExecutionThread, source);
-    }
-
-    @SessionScope
-    @Provides
-    AddEmailUseCase provideAddEmailUseCase(ThreadExecutor threadExecutor,
-                                             PostExecutionThread postExecutionThread,
-                                             AddEmailSource source) {
-        return new AddEmailUseCase(threadExecutor, postExecutionThread, source);
-    }
-
-    @SessionScope
-    @Provides
-    ChangeNameSource provideChangeNameSource(@Named(BEARER_SERVICE) AccountsService service,
-                                             ChangeNameMapper changeNameMapper,
-                                             GlobalCacheManager cacheManager) {
-        return new ChangeNameSource(service, changeNameMapper, cacheManager);
-    }
-
-    @SessionScope
-    @Provides
-    ChangeNameUseCase provideChangeNameUseCase(ThreadExecutor threadExecutor,
-                                             PostExecutionThread postExecutionThread,
-                                             ChangeNameSource source) {
-        return new ChangeNameUseCase(threadExecutor, postExecutionThread, source);
-    }
-
-    @SessionScope
-    @Provides
-    AddPasswordSource provideAddPasswordSource(@Named(BEARER_SERVICE) AccountsService service,
-                                             AddPasswordMapper addPasswordMapper,
-                                               SessionHandler sessionHandler) {
-        return new AddPasswordSource(service, addPasswordMapper, sessionHandler);
-    }
-
-
-    @SessionScope
-    @Provides
-    AddPasswordUseCase provideAddPasswordUseCase(ThreadExecutor threadExecutor,
-                                                PostExecutionThread postExecutionThread,
-                                                AddPasswordSource source) {
-        return new AddPasswordUseCase(threadExecutor, postExecutionThread, source);
-    }
 }

@@ -13,12 +13,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.di.DaggerUserComponent;
+import com.tokopedia.di.UserComponent;
 import com.tokopedia.session.R;
+import com.tokopedia.session.addchangepassword.di.DaggerAddChangePasswordComponent;
 import com.tokopedia.session.addchangepassword.view.listener.AddPasswordListener;
 import com.tokopedia.session.addchangepassword.view.presenter.AddPasswordPresenter;
 
@@ -54,15 +56,12 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
+        UserComponent userComponent = DaggerUserComponent.builder().baseAppComponent(
+                ((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent()).build();
 
-        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
-                DaggerSessionComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerSessionComponent.inject(this);
-
+        DaggerAddChangePasswordComponent.builder()
+                .userComponent(userComponent)
+                .build().inject(this);
     }
 
     @Nullable

@@ -15,12 +15,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.di.DaggerUserComponent;
+import com.tokopedia.di.UserComponent;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changename.di.DaggerChangeNameComponent;
 import com.tokopedia.session.changename.view.listener.ChangeNameListener;
 import com.tokopedia.session.changename.view.presenter.ChangeNamePresenter;
 
@@ -148,15 +150,12 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
 
     @Override
     protected void initInjector() {
+        UserComponent userComponent = DaggerUserComponent.builder().baseAppComponent(
+                ((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent()).build();
 
-        AppComponent appComponent = getComponent(AppComponent.class);
-
-        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
-                DaggerSessionComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerSessionComponent.inject(this);
+        DaggerChangeNameComponent.builder()
+                .userComponent(userComponent)
+                .build().inject(this);
     }
 
     @Override

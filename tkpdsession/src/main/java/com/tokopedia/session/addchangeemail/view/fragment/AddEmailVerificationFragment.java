@@ -21,12 +21,14 @@ import com.tkpd.library.ui.widget.PinEntryEditText;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.di.DaggerUserComponent;
+import com.tokopedia.di.UserComponent;
 import com.tokopedia.session.R;
+import com.tokopedia.session.addchangeemail.di.DaggerAddChangeEmailComponent;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailVerificationActivity;
 import com.tokopedia.session.addchangeemail.view.listener.AddEmailVerificationListener;
 import com.tokopedia.session.addchangeemail.view.presenter.AddEmailVerificationPresenter;
@@ -346,8 +348,6 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
                 goToOtherVerificationMethod();
             }
         });
-//        getActivity().setResult(Activity.RESULT_CANCELED);
-//        getActivity().finish();
     }
     private void goToOtherVerificationMethod() {
 
@@ -361,14 +361,12 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
+        UserComponent userComponent = DaggerUserComponent.builder().baseAppComponent(
+                ((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent()).build();
 
-        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
-                DaggerSessionComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerSessionComponent.inject(this);
+        DaggerAddChangeEmailComponent.builder()
+                .userComponent(userComponent)
+                .build().inject(this);
     }
 
     @Override

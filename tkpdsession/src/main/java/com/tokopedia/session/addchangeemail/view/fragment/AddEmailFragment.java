@@ -16,12 +16,14 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.di.DaggerUserComponent;
+import com.tokopedia.di.UserComponent;
 import com.tokopedia.session.R;
+import com.tokopedia.session.addchangeemail.di.DaggerAddChangeEmailComponent;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailVerificationActivity;
 import com.tokopedia.session.addchangeemail.view.listener.AddEmailListener;
 import com.tokopedia.session.addchangeemail.view.presenter.AddEmailPresenter;
@@ -77,14 +79,12 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
+        UserComponent userComponent = DaggerUserComponent.builder().baseAppComponent(
+                ((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent()).build();
 
-        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
-                DaggerSessionComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerSessionComponent.inject(this);
+        DaggerAddChangeEmailComponent.builder()
+                .userComponent(userComponent)
+                .build().inject(this);
     }
 
     private void initView() {
