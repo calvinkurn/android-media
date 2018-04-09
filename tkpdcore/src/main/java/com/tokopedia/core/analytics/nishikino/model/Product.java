@@ -26,6 +26,8 @@ public class Product extends BaseGTMModel {
     public static final String KEY_LIST     = "list";
     public static final String KEY_HOME_ATTRIBUTION     = "home_attribution";
 
+    public static final String DEFAULT_VALUE_NONE_OTHER = "none/other";
+
     public Product() {
 
     }

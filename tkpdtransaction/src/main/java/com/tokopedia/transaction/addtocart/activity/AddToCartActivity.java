@@ -896,6 +896,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 //presenter.sendAnalyticsATCSuccess(this, productCartPass, createFinalOrderData());
                 presenter.sendAddToCartCheckoutAnalytic(this,
                         productCartPass,
+                        mProductDetail,
                         etQuantity.getText().toString());
                 presenter.processAddToCartSuccess(this,
                         resultData.getString(ATCIntentService.EXTRA_MESSAGE));

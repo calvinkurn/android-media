@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.Window;
@@ -22,7 +21,6 @@ import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -45,6 +43,7 @@ import com.tokopedia.transaction.addtocart.model.kero.Data;
 import com.tokopedia.transaction.addtocart.model.kero.Product;
 import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
+import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Shipment;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ShipmentPackage;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
@@ -425,15 +424,18 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     @Override
     public void sendAddToCartCheckoutAnalytic(@NonNull Context context,
                                               @NonNull ProductCartPass productCartPass,
-                                              String quantity) {
+                                              @NonNull ProductDetail productDetail, String quantity) {
+        String categoryLevelStr = productDetail.getProductCatNameTracking();
         com.tokopedia.core.analytics.nishikino.model.Product product =
                 new com.tokopedia.core.analytics.nishikino.model.Product();
         product.setProductName(productCartPass.getProductName());
         product.setProductID(productCartPass.getProductId());
         product.setPrice(productCartPass.getPrice());
-        product.setBrand("none/other");
-        product.setCategory(productCartPass.getCategoryLevelName());
-        product.setVariant("none/other");
+        product.setBrand(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
+        product.setCategory(TextUtils.isEmpty(categoryLevelStr)
+                ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                : categoryLevelStr);
+        product.setVariant(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
         product.setQty(quantity);
         product.setShopId(productCartPass.getShopId());
         product.setShopType(productCartPass.getShopType());

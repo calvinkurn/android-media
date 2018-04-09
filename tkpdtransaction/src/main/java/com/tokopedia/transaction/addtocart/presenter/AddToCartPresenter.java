@@ -2,7 +2,6 @@ package com.tokopedia.transaction.addtocart.presenter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
@@ -10,6 +9,7 @@ import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.transaction.addtocart.model.OrderData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
+import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 
 /**
@@ -46,7 +46,7 @@ public interface AddToCartPresenter {
 
     void sendAddToCartCheckoutAnalytic(@NonNull Context context,
                                        @NonNull ProductCartPass productCartPass,
-                                       String quantity);
+                                       @NonNull ProductDetail mProductDetail, String quantity);
 
     void processAddToCartSuccess(@NonNull Context context, String message);
 
