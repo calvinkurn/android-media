@@ -298,12 +298,16 @@ public class ProductListFragment extends SearchSectionFragment
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {
         String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
         List<Object> dataLayerList = new ArrayList<>();
-        for(Visitable object : list) {
+        for (Visitable object : list) {
             if (object instanceof ProductItem) {
                 dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
             }
         }
-        SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
+        if (productViewModel.isImageSearch()) {
+            SearchTracking.eventImpressionImageSearchResultProduct(dataLayerList);
+        } else {
+            SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
+        }
     }
 
     @Override
@@ -509,10 +513,15 @@ public class ProductListFragment extends SearchSectionFragment
         String userId = SessionHandler.isV4Login(getContext()) ?
                 SessionHandler.getLoginID(getContext()) : "";
 
-        SearchTracking.trackEventClickSearchResultProduct(
-                item.getProductAsObjectDataLayer(userId),
-                productViewModel.getQuery()
-        );
+        if (productViewModel.isImageSearch()) {
+            SearchTracking.trackEventClickImageSearchResultProduct(
+                    item.getProductAsObjectDataLayerForImageSearch(userId), item.getPosition() / 2);
+        } else {
+            SearchTracking.trackEventClickSearchResultProduct(
+                    item.getProductAsObjectDataLayer(userId),
+                    productViewModel.getQuery()
+            );
+        }
     }
 
     @Override
@@ -575,7 +584,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void launchLoginActivity(Bundle extras) {
-        Intent intent = ((DiscoveryRouter)MainApplication.getAppContext()).getLoginIntent
+        Intent intent = ((DiscoveryRouter) MainApplication.getAppContext()).getLoginIntent
                 (getActivity());
         intent.putExtras(extras);
         startActivityForResult(intent, REQUEST_CODE_LOGIN);

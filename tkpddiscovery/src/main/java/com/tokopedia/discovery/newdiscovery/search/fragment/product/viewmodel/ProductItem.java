@@ -184,6 +184,18 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         );
     }
 
+    public Object getProductAsObjectDataLayerForImageSearch(String userId) {
+        return DataLayer.mapOf(
+                "name", getProductName(),
+                "id", getProductID(),
+                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
+                "category", "",
+                "list", String.format(SearchTracking.imageClick, getPosition()),
+                "position", Integer.toString(getPosition()),
+                "userId", userId
+        );
+    }
+
     @Override
     public int describeContents() {
         return 0;
