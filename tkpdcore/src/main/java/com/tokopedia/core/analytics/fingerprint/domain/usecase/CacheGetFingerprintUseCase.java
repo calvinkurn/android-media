@@ -1,15 +1,11 @@
 package com.tokopedia.core.analytics.fingerprint.domain.usecase;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -35,21 +31,16 @@ public class CacheGetFingerprintUseCase extends GetFingerprintUseCase {
 
         String cache =  localCacheHandler.getString(FINGERPRINT_USE_CASE);
         if(TextUtils.isEmpty(cache) || localCacheHandler.isExpired()){
-            super.createObservable(requestParams);
+            super.createObservable(requestParams).map(new Func1<String, String>() {
+                @Override
+                public String call(String s) {
+                    localCacheHandler.putString(FINGERPRINT_USE_CASE, s);
+                    localCacheHandler.applyEditor();
+                    return s;
+                }
+            });
         }
 
         return Observable.just(cache);
-    }
-
-    @NonNull
-    @Override
-    protected Func1<String, String> unnecessaryMap() {
-        return new Func1<String, String>() {
-            @Override
-            public String call(String s) {
-                localCacheHandler.putString(FINGERPRINT_USE_CASE, s);
-                return s;
-            }
-        };
     }
 }
