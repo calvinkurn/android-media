@@ -62,13 +62,13 @@ public class GroupChatPointsViewHolder extends BaseChatViewHolder<GroupChatPoint
     private void setIcon(String type) {
         switch (type) {
             case GroupChatPointsViewModel.TYPE_POINTS:
-                loadIcon(R.drawable.ic_got_points);
+                loadIcon(R.drawable.ic_gratification_points);
                 break;
             case GroupChatPointsViewModel.TYPE_COUPON:
-                loadIcon(R.drawable.ic_got_coupon);
+                loadIcon(R.drawable.ic_gratification_coupon);
                 break;
             case GroupChatPointsViewModel.TYPE_LOYALTY:
-                loadIcon(R.drawable.ic_got_coupon);
+                loadIcon(R.drawable.ic_gratification_loyalty);
                 break;
         }
     }

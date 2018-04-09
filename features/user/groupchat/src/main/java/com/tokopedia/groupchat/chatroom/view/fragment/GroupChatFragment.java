@@ -51,6 +51,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewMo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
+import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
@@ -737,6 +738,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void onSprintSaleComponentClicked(SprintSaleAnnouncementViewModel sprintSaleAnnouncementViewModel) {
+        if (TextUtils.isEmpty(sprintSaleAnnouncementViewModel.getRedirectUrl())) {
+            sprintSaleAnnouncementViewModel.setRedirectUrl(GroupChatUrl.DEFAULT_SPRINT_SALE_APPLINK);
+        }
 
         ArrayList<EEPromotion> list = new ArrayList<>();
         for (SprintSaleProductViewModel productViewModel : sprintSaleAnnouncementViewModel
@@ -764,29 +768,32 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void onSprintSaleIconClicked(SprintSaleViewModel sprintSaleViewModel) {
-        if (!TextUtils.isEmpty(sprintSaleViewModel.getRedirectUrl())) {
-            ArrayList<EEPromotion> list = new ArrayList<>();
-            for (SprintSaleProductViewModel productViewModel : sprintSaleViewModel
-                    .getListProduct()) {
-                list.add(new EEPromotion(productViewModel.getProductId(),
-                        EEPromotion.NAME_GROUPCHAT,
-                        GroupChatAnalytics.DEFAULT_EE_POSITION,
-                        productViewModel.getProductName(),
-                        productViewModel.getProductImage(),
-                        ((GroupChatContract.View) getActivity()).getAttributionTracking(GroupChatAnalytics
-                                .ATTRIBUTE_FLASH_SALE)
-                ));
-            }
-
-            ((GroupChatContract.View) getActivity()).eventClickComponentEnhancedEcommerce(GroupChatAnalytics
-                    .COMPONENT_FLASH_SALE, sprintSaleViewModel.getCampaignName(), GroupChatAnalytics
-                    .ATTRIBUTE_FLASH_SALE, list);
-
-            ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
-                    , ((GroupChatContract.View) getActivity()).generateAttributeApplink
-                            (sprintSaleViewModel.getRedirectUrl(),
-                                    GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
+        if (TextUtils.isEmpty(sprintSaleViewModel.getRedirectUrl())) {
+            sprintSaleViewModel.setRedirectUrl(GroupChatUrl.DEFAULT_SPRINT_SALE_APPLINK);
         }
+
+        ArrayList<EEPromotion> list = new ArrayList<>();
+        for (SprintSaleProductViewModel productViewModel : sprintSaleViewModel
+                .getListProduct()) {
+            list.add(new EEPromotion(productViewModel.getProductId(),
+                    EEPromotion.NAME_GROUPCHAT,
+                    GroupChatAnalytics.DEFAULT_EE_POSITION,
+                    productViewModel.getProductName(),
+                    productViewModel.getProductImage(),
+                    ((GroupChatContract.View) getActivity()).getAttributionTracking(GroupChatAnalytics
+                            .ATTRIBUTE_FLASH_SALE)
+            ));
+        }
+
+        ((GroupChatContract.View) getActivity()).eventClickComponentEnhancedEcommerce(GroupChatAnalytics
+                .COMPONENT_FLASH_SALE, sprintSaleViewModel.getCampaignName(), GroupChatAnalytics
+                .ATTRIBUTE_FLASH_SALE, list);
+
+        ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
+                , ((GroupChatContract.View) getActivity()).generateAttributeApplink
+                        (sprintSaleViewModel.getRedirectUrl(),
+                                GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
+
     }
 
     @Override

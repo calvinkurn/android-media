@@ -66,4 +66,8 @@ public class SprintSaleAnnouncementViewModel extends BaseChatViewModel implement
     public String getSprintSaleType() {
         return sprintSaleType;
     }
+
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+    }
 }

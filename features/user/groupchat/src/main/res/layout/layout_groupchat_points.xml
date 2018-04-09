@@ -28,18 +28,12 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
+                android:id="@+id/icon"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
-                android:background="@drawable/circle_white"
-                android:padding="@dimen/space_med" />
-
-            <ImageView
-                android:id="@+id/icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:contentDescription="@string/title_group_chat"
-                app:srcCompat="@drawable/ic_got_points" />
+                app:srcCompat="@drawable/ic_gratification_points" />
         </RelativeLayout>
 
         <TextView
@@ -54,7 +48,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/image"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Selamat! Anda mendapatkan 20 poin dari channel ini. Cek sekarang!" />
+            tools:text="Selamat! Anda mendapatkan 20 poin dari channel ini." />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
