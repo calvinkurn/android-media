@@ -796,7 +796,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && tabAdapter.getItemCount() > 1
                 && tabs.getChildAt(CHANNEL_VOTE_FRAGMENT) != null) {
             View view = ToolTipUtils.setToolTip(this, R.layout.tooltip, this);
-            View anchorView = tabs.getChildAt(CHATROOM_FRAGMENT);
+            View anchorView = tabs.getChildAt(CHANNEL_VOTE_FRAGMENT);
             if (view != null && anchorView != null) {
                 ToolTipUtils.showToolTip(view, anchorView);
             }
