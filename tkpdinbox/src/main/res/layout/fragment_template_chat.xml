@@ -33,10 +33,10 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/new_margin_sm"
-                android:paddingBottom="@dimen/new_margin_sm"
-                android:paddingRight="@dimen/new_margin_med"
-                android:paddingLeft="@dimen/new_margin_med"
+                android:paddingTop="@dimen/dp_24"
+                android:paddingBottom="@dimen/dp_24"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_16"
                 android:background="@drawable/shadow_background">
 
                 <TextView
@@ -59,7 +59,7 @@
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/text_size_medium"
                     android:lineSpacingExtra="1sp"
-                    android:layout_marginTop="@dimen/new_margin_small"/>
+                    android:layout_marginTop="@dimen/dp_8"/>
 
                 <android.support.v7.widget.SwitchCompat
                     style="@style/SwitchCompatStyle"
@@ -77,7 +77,7 @@
 
             <android.support.v4.widget.Space
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/new_margin_sm" />
+                android:layout_height="@dimen/dp_24" />
 
         <RelativeLayout
             android:id="@+id/template_container"
@@ -87,7 +87,7 @@
             android:background="@drawable/shadow_background"
             android:visibility="gone"
                 tools:visibility="visible"
-                android:paddingTop="@dimen/activity_vertical_margin">
+                android:paddingTop="@dimen/dp_16">
             <TextView
                 android:id="@+id/template_list"
                 android:layout_width="wrap_content"
@@ -97,9 +97,9 @@
                 android:fontFamily="sans-serif"
                 android:textStyle="bold"
                 android:textColor="@color/black_70"
-                android:layout_marginBottom="@dimen/new_margin_small"
-                android:layout_marginTop="@dimen/new_margin_small"
-                android:paddingLeft="@dimen/activity_vertical_margin" />
+                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_8"
+                android:paddingLeft="@dimen/dp_16" />
 
                 <ImageView
                     android:id="@+id/template_list_info"

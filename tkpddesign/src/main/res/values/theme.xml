@@ -18,11 +18,11 @@
     </style>
 
     <style name="TitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">@dimen/font_title</item>
+        <item name="android:textSize">@dimen/sp_16</item>
     </style>
 
     <style name="SubTitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
-        <item name="android:textSize">@dimen/font_micro</item>
+        <item name="android:textSize">@dimen/sp_12</item>
     </style>
 
     <style name="BaseTabBar" parent="Widget.Design.TabLayout">
