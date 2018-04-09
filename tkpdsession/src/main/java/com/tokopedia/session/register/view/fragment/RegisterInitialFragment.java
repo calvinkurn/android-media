@@ -175,7 +175,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     protected void prepareView(View view) {
         UserAuthenticationAnalytics.setActiveRegister();
-        registerPhoneNumberButton.setVisibility(View.GONE);
+        registerPhoneNumberButton.setVisibility(View.VISIBLE);
 
         registerButton.setColor(Color.WHITE);
         registerButton.setBorderColor(R.color.black);
@@ -203,7 +203,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
             }
         });
-        String sourceString = "Sudah punya akun? Masuk";
+        String sourceString = "Sudah punya akun Tokopedia? Masuk";
 
         Spannable spannable = new SpannableString(sourceString);
 
@@ -331,10 +331,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         for (int i = 0; i < listProvider.size(); i++) {
             DiscoverItemViewModel item = listProvider.get(i);
             if (!item.getId().equals(PHONE_NUMBER)) {
-                String color = item.getColor();
-                int colorInt;
-                colorInt = Color.parseColor(color);
-                LoginTextView loginTextView = new LoginTextView(getActivity(), colorInt);
+                LoginTextView loginTextView = new LoginTextView(getActivity()
+                        , MethodChecker.getColor(getActivity(), R.color.white));
                 loginTextView.setTextRegister(item.getName());
                 loginTextView.setImage(item.getImage());
                 loginTextView.setRoundCorner(10);

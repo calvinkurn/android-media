@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -113,36 +111,15 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     private void prepareView() {
         errorText.setVisibility(View.VISIBLE);
         phoneNumber.requestFocus();
-        phoneNumber.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (isValidNumber(charSequence.toString())) {
-                    enableButton(nextButton);
-                } else {
-                    disableButton(nextButton);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
         phoneNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                    if (isValidNumber(v.getText().toString())) {
-//                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
-                        presenter.checkPhoneNumber(phoneNumber.getText().toString());
-                    }
+                    message.setVisibility(View.VISIBLE);
+                    errorText.setVisibility(View.GONE);
+                    errorText.setText("");
+                    presenter.checkPhoneNumber(phoneNumber.getText().toString());
                     handled = true;
                 }
                 return handled;
@@ -151,11 +128,14 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-//                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
+            public void onClick(View view) {
+                message.setVisibility(View.VISIBLE);
+                errorText.setVisibility(View.GONE);
+                errorText.setText("");
                 presenter.checkPhoneNumber(phoneNumber.getText().toString());
             }
         });
+
         String joinString = getString(com.tokopedia.core.R.string.detail_term_and_privacy) +
                 "<br>" + getString(com.tokopedia.core.R.string.link_term_condition) +
                 " serta " + getString(com.tokopedia.core.R.string.link_privacy_policy);
@@ -166,27 +146,8 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     public boolean isValidNumber(String phoneNumber) {
         if (phoneNumber.length() == 0) {
-            message.setVisibility(View.GONE);
-            errorText.setVisibility(View.VISIBLE);
-            errorText.setText(getResources().getString(R.string.error_input_phone_number));
             return false;
         }
-        if (phoneNumber.length() < 8) {
-            message.setVisibility(View.GONE);
-            errorText.setVisibility(View.VISIBLE);
-            errorText.setText(getResources().getString(R.string.error_char_count_under));
-            return false;
-        }
-
-        if (phoneNumber.length() > 15) {
-            message.setVisibility(View.GONE);
-            errorText.setVisibility(View.VISIBLE);
-            errorText.setText(getResources().getString(R.string.error_char_count_over));
-            return false;
-        }
-        message.setVisibility(View.VISIBLE);
-        errorText.setVisibility(View.GONE);
-        errorText.setText("");
         return true;
     }
 
@@ -248,6 +209,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     @Override
     public void showErrorPhoneNumber(String errorMessage) {
         dismissLoading();
+        message.setVisibility(View.GONE);
         errorText.setVisibility(View.VISIBLE);
         errorText.setText(errorMessage);
     }

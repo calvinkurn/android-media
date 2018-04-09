@@ -60,7 +60,7 @@
     <string name="default_relogin">Autentikasi gagal. Mohon coba kembali.</string>
     <string name="tokocash">TokoCash</string>
     <string name="tokocash_phone_verification">Dengan memverifikasi nomor ponsel, TokoCash akan diaktifkan</string>
-    <string name="register_now">Daftar Sekarang di Tokopedia</string>
+    <string name="register_now">Daftar Sekarang dengan:</string>
     <string name="profile_completion_title">Data Diri</string>
     <string name="continue_form">Lanjut</string>
     <string name="skip_form">Lewati</string>
@@ -226,7 +226,10 @@
     <string name="subtitle_disabled_post">Anda dapat melihat post ini melalui Tokopedia App</string>
 
     <!--REGISTER PHONE NUMBER-->
-    <string name="register_with_phone_number">Daftar dengan Nomor Ponsel</string>
+    <string name="register_with_phone_number">Nomor Ponsel</string>
+    <string name="register_with_email">Email</string>
+    <string name="register_we_will_send_verification_code">Kami akan mengirimkan kode melalui SMS</string>
+    <string name="error_field_required_phone">Masukkan nomor ponsel untuk mendaftar.</string>
     <string name="error_char_count_under">Nomor ponsel terlalu pendek, minimal 8 angka</string>
     <string name="error_char_count_over">Nomor ponsel terlalu panjang, maksimal 15 angka</string>
     <string name="error_input_phone_number">Masukkan nomor ponsel untuk mendaftar</string>
