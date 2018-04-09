@@ -672,7 +672,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         builder.setPositiveButton(getResources().getString(R.string.phone_number_already_registered_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-                //go to login
+                goToLoginEmail();
             }
         });
         builder.setNegativeButton(getResources().getString(R.string.phone_number_already_registered_no), new DialogInterface.OnClickListener() {
@@ -687,6 +687,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+    }
+
+    @Override
+    public void goToLoginEmail() {
+        startActivity(LoginActivity.getLoginFromRegister(getActivity(), email.getText().toString()));
+        getActivity().finish();
     }
 
     @Override

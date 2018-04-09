@@ -119,6 +119,9 @@ public class LoginFragment extends BaseDaggerFragment
     public static final String AUTO_LOGIN_PASS = "pw";
     private static final int MINIMAL_HEIGHT = 1200;
 
+    public static final String IS_AUTO_FILL = "auto_fill";
+    public static final String AUTO_FILL_EMAIL = "email";
+
     AutoCompleteTextView emailEditText;
     TextInputEditText passwordEditText;
     ScrollView loginView;
@@ -321,8 +324,9 @@ public class LoginFragment extends BaseDaggerFragment
         emailEditText.setAdapter(autoCompleteAdapter);
 
         presenter.discoverLogin();
-
-        if (getArguments().getBoolean(IS_AUTO_LOGIN, false)) {
+        if (getArguments().getBoolean(IS_AUTO_FILL, false)) {
+            emailEditText.setText(getArguments().getString(AUTO_FILL_EMAIL, ""));
+        }else if (getArguments().getBoolean(IS_AUTO_LOGIN, false)) {
             switch (getArguments().getInt(AUTO_LOGIN_METHOD)) {
                 case LoginActivity.METHOD_FACEBOOK:
                     onLoginFacebookClick();
