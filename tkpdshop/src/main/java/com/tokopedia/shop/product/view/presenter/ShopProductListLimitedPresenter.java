@@ -132,7 +132,6 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
             getView().onErrorAddToWishList(new UserNotLoginException());
             return;
         }
-        getView().showLoadingDialog();
         RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
         addToWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
             @Override
@@ -144,14 +143,12 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
             public void onError(Throwable e) {
                 if (isViewAttached()) {
                     getView().onErrorAddToWishList(e);
-                    getView().hideLoadingDialog();
                 }
             }
 
             @Override
             public void onNext(Boolean aBoolean) {
                 getView().onSuccessAddToWishList(productId, aBoolean);
-                getView().hideLoadingDialog();
             }
         });
     }
@@ -161,7 +158,6 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
             getView().onErrorAddToWishList(new UserNotLoginException());
             return;
         }
-        getView().showLoadingDialog();
         RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
         removeFromWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
             @Override
@@ -173,14 +169,12 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
             public void onError(Throwable e) {
                 if (isViewAttached()) {
                     getView().onErrorRemoveFromWishList(e);
-                    getView().hideLoadingDialog();
                 }
             }
 
             @Override
             public void onNext(Boolean value) {
                 getView().onSuccessRemoveFromWishList(productId, value);
-                getView().hideLoadingDialog();
             }
         });
     }
