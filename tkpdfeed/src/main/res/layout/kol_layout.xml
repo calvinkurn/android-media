@@ -124,8 +124,8 @@
 
             <ImageView
                 android:id="@+id/like_icon"
-                android:layout_width="@dimen/feed_new_kol_button"
-                android:layout_height="@dimen/feed_new_kol_button"
+                android:layout_width="@dimen/feed_kol_button"
+                android:layout_height="@dimen/feed_kol_button"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_10"
                 app:srcCompat="@drawable/ic_thumb" />
@@ -161,8 +161,8 @@
 
             <ImageView
                 android:id="@+id/comment_icon"
-                android:layout_width="@dimen/feed_new_kol_button"
-                android:layout_height="@dimen/feed_new_kol_button"
+                android:layout_width="@dimen/feed_kol_button"
+                android:layout_height="@dimen/feed_kol_button"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_10"
                 app:srcCompat="@drawable/ic_comment" />

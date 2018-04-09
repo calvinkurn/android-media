@@ -123,8 +123,8 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
 
             Drawable img = context.getResources().getDrawable(R.drawable.ic_toa);
             img.setBounds(0, 0,
-                    context.getResources().getDimensionPixelOffset(R.dimen.feed_new_badge_size),
-                    context.getResources().getDimensionPixelOffset(R.dimen.feed_new_badge_size));
+                    context.getResources().getDimensionPixelOffset(R.dimen.feed_badge_size),
+                    context.getResources().getDimensionPixelOffset(R.dimen.feed_badge_size));
 
             if (shop.isGoldShopBadge()) {
                 setShopBadge(title, img, R.drawable.ic_gold);
@@ -142,8 +142,8 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
     private void setShopBadge(Spanned text, Drawable topadsBadge, int drawable) {
         Drawable shopBadge = context.getResources().getDrawable(drawable);
         shopBadge.setBounds(0, 0,
-                context.getResources().getDimensionPixelOffset(R.dimen.feed_new_badge_size),
-                context.getResources().getDimensionPixelOffset(R.dimen.feed_new_badge_size));
+                context.getResources().getDimensionPixelOffset(R.dimen.feed_badge_size),
+                context.getResources().getDimensionPixelOffset(R.dimen.feed_badge_size));
         shopTitle.setCompoundDrawables(shopBadge, null, topadsBadge, null);
     }
 
@@ -163,8 +163,8 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         }
 
         drawable.setBounds(0, 0,
-                context.getResources().getDimensionPixelOffset(R.dimen.feed_new_fav_icon),
-                context.getResources().getDimensionPixelOffset(R.dimen.feed_new_fav_icon));
+                context.getResources().getDimensionPixelOffset(R.dimen.feed_fav_icon),
+                context.getResources().getDimensionPixelOffset(R.dimen.feed_fav_icon));
         favoriteText.setCompoundDrawables(drawable, null, null, null);
         favoriteText.setText(text);
     }

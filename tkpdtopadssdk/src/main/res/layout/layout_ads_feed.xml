@@ -22,8 +22,8 @@
 
         <ImageView
             android:id="@+id/promoted_icon"
-            android:layout_width="@dimen/feed_new_badge_size"
-            android:layout_height="@dimen/feed_new_badge_size"
+            android:layout_width="@dimen/feed_badge_size"
+            android:layout_height="@dimen/feed_badge_size"
             app:srcCompat="@drawable/ic_toa"/>
 
         <TextView

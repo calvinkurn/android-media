@@ -29,8 +29,8 @@
 
             <com.tokopedia.topads.sdk.view.RoundedCornerImageView
                 android:id="@+id/shop_image"
-                android:layout_width="@dimen/feed_new_shop_image"
-                android:layout_height="@dimen/feed_new_shop_image"
+                android:layout_width="@dimen/feed_shop_image"
+                android:layout_height="@dimen/feed_shop_image"
                 android:padding="0.5dp"
                 tools:src="@tools:sample/avatars" />
 
@@ -87,8 +87,8 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
-        android:paddingTop="@dimen/feed_new_fav_padding"
-        android:paddingBottom="@dimen/feed_new_fav_padding"
+        android:paddingTop="@dimen/feed_fav_padding"
+        android:paddingBottom="@dimen/feed_fav_padding"
         android:background="@drawable/selector_favorite"
         android:gravity="center">
 

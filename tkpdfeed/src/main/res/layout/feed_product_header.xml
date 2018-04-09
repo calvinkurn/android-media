@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/shop_avatar"
-        android:layout_width="@dimen/feed_new_avatar_size"
-        android:layout_height="@dimen/feed_new_avatar_size"
+        android:layout_width="@dimen/avatar_size_small"
+        android:layout_height="@dimen/avatar_size_small"
         android:layout_marginRight="@dimen/dp_10"
         android:background="@drawable/feed_container_rounded_corners_border"
         android:layout_centerVertical="true"
@@ -21,8 +21,8 @@
     <ImageView
         android:id="@+id/gold_merchant"
         android:layout_marginTop="@dimen/dp_3"
-        android:layout_width="@dimen/feed_new_badge_size"
-        android:layout_height="@dimen/feed_new_badge_size"
+        android:layout_width="@dimen/avatar_size_small"
+        android:layout_height="@dimen/avatar_size_small"
         android:layout_marginRight="@dimen/dp_10"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/shop_avatar"
@@ -34,8 +34,8 @@
     <ImageView
         android:id="@+id/official_store"
         android:layout_marginTop="@dimen/dp_3"
-        android:layout_width="@dimen/feed_new_badge_size"
-        android:layout_height="@dimen/feed_new_badge_size"
+        android:layout_width="@dimen/feed_badge_size"
+        android:layout_height="@dimen/feed_badge_size"
         android:layout_marginRight="@dimen/dp_10"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/shop_avatar"

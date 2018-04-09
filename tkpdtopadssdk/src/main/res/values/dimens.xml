@@ -37,10 +37,10 @@
     <dimen name="review_count_margin_left">4dp</dimen>
     <dimen name="line_spacing_normal">4sp</dimen>
 
-    <dimen name="feed_new_shop_image">32dp</dimen>
-    <dimen name="feed_new_badge_size">12dp</dimen>
-    <dimen name="feed_new_fav_icon">10dp</dimen>
-    <dimen name="feed_new_fav_padding">7dp</dimen>
-    <dimen name="feed_new_image_padding">1dp</dimen>
+    <dimen name="feed_shop_image">32dp</dimen>
+    <dimen name="feed_badge_size">12dp</dimen>
+    <dimen name="feed_fav_icon">10dp</dimen>
+    <dimen name="feed_fav_padding">7dp</dimen>
+    <dimen name="feed_image_padding">1dp</dimen>
 
 </resources>
