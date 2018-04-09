@@ -184,7 +184,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (getArguments() != null) {
             title = getArguments().getString(PARAM_SENDER_NAME, "");
             avatarImage = getArguments().getString(PARAM_SENDER_IMAGE, "");
-            isChatBot = getArguments().getBoolean(TkpdInboxRouter.IS_CHAT_BOT, false);
+            boolean isChatBotArguments = getArguments().getString(TkpdInboxRouter.IS_CHAT_BOT,
+                    "false").equals("true");
+            isChatBot = (getArguments().getBoolean(TkpdInboxRouter.IS_CHAT_BOT, false) ||
+                    isChatBotArguments);
         }
     }
 
