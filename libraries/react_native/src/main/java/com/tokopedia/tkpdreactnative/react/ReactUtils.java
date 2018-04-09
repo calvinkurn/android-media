@@ -29,16 +29,6 @@ public class ReactUtils {
         return null;
     }
 
-    public void sendTrigerHideFingerprintThanksModal(){
-        WritableMap params = Arguments.createMap();
-        params.putBoolean("hide_fingerprint", true);
-        sendEmittEvent(
-                getCurrentReactContext(),
-                ReactConst.EventEmitter.THANKS_FINGERPRINT_HIDE,
-                params
-        );
-    }
-
     public void sendAddWishlistEmitter(String productId, String userId) {
         WritableMap params = Arguments.createMap();
         params.putString("product_id", productId);
