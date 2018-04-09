@@ -20,6 +20,7 @@ import com.tokopedia.core.util.SessionHandler;
  */
 public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPresenter> {
 
+
     public TextView messenger;
     public View changeEmailBtn;
     public EditText email;
@@ -31,6 +32,16 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
     public TextView checkEmailInfo;
     public TextView tvEmail, tvEmailHint;
     public View tvVerifiedPhoneNumber;
+
+
+    //case 0, phone not verified and email is empty, thus show edit text email (email) and hint
+    //case 1, phone not verified and email available, this not showing any button, but show email
+    //case 2, phone verified and email is empty, thus show tv email
+    //case 3, phone verified and email is available, thus show change button and text view email (tvEmail)
+    public static final int CASE_DEFAULT = 0;
+    public static final int CASE_FIRST = 1;
+    public static final int CASE_SECOND = 2;
+    public static final int CASE_THIRD = 3;
 
     public ContactView(Context context) {
         super(context);
@@ -89,28 +100,24 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
         tvEmail.setVisibility(GONE);
         changeEmailBtn.setVisibility(GONE);
         int emailCase  = 0;
-        //case 0, phone not verified and email is empty, thus show edit text email (email) and hint
-        //case 1, phone not verified and email available, this not showing any button, but show email
-        //case 2, phone verified and email is empty, thus show tv email
-        //case 3, phone verified and email is available, thus show change button and text view email (tvEmail)
-        if (!SessionHandler.isMsisdnVerified() && TextUtils.isEmpty(userEmail)) emailCase = 0;
-        else if (!SessionHandler.isMsisdnVerified() && !TextUtils.isEmpty(userEmail)) emailCase = 1;
-        else if (SessionHandler.isMsisdnVerified() && TextUtils.isEmpty(userEmail)) emailCase = 2;
-        else if (SessionHandler.isMsisdnVerified() && !TextUtils.isEmpty(userEmail)) emailCase = 3;
+        if (!SessionHandler.isMsisdnVerified() && TextUtils.isEmpty(userEmail)) emailCase = CASE_DEFAULT;
+        else if (!SessionHandler.isMsisdnVerified() && !TextUtils.isEmpty(userEmail)) emailCase = CASE_FIRST;
+        else if (SessionHandler.isMsisdnVerified() && TextUtils.isEmpty(userEmail)) emailCase = CASE_SECOND;
+        else if (SessionHandler.isMsisdnVerified() && !TextUtils.isEmpty(userEmail)) emailCase = CASE_THIRD;
         switch (emailCase) {
-            case 0:
-            case 2:
+            case CASE_DEFAULT:
+            case CASE_SECOND:
                 email.setVisibility(VISIBLE);
                 email.setClickable(true);
                 email.setEnabled(true);
                 email.setOnClickListener(new AddEmailClick());
                 tvEmailHint.setVisibility(VISIBLE);
                 break;
-            case 1:
+            case CASE_FIRST:
                 tvEmail.setText(userEmail);
                 tvEmail.setVisibility(VISIBLE);
                 break;
-            case 3:
+            case CASE_THIRD:
                 tvEmail.setText(userEmail);
                 tvEmail.setVisibility(VISIBLE);
                 changeEmailBtn.setVisibility(VISIBLE);

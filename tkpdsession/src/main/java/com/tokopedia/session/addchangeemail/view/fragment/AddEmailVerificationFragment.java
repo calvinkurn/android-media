@@ -346,8 +346,6 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
                 goToOtherVerificationMethod();
             }
         });
-//        getActivity().setResult(Activity.RESULT_CANCELED);
-//        getActivity().finish();
     }
     private void goToOtherVerificationMethod() {
 
