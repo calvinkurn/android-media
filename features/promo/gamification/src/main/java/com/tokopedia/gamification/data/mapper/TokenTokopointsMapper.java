@@ -5,6 +5,7 @@ import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.floating.view.model.TokenAsset;
 import com.tokopedia.gamification.floating.view.model.TokenBackgroundAsset;
 import com.tokopedia.gamification.floating.view.model.TokenData;
+import com.tokopedia.gamification.floating.view.model.TokenEmptyState;
 import com.tokopedia.gamification.floating.view.model.TokenFloating;
 import com.tokopedia.gamification.floating.view.model.TokenHome;
 import com.tokopedia.gamification.floating.view.model.TokenUser;
@@ -69,6 +70,15 @@ public class TokenTokopointsMapper implements Func1<TokenDataEntity, TokenData> 
                     tokenUser.setTokenUserID(tokenDataEntity.getHome().getTokensUser().getTokenUserID());
                     tokenUser.setUnixTimestampFetch(tokenDataEntity.getHome().getTokensUser().getUnixTimestampFetch());
                     tokenHome.setTokensUser(tokenUser);
+                }
+
+                if (tokenDataEntity.getHome().getEmptyState() != null) {
+                    TokenEmptyState tokenEmptyState = new TokenEmptyState();
+                    tokenEmptyState.setTitle(tokenDataEntity.getHome().getEmptyState().getTitle());
+                    tokenEmptyState.setButtonText(tokenDataEntity.getHome().getEmptyState().getButtonText());
+                    tokenEmptyState.setButtonApplink(tokenDataEntity.getHome().getEmptyState().getButtonApplink());
+                    tokenEmptyState.setButtonURL(tokenDataEntity.getHome().getEmptyState().getButtonURL());
+                    tokenHome.setTokenEmptyState(tokenEmptyState);
                 }
 
                 tokenHome.setButtonApplink(tokenDataEntity.getHome().getButtonApplink());
