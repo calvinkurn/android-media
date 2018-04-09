@@ -388,20 +388,17 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
                     .setBody("Masukan Kode Promo di halaman pembayaran")
                     .setImg(R.drawable.ic_promo)
                     .build());
-            bottomSheetViewInfoPromoCode.setListener(new BottomSheetView.ActionListener() {
-                @Override
-                public void clickOnTextLink(String url) {
 
-                }
-
+            bottomSheetViewInfoPromoCode.setBtnCloseOnClick(new View.OnClickListener() {
                 @Override
-                public void clickOnButton(String url, String appLink) {
+                public void onClick(View view) {
                     UnifyTracking.eventPromoTooltipClickCloseTooltip();
+                    bottomSheetViewInfoPromoCode.dismiss();
                 }
             });
         }
-        bottomSheetViewInfoPromoCode.show();
 
+        bottomSheetViewInfoPromoCode.show();
     }
 
     private void handleErrorEmptyState(String message) {

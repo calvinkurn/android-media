@@ -67,7 +67,6 @@ public class BottomSheetView extends BottomSheetDialog {
             @Override
             public void onClick(View view) {
                 dismiss();
-                listener.clickOnButton("", "");
             }
         });
     }

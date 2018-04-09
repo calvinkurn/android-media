@@ -235,15 +235,11 @@ public class PromoDetailFragment extends BaseDaggerFragment
                             .setImg(R.drawable.ic_promo)
                             .build());
 
-                    bottomSheetInfoPromoCode.setListener(new BottomSheetView.ActionListener() {
+                    bottomSheetInfoPromoCode.setBtnCloseOnClick(new View.OnClickListener() {
                         @Override
-                        public void clickOnTextLink(String url) {
+                        public void onClick(View view) {
                             promoDetailAnalytics.userCloseTooltip();
-                        }
-
-                        @Override
-                        public void clickOnButton(String url, String appLink) {
-                            promoDetailAnalytics.userCloseTooltip();
+                            bottomSheetInfoPromoCode.dismiss();
                         }
                     });
                 }
