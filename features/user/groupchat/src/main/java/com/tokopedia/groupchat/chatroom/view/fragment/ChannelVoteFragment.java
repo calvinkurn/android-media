@@ -304,12 +304,17 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         }
     }
 
+    /**
+     *
+     * @param voted
+     * commented per request from UI team.
+     */
     public void setVoted(boolean voted) {
-        if(voted) {
-            votedView.setVisibility(View.VISIBLE);
-        }else {
-            votedView.setVisibility(View.GONE);
-        }
+//        if(voted) {
+//            votedView.setVisibility(View.VISIBLE);
+//        }else {
+//            votedView.setVisibility(View.GONE);
+//        }
     }
 
     @Override

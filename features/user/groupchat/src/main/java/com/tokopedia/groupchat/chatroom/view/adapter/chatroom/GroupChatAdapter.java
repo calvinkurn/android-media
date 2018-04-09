@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BaseChatViewModel;
@@ -32,7 +33,7 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private List<Visitable> listDummy;
     private GroupChatTypeFactory typeFactory;
     private EmptyModel emptyModel;
-    private LoadingModel loadingModel;
+    private LoadingMoreModel loadingModel;
     private boolean canLoadMore;
     private long mLastCursor = 0;
 
@@ -41,7 +42,7 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.listDummy = new ArrayList<>();
         this.typeFactory = typeFactory;
         this.emptyModel = new EmptyModel();
-        this.loadingModel = new LoadingModel();
+        this.loadingModel = new LoadingMoreModel();
         this.canLoadMore = true;
         this.mLastCursor = 0;
     }
