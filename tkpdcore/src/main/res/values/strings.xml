@@ -449,6 +449,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="action_editor">Edit gambar</string>
     <string name="title_confirm">Konfirmasi</string>
     <string name="title_confirm_otp">Verifikasi</string>
+    <string name="title_activation_otp">Aktivasi</string>
     <string name="title_copy">Salin Invoice</string>
     <string name="title_no">Tidak</string>
     <string name="title_yes">Ya</string>

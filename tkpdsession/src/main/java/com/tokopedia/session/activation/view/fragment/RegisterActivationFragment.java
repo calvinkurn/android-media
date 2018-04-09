@@ -143,7 +143,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
         setActivateText();
 
-        Spannable spannable = new SpannableString(getString(R.string.activation_resend_email));
+        Spannable spannable = new SpannableString(getString(R.string.activation_resend_email_2));
 
         spannable.setSpan(new ClickableSpan() {
                               @Override
@@ -157,16 +157,16 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
                                           com.tokopedia.core.R.color.tkpd_main_green));
                               }
                           }
-                , getString(R.string.activation_resend_email).indexOf("Kirim")
+                , getString(R.string.activation_resend_email_2).indexOf("Kirim")
                 , getString(
-                        R.string.activation_resend_email).length()
+                        R.string.activation_resend_email_2).length()
                 , 0);
 
         footer.setText(spannable, TextView.BufferType.SPANNABLE);
     }
 
     private void setActivateText() {
-        String activateText = getString(R.string.activation_header_text) + " <br><b>" + getEmail() + "</b>";
+        String activateText = getString(R.string.activation_header_text_2) + " <font color='#000000'>" + getEmail() + "</font>";
         activationText.setText(MethodChecker.fromHtml(activateText));
     }
 
@@ -201,12 +201,12 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
                 if (s.length() == 5) {
                     activateButton.setEnabled(true);
                     MethodChecker.setBackground(activateButton,
-                            MethodChecker.getDrawable(getActivity(), R.drawable.green_button));
+                            MethodChecker.getDrawable(getActivity(), R.drawable.green_button_rounded));
                     activateButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
                 } else {
                     activateButton.setEnabled(false);
                     MethodChecker.setBackground(activateButton,
-                            MethodChecker.getDrawable(getActivity(), R.drawable.cards_grey));
+                            MethodChecker.getDrawable(getActivity(), R.drawable.green_button_rounded));
                     activateButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
                 }
             }

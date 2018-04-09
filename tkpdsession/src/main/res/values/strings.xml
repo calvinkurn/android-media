@@ -52,7 +52,9 @@
     <string name="default_error_upload_image">Gagal mengupload gambar</string>
     <string name="title_activate_account">Aktivasi Akun Tokopedia</string>
     <string name="activation_resend_email">Belum menerima email? Kirim ulang email</string>
+    <string name="activation_resend_email_2">Belum menerima email? Kirim ulang</string>
     <string name="activation_header_text">Kode aktivasi akun telah dikirimkan ke</string>
+    <string name="activation_header_text_2">Kode aktivasi akun telah dikirimkan melalui \nemail ke</string>
     <string name="resend_activation_email">Kirim Ulang Email</string>
     <string name="message_resend_email_to">Apakah anda ingin kirim ulang email ke</string>
     <string name="button_change_email">Ubah Email</string>
@@ -230,7 +232,7 @@
     <string name="register_with_phone_number_button">Nomor Ponsel</string>
     <string name="register_with_email">Email</string>
     <string name="register_we_will_send_verification_code">Kami akan mengirimkan kode melalui SMS</string>
-    <string name="error_field_required_phone">Masukkan nomor ponsel untuk mendaftar.</string>
+    <string name="error_field_required_phone">Masukkan nomor ponsel untuk mendaftar</string>
     <string name="error_char_count_under">Nomor ponsel terlalu pendek, minimal 8 angka</string>
     <string name="error_char_count_over">Nomor ponsel terlalu panjang, maksimal 15 angka</string>
     <string name="error_input_phone_number">Masukkan nomor ponsel untuk mendaftar</string>
@@ -241,6 +243,7 @@
     <string name="phone_number_already_registered_yes">Masuk</string>
     <string name="phone_number_not_registered_no">Ubah</string>
     <string name="phone_number_not_registered_yes">Ya, Lanjut</string>
+    <string name="activation_title">Masukkan Kode Aktivasi</string>
 
     <!--ADD CHANGE EMAIL-->
     <string name="title_add_email">Tambah Email</string>
