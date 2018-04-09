@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -165,17 +164,17 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         return false;
     }
 
-    @NeedsPermission({Manifest.permission.WRITE_CALL_LOG,Manifest.permission.CALL_PHONE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    @NeedsPermission({Manifest.permission.WRITE_CALL_LOG, Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG})
     void requestNOtpWithPermission() {
         presenter.callPermissionCheckSuccess();
     }
 
-    @OnPermissionDenied({Manifest.permission.WRITE_CALL_LOG,Manifest.permission.CALL_PHONE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    @OnPermissionDenied({Manifest.permission.WRITE_CALL_LOG, Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG})
     void requestNOtpPermissionDenied() {
         presenter.callPermissionCheckFail();
     }
 
-    @OnNeverAskAgain({Manifest.permission.WRITE_CALL_LOG,Manifest.permission.CALL_PHONE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    @OnNeverAskAgain({Manifest.permission.WRITE_CALL_LOG, Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG})
     void requestNOtpPermissionNeverAsk() {
         presenter.callPermissionCheckFail();
     }
@@ -259,9 +258,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public void showProgressLoading(String title,String message) {
-        progressDialogNormal.showDialog(title,message);
+    public void showProgressLoading(String title, String message) {
+        progressDialogNormal.showDialog(title, message);
     }
+
     @Override
     public void showProgressLoading() {
         progressDialogNormal.showDialog();
@@ -350,7 +350,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             if (cartDigitalInfoData.getAttributes().isEnableVoucher() &&
                     cartDigitalInfoData.getAttributes().getAutoApplyVoucher() != null &&
                     cartDigitalInfoData.getAttributes().getAutoApplyVoucher().isSuccess()) {
-                if (!(cartDigitalInfoData.getAttributes().isCouponActive() == 0 && cartDigitalInfoData.getAttributes().getAutoApplyVoucher().getIsCoupon() == 1)){
+                if (!(cartDigitalInfoData.getAttributes().isCouponActive() == 0 && cartDigitalInfoData.getAttributes().getAutoApplyVoucher().isCoupon() == 1)) {
                     CartAutoApplyVoucher cartAutoApplyVoucher = cartDigitalInfoData.getAttributes().getAutoApplyVoucher();
                     VoucherDigital voucherDigital = new VoucherDigital();
                     VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
@@ -358,7 +358,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     voucherAttributeDigital.setDiscountAmountPlain(cartAutoApplyVoucher.getDiscountAmount());
                     voucherAttributeDigital.setMessage(cartAutoApplyVoucher.getMessageSuccess());
                     voucherDigital.setAttributeVoucher(voucherAttributeDigital);
-                    renderVoucherInfoData(voucherDigital);
+
+                    if (cartAutoApplyVoucher.isCoupon() == 1) {
+                        renderCouponInfoData(cartAutoApplyVoucher.getTitle(), voucherDigital);
+                    } else {
+                        renderVoucherInfoData(voucherDigital);
+                    }
                 }
             }
         }
@@ -511,6 +516,18 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             checkoutHolderView.enableVoucherDiscount(
                     voucherDigital.getAttributeVoucher().getDiscountAmountPlain()
             );
+        }
+    }
+
+    @Override
+    public void renderCouponInfoData(String title, VoucherDigital voucherDigital) {
+        this.voucherDigitalState = voucherDigital;
+        voucherCartHachikoView.setCoupon(title,
+                voucherDigital.getAttributeVoucher().getMessage(),
+                voucherDigital.getAttributeVoucher().getVoucherCode()
+        );
+        if (voucherDigital.getAttributeVoucher().getDiscountAmountPlain() > 0) {
+            checkoutHolderView.enableVoucherDiscount(voucherDigital.getAttributeVoucher().getDiscountAmountPlain());
         }
     }
 
@@ -705,12 +722,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void onClickUseVoucher() {
-        if(cartDigitalInfoDataState.getAttributes().isEnableVoucher()) {
+        if (cartDigitalInfoDataState.getAttributes().isEnableVoucher()) {
             Intent intent;
             if (cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE) {
                 if (cartDigitalInfoDataState.getAttributes().getDefaultPromoTab().equalsIgnoreCase(LoyaltyActivity.COUPON_STATE)) {
                     intent = LoyaltyActivity.newInstanceCouponActiveAndSelected(context, LoyaltyActivity.DIGITAL_STRING, passData.getCategoryId());
-                }else {
+                } else {
                     intent = LoyaltyActivity.newInstanceCouponActive(context, LoyaltyActivity.DIGITAL_STRING, passData.getCategoryId());
                 }
             } else {
@@ -738,11 +755,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void trackingCancelledVoucher() {
         UnifyTracking.eventClickCancelVoucher("", "");
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        CartDigitalFragmentPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+        CartDigitalFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

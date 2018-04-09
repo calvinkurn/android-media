@@ -57,7 +57,7 @@ public class CartAutoApplyVoucher implements Parcelable {
         this.code = code;
     }
 
-    public int getIsCoupon() {
+    public int isCoupon() {
         return isCoupon;
     }
 
