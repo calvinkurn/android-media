@@ -11,12 +11,12 @@ public class SearchViewModel implements Parcelable {
     private String url;
     private String displayName;
     private String title;
-    private Integer salesPrice;
+    private int salesPrice;
     private String cityName;
-    private Integer minStartDate;
-    private Integer maxEndDate;
+    private int minStartDate;
+    private int maxEndDate;
     private String imageApp;
-    private Integer isTop;
+    private int isTop;
 
 
     public String getUrl() {
@@ -43,11 +43,11 @@ public class SearchViewModel implements Parcelable {
         this.title = title;
     }
 
-    public Integer getSalesPrice() {
+    public int getSalesPrice() {
         return salesPrice;
     }
 
-    public void setSalesPrice(Integer salesPrice) {
+    public void setSalesPrice(int salesPrice) {
         this.salesPrice = salesPrice;
     }
 
@@ -59,27 +59,27 @@ public class SearchViewModel implements Parcelable {
         this.cityName = cityName;
     }
 
-    public Integer getIsTop() {
+    public int getIsTop() {
         return isTop;
     }
 
-    public void setIsTop(Integer isTop) {
+    public void setIsTop(int isTop) {
         this.isTop = isTop;
     }
 
-    public Integer getMinStartDate() {
+    public int getMinStartDate() {
         return minStartDate;
     }
 
-    public void setMinStartDate(Integer minStartDate) {
+    public void setMinStartDate(int minStartDate) {
         this.minStartDate = minStartDate;
     }
 
-    public Integer getMaxEndDate() {
+    public int getMaxEndDate() {
         return maxEndDate;
     }
 
-    public void setMaxEndDate(Integer maxEndDate) {
+    public void setMaxEndDate(int maxEndDate) {
         this.maxEndDate = maxEndDate;
     }
 
@@ -91,8 +91,6 @@ public class SearchViewModel implements Parcelable {
         this.imageApp = imageApp;
     }
 
-    public SearchViewModel() {
-    }
 
     @Override
     public int describeContents() {
@@ -104,27 +102,30 @@ public class SearchViewModel implements Parcelable {
         dest.writeString(this.url);
         dest.writeString(this.displayName);
         dest.writeString(this.title);
-        dest.writeValue(this.salesPrice);
+        dest.writeInt(this.salesPrice);
         dest.writeString(this.cityName);
-        dest.writeValue(this.minStartDate);
-        dest.writeValue(this.maxEndDate);
+        dest.writeInt(this.minStartDate);
+        dest.writeInt(this.maxEndDate);
         dest.writeString(this.imageApp);
-        dest.writeValue(this.isTop);
+        dest.writeInt(this.isTop);
+    }
+
+    public SearchViewModel() {
     }
 
     protected SearchViewModel(Parcel in) {
         this.url = in.readString();
         this.displayName = in.readString();
         this.title = in.readString();
-        this.salesPrice = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.salesPrice = in.readInt();
         this.cityName = in.readString();
-        this.minStartDate = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.maxEndDate = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.minStartDate = in.readInt();
+        this.maxEndDate = in.readInt();
         this.imageApp = in.readString();
-        this.isTop = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.isTop = in.readInt();
     }
 
-    public static final Creator<SearchViewModel> CREATOR = new Creator<SearchViewModel>() {
+    public static final Parcelable.Creator<SearchViewModel> CREATOR = new Parcelable.Creator<SearchViewModel>() {
         @Override
         public SearchViewModel createFromParcel(Parcel source) {
             return new SearchViewModel(source);

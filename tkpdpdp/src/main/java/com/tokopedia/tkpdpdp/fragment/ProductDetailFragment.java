@@ -718,10 +718,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 fabWishlist.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        showToastMessage(productData.getInfo().getProductStatusTitle() );
+                        showToastMessage(productData.getInfo().getProductStatusTitle());
                     }
                 });
             }
+
         } else if (status == 1) {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
         } else {

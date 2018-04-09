@@ -14,23 +14,18 @@
         android:paddingBottom="@dimen/padding_16"
         android:paddingTop="@dimen/padding_16"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/bg_line_separator" />
-
     <LinearLayout
         android:id="@+id/passenger_detail_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/padding_small">
+        android:paddingBottom="@dimen/dp_10">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_5"
             android:orientation="vertical">
 
             <android.support.v7.widget.AppCompatTextView
@@ -38,7 +33,7 @@
                 style="@style/TextView.Small.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vvs"
+                android:layout_marginBottom="@dimen/dp_3"
                 android:layout_weight="1"
                 tools:text="Nona Aisyah Sarasvati" />
 
@@ -48,10 +43,6 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/bg_line_separator" />
     </LinearLayout>
 
 </LinearLayout>

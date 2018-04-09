@@ -49,6 +49,7 @@ import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.google.GoogleSignInActivity;
+import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
@@ -133,7 +134,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         callbackManager = CallbackManager.Factory.create();
-        sessionHandler.clearToken();
     }
 
     @Nullable
@@ -230,21 +230,18 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -454,11 +451,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void clearToken() {
-        presenter.clearToken();
-    }
-
-    @Override
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone) {
 
         InterruptVerificationViewModel interruptVerificationViewModel;
@@ -507,6 +499,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 presenter.registerFacebook(accessToken);
             }
         };
+    }
+
+    @Override
+    public void onForbidden() {
+        ForbiddenActivity.startActivity(getActivity());
     }
 
     @Override

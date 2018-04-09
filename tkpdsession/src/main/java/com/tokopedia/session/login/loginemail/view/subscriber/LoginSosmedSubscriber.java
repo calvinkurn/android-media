@@ -2,6 +2,7 @@ package com.tokopedia.session.login.loginemail.view.subscriber;
 
 import android.text.TextUtils;
 
+import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.network.ErrorCode;
@@ -41,7 +42,17 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
             view.onGoToActivationPage(email);
         } else {
             view.dismissLoadingLogin();
-            view.onErrorLogin(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
+            ErrorHandler.getErrorMessage(new ErrorHandler.ErrorForbiddenListener() {
+                @Override
+                public void onForbidden() {
+                    view.onForbidden();
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    view.onErrorLogin(errorMessage);
+                }
+            }, e, view.getContext());
         }
     }
 
@@ -69,7 +80,6 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
                     loginSosmedDomain.getInfo().getGetUserInfoDomainData().getPhone());
         } else {
             view.dismissLoadingLogin();
-            view.resetToken();
             view.onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
     }

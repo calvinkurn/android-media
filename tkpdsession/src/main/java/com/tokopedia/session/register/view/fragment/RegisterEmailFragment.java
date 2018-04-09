@@ -51,6 +51,7 @@ import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
+import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
@@ -662,6 +663,11 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         });
         redirectView.setVisibility(View.VISIBLE);
         container.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onForbidden() {
+        ForbiddenActivity.startActivity(getActivity());
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachImageModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
@@ -30,4 +31,6 @@ public interface ChatRoomTypeFactory {
     int type(TypingChatModel typingChatModel);
 
     int type(AttachImageModel attachImageModel);
+
+    int type(AttachProductViewModel attachProductViewModel);
 }

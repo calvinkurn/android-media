@@ -40,6 +40,7 @@ import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
 import com.tokopedia.session.R;
+import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.view.adapter.TokocashAccountAdapter;
@@ -253,6 +254,11 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void onForbidden() {
+        ForbiddenActivity.startActivity(getActivity());
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         message.setText(getPromptText());
@@ -269,7 +275,6 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
         if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             onSuccessLogin();
         } else {
-            presenter.clearToken();
             super.onActivityResult(requestCode, resultCode, data);
         }
     }

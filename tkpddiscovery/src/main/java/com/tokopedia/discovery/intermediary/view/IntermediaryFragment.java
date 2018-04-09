@@ -3,7 +3,6 @@ package com.tokopedia.discovery.intermediary.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -37,10 +36,11 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
@@ -55,7 +55,6 @@ import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
 import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
-import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 import com.tokopedia.discovery.intermediary.domain.model.ProductModel;
 import com.tokopedia.discovery.intermediary.domain.model.VideoModel;
 import com.tokopedia.discovery.intermediary.view.adapter.BannerPagerAdapter;
@@ -96,7 +95,7 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALU
 
 public class IntermediaryFragment extends BaseDaggerFragment implements IntermediaryContract.View,
         CuratedProductAdapter.OnItemClickListener, TopAdsItemClickListener, TopAdsListener,
-        IntermediaryCategoryAdapter.CategoryListener, IntermediaryBrandsAdapter.BrandListener {
+        IntermediaryCategoryAdapter.CategoryListener, IntermediaryBrandsAdapter.BrandListener, BannerPagerAdapter.OnPromoClickListener {
 
     public static final String TAG = "INTERMEDIARY_FRAGMENT";
     private static final long SLIDE_DELAY = 8000;
@@ -356,7 +355,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public void renderBanner(List<BannerModel> bannerModelList) {
         bannerHandler = new Handler();
         incrementPage = runnableIncrement();
-        bannerPagerAdapter = new BannerPagerAdapter(getActivity(), bannerModelList, departmentId);
+        bannerPagerAdapter = new BannerPagerAdapter(getActivity(), bannerModelList, departmentId, this);
         banner = getActivity().getLayoutInflater().inflate(R.layout.banner_intermediary, bannerContainer);
         bannerViewPager = (ViewPager) banner.findViewById(R.id.view_pager_intermediary);
         bannerIndicator = (CirclePageIndicator) banner.findViewById(R.id.indicator_intermediary);
@@ -583,7 +582,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         ProductItem data = new ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -597,7 +596,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
+    public void onShopItemClicked(int position, Shop shop) {
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
         getActivity().startActivity(intent);
     }
@@ -649,5 +648,33 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), brandModel.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onPromoClick(String applink, String url) {
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
+                && !TextUtils.isEmpty(applink)
+                && ((TkpdCoreRouter) getActivity().getApplicationContext())
+                .isSupportedDelegateDeepLink(applink)) {
+            ((TkpdCoreRouter) getActivity().getApplicationContext())
+                    .actionApplink(getActivity(), applink);
+        } else {
+            switch ((DeepLinkChecker.getDeepLinkType(url))) {
+                case DeepLinkChecker.BROWSE:
+                    DeepLinkChecker.openBrowse(url, getActivity());
+                    break;
+                case DeepLinkChecker.HOT:
+                    DeepLinkChecker.openHot(url, getActivity());
+                    break;
+                case DeepLinkChecker.CATALOG:
+                    DeepLinkChecker.openCatalog(url, getActivity());
+                    break;
+                default:
+                    Intent intent = new Intent(getActivity(), BannerWebView.class);
+                    intent.putExtra("url", url);
+                    startActivity(intent);
+            }
+        }
     }
 }

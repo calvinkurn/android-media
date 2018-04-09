@@ -6,19 +6,19 @@
     android:clickable="true"
     android:foreground="?attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/margin_sm"
-    android:paddingLeft="@dimen/margin_vs"
-    android:paddingRight="@dimen/margin_vs"
-    android:paddingTop="@dimen/margin_sm">
+    android:paddingBottom="@dimen/dp_15"
+    android:paddingLeft="@dimen/dp_5"
+    android:paddingRight="@dimen/dp_5"
+    android:paddingTop="@dimen/dp_15">
 
     <ImageView
         android:id="@+id/iv_logo"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/image_width_s"
+        android:layout_height="@dimen/dp_32"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_vs"
-        android:minWidth="@dimen/image_width_xl" />
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_5"
+        android:minWidth="@dimen/dp_72" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -39,14 +39,14 @@
             style="@style/TextView.Micro.BlackSecondary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vvs"
+            android:layout_marginTop="@dimen/dp_3"
             tools:text="Mulai dari Rp5.857.900" />
     </LinearLayout>
 
     <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/checkbox"
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size"
+        android:layout_width="@dimen/dp_36"
+        android:layout_height="@dimen/dp_36"
         android:layout_gravity="center_vertical"
         android:theme="@style/checkBoxStyle" />
 </LinearLayout>

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.place.data.entity.DirectionEntity;
 import com.tokopedia.ride.common.place.data.entity.DistanceMatrixEntity;
+import com.tokopedia.ride.common.place.data.entity.NearbyRoads;
 import com.tokopedia.ride.common.place.data.entity.ReverseGeoCodeAddress;
 import com.tokopedia.ride.common.place.domain.PlaceRepository;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
@@ -62,5 +63,11 @@ public class PlaceDataRepository implements PlaceRepository {
                         return reverseGeoCodeAddress;
                     }
                 });
+    }
+
+    @Override
+    public Observable<NearbyRoads> getNearByRoadsFromGoogleAPI(String points, String key) {
+        return placeDataStoreFactory.createCloudPlaceDataStore()
+                .getNearbyRoadsFromGoogleAPI(points,key);
     }
 }

@@ -523,7 +523,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         ProductItem data = new ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -537,7 +537,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
+    public void onShopItemClicked(int position, Shop shop) {
         Intent intent = ((TransactionRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
         startActivity(intent);
     }
@@ -801,6 +801,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
             }
         });
+    }
+
+    @Override
+    public void renderPartialOrder(boolean enableCancelPartial) {
+        cartItemAdapter.setEnableCancelPartial(enableCancelPartial);
     }
 
     @Override

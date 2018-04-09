@@ -7,4 +7,5 @@ package com.tokopedia.tkpd;
 public class ConsumerAppNetworkKeys {
     public static final String CREDIT_CARD_VAULT_AUTH_KEY = "AdKc1ag2NmYgRUF97eQQ8J";
     public static final String ZEUS_WHITELIST = "abf49d067c9ca8585f3a1059464d22b9";
+    public static final String HMAC_PENDING_CASHBACK = "CPAnAGpC3NIg7ZSj";
 }

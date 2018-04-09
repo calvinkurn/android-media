@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="@dimen/margin_small"
     android:layout_marginLeft="@dimen/margin_small"
     android:layout_marginRight="@dimen/margin_small"
@@ -45,7 +46,7 @@
                     android:layout_width="@dimen/img_thumb"
                     android:layout_height="@dimen/img_thumb"
                     android:layout_marginRight="@dimen/margin_vs"
-                    android:src="@drawable/ic_icon_repsis_smile_active"
+                    app:srcCompat="@drawable/ic_icon_repsis_smile_active"
                     android:id="@+id/icon_reputation"/>
 
                 <TextView
@@ -87,14 +88,14 @@
                         <ImageView
                             android:layout_width="@dimen/img_thumb_s"
                             android:layout_height="@dimen/img_thumb_s"
-                            android:src="@drawable/ic_icon_repsis_smile_active"
+                            app:srcCompat="@drawable/ic_icon_repsis_smile_active"
                             android:layout_marginRight="@dimen/padding_vs"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/title_positif"
-                            android:textSize="@dimen/font_small"/>
+                            android:textSize="@dimen/sp_14"/>
 
                     </LinearLayout>
 
@@ -124,14 +125,14 @@
                         <ImageView
                             android:layout_width="@dimen/img_thumb_s"
                             android:layout_height="@dimen/img_thumb_s"
-                            android:src="@drawable/ic_icon_repsis_neutral_active"
+                            app:srcCompat="@drawable/ic_icon_repsis_neutral_active"
                             android:layout_marginRight="@dimen/padding_vs"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/title_netral"
-                            android:textSize="@dimen/font_small"/>
+                            android:textSize="@dimen/sp_14"/>
 
                     </LinearLayout>
 
@@ -161,14 +162,14 @@
                         <ImageView
                             android:layout_width="@dimen/img_thumb_s"
                             android:layout_height="@dimen/img_thumb_s"
-                            android:src="@drawable/ic_icon_repsis_sad_active"
+                            app:srcCompat="@drawable/ic_icon_repsis_sad_active"
                             android:layout_marginRight="@dimen/padding_vs"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/title_negatif"
-                            android:textSize="@dimen/font_small"/>
+                            android:textSize="@dimen/sp_14"/>
 
                     </LinearLayout>
 
@@ -193,7 +194,7 @@
                     android:layout_width="@dimen/img_thumb"
                     android:layout_height="@dimen/img_thumb"
                     android:id="@+id/imageView10"
-                    android:src="@drawable/ic_icon_repsis_smile_active"
+                    app:srcCompat="@drawable/ic_icon_repsis_smile_active"
                     android:layout_marginBottom="@dimen/margin_vs" />
 
                 <TextView
@@ -201,7 +202,7 @@
                     android:layout_height="wrap_content"
                     android:text="42%"
                     android:id="@+id/user_reputation"
-                    android:textSize="@dimen/font_small"
+                    android:textSize="@dimen/sp_14"
                     android:layout_gravity="center"
                     android:gravity="center" />
 
@@ -210,7 +211,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/title_positif"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
             </LinearLayout>
 
             <LinearLayout
@@ -232,14 +233,14 @@
                     <ImageView
                         android:layout_width="@dimen/img_thumb"
                         android:layout_height="@dimen/img_thumb"
-                        android:src="@drawable/ic_icon_repsis_smile_active"
+                        app:srcCompat="@drawable/ic_icon_repsis_smile_active"
                         android:layout_marginBottom="@dimen/margin_vs"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="11"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:id="@+id/counter_positive"
                         android:textStyle="bold" />
 
@@ -260,14 +261,14 @@
                     <ImageView
                         android:layout_width="@dimen/img_thumb"
                         android:layout_height="@dimen/img_thumb"
-                        android:src="@drawable/ic_icon_repsis_neutral_active"
+                        app:srcCompat="@drawable/ic_icon_repsis_neutral_active"
                         android:layout_marginBottom="@dimen/margin_vs"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="11"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:id="@+id/counter_neutral"
                         android:textStyle="bold" />
 
@@ -288,14 +289,14 @@
                     <ImageView
                         android:layout_width="@dimen/img_thumb"
                         android:layout_height="@dimen/img_thumb"
-                        android:src="@drawable/ic_icon_repsis_sad_active"
+                        app:srcCompat="@drawable/ic_icon_repsis_sad_active"
                         android:layout_marginBottom="@dimen/margin_vs"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="11"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:id="@+id/counter_negative"
                         android:textStyle="bold" />
 

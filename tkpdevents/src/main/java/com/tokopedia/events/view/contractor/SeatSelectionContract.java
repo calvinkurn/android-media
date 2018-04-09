@@ -39,7 +39,7 @@ public class SeatSelectionContract {
 
         void setSelectedSeatText();
 
-        void initializeSeatLayoutModel(List<String> selectedSeatText, List<String> rowIds);
+        void initializeSeatLayoutModel(List<String> selectedSeatText, List<String> rowIds, List<String> actualSeat);
 
         void setEventTitle(String text);
 
@@ -57,6 +57,8 @@ public class SeatSelectionContract {
 
 
         void validateSelection();
+
+        void onActivityResult(int requestCode);
 
     }
 }

@@ -32,4 +32,8 @@ public interface HomeCategoryListener {
     void showNetworkError(String message);
 
     void onDynamicChannelClicked(String applink);
+
+    void onRefreshTokoPointButtonClicked();
+
+    void onRefreshTokoCashButtonClicked();
 }

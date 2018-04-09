@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.campaign.data.entity;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CampaignResponseEntity{
+public class CampaignResponseEntity {
 
 	@SerializedName("updated_at")
 	private String updatedAt;

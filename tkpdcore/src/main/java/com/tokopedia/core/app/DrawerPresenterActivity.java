@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -166,10 +165,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         drawerDataManager.getDeposit();
     }
 
-    protected void getDrawerTopPoints() {
-        drawerDataManager.getTopPoints();
-    }
-
     protected void getDrawerProfile() {
         drawerDataManager.getProfile();
     }
@@ -223,7 +218,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
             getDrawerNotification();
 
             if (!GlobalConfig.isSellerApp()) {
-                getDrawerTopPoints();
                 getDrawerTokoCash();
                 getTokoPointData();
                 getProfileCompletion();

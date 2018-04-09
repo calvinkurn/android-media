@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.tkpdpdp.R;
@@ -142,13 +141,7 @@ public class ManageView extends BaseView<ProductDetailData, ProductDetailView> {
             if (data.getProductImages().isEmpty()) {
                 listener.showToastMessage("Gambar harus diisi");
             } else {
-                if (data.getProductImages().get(0).getImageSrc300()
-                        .contains("android.resource://" + BuildConfig.APPLICATION_ID +
-                                "/drawable/product_no_photo_default")) {
-                    listener.showToastMessage("Gambar harus diisi");
-                } else {
-                    listener.onProductManageToEtalaseClicked(data.getInfo().getProductId());
-                }
+
             }
         }
     }

@@ -550,7 +550,7 @@ public class ProductFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -564,7 +564,7 @@ public class ProductFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
+    public void onShopItemClicked(int position, Shop shop) {
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
         getActivity().startActivity(intent);
     }

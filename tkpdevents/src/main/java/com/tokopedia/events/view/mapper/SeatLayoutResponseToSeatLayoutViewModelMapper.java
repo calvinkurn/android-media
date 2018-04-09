@@ -49,6 +49,7 @@ public class SeatLayoutResponseToSeatLayoutViewModelMapper {
                         seatViewModel.setAreaId(seat.getAreaId());
                         seatViewModel.setNo(seat.getNo());
                         seatViewModel.setStatus(seat.getStatus());
+                        seatViewModel.setActualSeat(seat.getActualSeat());
                         seatViewModels.add(seatViewModel);
                     }
                     layoutDetailViewModel.setSeat(seatViewModels);

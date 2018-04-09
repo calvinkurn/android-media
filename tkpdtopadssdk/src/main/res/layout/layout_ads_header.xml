@@ -1,7 +1,7 @@
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/top_promote_h"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@id/ads_header"
     android:background="@color/white"
     android:gravity="center_vertical"
@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:paddingLeft="@dimen/margin_small"
-        android:paddingRight="@dimen/margin_vs"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_5"
         android:text="@string/title_promote"
         android:layout_weight="1"
         android:textColor="@color/black_38"
@@ -26,7 +26,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/icon_info"
+        app:srcCompat="@drawable/icon_info"
         android:layout_marginRight="@dimen/label_padding_left_right"
         android:tint="@color/tkpd_dark_gray" />
 </LinearLayout>

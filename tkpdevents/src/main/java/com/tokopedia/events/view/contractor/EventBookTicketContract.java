@@ -8,6 +8,10 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
+import com.tokopedia.events.view.viewmodel.PackageViewModel;
+import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
+
+import java.util.List;
 
 /**
  * Created by pranaymohapatra on 28/11/17.
@@ -36,8 +40,6 @@ public class EventBookTicketContract {
 
         void hideProgressBar();
 
-        void initTablayout();
-
         void renderSeatmap(String url);
 
         void hideSeatmap();
@@ -47,6 +49,8 @@ public class EventBookTicketContract {
         int getButtonLayoutHeight();
 
         int getRequestCode();
+
+        void setLocationDate(String location, String date, SchedulesViewModel datas);
     }
 
     public interface Presenter extends CustomerPresenter<EventBookTicketContract.EventBookTicketView> {

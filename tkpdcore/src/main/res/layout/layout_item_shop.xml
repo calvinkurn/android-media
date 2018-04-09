@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="5dp"
     android:paddingBottom="5dp">
 
@@ -33,7 +34,7 @@
                 android:id="@+id/item_shop_gold"
                 android:layout_width="13dp"
                 android:layout_height="13dp"
-                android:src="@drawable/ic_shop_gold"
+                app:srcCompat="@drawable/ic_shop_gold"
                 android:layout_marginRight="3dp"
                 android:visibility="gone" />
 
@@ -57,12 +58,12 @@
             android:layout_height="@dimen/shop_list_reputation_view_height"
             android:layout_marginTop="4dp"/>
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/shop_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:drawableLeft="@drawable/ic_place_black_24dp"
+            app:drawableLeftCompat="@drawable/ic_place_grey_24dp"
             android:textSize="11sp"
             android:textColor="@color/black_36"
             />

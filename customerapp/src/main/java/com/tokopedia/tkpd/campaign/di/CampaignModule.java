@@ -1,13 +1,14 @@
 package com.tokopedia.tkpd.campaign.di;
-
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.campaign.data.model.CampaignErrorResponse;
-import com.tokopedia.tkpd.campaign.domain.barcode.CampaignDataRepository;
+import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
+import com.tokopedia.tkpd.campaign.domain.audio.PostAudioDataUseCase;
 import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
+import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.tkpd.campaign.source.CampaignData;
 import com.tokopedia.tkpd.campaign.source.CampaignDataFactory;
 import com.tokopedia.tkpd.campaign.source.api.CampaignAPI;
@@ -33,6 +34,14 @@ public class CampaignModule {
         return new PostBarCodeDataUseCase(bookingRideRepository);
     }
 
+    @Provides
+    PostAudioDataUseCase providePostAudioCodeDataUseCase(CampaignDataRepository bookingRideRepository) {
+        return new PostAudioDataUseCase(bookingRideRepository);
+    }
+    @Provides
+    ShakeUseCase provideShakeUseCase(CampaignDataRepository bookingRideRepository) {
+        return new ShakeUseCase(bookingRideRepository);
+    }
     @Provides
     CampaignDataRepository provideCampaignRideRepository(CampaignDataFactory campaignDataFactory) {
         return new CampaignData(campaignDataFactory);

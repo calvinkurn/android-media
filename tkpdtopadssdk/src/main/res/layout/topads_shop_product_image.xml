@@ -12,5 +12,7 @@
         android:adjustViewBounds="true"
         android:gravity="center"
         android:padding="0.5dp"
+        android:src="@drawable/loading_page"
         android:scaleType="centerCrop" />
+
 </LinearLayout>

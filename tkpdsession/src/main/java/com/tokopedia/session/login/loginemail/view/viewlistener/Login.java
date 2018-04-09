@@ -57,8 +57,6 @@ public interface Login {
 
         void setSmartLock();
 
-        void resetToken();
-
         void onErrorLogin(String errorMessage, int codeError);
 
         void onGoToActivationPage(String email);
@@ -72,6 +70,8 @@ public interface Login {
         void disableArrow();
 
         void enableArrow();
+
+        void onForbidden();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -92,6 +92,5 @@ public interface Login {
 
         void loginFacebook(AccessToken accessToken, String email);
 
-        void resetToken();
     }
 }

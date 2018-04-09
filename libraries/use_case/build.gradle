@@ -1,0 +1,12 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+
+dependencies {
+    compile rootProject.ext.miscDependencies.rxAndroid
+    compile rootProject.ext.miscDependencies.rxJava
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.testDependencies.junit
+}

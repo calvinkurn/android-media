@@ -17,6 +17,10 @@ public class Product extends BaseGTMModel {
     public static final String KEY_CAT      = "category";
     public static final String KEY_VARIANT  = "variant";
     public static final String KEY_QTY      = "quantity";
+    public static final String KEY_SHOP_ID  = "shop_id";
+    public static final String KEY_SHOP_NAME = "shop_name";
+    public static final String KEY_CATEGORY_ID = "category_id";
+    public static final String KEY_CART_ID = "cart_id";
     public static final String KEY_POS      = "position";
     public static final String KEY_LIST     = "list";
 
@@ -64,5 +68,20 @@ public class Product extends BaseGTMModel {
         return Product;
     }
 
+    public void setShopId(String shopId) {
+        Product.put(KEY_SHOP_ID, shopId);
+    }
+
+    public void setShopName(String shopName) {
+        Product.put(KEY_SHOP_NAME, shopName);
+    }
+
+    public void setCategoryId(String categoryId) {
+        Product.put(KEY_CATEGORY_ID, categoryId);
+    }
+
+    public void setCartId(String cartId) {
+        Product.put(KEY_CART_ID, cartId);
+    }
 
 }

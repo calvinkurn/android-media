@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -66,8 +67,11 @@ public class LabelView extends BaseCustomView {
     private void init(AttributeSet attrs) {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelView);
         try {
-            imageDrawable = styledAttributes.getDrawable(R.styleable.LabelView_lv_image);
-            imageWidth = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_width, getResources().getDimension(R.dimen.image_width_s));
+            final int drawableId = styledAttributes.getResourceId(R.styleable.LabelView_lv_image, -1);
+            if (drawableId >= 0) {
+                imageDrawable = AppCompatResources.getDrawable(getContext(), drawableId);
+            }
+            imageWidth = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_width, getResources().getDimension(R.dimen.dp_32));
             titleText = styledAttributes.getString(R.styleable.LabelView_lv_title);
             titleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
             subTitleText = styledAttributes.getString(R.styleable.LabelView_lv_sub_title);
@@ -76,7 +80,7 @@ public class LabelView extends BaseCustomView {
             contentTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_lv_content_text_style, Typeface.NORMAL);
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_lv_title_text_style, Typeface.NORMAL);
             maxLines = styledAttributes.getInt(R.styleable.LabelView_lv_content_max_lines, 1);
-            contentTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_content_text_size, getResources().getDimension(R.dimen.font_title));
+            contentTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_content_text_size, getResources().getDimension(R.dimen.sp_16));
             titleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_title_text_size, contentTextSize);
             minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.LabelView_lv_title_min_width, 0);
         } finally {

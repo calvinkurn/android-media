@@ -1,5 +1,6 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import com.tkpd.library.utils.AnalyticsLog;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
@@ -24,7 +25,7 @@ import okio.Buffer;
 
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
- * refer {@link com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor}
+ *         refer {@link com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor}
  */
 @Deprecated
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
@@ -36,6 +37,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String TOKEN = "token";
     private static final String ACCOUNTS_AUTHORIZATION = "accounts-authorization";
     private final String authKey;
+
+    private static final String RESPONSE_STATUS_INVALID_GRANT = "INVALID_GRANT";
+    private static final String RESPONSE_PARAM_TOKEN = "token";
+    private static final String REQUEST_PARAM_REFRESH_TOKEN = "refresh_token";
 
     public TkpdAuthInterceptor(String authKey) {
         this.authKey = authKey;
@@ -71,26 +76,36 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
             IOException {
-        if (isNeedRelogin(response)) {
-            refreshTokenWithRelogin();
-            if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {
-                Request newestRequest = recreateRequestWithNewAccessToken(chain);
-                return checkShowForceLogout(chain, newestRequest);
-            } else {
-                Request newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
-                return checkShowForceLogout(chain, newestRequest);
-            }
+        if (isNeedGcmUpdate(response)) {
+            return refreshTokenAndGcmUpdate(chain, response, finalRequest);
         } else if (isUnauthorized(finalRequest, response)) {
-            refreshToken();
-            Request newest = recreateRequestWithNewAccessToken(chain);
-            return checkShowForceLogout(chain, newest);
+            return refreshToken(chain, response);
+        } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)){
+            logInvalidGrant(response);
+            return response;
         }
         return response;
     }
 
+    private boolean isInvalidGrantWhenRefreshToken(Request request, Response response) {
+        try {
+            String responseString = response.peekBody(512).string();
+            return responseString.toUpperCase().contains(RESPONSE_STATUS_INVALID_GRANT)
+                    && response.request().url().encodedPath().contains(RESPONSE_PARAM_TOKEN)
+                    && request.toString().contains(REQUEST_PARAM_REFRESH_TOKEN);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void logInvalidGrant(Response response) {
+        AnalyticsLog.logInvalidGrant(response.request().url().toString());
+    }
+
     protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException {
         Response response = chain.proceed(newestRequest);
-        if (isUnauthorized(newestRequest, response) || isNeedRelogin(response)) {
+        if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)) {
             ServerErrorHandler.showForceLogoutDialog();
             ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
         }
@@ -313,7 +328,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return builder.build();
     }
 
-    protected Boolean isNeedRelogin(Response response) {
+    protected Boolean isNeedGcmUpdate(Response response) {
         try {
             //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
             String responseString = response.peekBody(512).string();
@@ -346,30 +361,45 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected void doRelogin(String newAccessToken) {
         SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
-            sessionRefresh.refreshLogin();
+            sessionRefresh.gcmUpdate();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    protected void refreshToken() {
+    protected Response refreshToken(Chain chain, Response response) {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
             accessTokenRefresh.refreshToken();
+            Request newest = recreateRequestWithNewAccessToken(chain);
+            return checkShowForceLogout(chain, newest);
         } catch (IOException e) {
             e.printStackTrace();
+            return response;
         }
     }
 
-    protected void refreshTokenWithRelogin() {
+    protected Response refreshTokenAndGcmUpdate(Chain chain, Response response, Request finalRequest) {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
             String newAccessToken = accessTokenRefresh.refreshToken();
             doRelogin(newAccessToken);
+
+            if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {
+                Request newestRequest = recreateRequestWithNewAccessToken(chain);
+                return checkShowForceLogout(chain, newestRequest);
+            } else {
+                Request newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
+                return checkShowForceLogout(chain, newestRequest);
+            }
         } catch (IOException e) {
             e.printStackTrace();
+            return response;
         }
-    }private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException{
+
+    }
+
+    private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException {
         Request newest = chain.request();
         Request.Builder newestRequestBuilder = chain.request().newBuilder();
         generateHmacAuthRequest(newest, newestRequestBuilder);

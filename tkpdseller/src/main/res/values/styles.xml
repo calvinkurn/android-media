@@ -123,8 +123,8 @@
     </style>
 
     <style name="ExpandableHeaderStylePadding" parent="eo_header_style">
-        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingLeft">@dimen/dp_16</item>
+        <item name="android:paddingRight">@dimen/dp_16</item>
         <item name="android:paddingTop">@dimen/margin_small_sm</item>
         <item name="android:paddingBottom">@dimen/margin_small_sm</item>
         <item name="android:gravity">center_vertical</item>
@@ -208,7 +208,7 @@
         <item name="android:paddingRight">20dp</item>
         <item name="android:paddingTop">7dp</item>
         <item name="android:paddingBottom">7dp</item>
-        <item name="android:background">@drawable/ic_bubble_logo</item>
+        <item name="android:background">@drawable/background_info_image_picker</item>
         <item name="android:layout_marginLeft">10dp</item>
         <item name="android:orientation">vertical</item>
         <item name="android:layout_width">match_parent</item>
