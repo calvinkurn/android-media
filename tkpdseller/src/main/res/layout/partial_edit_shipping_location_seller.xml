@@ -5,11 +5,11 @@
     android:orientation="vertical">
 
 
-    <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
         android:id="@+id/seller_city_text_input_layout"
         style="@style/HintTextInputLayout"
         android:hint="@string/title_city"
-        android:layout_marginTop="@dimen/padding_small"
+        android:layout_marginTop="@dimen/dp_10"
         >
         <EditText
             android:id="@+id/seller_text_edit_shipping_city"
@@ -19,14 +19,14 @@
             android:clickable="true"
             android:focusable="false"
             />
-    </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-    <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
         android:id="@+id/seller_text_input_layout_postal_code"
         style="@style/HintTextInputLayout"
         android:hint="@string/title_post_code"
         android:layout_below="@id/seller_city_text_input_layout"
-        android:layout_marginTop="@dimen/padding_small">
+        android:layout_marginTop="@dimen/dp_10">
 
         <AutoCompleteTextView
             android:id="@+id/seller_postal_code"
@@ -37,6 +37,6 @@
             android:inputType="phone"
             android:maxLength="5" />
 
-    </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
 </RelativeLayout>

@@ -6,7 +6,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 /**
  * @author sebastianuskh on 4/12/17.
  */
-
+@Deprecated
 public class EditProductInputServiceModel extends AddProductValidationInputServiceModel{
 
     public static final String PRODUCT_CHANGE_CATALOG = "product_change_catalog";

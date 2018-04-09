@@ -4,10 +4,10 @@
     android:id="@+id/layout_border"
     android:layout_width="wrap_content"
     android:layout_height="40dp"
-    android:layout_marginBottom="@dimen/margin_small"
-    android:layout_marginLeft="@dimen/margin_vs"
-    android:layout_marginRight="@dimen/margin_vs"
-    android:layout_marginTop="@dimen/margin_small"
+    android:layout_marginBottom="@dimen/dp_10"
+    android:layout_marginLeft="@dimen/dp_5"
+    android:layout_marginRight="@dimen/dp_5"
+    android:layout_marginTop="@dimen/dp_10"
     android:background="@color/tkpd_main_green"
     android:orientation="horizontal">
 

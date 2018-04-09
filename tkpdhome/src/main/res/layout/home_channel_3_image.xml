@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:layout_marginTop="@dimen/margin_ms">
+        android:layout_marginTop="@dimen/dp_8">
 
         <TextView
             android:id="@+id/home_channel_title"
@@ -27,7 +27,7 @@
             android:layout_toRightOf="@id/home_channel_title"
             android:layout_centerVertical="true"
             app:coundDownBackgroud="@drawable/background_countdown"
-            android:layout_marginLeft="@dimen/margin_ms"/>
+            android:layout_marginLeft="@dimen/dp_8"/>
 
         <TextView
             android:id="@+id/see_all_button"
@@ -64,14 +64,14 @@
                 android:id="@+id/channel_price_1"
                 style="@style/TextView.Small.Orange"
                 android:layout_below="@id/channel_image_1"
-                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/dp_15"
                 tools:text="Rp 1.399.500"/>
 
             <TextView
                 android:id="@+id/channel_before_disc_price_1"
                 style="@style/TextView.Nano.BlackDisabled"
                 android:layout_below="@id/channel_image_1"
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/dp_5"
                 tools:text="Rp 2.799.000"/>
 
             <TextView
@@ -84,8 +84,8 @@
                 android:paddingRight="@dimen/label_padding_left_right"
                 android:layout_alignTop="@id/channel_image_1"
                 android:layout_alignRight="@id/channel_image_1"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
                 tools:text="50% OFF"/>
 
         </RelativeLayout>
@@ -106,14 +106,14 @@
                 android:id="@+id/channel_price_2"
                 style="@style/TextView.Small.Orange"
                 android:layout_below="@id/channel_image_2"
-                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/dp_15"
                 tools:text="Rp 1.399.500"/>
 
             <TextView
                 android:id="@+id/channel_before_disc_price_2"
                 style="@style/TextView.Nano.BlackDisabled"
                 android:layout_below="@id/channel_image_2"
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/dp_5"
                 tools:text="Rp 2.799.000"/>
 
             <TextView
@@ -126,8 +126,8 @@
                 android:paddingRight="@dimen/label_padding_left_right"
                 android:layout_alignTop="@id/channel_image_2"
                 android:layout_alignRight="@id/channel_image_2"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
                 tools:text="50% OFF"/>
 
         </RelativeLayout>
@@ -148,14 +148,14 @@
                 android:id="@+id/channel_price_3"
                 style="@style/TextView.Small.Orange"
                 android:layout_below="@id/channel_image_3"
-                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/dp_15"
                 tools:text="Rp 1.399.500"/>
 
             <TextView
                 android:id="@+id/channel_before_disc_price_3"
                 style="@style/TextView.Nano.BlackDisabled"
                 android:layout_below="@id/channel_image_3"
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/dp_5"
                 tools:text="Rp 2.799.000"/>
 
             <TextView
@@ -168,8 +168,8 @@
                 android:paddingRight="@dimen/label_padding_left_right"
                 android:layout_alignTop="@id/channel_image_3"
                 android:layout_alignRight="@id/channel_image_3"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
                 tools:text="50% OFF"/>
 
         </RelativeLayout>
