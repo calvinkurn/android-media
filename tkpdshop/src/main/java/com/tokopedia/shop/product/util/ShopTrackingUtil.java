@@ -6,7 +6,7 @@ import android.text.TextUtils;
  * Created by nakama on 05/04/18.
  */
 
-public class ShopUtil {
+public class ShopTrackingUtil {
 
     public static String appendTrackerAttributionIfNeeded(String applink, String trackingAttribution) {
         if (TextUtils.isEmpty(trackingAttribution)) {
