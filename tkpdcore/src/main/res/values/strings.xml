@@ -582,6 +582,10 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="string_verified">Terverifikasi</string>
     <string name="error_bank_no_password_title">Anda tidak memiliki kata sandi</string>
     <string name="error_bank_no_password_content">Silahkan buat kata sandi Tokopedia terlebih dahulu untuk menambah rekening.</string>
+    <string name="error_change_number_no_email_title">Anda tidak memiliki kata sandi</string>
+    <string name="error_change_number_no_email_content">Silahkan tambah terlebih dahulu untuk melakukan perubahan nomor ponsel.</string>
+    <string name="error_change_number_no_email_yes">Tambah email</string>
+    <string name="error_change_number_no_email_no">Tidak</string>
     <string name="error_no_password_no">Tutup</string>
     <string name="error_no_password_yes">Buat kata sandi</string>
     <string name="error_changeemail_no_password_title">Anda tidak memiliki kata sandi</string>
