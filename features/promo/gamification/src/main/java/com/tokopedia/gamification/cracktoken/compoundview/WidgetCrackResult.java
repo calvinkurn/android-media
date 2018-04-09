@@ -53,11 +53,11 @@ public class WidgetCrackResult extends RelativeLayout {
     private WidgetCrackResultListener listener;
 
     public interface WidgetCrackResultListener {
-        void onClickCtaButton(CrackResult crackResult);
+        void onClickCtaButton(CrackResult crackResult, String titleBtn);
 
         void onTrackingCloseRewardButton(CrackResult crackResult);
 
-        void onClickReturnButton(CrackResult crackResult);
+        void onClickReturnButton(CrackResult crackResult, String titleBtn);
 
         void onClickCloseButton();
     }
@@ -210,7 +210,7 @@ public class WidgetCrackResult extends RelativeLayout {
             buttonReturn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClickReturnButton(crackResult);
+                    listener.onClickReturnButton(crackResult, buttonReturn.getText().toString());
                 }
             });
         } else {
@@ -225,7 +225,7 @@ public class WidgetCrackResult extends RelativeLayout {
             buttonCta.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClickCtaButton(crackResult);
+                    listener.onClickCtaButton(crackResult, buttonCta.getText().toString());
                 }
             });
         } else {

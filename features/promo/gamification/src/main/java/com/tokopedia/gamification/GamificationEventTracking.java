@@ -15,8 +15,7 @@ public interface GamificationEventTracking {
         String CLICK_LUCKY_EGG = "lucky egg - homepage entry point";
         String CRACK_LUCKY_EGG = "lucky egg - crack the egg";
         String VIEW_REWARD = "lucky egg - rewards page";
-        String POINT_AND_LOYALTY_REWARD = "lucky egg - points and loyalty reward";
-        String COUPON_REWARD = "lucky egg - coupon rewards";
+        String REWARD_CLICK = "lucky egg - ";
         String ERROR_PAGE = "lucky egg - error page";
         String EXPIRED_TOKEN = "lucky egg - error expired token";
         String EMPTY_PAGE = "lucky egg - empty page";
@@ -24,13 +23,11 @@ public interface GamificationEventTracking {
 
     interface Action {
         String CLICK_LUCKY_EGG = "click egg on homepage";
-        String IMPRESSION_LUCKY_EGG = "impression";
+        String IMPRESSION_LUCKY_EGG = "impression on egg";
+        String IMPRESSION = "impression";
         String CRACK_LUCKY_EGG = "click on egg";
-        String CLICK_CRACK_OTHER_EGG = "click pecahkan telur lainnya";
-        String CLICK_TO_TOKOPOINT = "click cek tokopoints";
+        String CLICK = "click";
         String CLICK_CLOSE_BUTTON = "click close button";
-        String EMPTY_PAGE = "click belanja dan dapatkan lucky egg";
-        String CLICK_USE_GIFT = "click cek dan gunakan hadiah";
         String CLICK_OK = "click ok";
         String CLICK_TRY_AGAIN = "click coba lagi";
     }

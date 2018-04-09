@@ -91,15 +91,15 @@ public class CrackResult {
         return resultStatus.getCode().equals("42503") || resultStatus.getCode().equals("42504");
     }
 
+    public boolean isTryAgainBtn() {
+        return resultStatus.getCode().equals("500");
+    }
+
     public boolean isCrackButtonDismiss(CrackButton crackButton) {
         return crackButton.getType().equals("dismiss");
     }
 
     public boolean isCrackButtonRedirect(CrackButton crackButton) {
         return crackButton.getType().equals("redirect");
-    }
-
-    public boolean isBenefitTypeCoupon() {
-        return benefitType.equals("Coupon");
     }
 }

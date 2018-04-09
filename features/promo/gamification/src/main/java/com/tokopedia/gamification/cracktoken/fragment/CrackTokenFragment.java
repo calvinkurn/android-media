@@ -107,15 +107,13 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
-            public void onClickCtaButton(CrackResult crackResult) {
+            public void onClickCtaButton(CrackResult crackResult, String titleBtn) {
                 if (crackResult.isCrackButtonDismiss(crackResult.getCtaButton())) {
                     widgetCrackResult.clearCrackResult();
 
                     crackTokenPresenter.getGetTokenTokopoints();
                 } else if (crackResult.isCrackButtonRedirect(crackResult.getCtaButton())) {
-                    trackingButtonClick(GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
-                            GamificationEventTracking.Action.CLICK_TO_TOKOPOINT,
-                            "");
+                    trackingButtonClick(crackResult.getBenefitType(), titleBtn);
 
                     ApplinkUtil.navigateToAssociatedPage(getActivity(), crackResult.getCtaButton().getApplink(),
                             crackResult.getCtaButton().getUrl(),
@@ -124,31 +122,21 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
 
             @Override
-            public void onClickReturnButton(CrackResult crackResult) {
+            public void onClickReturnButton(CrackResult crackResult, String titleBtn) {
                 if (crackResult.isCrackButtonDismiss(crackResult.getReturnButton())) {
                     widgetCrackResult.clearCrackResult();
 
                     if (crackResult.isCrackTokenSuccess()) {
-                        trackingButtonClick(GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD,
-                                GamificationEventTracking.Action.CLICK_CRACK_OTHER_EGG,
-                                "");
+                        trackingButtonClick(crackResult.getBenefitType(), titleBtn);
                     } else if (crackResult.isCrackTokenExpired()) {
-                        trackingButtonClick(GamificationEventTracking.Category.EXPIRED_TOKEN,
-                                GamificationEventTracking.Action.CLICK_OK,
-                                "");
+                        trackingExpiredBtnClick();
+                    } else if (crackResult.isTryAgainBtn()) {
+                        trackingTryAgainBtnClick();
                     }
 
                     crackTokenPresenter.getGetTokenTokopoints();
                 } else if (crackResult.isCrackButtonRedirect(crackResult.getReturnButton())) {
-                    if (crackResult.isCrackTokenSuccess()) {
-                        trackingButtonClick(GamificationEventTracking.Category.COUPON_REWARD,
-                                GamificationEventTracking.Action.CLICK_USE_GIFT,
-                                widgetCrackResult.getBenefitType());
-                    } else {
-                        trackingButtonClick(GamificationEventTracking.Category.ERROR_PAGE,
-                                GamificationEventTracking.Action.CLICK_TRY_AGAIN,
-                                "");
-                    }
+                    trackingButtonClick(crackResult.getBenefitType(), titleBtn);
 
                     ApplinkUtil.navigateToAssociatedPage(getActivity(),
                             crackResult.getReturnButton().getApplink(),
@@ -399,9 +387,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
                 widgetCrackResult.showCrackResult(crackResult);
 
-                if (!crackResult.getBenefits().isEmpty()) {
-                    trackingRewardLuckyEggView(crackResult.getBenefits().get(0).getText());
-                }
+                trackingRewardLuckyEggView(crackResult.getBenefitType());
             }
         }, widgetTokenView.isCrackPercentageFull() ? 1 : 1000);
     }
@@ -435,8 +421,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                     .sendEventTracking(
                             GamificationEventTracking.Event.VIEW_LUCKY_EGG,
                             GamificationEventTracking.Category.CRACK_LUCKY_EGG,
-                            GamificationEventTracking.Action.IMPRESSION_LUCKY_EGG,
-                            tokenData.getFloating().getTokenAsset().getName()
+                            GamificationEventTracking.Action.IMPRESSION,
+                            String.valueOf(tokenData.getFloating().getTokenId())
                     );
         }
     }
@@ -449,33 +435,59 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                             GamificationEventTracking.Event.CLICK_LUCKY_EGG,
                             GamificationEventTracking.Category.CRACK_LUCKY_EGG,
                             GamificationEventTracking.Action.CRACK_LUCKY_EGG,
-                            tokenData.getFloating().getTokenAsset().getName()
+                            String.valueOf(tokenData.getFloating().getTokenId())
                     );
         }
     }
 
-    private void trackingRewardLuckyEggView(String benefitName) {
+    private void trackingRewardLuckyEggView(String benefitType) {
         if (getActivity().getApplication() instanceof AbstractionRouter) {
             abstractionRouter
                     .getAnalyticTracker()
                     .sendEventTracking(
                             GamificationEventTracking.Event.VIEW_LUCKY_EGG,
                             GamificationEventTracking.Category.VIEW_REWARD,
-                            GamificationEventTracking.Action.IMPRESSION_LUCKY_EGG,
-                            benefitName
+                            GamificationEventTracking.Action.IMPRESSION,
+                            benefitType
                     );
         }
     }
 
-    private void trackingButtonClick(String category, String action, String label) {
+    private void trackingButtonClick(String benefitType, String buttonTitle) {
         if (getActivity().getApplication() instanceof AbstractionRouter) {
             abstractionRouter
                     .getAnalyticTracker()
                     .sendEventTracking(
                             GamificationEventTracking.Event.CLICK_LUCKY_EGG,
-                            category,
-                            action,
-                            label
+                            GamificationEventTracking.Category.REWARD_CLICK + benefitType,
+                            GamificationEventTracking.Action.CLICK,
+                            buttonTitle
+                    );
+        }
+    }
+
+    private void trackingTryAgainBtnClick() {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            abstractionRouter
+                    .getAnalyticTracker()
+                    .sendEventTracking(
+                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                            GamificationEventTracking.Category.ERROR_PAGE,
+                            GamificationEventTracking.Action.CLICK_TRY_AGAIN,
+                            ""
+                    );
+        }
+    }
+
+    private void trackingExpiredBtnClick() {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            abstractionRouter
+                    .getAnalyticTracker()
+                    .sendEventTracking(
+                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                            GamificationEventTracking.Category.EXPIRED_TOKEN,
+                            GamificationEventTracking.Action.CLICK_OK,
+                            ""
                     );
         }
     }
@@ -483,18 +495,10 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private void trackingCloseRewardButtonClick(CrackResult crackResult) {
         if (getActivity().getApplication() instanceof AbstractionRouter) {
             String category = "";
-            if (crackResult.isCrackTokenSuccess()) {
-                if (crackResult.isBenefitTypeCoupon()) {
-                    category = GamificationEventTracking.Category.COUPON_REWARD;
-                } else {
-                    category = GamificationEventTracking.Category.POINT_AND_LOYALTY_REWARD;
-                }
+            if (crackResult.isCrackTokenExpired()) {
+                category = GamificationEventTracking.Category.EXPIRED_TOKEN;
             } else {
-                if (crackResult.isCrackTokenExpired()) {
-                    category = GamificationEventTracking.Category.EXPIRED_TOKEN;
-                } else {
-                    category = GamificationEventTracking.Category.ERROR_PAGE;
-                }
+                category = GamificationEventTracking.Category.ERROR_PAGE;
             }
             abstractionRouter
                     .getAnalyticTracker()

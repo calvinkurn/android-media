@@ -3,7 +3,6 @@ package com.tokopedia.gamification.cracktoken.presenter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -195,9 +194,11 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
     public class ImageRequestListener implements RequestListener<String, GlideDrawable> {
 
         private int size;
-        ImageRequestListener(int size){
+
+        ImageRequestListener(int size) {
             this.size = size;
         }
+
         int counter = 0;
 
         @Override
@@ -218,7 +219,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
             return false;
         }
 
-        void onAllResourceDownloaded(){
+        void onAllResourceDownloaded() {
             if (isViewAttached()) {
                 getView().hideLoading();
                 getView().onSuccessDownloadAllAsset();
