@@ -57,7 +57,6 @@ public class VoteBarViewHolder extends AbstractViewHolder<VoteViewModel> {
                 option.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_bar_unselected));
             }
-            percent.setTextColor(MethodChecker.getColor(context, R.color.black_54));
         }
 
         option.setText(element.getOption());

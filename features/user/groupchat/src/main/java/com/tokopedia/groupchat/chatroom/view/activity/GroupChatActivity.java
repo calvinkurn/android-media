@@ -742,6 +742,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
             viewModel.getChannelInfoViewModel().setVoteInfoViewModel(voteInfoViewModel);
         }
+
+        setGreenIndicator(voteInfoViewModel);
     }
 
     @Override
@@ -913,9 +915,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (tooltipHandler != null && runnable != null) {
-            tooltipHandler.postDelayed(runnable, TOOLTIP_DELAY);
-        }
 
         kickIfIdleForTooLong();
 
@@ -1353,7 +1352,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
 
         setTooltip(voteInfoViewModel);
-        setGreenIndicator(voteInfoViewModel);
 
         if (currentFragmentIsVote()
                 && voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
@@ -1367,10 +1365,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void setGreenIndicator(VoteInfoViewModel voteInfoViewModel) {
         if (tabAdapter != null && voteInfoViewModel != null) {
-            if ((voteInfoViewModel.getStatusId() ==
-                    VoteInfoViewModel
-                            .STATUS_ACTIVE
+            if ((voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
                     || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE)
+                    && !voteInfoViewModel.isVoted()
                     && tabAdapter.getItemCount() > 2) {
                 tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
             } else {

@@ -322,7 +322,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         if (canVote && (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
                 || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE)) {
             canVote = false;
-            boolean voted = (votedView.getVisibility() == View.VISIBLE);
+            boolean voted = voteInfoViewModel.isVoted();
             presenter.sendVote(userSession, voteInfoViewModel.getPollId(), voted, element);
 
             if (getActivity() != null

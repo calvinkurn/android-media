@@ -84,6 +84,7 @@
                 android:layout_alignTop="@+id/text_view"
                 android:indeterminate="false"
                 android:progress="10"
+                android:alpha="0.8"
                 android:progressDrawable="@drawable/vote_option_image_default"/>
 
             <ImageView

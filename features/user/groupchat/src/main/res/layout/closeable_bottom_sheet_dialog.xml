@@ -16,13 +16,13 @@
 
     <ImageView
         android:id="@+id/close_button"
-        android:layout_width="@dimen/dp_36"
-        android:layout_height="@dimen/dp_36"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/view_separator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_close_dialog_stream"
-        android:padding="@dimen/space_med"/>
+        android:padding="@dimen/dp_16"/>
 
     <FrameLayout
         android:id="@+id/container"

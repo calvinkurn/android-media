@@ -52,7 +52,6 @@
             android:id="@+id/percent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:fontFamily="sans-serif"
             android:paddingBottom="@dimen/space_average"
             android:paddingLeft="@dimen/space_small"

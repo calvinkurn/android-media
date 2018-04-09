@@ -269,7 +269,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                                         userSession.getName(),
                                         userSession.getProfilePicture(),
                                         false);
-                        adapter.addDummyReply(pendingChatViewModel);
+//                        adapter.addDummyReply(pendingChatViewModel);
                         presenter.sendReply(pendingChatViewModel, mChannel);
                     }
                 }
@@ -510,12 +510,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel, String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
-        adapter.setRetry(pendingChatViewModel);
+//        adapter.setRetry(pendingChatViewModel);
     }
 
     @Override
     public void onSuccessSendMessage(PendingChatViewModel pendingChatViewModel, ChatViewModel viewModel) {
-        adapter.removeDummy(pendingChatViewModel);
+//        adapter.removeDummy(pendingChatViewModel);
         adapter.addReply(viewModel);
         adapter.notifyDataSetChanged();
         replyEditText.setText("");

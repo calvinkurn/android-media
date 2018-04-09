@@ -303,16 +303,15 @@ public class GroupChatMessagesMapper {
                 list.add(new VoteViewModel(
                         String.valueOf(statisticOptionPojo.getOptionId()),
                         statisticOptionPojo.getOption(),
-                        String.valueOf(Math.floor(statisticOptionPojo.getPercentage())),
+                        statisticOptionPojo.getPercentage(),
                         checkIfSelected(isAnswered, statisticOptionPojo.isIsSelected())
                 ));
             } else if (optionType.equalsIgnoreCase(OPTION_IMAGE)) {
                 list.add(new VoteViewModel(
                         String.valueOf(statisticOptionPojo.getOptionId()),
-
                         statisticOptionPojo.getOption(),
                         optionPojo.getImageOption().trim(),
-                        String.valueOf(Math.floor(statisticOptionPojo.getPercentage())),
+                        statisticOptionPojo.getPercentage(),
                         checkIfSelected(isAnswered, statisticOptionPojo.isIsSelected())
                 ));
             }
