@@ -1527,7 +1527,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         "eventLabel", String.format(
                                 Locale.getDefault(),
                                 "%s - %s - %s",
-                                getEnhanceShopType(), productData.getShopInfo().getShopName(), productData.getInfo().getProductName()
+                                productData.getEnhanceShopType(), productData.getShopInfo().getShopName(), productData.getInfo().getProductName()
                         ),
                         "ecommerce", DataLayer.mapOf(
                                 "currencyCode", "IDR",
@@ -1539,14 +1539,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                                                         "id", productData.getInfo().getProductId(),
                                                         "price", productData.getInfo().getProductPriceUnformatted(),
                                                         "brand", "none / other",
-                                                        "category", getEnhanceCategoryFormatted(),
+                                                        "category", productData.getEnhanceCategoryFormatted(),
                                                         "variant", getEnhanceVariant(),
                                                         "dimension38", productPass.getTrackerAttribution()
                                                 )
                                         )
                                 )
                         ),
-                        "key", getEnhanceUrl(productData.getInfo().getProductUrl()),
+                        "key", productData.getEnhanceUrl(productData.getInfo().getProductUrl()),
                         "shop_name", productData.getShopInfo().getShopName(),
                         "shop_id", productData.getShopInfo().getShopId(),
                         "shop_domain", productData.getShopInfo().getShopDomain(),
@@ -1554,7 +1554,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         "shop_is_gold", String.valueOf(productData.getShopInfo().shopIsGoldBadge() ? 1 : 0),
                         "category_id", productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1).getDepartmentId(),
                         "url", productData.getInfo().getProductUrl(),
-                        "shop_type", getEnhanceShopType()
+                        "shop_type", productData.getEnhanceShopType()
                 )
         );
     }
@@ -1567,26 +1567,4 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
     }
 
-    private String getEnhanceCategoryFormatted() {
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < productData.getBreadcrumb().size(); i++) {
-            list.add(productData.getBreadcrumb().get(i).getDepartmentName());
-        }
-        return TextUtils.join("/", list);
-    }
-
-    public String getEnhanceUrl(String url) {
-        Uri uri = Uri.parse(url);
-        return uri.getLastPathSegment();
-    }
-
-    public String getEnhanceShopType() {
-        if (productData.getShopInfo().getShopIsOfficial() == 1) {
-            return "official_store";
-        } else if (productData.getShopInfo().getShopIsGold() == 1) {
-            return "gold_merchant";
-        } else {
-            return "regular";
-        }
-    }
 }
