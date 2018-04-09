@@ -355,13 +355,13 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         final boolean isShowTime = tokenFloating.getShowTime();
         String imageUrl = tokenFloating.getTokenAsset().getFloatingImgUrl();
 
+        serverOffFlag = tokenData.getOffFlag() || TextUtils.isEmpty(imageUrl);
+
         if (serverOffFlag) {
             hideFLoatingEgg();
         } else {
             showFloatingEgg();
         }
-
-        serverOffFlag = tokenData.getOffFlag() || TextUtils.isEmpty(imageUrl);
 
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
