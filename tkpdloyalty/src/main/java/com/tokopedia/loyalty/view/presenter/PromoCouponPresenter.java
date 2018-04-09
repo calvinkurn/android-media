@@ -192,7 +192,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 viewModel.setRawCashback(voucherViewModel.getRawCashback());
                 viewModel.setRawDiscount(voucherViewModel.getRawDiscount());
                 viewModel.setMessage(voucherViewModel.getMessage());
-                viewModel.setTitle(voucherViewModel.getCode());
+                viewModel.setTitle(data.getTitle());
                 viewModel.setSuccess(true);
                 view.receiveResult(viewModel);
                 view.hideProgressLoading();
