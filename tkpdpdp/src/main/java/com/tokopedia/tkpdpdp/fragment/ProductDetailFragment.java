@@ -1512,7 +1512,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                                                         "brand", "none / other",
                                                         "category", getEnhanceCategoryFormatted(),
                                                         "variant", getEnhanceVariant(),
-                                                        "attribution", productPass.getTrackerAttribution()
+                                                        "dimension38", productPass.getTrackerAttribution()
                                                 )
                                         )
                                 )

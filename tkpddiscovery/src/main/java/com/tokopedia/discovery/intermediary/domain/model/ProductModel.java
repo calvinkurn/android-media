@@ -125,7 +125,7 @@ public class ProductModel {
                 "variant", "none / other",
                 "list", getTrackerListName(),
                 "position", getTrackerPosition(),
-                "attribution", getTrackerAttribution()
+                "dimension38", getTrackerAttribution()
         );
     }
 
@@ -138,7 +138,7 @@ public class ProductModel {
                 "category", "none / other",
                 "variant", "none / other",
                 "position", getTrackerPosition(),
-                "attribution", getTrackerAttribution()
+                "dimension38", getTrackerAttribution()
         );
     }
 }

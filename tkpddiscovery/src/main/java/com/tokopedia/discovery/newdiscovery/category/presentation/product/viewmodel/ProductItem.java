@@ -260,7 +260,7 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
                 "variant", "none / other",
                 "list", getTrackerName(),
                 "position", getTrackerPosition(),
-                "attribution", getHomeAttribution()
+                "dimension38", getHomeAttribution()
         );
     }
 
@@ -273,7 +273,7 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
                 "category", "none / other",
                 "variant", "none / other",
                 "position", getTrackerPosition(),
-                "attribution", getHomeAttribution()
+                "dimension38", getHomeAttribution()
         );
     }
 }
