@@ -154,6 +154,7 @@ public class ShopProductMapper {
         shopProductHomeViewModel.setTotalReview(shopProductViewModel.getTotalReview());
         shopProductHomeViewModel.setWholesale(shopProductViewModel.isWholesale());
         shopProductHomeViewModel.setWishList(shopProductViewModel.isWishList());
+        shopProductHomeViewModel.setSoldOut(shopProductViewModel.isSoldOut());
         return shopProductHomeViewModel;
     }
 
@@ -176,6 +177,7 @@ public class ShopProductMapper {
         shopProductLimitedFeaturedViewModel.setTotalReview(shopProductViewModel.getTotalReview());
         shopProductLimitedFeaturedViewModel.setWholesale(shopProductViewModel.isWholesale());
         shopProductLimitedFeaturedViewModel.setWishList(shopProductViewModel.isWishList());
+        shopProductLimitedFeaturedViewModel.setSoldOut(shopProductViewModel.isSoldOut());
         return shopProductLimitedFeaturedViewModel;
     }
 
