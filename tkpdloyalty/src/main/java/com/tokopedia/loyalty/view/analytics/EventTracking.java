@@ -8,7 +8,7 @@ public class EventTracking {
     private static final String KEY_PARAM_EVENT = "event";
     private static final String KEY_PARAM_CATEGORY = "eventCategory";
     private static final String KEY_PARAM_ACTION = "eventAction";
-    private static final String KEY_PARAM_LABEL = "actionLabel";
+    private static final String KEY_PARAM_LABEL = "eventLabel";
     private static final String KEY_PARAM_ECOMMERCE = "ecommerce";
 
     private Map<String, Object> eventTracking;

@@ -213,7 +213,6 @@ public class PromoDetailFragment extends BaseDaggerFragment
                 if (getView() != null) Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
                 else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
 
-                UnifyTracking.eventPromoListClickCopyToClipboardPromoCode(promoCode);
                 ClipboardManager clipboard = (ClipboardManager)
                         getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
 
@@ -239,7 +238,7 @@ public class PromoDetailFragment extends BaseDaggerFragment
                     bottomSheetInfoPromoCode.setListener(new BottomSheetView.ActionListener() {
                         @Override
                         public void clickOnTextLink(String url) {
-
+                            promoDetailAnalytics.userCloseTooltip();
                         }
 
                         @Override

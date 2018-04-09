@@ -15,9 +15,10 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
     private static final String EVENT_PROMO_CLICK = "promoClick";
     private static final String EVENT_PROMO_CLICK_MICROSITE = "clickPromoMicrosite";
 
-    private static final String EVENT_CATEGORY_PROMO_DETAIL = "promo-microsite - promo detail";
-    private static final String EVENT_CATEGORY_PROMO_SHARING = "promo-microsite - promo sharing";
-    private static final String EVENT_CATEGORY_PROMO_TOOLTIP = "promo-microsite - promo tooltip";
+    private static final String EVENT_CATEGORY_PROMO_LIST = "promo microsite - promo list";
+    private static final String EVENT_CATEGORY_PROMO_DETAIL = "promo microsite - promo detail";
+    private static final String EVENT_CATEGORY_PROMO_SHARING = "promo microsite - promo sharing";
+    private static final String EVENT_CATEGORY_PROMO_TOOLTIP = "promo microsite - promo tooltip";
 
     private static final String EVENT_ACTION_IMPRESSION_PROMO = "impression on promo";
     private static final String EVENT_ACTION_COPY_PROMO = "user click copy icon";
@@ -36,23 +37,32 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
     @Override
     public void userViewPromo(String promoName, int page, String categoryName, int position,
                               PromoData promoData) {
-        PromoView promoView = new PromoView();
-        promoView.addCustomTracking("promoView", DataLayer.mapOf(
+        List<Object> list = new ArrayList<>();
+
+        list.add(DataLayer.mapOf(
                 "id", promoData.getId(),
-                "name", "promo detail - p" + String.valueOf(page) + " - " + categoryName,
-                "creative_url", promoData.getThumbnailImage(),
-                "position", String.valueOf(position + 1),
-                "promo_id", promoData.getId(),
-                "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode()));
+                "name", "promo detail - P" + String.valueOf(page) + " - " + categoryName,
+                "creative", promoData.getThumbnailImage(),
+                "position", position,
+                "promo_id", "0",
+                "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
+        );
 
         analyticTracker.sendEventTracking(
-                new EventTracking(
-                        EVENT_PROMO_VIEW,
-                        EVENT_CATEGORY_PROMO_DETAIL,
-                        EVENT_ACTION_IMPRESSION_PROMO,
-                        promoName,
-                        new Ecommerce(promoView)
-                ).getEventMap()
+                DataLayer.mapOf(
+                        "event", EVENT_PROMO_VIEW,
+                        "eventCategory", EVENT_CATEGORY_PROMO_DETAIL,
+                        "eventAction", EVENT_ACTION_IMPRESSION_PROMO,
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
+                                )
+                        )
+                )
         );
     }
 
@@ -61,7 +71,7 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
         analyticTracker.sendEventTracking(
                 new EventTracking(
                         EVENT_PROMO_CLICK_MICROSITE,
-                        EVENT_CATEGORY_PROMO_DETAIL,
+                        EVENT_CATEGORY_PROMO_LIST,
                         EVENT_ACTION_COPY_PROMO,
                         promoName
                 ).getEventMap());
@@ -70,23 +80,32 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
     @Override
     public void userClickCta(String promoName, int page, String categoryName, int position,
                              PromoData promoData) {
-        PromoClick promoClick = new PromoClick();
-        promoClick.addCustomTracking("promoClick", DataLayer.mapOf(
+
+        List<Object> list = new ArrayList<>();
+        list.add(DataLayer.mapOf(
                 "id", promoData.getId(),
-                "name", "promo detail - p" + String.valueOf(page) + " - " + categoryName,
-                "creative_url", promoData.getThumbnailImage(),
-                "position", position,
-                "promo_id", promoData.getId(),
-                "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode()));
+                "name", "promo detail - P" + String.valueOf(page) + " - " + categoryName,
+                "creative", promoData.getThumbnailImage(),
+                "position", String.valueOf(position + 1),
+                "promo_id", "0",
+                "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
+        );
 
         analyticTracker.sendEventTracking(
-                new EventTracking(
-                        EVENT_PROMO_CLICK,
-                        EVENT_CATEGORY_PROMO_DETAIL,
-                        EVENT_ACTION_CTA,
-                        promoName,
-                        new Ecommerce(promoClick)
-                ).getEventMap()
+                DataLayer.mapOf(
+                        "event", EVENT_PROMO_CLICK,
+                        "eventCategory", EVENT_CATEGORY_PROMO_DETAIL,
+                        "eventAction", EVENT_ACTION_CTA,
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
+                                )
+                        )
+                )
         );
     }
 
