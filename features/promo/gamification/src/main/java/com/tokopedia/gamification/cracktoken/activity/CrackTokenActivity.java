@@ -2,11 +2,13 @@ package com.tokopedia.gamification.cracktoken.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.fragment.CrackEmptyTokenFragment;
@@ -32,6 +34,8 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.toko_points_title));
+
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 
     @Override
@@ -47,4 +51,13 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
                     CrackEmptyTokenFragment.newInstance()).commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot()) {
+            ((GamificationRouter) getApplication()).goToHome(this);
+            finish();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

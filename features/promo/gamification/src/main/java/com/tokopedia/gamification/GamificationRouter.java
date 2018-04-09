@@ -20,4 +20,6 @@ public interface GamificationRouter {
 
     boolean isSupportedDelegateDeepLink(String appLinks);
 
+    void goToHome(Context context);
+
 }
