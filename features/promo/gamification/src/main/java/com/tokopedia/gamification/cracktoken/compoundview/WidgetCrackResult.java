@@ -119,7 +119,7 @@ public class WidgetCrackResult extends RelativeLayout {
         TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
         animationCrackResult.addAnimation(translateAnimationCrackResult);
         animationCrackResult.setFillAfter(true);
-        animationCrackResult.setDuration(600);
+        animationCrackResult.setDuration(800);
         animationCrackResult.setInterpolator(new FastOutSlowInInterpolator());
 
         if (crackResult.getImageBitmap() != null && !crackResult.getImageBitmap().isRecycled()) {
