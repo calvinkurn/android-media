@@ -54,6 +54,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         implements FlightDetailOrderContract.Presenter {
 
     private static final String NEW_LINE = "\n";
+    private static final int MINIMUM_HOURS_CANCELLATION_DURATION = 6;
 
     private final FlightGetOrderUseCase flightGetOrderUseCase;
     private FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper;
@@ -188,7 +189,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     private boolean isDepartureDateMoreThan6Hours(Date departureDate) {
         Date currentDate = FlightDateUtil.getCurrentDate();
         long diffHours = (departureDate.getTime() - currentDate.getTime()) / TimeUnit.HOURS.toMillis(1);
-        return diffHours >= 6;
+        return diffHours >= MINIMUM_HOURS_CANCELLATION_DURATION || diffHours < 0;
     }
 
     private void renderPaymentInfo(FlightOrder flightOrder) {

@@ -36,6 +36,9 @@ import rx.subscriptions.CompositeSubscription;
 
 public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderListContract.View>
         implements FlightOrderListContract.Presenter {
+
+    private static final int MINIMUM_HOURS_CANCELLATION_DURATION = 6;
+
     private UserSession userSession;
     private FlightGetOrdersUseCase flightGetOrdersUseCase;
     private FlightOrderViewModelMapper flightOrderViewModelMapper;
@@ -199,6 +202,6 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     private boolean isDepartureDateMoreThan6Hours(Date departureDate) {
         Date currentDate = FlightDateUtil.getCurrentDate();
         long diffHours = (departureDate.getTime() - currentDate.getTime()) / TimeUnit.HOURS.toMillis(1);
-        return diffHours >= 6;
+        return diffHours >= MINIMUM_HOURS_CANCELLATION_DURATION || diffHours < 0;
     }
 }
