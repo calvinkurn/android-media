@@ -15,14 +15,14 @@ public class SprintSaleProductViewModel implements Parcelable {
     String discountLabel;
     String productPrice;
     String productPriceBeforeDiscount;
-    int stockPercentage;
+    double stockPercentage;
     String stockText;
     private String productUrl;
 
     public SprintSaleProductViewModel(String productId, String productName, String productImage,
                                       String discountLabel,
                                       String productPrice, String productPriceBeforeDiscount,
-                                      int stockPercentage, String stockText, String productUrl) {
+                                      double stockPercentage, String stockText, String productUrl) {
         this.productId = productId;
         this.productName = productName;
         this.productImage = productImage;
@@ -42,7 +42,7 @@ public class SprintSaleProductViewModel implements Parcelable {
         discountLabel = in.readString();
         productPrice = in.readString();
         productPriceBeforeDiscount = in.readString();
-        stockPercentage = in.readInt();
+        stockPercentage = in.readDouble();
         stockText = in.readString();
         productUrl = in.readString();
     }
@@ -55,7 +55,7 @@ public class SprintSaleProductViewModel implements Parcelable {
         dest.writeString(discountLabel);
         dest.writeString(productPrice);
         dest.writeString(productPriceBeforeDiscount);
-        dest.writeInt(stockPercentage);
+        dest.writeDouble(stockPercentage);
         dest.writeString(stockText);
         dest.writeString(productUrl);
     }
@@ -101,7 +101,7 @@ public class SprintSaleProductViewModel implements Parcelable {
         return productPriceBeforeDiscount;
     }
 
-    public int getStockPercentage() {
+    public double getStockPercentage() {
         return stockPercentage;
     }
 
