@@ -817,9 +817,4 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             analytics.eventClickLoyaltyWidget(channelName);
         }
     }
-
-    @Override
-    public void showWarningSendMessage(String errorMessage) {
-        replyEditText.setError(errorMessage);
-    }
 }

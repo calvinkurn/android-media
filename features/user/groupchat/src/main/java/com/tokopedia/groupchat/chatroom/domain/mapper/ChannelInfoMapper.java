@@ -65,7 +65,9 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getTotalViews() != null ? pojo.getChannel().getTotalViews() : "",
                 convertChannelPartner(pojo.getChannel()),
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()),
-                mapToSprintSaleViewModel(pojo.getChannel().getFlashsale())
+                mapToSprintSaleViewModel(pojo.getChannel().getFlashsale()),
+                pojo.getChannel().getBannedMessage() != null ? pojo.getChannel().getBannedMessage() : "",
+                pojo.getChannel().getKickedMessage() != null ? pojo.getChannel().getKickedMessage() : ""
         );
     }
 

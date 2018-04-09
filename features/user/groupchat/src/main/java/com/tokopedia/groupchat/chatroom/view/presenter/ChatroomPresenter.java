@@ -73,36 +73,27 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
 
     @Override
     public void sendReply(final PendingChatViewModel pendingChatViewModel, OpenChannel mChannel) {
-        if (isValidReply(pendingChatViewModel)) {
-            sendMessageUseCase.execute(getView().getContext(), pendingChatViewModel, mChannel,
-                    new SendGroupChatMessageUseCase.SendGroupChatMessageListener() {
+        sendMessageUseCase.execute(getView().getContext(), pendingChatViewModel, mChannel,
+                new SendGroupChatMessageUseCase.SendGroupChatMessageListener() {
 
-                        @Override
-                        public void onSuccessSendMessage(ChatViewModel viewModel) {
-                            if (getView() != null) {
-                                getView().onSuccessSendMessage(pendingChatViewModel, viewModel);
-                            }
+                    @Override
+                    public void onSuccessSendMessage(ChatViewModel viewModel) {
+                        if (getView() != null) {
+                            getView().onSuccessSendMessage(pendingChatViewModel, viewModel);
                         }
+                    }
 
-                        @Override
-                        public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel,
-                                                       String errorMessage) {
-                            if (getView() != null) {
-                                getView().onErrorSendMessage(pendingChatViewModel, errorMessage);
-                            }
+                    @Override
+                    public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel,
+                                                   String errorMessage) {
+                        if (getView() != null) {
+                            getView().onErrorSendMessage(pendingChatViewModel, errorMessage);
                         }
-                    });
-        }
+                    }
+                });
+
     }
 
-    private boolean isValidReply(PendingChatViewModel pendingChatViewModel) {
-        if (!TextUtils.isEmpty(pendingChatViewModel.getMessage()) && pendingChatViewModel
-                .getMessage().length() > MAX_CHARACTER_LENGTH) {
-            getView().showWarningSendMessage(getView().getContext().getString(R.string
-                    .error_max_characters_reached));
-        }
-        return false;
-    }
 
     @Override
     public void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery) {

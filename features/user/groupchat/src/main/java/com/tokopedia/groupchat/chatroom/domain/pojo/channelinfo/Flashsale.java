@@ -11,7 +11,7 @@ public class Flashsale {
     @SerializedName("status")
     @Expose
     private String status;
-    @SerializedName("app_link")
+    @SerializedName("applink")
     @Expose
     private String appLink;
     @SerializedName("campaign_name")

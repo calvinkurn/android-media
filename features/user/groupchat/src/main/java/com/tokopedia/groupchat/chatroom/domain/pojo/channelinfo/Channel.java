@@ -9,7 +9,6 @@ import java.util.List;
 
 public class Channel {
 
-
     @SerializedName("channel_id")
     @Expose
     private int channelId;
@@ -82,6 +81,12 @@ public class Channel {
     @SerializedName("list_officials")
     @Expose
     private List<ListOfficial> listOfficials = null;
+    @SerializedName("banned_msg")
+    @Expose
+    private String bannedMessage;
+    @SerializedName("kick_msg")
+    @Expose
+    private String kickedMessage;
 
     public int getChannelId() {
         return channelId;
@@ -233,5 +238,13 @@ public class Channel {
 
     public String getAdsId() {
         return adsId;
+    }
+
+    public String getBannedMessage() {
+        return bannedMessage;
+    }
+
+    public String getKickedMessage() {
+        return kickedMessage;
     }
 }

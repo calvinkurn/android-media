@@ -63,7 +63,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="8"
-
                 android:background="@drawable/chat_vote_background"
                 android:minWidth="@dimen/max_size_bubble"
                 android:paddingBottom="@dimen/space_med"

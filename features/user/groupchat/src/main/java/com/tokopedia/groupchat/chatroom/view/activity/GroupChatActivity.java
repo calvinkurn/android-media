@@ -556,7 +556,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void addPaddingIfKeyboardIsClosed() {
-        if (getSoftButtonsBarSizePort(GroupChatActivity.this) > 0) {
+        if (isLollipopOrNewer() && getSoftButtonsBarSizePort(GroupChatActivity.this) > 0) {
             FrameLayout container = rootView.findViewById(R.id.container);
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) container
                     .getLayoutParams();
@@ -566,7 +566,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void removePaddingIfKeyboardIsShowing() {
-        if (getSoftButtonsBarSizePort(GroupChatActivity.this) > 0) {
+        if (isLollipopOrNewer() && getSoftButtonsBarSizePort(GroupChatActivity.this) > 0) {
             FrameLayout container = rootView.findViewById(R.id.container);
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) container.getLayoutParams();
             params.setMargins(0, 0, 0, 0);
@@ -1079,7 +1079,13 @@ public class GroupChatActivity extends BaseSimpleActivity
     private void onUserIdleTooLong() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.you_have_been_kicked);
-        builder.setMessage(R.string.you_have_been_idle_for_too_long);
+        if (viewModel != null
+                && viewModel.getChannelInfoViewModel() != null
+                && !TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getBannedMessage())) {
+            builder.setMessage(viewModel.getChannelInfoViewModel().getKickedMessage());
+        } else {
+            builder.setMessage(R.string.you_have_been_idle_for_too_long);
+        }
         builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -1159,7 +1165,13 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void onUserBanned(String errorMessage) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.default_banned_title);
-        builder.setMessage(errorMessage);
+        if (viewModel != null
+                && viewModel.getChannelInfoViewModel() != null
+                && !TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getBannedMessage())) {
+            builder.setMessage(viewModel.getChannelInfoViewModel().getBannedMessage());
+        } else {
+            builder.setMessage(errorMessage);
+        }
         builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

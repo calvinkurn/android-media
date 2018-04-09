@@ -8,7 +8,7 @@ import java.util.List;
 
 public class FlashSalePojo {
 
-    @SerializedName("app_link")
+    @SerializedName("applink")
     @Expose
     private String appLink;
     @SerializedName("campaign_name")

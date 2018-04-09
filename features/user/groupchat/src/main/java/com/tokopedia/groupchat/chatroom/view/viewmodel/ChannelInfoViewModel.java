@@ -32,6 +32,8 @@ public class ChannelInfoViewModel implements Parcelable {
     private String description;
     private String totalView;
     private List<ChannelPartnerViewModel> channelPartnerViewModels;
+    private String bannedMessage;
+    private String kickedMessage;
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
@@ -49,7 +51,8 @@ public class ChannelInfoViewModel implements Parcelable {
                                 String adminPicture, String description, String totalView,
                                 List<ChannelPartnerViewModel> channelPartnerViewModels,
                                 @Nullable VoteInfoViewModel voteInfoViewModel,
-                                @Nullable SprintSaleViewModel sprintSaleViewModel) {
+                                @Nullable SprintSaleViewModel sprintSaleViewModel,
+                                String bannedMessage, String kickedMessage) {
         this.title = title;
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
@@ -68,7 +71,45 @@ public class ChannelInfoViewModel implements Parcelable {
         this.channelPartnerViewModels = channelPartnerViewModels;
         this.voteInfoViewModel = voteInfoViewModel;
         this.sprintSaleViewModel = sprintSaleViewModel;
+        this.bannedMessage = bannedMessage;
+        this.kickedMessage = kickedMessage;
     }
+
+    protected ChannelInfoViewModel(Parcel in) {
+        title = in.readString();
+        channelUrl = in.readString();
+        bannerUrl = in.readString();
+        blurredBannerUrl = in.readString();
+        adsImageUrl = in.readString();
+        adsLink = in.readString();
+        adsId = in.readString();
+        adsName = in.readString();
+        bannerName = in.readString();
+        sendBirdToken = in.readString();
+        adminName = in.readString();
+        image = in.readString();
+        adminPicture = in.readString();
+        description = in.readString();
+        totalView = in.readString();
+        channelPartnerViewModels = in.createTypedArrayList(ChannelPartnerViewModel.CREATOR);
+        bannedMessage = in.readString();
+        kickedMessage = in.readString();
+        voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
+        sprintSaleViewModel = in.readParcelable(SprintSaleViewModel.class.getClassLoader());
+        groupChatPointsViewModel = in.readParcelable(GroupChatPointsViewModel.class.getClassLoader());
+    }
+
+    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
+        @Override
+        public ChannelInfoViewModel createFromParcel(Parcel in) {
+            return new ChannelInfoViewModel(in);
+        }
+
+        @Override
+        public ChannelInfoViewModel[] newArray(int size) {
+            return new ChannelInfoViewModel[size];
+        }
+    };
 
     public String getTitle() {
         return title;
@@ -157,64 +198,6 @@ public class ChannelInfoViewModel implements Parcelable {
         this.groupChatPointsViewModel = groupChatPointsViewModel;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.title);
-        dest.writeString(this.channelUrl);
-        dest.writeString(this.bannerUrl);
-        dest.writeString(this.blurredBannerUrl);
-        dest.writeString(this.adsImageUrl);
-        dest.writeString(this.adsLink);
-        dest.writeString(this.bannerName);
-        dest.writeString(this.sendBirdToken);
-        dest.writeString(this.adminName);
-        dest.writeString(this.image);
-        dest.writeString(this.adminPicture);
-        dest.writeString(this.description);
-        dest.writeString(this.totalView);
-        dest.writeTypedList(this.channelPartnerViewModels);
-        dest.writeParcelable(this.voteInfoViewModel, flags);
-        dest.writeParcelable(this.sprintSaleViewModel, flags);
-        dest.writeParcelable(this.groupChatPointsViewModel, flags);
-    }
-
-    protected ChannelInfoViewModel(Parcel in) {
-        this.title = in.readString();
-        this.channelUrl = in.readString();
-        this.bannerUrl = in.readString();
-        this.blurredBannerUrl = in.readString();
-        this.adsImageUrl = in.readString();
-        this.adsLink = in.readString();
-        this.bannerName = in.readString();
-        this.sendBirdToken = in.readString();
-        this.adminName = in.readString();
-        this.image = in.readString();
-        this.adminPicture = in.readString();
-        this.description = in.readString();
-        this.totalView = in.readString();
-        this.channelPartnerViewModels = in.createTypedArrayList(ChannelPartnerViewModel.CREATOR);
-        this.voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
-        this.sprintSaleViewModel = in.readParcelable(SprintSaleViewModel.class.getClassLoader());
-        this.groupChatPointsViewModel = in.readParcelable(GroupChatPointsViewModel.class.getClassLoader());
-    }
-
-    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
-        @Override
-        public ChannelInfoViewModel createFromParcel(Parcel source) {
-            return new ChannelInfoViewModel(source);
-        }
-
-        @Override
-        public ChannelInfoViewModel[] newArray(int size) {
-            return new ChannelInfoViewModel[size];
-        }
-    };
-
     public String getAdsId() {
         return adsId;
     }
@@ -229,5 +212,44 @@ public class ChannelInfoViewModel implements Parcelable {
 
     public void setAdsName(String adsName) {
         this.adsName = adsName;
+    }
+
+    public String getBannedMessage() {
+        return bannedMessage;
+    }
+
+    public String getKickedMessage() {
+        return kickedMessage;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(channelUrl);
+        dest.writeString(bannerUrl);
+        dest.writeString(blurredBannerUrl);
+        dest.writeString(adsImageUrl);
+        dest.writeString(adsLink);
+        dest.writeString(adsId);
+        dest.writeString(adsName);
+        dest.writeString(bannerName);
+        dest.writeString(sendBirdToken);
+        dest.writeString(adminName);
+        dest.writeString(image);
+        dest.writeString(adminPicture);
+        dest.writeString(description);
+        dest.writeString(totalView);
+        dest.writeTypedList(channelPartnerViewModels);
+        dest.writeString(bannedMessage);
+        dest.writeString(kickedMessage);
+        dest.writeParcelable(voteInfoViewModel, flags);
+        dest.writeParcelable(sprintSaleViewModel, flags);
+        dest.writeParcelable(groupChatPointsViewModel, flags);
     }
 }
