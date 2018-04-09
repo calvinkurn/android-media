@@ -12,9 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingEnd="@null"
-        android:paddingLeft="@dimen/dp_3"
+        android:paddingLeft="@null"
         android:paddingRight="@null"
-        android:paddingStart="@dimen/dp_3"
+        android:paddingStart="@null"
         android:text="@string/label_title_price_info_digital"
         android:textSize="@dimen/sp_14"/>
 
@@ -31,9 +31,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="@null"
-            android:paddingLeft="@dimen/dp_3"
+            android:paddingLeft="@dimen/padding_vvs"
             android:paddingRight="@null"
-            android:paddingStart="@dimen/dp_3"
+            android:paddingStart="@dimen/padding_vvs"
             android:textSize="@dimen/sp_14"
             tools:text="Rp.100.000"/>
 
@@ -43,9 +43,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:paddingEnd="@null"
-            android:paddingLeft="@dimen/dp_10"
+            android:paddingLeft="@dimen/padding_small"
             android:paddingRight="@null"
-            android:paddingStart="@dimen/dp_10"
+            android:paddingStart="@dimen/padding_small"
             android:textSize="@dimen/fontvvs"
             tools:text="Rp.100.000"/>
 
