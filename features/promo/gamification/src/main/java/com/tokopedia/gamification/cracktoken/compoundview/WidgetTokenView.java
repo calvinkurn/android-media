@@ -6,7 +6,9 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,18 +43,18 @@ import static android.view.Gravity.CENTER_HORIZONTAL;
 public class WidgetTokenView extends FrameLayout {
 
     public static final float Y_PIVOT_PERCENT = 0.9f;
-    public static final int CRACK_STEP1_SHAKE_DURATION = 100;
+    public static final int CRACK_STEP1_SHAKE_DURATION = 150;
     public static final int CRACK_STEP1_DURATION = 350;
     public static final int CRACK_STEP1_DEGREE = 3;
-    public static final int CRACK_STEP2_DEGREE = 5;
+    public static final int CRACK_STEP2_DEGREE = 6;
     public static final int CRACK_STEP2_DURATION = 350;
-    public static final int CRACK_STEP2_SHAKE_DURATION = 80;
-    public static final int CRACK_STEP2_START_DELAY = 150;
+    public static final int CRACK_STEP2_SHAKE_DURATION = 120;
+    public static final int CRACK_STEP2_START_DELAY = 80;
     public static final int CRACK_STEP3_START_DELAY = 100;
     public static final int CRACK_STEP3_DURATION = 350;
-    public static final int CRACK_STEP3_SHAKE_DURATION = 100;
-    public static final int STEP2_END_MASKED_PERCENT = 33;
-    public static final int STEP1_END_MASKED_PERCENT = 67;
+    public static final int CRACK_STEP3_SHAKE_DURATION = 150;
+    public static final int STEP2_END_MASKED_PERCENT = 30;
+    public static final int STEP1_END_MASKED_PERCENT = 70;
     public static final double RATIO_IMAGE_WIDTH = 0.5;
     public static final double RATIO_IMAGE_MARGIN_BOTTOM = 0.64;
     public static final double RATIO_LIGHT_WIDTH = 0.8;
@@ -75,6 +77,9 @@ public class WidgetTokenView extends FrameLayout {
     private AnimatorSet crackingAnimationSet2;
     private AnimatorSet crackingAnimationSet3;
     private ObjectAnimator shakeAnimatorSlow;
+
+    private MediaPlayer crackMediaPlayer;
+    private MediaPlayer openCrackMediaPlayer;
 
     public interface WidgetTokenListener {
         void onClick();
@@ -132,6 +137,7 @@ public class WidgetTokenView extends FrameLayout {
                 }
             }
         });
+
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
@@ -281,6 +287,7 @@ public class WidgetTokenView extends FrameLayout {
         imageViewCracked.setVisibility(VISIBLE);
 
         initCrackingAnimationSet();
+        playCrack();
         crackingAnimationSet.start();
     }
 
@@ -292,6 +299,42 @@ public class WidgetTokenView extends FrameLayout {
             initCracking3();
             crackingAnimationSet.playSequentially(crackingAnimationSet1, crackingAnimationSet2, crackingAnimationSet3);
         }
+    }
+
+    private void playCrack() {
+        playSound(R.raw.crack);
+    }
+
+    private void playRewardSound() {
+        playSound(R.raw.reward);
+    }
+
+    private void playSound(int resId) {
+        MediaPlayer mp = getCrackMediaPlayer(resId);
+        if (mp!=null) {
+            mp.start();
+        }
+    }
+
+    public MediaPlayer getCrackMediaPlayer(int resId) {
+        if (crackMediaPlayer == null) {
+            crackMediaPlayer = new MediaPlayer();
+        } else {
+            crackMediaPlayer.stop();
+            crackMediaPlayer.reset();
+        }
+        try {
+            AssetFileDescriptor afd = getContext().getResources().openRawResourceFd(resId);
+            if (afd == null) {
+                return null;
+            }
+            crackMediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            afd.close();
+            crackMediaPlayer.prepare();
+        } catch (Exception e) {
+            return null;
+        }
+        return crackMediaPlayer;
     }
 
     public boolean isCrackPercentageFull() {
@@ -377,6 +420,7 @@ public class WidgetTokenView extends FrameLayout {
 
     public void stopShaking() {
         imageViewFull.setRotation(0);
+        imageViewCracked.setRotation(0);
         if (shakeAnimatorSlow != null) {
             shakeAnimatorSlow.cancel();
         }
@@ -386,6 +430,8 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     public void split() {
+        playRewardSound();
+
         imageViewFull.setVisibility(View.GONE);
         imageViewCracked.setVisibility(View.GONE);
 
