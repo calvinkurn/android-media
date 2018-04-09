@@ -41,18 +41,18 @@ import static android.view.Gravity.CENTER_HORIZONTAL;
 public class WidgetTokenView extends FrameLayout {
 
     public static final float Y_PIVOT_PERCENT = 0.9f;
-    public static final int CRACK_STEP1_SHAKE_DURATION = 100;
+    public static final int CRACK_STEP1_SHAKE_DURATION = 150;
     public static final int CRACK_STEP1_DURATION = 350;
     public static final int CRACK_STEP1_DEGREE = 3;
-    public static final int CRACK_STEP2_DEGREE = 5;
+    public static final int CRACK_STEP2_DEGREE = 6;
     public static final int CRACK_STEP2_DURATION = 350;
-    public static final int CRACK_STEP2_SHAKE_DURATION = 80;
-    public static final int CRACK_STEP2_START_DELAY = 150;
+    public static final int CRACK_STEP2_SHAKE_DURATION = 120;
+    public static final int CRACK_STEP2_START_DELAY = 80;
     public static final int CRACK_STEP3_START_DELAY = 100;
     public static final int CRACK_STEP3_DURATION = 350;
-    public static final int CRACK_STEP3_SHAKE_DURATION = 100;
-    public static final int STEP2_END_MASKED_PERCENT = 33;
-    public static final int STEP1_END_MASKED_PERCENT = 67;
+    public static final int CRACK_STEP3_SHAKE_DURATION = 150;
+    public static final int STEP2_END_MASKED_PERCENT = 30;
+    public static final int STEP1_END_MASKED_PERCENT = 70;
     public static final double RATIO_IMAGE_WIDTH = 0.5;
     public static final double RATIO_IMAGE_MARGIN_BOTTOM = 0.64;
     public static final double RATIO_LIGHT_WIDTH = 0.8;
@@ -377,6 +377,7 @@ public class WidgetTokenView extends FrameLayout {
 
     public void stopShaking() {
         imageViewFull.setRotation(0);
+        imageViewCracked.setRotation(0);
         if (shakeAnimatorSlow != null) {
             shakeAnimatorSlow.cancel();
         }

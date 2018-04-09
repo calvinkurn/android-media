@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.fragment.CrackEmptyTokenFragment;
@@ -47,4 +48,13 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
                     CrackEmptyTokenFragment.newInstance()).commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot()) {
+            ((GamificationRouter) getApplication()).goToHome(this);
+            finish();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }
