@@ -16,6 +16,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -208,15 +209,18 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
+                SearchTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
+                SearchTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
                 break;
             case GRID_3:
                 setSpanCount(1);
                 getAdapter().changeListView();
+                SearchTracking.eventSearchResultChangeGrid("list", getScreenName());
                 break;
         }
         refreshBottomBarGridIcon();
@@ -239,6 +243,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (TextUtils.isEmpty(shareUrl)) {
             return;
         }
+
+        SearchTracking.eventSearchResultShare(getScreenName());
 
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.DISCOVERY_TYPE)
