@@ -25,15 +25,17 @@ public class ShopPagePagerAdapter extends FragmentStatePagerAdapter {
     private final ShopPagePromoWebView.Listener listener;
     private final String shopId;
     private final String shopDomain;
+    private final String shopAttribution;
 
     public ShopPagePagerAdapter(FragmentManager fragmentManager, String[] title, ShopModuleRouter shopModuleRouter,
-                                ShopPagePromoWebView.Listener listener, String shopId, String shopDomain) {
+                                ShopPagePromoWebView.Listener listener, String shopId, String shopDomain, String shopAttribution) {
         super(fragmentManager);
         this.title = title;
         this.shopModuleRouter = shopModuleRouter;
         this.listener = listener;
         this.shopId = shopId;
         this.shopDomain = shopDomain;
+        this.shopAttribution = shopAttribution;
     }
 
     @Override
@@ -50,7 +52,7 @@ public class ShopPagePagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        ShopProductListLimitedFragment shopProductListLimitedFragment = ShopProductListLimitedFragment.createInstance();
+        ShopProductListLimitedFragment shopProductListLimitedFragment = ShopProductListLimitedFragment.createInstance(shopAttribution);
         shopProductListLimitedFragment.setPromoWebViewListener(listener);
         switch (position) {
             case 0:
