@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
     private VerticalRecyclerView verticalRecyclerView;
     private PassengerAdapter passengerAdapter;
     private CheckBox checkBoxFlight;
+    private boolean isJourneyChecked = false;
 
     private FlightCancellationListener listener;
 
@@ -66,6 +68,9 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         verticalRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         passengerAdapter = new PassengerAdapter();
         verticalRecyclerView.setAdapter(passengerAdapter);
+
+
+
 
     }
 
@@ -118,6 +123,8 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         checkBoxFlight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isJourneyChecked = isChecked;
+
                 if (isChecked) {
                     passengerAdapter.checkAllData();
                 } else {
@@ -125,6 +132,17 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
                 }
             }
         });
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleCheckJourney();
+            }
+        });
+    }
+
+    private void toggleCheckJourney() {
+        checkBoxFlight.setChecked(!isJourneyChecked);
     }
 
     private class PassengerAdapter extends RecyclerView.Adapter<PassengerViewHolder> {
@@ -199,6 +217,21 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
                     } else {
                         listener.onPassengerUnchecked(passengerViewModel, adapterPosition);
                     }
+                }
+            });
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    isPassengerChecked = !isPassengerChecked;
+
+                    if (isPassengerChecked) {
+                        listener.onPassengerChecked(passengerViewModel, adapterPosition);
+                    } else {
+                        listener.onPassengerUnchecked(passengerViewModel, adapterPosition);
+                    }
+
+                    updateCheckedButton(isPassengerChecked);
                 }
             });
         }
