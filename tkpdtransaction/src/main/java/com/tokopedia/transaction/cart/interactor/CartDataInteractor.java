@@ -544,21 +544,4 @@ public class CartDataInteractor implements ICartDataInteractor {
         return false;
     }
 
-    /*private OngkirRatesInput getOngkirRatesInputFromParam(TKPDMapParam<String, String> params) {
-
-        return OngkirRatesInput.builder()
-                .cat_id(params.get(KeroppiParam.CAT_ID))
-                .destination(params.get(KeroppiParam.DESTINATION))
-                .from(params.get(KeroppiParam.FROM))
-                .insurance(params.get(KeroppiParam.INSURANCE))
-                .names(params.get(KeroppiParam.NAMES))
-                .order_value(params.get(KeroppiParam.ORDER_VALUE))
-                .origin(params.get(KeroppiParam.ORIGIN))
-                .product_insurance(params.get(KeroppiParam.PRODUCT_INSURANCE))
-                .token(params.get(KeroppiParam.TOKEN))
-                .ut(params.get(KeroppiParam.UT))
-                .weight(params.get(KeroppiParam.WEIGHT))
-                .build();
-    }*/
-
 }
