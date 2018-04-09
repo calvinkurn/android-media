@@ -70,8 +70,8 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
                             .sendEventTracking(
                                     GamificationEventTracking.Event.CLICK_LUCKY_EGG,
                                     GamificationEventTracking.Category.EMPTY_PAGE,
-                                    GamificationEventTracking.Action.EMPTY_PAGE,
-                                    ""
+                                    GamificationEventTracking.Action.CLICK,
+                                    getMoreTokenBtn.getText().toString()
                             );
                 }
 
