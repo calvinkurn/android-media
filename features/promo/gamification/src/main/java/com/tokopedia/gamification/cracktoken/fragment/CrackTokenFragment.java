@@ -177,6 +177,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        crackTokenPresenter.detachView();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         // restart the timer (only if the timer was paused in onPaused)
