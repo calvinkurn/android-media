@@ -36,7 +36,7 @@
                 android:lines="1"
                 android:scrollHorizontally="true"
                 android:textColor="@color/black"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 tools:text="User name"/>
 
             <LinearLayout
@@ -113,7 +113,7 @@
                 android:layout_below="@+id/detail_layout"
                 android:maxLines="3"
                 android:textColor="@color/black"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 tools:text="Ini isi pesannya"/>
 
             <TextView

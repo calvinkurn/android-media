@@ -63,7 +63,7 @@ public class SpinnerCounterInputView extends BaseCustomView {
             values = styledAttributes.getTextArray(R.styleable.SpinnerCounterInputView_spinner_decimal_values);
             showCounterButton = styledAttributes.getBoolean(R.styleable.SpinnerCounterInputView_spinner_decimal_show_counter_button, true);
             enabled = styledAttributes.getBoolean(R.styleable.SpinnerCounterInputView_spinner_decimal_enabled, true);
-            spinnerWidth = styledAttributes.getDimensionPixelSize(R.styleable.SpinnerCounterInputView_spinner_decimal_spinner_width, (int) getResources().getDimension(R.dimen.spinner_decimal_spinner_width));
+            spinnerWidth = styledAttributes.getDimensionPixelSize(R.styleable.SpinnerCounterInputView_spinner_decimal_spinner_width, (int) getResources().getDimension(R.dimen.dp_80));
         } finally {
             styledAttributes.recycle();
         }

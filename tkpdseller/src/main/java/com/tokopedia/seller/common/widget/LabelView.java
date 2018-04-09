@@ -64,7 +64,7 @@ public class LabelView extends BaseCustomView {
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_title_textStyle, Typeface.NORMAL);
             maxLines = styledAttributes.getInt(R.styleable.LabelView_content_max_lines, 1);
             textSize = styledAttributes.getDimension(R.styleable.LabelView_lv_font_size,
-                    getResources().getDimension(R.dimen.font_title));
+                    getResources().getDimension(R.dimen.sp_16));
             minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.LabelView_lv_min_title_width, 0);
         } finally {
             styledAttributes.recycle();

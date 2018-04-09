@@ -5,15 +5,15 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
-    android:paddingBottom="@dimen/padding_small"
-    android:paddingTop="@dimen/padding_small">
+    android:paddingBottom="@dimen/dp_10"
+    android:paddingTop="@dimen/dp_10">
 
     <ImageView
         android:id="@+id/icon_category"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:layout_marginLeft="@dimen/margin_med"
-        android:layout_marginStart="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_20"
         app:srcCompat="@drawable/loading_page"
         tools:ignore="ContentDescription"/>
 
@@ -21,8 +21,8 @@
         android:id="@+id/category_name"
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginStart="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_10"
         android:layout_toEndOf="@+id/icon_category"
         android:layout_toRightOf="@+id/icon_category"
         android:gravity="center_vertical|start"
@@ -36,8 +36,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/icon_category"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@color/digital_separator"/>
 
     <LinearLayout
@@ -45,17 +45,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/separator_title"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:layout_marginLeft="@dimen/margin_large"
-        android:layout_marginRight="@dimen/margin_large"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_30"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/operator_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_5"
             android:textColor="@color/digital_voucher"
             android:textSize="@dimen/font_large"
             tools:text="Telkomsel - Simpati"/>
@@ -80,8 +80,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/holder_main_info"
-        android:layout_marginLeft="@dimen/padding_small"
-        android:layout_marginRight="@dimen/padding_small"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
         android:background="@color/digital_separator"
         android:visibility="gone"
         tools:visibility="visible"/>
@@ -96,10 +96,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
             app:drawableRightCompat="@drawable/page_2"
-            android:drawablePadding="@dimen/margin_small"
+            android:drawablePadding="@dimen/dp_10"
             android:text="@string/lihat_detail"
             android:textColor="@color/tkpd_main_green"
             android:visibility="gone"

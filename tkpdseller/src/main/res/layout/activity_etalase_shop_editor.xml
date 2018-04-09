@@ -17,7 +17,7 @@
         android:id="@+id/listview_etalase"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_small"
+        android:layout_margin="@dimen/dp_10"
         android:divider="@android:color/transparent"
-        android:dividerHeight="@dimen/margin_small" />
+        android:dividerHeight="@dimen/dp_10" />
 </LinearLayout>

@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/product_rating"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/dp_5"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="7sp"
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/reviewer_name"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/dp_5"
             android:lineSpacingExtra="4sp"
             android:textColor="@color/black_38"
             android:textSize="@dimen/text_size_xsmall"
@@ -87,12 +87,12 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/padding_activity"
         android:layout_marginRight="@dimen/padding_activity"
-        android:layout_marginTop="@dimen/margin_small"/>
+        android:layout_marginTop="@dimen/dp_10"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@color/grey_300"/>
 
     <LinearLayout
@@ -100,7 +100,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:visibility="gone">
 
         <ImageView
@@ -114,7 +114,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_10"
             android:layout_weight="1"
             android:ellipsize="end"
             android:fontFamily="sans-serif"

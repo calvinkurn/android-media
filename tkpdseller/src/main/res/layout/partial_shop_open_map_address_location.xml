@@ -8,7 +8,7 @@
         android:id="@+id/shop_desc_input_layout"
         style="@style/HintTextInputLayout"
         android:hint="@string/shop_open_pickup_location"
-        android:layout_marginTop="@dimen/margin_med">
+        android:layout_marginTop="@dimen/dp_20">
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/open_shop_address_edittext"

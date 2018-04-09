@@ -7,7 +7,7 @@
     android:layout_marginRight="20dp"
     android:background="#ffffff"
     android:layout_gravity="center"
-    android:padding="@dimen/padding_small">
+    android:padding="@dimen/dp_10">
 
     <TextView
         android:layout_width="320dp"
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginTop="@dimen/margin_small">
+        android:layout_marginTop="@dimen/dp_10">
 
         <android.support.v7.widget.AppCompatTextView
             android:layout_width="80dp"
@@ -40,7 +40,7 @@
             android:background="?attr/selectableItemBackground"
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/font_large"
-            android:padding="@dimen/padding_vs"
+            android:padding="@dimen/dp_5"
             android:gravity="center"/>
 
         <android.support.v7.widget.AppCompatTextView
@@ -53,6 +53,6 @@
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/font_large"
             android:gravity="center"
-            android:padding="@dimen/padding_vs"/>
+            android:padding="@dimen/dp_5"/>
     </LinearLayout>
 </LinearLayout>

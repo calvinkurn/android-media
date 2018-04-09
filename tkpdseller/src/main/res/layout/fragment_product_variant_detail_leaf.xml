@@ -52,10 +52,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:ls_content_color="@color/font_black_primary_70"
-                    app:ls_content_text_size="@dimen/font_title"
+                    app:ls_content_text_size="@dimen/sp_16"
                     app:ls_title="@string/product_variant_status"
                     app:ls_title_color="@color/font_black_secondary_54"
-                    app:ls_title_text_size="@dimen/font_small" />
+                    app:ls_title_text_size="@dimen/sp_14" />
 
                 <com.tokopedia.design.text.CounterInputView
                     android:id="@+id/counter_input_view_stock_total"
