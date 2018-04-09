@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReasonAndProofActivity;
@@ -20,6 +21,7 @@ import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationPresen
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +42,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     private String invoiceId;
     private List<FlightCancellationViewModel> flightCancellationViewModelList;
-    private List<FlightCancellationViewModel> selectedCancellationViewModelList;
+    private FlightCancellationWrapperViewModel selectedCancellationViewModelList;
     List<FlightCancellationJourney> flightCancellationJourneyList;
 
     @Inject
@@ -67,7 +69,8 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToReviewCancellationPage();
+                flightCancellationPresenter.onNextButtonClicked();
+//                navigateToReviewCancellationPage();
 //                startActivity(FlightCancellationReasonAndProofActivity.getCallingIntent(getActivity(), selectedCancellationViewModelList));
             }
         });
@@ -81,6 +84,8 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
         invoiceId = getArguments().getString(EXTRA_INVOICE_ID);
         flightCancellationJourneyList = getArguments().getParcelableArrayList(EXTRA_CANCEL_JOURNEY);
+
+        selectedCancellationViewModelList = new FlightCancellationWrapperViewModel();
 
         flightCancellationPresenter.attachView(this);
         flightCancellationPresenter.onViewCreated();
@@ -123,7 +128,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @Override
     public void setSelectedCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList) {
-        this.selectedCancellationViewModelList = flightCancellationViewModelList;
+        this.selectedCancellationViewModelList.setViewModels(flightCancellationViewModelList);
     }
 
     @Override
@@ -143,18 +148,29 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @Override
     public List<FlightCancellationViewModel> getSelectedCancellationViewModel() {
-        return selectedCancellationViewModelList;
+        return selectedCancellationViewModelList.getViewModels();
+    }
+
+    @Override
+    public void showShouldChooseAtLeastOnePassengerError() {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
+                getString(R.string.flight_cancellation_should_choose_at_least_one_passenger_error));
     }
 
     @Override
     public void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
-        selectedCancellationViewModelList.get(position)
+        selectedCancellationViewModelList.getViewModels().get(position)
                 .getPassengerViewModelList().add(passengerViewModel);
     }
 
     @Override
     public void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
         flightCancellationPresenter.uncheckPassenger(passengerViewModel, position);
+    }
+
+    @Override
+    public void goToNextPage() {
+        navigateToReviewCancellationPage();
     }
 
     private void navigateToReviewCancellationPage() {

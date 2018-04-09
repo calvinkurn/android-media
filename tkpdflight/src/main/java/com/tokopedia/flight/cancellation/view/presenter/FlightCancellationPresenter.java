@@ -38,6 +38,24 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
     }
 
     @Override
+    public void onNextButtonClicked() {
+        boolean canGoToNext = false;
+
+        for (FlightCancellationViewModel item : getView().getSelectedCancellationViewModel()) {
+            if (item.getPassengerViewModelList().size() > 0) {
+                canGoToNext = true;
+                break;
+            }
+        }
+
+        if (canGoToNext) {
+            getView().goToNextPage();
+        } else {
+            getView().showShouldChooseAtLeastOnePassengerError();
+        }
+    }
+
+    @Override
     public void uncheckPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position) {
         FlightCancellationViewModel flightCancellationViewModel = getView().getSelectedCancellationViewModel().get(position);
         flightCancellationViewModel.getPassengerViewModelList().remove(passengerViewModel);

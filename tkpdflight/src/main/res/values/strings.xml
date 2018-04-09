@@ -356,5 +356,6 @@
     <string name="flight_cancellation_dialog_non_refundable_description"><![CDATA[Dengan melakukan pembatalan pesanan, seluruh dana pembayaran Anda akan <b>hangus</b> karena pihak maskapai tidak menyediakan fitur pengembalian dana.]]></string>
     <string name="flight_cancellation_dialog_back_button_text">Kembali</string>
     <string name="flight_cancellation_dialog_refundable_description"><![CDATA[Dengan melakukan pembatalan pesanan, dana pembayaran Anda <b>akan dikembalikan</b> sesuai dengan syarat dan ketentuan pihak maskapai penerbangan.]]></string>
+    <string name="flight_cancellation_should_choose_at_least_one_passenger_error">Harap pilih setidaknya satu penumpang untuk di batalkan.</string>
 
 </resources>

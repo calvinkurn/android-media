@@ -17,6 +17,7 @@ import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.adapter.FlightReviewCancellationAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,14 +35,14 @@ public class FlightReviewCancellationFragment extends BaseListFragment<FlightCan
     private AppCompatTextView txtDescription;
 
     private String invoiceId;
-    private List<FlightCancellationViewModel> flightCancellationPassData;
+    private FlightCancellationWrapperViewModel flightCancellationPassData;
 
     public static FlightReviewCancellationFragment createInstance(String invoiceId,
-                                                            List<FlightCancellationJourney> flightCancellationPassData) {
+                                                            FlightCancellationWrapperViewModel flightCancellationPassData) {
         FlightReviewCancellationFragment fragment = new FlightReviewCancellationFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_INVOICE_ID, invoiceId);
-        bundle.putParcelableArrayList(EXTRA_CANCEL_JOURNEY, (ArrayList<? extends Parcelable>) flightCancellationPassData);
+        bundle.putParcelable(EXTRA_CANCEL_JOURNEY, flightCancellationPassData);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -67,7 +68,7 @@ public class FlightReviewCancellationFragment extends BaseListFragment<FlightCan
         super.onViewCreated(view, savedInstanceState);
 
         invoiceId = getArguments().getString(EXTRA_INVOICE_ID);
-        flightCancellationPassData = getArguments().getParcelableArrayList(EXTRA_CANCEL_JOURNEY);
+        flightCancellationPassData = getArguments().getParcelable(EXTRA_CANCEL_JOURNEY);
 
         renderReviewList();
     }
@@ -97,6 +98,6 @@ public class FlightReviewCancellationFragment extends BaseListFragment<FlightCan
     }
 
     private void renderReviewList() {
-        renderList(flightCancellationPassData);
+        renderList(flightCancellationPassData.getViewModels());
     }
 }
