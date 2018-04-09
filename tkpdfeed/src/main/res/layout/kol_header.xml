@@ -26,7 +26,7 @@
         <ImageView
             android:id="@+id/kol_badge"
             android:layout_width="@dimen/feed_badge_size"
-            android:layout_height="@dimen/feed_new_badge_size"
+            android:layout_height="@dimen/feed_badge_size"
             android:layout_marginRight="@dimen/dp_5"
             android:layout_marginTop="@dimen/dp_2"
             app:srcCompat="@drawable/ic_kol_badge"/>
