@@ -1,5 +1,10 @@
 package com.tokopedia.loyalty.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.loyalty.di.PromoDetailScope;
 import com.tokopedia.loyalty.domain.repository.IPromoRepository;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
@@ -18,6 +23,15 @@ import rx.subscriptions.CompositeSubscription;
 
 @Module(includes = {ServiceApiModule.class})
 public class PromoDetailModule {
+
+    @Provides
+    @PromoDetailScope
+    public AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
+        if (context instanceof AbstractionRouter) {
+            return ((AbstractionRouter) context).getAnalyticTracker();
+        }
+        throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
+    }
 
     @Provides
     @PromoDetailScope

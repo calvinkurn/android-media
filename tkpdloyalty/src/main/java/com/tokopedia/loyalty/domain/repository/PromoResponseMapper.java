@@ -115,6 +115,7 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             List<SingleCodeViewModel> singleCodeViewModelList = new ArrayList<>();
             for (GroupCode groupCode : promoCode.getGroupCode()) {
                 SingleCodeViewModel singleCodeViewModel = new SingleCodeViewModel();
+                singleCodeViewModel.setPromoName(promoCode.getGroupCodeTitle());
                 singleCodeViewModel.setSingleCode(groupCode.getSingleCode());
 
                 singleCodeViewModelList.add(singleCodeViewModel);

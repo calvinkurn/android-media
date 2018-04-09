@@ -3,6 +3,7 @@ package com.tokopedia.loyalty.view.data.mapper;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoDetailInfoHolderData;
 import com.tokopedia.loyalty.view.data.PromoDetailTncHolderData;
+import com.tokopedia.loyalty.view.data.SingleCodeViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,10 @@ public class PromoDataMapper {
 
         promoDetailData.add(convertToPromoDetailInfoHolderData(promoData));
         if (promoData.getPromoCodeList().isEmpty()) {
-            promoDetailData.add(promoData.getPromoCode());
+            SingleCodeViewModel viewModel = new SingleCodeViewModel();
+            viewModel.setPromoName(promoData.getTitle());
+            viewModel.setSingleCode(promoData.getPromoCode());
+            promoDetailData.add(viewModel);
         } else {
             promoDetailData.addAll(promoData.getPromoCodeList());
         }

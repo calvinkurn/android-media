@@ -10,6 +10,7 @@ import com.tokopedia.loyalty.view.data.PromoCodeViewModel;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoDetailInfoHolderData;
 import com.tokopedia.loyalty.view.data.PromoDetailTncHolderData;
+import com.tokopedia.loyalty.view.data.SingleCodeViewModel;
 import com.tokopedia.loyalty.view.viewholder.PromoDetailGroupCodeViewHolder;
 import com.tokopedia.loyalty.view.viewholder.PromoDetailInfoViewHolder;
 import com.tokopedia.loyalty.view.viewholder.PromoDetailSimpleCodeViewHolder;
@@ -67,7 +68,7 @@ public class PromoDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         } else if (viewType == ITEM_VIEW_GROUP_CODE) {
             ((PromoDetailGroupCodeViewHolder) viewHolder).bind((PromoCodeViewModel) data);
         } else if (viewType == ITEM_VIEW_SIMPLE_CODE) {
-            ((PromoDetailSimpleCodeViewHolder) viewHolder).bind((String) data);
+            ((PromoDetailSimpleCodeViewHolder) viewHolder).bind((SingleCodeViewModel) data);
         } else if (viewType == ITEM_VIEW_TNC) {
             ((PromoDetailTnCViewHolder) viewHolder).bind((PromoDetailTncHolderData) data);
         }
@@ -86,7 +87,7 @@ public class PromoDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return ITEM_VIEW_DETAIL_INFO;
         } else if (item instanceof PromoCodeViewModel) {
             return ITEM_VIEW_GROUP_CODE;
-        } else if (item instanceof String) {
+        } else if (item instanceof SingleCodeViewModel) {
             return ITEM_VIEW_SIMPLE_CODE;
         } else if (item instanceof PromoDetailTncHolderData) {
             return ITEM_VIEW_TNC;
@@ -107,7 +108,7 @@ public class PromoDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         void onItemPromoShareClicked(PromoData promoData);
 
-        void onItemPromoCodeCopyClipboardClicked(String promoCode);
+        void onItemPromoCodeCopyClipboardClicked(String promoName, String promoCode);
 
         void onItemPromoCodeTooltipClicked();
 

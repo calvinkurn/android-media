@@ -8,7 +8,17 @@ import android.os.Parcelable;
  */
 
 public class SingleCodeViewModel implements Parcelable {
+
+    private String promoName;
     private String singleCode;
+
+    public String getPromoName() {
+        return promoName;
+    }
+
+    public void setPromoName(String promoName) {
+        this.promoName = promoName;
+    }
 
     public String getSingleCode() {
         return singleCode;
@@ -25,6 +35,7 @@ public class SingleCodeViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.promoName);
         dest.writeString(this.singleCode);
     }
 
@@ -32,6 +43,7 @@ public class SingleCodeViewModel implements Parcelable {
     }
 
     protected SingleCodeViewModel(Parcel in) {
+        this.promoName = in.readString();
         this.singleCode = in.readString();
     }
 

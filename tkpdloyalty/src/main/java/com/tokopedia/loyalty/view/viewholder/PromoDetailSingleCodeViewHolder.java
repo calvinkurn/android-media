@@ -37,14 +37,16 @@ public class PromoDetailSingleCodeViewHolder extends RecyclerView.ViewHolder {
     public void bind(SingleCodeViewModel singleCode, int position) {
         this.tvOrdinalNumber.setText(String.valueOf(position));
         this.tvSingleCode.setText(singleCode.getSingleCode());
-        this.ivCopyToClipboard.setOnClickListener(copyToClipboardListener(singleCode.getSingleCode()));
+        this.ivCopyToClipboard.setOnClickListener(copyToClipboardListener(
+                singleCode.getPromoName(), singleCode.getSingleCode()));
     }
 
-    private View.OnClickListener copyToClipboardListener(final String singleCode) {
+    private View.OnClickListener copyToClipboardListener(final String promoName,
+                                                         final String singleCode) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                adapterActionListener.onItemPromoCodeCopyClipboardClicked(singleCode);
+                adapterActionListener.onItemPromoCodeCopyClipboardClicked(promoName, singleCode);
             }
         };
     }

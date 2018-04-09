@@ -161,6 +161,12 @@ public class PromoDetailFragment extends BaseDaggerFragment
 
     @Override
     public void renderPromoDetail(PromoData promoData) {
+        this.promoDetailAnalytics.userViewPromo(promoData.getTitle(),
+                -1,
+                "",
+                -1,
+                promoData);
+
         this.refreshHandler.finishRefresh();
 
         View errorView = this.rlContainerLayout.findViewById(com.tokopedia.core.R.id.main_retry);
@@ -195,11 +201,13 @@ public class PromoDetailFragment extends BaseDaggerFragment
         return new PromoDetailAdapter.OnAdapterActionListener() {
             @Override
             public void onItemPromoShareClicked(PromoData promoData) {
+                promoDetailAnalytics.userSharePromo("");
                 actionListener.onSharePromo(promoData);
             }
 
             @Override
-            public void onItemPromoCodeCopyClipboardClicked(String promoCode) {
+            public void onItemPromoCodeCopyClipboardClicked(String promoName, String promoCode) {
+                promoDetailAnalytics.userClickCopyIcon(promoName);
                 String message = getString(R.string.voucher_code_copy_to_clipboard);
 
                 if (getView() != null) Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
@@ -216,6 +224,8 @@ public class PromoDetailFragment extends BaseDaggerFragment
 
             @Override
             public void onItemPromoCodeTooltipClicked() {
+                promoDetailAnalytics.userClickTooltip();
+
                 if (bottomSheetInfoPromoCode == null) {
                     bottomSheetInfoPromoCode = new BottomSheetView(getActivity());
 
@@ -234,6 +244,7 @@ public class PromoDetailFragment extends BaseDaggerFragment
 
                         @Override
                         public void clickOnButton(String url, String appLink) {
+                            promoDetailAnalytics.userCloseTooltip();
                         }
                     });
                 }
@@ -258,6 +269,12 @@ public class PromoDetailFragment extends BaseDaggerFragment
         this.tvPromoDetailAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                promoDetailAnalytics.userClickCta(promoData.getTitle(),
+                        -1,
+                        "",
+                        -1,
+                        promoData);
+
                 String appLink = promoData.getAppLink();
                 String redirectUrl = promoData.getPromoLink();
 
@@ -272,10 +289,6 @@ public class PromoDetailFragment extends BaseDaggerFragment
                 }
             }
         });
-    }
-
-    private void unsetFragmentLayout() {
-        this.llPromoDetailBottomLayout.setVisibility(View.GONE);
     }
 
     private void handleErrorEmptyState(String message) {

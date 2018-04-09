@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.view.adapter.PromoDetailAdapter.OnAdapterActionListener;
+import com.tokopedia.loyalty.view.data.SingleCodeViewModel;
 
 /**
  * @author Aghny A. Putra on 27/03/18
@@ -40,15 +41,16 @@ public class PromoDetailSimpleCodeViewHolder extends RecyclerView.ViewHolder {
         this.tvPromoCodeCopy = itemView.findViewById(R.id.tv_promo_code_copy);
     }
 
-    public void bind(final String singleCode) {
-        boolean withoutPromoCode = TextUtils.isEmpty(singleCode);
+    public void bind(SingleCodeViewModel viewModel) {
+        boolean withoutPromoCode = TextUtils.isEmpty(viewModel.getSingleCode());
 
         this.tvPromoCodeLabel.setText(withoutPromoCode ? "Tanpa Kode Promo" : "Kode Promo");
         this.ivTooltipInfo.setVisibility(withoutPromoCode ? View.GONE : View.VISIBLE);
         this.ivTooltipInfo.setOnClickListener(tooltipInfoListener());
         this.rlPromoCodeLayout.setVisibility(withoutPromoCode ? View.GONE : View.VISIBLE);
-        this.tvSingleCode.setText(singleCode);
-        this.rlSingleCodeCopyLayout.setOnClickListener(copyToClipboardListener(singleCode));
+        this.tvSingleCode.setText(viewModel.getSingleCode());
+        this.rlSingleCodeCopyLayout.setOnClickListener(copyToClipboardListener(
+                viewModel.getPromoName(), viewModel.getSingleCode()));
         this.tvPromoCodeCopy.setText("Salin Kode");
     }
 
@@ -61,11 +63,12 @@ public class PromoDetailSimpleCodeViewHolder extends RecyclerView.ViewHolder {
         };
     }
 
-    private View.OnClickListener copyToClipboardListener(final String singleCode) {
+    private View.OnClickListener copyToClipboardListener(final String promoName,
+                                                         final String singleCode) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                adapterActionListener.onItemPromoCodeCopyClipboardClicked(singleCode);
+                adapterActionListener.onItemPromoCodeCopyClipboardClicked(promoName, singleCode);
                 tvPromoCodeCopy.setText("Tersalin");
                 rlSingleCodeCopyLayout.setBackgroundResource(R.drawable.round_button_right_grey);
             }
