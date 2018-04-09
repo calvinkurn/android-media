@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -35,7 +34,7 @@ import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
-import com.tokopedia.shop.product.util.ShopUtil;
+import com.tokopedia.shop.product.util.ShopTrackingUtil;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
@@ -333,7 +332,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                     ShopPageTracking.getShopType(shopInfo.getInfo()), false);
         }
-        String productUrl = ShopUtil.appendTrackerAttributionIfNeeded(shopProductViewModel.getProductUrl(), attribution);
+        String productUrl = ShopTrackingUtil.appendTrackerAttributionIfNeeded(shopProductViewModel.getProductUrl(), attribution);
         shopModuleRouter.goToProductDetail(getActivity(), productUrl);
     }
 
