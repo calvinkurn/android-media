@@ -56,6 +56,9 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
                     @Override
                     public void onError(Throwable e) {
+                        if (!isViewAttached()) {
+                            return;
+                        }
                         CrackResult errorCrackResult = createGeneralErrorCrackResult();
 
                         getView().onErrorCrackToken(errorCrackResult);
@@ -63,6 +66,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
                     @Override
                     public void onNext(CrackResult crackResult) {
+
                         // check result status
                         if (crackResult.getResultStatus().getCode().equals("200")) {
                             // success
@@ -144,6 +148,10 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
             @Override
             public void onError(Throwable e) {
+                if (!isViewAttached()) {
+                    return;
+                }
+
                 getView().hideLoading();
 
                 CrackResult crackResult = createGeneralErrorCrackResult();
