@@ -3,6 +3,8 @@ package com.tokopedia.payment.fingerprint.domain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
@@ -23,6 +25,7 @@ public class SaveFingerPrintUseCase extends UseCase<Boolean> {
     private FingerprintRepository fingerprintRepository;
     private SavePublicKeyUseCase savePublicKeyUseCase;
 
+    @Inject
     public SaveFingerPrintUseCase(FingerprintRepository fingerprintRepository,
                                   SavePublicKeyUseCase savePublicKeyUseCase) {
         this.fingerprintRepository = fingerprintRepository;

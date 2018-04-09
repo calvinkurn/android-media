@@ -1,9 +1,11 @@
 package com.tokopedia.payment.fingerprint.domain;
 
 import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint;
-import com.tokopedia.payment.fingerprint.domain.FingerPrintRepository;
+import com.tokopedia.payment.fingerprint.domain.FingerprintRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -23,6 +25,7 @@ public class PaymentFingerprintUseCase extends UseCase<ResponsePaymentFingerprin
     public static final String OS_ANDROID_VALUE = "1";
     private FingerprintRepository fingerprintRepository;
 
+    @Inject
     public PaymentFingerprintUseCase(FingerprintRepository fingerprintRepository) {
         this.fingerprintRepository = fingerprintRepository;
     }

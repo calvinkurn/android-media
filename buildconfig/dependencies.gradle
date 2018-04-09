@@ -10,6 +10,7 @@ ext {
     deeplinkDispatchVersion = '3.0.0-rc1'
     tkpdUseCaseVersion = '1.+'
     tkpdAbstractionVersion = '1.+'
+    tkpdCacheApiVersion = '1.+'
     tkpdCoreVersion = '1.+'
     tkpdInboxVersion = '1.+'
     tkpdSessionVersion = '1.+'
@@ -26,6 +27,8 @@ ext {
     tkpdLoyaltyVersion = '1.+'
     tkpdReactNativeVersion = '1.+'
     tkpdFlightVersion = '1.+'
+    tkpdCacheApiVersion = '1.+'
+    tkpdReputationVersion = '1.+'
     compileSdkVersion = 26
     minSdkVersion = 16
     targetSdkVersion = 26
@@ -180,6 +183,7 @@ ext {
             usecase    : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
             abstraction: "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
             core       : "com.tokopedia.core:core:${tkpdCoreVersion}",
+            cacheapi   : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
             inbox      : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             session    : "com.tokopedia.session:session:${tkpdSessionVersion}",
             transaction: "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
@@ -196,6 +200,8 @@ ext {
             loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
             flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
             flightNoOp : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
+            cacheapi   : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
+            reputation : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}"
     ]
 
     tkpdLibDependencies = [
@@ -234,7 +240,8 @@ ext {
             design          : ":tkpddesign",
             abstraction     : ":tkpdabstraction",
             cacheApi        : ":tkpdcacheapi",
-            reactNative     : ":libraries:react_native"
+            reactNative     : ":libraries:react_native",
+            fingerprint     : ":libraries:fingerprint"
     ]
 
 }

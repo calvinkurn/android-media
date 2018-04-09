@@ -5,7 +5,9 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
+import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import java.util.List;
 
@@ -17,7 +19,7 @@ import rx.Observable;
  * Created by zulfikarrahman on 4/26/17.
  */
 
-public class FetchAllDraftProductUseCase extends UseCase<List<UploadProductInputDomainModel>> {
+public class FetchAllDraftProductUseCase extends UseCase<List<ProductDraftViewModel>> {
     private ProductDraftRepository productDraftRepository;
 
     @Inject
@@ -28,7 +30,7 @@ public class FetchAllDraftProductUseCase extends UseCase<List<UploadProductInput
     }
 
     @Override
-    public Observable<List<UploadProductInputDomainModel>> createObservable(RequestParams requestParams) {
+    public Observable<List<ProductDraftViewModel>> createObservable(RequestParams requestParams) {
         return productDraftRepository.getAllDraft();
     }
 

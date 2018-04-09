@@ -21,12 +21,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="8sp"
             android:padding="@dimen/page_margin"
             android:textColor="@color/black_70"
             android:textSize="16sp"
-            android:textStyle="bold"
             tools:text="Bayar ini itu di Tokopedia" />
 
         <TextView

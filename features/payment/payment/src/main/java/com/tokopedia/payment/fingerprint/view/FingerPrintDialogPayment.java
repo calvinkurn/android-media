@@ -1,22 +1,153 @@
 package com.tokopedia.payment.fingerprint.view;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.Button;
 
-import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.payment.R;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by zulfikarrahman on 3/27/18.
  */
 
-public class FingerPrintDialogPayment extends BottomSheets {
+public class FingerPrintDialogPayment extends FingerPrintDialog implements FingerPrintDialog.Callback {
+
+    private static final int MAX_ERROR = 3;
+    public static final String USER_ID = "USER_ID";
+    public static final String URL_OTP = "URL_OTP";
+    public static final String TRANSACTION_ID = "TRANSACTION_ID";
+    public static final String PARTNER = "PARTNER";
+
+    private ListenerPayment listenerPayment;
+    private View containerOtp;
+    private Button buttonUseOtp;
+
+    private String userId;
+    private String urlOtp;
+    private String transactionId;
+    private String partner;
+    private int counterError = 0;
+
+    public static FingerPrintDialogPayment createInstance(String userId, String urlOtp, String transactionId, String partner){
+        FingerPrintDialogPayment fingerPrintDialogPayment = new FingerPrintDialogPayment();
+        Bundle bundle = new Bundle();
+        bundle.putString(USER_ID, userId);
+        bundle.putString(URL_OTP, urlOtp);
+        bundle.putString(TRANSACTION_ID, transactionId);
+        bundle.putString(PARTNER, partner);
+        fingerPrintDialogPayment.setArguments(bundle);
+        return fingerPrintDialogPayment;
+    }
+
+    @Override
+    public void startListening() {
+        super.startListening();
+        setTextToEncrypt(generateDate() + userId);
+    }
+
+    public void setListenerPayment(ListenerPayment listenerPayment) {
+        this.listenerPayment = listenerPayment;
+    }
+
     @Override
     public int getLayoutResourceId() {
         return R.layout.partial_bottom_sheet_fingerprint_view_payment;
     }
 
     @Override
-    public void initView(View view) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        urlOtp = getArguments().getString(URL_OTP, "");
+        userId = getArguments().getString(USER_ID, "");
+        transactionId = getArguments().getString(TRANSACTION_ID, "");
+        partner = getArguments().getString(PARTNER, "");
+    }
 
+    @Override
+    public Callback getCallback() {
+        return this;
+    }
+
+    private String generateDate() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return dateFormat.format(calendar.getTime());
+    }
+
+    @Override
+    public void initView(View view) {
+        containerOtp = view.findViewById(R.id.container_otp);
+        buttonUseOtp = view.findViewById(R.id.button_use_otp);
+        buttonUseOtp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listenerPayment.onGoToOtpPage(urlOtp);
+            }
+        });
+    }
+
+    public void setVisibilityContainer(boolean isVisible){
+        if(isVisible){
+            containerOtp.setVisibility(View.VISIBLE);
+        }else{
+            containerOtp.setVisibility(View.GONE);
+        }
+        updateHeight();
+    }
+
+    private boolean updateCounterError() {
+        counterError++;
+        updateTitle(getString(R.string.fingerprint_label_failed_scan));
+        setVisibilityContainer(true);
+        if (counterError > MAX_ERROR) {
+            dismiss();
+            listenerPayment.onGoToOtpPage(urlOtp);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public void onAuthenticationError(int errMsgId, CharSequence errString) {
+        updateCounterError();
+    }
+
+    @Override
+    public void onAuthenticationHelp(int helpMsgId, CharSequence helpString) {
+        updateCounterError();
+    }
+
+    @Override
+    public void onAuthenticationSucceeded(String publicKey, String signature) {
+        listenerPayment.onPaymentFingerPrint(transactionId, partner, publicKey, generateDate(), signature, userId);
+    }
+
+    @Override
+    public void onAuthenticationFailed() {
+        updateCounterError();
+    }
+
+    public void onErrorNetworkPaymentFingerPrint() {
+        if(updateCounterError()){
+            startListening();
+        }
+    }
+
+    public interface ListenerPayment {
+
+        void onGoToOtpPage(String urlOtp);
+
+        void onPaymentFingerPrint(String transactionId, String partner, String publicKey, String date, String signature, String userId);
     }
 }

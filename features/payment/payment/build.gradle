@@ -6,6 +6,7 @@ dependencies {
 
     compile project(rootProject.ext.libraries.abstraction)
     compile project(rootProject.ext.features.useCase)
+    compile project(rootProject.ext.libraries.fingerprint)
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
