@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -118,7 +119,8 @@ public class WidgetCrackResult extends RelativeLayout {
         TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
         animationCrackResult.addAnimation(translateAnimationCrackResult);
         animationCrackResult.setFillAfter(true);
-        animationCrackResult.setDuration(1000);
+        animationCrackResult.setDuration(800);
+        animationCrackResult.setInterpolator(new FastOutSlowInInterpolator());
 
         if (crackResult.getImageBitmap() != null && !crackResult.getImageBitmap().isRecycled()) {
             imageViewCrackResult.setImageBitmap(crackResult.getImageBitmap());
