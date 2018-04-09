@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -146,18 +147,21 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     public void onOperatorItemSelected(Operator operator) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_OPERATOR_DATA, operator));
         finish();
+        overridePendingTransition(R.anim.digital_anim_stay,R.anim.digital_slide_out_up );
     }
 
     @Override
     public void onProductItemSelected(Product product) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_PRODUCT_DATA, product));
         finish();
+        overridePendingTransition(R.anim.digital_anim_stay,R.anim.digital_slide_out_up );
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         invalidateTitleToolBar();
+        invalidateHomeUpToolbarIndicator();
     }
 
     @Override
@@ -171,10 +175,23 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
         super.onRestoreInstanceState(savedInstanceState);
         this.titleToolbar = savedInstanceState.getString(EXTRA_STATE_TITLE_TOOLBAR);
         invalidateTitleToolBar();
+        invalidateHomeUpToolbarIndicator();
     }
 
     private void invalidateTitleToolBar() {
         if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.digital_anim_stay,R.anim.digital_slide_out_up );
+    }
+
+    private void invalidateHomeUpToolbarIndicator(){
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default));
+        }
     }
 
     @Override
