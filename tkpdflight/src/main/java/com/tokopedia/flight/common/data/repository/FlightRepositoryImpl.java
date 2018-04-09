@@ -11,8 +11,10 @@ import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
-import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationDataListCloudSource;
+import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
+import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
+import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -71,7 +73,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightOrderDataSource flightOrderDataSource;
     private FlightOrderMapper flightOrderMapper;
     private FlightPassengerFactorySource flightPassengerFactorySource;
-    private FlightCancellationDataListCloudSource flightCancellationDataListCloudSource;
+    private FlightCancellationCloudDataSource flightCancellationCloudDataSource;
 
     public FlightRepositoryImpl(BannerDataSource bannerDataSource,
                                 FlightAirportDataListSource flightAirportDataListSource,
@@ -88,7 +90,7 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightOrderDataSource flightOrderDataSource,
                                 FlightOrderMapper flightOrderMapper,
                                 FlightPassengerFactorySource flightPassengerFactorySource,
-                                FlightCancellationDataListCloudSource flightCancellationDataListCloudSource) {
+                                FlightCancellationCloudDataSource flightCancellationCloudDataSource) {
         this.bannerDataSource = bannerDataSource;
         this.flightAirportDataListSource = flightAirportDataListSource;
         this.flightAirlineDataListSource = flightAirlineDataListSource;
@@ -104,7 +106,7 @@ public class FlightRepositoryImpl implements FlightRepository {
         this.flightOrderDataSource = flightOrderDataSource;
         this.flightOrderMapper = flightOrderMapper;
         this.flightPassengerFactorySource = flightPassengerFactorySource;
-        this.flightCancellationDataListCloudSource = flightCancellationDataListCloudSource;
+        this.flightCancellationCloudDataSource = flightCancellationCloudDataSource;
     }
 
     @Override
@@ -423,6 +425,11 @@ public class FlightRepositoryImpl implements FlightRepository {
 
     @Override
     public Observable<List<Passenger>> getCancelablePassenger(String invoiceId) {
-        return flightCancellationDataListCloudSource.getData(invoiceId);
+        return flightCancellationCloudDataSource.getCancelablePassenger(invoiceId);
+    }
+
+    @Override
+    public Observable<EstimateRefundResultEntity> estimateRefund(FlightEstimateRefundRequest request) {
+        return flightCancellationCloudDataSource.getEstimateRefund(request);
     }
 }

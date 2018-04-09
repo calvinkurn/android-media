@@ -9,6 +9,8 @@ import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancelPassengerEntity;
+import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
+import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
@@ -109,4 +111,7 @@ public interface FlightApi {
     @GET(FlightUrl.FLIGHT_CANCEL_PASSENGER_PATH)
     Observable<Response<DataResponse<CancelPassengerEntity>>> getCancellablePassenger(@Query("invoice_id") String invoiceId);
 
+    @Headers({"Content-Type: application/json"})
+    @POST(FlightUrl.FLIGHT_CANCELLATION_ESTIMATE_REFUND)
+    Observable<Response<DataResponse<EstimateRefundResultEntity>>> getEstimateRefund(@Body DataRequest<FlightEstimateRefundRequest> flightEstimateRefundRequestDataRequest);
 }

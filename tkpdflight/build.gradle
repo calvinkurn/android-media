@@ -23,6 +23,7 @@ dependencies {
     }
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    compile 'com.android.support:support-v4:26.1.0'
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
