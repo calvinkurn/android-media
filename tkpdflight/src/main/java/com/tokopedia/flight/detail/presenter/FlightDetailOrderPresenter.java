@@ -85,7 +85,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
         boolean isRefundable = false;
         for (FlightCancellationJourney item : items) {
-            if (item.isRefundable()) isRefundable = true;
+            if (item.isRefundable()) {
+                isRefundable = true;
+            }
         }
 
         if (isRefundable) {
@@ -93,12 +95,6 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         } else {
             getView().showNonRefundableCancelDialog(getView().getFlightOrder().getId(), items);
         }
-//
-//        if (checkIfFlightCancellable()) {
-//            getView().navigateToCancellationPage(getView().getFlightOrder());
-//        } else {
-//            getView().showLessThan6HoursDialog();
-//        }
     }
 
     @Override

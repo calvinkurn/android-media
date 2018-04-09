@@ -39,6 +39,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
 
     public static final int REQUEST_REVIEW_CANCELLATION = 1;
+    public static final int REQUEST_REASON_AND_PROOF_CANCELLATION = 2;
 
     private String invoiceId;
     private List<FlightCancellationViewModel> flightCancellationViewModelList;
@@ -70,8 +71,6 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
             @Override
             public void onClick(View v) {
                 flightCancellationPresenter.onNextButtonClicked();
-//                navigateToReviewCancellationPage();
-//                startActivity(FlightCancellationReasonAndProofActivity.getCallingIntent(getActivity(), selectedCancellationViewModelList));
             }
         });
 
@@ -169,15 +168,21 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     }
 
     @Override
-    public void goToNextPage() {
-        navigateToReviewCancellationPage();
-    }
-
-    private void navigateToReviewCancellationPage() {
+    public void navigateToReviewCancellationPage() {
         startActivityForResult(
                 FlightReviewCancellationActivity.createIntent(getContext(),
                         invoiceId, selectedCancellationViewModelList),
                 REQUEST_REVIEW_CANCELLATION
+        );
+    }
+
+    @Override
+    public void navigateToReasonAndProofPage() {
+        startActivityForResult(
+                FlightCancellationReasonAndProofActivity.getCallingIntent(
+                        getActivity(), selectedCancellationViewModelList
+                ),
+                REQUEST_REASON_AND_PROOF_CANCELLATION
         );
     }
 }

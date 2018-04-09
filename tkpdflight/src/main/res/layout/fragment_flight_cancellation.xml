@@ -9,10 +9,7 @@
         style="@style/TextView.Micro.BlackDisabled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_10"
-        android:paddingLeft="@dimen/dp_20"
-        android:paddingRight="@dimen/dp_20"
-        android:paddingTop="@dimen/dp_10"
+        android:padding="@dimen/dp_16"
         android:text="@string/flight_cancellation_choose_to_cancel_hint" />
 
     <android.support.v7.widget.RecyclerView

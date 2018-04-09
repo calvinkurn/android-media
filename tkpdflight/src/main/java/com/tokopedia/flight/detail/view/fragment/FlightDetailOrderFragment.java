@@ -561,8 +561,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void showRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> items) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(
-                Html.fromHtml(getString(R.string.flight_cancellation_dialog_refundable_description)));
+        dialog.setDesc(Html.fromHtml(
+                getString(R.string.flight_cancellation_dialog_refundable_description)));
         dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
@@ -585,9 +585,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void showNonRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> items) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(
-                Html.fromHtml(getString(
-                        R.string.flight_cancellation_dialog_non_refundable_description)));
+        dialog.setDesc(Html.fromHtml(getString(
+                R.string.flight_cancellation_dialog_non_refundable_description)));
         dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
