@@ -35,24 +35,38 @@ public class TkpdResponseToInvoicesDataModelMapper implements
             GetInvoicesPayloadWrapper payloadWrapper = responseWrapper.getDataWrapper()
                     .getPayloadWrapper();
             if (payloadWrapper.getInvoices() != null) {
-                for (InvoicesDataModel invoicesDataModel : payloadWrapper.getInvoices()) {
-                    InvoiceAttributesDataModel invoiceAttributesDataModel = invoicesDataModel
-                            .getAttribute();
-                    domainModel.add(new Invoice(invoiceAttributesDataModel.getStatusId(),
-                            invoiceAttributesDataModel.getInvoiceNo(),
-                            invoicesDataModel.getType(),
-                            invoiceAttributesDataModel.getUrl(),
-                            invoiceAttributesDataModel.getTitle(),
-                            invoiceAttributesDataModel.getDescription(),
-                            invoiceAttributesDataModel.getInvoiceDate(),
-                            invoiceAttributesDataModel.getStatus(),
-                            invoiceAttributesDataModel.getAmount(),
-                            invoiceAttributesDataModel.getImageUrl(),
-                            invoicesDataModel.getTypeId(),
-                            invoiceAttributesDataModel.getInvoiceId()));
-                }
+                domainModel = convertPayloadDataToInvoiceList(payloadWrapper);
             }
         }
         return domainModel;
+    }
+
+    private List<Invoice> convertPayloadDataToInvoiceList(GetInvoicesPayloadWrapper payloadWrapper){
+        List<Invoice> domainModel = new ArrayList<>();
+        if (payloadWrapper.getInvoices() != null) {
+            for (InvoicesDataModel invoicesDataModel : payloadWrapper.getInvoices()) {
+                domainModel.add(convertInvoicefromInvoiceDataModel(invoicesDataModel));
+            }
+        }
+        return domainModel;
+    }
+
+    private Invoice convertInvoicefromInvoiceDataModel(InvoicesDataModel invoicesDataModel){
+        InvoiceAttributesDataModel invoiceAttributesDataModel = invoicesDataModel
+                .getAttribute();
+        Invoice.InvoiceBuilder invoiceBuilder = Invoice.InvoiceBuilder.getInstance();
+        invoiceBuilder.setStatusInt(invoiceAttributesDataModel.getStatusId())
+                .setNumber(invoiceAttributesDataModel.getInvoiceNo())
+                .setType(invoicesDataModel.getType())
+                .setUrl(invoiceAttributesDataModel.getUrl())
+                .setTitle(invoiceAttributesDataModel.getTitle())
+                .setDesc(invoiceAttributesDataModel.getDescription())
+                .setDate(invoiceAttributesDataModel.getInvoiceDate())
+                .setStatus(invoiceAttributesDataModel.getStatus())
+                .setTotal(invoiceAttributesDataModel.getAmount())
+                .setImageUrl(invoiceAttributesDataModel.getImageUrl())
+                .setInvoiceTypeInt(invoicesDataModel.getTypeId())
+                .setInvoiceId(invoiceAttributesDataModel.getInvoiceId());
+        return invoiceBuilder.createInvoice();
     }
 }

@@ -6,9 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.attachinvoice.view.AttachInvoiceContract;
 import com.tokopedia.inbox.attachinvoice.view.fragment.AttachInvoiceFragment;
@@ -71,7 +72,7 @@ public class AttachInvoiceActivity extends BaseSimpleActivity implements AttachI
     }
 
     @Override
-    public AppComponent getComponent() {
-        return ((MainApplication) getApplication()).getAppComponent();
+    public BaseAppComponent getComponent() {
+        return ((MainApplication) getApplication()).getBaseAppComponent();
     }
 }

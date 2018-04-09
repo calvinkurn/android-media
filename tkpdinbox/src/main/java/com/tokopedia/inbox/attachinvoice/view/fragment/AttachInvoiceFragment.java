@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.attachinvoice.di.DaggerAttachInvoiceComponent;
@@ -79,10 +80,10 @@ public class AttachInvoiceFragment extends BaseListFragment<InvoiceViewModel,
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
+        BaseAppComponent appComponent = getComponent(BaseAppComponent.class);
         DaggerAttachInvoiceComponent daggerInboxChatComponent =
                 (DaggerAttachInvoiceComponent) DaggerAttachInvoiceComponent.builder()
-                        .appComponent(appComponent).build();
+                        .baseAppComponent(appComponent).build();
         daggerInboxChatComponent.inject(this);
         presenter.attachView(this);
         presenter.attachActivityContract(activity);

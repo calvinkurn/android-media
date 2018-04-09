@@ -86,16 +86,29 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
+    private ListReplyViewModel getLastPrevListReplyViewModel(int initialPosition){
+        int position = initialPosition;
+        while(position > 0){
+            position--;
+            if(list.get(position) instanceof ListReplyViewModel){
+                return (ListReplyViewModel) list.get(position);
+            }
+        }
+        return null;
+    }
+
     private void showTime(Context context, int position) {
         if (position != 0) {
             try {
                 ListReplyViewModel now = (ListReplyViewModel) list.get(position);
-                ListReplyViewModel prev = (ListReplyViewModel) list.get(position - 1);
-                long myTime = Long.parseLong(now.getReplyTime());
-                long prevTime = Long.parseLong(prev.getReplyTime());
+                ListReplyViewModel prev = getLastPrevListReplyViewModel(position);
 
-                Calendar time1 = ChatTimeConverter.unixToCalendar(myTime);
-                Calendar calBefore = ChatTimeConverter.unixToCalendar(prevTime);
+                long myTime = Long.parseLong(now.getReplyTime());
+                long prevTime = 0;
+                if(prev != null) {
+                    prevTime = Long.parseLong(prev.getReplyTime());
+                }
+
                 if (compareTime(context, myTime, prevTime)) {
                     ((ListReplyViewModel) list.get(position)).setShowTime(false);
                 } else {
@@ -114,36 +127,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     private void showHour(Context context, int position) {
-//        if (position >= 0) {
-//            try {
-//                ListReplyViewModel now = (ListReplyViewModel) list.get(position);
-//                ListReplyViewModel prev = (ListReplyViewModel) list.get(position - 1);
-//                ListReplyViewModel next = (ListReplyViewModel) list.get(position + 1);
-//                String myTime = ChatTimeConverter.formatTime(Long.parseLong(now.getReplyTime()));
-//                String prevTime = ChatTimeConverter.formatTime(Long.parseLong(prev.getReplyTime()));
-//                String nextTime = ChatTimeConverter.formatTime(Long.parseLong(next.getReplyTime()));
-//
-//
-//                if(now.isOpposite() ^ prev.isOpposite() || now.isOpposite() ^ next.isOpposite()){
-//                    ((ListReplyViewModel) list.get(position)).setShowHour(true);
-//                }else {
-//                    if (compareHour(context, myTime, nextTime)) {
-//                        ((ListReplyViewModel) list.get(position)).setShowHour(false);
-//                    }else {
-//                        ((ListReplyViewModel) list.get(position)).setShowHour(true);
-//                    }
-//                }
-//
-//            } catch (NumberFormatException | ClassCastException | IndexOutOfBoundsException e) {
-//                ((ListReplyViewModel) list.get(position)).setShowHour(true);
-//            }
-//        } else {
-//            try {
-//                ((ListReplyViewModel) list.get(position)).setShowHour(true);
-//            } catch (ClassCastException e) {
-//                e.printStackTrace();
-//            }
-//        }
         ((ListReplyViewModel) list.get(position)).setShowHour(true);
     }
 

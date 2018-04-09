@@ -18,7 +18,7 @@ public class Invoice {
     int invoiceTypeInt;
     Long invoiceId;
 
-    public Invoice(int statusInt, String number, String type, String url, String title, String
+    private Invoice(int statusInt, String number, String type, String url, String title, String
             desc, String date, String status, String total, String imageUrl, int invoiceTypeInt,
                    Long invoiceId) {
         this.statusInt = statusInt;
@@ -129,5 +129,99 @@ public class Invoice {
 
     public void setInvoiceId(Long invoiceId) {
         this.invoiceId = invoiceId;
+    }
+
+    public static class InvoiceBuilder {
+        private int statusInt;
+        private String number;
+        private String type;
+        private String url;
+        private String title;
+        private String desc;
+        private String date;
+        private String status;
+        private String total;
+        private String imageUrl;
+        private int invoiceTypeInt;
+        private Long invoiceId;
+
+        public static InvoiceBuilder getInstance(){
+            return new InvoiceBuilder();
+        }
+
+        public InvoiceBuilder setStatusInt(int statusInt) {
+            this.statusInt = statusInt;
+            return this;
+        }
+
+        public InvoiceBuilder setNumber(String number) {
+            this.number = number;
+            return this;
+        }
+
+        public InvoiceBuilder setType(String type) {
+            this.type = type;
+            return this;
+        }
+
+        public InvoiceBuilder setUrl(String url) {
+            this.url = url;
+            return this;
+        }
+
+        public InvoiceBuilder setTitle(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public InvoiceBuilder setDesc(String desc) {
+            this.desc = desc;
+            return this;
+        }
+
+        public InvoiceBuilder setDate(String date) {
+            this.date = date;
+            return this;
+        }
+
+        public InvoiceBuilder setStatus(String status) {
+            this.status = status;
+            return this;
+        }
+
+        public InvoiceBuilder setTotal(String total) {
+            this.total = total;
+            return this;
+        }
+
+        public InvoiceBuilder setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+            return this;
+        }
+
+        public InvoiceBuilder setInvoiceTypeInt(int invoiceTypeInt) {
+            this.invoiceTypeInt = invoiceTypeInt;
+            return this;
+        }
+
+        public InvoiceBuilder setInvoiceId(Long invoiceId) {
+            this.invoiceId = invoiceId;
+            return this;
+        }
+
+        public Invoice createInvoice() {
+            return new Invoice(statusInt,
+                    number,
+                    type,
+                    url,
+                    title,
+                    desc,
+                    date,
+                    status,
+                    total,
+                    imageUrl,
+                    invoiceTypeInt,
+                    invoiceId);
+        }
     }
 }
