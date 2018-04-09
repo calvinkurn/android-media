@@ -405,7 +405,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             Glide.with(getContext())
                 .load(imageUrl)
                 .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
