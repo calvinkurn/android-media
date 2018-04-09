@@ -41,7 +41,6 @@ public class AttachInvoicesUseCase extends UseCase<List<InvoiceViewModel>> {
 
     public static RequestParams createRequestParam(String query, String userId, int page, int
             messageId, Context context) {
-        if (page == 0) page = 1;
         RequestParams param = RequestParams.create();
         if (!TextUtils.isEmpty(query)) param.putString(KEYWORD_KEY, query);
         param.putString(USER_ID_KEY, userId);
