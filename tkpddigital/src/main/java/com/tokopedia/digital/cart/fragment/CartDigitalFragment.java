@@ -357,13 +357,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     voucherAttributeDigital.setVoucherCode(cartAutoApplyVoucher.getCode());
                     voucherAttributeDigital.setDiscountAmountPlain(cartAutoApplyVoucher.getDiscountAmount());
                     voucherAttributeDigital.setMessage(cartAutoApplyVoucher.getMessageSuccess());
+                    voucherAttributeDigital.setIsCoupon(cartAutoApplyVoucher.isCoupon());
+                    voucherAttributeDigital.setTitle(cartAutoApplyVoucher.getTitle());
                     voucherDigital.setAttributeVoucher(voucherAttributeDigital);
 
-                    if (cartAutoApplyVoucher.isCoupon() == 1) {
-                        renderCouponInfoData(cartAutoApplyVoucher.getTitle(), voucherDigital);
-                    } else {
-                        renderVoucherInfoData(voucherDigital);
-                    }
+                    renderCouponAndVoucher(voucherDigital);
                 }
             }
         }
@@ -381,15 +379,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 cartDigitalInfoData.getAttributes().getPricePlain()
         );
         if (voucherDigitalState != null) {
-            voucherCartHachikoView.setVoucher(
-                    voucherDigitalState.getAttributeVoucher().getVoucherCode(),
-                    voucherDigitalState.getAttributeVoucher().getMessage()
-            );
-            if (voucherDigitalState.getAttributeVoucher().getDiscountAmountPlain() > 0) {
-                checkoutHolderView.enableVoucherDiscount(
-                        voucherDigitalState.getAttributeVoucher().getDiscountAmountPlain()
-                );
-            }
+            renderCouponAndVoucher(voucherDigitalState);
         }
         if (passData.getInstantCheckout().equals("1") && !cartDigitalInfoData.isForceRenderCart()) {
             pbMainLoading.setVisibility(View.VISIBLE);
@@ -410,6 +400,14 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         );
 
         presenter.autoApplyCouponIfAvailable(passData.getCategoryId());
+    }
+
+    private void renderCouponAndVoucher(VoucherDigital voucherDigital) {
+        if (voucherDigital.getAttributeVoucher().getIsCoupon() == 1) {
+            renderCouponInfoData(voucherDigital);
+        } else {
+            renderVoucherInfoData(voucherDigital);
+        }
     }
 
     private void sendGTMAnalytics(String ec, String el, boolean analyticsKind) {
@@ -520,9 +518,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public void renderCouponInfoData(String title, VoucherDigital voucherDigital) {
+    public void renderCouponInfoData(VoucherDigital voucherDigital) {
         this.voucherDigitalState = voucherDigital;
-        voucherCartHachikoView.setCoupon(title,
+        voucherCartHachikoView.setCoupon(voucherDigital.getAttributeVoucher().getTitle(),
                 voucherDigital.getAttributeVoucher().getMessage(),
                 voucherDigital.getAttributeVoucher().getVoucherCode()
         );
@@ -817,7 +815,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     voucherAttributeDigital.setVoucherCode(voucherCode);
                     voucherAttributeDigital.setDiscountAmountPlain(voucherDiscountAmount);
                     voucherAttributeDigital.setMessage(voucherMessage);
+                    voucherAttributeDigital.setIsCoupon(0);
                     voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+
 
                     voucherDigitalState = voucherDigital;
 
@@ -837,6 +837,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
                     VoucherDigital voucherDigital = new VoucherDigital();
                     VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+                    voucherAttributeDigital.setIsCoupon(1);
+                    voucherAttributeDigital.setTitle(couponTitle);
                     voucherAttributeDigital.setVoucherCode(couponCode);
                     voucherAttributeDigital.setDiscountAmountPlain(couponDiscountAmount);
                     voucherAttributeDigital.setMessage(couponMessage);

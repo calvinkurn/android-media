@@ -42,7 +42,7 @@ public interface IDigitalCartView extends IBaseView {
 
     void renderVoucherInfoData(VoucherDigital voucherDigital);
 
-    void renderCouponInfoData(String title, VoucherDigital voucherDigital);
+    void renderCouponInfoData(VoucherDigital voucherDigital);
 
 //    void renderErrorCheckVoucher(String message);
 
