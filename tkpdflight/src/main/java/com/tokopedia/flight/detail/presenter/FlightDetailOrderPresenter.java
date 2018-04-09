@@ -79,11 +79,26 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     @Override
     public void actionCancelOrderButtonClicked() {
-        if (checkIfFlightCancellable()) {
-            getView().navigateToCancellationPage(getView().getFlightOrder());
-        } else {
-            getView().showLessThan6HoursDialog();
+
+        List<FlightCancellationJourney> items = transformOrderToCancellation(getView()
+                .getFlightOrder().getJourneys());
+
+        boolean isRefundable = false;
+        for (FlightCancellationJourney item : items) {
+            if (item.isRefundable()) isRefundable = true;
         }
+
+        if (isRefundable) {
+            getView().showRefundableCancelDialog(getView().getFlightOrder().getId(), items);
+        } else {
+            getView().showNonRefundableCancelDialog(getView().getFlightOrder().getId(), items);
+        }
+//
+//        if (checkIfFlightCancellable()) {
+//            getView().navigateToCancellationPage(getView().getFlightOrder());
+//        } else {
+//            getView().showLessThan6HoursDialog();
+//        }
     }
 
     @Override
@@ -189,7 +204,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     private boolean isDepartureDateMoreThan6Hours(Date departureDate) {
         Date currentDate = FlightDateUtil.getCurrentDate();
         long diffHours = (departureDate.getTime() - currentDate.getTime()) / TimeUnit.HOURS.toMillis(1);
-        return diffHours >= MINIMUM_HOURS_CANCELLATION_DURATION || diffHours < 0;
+        return diffHours >= MINIMUM_HOURS_CANCELLATION_DURATION;
     }
 
     private void renderPaymentInfo(FlightOrder flightOrder) {
@@ -340,15 +355,21 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         }
     }
 
-    private boolean checkIfFlightCancellable() {
+    @Override
+    public void checkIfFlightCancellable(String invoiceId, List<FlightCancellationJourney> items) {
+        boolean canGoToCancelPage = false;
         for (FlightOrderJourney item : getView().getFlightOrder().getJourneys()) {
             if (isDepartureDateMoreThan6Hours(
                     FlightDateUtil.stringToDate(item.getDepartureTime()))) {
-                return isDepartureDateMoreThan6Hours(
-                        FlightDateUtil.stringToDate(item.getDepartureTime()));
+                canGoToCancelPage = true;
             }
         }
-        return false;
+
+        if (canGoToCancelPage) {
+            getView().navigateToCancellationPage(invoiceId, items);
+        } else {
+            getView().showLessThan6HoursDialog();
+        }
     }
 
     private List<FlightOrderJourney> filterFlightJourneys(int status, List<FlightOrderJourney> journeys, FlightOrderDetailPassData flightOrderDetailPassData) {
