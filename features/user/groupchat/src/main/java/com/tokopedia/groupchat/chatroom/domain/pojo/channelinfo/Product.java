@@ -32,7 +32,7 @@ public class Product {
     private String originalPrice;
     @SerializedName("remaining_stock_percentage")
     @Expose
-    private int remainingStockPercentage;
+    private double remainingStockPercentage;
     @SerializedName("stock_text")
     @Expose
     private String stockText;
@@ -65,7 +65,7 @@ public class Product {
         return originalPrice;
     }
 
-    public int getRemainingStockPercentage() {
+    public double getRemainingStockPercentage() {
         return remainingStockPercentage;
     }
 

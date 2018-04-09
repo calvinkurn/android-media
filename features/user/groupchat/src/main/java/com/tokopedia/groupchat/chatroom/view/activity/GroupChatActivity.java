@@ -91,6 +91,7 @@ import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UnknownFormatConversionException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -103,6 +104,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         implements GroupChatTabAdapter.TabListener, GroupChatContract.View,
         LoginGroupChatUseCase.LoginGroupChatListener, ChannelHandlerUseCase.ChannelHandlerListener
         , ToolTipUtils.ToolTipListener, GroupChatNotifInterface {
+
+    private static final String TOKOPEDIA_APPLINK = "tokopedia://";
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -1460,13 +1463,22 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public String generateAttributeApplink(String applink,
                                            String attributeBanner) {
-        if (viewModel != null) {
-            return generateAttributeApplink(applink, attributeBanner,
-                    viewModel.getChannelUrl(),
-                    viewModel.getChannelName());
-        } else {
+        try {
+            if (viewModel != null && isAppLink(applink)) {
+                return generateAttributeApplink(applink, attributeBanner,
+                        viewModel.getChannelUrl(),
+                        viewModel.getChannelName());
+            } else {
+                return applink;
+            }
+        } catch (UnknownFormatConversionException e) {
+            e.printStackTrace();
             return applink;
         }
+    }
+
+    private boolean isAppLink(String applink) {
+        return applink.trim().toLowerCase().startsWith(TOKOPEDIA_APPLINK);
     }
 
     private String generateAttributeApplink(String applink,

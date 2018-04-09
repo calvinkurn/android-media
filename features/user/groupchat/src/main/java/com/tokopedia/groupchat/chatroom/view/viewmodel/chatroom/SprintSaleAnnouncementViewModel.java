@@ -13,7 +13,7 @@ public class SprintSaleAnnouncementViewModel extends BaseChatViewModel implement
 
     public static final String SPRINT_SALE_UPCOMING = "flashsale_upcoming";
     public static final String SPRINT_SALE_START = "flashsale_start";
-    public static final String SPRINT_SALE_END = "flashsale_end";
+    public static final String SPRINT_SALE_FINISH = "flashsale_end";
 
     private ArrayList<SprintSaleProductViewModel> listProducts;
     private String redirectUrl;

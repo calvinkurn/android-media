@@ -24,11 +24,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncement
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -120,7 +116,7 @@ public class GroupChatMessagesMapper {
                 return mapToAdminImageChat(message, message.getData());
             case SprintSaleAnnouncementViewModel.SPRINT_SALE_UPCOMING:
             case SprintSaleAnnouncementViewModel.SPRINT_SALE_START:
-            case SprintSaleAnnouncementViewModel.SPRINT_SALE_END:
+            case SprintSaleAnnouncementViewModel.SPRINT_SALE_FINISH:
                 return mapToSprintSale(message, message.getData());
             case VibrateViewModel.TYPE:
                 return new VibrateViewModel();

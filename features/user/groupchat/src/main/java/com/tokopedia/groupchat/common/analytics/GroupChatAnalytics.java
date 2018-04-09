@@ -53,6 +53,7 @@ public class GroupChatAnalytics {
     public static final String EVENT_NAME_CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
     private static final String EVENT_NAME_PROMO_CLICK = "promoClick";
     private static final String EVENT_NAME_PROMO_VIEW = "promoView";
+    private static final String EVENT_NAME_CLICK_BACK = "clickBack";
 
     public static final String COMPONENT_FLASH_SALE = "flashsale";
     public static final String COMPONENT_BANNER = "banner";
@@ -215,7 +216,7 @@ public class GroupChatAnalytics {
     }
 
     public void eventUserExit(String channelName) {
-        analyticTracker.sendEventTracking("",
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_BACK,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_LEAVE_ROOM,
                 ""

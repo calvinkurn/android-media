@@ -27,7 +27,7 @@ public class Product {
     @SerializedName("original_price")
     @Expose
     private String originalPrice;
-    @SerializedName("stock_sold_percentage")
+    @SerializedName("remaining_stock_percentage")
     @Expose
     private double remainingStockPercentage;
     @SerializedName("stock_text")
