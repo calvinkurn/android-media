@@ -28,7 +28,7 @@
                 android:lineSpacingExtra="4sp"
                 android:text="@string/register_now"
                 android:textColor="@color/black_70"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_size_l_medium"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/register"
-                android:layout_marginBottom="@dimen/padding_med"
+                android:layout_marginBottom="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 app:backgroundColor="@color/black"
@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/view"
-                android:layout_marginBottom="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 app:backgroundColor="@color/black"

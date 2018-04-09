@@ -10,6 +10,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -175,10 +176,12 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     protected void prepareView(View view) {
         UserAuthenticationAnalytics.setActiveRegister();
-        registerPhoneNumberButton.setVisibility(View.VISIBLE);
+        registerPhoneNumberButton.setVisibility(View.GONE);
 
         registerButton.setColor(Color.WHITE);
-        registerButton.setBorderColor(R.color.black);
+        registerButton.setBorderColor(Color.BLACK);
+        registerButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
+        registerButton.setRoundCorner(10);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,7 +194,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             }
         });
         registerPhoneNumberButton.setColor(Color.WHITE);
-        registerPhoneNumberButton.setBorderColor(R.color.black);
+        registerPhoneNumberButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
+        registerPhoneNumberButton.setRoundCorner(10);
         registerPhoneNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -325,8 +329,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 getResources().getDimensionPixelSize(R.dimen.btn_login_height));
+        int topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
 
-        layoutParams.setMargins(0, 20, 0, 15);
+        layoutParams.setMargins(0, topMargin, 0, 0);
 
         for (int i = 0; i < listProvider.size(); i++) {
             DiscoverItemViewModel item = listProvider.get(i);
@@ -334,6 +339,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 LoginTextView loginTextView = new LoginTextView(getActivity()
                         , MethodChecker.getColor(getActivity(), R.color.white));
                 loginTextView.setTextRegister(item.getName());
+                loginTextView.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
                 loginTextView.setImage(item.getImage());
                 loginTextView.setRoundCorner(10);
 

@@ -109,7 +109,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
-        errorText.setVisibility(View.VISIBLE);
+        errorText.setVisibility(View.GONE);
         phoneNumber.requestFocus();
         phoneNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
