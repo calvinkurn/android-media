@@ -61,12 +61,12 @@ public class AddEmailVerificationActivity extends BasePresenterActivity implemen
                 intentBundle(getIntent().getExtras().getString(INTENT_EXTRA_PARAM_EMAIL)));
         if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(com.tokopedia.core.R.id.container,
+                    .replace(R.id.container,
                             getSupportFragmentManager().findFragmentByTag(TAG))
                     .commit();
         } else {
             getSupportFragmentManager().beginTransaction()
-                    .add(com.tokopedia.core.R.id.container, fragment, TAG)
+                    .add(R.id.container, fragment, TAG)
                     .commit();
         }
     }

@@ -26,20 +26,15 @@ public class AddEmailMapper implements Func1<Response<TkpdResponse>, AddEmailVie
     @Override
     public AddEmailViewModel call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if ((!response.body().isNullData()
-                    && response.body().getErrorMessageJoined().equals(""))
-                    || (!response.body().isNullData()
-                    && response.body().getErrorMessages() == null)) {
+            if (response.body().getErrorMessages() != null && !response.body().getErrorMessages().isEmpty()) {
+
                 AddEmailResponse pojo = response.body().convertDataObj(AddEmailResponse
                         .class);
                 return mappingToViewModel(pojo);
+            } else if (response.body().isNullData()) {
+                throw new ErrorMessageException(response.body().getErrorMessageJoined());
             } else {
-                if (response.body().getErrorMessages() != null
-                        && !response.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                } else {
-                    throw new ErrorMessageException("");
-                }
+                throw new ErrorMessageException("");
             }
         } else {
             String messageError = ErrorHandler.getErrorMessage(response);

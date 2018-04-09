@@ -75,6 +75,6 @@ public class MethodItem implements Parcelable {
     }
     private static String getMaskedPhoneNumber(String phone) {
         phone = phone.substring(phone.length() - 4);
-        return String.format(("**** - **** - %s"), phone);
+        return String.format(MainApplication.getAppContext().getString(R.string.verification_masking_x), phone);
     }
 }

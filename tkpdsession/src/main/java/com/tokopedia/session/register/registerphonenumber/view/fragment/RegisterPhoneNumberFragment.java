@@ -140,7 +140,6 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
                     if (isValidNumber(v.getText().toString())) {
-//                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
                         presenter.checkPhoneNumber(phoneNumber.getText().toString());
                     }
                     handled = true;
@@ -152,7 +151,6 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
                 presenter.checkPhoneNumber(phoneNumber.getText().toString());
             }
         });

@@ -45,8 +45,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
     public void requestOTP(VerificationViewModel viewModel) {
         if (!TextUtils.isEmpty(viewModel.getPhoneNumber()) && getView().isCountdownFinished()) {
             getView().showLoadingProgress();
-            int type = viewModel.getType();
-            switch (type) {
+            switch (viewModel.getType()) {
                 case VerificationActivity.TYPE_SMS:
                     requestOtpUseCase.execute(RequestOtpUseCase.getParam(getView().getContext(),
                             RequestOtpUseCase.MODE_SMS,

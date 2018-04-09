@@ -26,20 +26,14 @@ public class CheckEmailMapper implements Func1<Response<TkpdResponse>, CheckEmai
     @Override
     public CheckEmailViewModel call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if ((!response.body().isNullData()
-                    && response.body().getErrorMessageJoined().equals(""))
-                    || (!response.body().isNullData()
-                    && response.body().getErrorMessages() == null)) {
+            if (response.body().getErrorMessages() != null && !response.body().getErrorMessages().isEmpty()) {
                 CheckEmailResponse pojo = response.body().convertDataObj(CheckEmailResponse
                         .class);
                 return mappingToViewModel(pojo);
+            } else if (response.body().isNullData()) {
+                throw new ErrorMessageException(response.body().getErrorMessageJoined());
             } else {
-                if (response.body().getErrorMessages() != null
-                        && !response.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                } else {
-                    throw new ErrorMessageException("");
-                }
+                throw new ErrorMessageException("");
             }
         } else {
             String messageError = ErrorHandler.getErrorMessage(response);

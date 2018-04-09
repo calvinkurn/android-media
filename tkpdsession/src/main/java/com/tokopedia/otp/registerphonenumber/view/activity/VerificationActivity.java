@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.analytics.OTPAnalytics;
@@ -54,12 +53,6 @@ public class VerificationActivity extends BasePresenterActivity implements HasCo
         fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
         fragmentTransaction.commit();
 
-        Log.d("NISNIS", getSupportFragmentManager().getBackStackEntryCount() + " " + (
-                getSupportFragmentManager().getBackStackEntryCount() > 0 ? getSupportFragmentManager()
-                        .getBackStackEntryAt
-                                (getSupportFragmentManager()
-                                        .getBackStackEntryCount() - 1).getName() : "No fragment at " +
-                        "backstack"));
     }
 
     private Fragment getFragment(int type, Bundle bundle) {
