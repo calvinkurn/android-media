@@ -130,12 +130,6 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         });
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (interactionListener != null) {
-            interactionListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     protected String getScreenName() {
         return FlightAnalytics.Screen.FLIGHT_CANCELLATION_STEP_TWO;
@@ -207,6 +201,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     @Override
     public void navigateToNextStep(FlightCancellationWrapperViewModel viewModel) {
         Toast.makeText(getActivity(), "Next Step", Toast.LENGTH_SHORT).show();
+        interactionListener.goToEstimateReview(viewModel);
     }
 
     @Override
@@ -277,6 +272,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
+
+        void goToEstimateReview(FlightCancellationWrapperViewModel viewModel);
     }
 }

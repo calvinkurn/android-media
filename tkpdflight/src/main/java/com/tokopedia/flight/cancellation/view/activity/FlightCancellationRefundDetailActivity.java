@@ -23,7 +23,7 @@ public class FlightCancellationRefundDetailActivity extends BaseFlightActivity i
 
     private FlightCancellationWrapperViewModel wrapperViewModel;
 
-    private static Intent getCallingIntent(Activity activity, FlightCancellationWrapperViewModel wrapperViewModel) {
+    public static Intent getCallingIntent(Activity activity, FlightCancellationWrapperViewModel wrapperViewModel) {
         Intent intent = new Intent(activity, FlightCancellationRefundDetailActivity.class);
         intent.putExtra(FLIWGHT_WRAPPER_EXTRA, wrapperViewModel);
         return intent;

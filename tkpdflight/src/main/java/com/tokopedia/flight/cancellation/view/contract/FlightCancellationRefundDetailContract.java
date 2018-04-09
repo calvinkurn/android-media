@@ -36,5 +36,9 @@ public interface FlightCancellationRefundDetailContract {
     interface Presenter extends CustomerPresenter<View>{
 
         void initialize();
+
+        void onRetryFetchEstimate();
+
+        void onNextButtonClicked();
     }
 }

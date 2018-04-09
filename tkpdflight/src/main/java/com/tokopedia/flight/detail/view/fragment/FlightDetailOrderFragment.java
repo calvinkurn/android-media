@@ -419,18 +419,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void navigateToCancellationPage(String invoiceId, List<FlightCancellationJourney> items) {
-//        startActivityForResult(getCallintIntent(
-//                CANCEL_SOLUTION_ID,
-//                flightOrder.getId(),
-//                getString(R.string.flight_contact_us_cancel_desc),
-//                getString(R.string.flight_contact_us_cancel_attc),
-//                cancelMessage,
-//                getString(R.string.flight_contact_us_cancel_toolbar))
-//                , CANCEL_REQUEST_CODE);
-
+    public void navigateToCancellationPage(String invoiceId, List<FlightCancellationJourney> items, int totalPrice) {
         startActivityForResult(
-                FlightCancellationActivity.createIntent(getContext(), invoiceId, items),
+                FlightCancellationActivity.createIntent(getContext(), invoiceId, items, totalPrice),
                 REQUEST_CODE_CANCELLATION
         );
 

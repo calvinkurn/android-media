@@ -32,6 +32,16 @@ public class FlightCancellationRefundDetailPresenter extends BaseDaggerPresenter
         actionFetchEstimateRefund();
     }
 
+    @Override
+    public void onRetryFetchEstimate() {
+        actionFetchEstimateRefund();
+    }
+
+    @Override
+    public void onNextButtonClicked() {
+
+    }
+
     private void actionFetchEstimateRefund() {
         getView().showLoading();
         getView().hideFullPageContainer();
