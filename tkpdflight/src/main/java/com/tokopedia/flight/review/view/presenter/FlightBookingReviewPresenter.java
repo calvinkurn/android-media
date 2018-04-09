@@ -153,55 +153,6 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         flightAnalytics.eventPurchaseAttemptCancelled();
     }
 
-    private Subscriber<DataResponseVerify> getSubscriberVerifyBooking() {
-        return new Subscriber<DataResponseVerify>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().hideProgressDialog();
-                    getView().onErrorVerifyCode(e);
-                }
-            }
-
-            @Override
-            public void onNext(DataResponseVerify dataResponseVerify) {
-                getView().hideProgressDialog();
-                // TODO integrate with checkout
-            }
-        };
-    }
-
-//    private Subscriber<AttributesVoucher> getSubscriberCheckVoucherCode(final String voucherCode) {
-//        return new Subscriber<AttributesVoucher>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                if (isViewAttached()) {
-//                    getView().hideProgressDialog();
-//                    getView().onErrorCheckVoucherCode(e);
-//                    flightAnalytics.eventVoucherErrors(voucherCode, e.getMessage());
-//                }
-//            }
-//
-//            @Override
-//            public void onNext(AttributesVoucher attributesVoucher) {
-//                getView().hideProgressDialog();
-//                flightAnalytics.eventVoucherSuccess(attributesVoucher.getVoucherCode(), attributesVoucher.getMessage());
-//                getView().onSuccessCheckVoucherCode(attributesVoucher);
-//                getView().updateFinalTotal(attributesVoucher, getView().getCurrentBookingReviewModel());
-//            }
-//        };
-//    }
-
     public Subscriber<FlightCheckoutEntity> getSubscriberSubmitData() {
         return new Subscriber<FlightCheckoutEntity>() {
             @Override
