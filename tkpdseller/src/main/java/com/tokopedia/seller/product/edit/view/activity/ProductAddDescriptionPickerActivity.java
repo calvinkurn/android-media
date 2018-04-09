@@ -39,6 +39,9 @@ public class ProductAddDescriptionPickerActivity extends BaseSimpleActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent();
+        if(productAddDescriptionPickerFragment==null){
+            productAddDescriptionPickerFragment = (ProductAddDescriptionPickerFragment) getFragment();
+        }
         intent.putExtra(PRODUCT_DESCRIPTION, productAddDescriptionPickerFragment.getDescriptionText());
         setResult(RESULT_OK, intent);
         super.onBackPressed();

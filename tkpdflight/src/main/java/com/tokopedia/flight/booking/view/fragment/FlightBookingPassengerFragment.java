@@ -29,7 +29,7 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity;
-import com.tokopedia.flight.booking.view.activity.FlightBookingListPassengerActivity;
+import com.tokopedia.flight.passenger.view.activity.FlightPassengerListActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresenter;
@@ -37,6 +37,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewM
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -543,13 +544,6 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void canGoBack() {
-        if (interactionListener != null) {
-            interactionListener.goBack();
-        }
-    }
-
-    @Override
     public void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected) {
         String title = String.format("%s %s", getString(R.string.flight_booking_luggage_toolbar_title), selected.getDescription());
         Intent intent = FlightBookingAmenityActivity.createIntent(getActivity(), title, luggages, selected);
@@ -565,7 +559,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected) {
-        Intent intent = FlightBookingListPassengerActivity.createIntent(getActivity(),
+        Intent intent = FlightPassengerListActivity.createIntent(getActivity(),
                 selected, requestId, departureDate);
         startActivityForResult(intent, REQUEST_CODE_PICK_SAVED_PASSENGER);
     }
@@ -589,8 +583,9 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                     break;
                 case REQUEST_CODE_PICK_SAVED_PASSENGER:
                     if (data != null) {
-                        FlightBookingPassengerViewModel flightBookingPassengerViewModel = data.getParcelableExtra(FlightBookingListPassengerFragment.EXTRA_SELECTED_PASSENGER);
+                        FlightBookingPassengerViewModel flightBookingPassengerViewModel = data.getParcelableExtra(FlightPassengerListFragment.EXTRA_SELECTED_PASSENGER);
                         presenter.onChangeFromSavedPassenger(flightBookingPassengerViewModel);
+                        interactionListener.updatePassengerViewModel(flightBookingPassengerViewModel);
                     } else {
                         presenter.onNewPassengerChoosed();
                     }
@@ -599,20 +594,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         }
     }
 
-    public void onBackPressed() {
-        if (selectedPassengerId == null && viewModel.getPassengerId() != null) {
-            presenter.onUnselectPassengerList(viewModel.getPassengerId());
-        } else if (viewModel.getPassengerId() != null &&
-                !viewModel.getPassengerId().equals(selectedPassengerId)) {
-            presenter.onUnselectPassengerList(viewModel.getPassengerId());
-        } else {
-            canGoBack();
-        }
-    }
-
     public interface OnFragmentInteractionListener {
         void actionSuccessUpdatePassengerData(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
 
-        void goBack();
+        void updatePassengerViewModel(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
+
     }
 }

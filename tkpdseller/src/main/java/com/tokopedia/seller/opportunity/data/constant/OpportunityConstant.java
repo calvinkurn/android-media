@@ -7,6 +7,7 @@ package com.tokopedia.seller.opportunity.data.constant;
 public class OpportunityConstant {
     public static final String PATH_GET_OPPORTUNITY = "/v4/order/replacement/list";
     public static final String PATH_GET_CATEGORY = "/v4/order/replacement/category";
+    public static final String PATH_GET_OPPORTUNITY_DETAIL = "/v4/replacement/detail";
 
     public static final String PATH_ACCEPT_REPLACEMENT = "/v4/order/replacement";
     public static final String PATH_CANCEL_REPLACEMENT = "/v4/replacement/cancel";
