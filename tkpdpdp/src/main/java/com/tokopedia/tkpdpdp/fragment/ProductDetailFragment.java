@@ -163,6 +163,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_PRODUCT_VARIANT = "STATE_PRODUCT_VARIANT";
+    public static final String STATE_PRODUCT_STOCK_NON_VARIANT = "STATE_PRODUCT_STOCK_NON_VARIANT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
     public static final String STATE_PROMO_WIDGET = "STATE_PROMO_WIDGET";
@@ -208,6 +209,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ProductDetailData productData;
     private boolean useVariant = true;
     private ProductVariant productVariant;
+    private Child productStockNonVariant;
     private List<ProductOther> productOthers;
     private VideoData videoData;
     private PromoAttributes promoAttributes;
@@ -973,9 +975,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onSaveState(Bundle outState) {
-        Log.d(TAG, "onSaveState");
         presenter.saveStateProductDetail(outState, STATE_DETAIL_PRODUCT, productData);
         presenter.saveStateProductVariant(outState, STATE_PRODUCT_VARIANT, productVariant);
+        presenter.saveStateProductStockNonVariant(outState, STATE_PRODUCT_STOCK_NON_VARIANT, productStockNonVariant);
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
         presenter.saveStatePromoWidget(outState, STATE_PROMO_WIDGET, promoAttributes);
@@ -1074,6 +1076,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                     if (productVariant != null) {
                         pictureView.renderData(productData);
                         headerInfoView.renderData(productData);
+                        headerInfoView.renderStockAvailability(productData.getInfo());
                         shopInfoView.renderData(productData);
                         presenter.updateRecentView(context, productData.getInfo().getProductId());
                         ratingTalkCourierView.renderData(productData);
@@ -1273,13 +1276,29 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         if (variantLevel1 != null && variantLevel1 instanceof Option) {
             priceSimulationView.updateVariant(generateVariantString());
         }
-        int defaultChild = productVariant.getParentId() == productData.getInfo().getProductId()
-                ? productVariant.getDefaultChild() : productData.getInfo().getProductId();
+        int defaultChild =  productVariant.getParentId() == productData.getInfo().getProductId()
+                ?  productVariant.getDefaultChild() : productData.getInfo().getProductId();
+        if(productVariant.getChildFromProductId(defaultChild).isEnabled()){
+            productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
+            productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
+            headerInfoView.renderStockAvailability(productData.getInfo());
+        }
+
         buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
                 defaultChild).isIsBuyable(), productData);
 
         startShowCase();
 
+    }
+
+    @Override
+    public void addProductStock(Child productStock) {
+        productStockNonVariant = productStock;
+        if(productStock.isEnabled()){
+            productData.getInfo().setProductStockWording(productStockNonVariant.getStockWording());
+            productData.getInfo().setLimitedStock(productStockNonVariant.isLimitedStock());
+            headerInfoView.renderStockAvailability(productData.getInfo());
+        }
     }
 
     @Override
