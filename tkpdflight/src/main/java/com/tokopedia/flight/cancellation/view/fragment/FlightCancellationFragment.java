@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReasonAndProofActivity;
@@ -38,10 +39,11 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
 
     public static final int REQUEST_REVIEW_CANCELLATION = 1;
+    public static final int REQUEST_REASON_AND_PROOF_CANCELLATION = 2;
 
     private String invoiceId;
     private List<FlightCancellationViewModel> flightCancellationViewModelList;
-    private List<FlightCancellationViewModel> selectedCancellationViewModelList;
+    private FlightCancellationWrapperViewModel selectedCancellationViewModelList;
     List<FlightCancellationJourney> flightCancellationJourneyList;
 
     @Inject
@@ -68,11 +70,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                navigateToReviewCancellationPage();
-                FlightCancellationWrapperViewModel wrapperViewModel = new FlightCancellationWrapperViewModel();
-                wrapperViewModel.setInvoice(getInvoiceId());
-                wrapperViewModel.setViewModels(selectedCancellationViewModelList);
-                startActivity(FlightCancellationReasonAndProofActivity.getCallingIntent(getActivity(), wrapperViewModel));
+                flightCancellationPresenter.onNextButtonClicked();
             }
         });
 
@@ -85,6 +83,8 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
         invoiceId = getArguments().getString(EXTRA_INVOICE_ID);
         flightCancellationJourneyList = getArguments().getParcelableArrayList(EXTRA_CANCEL_JOURNEY);
+
+        selectedCancellationViewModelList = new FlightCancellationWrapperViewModel();
 
         flightCancellationPresenter.attachView(this);
         flightCancellationPresenter.onViewCreated();
@@ -127,7 +127,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @Override
     public void setSelectedCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList) {
-        this.selectedCancellationViewModelList = flightCancellationViewModelList;
+        this.selectedCancellationViewModelList.setViewModels(flightCancellationViewModelList);
     }
 
     @Override
@@ -147,12 +147,18 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @Override
     public List<FlightCancellationViewModel> getSelectedCancellationViewModel() {
-        return selectedCancellationViewModelList;
+        return selectedCancellationViewModelList.getViewModels();
+    }
+
+    @Override
+    public void showShouldChooseAtLeastOnePassengerError() {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
+                getString(R.string.flight_cancellation_should_choose_at_least_one_passenger_error));
     }
 
     @Override
     public void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
-        selectedCancellationViewModelList.get(position)
+        selectedCancellationViewModelList.getViewModels().get(position)
                 .getPassengerViewModelList().add(passengerViewModel);
     }
 
@@ -161,11 +167,22 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         flightCancellationPresenter.uncheckPassenger(passengerViewModel, position);
     }
 
-    private void navigateToReviewCancellationPage() {
+    @Override
+    public void navigateToReviewCancellationPage() {
         startActivityForResult(
                 FlightReviewCancellationActivity.createIntent(getContext(),
                         invoiceId, selectedCancellationViewModelList),
                 REQUEST_REVIEW_CANCELLATION
+        );
+    }
+
+    @Override
+    public void navigateToReasonAndProofPage() {
+        startActivityForResult(
+                FlightCancellationReasonAndProofActivity.getCallingIntent(
+                        getActivity(), selectedCancellationViewModelList
+                ),
+                REQUEST_REASON_AND_PROOF_CANCELLATION
         );
     }
 }

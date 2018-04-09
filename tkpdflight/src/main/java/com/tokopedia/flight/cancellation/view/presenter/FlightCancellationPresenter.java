@@ -38,6 +38,30 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
     }
 
     @Override
+    public void onNextButtonClicked() {
+        boolean canGoToNext = false;
+        boolean isRefundable = false;
+
+        for (FlightCancellationViewModel item : getView().getSelectedCancellationViewModel()) {
+            if (item.getPassengerViewModelList().size() > 0) {
+                canGoToNext = true;
+            }
+
+            if (item.getFlightCancellationJourney().isRefundable()) {
+                isRefundable = true;
+            }
+        }
+
+        if (canGoToNext && isRefundable) {
+            getView().navigateToReasonAndProofPage();
+        } else if (canGoToNext && !isRefundable) {
+            getView().navigateToReviewCancellationPage();
+        } else {
+            getView().showShouldChooseAtLeastOnePassengerError();
+        }
+    }
+
+    @Override
     public void uncheckPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position) {
         FlightCancellationViewModel flightCancellationViewModel = getView().getSelectedCancellationViewModel().get(position);
         flightCancellationViewModel.getPassengerViewModelList().remove(passengerViewModel);

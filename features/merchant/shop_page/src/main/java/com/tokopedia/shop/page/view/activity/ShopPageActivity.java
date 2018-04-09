@@ -15,6 +15,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,8 +65,10 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     private static final float OFFSET_TOOLBAR_TITLE_SHOWN = 0.76f;
     private static final float OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED = 0.813f;
     public static final String APP_LINK_EXTRA_SHOP_ID = "shop_id";
+    public static final String APP_LINK_EXTRA_SHOP_ATTRIBUTION = "tracker_attribution";
     private static final String SHOP_ID = "EXTRA_SHOP_ID";
     private static final String SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN";
+    private static final String SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION";
     private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
     private static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     private static final int REQUEST_CODER_USER_LOGIN = 100;
@@ -94,6 +97,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     private String shopId;
     private String shopDomain;
+    private String shopAttribution;
 
     private ShopComponent component;
     private ShopModuleRouter shopModuleRouter;
@@ -116,10 +120,12 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     @DeepLink(ShopAppLink.SHOP)
     public static Intent getCallingIntent(Context context, Bundle extras) {
+
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
                 .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
+                .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
                 .putExtras(extras);
     }
@@ -130,6 +136,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
                 .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
+                .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_TALK)
                 .putExtras(extras);
     }
@@ -140,6 +147,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
                 .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
+                .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_REVIEW)
                 .putExtras(extras);
     }
@@ -148,6 +156,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     protected void onCreate(Bundle savedInstanceState) {
         shopId = getIntent().getStringExtra(SHOP_ID);
         shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
+        shopAttribution = getIntent().getStringExtra(SHOP_ATTRIBUTION);
         updateShopDiscussionIntent();
         if (getApplication() != null && getApplication() instanceof ShopModuleRouter) {
             shopModuleRouter = (ShopModuleRouter) getApplication();
@@ -301,7 +310,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
                 getString(R.string.shop_info_title_tab_discussion)
         };
         return new ShopPagePagerAdapter(getSupportFragmentManager(), title,
-                shopModuleRouter, this, shopId, shopDomain);
+                shopModuleRouter, this, shopId, shopDomain, shopAttribution);
     }
 
     @Override

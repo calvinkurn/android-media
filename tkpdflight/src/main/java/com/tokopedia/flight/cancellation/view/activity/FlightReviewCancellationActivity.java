@@ -16,6 +16,7 @@ import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationFragmen
 import com.tokopedia.flight.cancellation.view.fragment.FlightReviewCancellationFragment;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 
 import java.util.ArrayList;
@@ -27,10 +28,10 @@ import static com.tokopedia.flight.cancellation.view.fragment.FlightReviewCancel
 public class FlightReviewCancellationActivity extends BaseFlightActivity implements HasComponent<FlightCancellationComponent> {
 
     public static Intent createIntent(Context context, String invoiceId,
-                                      List<FlightCancellationViewModel> flightCancellationPassData) {
+                                      FlightCancellationWrapperViewModel flightCancellationPassData) {
         Intent intent = new Intent(context, FlightReviewCancellationActivity.class);
         intent.putExtra(EXTRA_INVOICE_ID, invoiceId);
-        intent.putParcelableArrayListExtra(EXTRA_CANCEL_JOURNEY, (ArrayList<? extends Parcelable>) flightCancellationPassData);
+        intent.putExtra(EXTRA_CANCEL_JOURNEY, flightCancellationPassData);
         return intent;
     }
 
@@ -63,8 +64,8 @@ public class FlightReviewCancellationActivity extends BaseFlightActivity impleme
 
     @Override
     protected Fragment getNewFragment() {
-        List<FlightCancellationJourney> flightCancellationJourneyList = getIntent().getExtras()
-                .getParcelableArrayList(EXTRA_CANCEL_JOURNEY);
+        FlightCancellationWrapperViewModel flightCancellationJourneyList = getIntent().getExtras()
+                .getParcelable(EXTRA_CANCEL_JOURNEY);
         return FlightReviewCancellationFragment.createInstance(
                 getIntent().getExtras().getString(EXTRA_INVOICE_ID),
                 flightCancellationJourneyList

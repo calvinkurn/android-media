@@ -31,11 +31,19 @@ public interface FlightCancellationContract {
 
         List<FlightCancellationViewModel> getSelectedCancellationViewModel();
 
+        void navigateToReviewCancellationPage();
+
+        void navigateToReasonAndProofPage();
+
+        void showShouldChooseAtLeastOnePassengerError();
+
     }
 
     interface Presenter {
 
         void onViewCreated();
+
+        void onNextButtonClicked();
 
         void uncheckPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position);
     }

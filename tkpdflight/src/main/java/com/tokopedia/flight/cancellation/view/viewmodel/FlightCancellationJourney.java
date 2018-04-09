@@ -35,6 +35,7 @@ public class FlightCancellationJourney implements Parcelable {
         arrivalAirportId = in.readString();
         arrivalTime = in.readString();
         airlineName = in.readString();
+        isRefundable = in.readByte() != 0;
     }
 
     public static final Creator<FlightCancellationJourney> CREATOR = new Creator<FlightCancellationJourney>() {
@@ -48,25 +49,6 @@ public class FlightCancellationJourney implements Parcelable {
             return new FlightCancellationJourney[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(journeyId);
-        dest.writeString(departureCity);
-        dest.writeString(departureCityCode);
-        dest.writeString(departureAiportId);
-        dest.writeString(departureTime);
-        dest.writeString(arrivalCity);
-        dest.writeString(arrivalCityCode);
-        dest.writeString(arrivalAirportId);
-        dest.writeString(arrivalTime);
-        dest.writeString(airlineName);
-    }
 
     public String getJourneyId() {
         return journeyId;
@@ -154,5 +136,42 @@ public class FlightCancellationJourney implements Parcelable {
 
     public void setRefundable(boolean refundable) {
         isRefundable = refundable;
+    }
+
+    @Override
+    public String toString() {
+        return "FlightCancellationJourney{" +
+                "journeyId='" + journeyId + '\'' +
+                ", departureCity='" + departureCity + '\'' +
+                ", departureCityCode='" + departureCityCode + '\'' +
+                ", departureAiportId='" + departureAiportId + '\'' +
+                ", departureTime='" + departureTime + '\'' +
+                ", arrivalCity='" + arrivalCity + '\'' +
+                ", arrivalCityCode='" + arrivalCityCode + '\'' +
+                ", arrivalAirportId='" + arrivalAirportId + '\'' +
+                ", arrivalTime='" + arrivalTime + '\'' +
+                ", airlineName='" + airlineName + '\'' +
+                ", isRefundable=" + isRefundable +
+                '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(journeyId);
+        dest.writeString(departureCity);
+        dest.writeString(departureCityCode);
+        dest.writeString(departureAiportId);
+        dest.writeString(departureTime);
+        dest.writeString(arrivalCity);
+        dest.writeString(arrivalCityCode);
+        dest.writeString(arrivalAirportId);
+        dest.writeString(arrivalTime);
+        dest.writeString(airlineName);
+        dest.writeByte((byte) (isRefundable ? 1 : 0));
     }
 }

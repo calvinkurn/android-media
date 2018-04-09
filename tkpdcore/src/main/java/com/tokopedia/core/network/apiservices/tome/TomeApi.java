@@ -1,5 +1,6 @@
 package com.tokopedia.core.network.apiservices.tome;
 
+import com.tokopedia.core.network.entity.variant.ProductStockResponse;
 import com.tokopedia.core.network.entity.variant.ProductVariantResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
@@ -15,6 +16,7 @@ import rx.Observable;
 
 import static com.tokopedia.core.network.constants.TkpdBaseURL.Tome.PATH_GET_SHOP_PRODUCT;
 import static com.tokopedia.core.network.constants.TkpdBaseURL.Tome.PATH_IS_FAVORITE_SHOP;
+import static com.tokopedia.core.network.constants.TkpdBaseURL.Tome.PATH_PRODUCT_STOCK;
 import static com.tokopedia.core.network.constants.TkpdBaseURL.Tome.PATH_PRODUCT_VARIANT;
 
 
@@ -39,4 +41,7 @@ public interface TomeApi {
 
     @GET(PATH_PRODUCT_VARIANT)
     Observable<Response<ProductVariantResponse>> getProductVariant(@Path(PRODUCT_ID) String productId);
+
+    @GET(PATH_PRODUCT_STOCK)
+    Observable<Response<ProductStockResponse>> getProductStock(@Path(PRODUCT_ID) String productId);
 }
