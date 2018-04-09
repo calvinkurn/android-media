@@ -1,7 +1,5 @@
 package com.tokopedia.shop.product.view.presenter;
 
-import android.util.Log;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -17,7 +15,6 @@ import com.tokopedia.shop.product.view.model.ShopProductHomeViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedEtalaseTitleViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedSearchViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductTitleFeaturedViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;

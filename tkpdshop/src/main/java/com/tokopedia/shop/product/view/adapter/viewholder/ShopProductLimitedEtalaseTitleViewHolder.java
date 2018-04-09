@@ -4,11 +4,8 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.design.label.LabelView;
-import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedEtalaseTitleViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedSearchViewModel;
 
 /**
  * @author by alvarisi on 12/12/17.

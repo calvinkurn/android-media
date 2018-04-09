@@ -8,11 +8,9 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
-import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedEtalaseTitleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedPromoViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedSearchViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductTitleFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
@@ -20,7 +18,6 @@ import com.tokopedia.shop.product.view.model.ShopProductHomeViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedEtalaseTitleViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedSearchViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductTitleFeaturedViewModel;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
@@ -56,10 +53,6 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
     @Override
     public int type(EmptyModel viewModel) {
         return EmptyViewHolder.LAYOUT;
-    }
-
-    public int type(ShopProductLimitedSearchViewModel shopProductLimitedSearchViewModel) {
-        return ShopProductLimitedSearchViewHolder.LAYOUT;
     }
 
     public int type(ShopProductLimitedEtalaseTitleViewModel shopProductLimitedEtalaseTitleViewHolder) {
