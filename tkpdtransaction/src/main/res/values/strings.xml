@@ -30,6 +30,7 @@
     <string name="courier_not_available">Alamat tidak didukung agen pengirim.</string>
     <string name="label_order_shipping_address">Alamat Pengiriman :</string>
     <string name="label_response_limit">Batas Respon :</string>
+    <string name="label_response_auto_finish">Selesai Otomatis :</string>
     <string name="label_accept_partial_order">Terima Sebagian :</string>
     <string name="shipment_data_not_complete">Data tidak lengkap.</string>
     <string name="label_title_empty_cart">Keranjang belanja Anda Kosong.</string>

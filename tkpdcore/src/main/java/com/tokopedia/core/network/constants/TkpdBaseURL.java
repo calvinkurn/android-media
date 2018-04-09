@@ -407,6 +407,7 @@ public class TkpdBaseURL {
         public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
         public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
         public static final String PATH_PRODUCT_VARIANT = "v2/product/{productId}/variant";
+        public static final String PATH_PRODUCT_STOCK = "v2/product/{productId}/stock";
     }
 
     public static class ResCenter {

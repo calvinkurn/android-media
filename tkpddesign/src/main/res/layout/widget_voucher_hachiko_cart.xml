@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_small"
-    android:paddingTop="@dimen/padding_small">
+    android:paddingLeft="@dimen/dp_10"
+    android:paddingRight="@dimen/dp_10"
+    android:paddingTop="@dimen/dp_10">
 
     <FrameLayout
         android:id="@+id/layout_input_promo"
@@ -17,7 +17,7 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textview_voucher"
-            android:drawablePadding="@dimen/padding_ms"
+            android:drawablePadding="@dimen/dp_8"
             app:drawableLeftCompat="@drawable/ic_kupon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,8 +50,8 @@
             android:id="@+id/textview_promo_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/padding_vvs"
-            android:layout_marginStart="@dimen/padding_vvs"
+            android:layout_marginLeft="@dimen/dp_3"
+            android:layout_marginStart="@dimen/dp_3"
             android:layout_toStartOf="@+id/button_cancel"
             android:layout_toLeftOf="@+id/button_cancel"
             android:layout_toEndOf="@id/label_promo_code"
