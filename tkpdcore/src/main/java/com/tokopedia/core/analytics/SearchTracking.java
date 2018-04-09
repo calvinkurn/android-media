@@ -12,11 +12,17 @@ import java.util.Map;
 
 public class SearchTracking extends TrackingUtils {
 
-    public static final String ACTION_FIELD = "/search result - product 2 - product list";
+    private static final String ACTION_FIELD = "/searchproduct - p$1 - product";
+
+    public static String getActionFieldString(int pageNumber) {
+        return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
+    }
 
     public static void trackEventClickSearchResultProduct(Object item,
+                                                          int pageNumber,
                                                           String eventLabel) {
-        getGTMEngine().enhanceClickSearchResultProduct(item, eventLabel, ACTION_FIELD);
+        getGTMEngine().enhanceClickSearchResultProduct(item,
+                eventLabel, getActionFieldString(pageNumber));
     }
 
     public static void eventImpressionSearchResultProduct(List<Object> list, String eventLabel) {
@@ -28,7 +34,7 @@ public class SearchTracking extends TrackingUtils {
                 "clickSearchResult",
                 "search result",
                 "click - guided search",
-                String.format("%s - %s - %s", previousKey, page, nextKey)
+                String.format("%s - %s - %s", previousKey, nextKey, page)
         ).getEvent());
     }
 
@@ -39,5 +45,61 @@ public class SearchTracking extends TrackingUtils {
                 "impression - guided search",
                 String.format("%s - %s", currentKey, page)
         ).getEvent());
+    }
+
+    public static void eventSearchResultShopItemClick(String keyword, String shopName,
+                                                      int page, int position) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                AppEventTracking.Action.CLICK_SHOP,
+                keyword + " - " + shopName + " - " + Integer.toString(page) + " - " + Integer.toString(position)
+        ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultShare(String screenName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.SEARCH_SHARE,
+                AppEventTracking.Action.CLICK_BAR + screenName,
+                ""
+        ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultChangeGrid(String gridName, String screenName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.GRID_MENU,
+                AppEventTracking.Action.CLICK_CHANGE_GRID + gridName,
+                screenName
+        ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultFavoriteShopClick(String keyword, String shopName,
+                                                          int page, int position) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                AppEventTracking.Action.FAVORITE_SHOP_CLICK,
+                keyword + " - " + shopName + " - " + Integer.toString(page) + " - " + Integer.toString(position)
+        ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultCatalogClick(String keyword, String catalogName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                AppEventTracking.Action.CLICK_CATALOG,
+                keyword + " - " + catalogName
+        ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultTabClick(String tabTitle) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.SEARCH_TAB,
+                AppEventTracking.Action.CLICK_TAB,
+                tabTitle
+        ).setUserId().getEvent());
     }
 }
