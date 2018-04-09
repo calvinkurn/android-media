@@ -185,7 +185,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         for (String assetUrl : assetUrls) {
             Glide.with(context)
                     .load(assetUrl)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .dontAnimate()
                     .listener(requestListener)
                     .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
