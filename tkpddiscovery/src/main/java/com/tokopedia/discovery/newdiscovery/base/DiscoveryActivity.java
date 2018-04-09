@@ -4,12 +4,7 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
@@ -34,10 +29,8 @@ import com.tokopedia.core.manage.people.profile.customdialog.UploadImageDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
-import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchItemResponse;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -45,13 +38,10 @@ import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -72,8 +62,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         BottomNavigationListener {
 
     private static final double MIN_SCORE = 10.0;
-    private static final String FAILURE = "fail";
-    private static final String SUCCESS = "success";
+    private static final String FAILURE = "no matching result found";
+    private static final String NO_RESPONSE = "no response";
+    private static final String SUCCESS = "success match found";
     private Toolbar toolbar;
     private FrameLayout container;
     private AHBottomNavigation bottomNavigation;
@@ -85,8 +76,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     private UploadImageDialog uploadDialog;
     private TkpdProgressDialog tkpdProgressDialog;
-    private final int MAX_WIDTH = 600;
-    private final int MAX_HEIGHT = 600;
     private boolean fromCamera;
 
     @Override
@@ -247,12 +236,12 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         UnifyTracking.eventDiscoveryGalleryImageSearch();
     }
 
-    private void sendCameraImageSearchResultGTM(String label) {
-        UnifyTracking.eventDiscoveryCameraImageSearchResult(label);
-    }
-
     private void sendGalleryImageSearchResultGTM(String label) {
         UnifyTracking.eventDiscoveryGalleryImageSearchResult(label);
+    }
+
+    private void sendCameraImageSearchResultGTM(String label) {
+        UnifyTracking.eventDiscoveryCameraImageSearchResult(label);
     }
 
     @Override
@@ -456,7 +445,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                     new UploadImageDialog.UploadImageDialogListener() {
                         @Override
                         public void onSuccess(String imagePath) {
-                            onImagePickedSuccess(imagePath);
+
+                            File file = new File(imagePath);
+                            if (file.exists()) {
+                                onImagePickedSuccess(imagePath);
+                            } else {
+                                showSnackBarView(getString(com.tokopedia.core.R.string.error_gallery_valid));
+                            }
                         }
 
                         @Override
@@ -481,133 +476,19 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     private void onImagePickedSuccess(String imagePath) {
-        File imgFile = new File(imagePath);
-        if (imgFile.exists()) {
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            myBitmap = resize(myBitmap);
-            try {
-                myBitmap = modifyOrientation(myBitmap, imagePath);
-            } catch (IOException exception) {
-
-            }
-
-            if (fromCamera) {
-                addImageToGallery(myBitmap);
-            }
-
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            byte[] byteArray = stream.toByteArray();
-            tkpdProgressDialog = new TkpdProgressDialog(this, 1);
-            tkpdProgressDialog.showDialog();
-            getPresenter().requestImageSearch(byteArray);
-        }
+        tkpdProgressDialog = new TkpdProgressDialog(this, 1);
+        tkpdProgressDialog.showDialog();
+        getPresenter().requestImageSearch(imagePath);
     }
 
     List<String> productIDList = new ArrayList<>();
 
-    private Bitmap modifyOrientation(Bitmap bitmap, String image_absolute_path) throws IOException {
-        ExifInterface ei = new ExifInterface(image_absolute_path);
-        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
-        switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                return rotate(bitmap, 90);
-
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                return rotate(bitmap, 180);
-
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                return rotate(bitmap, 270);
-
-            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
-                return flip(bitmap, true, false);
-
-            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
-                return flip(bitmap, false, true);
-
-            default:
-                return bitmap;
-        }
-    }
-
-    private Bitmap rotate(Bitmap bitmap, float degrees) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degrees);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-    }
-
-    private Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical) {
-        Matrix matrix = new Matrix();
-        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-    }
-
-    @Override
-    public void onHandleImageSearchResponse(ImageSearchItemResponse imageSearchResponse) {
-        if (imageSearchResponse == null || imageSearchResponse.getAuctionsArrayList() == null) {
-            if (tkpdProgressDialog != null) {
-                tkpdProgressDialog.dismiss();
-            }
-
-            if (fromCamera) {
-                sendCameraImageSearchResultGTM(FAILURE);
-            } else {
-                sendGalleryImageSearchResultGTM(FAILURE);
-            }
-
-            Toast.makeText(this, "Invalid Response", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        int productCount = imageSearchResponse.getAuctionsArrayList().size();
-        StringBuilder productIDs = new StringBuilder();
-
-        productIDList.clear();
-
-        for (int i = 0; i < productCount; i++) {
-            String itemId = imageSearchResponse.getAuctionsArrayList().get(i).getItemId();
-            productIDList.add(itemId);
-            productIDs.append(itemId);
-            if (i != productCount - 1) {
-                productIDs.append(",");
-            }
-        }
-
-        if (StringUtils.isNotBlank(productIDs.toString())) {
-
-            if (fromCamera) {
-                sendCameraImageSearchResultGTM(SUCCESS);
-            } else {
-                sendGalleryImageSearchResultGTM(SUCCESS);
-            }
-
-            SearchParameter imageSearchProductParameter = new SearchParameter();
-            imageSearchProductParameter.setStartRow(productCount);
-            imageSearchProductParameter.setQueryKey(String.valueOf(productIDs));
-            imageSearchProductParameter.setSource("imagesearch");
-            getPresenter().requestImageSearchProduct(imageSearchProductParameter);
-
-        } else {
-            if (tkpdProgressDialog != null) {
-                tkpdProgressDialog.dismiss();
-            }
-
-            if (fromCamera) {
-                sendCameraImageSearchResultGTM(FAILURE);
-            } else {
-                sendGalleryImageSearchResultGTM(FAILURE);
-            }
-
-            Toast.makeText(this, "No Results Found!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
 
-        if (tkpdProgressDialog != null)
+        if (tkpdProgressDialog != null) {
             tkpdProgressDialog.dismiss();
+        }
         HashMap<String, ProductItem> productItemHashMap = new HashMap<>();
         for (ProductItem productItem : productViewModel.getProductList()) {
             productItemHashMap.put(productItem.getProductID(), productItem);
@@ -622,29 +503,51 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         finish();
     }
 
-    private Bitmap resize(Bitmap image) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-        float ratioBitmap = (float) width / (float) height;
-        float ratioMax = (float) MAX_WIDTH / (float) MAX_HEIGHT;
-
-        int finalWidth = MAX_WIDTH;
-        int finalHeight = MAX_HEIGHT;
-        if (ratioMax > ratioBitmap) {
-            finalWidth = (int) ((float) MAX_HEIGHT * ratioBitmap);
+    @Override
+    public void onHandleImageSearchResponseSuccess(List<String> productIDList, String productIDs) {
+        this.productIDList = productIDList;
+        if (fromCamera) {
+            sendCameraImageSearchResultGTM(SUCCESS);
         } else {
-            finalHeight = (int) ((float) MAX_WIDTH / ratioBitmap);
+            sendGalleryImageSearchResultGTM(SUCCESS);
         }
-        image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
-        return image;
+
+        SearchParameter imageSearchProductParameter = new SearchParameter();
+        imageSearchProductParameter.setStartRow(productIDList.size());
+        imageSearchProductParameter.setQueryKey(String.valueOf(productIDs));
+        imageSearchProductParameter.setSource("imagesearch");
+        getPresenter().requestImageSearchProduct(imageSearchProductParameter);
+
     }
 
-    public void addImageToGallery(final Bitmap filePath) {
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image-" + n;
-        MediaStore.Images.Media.insertImage(getContentResolver(), filePath, fname, "");
+    @Override
+    public void onHandleImageSearchResponseError() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+
+        if (fromCamera) {
+            sendCameraImageSearchResultGTM(FAILURE);
+        } else {
+            sendGalleryImageSearchResultGTM(FAILURE);
+        }
+
+        Toast.makeText(this, "No Results Found", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onHandleInvalidImageSearchResponse() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+
+        if (fromCamera) {
+            sendCameraImageSearchResultGTM(NO_RESPONSE);
+        } else {
+            sendGalleryImageSearchResultGTM(NO_RESPONSE);
+        }
+
+        Toast.makeText(this, "No Results Found", Toast.LENGTH_SHORT).show();
     }
 
     public void showSnackBarView(String message) {

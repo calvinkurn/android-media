@@ -45,7 +45,7 @@ public class BaseDiscoveryPresenter<T extends CustomerView, D extends BaseDiscov
     }
 
     @Override
-    public void requestImageSearch(byte[] imageByteArray) {
+    public void requestImageSearch(String imageByteArray) {
         checkDiscoveryViewAttached();
     }
 

@@ -1,8 +1,9 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchItemResponse;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+
+import java.util.List;
 
 /**
  * Created by hangnadi on 9/26/17.
@@ -24,7 +25,9 @@ public interface BaseDiscoveryContract {
 
         void onHandleResponseSearch(ProductViewModel productViewModel);
 
-        void onHandleImageSearchResponse(ImageSearchItemResponse imageSearchResponse);
+        void onHandleImageSearchResponseSuccess(List<String> productIdList, String productIds);
+
+        void onHandleImageSearchResponseError();
 
         void onHandleResponseIntermediary(String departmentId);
 
@@ -35,6 +38,8 @@ public interface BaseDiscoveryContract {
         void onHandleResponseCatalog(String redirectUrl);
 
         void onHandleResponseError();
+
+        void onHandleInvalidImageSearchResponse();
     }
 
     interface Presenter<D extends View> {
@@ -45,7 +50,7 @@ public interface BaseDiscoveryContract {
 
         void requestImageSearchProduct(SearchParameter imageSearchProductParameter);
 
-        void requestImageSearch(byte[] imageByteArray);
+        void requestImageSearch(String filePath);
 
     }
 }

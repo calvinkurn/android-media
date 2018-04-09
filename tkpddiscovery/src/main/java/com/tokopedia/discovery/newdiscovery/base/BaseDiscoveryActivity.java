@@ -15,6 +15,8 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivit
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 
+import java.util.List;
+
 /**
  * Created by hangnadi on 9/26/17.
  */
@@ -107,7 +109,11 @@ public class BaseDiscoveryActivity
     }
 
     @Override
-    public void onHandleImageSearchResponse(ImageSearchItemResponse imageSearchResponse) {
+    public void onHandleImageSearchResponseSuccess(List<String> productIdsList, String productIds) {
+    }
+
+    @Override
+    public void onHandleImageSearchResponseError() {
     }
 
     @Override
@@ -137,6 +143,11 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseError() {
+
+    }
+
+    @Override
+    public void onHandleInvalidImageSearchResponse() {
 
     }
 
