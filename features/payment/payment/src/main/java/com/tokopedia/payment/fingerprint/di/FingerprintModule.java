@@ -1,21 +1,18 @@
 package com.tokopedia.payment.fingerprint.di;
 
-import android.content.Context;
-
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.payment.fingerprint.data.AccountFingerprintApi;
 import com.tokopedia.payment.fingerprint.data.FingerprintApi;
 import com.tokopedia.payment.fingerprint.data.FingerprintDataSourceCloud;
 import com.tokopedia.payment.fingerprint.data.FingerprintRepositoryImpl;
 import com.tokopedia.payment.fingerprint.domain.FingerprintRepository;
+import com.tokopedia.payment.fingerprint.domain.GetPostDataOtpUseCase;
 import com.tokopedia.payment.fingerprint.domain.PaymentFingerprintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SaveFingerPrintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SavePublicKeyUseCase;
 import com.tokopedia.payment.fingerprint.util.FingerprintConstant;
 import com.tokopedia.payment.presenter.TopPayPresenter;
-import com.tokopedia.payment.router.IPaymentModuleRouter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,9 +33,10 @@ public class FingerprintModule {
     TopPayPresenter provideTopPayPresenter(SaveFingerPrintUseCase saveFingerPrintUseCase,
                                            SavePublicKeyUseCase savePublicKeyUseCase,
                                            PaymentFingerprintUseCase paymentFingerprintUseCase,
+                                           GetPostDataOtpUseCase getPostDataOtpUseCase,
                                            UserSession userSession){
         return new TopPayPresenter(saveFingerPrintUseCase, savePublicKeyUseCase,
-                paymentFingerprintUseCase, userSession);
+                paymentFingerprintUseCase, getPostDataOtpUseCase, userSession);
     };
 
     @FingerprintScope

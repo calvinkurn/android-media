@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent;
 import com.tokopedia.payment.BuildConfig;
@@ -46,6 +47,7 @@ import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.utils.Constant;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -313,8 +315,24 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     @Override
-    public void onGoToOtpPage(String urlOtp) {
+    public void onGoToOtpPage(String transactionId, String urlOtp) {
+        fingerPrintDialogPayment.stopListening();
+        fingerPrintDialogPayment.dismiss();
+        presenter.getPostDataOtp(transactionId, urlOtp);
+    }
 
+    @Override
+    public void onSuccessGetPostDataOTP(String postData, String urlOtp) {
+        try {
+            scroogeWebView.postUrl(urlOtp, postData.getBytes(CHARSET_UTF_8));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onErrorGetPostDataOtp(Throwable e) {
+        NetworkErrorHelper.showSnackbar(this, ErrorHandler.getErrorMessage(this, e));
     }
 
     @Override
@@ -340,6 +358,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 String transactionId = uri.getQueryParameter(FingerprintConstant.TRANSACTION_ID);
                 fingerPrintDialogRegister = FingerprintDialogRegister.createInstance(presenter.getUserId(), transactionId);
                 fingerPrintDialogRegister.setListenerRegister(TopPayActivity.this);
+                fingerPrintDialogRegister.setContext(TopPayActivity.this);
                 fingerPrintDialogRegister.show(getSupportFragmentManager(), "fingerprintRegister");
                 fingerPrintDialogRegister.startListening();
                 return true;
@@ -427,7 +446,8 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 fingerPrintDialogPayment.setContext(TopPayActivity.this);
                 fingerPrintDialogPayment.show(getSupportFragmentManager(), "fingerprintPayment");
                 fingerPrintDialogPayment.startListening();
-                return null;
+                return new WebResourceResponse("text/javascript",
+                        "utf-8", null);
             }
             return super.shouldInterceptRequest(view, request);
         }

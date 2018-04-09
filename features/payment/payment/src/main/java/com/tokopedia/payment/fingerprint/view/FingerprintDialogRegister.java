@@ -74,15 +74,19 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     }
 
     private boolean updateCounterError() {
-        counterError++;
-        if (isVisible()) {
-            updateDesc(getString(R.string.fingerprint_label_desc_default));
-            updateTitle(getString(R.string.fingerprint_label_try_again));
-        }
-        if (counterError > MAX_ERROR) {
-            dismiss();
-            return false;
-        } else {
+        if(!isDetached()) {
+            counterError++;
+            if (isVisible()) {
+                updateDesc(getString(R.string.fingerprint_label_desc_default));
+                updateTitle(getString(R.string.fingerprint_label_try_again));
+            }
+            if (counterError > MAX_ERROR) {
+                dismiss();
+                return false;
+            } else {
+                return true;
+            }
+        }else{
             return true;
         }
     }

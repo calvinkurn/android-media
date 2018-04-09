@@ -33,4 +33,9 @@ public class FingerprintRepositoryImpl implements FingerprintRepository {
     public Observable<Boolean> savePublicKey(HashMap<String, String> params) {
         return fingerprintDataSourceCloud.savePublicKey(params);
     }
+
+    @Override
+    public Observable<HashMap<String, String>> getPostDataOtp(String transactionId) {
+        return fingerprintDataSourceCloud.getDataPostOtp(transactionId);
+    }
 }
