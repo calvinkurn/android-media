@@ -25,6 +25,7 @@ import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.fragment.LocationDateBottomSheetFragment;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
@@ -284,7 +285,7 @@ public class EventBookTicketActivity
             super.onBackPressed();
         else
             finish();
-        UnifyTracking.eventDigitalEventClickBack("Digital_Events_Ticket_Details");
+        UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK,mPresenter.getSCREEN_NAME());
     }
 
     @Override

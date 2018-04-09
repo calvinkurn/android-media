@@ -497,32 +497,6 @@ public interface AppEventTracking {
         String LOGIN_NOW = "masuk sekarang";
         String CHECKOUT = "Checkout";
 
-        String EVENT_CLICK_BACK = "click back";
-        String EVENT_CLICK_SEARCH = "click search icon";
-        String EVENT_CLICK_DAFTAR_TRANSAKSI = "click daftar transaksi";
-        String EVENT_CLICK_BANTUAN = "click bantuan";
-        String EVENT_CLICK_PROMO = "click promo";
-        String EVENT_CLICK_TAB = "click tab";
-        String EVENT_PRODUCT_IMPRESSION = "product impressions";
-        String EVENT_PROMO_IMPRESSION = "promotion impression";
-        String EVENT_PRODUCT_CLICK = "product click";
-        String EVENT_PROMO_CLICK = "promotion click";
-        String EVENT_SEARCH = "search";
-        String EVENT_PRODUCT_DETAIL_IMPRESSION = "product detail impressions";
-        String EVENT_CLICK_LANJUKTAN = "click lanjutkan";
-        String EVENT_CHANGE_EMAIL = "change email user";
-        String EVENT_CHANGE_NUMBER = "change phone number";
-
-        String EVENT_CHECK_PROMO = "check promo code";
-        String EVENT_PROMO_SUCCESS = "voucher success - ";
-        String EVENT_PROMO_FAILURE = "voucher failed - ";
-        String EVENT_PAYMENT = "proceed to payment";
-        String EVENT_PURCHASE_ATTEMPT = "purchase attempt";
-        String EVENT_ADD_TICKET = "add to cart";
-        String EVENT_REMOVE_TICKET = "remove cart";
-        String EVENT_CHECKOUT = "checkout";
-        String EVENT_SEARCH_CLICK = "search result click";
-        String EVENT_SEARCH_IMPRESSION = "search result impression";
         String QUICK_FILTER = "quick filter";
     }
 

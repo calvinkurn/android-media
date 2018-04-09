@@ -3341,101 +3341,101 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventClickBack(String label) {
+    public static void eventDigitalEventClickBack(String action,String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_CLICK_BACK,
+                action,
                 label
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventClickSearch() {
+    public static void eventDigitalEventClickSearch(String action) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_CLICK_SEARCH,
+                action,
                 ""
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventClickDaftarTransaksi() {
+    public static void eventDigitalEventClickDaftarTransaksi(String action) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_CLICK_DAFTAR_TRANSAKSI,
+                action,
                 ""
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventClickBantaun() {
+    public static void eventDigitalEventClickBantaun(String action) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_CLICK_BANTUAN,
+                action,
                 ""
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventClickPromo() {
+    public static void eventDigitalEventClickPromo(String action) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_CLICK_PROMO,
+                action,
                 ""
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventClickTab(String tabLabel) {
+    public static void eventDigitalEventClickTab(String action,String tabLabel) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_CLICK_TAB,
+                action,
                 tabLabel
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventClickProduct(String prodLabel) {
+    public static void eventDigitalEventClickProduct(String action,String prodLabel) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_PRODUCT_CLICK,
+                action,
                 prodLabel
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventClickPromo(String promoLabel) {
+    public static void eventDigitalEventClickPromo(String action,String promoLabel) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_PROMO_CLICK,
+                action,
                 promoLabel
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventSearch(String searchTag) {
+    public static void eventDigitalEventSearch(String action,String searchTag) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_SEARCH,
+                action,
                 searchTag
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventSearchImpression(String searchTag) {
+    public static void eventDigitalEventSearchImpression(String action,String searchTag) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_SEARCH_IMPRESSION,
+                action,
                 searchTag
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventProductImpression(String productName) {
+    public static void eventDigitalEventProductImpression(String action,String productName) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_PRODUCT_DETAIL_IMPRESSION,
+                action,
                 productName
         ).setUserId().getEvent());
     }
@@ -3449,128 +3449,128 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventClickLanjuktan(String productName) {
+    public static void eventDigitalEventClickLanjuktan(String action,String productName) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_CLICK_LANJUKTAN,
+                action,
                 productName
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventChangeEmail() {
+    public static void eventDigitalEventChangeEmail(String action) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_CHANGE_EMAIL,
+                action,
                 ""
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventChaneNumber() {
+    public static void eventDigitalEventChaneNumber(String action) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_CHANGE_NUMBER,
+                action,
                 ""
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventCheckPromo(String promoCode) {
+    public static void eventDigitalEventCheckPromo(String action,String promoCode) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_CHECK_PROMO,
+                action,
                 promoCode
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventPromoImpression(String promo) {
+    public static void eventDigitalEventPromoImpression(String action,String promo) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_PROMO_IMPRESSION,
+                action,
                 promo
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventFeedImpression(String product) {
+    public static void eventDigitalEventFeedImpression(String action,String product) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_PRODUCT_IMPRESSION,
+                action,
                 product
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventPromoSuccess(String promoCode, String successMessage) {
+    public static void eventDigitalEventPromoSuccess(String action,String promoCode, String successMessage) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_PROMO_SUCCESS + " - " + promoCode,
+                action + " - " + promoCode,
                 successMessage
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventPromoFailure(String promoCode, String successMessage) {
+    public static void eventDigitalEventPromoFailure(String action,String promoCode, String successMessage) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_PROMO_FAILURE + " - " + promoCode,
+                action + " - " + promoCode,
                 successMessage
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventPayment(String message) {
+    public static void eventDigitalEventPayment(String action,String message) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_PAYMENT,
+                action,
                 message
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventPurchaseAttempt(String status) {
+    public static void eventDigitalEventPurchaseAttempt(String action,String status) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_PURCHASE_ATTEMPT,
+                action,
                 status
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventAddTicket(String status) {
+    public static void eventDigitalEventAddTicket(String action,String status) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_ADD_TICKET,
+                action,
                 status
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventRemoveTicket(String status) {
+    public static void eventDigitalEventRemoveTicket(String action,String status) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_REMOVE_TICKET,
+                action,
                 status
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventCheckout(String status) {
+    public static void eventDigitalEventCheckout(String action,String status) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_CHECKOUT,
+                action,
                 status
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalSearchResultClick(String status) {
+    public static void eventDigitalSearchResultClick(String action,String status) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
-                AppEventTracking.Action.EVENT_SEARCH_CLICK,
+                action,
                 status
         ).setUserId().getEvent());
     }

@@ -34,6 +34,7 @@ import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
 import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
@@ -485,18 +486,18 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             switch (resultCode) {
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_SUCCESS:
                     getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
-                    UnifyTracking.eventDigitalEventPurchaseAttempt("payment success");
+                    UnifyTracking.eventDigitalEventPurchaseAttempt(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
                     finish();
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
-                    UnifyTracking.eventDigitalEventPurchaseAttempt("payment failed");
+                    UnifyTracking.eventDigitalEventPurchaseAttempt(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_FAILURE);
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
-                    UnifyTracking.eventDigitalEventPurchaseAttempt("payment cancelled");
+                    UnifyTracking.eventDigitalEventPurchaseAttempt(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_CANCELLED);
                     break;
                 default:
                     break;
@@ -535,6 +536,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventClickBack("Digital_Events_Checkout");
+        UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK, mPresenter.getSCREEN_NAME());
     }
 }

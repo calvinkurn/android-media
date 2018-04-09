@@ -71,5 +71,7 @@ public class EventSearchContract {
         void onSearchResultClick(SearchViewModel searchViewModel, int position);
 
         void onRecyclerViewScrolled(LinearLayoutManager layoutManager);
+
+        public String getSCREEN_NAME();
     }
 }

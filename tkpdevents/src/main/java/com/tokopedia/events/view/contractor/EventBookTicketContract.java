@@ -67,5 +67,7 @@ public class EventBookTicketContract {
         void onActivityResult(int requestCode);
 
         void payTicketsClick(String title);
+
+        public String getSCREEN_NAME();
     }
 }

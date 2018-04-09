@@ -36,6 +36,7 @@ import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -274,7 +275,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         }
 
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
-        UnifyTracking.eventDigitalEventProductImpression(data.getTitle());
+        UnifyTracking.eventDigitalEventProductImpression(EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION,data.getTitle());
     }
 
     @Override
@@ -368,7 +369,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventClickBack("Digital_Events_Product_Details");
+        UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK,mPresenter.getSCREEN_NAME());
     }
 
     @Override

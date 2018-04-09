@@ -15,6 +15,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.events.R;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
@@ -121,8 +122,6 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         CategoryItemViewListener listener = new CategoryItemViewListener(holder);
 
         holder.itemView.setOnClickListener(listener);
-
-        UnifyTracking.eventDigitalEventFeedImpression(model.getTitle() + " - " + position);
     }
 
     @Override
@@ -130,7 +129,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         super.onViewAttachedToWindow(holder);
         if (!holder.isShown()) {
             holder.setShown(true);
-            UnifyTracking.eventDigitalEventFeedImpression(categoryItems.get(holder.getIndex()).getTitle()
+            UnifyTracking.eventDigitalEventFeedImpression(EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryItems.get(holder.getIndex()).getTitle()
                     + " - " + holder.getIndex());
         }
     }
@@ -149,7 +148,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(mViewHolder.getIndex()));
             context.startActivity(detailsIntent);
-            UnifyTracking.eventDigitalEventClickProduct(categoryItems.get(mViewHolder.getIndex()).getTitle()
+            UnifyTracking.eventDigitalEventClickProduct(EventsGAConst.EVENT_PRODUCT_CLICK, categoryItems.get(mViewHolder.getIndex()).getTitle()
                     + "-" + String.valueOf(mViewHolder.getIndex()));
         }
     }

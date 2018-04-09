@@ -24,6 +24,7 @@ import com.tokopedia.events.view.adapter.TopEventsSuggestionsAdapter;
 import com.tokopedia.events.view.contractor.EventSearchContract;
 import com.tokopedia.events.view.customview.SearchInputView;
 import com.tokopedia.events.view.presenter.EventSearchPresenter;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
 
@@ -185,7 +186,7 @@ public class EventSearchActivity extends TActivity implements
             tvTopevents.setVisibility(View.GONE);
             rvTopEventSuggestions.setVisibility(View.VISIBLE);
             rvSearchResults.setVisibility(View.GONE);
-            UnifyTracking.eventDigitalEventSearchImpression(mPresenter.getSearchTag()
+            UnifyTracking.eventDigitalEventSearchImpression(EventsGAConst.EVENT_SEARCH_IMPRESSION,mPresenter.getSearchTag()
                     + " - " + suggestions.get(0).getTitle() + " - " + "0");
         } else {
             rvSearchResults.setVisibility(View.GONE);
@@ -250,6 +251,6 @@ public class EventSearchActivity extends TActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventClickBack("Digital_Events_Search");
+        UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK,mPresenter.getSCREEN_NAME());
     }
 }

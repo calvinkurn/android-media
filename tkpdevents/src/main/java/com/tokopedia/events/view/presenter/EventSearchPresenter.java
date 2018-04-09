@@ -18,6 +18,7 @@ import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.adapter.FiltersAdapter;
 import com.tokopedia.events.view.contractor.EventSearchContract;
 import com.tokopedia.events.view.fragment.FilterFragment;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
@@ -103,7 +104,7 @@ public class EventSearchPresenter
             if (searchText.length() > 2) {
                 getEventsListBySearch(searchText);
                 searchTag = searchText;
-                UnifyTracking.eventDigitalEventSearch(searchText);
+                UnifyTracking.eventDigitalEventSearch(EventsGAConst.EVENT_SEARCH,searchText);
             }
             if (searchText.length() == 0) {
                 getView().setTopEvents(mTopEvents);
@@ -117,7 +118,7 @@ public class EventSearchPresenter
     public void searchSubmitted(String searchText) {
         getEventsListBySearch(searchText);
         searchTag = searchText;
-        UnifyTracking.eventDigitalEventSearch(searchText);
+        UnifyTracking.eventDigitalEventSearch(EventsGAConst.EVENT_SEARCH,searchText);
     }
 
     @Override
@@ -169,7 +170,7 @@ public class EventSearchPresenter
 
     @Override
     public void onSearchResultClick(SearchViewModel searchViewModel, int position) {
-        UnifyTracking.eventDigitalSearchResultClick(searchTag + " - " +
+        UnifyTracking.eventDigitalSearchResultClick(EventsGAConst.EVENT_SEARCH_CLICK,searchTag + " - " +
                 searchViewModel.getTitle() + " - " + position);
         CategoryItemsViewModel detailsViewModel = new CategoryItemsViewModel();
         detailsViewModel.setTitle(searchViewModel.getTitle());
@@ -192,6 +193,11 @@ public class EventSearchPresenter
     @Override
     public void onRecyclerViewScrolled(LinearLayoutManager layoutManager) {
         checkIfToLoad(layoutManager);
+    }
+
+    @Override
+    public String getSCREEN_NAME() {
+        return EventsGAConst.EVENTS_SEARCHPAGE;
     }
 
     private void loadMoreItems() {

@@ -37,6 +37,7 @@ import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.customview.EventCategoryView;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
 import com.tokopedia.events.view.utils.CirclePageIndicator;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import com.tokopedia.events.view.viewmodel.EventLocationViewModel;
 
@@ -228,7 +229,7 @@ public class EventsHomeActivity extends TActivity
         switch (requestCode) {
             case REQUEST_CODE_EVENTLOCATIONACTIVITY:
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    EventLocationViewModel eventLocationViewModel = (EventLocationViewModel) data.getParcelableExtra(EventLocationActivity.EXTRA_CALLBACK_LOCATION);
+                    EventLocationViewModel eventLocationViewModel = data.getParcelableExtra(EventLocationActivity.EXTRA_CALLBACK_LOCATION);
                     mPresenter.getEventsListByLocation(eventLocationViewModel.getSearchName());
                 }
 
@@ -302,7 +303,7 @@ public class EventsHomeActivity extends TActivity
 
             @Override
             public void onPageSelected(int position) {
-                UnifyTracking.eventDigitalEventClickTab(categoryViewPager.getAdapter().getPageTitle(position) + "-"
+                UnifyTracking.eventDigitalEventClickTab(EventsGAConst.EVENT_CLICK_TAB, categoryViewPager.getAdapter().getPageTitle(position) + "-"
                         + String.valueOf(position));
             }
 
@@ -321,7 +322,7 @@ public class EventsHomeActivity extends TActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventClickBack(mPresenter.getSCREEN_NAME());
+        UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK, mPresenter.getSCREEN_NAME());
     }
 
     @Override

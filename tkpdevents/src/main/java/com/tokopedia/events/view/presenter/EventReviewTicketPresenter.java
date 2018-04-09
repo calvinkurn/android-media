@@ -28,6 +28,7 @@ import com.tokopedia.events.domain.model.request.cart.TaxPerQuantityItem;
 import com.tokopedia.events.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 
@@ -97,7 +98,7 @@ public class EventReviewTicketPresenter
         else if (code.length() > 3) {
             getView().hideSuccessMessage();
             isPromoCodeCase = true;
-            UnifyTracking.eventDigitalEventCheckPromo(code);
+            UnifyTracking.eventDigitalEventCheckPromo(EventsGAConst.EVENT_CHECK_PROMO, code);
             verifyCart();
         } else {
             getView().hideSuccessMessage();
@@ -120,13 +121,13 @@ public class EventReviewTicketPresenter
     @Override
     public void updateEmail(String mail) {
         this.email = mail;
-        UnifyTracking.eventDigitalEventChangeEmail();
+        UnifyTracking.eventDigitalEventChangeEmail(EventsGAConst.EVENT_CHANGE_EMAIL);
     }
 
     @Override
     public void updateNumber(String umber) {
         this.number = umber;
-        UnifyTracking.eventDigitalEventChaneNumber();
+        UnifyTracking.eventDigitalEventChaneNumber(EventsGAConst.EVENT_CHANGE_NUMBER);
     }
 
     @Override
@@ -173,6 +174,11 @@ public class EventReviewTicketPresenter
     @Override
     public void clickDismissTooltip() {
         getView().hideTooltip();
+    }
+
+    @Override
+    public String getSCREEN_NAME() {
+        return EventsGAConst.EVENTS_CHECKOUT_PAGE;
     }
 
     private CartItems convertPackageToCartItem(PackageViewModel packageViewModel) {
@@ -340,7 +346,7 @@ public class EventReviewTicketPresenter
                         getView().hideSuccessMessage();
                         getView().showPromoSuccessMessage(errorMsg,
                                 getView().getActivity().getResources().getColor(R.color.red_a700));
-                        UnifyTracking.eventDigitalEventPromoFailure(promocode, errorMsg);
+                        UnifyTracking.eventDigitalEventPromoFailure(EventsGAConst.EVENT_PROMO_FAILURE, promocode, errorMsg);
                         promocode = "";
                     } else {
                         String successMsg = verifyCartResponse.getCart().getPromocodeSuccessMessage();
@@ -349,7 +355,7 @@ public class EventReviewTicketPresenter
                             getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),
                                     getView().getActivity().getResources().getColor(R.color.black_54));
                             getView().showCashbackMessage(successMsg);
-                            UnifyTracking.eventDigitalEventPromoSuccess(promocode, successMsg);
+                            UnifyTracking.eventDigitalEventPromoSuccess(EventsGAConst.EVENT_PROMO_SUCCESS, promocode, successMsg);
                         }
                     }
                 }
@@ -390,7 +396,7 @@ public class EventReviewTicketPresenter
                 paymentPassData.setCallbackSuccessUrl(checkoutResponse.getCallbackUrlSuccess());
                 paymentPassData.setCallbackFailedUrl(checkoutResponse.getCallbackUrlFailed());
                 paymentPassData.setTransactionId(checkoutResponse.getParameter().getTransactionId());
-                UnifyTracking.eventDigitalEventPayment(checkoutData.getTitle() + " - "
+                UnifyTracking.eventDigitalEventPayment(EventsGAConst.EVENT_PAYMENT,checkoutData.getTitle() + " - "
                         + checkoutData.getCategoryId() + " - " + checkoutData.getSalesPrice() + " - " + promocode);
                 getView().navigateToActivityRequest(com.tokopedia.payment.activity.TopPayActivity.
                                 createInstance(getView().getActivity().getApplicationContext(), paymentPassData),

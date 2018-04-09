@@ -30,6 +30,7 @@ import com.tokopedia.events.view.customview.CustomSeatAreaLayout;
 import com.tokopedia.events.view.customview.CustomSeatLayout;
 import com.tokopedia.events.view.presenter.SeatSelectionPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
@@ -321,6 +322,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventClickBack("Digital_Events_Ticket_Seat_Details");
+        UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK,mPresenter.getSCREEN_NAME());
     }
 }

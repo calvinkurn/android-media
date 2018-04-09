@@ -12,6 +12,7 @@ import com.tokopedia.events.view.activity.EventBookTicketActivity;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.mapper.EventDetailsViewModelMapper;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 
@@ -24,7 +25,9 @@ import rx.functions.Func1;
  * Created by ashwanityagi on 23/11/17.
  */
 
-public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsContract.EventDetailsView> implements EventsDetailsContract.Presenter {
+public class EventsDetailsPresenter
+        extends BaseDaggerPresenter<EventsDetailsContract.EventDetailsView>
+        implements EventsDetailsContract.Presenter {
 
     private GetEventDetailsRequestUseCase getEventDetailsRequestUseCase;
     private EventsDetailsViewModel eventsDetailsViewModel;
@@ -109,6 +112,11 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
         });
     }
 
+    @Override
+    public String getSCREEN_NAME() {
+        return EventsGAConst.EVENTS_PRODUCT_PAGE;
+    }
+
 
     private EventsDetailsViewModel convertIntoEventDetailsViewModel(EventDetailsDomain eventDetailsDomain) {
         eventsDetailsViewModel = new EventsDetailsViewModel();
@@ -124,7 +132,7 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
         bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL, eventsDetailsViewModel);
         bookTicketIntent.putExtra(EXTRA_SEATING_PARAMETER, hasSeatLayout);
         getView().navigateToActivityRequest(bookTicketIntent, 100);
-        UnifyTracking.eventDigitalEventClickLanjuktan(eventsDetailsViewModel.getTitle() + "-" + "DIGITAL_EVENTS_DETAILS");
+        UnifyTracking.eventDigitalEventClickLanjuktan(EventsGAConst.EVENT_CLICK_LANJUKTAN,eventsDetailsViewModel.getTitle() + "-" + getSCREEN_NAME());
     }
 
 }
