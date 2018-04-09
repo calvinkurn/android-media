@@ -1076,7 +1076,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                                        String description) {
         promoResultLayout.setVisibility(View.VISIBLE);
         labelPromoType.setText(getString(R.string.title_coupon_code) + " : ");
-        promoVoucherCode.setText(couponCode);
+        promoVoucherCode.setText(couponTitle);
         voucherDescription.setText(description);
 
         //TODO check state
