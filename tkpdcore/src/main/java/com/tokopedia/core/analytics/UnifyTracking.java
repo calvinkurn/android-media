@@ -3283,15 +3283,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSearchResultShopItemClick(String keyword, String shopName) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH_RESULT,
-                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                AppEventTracking.Action.CLICK_SHOP,
-                keyword + " - " + shopName
-        ).setUserId().getEvent());
-    }
-
     public static void eventSearchResultProductWishlistClick(boolean isWishlisted, String keyword) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.PRODUCT_VIEW,
@@ -3321,6 +3312,15 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FILTER_PRODUCT,
                 AppEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
                 generateFilterEventLabel(selectedFilter)
+        ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.FILTER_PRODUCT,
+                AppEventTracking.Action.QUICK_FILTER,
+                filterName + " - " + filterValue + " - " + Boolean.toString(isSelected)
         ).setUserId().getEvent());
     }
 
@@ -3367,5 +3367,4 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.TAKE_TO_SHOP
         ).setUserId().getEvent());
     }
-
 }

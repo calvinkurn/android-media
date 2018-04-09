@@ -17,9 +17,9 @@
 
         <ImageView
             android:id="@+id/attach_but"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:padding="@dimen/padding_small"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            android:padding="@dimen/dp_10"
             app:srcCompat="@drawable/ic_action_attachment" />
 
         <EditText
@@ -31,16 +31,16 @@
 
         <ImageView
             android:id="@+id/send_button"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:padding="@dimen/padding_small"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            android:padding="@dimen/dp_10"
             app:srcCompat="@drawable/ic_send_24dp_green" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/discussion_list"
         android:layout_width="match_parent"
-        android:layout_margin="@dimen/margin_small"
+        android:layout_margin="@dimen/dp_10"
         android:layout_height="match_parent"
         android:layout_above="@id/reply_view" />
 

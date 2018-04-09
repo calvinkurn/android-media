@@ -302,6 +302,9 @@ public interface AppEventTracking {
         String HOME_BOTTOM_NAV = "bottom nav";
         String ECOMMERCE = "Ecommerce";
         String APPSHARE = "App share";
+        String SEARCH_SHARE = "search share";
+        String GRID_MENU = "grid menu";
+        String SEARCH_TAB = "search tab";
     }
 
     interface Action {
@@ -499,6 +502,12 @@ public interface AppEventTracking {
 
         String LOGIN_NOW = "masuk sekarang";
         String CHECKOUT = "Checkout";
+        String QUICK_FILTER = "quick filter";
+        String CLICK_BAR = "click - bar - ";
+        String CLICK_CHANGE_GRID = "click - ";
+        String FAVORITE_SHOP_CLICK = "click - favoritkan";
+        String CLICK_CATALOG = "click - catalog";
+        String CLICK_TAB = "click - tab";
     }
 
     interface ImageEditor {

@@ -6,7 +6,7 @@
     android:background="@color/white"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="@dimen/padding_med">
+    android:padding="@dimen/dp_20">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginTop="@dimen/dp_30"
         android:gravity="center"
         android:text="@string/waiting_data_checking_process"
         android:textSize="@dimen/font_large"
@@ -27,9 +27,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/margin_med"
-        android:layout_marginLeft="@dimen/margin_med"
-        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
         android:gravity="center"
         android:text="@string/info_change_phone_number" />
 
@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/margin_med"
+        android:layout_margin="@dimen/dp_20"
         android:background="@drawable/green_button_rounded"
         android:gravity="center"
         android:text="@string/navigate_back"

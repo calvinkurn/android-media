@@ -23,7 +23,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
 import com.tokopedia.core.apprating.SimpleAppRatingDialog;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -34,7 +33,6 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
@@ -43,21 +41,16 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationForm
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationDetailAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail
-        .InboxReputationDetailTypeFactory;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail
-        .InboxReputationDetailTypeFactoryImpl;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.ShareReviewDialog;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationDetailPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail
-        .InboxReputationDetailHeaderViewModel;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail
-        .InboxReputationDetailItemViewModel;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail
-        .InboxReputationDetailPassModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
 
 import java.util.ArrayList;
@@ -127,10 +120,14 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
-        if (cacheManager != null)
-            passModel = cacheManager.getConvertObjData(InboxReputationDetailActivity.CACHE_PASS_DATA,
-                    InboxReputationDetailPassModel.class);
-
+        if (cacheManager != null) {
+            try {
+                passModel = cacheManager.getConvertObjData(InboxReputationDetailActivity.CACHE_PASS_DATA,
+                        InboxReputationDetailPassModel.class);
+            } catch (Exception e) {
+                // Ignore cache expired exception
+            }
+        }
         callbackManager = CallbackManager.Factory.create();
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         InboxReputationDetailTypeFactory typeFactory = new InboxReputationDetailTypeFactoryImpl
@@ -470,8 +467,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToShopInfo(int shopId) {
-        Intent intent = new Intent(MainApplication.getAppContext(), ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(String.valueOf(shopId), ""));
+        Intent intent = ((ReputationRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
         startActivity(intent);
     }
 
@@ -507,9 +503,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToShopDetail(int shopId) {
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), "");
-        intent.putExtras(bundle);
+        Intent intent = ((ReputationRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
         startActivity(intent);
     }
 

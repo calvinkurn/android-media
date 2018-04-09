@@ -5,23 +5,23 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/padding_small"
-    android:paddingBottom="@dimen/padding_small"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin">
+    android:paddingTop="@dimen/dp_10"
+    android:paddingBottom="@dimen/dp_10"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16">
 
     <com.tokopedia.core.customView.RoundedCornerImageView
         android:id="@+id/product_image"
-        android:layout_width="@dimen/image_width_l"
-        android:layout_height="@dimen/image_width_l"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
         android:layout_gravity="center_vertical"
         tools:src="@color/black" />
 
     <TextView
         android:id="@+id/product_name"
         style="@style/TextView.Small.Bold.BlackSecondary"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginStart="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_10"
         android:layout_gravity="center_vertical"
         android:ellipsize="end"
         android:maxLines="2"
