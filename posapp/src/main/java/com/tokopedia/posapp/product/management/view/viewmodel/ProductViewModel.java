@@ -16,7 +16,7 @@ public class ProductViewModel implements Visitable<ProductManagementAdapterTypeF
     private String name;
     private double onlinePrice;
     private double outletPrice;
-    private boolean isShown;
+    private int status;
 
     public String getId() {
         return id;
@@ -58,19 +58,18 @@ public class ProductViewModel implements Visitable<ProductManagementAdapterTypeF
         this.outletPrice = outletPrice;
     }
 
-    public boolean isShown() {
-        return isShown;
+    public int getStatus() {
+        return status;
     }
 
-    public void setShown(boolean shown) {
-        isShown = shown;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     @Override
     public int type(ProductManagementAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
-
 
     @Override
     public int describeContents() {
@@ -84,7 +83,7 @@ public class ProductViewModel implements Visitable<ProductManagementAdapterTypeF
         dest.writeString(this.name);
         dest.writeDouble(this.onlinePrice);
         dest.writeDouble(this.outletPrice);
-        dest.writeByte(this.isShown ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.status);
     }
 
     public ProductViewModel() {
@@ -96,10 +95,10 @@ public class ProductViewModel implements Visitable<ProductManagementAdapterTypeF
         this.name = in.readString();
         this.onlinePrice = in.readDouble();
         this.outletPrice = in.readDouble();
-        this.isShown = in.readByte() != 0;
+        this.status = in.readInt();
     }
 
-    public static final Parcelable.Creator<ProductViewModel> CREATOR = new Parcelable.Creator<ProductViewModel>() {
+    public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {
         @Override
         public ProductViewModel createFromParcel(Parcel source) {
             return new ProductViewModel(source);

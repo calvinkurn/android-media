@@ -10,7 +10,7 @@ import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
 
 public interface EditProduct {
     interface Presenter extends CustomerPresenter<View> {
-        void save(ProductViewModel productViewModel, String s);
+        void save(ProductViewModel productViewModel, String localPrice);
     }
 
     interface View extends CustomerView {

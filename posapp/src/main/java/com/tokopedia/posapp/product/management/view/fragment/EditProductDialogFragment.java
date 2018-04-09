@@ -121,6 +121,10 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
         return view;
     }
 
+    private double getOutletPrice(String s) {
+        return 0;
+    }
+
     private String getFormattedCurrency(double price) {
         return CurrencyFormatUtil.getThousandSeparatorString(
                 price, false, 0

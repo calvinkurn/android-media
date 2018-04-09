@@ -1,5 +1,7 @@
 package com.tokopedia.posapp.common;
 
+import com.tokopedia.posapp.product.common.ProductConstant;
+
 /**
  * @author okasurya on 3/26/18.
  */
@@ -7,10 +9,11 @@ package com.tokopedia.posapp.common;
 public class PosUrl {
     public static String POS_DOMAIN = "https://gw.tokopedia.com/";
 
-    public class Product {
+    public static class Product {
         public static final String PRODUCT_LIST_V1 = "o2o/v1/shops/get_products";
         public static final String PRODUCT_LIST_V2 = "o2o/v2/shops/get_products";
         public static final String GET_ETALASE = "o2o/v1/shops/get_etalase";
+        public static final String EDIT_PRODUCT = "o2o/v1/price/update/{"+ ProductConstant.Key.OUTLET_ID +"}";
     }
 
     public class Shop {

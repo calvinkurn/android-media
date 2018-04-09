@@ -13,8 +13,10 @@ import com.tokopedia.design.text.DecimalInputView;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.posapp.product.management.view.adapter.ProductManagementTypeFactory;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
+import com.tokopedia.posapp.product.productdetail.view.Product;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 
 public class ProductManagementViewHolder extends AbstractViewHolder<ProductViewModel> {
@@ -48,7 +50,12 @@ public class ProductManagementViewHolder extends AbstractViewHolder<ProductViewM
         editOutletPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(element.getOutletPrice(), true));
 
         switchStatus.setOnCheckedChangeListener(null);
-        switchStatus.setChecked(element.isShown());
+        if(element.getStatus() == ProductConstant.Status.LOCAL_PRICE_SHOW
+                || element.getStatus() == ProductConstant.Status.ONLINE_PRICE_SHOW) {
+            switchStatus.setChecked(true);
+        } else {
+            switchStatus.setChecked(false);
+        }
         switchStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

@@ -1,9 +1,11 @@
 package com.tokopedia.posapp.product.management.data.repository;
 
+import com.google.gson.Gson;
 import com.tokopedia.posapp.base.domain.model.DataStatus;
+import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
+import com.tokopedia.posapp.product.management.data.pojo.EditProductRequest;
 import com.tokopedia.posapp.product.management.data.source.ProductManagementCloudSource;
-import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -18,10 +20,13 @@ import rx.Observable;
 
 public class ProductManagementCloudRepository implements ProductManagementRepository {
     private ProductManagementCloudSource productManagementCloudSource;
+    private Gson gson;
 
     @Inject
-    public ProductManagementCloudRepository(ProductManagementCloudSource productManagementCloudSource) {
+    public ProductManagementCloudRepository(ProductManagementCloudSource productManagementCloudSource,
+                                            Gson gson) {
         this.productManagementCloudSource = productManagementCloudSource;
+        this.gson = gson;
     }
 
     @Override
@@ -36,6 +41,10 @@ public class ProductManagementCloudRepository implements ProductManagementReposi
 
     @Override
     public Observable<DataStatus> edit(RequestParams requestParams) {
-        return null;
+        EditProductRequest editProductRequest = (EditProductRequest) requestParams.getObject(ProductConstant.Key.EDIT_PRODUCT_REQUEST);
+        return productManagementCloudSource.editProduct(
+                requestParams.getString(ProductConstant.Key.OUTLET_ID, ""),
+                gson.toJson(editProductRequest)
+        );
     }
 }
