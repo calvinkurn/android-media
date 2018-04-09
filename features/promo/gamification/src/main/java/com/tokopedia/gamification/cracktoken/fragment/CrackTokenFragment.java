@@ -2,6 +2,7 @@ package com.tokopedia.gamification.cracktoken.fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -385,6 +386,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                             crackResult.setImageBitmap(resource);
+                            showCrackWidgetSuccess(crackResult);
+                        }
+
+                        @Override
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
+                            crackResult.setImageBitmap(null);
+                            // image load is failed, but we need to show the text instead.
                             showCrackWidgetSuccess(crackResult);
                         }
                     });
