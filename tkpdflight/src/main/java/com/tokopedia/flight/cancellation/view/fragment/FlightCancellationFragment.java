@@ -20,6 +20,7 @@ import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationPresen
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,8 +68,11 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToReviewCancellationPage();
-//                startActivity(FlightCancellationReasonAndProofActivity.getCallingIntent(getActivity(), selectedCancellationViewModelList));
+//                navigateToReviewCancellationPage();
+                FlightCancellationWrapperViewModel wrapperViewModel = new FlightCancellationWrapperViewModel();
+                wrapperViewModel.setInvoice(getInvoiceId());
+                wrapperViewModel.setViewModels(selectedCancellationViewModelList);
+                startActivity(FlightCancellationReasonAndProofActivity.getCallingIntent(getActivity(), wrapperViewModel));
             }
         });
 

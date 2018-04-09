@@ -160,6 +160,7 @@ import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
+import com.tokopedia.seller.shop.setting.constant.ShopSettingNetworkConstant;
 import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
@@ -721,7 +722,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Observable<String> uploadImage(String destinationFolderPath, String localFilePath) {
         UploadImageUseCase<UploadShopImageModel> uploadImageUseCase = getFlightConsumerComponent().uploadImageUseCase();
-        return uploadImageUseCase.createObservable(uploadImageUseCase.createRequestParams(destinationFolderPath, localFilePath, "", ""))
+        return uploadImageUseCase.createObservable(uploadImageUseCase.createRequestParams(ShopSettingNetworkConstant.UPLOAD_SHOP_IMAGE_PATH,
+                localFilePath, ShopSettingNetworkConstant.LOGO_FILENAME_IMAGE_JPG, ""))
                 .map(new Func1<ImageUploadDomainModel<UploadShopImageModel>, String>() {
             @Override
             public String call(ImageUploadDomainModel<UploadShopImageModel> uploadShopImageModelImageUploadDomainModel) {
