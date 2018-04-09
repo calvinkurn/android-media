@@ -499,6 +499,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                 productItemList.add(productItemHashMap.get(productId));
         }
         productViewModel.setProductList(productItemList);
+        productViewModel.setTotalData(productItemList.size());
         SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
         finish();
     }
