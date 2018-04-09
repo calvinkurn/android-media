@@ -25,6 +25,10 @@ public class TokenHomeEntity {
     @Expose
     private TokenUserEntity tokensUser;
 
+    @SerializedName("emptyState")
+    @Expose
+    private TokenEmptyStateEntity emptyState;
+
     public String getButtonApplink() {
         return buttonApplink;
     }
@@ -39,5 +43,9 @@ public class TokenHomeEntity {
 
     public String[] getCountingMessage() {
         return countingMessage;
+    }
+
+    public TokenEmptyStateEntity getEmptyState() {
+        return emptyState;
     }
 }

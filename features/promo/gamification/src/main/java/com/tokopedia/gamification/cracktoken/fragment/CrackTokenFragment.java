@@ -339,7 +339,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     @Override
     public void onSuccessGetToken(TokenData tokenData) {
         if (tokenData.getSumToken() == 0) {
-            listener.directPageToCrackEmpty();
+            listener.directPageToCrackEmpty(tokenData);
         } else {
             this.tokenData = tokenData;
             crackTokenPresenter.downloadAllAsset(getContext(), this.tokenData);
@@ -512,6 +512,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     public interface ActionListener {
-        void directPageToCrackEmpty();
+        void directPageToCrackEmpty(TokenData tokenData);
     }
 }
