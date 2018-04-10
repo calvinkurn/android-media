@@ -4,11 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.events.data.entity.response.Form;
+import com.tokopedia.events.domain.model.Catalog;
 
 import java.util.List;
 
 public class EventsDetailsViewModel implements Parcelable {
-
 
     private String title;
     private String duration;

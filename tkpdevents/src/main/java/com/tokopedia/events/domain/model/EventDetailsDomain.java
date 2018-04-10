@@ -7,6 +7,7 @@ import java.util.List;
 
 public class EventDetailsDomain {
 
+    private Catalog catalog;
     private int id;
     private int parentId;
     private int categoryId;
@@ -441,5 +442,13 @@ public class EventDetailsDomain {
 
     public void setDisplayTags(String displayTags) {
         this.displayTags = displayTags;
+    }
+
+    public Catalog getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
     }
 }

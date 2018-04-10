@@ -3,11 +3,14 @@ package com.tokopedia.events.data.entity.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.events.domain.model.Catalog;
 
 import java.util.List;
 
 public class EventsDetailsEntity {
 
+    @SerializedName("catalog")
+    Catalog catalog;
     @SerializedName("id")
     @Expose
     private int id;
@@ -755,5 +758,13 @@ public class EventsDetailsEntity {
 
     public void setSeatmapImage(String seatmapImage) {
         this.seatmapImage = seatmapImage;
+    }
+
+    public Catalog getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
     }
 }

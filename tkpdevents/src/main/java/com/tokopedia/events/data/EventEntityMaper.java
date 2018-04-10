@@ -12,8 +12,8 @@ import com.tokopedia.events.data.entity.response.Schedule;
 import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.domain.model.EventLocationDomain;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
-import com.tokopedia.events.domain.model.ScheduleDomain;
 import com.tokopedia.events.domain.model.ScheduleDetailDomain;
+import com.tokopedia.events.domain.model.ScheduleDomain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +97,7 @@ public class EventEntityMaper {
         eventDetailsDomain.setGenre(eventsDetailsEntity.getGenre());
         eventDetailsDomain.setForms(eventsDetailsEntity.getForms());
         eventDetailsDomain.setSeatMapImage(eventsDetailsEntity.getSeatmapImage());
+        eventDetailsDomain.setCatalog(eventsDetailsEntity.getCatalog());
         List<ScheduleDomain> scheduleDomainList = new ArrayList<>();
         try {
             for (Schedule item : eventsDetailsEntity.getSchedules()) {
@@ -138,7 +139,7 @@ public class EventEntityMaper {
                 scheduleDomainList.add(scheduleDomain);
 
             }
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
 

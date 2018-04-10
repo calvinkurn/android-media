@@ -86,6 +86,9 @@ public class EventDetailsViewModelMapper {
                     for (int j = 0; j < packages.size(); j++) {
                         PackageViewModel packageViewModel = new PackageViewModel();
                         Package aPackage = packages.get(j);
+                        packageViewModel.setDigitalCategoryID(source.getCatalog().getDigitalCategoryId());
+                        packageViewModel.setDigitalProductCode(source.getCatalog().getDigitalProductCode());
+                        packageViewModel.setDigitalProductID(source.getCatalog().getDigitalProductId());
                         packageViewModel.setId(aPackage.getId());
                         packageViewModel.setProductId(aPackage.getProductId());
                         packageViewModel.setProductGroupId(aPackage.getProductGroupId());

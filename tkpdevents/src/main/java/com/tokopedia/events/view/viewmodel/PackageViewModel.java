@@ -38,6 +38,9 @@ public class PackageViewModel implements Parcelable {
     private Form form;
     private String fetchSectionUrl;
     private List<Form> forms;
+    private int digitalCategoryID;
+    private int digitalProductID;
+    private String digitalProductCode;
 
     public String getTitle() {
         return title;
@@ -60,6 +63,7 @@ public class PackageViewModel implements Parcelable {
     public Form getForm() {
         return form;
     }
+
     public void setForm(Form form) {
         this.form = form;
     }
@@ -267,12 +271,40 @@ public class PackageViewModel implements Parcelable {
         this.fetchSectionUrl = fetchSectionUrl;
     }
 
+    public int getDigitalCategoryID() {
+        return digitalCategoryID;
+    }
+
+    public void setDigitalCategoryID(int digitalCategoryID) {
+        this.digitalCategoryID = digitalCategoryID;
+    }
+
+    public int getDigitalProductID() {
+        return digitalProductID;
+    }
+
+    public void setDigitalProductID(int digitalProductID) {
+        this.digitalProductID = digitalProductID;
+    }
+
+    public String getDigitalProductCode() {
+        return digitalProductCode;
+    }
+
+    public void setDigitalProductCode(String digitalProductCode) {
+        this.digitalProductCode = digitalProductCode;
+    }
+
+
     public List<Form> getForms() {
         return forms;
     }
 
     public void setForms(List<Form> forms) {
         this.forms = forms;
+    }
+
+    public PackageViewModel() {
     }
 
     @Override
@@ -310,10 +342,10 @@ public class PackageViewModel implements Parcelable {
         dest.writeParcelable(this.form, flags);
         dest.writeString(this.fetchSectionUrl);
         dest.writeTypedList(this.forms);
+        dest.writeInt(this.digitalCategoryID);
+        dest.writeInt(this.digitalProductID);
+        dest.writeString(this.digitalProductCode);
         dest.writeInt(this.categoryId);
-    }
-
-    public PackageViewModel() {
     }
 
     protected PackageViewModel(Parcel in) {
@@ -345,10 +377,13 @@ public class PackageViewModel implements Parcelable {
         this.form = in.readParcelable(Form.class.getClassLoader());
         this.fetchSectionUrl = in.readString();
         this.forms = in.createTypedArrayList(Form.CREATOR);
+        this.digitalCategoryID = in.readInt();
+        this.digitalProductID = in.readInt();
+        this.digitalProductCode = in.readString();
         this.categoryId = in.readInt();
     }
 
-    public static final Parcelable.Creator<PackageViewModel> CREATOR = new Parcelable.Creator<PackageViewModel>() {
+    public static final Creator<PackageViewModel> CREATOR = new Creator<PackageViewModel>() {
         @Override
         public PackageViewModel createFromParcel(Parcel source) {
             return new PackageViewModel(source);
