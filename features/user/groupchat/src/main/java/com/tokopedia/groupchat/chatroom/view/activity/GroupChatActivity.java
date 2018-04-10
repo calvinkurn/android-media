@@ -797,8 +797,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private void showTooltip() {
         if (tabs != null
                 && tabAdapter != null
-                && tabAdapter.getItemCount() > 1
-                && tabs.getChildAt(CHANNEL_VOTE_FRAGMENT) != null) {
+                && hasVoteTab()) {
             View view = ToolTipUtils.setToolTip(this, R.layout.tooltip, this);
             TextView temp = view.findViewById(R.id.text);
             MethodChecker.setBackground(temp, MethodChecker.getDrawable(this, R.drawable.ic_combined_shape));
@@ -922,7 +921,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onResume() {
         super.onResume();
 
-        if(((GroupChatModuleRouter)getApplicationContext()).isEnabledIdleKick()) {
+        if (((GroupChatModuleRouter) getApplicationContext()).isEnabledIdleKick()) {
             kickIfIdleForTooLong();
         }
 
@@ -968,14 +967,21 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         setChannelInfoView(channelInfoViewModel);
-
+        refreshTab();
         if (currentFragmentIsChat()) {
             refreshChat();
-        } else if (currentFragmentIsVote()) {
+        } else if (currentFragmentIsVote() && checkPollValid()) {
             refreshVote(channelInfoViewModel.getVoteInfoViewModel());
+        } else if (currentFragmentIsVote()) {
+            viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
+            showFragment(CHATROOM_FRAGMENT);
         } else if (currentFragmentIsInfo()) {
             populateChannelInfoFragment();
         }
+    }
+
+    private void refreshTab() {
+        tabAdapter.replace(createListFragment());
     }
 
     @Override
@@ -1348,11 +1354,12 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         if ((voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
                 || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE)
-                && tabAdapter.getItemCount() < 3) {
+                && !hasVoteTab()) {
             tabAdapter.add(CHANNEL_VOTE_FRAGMENT, new TabViewModel(getString(R.string
                     .title_vote)));
             tabAdapter.notifyItemInserted(CHANNEL_VOTE_FRAGMENT);
-        } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
+        } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED
+                && hasVoteTab()) {
             viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
             tabAdapter.remove(CHANNEL_VOTE_FRAGMENT);
             tabAdapter.notifyItemRemoved(CHANNEL_VOTE_FRAGMENT);
@@ -1376,7 +1383,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             if ((voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
                     || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE)
                     && !voteInfoViewModel.isVoted()
-                    && tabAdapter.getItemCount() > 2) {
+                    && hasVoteTab()) {
                 tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
             } else {
                 tabAdapter.change(CHANNEL_VOTE_FRAGMENT, false);

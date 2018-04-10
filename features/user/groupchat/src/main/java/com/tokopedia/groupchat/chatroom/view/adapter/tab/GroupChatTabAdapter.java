@@ -119,4 +119,10 @@ public class GroupChatTabAdapter extends RecyclerView.Adapter<GroupChatTabAdapte
         return listTab.get(position);
     }
 
+    public void replace(List<TabViewModel> listFragment) {
+        this.listTab.clear();
+        this.listTab.addAll(listFragment);
+        notifyDataSetChanged();
+    }
+
 }

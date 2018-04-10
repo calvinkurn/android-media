@@ -77,7 +77,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     private View voteBar;
     private View voteBody;
     private TextView voteTitle;
-    private TextView voteParticipant;
     private TextView voteInfoLink;
     private ImageView iconVote;
     private View votedView;
@@ -145,7 +144,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         voteBar = rootView.findViewById(R.id.vote_header);
         voteBody = rootView.findViewById(R.id.vote_body);
         voteTitle = rootView.findViewById(R.id.vote_title);
-        voteParticipant = rootView.findViewById(R.id.vote_participant);
         voteInfoLink = rootView.findViewById(R.id.vote_info_link);
         iconVote = rootView.findViewById(R.id.icon_vote);
         voteStatus = rootView.findViewById(R.id.vote_status);
@@ -170,7 +168,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void onResume() {
         super.onResume();
         if (voteInfoViewModel != null
-                && voteInfoViewModel != null
                 && voteInfoViewModel.getStartTime() != 0
                 && voteInfoViewModel.getEndTime() != 0
                 && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime()
@@ -244,9 +241,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             setVoted(false);
         }
 
-        voteParticipant.setText(String.format("%s %s", TextFormatter.format(voteInfoViewModel.getParticipant())
-                , getActivity().getString(R.string.voter)));
-
         voteInfoLink.setText(voteInfoViewModel.getVoteInfoStringResId());
         voteInfoLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,19 +255,12 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             progressBarWithTimer.setVisibility(View.GONE);
             progressBarWithTimer.cancel();
             setVoteHasEnded();
-        } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
-            hideVoteLayout();
         } else {
             progressBarWithTimer.setVisibility(View.VISIBLE);
             progressBarWithTimer.cancel();
             progressBarWithTimer.setTimer(voteInfoViewModel.getStartTime(), voteInfoViewModel.getEndTime());
         }
 
-    }
-
-    public void hideVoteLayout() {
-        voteBar.setVisibility(View.GONE);
-        voteBody.setVisibility(View.GONE);
     }
 
     public void setVoteHasEnded() {
@@ -367,10 +354,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             voteInfoViewModel.setParticipant(
                     String.valueOf(Integer.parseInt(voteStatisticViewModel.getTotalParticipants())));
             setVoted(true);
-
-            voteParticipant.setText(String.format("%s %s", TextFormatter.format(voteInfoViewModel.getParticipant())
-                    , getActivity().getString(R.string.voter)));
-
 
             if (getActivity() instanceof GroupChatContract.View) {
                 ((GroupChatContract.View) getActivity()).updateVoteViewModel(
