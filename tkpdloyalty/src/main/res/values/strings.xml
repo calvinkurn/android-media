@@ -22,4 +22,8 @@
     <string name="bottom_sheet_body_promo_tooltips">Masukan Kode Promo di halaman pembayaran</string>
     <string name="syarat_amp_ketentuan"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="label_min_transaction_promo_loyalty_module">Minimum Transaksi</string>
+    <string name="copy_code">Salin Kode</string>
+    <string name="copied">Tersalin</string>
+    <string name="without_promo_code">Tanpa Kode Promo</string>
+    <string name="with_promo_code">Kode Promo</string>
 </resources>

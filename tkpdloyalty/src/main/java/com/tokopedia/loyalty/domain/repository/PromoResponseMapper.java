@@ -130,18 +130,7 @@ public class PromoResponseMapper implements IPromoResponseMapper {
 
     private List<String> parseContent(String content) {
         List<String> termAndConditions = new ArrayList<>();
-
-//        String regex = "[<li style=\"font-weight: 400;\">|<li>](.*?)</li>|<p>(.*?)</p>";
-//
-//        Pattern pattern = Pattern.compile(regex);
-//        Matcher matcher = pattern.matcher(content);
-//
-//        while (matcher.find()) {
-//            termAndConditions.add(matcher.group(1));
-//        }
-
         termAndConditions.add(content);
-
         return termAndConditions;
     }
 

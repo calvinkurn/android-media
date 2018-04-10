@@ -44,14 +44,19 @@ public class PromoDetailSimpleCodeViewHolder extends RecyclerView.ViewHolder {
     public void bind(SingleCodeViewModel viewModel) {
         boolean withoutPromoCode = TextUtils.isEmpty(viewModel.getSingleCode());
 
-        this.tvPromoCodeLabel.setText(withoutPromoCode ? "Tanpa Kode Promo" : "Kode Promo");
+        if (withoutPromoCode) {
+            this.tvPromoCodeLabel.setText(R.string.without_promo_code);
+        } else {
+            this.tvPromoCodeLabel.setText(R.string.with_promo_code);
+        }
+
         this.ivTooltipInfo.setVisibility(withoutPromoCode ? View.GONE : View.VISIBLE);
         this.ivTooltipInfo.setOnClickListener(tooltipInfoListener());
         this.rlPromoCodeLayout.setVisibility(withoutPromoCode ? View.GONE : View.VISIBLE);
         this.tvSingleCode.setText(viewModel.getSingleCode());
         this.rlSingleCodeCopyLayout.setOnClickListener(copyToClipboardListener(
                 viewModel.getPromoName(), viewModel.getSingleCode()));
-        this.tvPromoCodeCopy.setText("Salin Kode");
+        this.tvPromoCodeCopy.setText(R.string.copy_code);
     }
 
     private View.OnClickListener tooltipInfoListener() {
@@ -69,7 +74,7 @@ public class PromoDetailSimpleCodeViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 adapterActionListener.onItemPromoCodeCopyClipboardClicked(promoName, singleCode);
-                tvPromoCodeCopy.setText("Tersalin");
+                tvPromoCodeCopy.setText(R.string.copied);
                 rlSingleCodeCopyLayout.setBackgroundResource(R.drawable.round_button_right_grey);
             }
         };
