@@ -36,6 +36,7 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.spec.AlgorithmParameterSpec;
 
 
 /**
@@ -139,7 +140,7 @@ public class FingerPrintDialog extends BottomSheets {
     }
 
     private String getPublicKey(){
-        return new String(Base64.encode(generatePublicKey(getContext()).getEncoded(), 0));
+        return Base64.encodeToString(generatePublicKey(getContext()).getEncoded(), 0);
     }
 
     private String getSignature() {
