@@ -1505,7 +1505,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void onGetNotif(Bundle data) {
         GroupChatPointsViewModel model = new GroupChatPointsViewModel(
                 data.getString("desc", ""),
-                data.getString("url", ""),
+                data.getString("applinks", ""),
                 data.getString("tkp_code", "")
         );
 

@@ -14,7 +14,7 @@ public class GroupChatPointsViewModel implements Parcelable,
         Visitable<GroupChatTypeFactory> {
 
     public static final String TYPE_POINTS = "1401";
-    public static final String TYPE_LOYALTY = "1003";
+    public static final String TYPE_LOYALTY = "1402";
     public static final String TYPE_COUPON = "1403";
 
 

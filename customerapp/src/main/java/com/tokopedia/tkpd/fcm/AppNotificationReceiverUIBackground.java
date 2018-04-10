@@ -134,7 +134,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private void prepareAndExecuteApplinkNotification(Bundle data) {
 
-        if (canBroadcastPointReceived(data.getInt(Constants.ARG_NOTIFICATION_CODE, 0))) {
+        if (canBroadcastPointReceived(data.getString(Constants.ARG_NOTIFICATION_CODE, "0"))) {
             broadcastPointReceived(data);
         }
 
@@ -192,10 +192,10 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         }
     }
 
-    private boolean canBroadcastPointReceived(int tkpCode) {
-        return tkpCode == (TkpdState.GCMServiceState.GCM_GROUP_CHAT_POINTS)
-                || tkpCode == (TkpdState.GCMServiceState.GCM_GROUP_CHAT_LOYALTY)
-                || tkpCode == (TkpdState.GCMServiceState.GCM_GROUP_CHAT_COUPON);
+    private boolean canBroadcastPointReceived(String tkpCode) {
+        return tkpCode.equals(String.valueOf(TkpdState.GCMServiceState.GCM_GROUP_CHAT_POINTS))
+                || tkpCode.equals(String.valueOf(TkpdState.GCMServiceState.GCM_GROUP_CHAT_LOYALTY))
+                || tkpCode.equals(String.valueOf(TkpdState.GCMServiceState.GCM_GROUP_CHAT_COUPON));
     }
 
     private void broadcastPointReceived(Bundle data) {
