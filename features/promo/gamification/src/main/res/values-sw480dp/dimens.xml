@@ -10,8 +10,8 @@
     <integer name="translate_egg_to_y_delta">-50</integer>
 
     <integer name="reward_translate_y_axis">-200</integer>
-    <fraction name="to_x_scale_reward_anim">36000%</fraction>
-    <fraction name="to_y_scale_reward_anim">36000%</fraction>
+    <fraction name="to_x_scale_reward_anim">30000%</fraction>
+    <fraction name="to_y_scale_reward_anim">30000%</fraction>
     <fraction name="to_x_scale_bg_reward_anim">36000%</fraction>
     <fraction name="to_y_scale_bg_reward_anim">36000%</fraction>
 
