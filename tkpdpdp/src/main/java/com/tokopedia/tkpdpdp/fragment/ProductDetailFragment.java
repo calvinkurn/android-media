@@ -172,6 +172,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_PROMO_WIDGET = "STATE_PROMO_WIDGET";
     public static final String STATE_APP_BAR_COLLAPSED = "STATE_APP_BAR_COLLAPSED";
     public static final String TAG_SHOWCASE_VARIANT = "-SHOWCASE_VARIANT";
+    private static final String STATIC_VALUE_ENHANCE_NONE_OTHER = "none / other";
 
     private CoordinatorLayout coordinatorLayout;
     private HeaderInfoView headerInfoView;
@@ -1562,9 +1563,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private String getEnhanceVariant() {
         if (productVariant != null) {
             String variantValue = productVariant.generateVariantValue(productData.getInfo().getProductId());
-            return variantValue.isEmpty() ? "none / other" : variantValue;
+            return variantValue.isEmpty() ? STATIC_VALUE_ENHANCE_NONE_OTHER : variantValue;
         } else {
-            return "none / other";
+            return STATIC_VALUE_ENHANCE_NONE_OTHER;
         }
     }
 
