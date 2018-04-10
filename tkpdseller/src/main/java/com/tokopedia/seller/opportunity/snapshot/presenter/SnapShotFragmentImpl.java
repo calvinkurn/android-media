@@ -45,6 +45,7 @@ public class SnapShotFragmentImpl extends SnapShotFragmentPresenter {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 getView().showProductDetailRetry();
                 getView().hideProgressLoading();
             }

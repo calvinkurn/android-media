@@ -3,6 +3,8 @@ package com.tokopedia.seller.opportunity.domain.entity;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by nakama on 27/03/18.
  */
@@ -11,6 +13,9 @@ public class OpportunityProduct {
     @SerializedName("detail_id")
     @Expose
     private int detailId;
+    @SerializedName("detail_product_desc")
+    @Expose
+    private String productDescription;
     @SerializedName("detail_product_url")
     @Expose
     private String productUrl;
@@ -35,6 +40,9 @@ public class OpportunityProduct {
     @SerializedName("detail_product_price")
     @Expose
     private String productPrice;
+    @SerializedName("detail_product_pictures")
+    @Expose
+    private List<String> productPictures = null;
 
     public int getDetailId() {
         return detailId;
@@ -106,5 +114,21 @@ public class OpportunityProduct {
 
     public void setProductPrice(String productPrice) {
         this.productPrice = productPrice;
+    }
+
+    public String getProductDescription() {
+        return productDescription;
+    }
+
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
+    }
+
+    public List<String> getProductPictures() {
+        return productPictures;
+    }
+
+    public void setProductPictures(List<String> productPictures) {
+        this.productPictures = productPictures;
     }
 }
