@@ -31,7 +31,6 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
-import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -508,6 +507,7 @@ public class PosRouterApplication extends MainApplication implements
 
     private void initDaggerInjector() {
         getReactNativeComponent().inject(this);
+//        CodePush.setReactInstanceHolder((ReactInstanceHolder) reactNativeHost);
     }
 
     private ReactNativeComponent getReactNativeComponent() {
@@ -553,14 +553,14 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public UserSession getSession() {
-        if(userSession == null) userSession = new UserSessionImpl(this);
+        if (userSession == null) userSession = new UserSessionImpl(this);
 
         return userSession;
     }
 
     @Override
     public CacheManager getGlobalCacheManager() {
-        if(cacheManager == null) cacheManager = new GlobalCacheManager();
+        if (cacheManager == null) cacheManager = new GlobalCacheManager();
         return cacheManager;
     }
 

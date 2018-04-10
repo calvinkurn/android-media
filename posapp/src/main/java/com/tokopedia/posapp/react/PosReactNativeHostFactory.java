@@ -23,14 +23,14 @@ public class PosReactNativeHostFactory {
 
     protected PosReactNativeHostFactory() {}
 
-    public static ReactNativeHost init(Application application) {
+    public static PosReactNativeHost init(Application application) {
         if(instance == null) instance = new PosReactNativeHostFactory();
 
         return instance.createReactNativeHost(application);
     }
 
-    private ReactNativeHost createReactNativeHost(final Application application) {
-        return new ReactNativeHost(application) {
+    private PosReactNativeHost createReactNativeHost(final Application application) {
+        return new PosReactNativeHost(application) {
             @Override
             public boolean getUseDeveloperSupport() {
                 return GlobalConfig.isAllowDebuggingTools();
@@ -48,8 +48,8 @@ public class PosReactNativeHostFactory {
         };
     }
 
-    private ReactNativeHost createReactNativeHostDev(final Application application) {
-        return new ReactNativeHost(application) {
+    private PosReactNativeHost createReactNativeHostDev(final Application application) {
+        return new PosReactNativeHost(application) {
             @Override
             public boolean getUseDeveloperSupport() {
                 return true;

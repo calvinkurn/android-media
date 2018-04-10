@@ -65,7 +65,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         sessionHandler = new SessionHandler(MainApplication.getAppContext());
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
         setupDrawer();
-        if (!GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isCustomerApp()) {
             registerBroadcastReceiverHeaderTokoCash();
             registerBroadcastReceiverHeaderTokoCashPending();
             registerBroadcastReceiverHeaderTokoPoint();
