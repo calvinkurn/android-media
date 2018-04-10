@@ -301,7 +301,7 @@ public class ShopListFragment extends SearchSectionFragment
                         openFilterActivity();
                         return true;
                     case 1:
-                        switchLayoutType();
+                        switchLayoutType(false);
                         return true;
                     default:
                         return false;
@@ -424,8 +424,8 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected void switchLayoutType() {
-        super.switchLayoutType();
+    protected void switchLayoutType(boolean isImageSearch) {
+        super.switchLayoutType(isImageSearch);
         
         if (!getUserVisibleHint() || !isNextPageAvailable) {
             return;

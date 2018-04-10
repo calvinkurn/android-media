@@ -494,9 +494,14 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             productItemHashMap.put(productItem.getProductID(), productItem);
         }
         List<ProductItem> productItemList = new ArrayList<>();
-        for (String productId : productIDList) {
-            if (productItemHashMap.get(productId) != null)
-                productItemList.add(productItemHashMap.get(productId));
+        int count = 0;
+        for (int i = 0; i < productIDList.size(); i++) {
+            if (productItemHashMap.get(productIDList.get(i)) != null) {
+                ProductItem productItem = productItemHashMap.get(productIDList.get(i));
+                productItem.setPosition(++count);
+                productItemList.add(productItemHashMap.get(productIDList.get(i)));
+                productItemHashMap.remove(productItem.getProductID());
+            }
         }
         productViewModel.setProductList(productItemList);
         productViewModel.setTotalData(productItemList.size());

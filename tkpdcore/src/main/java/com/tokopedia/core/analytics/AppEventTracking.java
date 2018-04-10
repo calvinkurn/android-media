@@ -58,6 +58,7 @@ public interface AppEventTracking {
         String WISHLIST = "clickWishlist";
         String FEED = "clickFeed";
         String SEARCH_RESULT = "clickSearchResult";
+        String IMAGE_SEARCH_RESULT = "imageSearchClick";
         String SORT = "clickSort";
         String FILTER = "clickFilter";
         String NO_RESULT = "noSearchResult";
@@ -511,6 +512,7 @@ public interface AppEventTracking {
         String FAVORITE_SHOP_CLICK = "click - favoritkan";
         String CLICK_CATALOG = "click - catalog";
         String CLICK_TAB = "click - tab";
+        String CLICK_SWITCH_VIEW = "click switch view";
     }
 
     interface ImageEditor {

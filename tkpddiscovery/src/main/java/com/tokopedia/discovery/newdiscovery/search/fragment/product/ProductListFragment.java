@@ -142,7 +142,7 @@ public class ProductListFragment extends SearchSectionFragment
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
-            switchLayoutType();
+            switchLayoutType(productViewModel.isImageSearch());
         }
     }
 
@@ -404,7 +404,7 @@ public class ProductListFragment extends SearchSectionFragment
                 switch (position) {
                     case 0:
                         if (productViewModel.isImageSearch())
-                            switchLayoutType();
+                            switchLayoutType(true);
                         else
                             openSortActivity();
                         return true;
@@ -415,7 +415,7 @@ public class ProductListFragment extends SearchSectionFragment
                             openFilterActivity();
                         return true;
                     case 2:
-                        switchLayoutType();
+                        switchLayoutType(productViewModel.isImageSearch());
                         return true;
                     case 3:
                         startShareActivity(productViewModel.getShareUrl());
@@ -522,7 +522,7 @@ public class ProductListFragment extends SearchSectionFragment
 
         if (productViewModel.isImageSearch()) {
             SearchTracking.trackEventClickImageSearchResultProduct(
-                    item.getProductAsObjectDataLayerForImageSearch(userId), item.getPosition() / 2);
+                    item.getProductAsObjectDataLayerForImageSearch(userId), (item.getPosition() + 1) / 2);
         } else {
             SearchTracking.trackEventClickSearchResultProduct(
                     item.getProductAsObjectDataLayer(userId),
@@ -809,6 +809,9 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void getQuickFilter() {
+        if (productViewModel.isImageSearch()) {
+            return;
+        }
         presenter.requestQuickFilter(NetworkParamHelper.getParamMap(productViewModel.getAdditionalParams()));
     }
 

@@ -14,7 +14,6 @@ import android.view.View;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -199,7 +198,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         return linearLayoutManager;
     }
 
-    protected void switchLayoutType() {
+    protected void switchLayoutType(boolean isImageSearch) {
         if (!getUserVisibleHint()) {
             return;
         }
@@ -209,18 +208,30 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
-                SearchTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
+                if (isImageSearch) {
+                    SearchTracking.eventImageSearchResultChangeGrid("default");
+                } else {
+                    SearchTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
+                }
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
-                SearchTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
+                if (isImageSearch) {
+                    SearchTracking.eventImageSearchResultChangeGrid("instagram grid");
+                } else {
+                    SearchTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
+                }
                 break;
             case GRID_3:
                 setSpanCount(1);
                 getAdapter().changeListView();
-                SearchTracking.eventSearchResultChangeGrid("list", getScreenName());
+                if (isImageSearch) {
+                    SearchTracking.eventImageSearchResultChangeGrid("list");
+                } else {
+                    SearchTracking.eventSearchResultChangeGrid("list", getScreenName());
+                }
                 break;
         }
         refreshBottomBarGridIcon();
@@ -467,7 +478,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     }
 
-    protected void disableSwipeRefresh(){
+    protected void disableSwipeRefresh() {
         refreshLayout.setEnabled(false);
         refreshLayout.setRefreshing(false);
     }

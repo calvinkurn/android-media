@@ -13,7 +13,7 @@ import java.util.Map;
 public class SearchTracking extends TrackingUtils {
 
     private static final String ACTION_FIELD = "/searchproduct - p$1 - product";
-    public static String imageClick = "/imagesearch - %s";
+    public static String imageClick = "/imagesearch - p{%s}";
 
     public static String getActionFieldString(int pageNumber) {
         return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
@@ -72,6 +72,15 @@ public class SearchTracking extends TrackingUtils {
                 AppEventTracking.Category.SEARCH_SHARE,
                 AppEventTracking.Action.CLICK_BAR + screenName,
                 ""
+        ).setUserId().getEvent());
+    }
+
+    public static void eventImageSearchResultChangeGrid(String gridName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.CLICK_CHANGE_GRID,
+                gridName
         ).setUserId().getEvent());
     }
 
