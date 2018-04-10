@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.drawer2.data.pojo.UserDrawerData;
+import com.tokopedia.core.drawer2.data.pojo.UserData;
 import com.tokopedia.core.drawer2.domain.interactor.GetUserAttributesUseCase;
 import com.tokopedia.core.network.apiservices.drawer.DrawerService;
 
@@ -38,12 +38,12 @@ public class CloudAttrDataSource {
         analyticsCacheHandler = new AnalyticsCacheHandler();
     }
 
-    public Observable<UserDrawerData> getConsumerUserAttributes(RequestParams requestParams) {
+    public Observable<UserData> getConsumerUserAttributes(RequestParams requestParams) {
         return drawerService.getApi()
                 .getConsumerDrawerData(String.format(getRequestPayload(), requestParams.getInt(GetUserAttributesUseCase.PARAM_USER_ID, 0)))
-                .map(new Func1<Response<GraphqlResponse<UserDrawerData>>, UserDrawerData>() {
+                .map(new Func1<Response<GraphqlResponse<UserData>>, UserData>() {
                     @Override
-                    public UserDrawerData call(Response<GraphqlResponse<UserDrawerData>> graphqlResponseResponse) {
+                    public UserData call(Response<GraphqlResponse<UserData>> graphqlResponseResponse) {
 
                         if (graphqlResponseResponse != null) {
                             if (graphqlResponseResponse.isSuccessful()) {
@@ -57,12 +57,12 @@ public class CloudAttrDataSource {
                 .doOnNext(setToCache());
     }
 
-    public Observable<UserDrawerData> getSellerUserAttributes(RequestParams requestParams) {
+    public Observable<UserData> getSellerUserAttributes(RequestParams requestParams) {
         return drawerService.getApi()
                 .getSellerDrawerData(String.format(getRequestSellerDataPayload(), requestParams.getInt(GetUserAttributesUseCase.PARAM_USER_ID, 0)))
-                .map(new Func1<Response<GraphqlResponse<UserDrawerData>>, UserDrawerData>() {
+                .map(new Func1<Response<GraphqlResponse<UserData>>, UserData>() {
                     @Override
-                    public UserDrawerData call(Response<GraphqlResponse<UserDrawerData>> graphqlResponseResponse) {
+                    public UserData call(Response<GraphqlResponse<UserData>> graphqlResponseResponse) {
 
                         if (graphqlResponseResponse != null) {
                             if (graphqlResponseResponse.isSuccessful()) {
@@ -76,10 +76,10 @@ public class CloudAttrDataSource {
         //.doOnNext(setToCache());
     }
 
-    private Action1<UserDrawerData> setToCache() {
-        return new Action1<UserDrawerData>() {
+    private Action1<UserData> setToCache() {
+        return new Action1<UserData>() {
             @Override
-            public void call(UserDrawerData data) {
+            public void call(UserData data) {
                 if (data != null) {
                     analyticsCacheHandler.setUserDataGraphQLCache(data);
                 }

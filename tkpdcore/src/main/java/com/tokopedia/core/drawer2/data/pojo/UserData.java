@@ -4,7 +4,7 @@ package com.tokopedia.core.drawer2.data.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UserDrawerData {
+public class UserData {
 
     @SerializedName("shopInfoMoengage")
     @Expose

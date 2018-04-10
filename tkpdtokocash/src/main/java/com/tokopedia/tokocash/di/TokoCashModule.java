@@ -8,6 +8,10 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tokocash.TokoCashRouter;
@@ -26,6 +30,7 @@ import com.tokopedia.tokocash.historytokocash.domain.PostHelpHistoryDetailUseCas
 import com.tokopedia.tokocash.network.WalletTokenRefresh;
 import com.tokopedia.tokocash.network.api.TokoCashApi;
 import com.tokopedia.tokocash.network.api.WalletApi;
+import com.tokopedia.tokocash.network.api.WalletBalanceApi;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.tokocash.network.interceptor.TokoCashAuthInterceptor;
 import com.tokopedia.tokocash.network.interceptor.TokoCashErrorResponseInterceptor;
@@ -205,5 +210,16 @@ public class TokoCashModule {
     @TokoCashScope
     PostUnlinkTokoCashUseCase providePostUnlinkTokoCashUseCase(AccountSettingRepository accountSettingRepository) {
         return new PostUnlinkTokoCashUseCase(accountSettingRepository);
+    }
+
+    @Provides
+    WalletBalanceApi provideWalletBalanceApi() {
+        Retrofit retrofit = RetrofitFactory.createRetrofitDefaultConfig(TkpdBaseURL.HOME_DATA_BASE_URL)
+                .client(OkHttpFactory.create()
+                        .addOkHttpRetryPolicy(OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy())
+                        .buildClientDefaultAuth())
+                .build();
+
+        return retrofit.create(WalletBalanceApi.class);
     }
 }

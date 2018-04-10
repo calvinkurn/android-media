@@ -1,4 +1,4 @@
-package com.tokopedia.core.network.apiservices.drawer.api;
+package com.tokopedia.tokocash.network.api;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.core.drawer2.data.pojo.UserData;
@@ -13,13 +13,9 @@ import rx.Observable;
  * Created by stevenfredian on 8/31/17.
  */
 
-public interface DrawerDataApi {
+public interface WalletBalanceApi {
 
     @POST("./")
     @Headers({"Content-Type: application/json"})
-    Observable<Response<GraphqlResponse<UserData>>> getConsumerDrawerData(@Body String requestBody);
-
-    @POST("./")
-    @Headers({"Content-Type: application/json"})
-    Observable<Response<GraphqlResponse<UserData>>> getSellerDrawerData(@Body String requestBody);
+    Observable<Response<GraphqlResponse<UserData>>> getBalance(@Body String requestBody);
 }

@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.pojo.UserDrawerData;
+import com.tokopedia.core.drawer2.data.pojo.UserData;
 
 import rx.Single;
 import rx.SingleSubscriber;
@@ -33,17 +33,17 @@ public class AnalyticsCacheHandler {
 
     public void getUserAttrGraphQLCache(final GetUserDataListener listener) {
 
-        Single<UserDrawerData> getData = Single.just(USER_ATTR)
-                .map(new Func1<String, UserDrawerData>() {
+        Single<UserData> getData = Single.just(USER_ATTR)
+                .map(new Func1<String, UserData>() {
                     @Override
-                    public UserDrawerData call(String s) {
-                        return cacheManager.getConvertObjData(USER_ATTR, UserDrawerData.class);
+                    public UserData call(String s) {
+                        return cacheManager.getConvertObjData(USER_ATTR, UserData.class);
                     }
                 });
-        executor(getData, new SingleSubscriber<UserDrawerData>() {
+        executor(getData, new SingleSubscriber<UserData>() {
 
             @Override
-            public void onSuccess(UserDrawerData data) {
+            public void onSuccess(UserData data) {
                 listener.onSuccessGetUserAttr(data);
             }
 
@@ -94,15 +94,15 @@ public class AnalyticsCacheHandler {
 
     }
 
-    public void setUserDataGraphQLCache(UserDrawerData data) {
-        Single<UserDrawerData> saveData = Single.just(data);
-        executor(saveData, new SingleSubscriber<UserDrawerData>() {
+    public void setUserDataGraphQLCache(UserData data) {
+        Single<UserData> saveData = Single.just(data);
+        executor(saveData, new SingleSubscriber<UserData>() {
             @Override
-            public void onSuccess(UserDrawerData value) {
+            public void onSuccess(UserData value) {
 
                 cacheManager.setKey(USER_ATTR);
                 cacheManager.setValue(CacheUtil.convertModelToString(value,
-                        new TypeToken<UserDrawerData>() {
+                        new TypeToken<UserData>() {
                         }.getType()));
                 cacheManager.store();
             }
@@ -120,7 +120,7 @@ public class AnalyticsCacheHandler {
 
 
     public interface GetUserDataListener {
-        void onSuccessGetUserAttr(UserDrawerData data);
+        void onSuccessGetUserAttr(UserData data);
 
         void onError(Throwable e);
     }

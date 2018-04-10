@@ -19,7 +19,7 @@ import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.drawer2.data.pojo.UserDrawerData;
+import com.tokopedia.core.drawer2.data.pojo.UserData;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
@@ -66,7 +66,7 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().setUserProfile(customerWrapper);
     }
 
-    public static void setMoEUserAttributesOld(UserDrawerData profileData) {
+    public static void setMoEUserAttributesOld(UserData profileData) {
         if (profileData != null) {
             CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
                     .setFullName(profileData.getProfile() == null ? "" : profileData.getProfile().getFullName())
@@ -93,7 +93,7 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
-    public static void setMoEUserAttributes(UserDrawerData profileData) {
+    public static void setMoEUserAttributes(UserData profileData) {
         if (profileData != null) {
             try {
                 CustomerWrapper customerWrapper = new CustomerWrapper.Builder()

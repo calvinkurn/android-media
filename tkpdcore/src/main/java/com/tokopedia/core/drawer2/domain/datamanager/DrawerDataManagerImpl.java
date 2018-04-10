@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.drawer2.data.pojo.Notifications;
-import com.tokopedia.core.drawer2.data.pojo.UserDrawerData;
+import com.tokopedia.core.drawer2.data.pojo.UserData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
@@ -86,7 +86,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
 
     @Override
     public void getUserAttributes(SessionHandler sessionHandler) {
-        userAttributesUseCase.execute(userAttributesUseCase.getUserAttrParam(sessionHandler), new Subscriber<UserDrawerData>() {
+        userAttributesUseCase.execute(userAttributesUseCase.getUserAttrParam(sessionHandler), new Subscriber<UserData>() {
             @Override
             public void onCompleted() {
 
@@ -103,7 +103,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
             }
 
             @Override
-            public void onNext(UserDrawerData response) {
+            public void onNext(UserData response) {
                 if (viewListener.getActivity() == null) {
                     return;
                 }
@@ -125,7 +125,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
 
     @Override
     public void getSellerUserAttributes(SessionHandler sessionHandler) {
-        sellerUserAttributesUseCase.execute(sellerUserAttributesUseCase.getUserAttrParam(sessionHandler), new Subscriber<UserDrawerData>() {
+        sellerUserAttributesUseCase.execute(sellerUserAttributesUseCase.getUserAttrParam(sessionHandler), new Subscriber<UserData>() {
             @Override
             public void onCompleted() {
 
@@ -137,7 +137,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
             }
 
             @Override
-            public void onNext(UserDrawerData response) {
+            public void onNext(UserData response) {
                 renderSaldo(response);
                 renderProfile(response);
                 renderNotification(response.getNotifications());
@@ -151,7 +151,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
         });
     }
 
-    private void renderProfileCompletion(UserDrawerData response) {
+    private void renderProfileCompletion(UserData response) {
         //update values in session handler
         SessionHandler sessionHandler = new SessionHandler(viewListener.getActivity());
         if (!sessionHandler.isV4Login()) {
@@ -178,7 +178,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
         }
     }
 
-    private void renderSaldo(UserDrawerData response) {
+    private void renderSaldo(UserData response) {
         if (response.getSaldo() != null) {
             String depositFormat = response.getSaldo().getDepositFmt();
             if (depositFormat != null && !depositFormat.equalsIgnoreCase("ERROR FAIL")) {
@@ -191,7 +191,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
         }
     }
 
-    private void renderWallet(UserDrawerData response) {
+    private void renderWallet(UserData response) {
         if (response.getWallet() != null) {
             viewListener.onGetTokoCash(TokoCashUtil.convertToViewModel(response.getWallet(), viewListener.getActivity()));
         } else {
@@ -199,7 +199,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
         }
     }
 
-    private void renderProfile(UserDrawerData response) {
+    private void renderProfile(UserData response) {
         if (response.getProfile() != null) {
             DrawerProfile drawerProfile = new DrawerProfile();
             if (response.getShopInfoMoengage() != null) {
