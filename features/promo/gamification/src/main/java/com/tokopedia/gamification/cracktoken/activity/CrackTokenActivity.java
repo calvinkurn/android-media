@@ -69,7 +69,7 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
     public void onBackPressed() {
         CrackTokenFragment crackTokenFragment = getCrackFragment();
         if (crackTokenFragment != null && crackTokenFragment.isShowReward()) {
-            crackTokenFragment.dimissReward();
+            crackTokenFragment.dismissReward();
         } else {
             onBackPressedRoot();
         }

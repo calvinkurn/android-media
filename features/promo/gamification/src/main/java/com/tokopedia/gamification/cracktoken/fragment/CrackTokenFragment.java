@@ -430,7 +430,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         return widgetCrackResult.isShown();
     }
 
-    public void dimissReward(){
+    public void dismissReward(){
         widgetCrackResult.dismissReward();
     }
 
