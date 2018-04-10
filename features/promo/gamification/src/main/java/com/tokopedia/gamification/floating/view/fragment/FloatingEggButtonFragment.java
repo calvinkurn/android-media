@@ -55,8 +55,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class FloatingEggButtonFragment extends BaseDaggerFragment implements FloatingEggContract.View {
 
-    private static final String TAG = FloatingEggButtonFragment.class.getSimpleName();
-
     private static final String COORD_X = "x";
     private static final String COORD_Y = "y";
     public static final String COORD_EGG_PREF = "_egg.pref";

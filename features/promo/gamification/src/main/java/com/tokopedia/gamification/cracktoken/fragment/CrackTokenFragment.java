@@ -11,7 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +40,7 @@ import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
+import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenUser;
@@ -53,8 +54,6 @@ import javax.inject.Inject;
 public class CrackTokenFragment extends BaseDaggerFragment implements CrackTokenContract.View {
 
     private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
-
-    public static final double RATIO_MARGIN_TOP_TIMER = 0.05;
 
     @Inject
     CrackTokenPresenter crackTokenPresenter;
@@ -161,11 +160,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
 
             @Override
-            public void hideToolbar() {
-                listener.hideToolbar();
-            }
-
-            @Override
             public void onTrackingCloseRewardButton(CrackResult crackResult) {
                 trackingCloseRewardButtonClick(crackResult);
             }
@@ -238,7 +232,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             @Override
             public void onClick() {
                 stopTimer();
+                hideInfoTitle();
                 widgetTokenOnBoarding.hideHandOnBoarding(true);
+                listener.hideToolbar();
                 TokenUser tokenUser = tokenData.getHome().getTokensUser();
                 crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
 
@@ -253,6 +249,15 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 tokenData.getHome().getCountingMessage());
 
         showTimer(tokenData);
+        showInfoTitle();
+    }
+
+    private void hideInfoTitle(){
+        infoTitlePage.setVisibility(View.GONE);
+    }
+
+    private void showInfoTitle(){
+        infoTitlePage.setVisibility(View.VISIBLE);
     }
 
     private void stopTimer() {
@@ -264,18 +269,15 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void initTimerBound() {
+        int rootWidth = rootView.getWidth();
         int rootHeight = rootView.getHeight();
-
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-        if (getContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-
-        int imageMarginTop = (int) (RATIO_MARGIN_TOP_TIMER * rootHeight) + actionBarHeight;
+        int imageHeight = TokenMarginUtil.getEggWidth (rootWidth, rootHeight);
+        int marginTop = TokenMarginUtil.getEggMarginBottom (rootHeight) - imageHeight
+                - getContext().getResources().getDimensionPixelOffset(R.dimen.dp_112);
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) layoutTimer.getLayoutParams();
-        ivFullLp.topMargin = imageMarginTop;
+        ivFullLp.gravity = Gravity.CENTER_HORIZONTAL;
+        ivFullLp.topMargin = marginTop;
         layoutTimer.requestLayout();
         layoutTimer.setVisibility(View.VISIBLE);
     }

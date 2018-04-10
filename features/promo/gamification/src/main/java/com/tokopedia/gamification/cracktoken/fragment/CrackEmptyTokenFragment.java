@@ -19,6 +19,7 @@ import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
+import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
@@ -103,9 +104,10 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
     private void setPercentageTokenImage() {
         int rootWidth = rootView.getWidth();
         int rootHeight = rootView.getHeight();
-        int imageWidth = (int) (0.5 * Math.min(rootWidth, rootHeight));
+        int imageWidth = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
         int imageHeight = imageWidth;
-        int imageMarginTop = (int) (0.64 * (rootHeight)) - imageHeight;
+        int imageMarginBottom = TokenMarginUtil.getEggMarginBottom(rootHeight);
+        int imageMarginTop = imageMarginBottom - imageHeight;
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) tokenEmptyImage.getLayoutParams();
         ivFullLp.width = imageWidth;
@@ -113,6 +115,13 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
         ivFullLp.gravity = CENTER_HORIZONTAL;
         ivFullLp.topMargin = imageMarginTop;
         tokenEmptyImage.requestLayout();
+
+        int titleMarginTop = imageMarginTop - getContext().getResources().getDimensionPixelOffset(R.dimen.dp_112);
+        FrameLayout.LayoutParams titleLp = (FrameLayout.LayoutParams) title.getLayoutParams();
+        ivFullLp.gravity = CENTER_HORIZONTAL;
+        titleLp.topMargin = titleMarginTop;
+        title.requestLayout();
+        title.setVisibility(View.VISIBLE);
     }
 
     @Override
