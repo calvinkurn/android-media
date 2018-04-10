@@ -13,6 +13,7 @@ import java.util.Map;
 public class SearchTracking extends TrackingUtils {
 
     private static final String ACTION_FIELD = "/searchproduct - p$1 - product";
+    public static String imageClick = "/imagesearch - %s";
 
     public static String getActionFieldString(int pageNumber) {
         return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
@@ -25,8 +26,16 @@ public class SearchTracking extends TrackingUtils {
                 eventLabel, getActionFieldString(pageNumber));
     }
 
+    public static void trackEventClickImageSearchResultProduct(Object item, int position){
+        getGTMEngine().enhanceClickImageSearchResultProduct(item, String.format(imageClick, position));
+    }
+
     public static void eventImpressionSearchResultProduct(List<Object> list, String eventLabel) {
         getGTMEngine().enhanceImpressionSearchResultProduct(list, eventLabel);
+    }
+
+    public static void eventImpressionImageSearchResultProduct(List<Object> list) {
+        getGTMEngine().enhanceImpressionImageSearchResultProduct(list);
     }
 
     public static void eventClickGuidedSearch(String previousKey, String page, String nextKey) {

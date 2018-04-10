@@ -190,6 +190,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="dialog_payment_cancellation_confirmation">Apakah Anda yakin membatalkan transaksi ini?</string>
     <string name="dialog_payment_cancellation_confirmation_detil1">Jumlah Kupon yg diaktifkan : </string>
     <string name="dialog_payment_cancellation_confirmation_detil2">Daftar Kupon : </string>
+    <string name="dialog_image_upload_option" >Bagaimana Anda ingin mengunggah gambar</string>
 
     <string-array name="return_policy">
         <item>@string/return_policy_not_set</item>
