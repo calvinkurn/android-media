@@ -62,6 +62,14 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
     }
 
     @Override
+    public void checkPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position) {
+        FlightCancellationViewModel flightCancellationViewModel = getView().getSelectedCancellationViewModel().get(position);
+        if (!flightCancellationViewModel.getPassengerViewModelList().contains(passengerViewModel)) {
+            flightCancellationViewModel.getPassengerViewModelList().add(passengerViewModel);
+        }
+    }
+
+    @Override
     public void uncheckPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position) {
         FlightCancellationViewModel flightCancellationViewModel = getView().getSelectedCancellationViewModel().get(position);
         flightCancellationViewModel.getPassengerViewModelList().remove(passengerViewModel);

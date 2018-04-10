@@ -38,6 +38,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
     public interface FlightCancellationListener {
         void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position);
         void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position);
+        boolean shouldCheckAll();
     }
 
     private Context context;
@@ -68,9 +69,6 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         verticalRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         passengerAdapter = new PassengerAdapter();
         verticalRecyclerView.setAdapter(passengerAdapter);
-
-
-
 
     }
 
@@ -139,6 +137,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
                 toggleCheckJourney();
             }
         });
+
     }
 
     private void toggleCheckJourney() {
@@ -165,6 +164,10 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         public void onBindViewHolder(PassengerViewHolder passengerViewHolder, int position) {
             passengerViewHolder.bindData(passengerViewModelList.get(position), getAdapterPosition());
             passengerViewHolderList.add(passengerViewHolder);
+
+            if (listener.shouldCheckAll()) {
+                toggleCheckJourney();
+            }
         }
 
         @Override
@@ -179,17 +182,15 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         }
 
         public void checkAllData() {
-            for (int index = 0; index < getItemCount(); index++) {
+            for (int index = 0; index < passengerViewHolderList.size(); index++) {
                 passengerViewHolderList.get(index).updateCheckedButton(true);
             }
-            notifyDataSetChanged();
         }
 
         public void uncheckAllData() {
-            for (int index = 0; index < getItemCount(); index++) {
+            for (int index = 0; index < passengerViewHolderList.size(); index++) {
                 passengerViewHolderList.get(index).updateCheckedButton(false);
             }
-            notifyDataSetChanged();
         }
     }
 

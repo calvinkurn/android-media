@@ -45,6 +45,8 @@ public interface FlightCancellationContract {
 
         void onNextButtonClicked();
 
+        void checkPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position);
+
         void uncheckPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position);
     }
 }
