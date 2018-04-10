@@ -63,7 +63,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener {
 
-    private final String NOTIFICATION_CHANNEL_NAME = "CUSTOM SOUND";
+    private final String NOTIFICATION_CHANNEL_NAME = "Promo";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
     @Override
