@@ -32,6 +32,11 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
     }
 
     @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_token_crack;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.toko_points_title));
