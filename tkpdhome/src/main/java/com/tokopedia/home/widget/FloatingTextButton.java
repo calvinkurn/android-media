@@ -186,7 +186,7 @@ public class FloatingTextButton extends FrameLayout {
                 rightIcon = AppCompatResources.getDrawable(getContext(), drawableRightId);
         }
         background = styleable.getColor(R.styleable.FloatingTextButton_floating_background_color, Color.WHITE);
-        titleAllCaps = styleable.getBoolean(R.styleable.FloatingButton_buttonTextAllCaps, true);
+        titleAllCaps = styleable.getBoolean(R.styleable.FloatingTextButton_floating_title_allcaps, false);
         titleView.setAllCaps(titleAllCaps);
         styleable.recycle();
     }
