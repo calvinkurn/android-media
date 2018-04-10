@@ -30,6 +30,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView;
+import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.floating.view.model.TokenAsset;
 
 import java.util.List;
@@ -55,8 +56,6 @@ public class WidgetTokenView extends FrameLayout {
     public static final int CRACK_STEP3_SHAKE_DURATION = 150;
     public static final int STEP2_END_MASKED_PERCENT = 30;
     public static final int STEP1_END_MASKED_PERCENT = 70;
-    public static final double RATIO_IMAGE_WIDTH = 0.5;
-    public static final double RATIO_IMAGE_MARGIN_BOTTOM = 0.64;
     public static final double RATIO_LIGHT_WIDTH = 0.8;
     public static final int CRACK_STEP3_DEGREE = 4;
 
@@ -143,9 +142,10 @@ public class WidgetTokenView extends FrameLayout {
     private void initImageBound() {
         int rootWidth = rootView.getWidth();
         int rootHeight = rootView.getHeight();
-        int imageWidth = (int) (RATIO_IMAGE_WIDTH * Math.min(rootWidth, rootHeight));
+        int imageWidth = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
         int imageHeight = imageWidth;
-        int imageMarginTop = (int) (RATIO_IMAGE_MARGIN_BOTTOM * (rootHeight)) - imageHeight;
+        int imageMarginBottom = TokenMarginUtil.getEggMarginBottom(rootHeight);
+        int imageMarginTop = imageMarginBottom - imageHeight;
 
         int lightImageWidth = (int) (RATIO_LIGHT_WIDTH * imageWidth);
         int lightImageHeight = lightImageWidth;
@@ -179,7 +179,7 @@ public class WidgetTokenView extends FrameLayout {
         imageViewRight.requestLayout();
 
         // to show the light on the top left
-        int marginTopLightLeft = (int) (RATIO_IMAGE_MARGIN_BOTTOM * (rootHeight)) - (int) (0.75 * imageHeight) - lightImageHeight / 2;
+        int marginTopLightLeft =imageMarginBottom - (int) (0.75 * imageHeight) - lightImageHeight / 2;
         int marginLeftLightLeft = (int) (0.5 * (rootWidth - (int) (0.65 * imageWidth) - lightImageWidth));
         FrameLayout.LayoutParams ivLightLeftLp = (FrameLayout.LayoutParams) imageViewLightLeft.getLayoutParams();
         ivLightLeftLp.width = lightImageWidth;
@@ -189,7 +189,7 @@ public class WidgetTokenView extends FrameLayout {
         imageViewLightLeft.requestLayout();
 
         // to show the light on the top right
-        int marginTopLightRight = (int) (RATIO_IMAGE_MARGIN_BOTTOM * (rootHeight)) - (int) (0.95 * imageHeight) - lightImageHeight / 2;
+        int marginTopLightRight = imageMarginBottom - (int) (0.95 * imageHeight) - lightImageHeight / 2;
         int marginLeftLightRight = (int) (0.5 * (rootWidth + (int) (0.35 * imageWidth) - lightImageWidth));
         FrameLayout.LayoutParams ivLightRightLp = (FrameLayout.LayoutParams) imageViewLightRight.getLayoutParams();
         ivLightRightLp.width = lightImageWidth;

@@ -66,8 +66,6 @@ public class WidgetCrackResult extends RelativeLayout {
         void onClickCloseButton();
 
         void showToolbar();
-
-        void hideToolbar();
     }
 
     public WidgetCrackResult(Context context) {
@@ -106,8 +104,6 @@ public class WidgetCrackResult extends RelativeLayout {
         renderCtaButton(crackResult);
         renderReturnButton(crackResult);
         renderCloseReward(crackResult);
-
-        listener.hideToolbar();
     }
 
     private void showCrackResultImageAnimation(CrackResult crackResult) {
