@@ -1,32 +1,34 @@
-/tkpdsession/       @nisie
-/tkpdflight/        @alvarisi
+/tkpdsession/       @tokopedia/minion-kevin
+/tkpdflight/        @tokopedia/minion-mark
 /tkpdloyalty/       @tokopedia/minion-bob
 /tkpdride/          @vishalgupta1987
-/tkpdfeed/          @nisie
-/tkpddigital/       @rizkyfadillah
-/tkpdcore/          @okasurya
-/tkpdinbox/         @nisie
-/tkpddiscovery/     @hangnadi
+/tkpdfeed/          @tokopedia/minion-kevin
+/tkpddigital/       @tokopedia/minion-mark
+/tkpdcore/          @tokopedia/core-team
+/tkpdinbox/         @tokopedia/minion-kevin
+/tkpddiscovery/     @tokopedia/minion-dave
 /tkpdtransaction/   @tokopedia/minion-bob
-/tkpdtopadssdk/     @eriksuprayogi
-/tkpdpdp/           @alifanuraniputri
+/tkpdtopadssdk/     @tokopedia/minion-dave
+/tkpdpdp/           @tokopedia/minion-dave
 /tkpddesign/        @mzennis
-/sellerapp/         @nathaniel09
-/tkpdseller/        @nathaniel09
-/tkpdtopads/        @nathaniel09
-/tkpdtokocash/      @nabillasab
-/tkpdusecase/       @ricoharisin
-/tkpdabstraction/   @ricoharisin
-/tkpdcacheapi/      @nathaniel09
+/sellerapp/         @tokopedia/minion-stuart
+/tkpdseller/        @tokopedia/minion-stuart
+/tkpdtopads/        @tokopedia/minion-stuart
+/tkpdtokocash/      @tokopedia/minion-mark
+/tkpdusecase/       @tokopedia/core-team
+/tkpdabstraction/   @tokopedia/core-team
+/tkpdcacheapi/      @tokopedia/core-team
 /tkpdevents/        @vishalgupta1987
-/tkpdhome/          @chnerypriyono
+/tkpdhome/          @tokopedia/minion-dave
+/customerapp/       @tokopedia/core-team
 
-/features/fintech/mitra_toppers/        @nathaniel09
-/features/digital/flight_no_op/         @alvarisi
-/features/merchant/gold_merchant/       @nathaniel09
-/features/merchant/reputation/          @nathaniel09
+/features/fintech/mitra_toppers/        @tokopedia/minion-stuart
+/features/digital/flight_no_op/         @tokopedia/minion-mark
+/features/merchant/gold_merchant/       @tokopedia/minion-stuart
+/features/merchant/reputation/          @tokopedia/minion-stuart
 /features/payment/payment/              @tokopedia/minion-bob
+/features/digital/flight_no_op/         @tokopedia/minion-mark
 
-/libraries/react_native/                @okasurya
+/libraries/react_native/                @tokopedia/core-team
 
 
