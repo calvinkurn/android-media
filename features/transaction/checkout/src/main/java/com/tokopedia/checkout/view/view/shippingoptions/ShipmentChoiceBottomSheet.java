@@ -27,6 +27,8 @@ import com.tokopedia.checkout.view.adapter.ShipmentChoiceAdapter;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentChoiceComponent;
 import com.tokopedia.checkout.view.di.component.ShipmentChoiceComponent;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -92,6 +94,11 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
         ShipmentChoiceComponent shipmentChoiceComponent = DaggerShipmentChoiceComponent.builder()
                 .build();
         shipmentChoiceComponent.inject(this);
+    }
+
+    public void updateData(List<ShipmentItemData> shipmentItemDataList) {
+        presenter.setShipmentChoices(shipmentItemDataList);
+        shipmentChoiceAdapter.notifyDataSetChanged();
     }
 
     public void updateHeight() {

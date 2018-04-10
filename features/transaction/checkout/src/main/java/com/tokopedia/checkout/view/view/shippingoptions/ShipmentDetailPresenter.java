@@ -142,11 +142,18 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
             public void onNext(ShipmentDetailData shipmentDetailData) {
                 if (isViewAttached()) {
                     getView().hideLoading();
-                    boolean instantCourierAvailable = checkPreviouslySelectedShipmentAndCourier(shipmentDetailData);
-                    if (instantCourierAvailable) {
-                        getView().renderFirstLoadedRatesData(ShipmentDetailPresenter.this.shipmentDetailData);
-                    } else {
+                    boolean canRenderShipmentData = checkPreviouslySelectedShipmentAndCourier(shipmentDetailData);
+                    if (!canRenderShipmentData) {
+                        shipmentDetailData.getShipmentCartData().setDestinationLatitude(null);
+                        shipmentDetailData.getShipmentCartData().setDestinationLongitude(null);
+                        shipmentDetailData.getShipmentCartData().setDestinationAddress(null);
                         getView().showErrorSnackbar(getView().getActivity().getResources().getString(R.string.message_pinpoint_too_far));
+                    } else {
+                        if (ShipmentDetailPresenter.this.shipmentDetailData.getSelectedShipment() == null) {
+                            getView().renderFirstLoadedRatesData(ShipmentDetailPresenter.this.shipmentDetailData);
+                        } else {
+                            getView().renderAfterReloadRatesData(ShipmentDetailPresenter.this.shipmentDetailData);
+                        }
                     }
                 }
             }
@@ -155,6 +162,10 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     }
 
     private boolean checkPreviouslySelectedShipmentAndCourier(ShipmentDetailData shipmentDetailData) {
+        if (this.shipmentDetailData.getSelectedShipment() == null) {
+            return true;
+        }
+
         ShipmentItemData selectedShipmentItemData = null;
         CourierItemData selectedCourierItemData = null;
         if (this.shipmentDetailData.getSelectedShipment() != null) {
@@ -181,6 +192,7 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
         this.shipmentDetailData.setSelectedShipment(selectedShipmentItemData);
         this.shipmentDetailData.setSelectedCourier(selectedCourierItemData);
         this.shipmentDetailData.setShipmentItemData(shipmentDetailData.getShipmentItemData());
+        this.shipmentDetailData.setShipmentCartData(shipmentDetailData.getShipmentCartData());
 
         return true;
     }

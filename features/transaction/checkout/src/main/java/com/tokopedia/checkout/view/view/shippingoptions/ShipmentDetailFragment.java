@@ -413,6 +413,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     @Override
+    public void renderAfterReloadRatesData(ShipmentDetailData shipmentDetailData) {
+        shipmentChoiceBottomSheet.updateData(shipmentDetailData.getShipmentItemData());
+        renderShipmentWithoutMap(shipmentDetailData);
+    }
+
+    @Override
     public void showPinPointChooserMap(ShipmentDetailData shipmentDetailData) {
         Intent intent = GeolocationActivity.createInstance(context, null);
         startActivityForResult(intent, REQUEST_CODE_PINPOINT);

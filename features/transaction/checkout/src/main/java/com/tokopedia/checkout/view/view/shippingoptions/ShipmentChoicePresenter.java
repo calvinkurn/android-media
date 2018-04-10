@@ -54,6 +54,12 @@ public class ShipmentChoicePresenter extends BaseDaggerPresenter<IShipmentChoice
     }
 
     @Override
+    public void setShipmentChoices(List<ShipmentItemData> shipmentChoices) {
+        shipments.clear();
+        shipments.addAll(shipmentChoices);
+    }
+
+    @Override
     public ShipmentDetailData getShipmentDetailData() {
         return shipmentDetailData;
     }

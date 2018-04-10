@@ -16,5 +16,7 @@ public interface IShipmentChoicePresenter extends CustomerPresenter<IShipmentCho
 
     List<ShipmentItemData> getShipmentChoices();
 
+    void setShipmentChoices(List<ShipmentItemData> shipmentChoices);
+
     ShipmentDetailData getShipmentDetailData();
 }

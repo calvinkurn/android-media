@@ -24,6 +24,8 @@ public interface IShipmentDetailView extends CustomerView {
 
     void renderFirstLoadedRatesData(ShipmentDetailData shipmentDetailData);
 
+    void renderAfterReloadRatesData(ShipmentDetailData shipmentDetailData);
+
     void showAllCouriers();
 
     void showPinPointChooserMap(ShipmentDetailData shipmentDetailData);
