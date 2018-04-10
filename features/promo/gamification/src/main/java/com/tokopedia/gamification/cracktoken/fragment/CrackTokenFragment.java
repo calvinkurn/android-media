@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -148,9 +149,20 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
             @Override
             public void onClickCloseButton() {
+
                 widgetCrackResult.clearCrackResult();
 
                 crackTokenPresenter.getGetTokenTokopoints();
+            }
+
+            @Override
+            public void showToolbar() {
+                listener.showToolbar();
+            }
+
+            @Override
+            public void hideToolbar() {
+                listener.hideToolbar();
             }
 
             @Override
@@ -253,7 +265,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private void initTimerBound() {
         int rootHeight = rootView.getHeight();
-        int imageMarginTop = (int) (RATIO_MARGIN_TOP_TIMER * rootHeight);
+
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (getContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+
+        int imageMarginTop = (int) (RATIO_MARGIN_TOP_TIMER * rootHeight) + actionBarHeight;
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) layoutTimer.getLayoutParams();
         ivFullLp.topMargin = imageMarginTop;
@@ -407,6 +426,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }, widgetTokenView.isCrackPercentageFull() ? 1 : 1000);
     }
 
+    public boolean isShowReward(){
+        return widgetCrackResult.isShown();
+    }
+
+    public void dismissReward(){
+        widgetCrackResult.dismissReward();
+    }
+
     @Override
     public void onErrorCrackToken(final CrackResult crackResult) {
         final Handler handler = new Handler();
@@ -528,5 +555,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     public interface ActionListener {
         void directPageToCrackEmpty(TokenData tokenData);
+        void hideToolbar();
+        void showToolbar();
     }
 }

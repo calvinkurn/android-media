@@ -60,6 +60,10 @@ public class WidgetCrackResult extends RelativeLayout {
         void onClickReturnButton(CrackResult crackResult, String titleBtn);
 
         void onClickCloseButton();
+
+        void showToolbar();
+
+        void hideToolbar();
     }
 
     public WidgetCrackResult(Context context) {
@@ -98,6 +102,8 @@ public class WidgetCrackResult extends RelativeLayout {
         renderCtaButton(crackResult);
         renderReturnButton(crackResult);
         renderCloseReward(crackResult);
+
+        listener.hideToolbar();
     }
 
     private void showCrackResultImageAnimation(CrackResult crackResult) {
@@ -259,6 +265,16 @@ public class WidgetCrackResult extends RelativeLayout {
         listCrackResultText.removeAllViews();
         containerTextCrackResult.setVisibility(GONE);
         closeRewardBtn.setVisibility(GONE);
+
+        listener.showToolbar();
+    }
+
+    public boolean isShown(){
+        return imageViewBgCrackResult.isShown();
+    }
+
+    public void dismissReward(){
+        listener.onClickCloseButton();
     }
 
 }
