@@ -38,6 +38,10 @@ import java.util.List;
 
 public class WidgetCrackResult extends RelativeLayout {
 
+    private final String TEXT_SIZE_REWARD_LARGE = "large";
+    private final String TEXT_SIZE_REWARD_MEDIUM = "medium";
+    private final String TEXT_SIZE_REWARD_SMALL = "small";
+
     private ImageView imageViewBgCrackResult;
     private ImageView imageViewCrackResult;
     private View backgroundViewCrackResult;
@@ -199,11 +203,11 @@ public class WidgetCrackResult extends RelativeLayout {
 
     private int convertSize(String size) {
         switch (size) {
-            case "large":
+            case TEXT_SIZE_REWARD_LARGE:
                 return R.dimen.text_size_reward_large;
-            case "medium":
+            case TEXT_SIZE_REWARD_MEDIUM:
                 return R.dimen.text_size_reward_medium;
-            case "small":
+            case TEXT_SIZE_REWARD_SMALL:
                 return R.dimen.text_size_reward_small;
             default:
                 return R.dimen.text_size_reward_medium;
@@ -212,14 +216,18 @@ public class WidgetCrackResult extends RelativeLayout {
 
     public void renderReturnButton(final CrackResult crackResult) {
         if (crackResult.getReturnButton() != null) {
-            buttonReturn.setVisibility(VISIBLE);
-            buttonReturn.setText(crackResult.getReturnButton().getTitle());
-            buttonReturn.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onClickReturnButton(crackResult, buttonReturn.getText().toString());
-                }
-            });
+            if (crackResult.isCrackButtonVisible(crackResult.getReturnButton())) {
+                buttonReturn.setVisibility(VISIBLE);
+                buttonReturn.setText(crackResult.getReturnButton().getTitle());
+                buttonReturn.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onClickReturnButton(crackResult, buttonReturn.getText().toString());
+                    }
+                });
+            } else {
+                buttonReturn.setVisibility(GONE);
+            }
         } else {
             buttonReturn.setVisibility(GONE);
         }
@@ -227,14 +235,18 @@ public class WidgetCrackResult extends RelativeLayout {
 
     public void renderCtaButton(final CrackResult crackResult) {
         if (crackResult.getCtaButton() != null) {
-            buttonCta.setVisibility(VISIBLE);
-            buttonCta.setText(crackResult.getCtaButton().getTitle());
-            buttonCta.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onClickCtaButton(crackResult, buttonCta.getText().toString());
-                }
-            });
+            if (crackResult.isCrackButtonVisible(crackResult.getCtaButton())) {
+                buttonCta.setVisibility(VISIBLE);
+                buttonCta.setText(crackResult.getCtaButton().getTitle());
+                buttonCta.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onClickCtaButton(crackResult, buttonCta.getText().toString());
+                    }
+                });
+            } else {
+                buttonCta.setVisibility(GONE);
+            }
         } else {
             buttonCta.setVisibility(GONE);
         }
