@@ -20,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -83,7 +84,7 @@ public class WidgetTokenOnBoarding extends FrameLayout {
 
     public void showHandOnboarding() {
         if (!hasSeenOnBoardingFromPref() && rootWidth > 0) {
-            int imageWidth = (int) (0.5 * Math.min(rootWidth, rootHeight));
+            int imageWidth = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
             int initialXEgg = rootWidth / 2 + (int) (0.3 * imageWidth);
             int initialYEgg = rootHeight / 2 + (int) (0.05 * imageWidth);
             int delta = (int) (0.1 * imageWidth);
@@ -159,6 +160,7 @@ public class WidgetTokenOnBoarding extends FrameLayout {
                 }
             };
             private boolean mCanceled;
+
             @Override
             public void onAnimationStart(Animator animation) {
                 mCanceled = false;
@@ -166,7 +168,7 @@ public class WidgetTokenOnBoarding extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (!mCanceled ) {
+                if (!mCanceled) {
                     handler.postDelayed(runnable, MEDIUM_ANIM_DURATION);
                 }
             }
