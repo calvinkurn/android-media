@@ -158,13 +158,23 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @Override
     public void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
-        selectedCancellationViewModelList.getViewModels().get(position)
-                .getPassengerViewModelList().add(passengerViewModel);
+        flightCancellationPresenter.checkPassenger(passengerViewModel, position);
     }
 
     @Override
     public void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
         flightCancellationPresenter.uncheckPassenger(passengerViewModel, position);
+    }
+
+    @Override
+    public boolean shouldCheckAll() {
+        if (flightCancellationViewModelList.size() == 1 &&
+                flightCancellationViewModelList.get(0).getPassengerViewModelList().size() == 1) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     @Override

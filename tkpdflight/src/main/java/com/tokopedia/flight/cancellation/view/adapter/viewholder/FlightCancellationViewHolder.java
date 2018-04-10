@@ -38,6 +38,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
     public interface FlightCancellationListener {
         void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position);
         void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position);
+        boolean shouldCheckAll();
     }
 
     private Context context;
@@ -68,9 +69,6 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         verticalRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         passengerAdapter = new PassengerAdapter();
         verticalRecyclerView.setAdapter(passengerAdapter);
-
-
-
 
     }
 
