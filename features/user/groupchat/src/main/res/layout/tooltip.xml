@@ -4,15 +4,14 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/vote_on_running"
         android:textColor="@color/medium_green"
-        android:background="@drawable/ic_combined_shape"
-        android:paddingTop="@dimen/space_med"
+        android:paddingTop="@dimen/space_average"
         android:paddingRight="@dimen/space_average"
         android:paddingLeft="@dimen/space_average"
-        android:paddingBottom="@dimen/space_small"
         android:textSize="@dimen/font_tooltip"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"/>
