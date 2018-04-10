@@ -136,6 +136,9 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
+import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
+import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
+import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
@@ -413,6 +416,21 @@ public abstract class SellerRouterApplication extends MainApplication
         } else {
             return intent;
         }
+    }
+
+    @Override
+    public Intent getAddEmailIntent(Context context) {
+        return AddEmailActivity.newInstance(context);
+    }
+
+    @Override
+    public Intent getAddPasswordIntent(Context context) {
+        return AddPasswordActivity.newInstance(context);
+    }
+
+    @Override
+    public Intent getChangeNameIntent(Context context) {
+        return ChangeNameActivity.newInstance(context);
     }
 
     @Override
