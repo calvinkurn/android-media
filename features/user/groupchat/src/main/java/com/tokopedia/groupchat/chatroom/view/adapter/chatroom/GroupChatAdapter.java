@@ -239,7 +239,7 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     @Nullable
     public Visitable getItemAt(int position) {
-        if (position < list.size()) {
+        if (position < list.size() && position >= 0) {
             return list.get(position);
         } else {
             return null;

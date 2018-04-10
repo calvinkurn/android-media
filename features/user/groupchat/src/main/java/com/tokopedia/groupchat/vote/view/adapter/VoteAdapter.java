@@ -66,9 +66,11 @@ public class VoteAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void addList(List<Visitable> listChat) {
-        this.list.clear();
-        this.list.addAll(listChat);
-        notifyDataSetChanged();
+        if (listChat != null) {
+            this.list.clear();
+            this.list.addAll(listChat);
+            notifyDataSetChanged();
+        }
     }
 
     public void change(GroupChatViewModel viewModel, VoteViewModel element,

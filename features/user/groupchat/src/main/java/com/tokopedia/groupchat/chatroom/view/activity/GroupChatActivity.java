@@ -47,6 +47,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.design.card.ToolTipUtils;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
@@ -799,6 +800,8 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && tabAdapter.getItemCount() > 1
                 && tabs.getChildAt(CHANNEL_VOTE_FRAGMENT) != null) {
             View view = ToolTipUtils.setToolTip(this, R.layout.tooltip, this);
+            TextView temp = view.findViewById(R.id.text);
+            MethodChecker.setBackground(temp, MethodChecker.getDrawable(this, R.drawable.ic_combined_shape));
             View anchorView = tabs.getChildAt(CHANNEL_VOTE_FRAGMENT);
             if (view != null && anchorView != null) {
                 ToolTipUtils.showToolTip(view, anchorView);

@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -379,7 +380,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                             && !(adapter.getItemAt(adapter.getItemCount() - 1) instanceof
                             SprintSaleAnnouncementViewModel)) {
                         addIncomingMessage(sprintSaleAnnouncementViewModel);
-                        ((GroupChatContract.View) getActivity()).vibratePhone();
+                        if(getActivity() != null) {
+                            ((GroupChatContract.View) getActivity()).vibratePhone();
+                        }
                     }
                 }
             };
@@ -822,6 +825,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             String channelName = ((GroupChatActivity) getActivity())
                     .getChannelInfoViewModel().getTitle();
             analytics.eventClickLoyaltyWidget(channelName);
+        }
+    }
+
+    private void scrollToLastVisible(){
+        if(layoutManager.findFirstCompletelyVisibleItemPosition() == 0){
+            chatRecyclerView.scrollToPosition(0);
         }
     }
 }
