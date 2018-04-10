@@ -1174,7 +1174,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId);
+        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
     }
 
     public Intent getGroupChatIntent(Context context, String channelUrl) {
