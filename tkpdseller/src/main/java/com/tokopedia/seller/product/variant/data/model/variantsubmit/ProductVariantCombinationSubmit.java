@@ -13,7 +13,7 @@ import java.util.List;
  * metrics between  the variant of level 1 + level 2 + so on.
  * Created by hendry on 8/15/2017.
  */
-
+@Deprecated
 public class ProductVariantCombinationSubmit implements Parcelable {
 
     @SerializedName("st")

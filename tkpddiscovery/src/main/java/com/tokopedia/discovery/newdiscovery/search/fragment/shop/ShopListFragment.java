@@ -21,7 +21,6 @@ import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
@@ -43,8 +42,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.core.shopinfo.ShopInfoActivity.FAVORITE_STATUS_UPDATED;
-import static com.tokopedia.core.shopinfo.ShopInfoActivity.SHOP_STATUS_IS_FAVORITED;
 
 /**
  * Created by henrypriyono on 10/6/17.
@@ -54,6 +51,7 @@ public class ShopListFragment extends SearchSectionFragment
         implements ShopListFragmentView,
         FavoriteActionListener, SearchSectionGeneralAdapter.OnItemChangeView, ItemClickListener {
 
+    private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
     private static final String EXTRA_QUERY = "EXTRA_QUERY";
     private static final int REQUEST_CODE_GOTO_SHOP_DETAIL = 125;
     private static final int REQUEST_CODE_LOGIN = 561;
@@ -305,8 +303,7 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Override
     public void onItemClicked(ShopViewModel.ShopItem shopItem, int adapterPosition) {
-        Intent intent = new Intent(getContext(), ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(shopItem.getShopId(), shopItem.getShopDomain()));
+        Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopItem.getShopId());
         lastSelectedItemPosition = adapterPosition;
         UnifyTracking.eventSearchResultShopItemClick(query, shopItem.getShopName());
         startActivityForResult(intent, REQUEST_CODE_GOTO_SHOP_DETAIL);
@@ -400,10 +397,9 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data != null && requestCode == REQUEST_CODE_GOTO_SHOP_DETAIL && resultCode == Activity.RESULT_CANCELED) {
-            boolean isFavorited = data.getBooleanExtra(SHOP_STATUS_IS_FAVORITED, false);
-            boolean isUpdated = data.getBooleanExtra(FAVORITE_STATUS_UPDATED, false);
-            if (lastSelectedItemPosition != -1 && isUpdated) {
+        if (data != null && requestCode == REQUEST_CODE_GOTO_SHOP_DETAIL && resultCode == Activity.RESULT_OK) {
+            boolean isFavorited = data.getBooleanExtra(SHOP_STATUS_FAVOURITE, false);
+            if (lastSelectedItemPosition != -1) {
                 updateFavoriteStatusFromShopDetailPage(lastSelectedItemPosition, isFavorited);
             }
         }

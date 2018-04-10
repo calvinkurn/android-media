@@ -340,7 +340,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         return flagFilterHelper;
     }
 
-    private void clearDataFilterSort() {
+    protected void clearDataFilterSort() {
         this.filters.clear();
         this.sort.clear();
     }

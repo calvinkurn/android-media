@@ -11,7 +11,7 @@
         android:id="@+id/bullet"
         android:layout_width="5dp"
         android:layout_height="5dp"
-        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/dp_5"
         android:layout_marginTop="7dp"
         android:background="@drawable/green_notification_circle"/>
 
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/title"
         android:layout_below="@id/title"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/dp_5"
         android:fontFamily="sans-serif"
 
         android:lineSpacingExtra="7sp"

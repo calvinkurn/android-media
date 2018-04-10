@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingTop="@dimen/padding_small"
+    android:paddingTop="@dimen/dp_10"
     android:orientation="vertical">
 
     <include layout="@layout/include_header_detail_flight"/>
@@ -17,38 +17,38 @@
             android:id="@+id/recycler_view_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
             android:nestedScrollingEnabled="false"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med" />
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/black_twenty_percent"
-            android:layout_marginLeft="@dimen/padding_small"
-            android:layout_marginRight="@dimen/padding_small" />
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med">
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20">
 
             <TextView
                 android:id="@+id/title_info"
                 style="@style/TextView.Small.Bold"
                 android:layout_width="130dp"
-                android:paddingTop="@dimen/padding_small"
+                android:paddingTop="@dimen/dp_10"
                 android:text="Fasilitas" />
 
             <TextView
                 style="@style/TextView.Small.Bold"
-                android:layout_marginLeft="@dimen/margin_vvs"
-                android:layout_marginRight="@dimen/margin_vvs"
-                android:paddingTop="@dimen/padding_small"
+                android:layout_marginLeft="@dimen/dp_3"
+                android:layout_marginRight="@dimen/dp_3"
+                android:paddingTop="@dimen/dp_10"
                 android:text=":" />
 
             <android.support.v7.widget.RecyclerView
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:nestedScrollingEnabled="false"
-                android:paddingBottom="@dimen/padding_vs" />
+                android:paddingBottom="@dimen/dp_5" />
 
         </LinearLayout>
     </LinearLayout>
@@ -66,7 +66,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/container_pnr"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/dp_5"
         android:background="@color/black_twenty_percent" />
 
 </LinearLayout>
