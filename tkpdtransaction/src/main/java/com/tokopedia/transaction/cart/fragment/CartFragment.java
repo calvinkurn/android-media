@@ -500,7 +500,13 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         } catch (NullPointerException e) {
             View emptyState = LayoutInflater.from(context).
                     inflate(R.layout.layout_empty_shopping_chart, (ViewGroup) rootview);
-            Button shop = (Button) emptyState.findViewById(R.id.shoping);
+            Button shop = emptyState.findViewById(R.id.shoping);
+            final RelativeLayout autoApplyView = emptyState.findViewById(R.id.promo_result_empty_cart);
+            TextView labelPromoType = emptyState.findViewById(R.id.label_promo_type_empty_cart);
+            TextView promoVoucherCode = emptyState.findViewById(R.id.voucher_code_empty_cart);
+            TextView voucherDescription = emptyState.findViewById(R.id.voucher_description_empty_cart);
+            ImageView cancelPromoLayout = emptyState.findViewById(R.id.cancel_promo_layout_empty_cart);
+
             shop.setOnClickListener(getRetryEmptyCartClickListener());
             TopAdsParams params = new TopAdsParams();
             params.getParam().put(TopAdsParams.KEY_SRC, TOPADS_CART_SRC);
@@ -514,46 +520,36 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     .topAdsParams(params)
                     .build();
 
-            TopAdsView topAdsView = (TopAdsView) emptyState.findViewById(R.id.topads);
+            TopAdsView topAdsView = emptyState.findViewById(R.id.topads);
             topAdsView.setConfig(config);
             topAdsView.setDisplayMode(DisplayMode.FEED);
             topAdsView.setMaxItems(4);
             topAdsView.setAdsItemClickListener(this);
             topAdsView.loadTopAds();
+
+
             if (autoApply != null && autoApply.isSuccess()) {
-                renderAutoApplyPromoViewOnEmptyCart(emptyState, autoApply);
+                autoApplyView.setVisibility(View.VISIBLE);
+                if (autoApply.getIsCoupon() == 1) {
+                    labelPromoType.setText(String.format("%s : ", getString(R.string.title_coupon_code)));
+                    promoVoucherCode.setText(autoApply.getTitleDescription());
+                    voucherDescription.setText(autoApply.getMessageSuccess());
+                } else {
+                    labelPromoType.setText(String.format("%s : ", getString(R.string.title_promo_code)));
+                    promoVoucherCode.setText(autoApply.getCode());
+                    voucherDescription.setText(autoApply.getMessageSuccess());
+                }
+
+                cancelPromoLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        autoApplyView.setVisibility(View.GONE);
+                    }
+                });
             } else {
-                emptyState.findViewById(R.id.promo_result).setVisibility(View.GONE);
+                autoApplyView.setVisibility(View.GONE);
             }
         }
-    }
-
-    private void renderAutoApplyPromoViewOnEmptyCart(View emptyStateView, AutoApply autoApply) {
-        final View rootView = emptyStateView.findViewById(R.id.promo_result);
-        TextView labelPromoType = emptyStateView.findViewById(R.id.label_promo_type);
-        TextView promoVoucherCode = emptyStateView.findViewById(R.id.voucher_code);
-        TextView voucherDescription = emptyStateView.findViewById(R.id.voucher_description);
-        View cancelPromoLayout = emptyStateView.findViewById(R.id.cancel_promo_layout);
-
-        rootView.setVisibility(View.VISIBLE);
-
-
-        if (autoApply.getIsCoupon() == 1) {
-            labelPromoType.setText(String.format("%s : ", getString(R.string.title_coupon_code)));
-            promoVoucherCode.setText(autoApply.getTitleDescription());
-            voucherDescription.setText(autoApply.getMessageSuccess());
-        } else {
-            labelPromoType.setText(String.format("%s : ", getString(R.string.title_promo_code)));
-            promoVoucherCode.setText(autoApply.getCode());
-            voucherDescription.setText(autoApply.getMessageSuccess());
-        }
-
-        cancelPromoLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                rootView.setVisibility(View.GONE);
-            }
-        });
     }
 
     @Override
