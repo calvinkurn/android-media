@@ -314,7 +314,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         context.startActivity(
                 PeopleInfoNoDrawerActivity.createInstance(context, userId)
         );
-	}
+    }
 
     private ContentConsumerComponent getContentConsumerComponent() {
         if (contentConsumerComponent == null) {
@@ -1504,7 +1504,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToAddProduct(Context context) {
-        if(context != null && context instanceof Activity){
+        if (context != null && context instanceof Activity) {
             ProductAddActivity.start((Activity) context);
         }
     }
@@ -1531,7 +1531,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
             ((Activity) context).startActivityForResult(intent, 100);
         }
-	}
+    }
 
     public void init() {
         ShakeDetectManager.getShakeDetectManager().init();
@@ -1669,7 +1669,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
         return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId);
-	}
+    }
 
     public void showForceHockeyAppDialog() {
         ServerErrorHandler.showForceHockeyAppDialog();
@@ -1705,6 +1705,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isEnabledGroupChatRoom() {
 //        return remoteConfig.getBoolean(GroupChatModuleRouter.ENABLE_GROUPCHAT_ROOM);
+        return true;
+    }
+
+    @Override
+    public boolean isEnabledIdleKick() {
+//        return remoteConfig.getBoolean(GroupChatModuleRouter.ENABLE_GROUPCHAT_IDLE_KICK);
         return true;
     }
 

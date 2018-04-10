@@ -53,4 +53,5 @@
     <dimen name="sprint_sale_announcement_icon_size">16dp</dimen>
     <dimen name="chat_tab_height">48dp</dimen>
     <dimen name="notification_circle_vote_size">22dp</dimen>
+    <dimen name="channel_ads_height">48dp</dimen>
 </resources>

@@ -919,7 +919,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onResume() {
         super.onResume();
 
-        kickIfIdleForTooLong();
+        if(((GroupChatModuleRouter)getApplicationContext()).isEnabledIdleKick()) {
+            kickIfIdleForTooLong();
+        }
 
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
             setChannelConnectionHandler();
