@@ -32,6 +32,11 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
     }
 
     @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_token_crack;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.toko_points_title));
@@ -52,8 +57,35 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
                     CrackEmptyTokenFragment.newInstance(tokenData)).commit();
     }
 
+    private CrackTokenFragment getCrackFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.parent_view);
+        if (fragment != null && fragment instanceof CrackTokenFragment) {
+            return (CrackTokenFragment) fragment;
+        }
+        return null;
+    }
+
     @Override
     public void onBackPressed() {
+        CrackTokenFragment crackTokenFragment = getCrackFragment();
+        if (crackTokenFragment != null && crackTokenFragment.isShowReward()) {
+            crackTokenFragment.dismissReward();
+        } else {
+            onBackPressedRoot();
+        }
+    }
+
+    @Override
+    public void hideToolbar() {
+        getSupportActionBar().hide();
+    }
+
+    @Override
+    public void showToolbar() {
+        getSupportActionBar().show();
+    }
+
+    private void onBackPressedRoot(){
         if (isTaskRoot()) {
             ((GamificationRouter) getApplication()).goToHome(this);
             finish();
