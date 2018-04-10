@@ -18,6 +18,7 @@ import com.tokopedia.cacheapi.util.EncryptionUtils;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import okhttp3.Response;
@@ -93,13 +94,26 @@ public class CacheApiDatabaseSource {
         });
     }
 
-    public Observable<Boolean> insertWhiteList(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
+    public Observable<List<CacheApiWhitelist>> getDynamicLinkWhiteList(final String host) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<List<CacheApiWhitelist>>() {
+            @Override
+            public void call(Subscriber<? super List<CacheApiWhitelist>> subscriber) {
+                subscriber.onNext(new Select()
+                        .from(CacheApiWhitelist.class)
+                        .where(CacheApiWhitelist_Table.dynamic_link.eq(true))
+                        .and(CacheApiWhitelist_Table.host.eq(host))
+                        .queryList());
+            }
+        });
+    }
+
+    public Observable<Boolean> insertWhiteList(final Collection<CacheApiWhiteListDomain> cacheApiDataList) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 CacheApiLoggingUtils.dumper(String.format("Inserting White List"));
                 int i = 0;
-                for (CacheApiWhiteListDomain cacheApiWhiteListDomain : cacheApiDatas) {
+                for (CacheApiWhiteListDomain cacheApiWhiteListDomain : cacheApiDataList) {
                     CacheApiWhitelist whiteList = CacheApiWhiteListMapper.from(cacheApiWhiteListDomain);
                     whiteList.setId(i++);
                     CacheApiLoggingUtils.dumper(String.format("Insert white list: %s - %s (id:%s)", whiteList.getHost(), whiteList.getPath(), whiteList.getId()));
