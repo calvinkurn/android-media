@@ -11,7 +11,7 @@
             android:name=".cracktoken.activity.CrackTokenActivity"
             android:label="@string/title_activity_gamification"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.Green"
             android:launchMode="singleTask"/>
 
     </application>

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="@dimen/dp_4"
-        android:theme="@style/Toolbar.Transparent"
+        android:theme="@style/Toolbar.Transparent.White"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
@@ -22,5 +22,10 @@
         android:id="@+id/parent_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_80"
+        android:src="@drawable/cover_shadow"/>
 
 </FrameLayout>

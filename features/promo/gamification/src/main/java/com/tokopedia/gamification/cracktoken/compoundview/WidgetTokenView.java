@@ -79,7 +79,6 @@ public class WidgetTokenView extends FrameLayout {
     private ObjectAnimator shakeAnimatorSlow;
 
     private MediaPlayer crackMediaPlayer;
-    private MediaPlayer openCrackMediaPlayer;
 
     public interface WidgetTokenListener {
         void onClick();
