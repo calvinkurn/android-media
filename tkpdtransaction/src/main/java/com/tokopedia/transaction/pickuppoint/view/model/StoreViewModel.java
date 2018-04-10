@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.pickuppoint.view.model;
 
-import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 /**
  * Created by Irfan Khoirul on 27/12/17.

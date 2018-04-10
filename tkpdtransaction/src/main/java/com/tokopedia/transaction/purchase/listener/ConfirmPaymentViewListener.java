@@ -2,7 +2,7 @@ package com.tokopedia.transaction.purchase.listener;
 
 import android.view.View;
 
-import com.tokopedia.transaction.base.IBaseView;
+import com.tokopedia.transaction.common.base.IBaseView;
 import com.tokopedia.transaction.purchase.model.ConfirmationData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormConfPaymentData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormEditPaymentData;

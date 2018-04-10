@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.pickuppoint.view.mapper;
 
-import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
 import com.tokopedia.transaction.pickuppoint.view.model.StoreViewModel;
 
 /**

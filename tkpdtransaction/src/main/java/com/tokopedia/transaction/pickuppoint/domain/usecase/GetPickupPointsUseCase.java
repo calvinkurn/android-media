@@ -5,11 +5,9 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.transaction.addtocart.model.OrderData;
-import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
-import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.pickuppoint.data.repository.PickupPointRepository;
-import com.tokopedia.transaction.pickuppoint.domain.model.PickupPointResponse;
-import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.common.data.pickuppoint.PickupPointResponse;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 import java.util.HashMap;
 
@@ -17,18 +15,17 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.Params.DEFAULT_PAGE;
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.Params.PARAM_DISTRICT_ID;
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.Params.PARAM_PAGE;
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.Params.PARAM_TOKEN;
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.Params.PARAM_UT;
+
 /**
  * Created by Irfan Khoirul on 22/12/17.
  */
 
 public class GetPickupPointsUseCase extends UseCase<PickupPointResponse> {
-    public static final String PARAM_TOKEN = "token";
-    public static final String PARAM_PAGE = "page";
-    public static final String PARAM_UT = "ut";
-    public static final String PARAM_QUERY = "query";
-    public static final String PARAM_DISTRICT_ID = "district_id";
-
-    public static final String DEFAULT_PAGE = "0";
 
     private final PickupPointRepository repository;
 
@@ -47,20 +44,20 @@ public class GetPickupPointsUseCase extends UseCase<PickupPointResponse> {
 
     public static HashMap<String, String> generateParams(OrderData orderData) {
         HashMap<String, String> params = new HashMap<>();
-        params.put(GetPickupPointsUseCase.PARAM_DISTRICT_ID,
+        params.put(PARAM_DISTRICT_ID,
                 String.valueOf(orderData.getAddress().getDistrictId()));
-        params.put(GetPickupPointsUseCase.PARAM_PAGE, GetPickupPointsUseCase.DEFAULT_PAGE);
-        params.put(GetPickupPointsUseCase.PARAM_TOKEN,
+        params.put(PARAM_PAGE, DEFAULT_PAGE);
+        params.put(PARAM_TOKEN,
                 orderData.getShop().getTokenPickup() != null ? orderData.getShop().getTokenPickup() : "");
-        params.put(GetPickupPointsUseCase.PARAM_UT, String.valueOf(orderData.getShop().getUt()));
+        params.put(PARAM_UT, String.valueOf(orderData.getShop().getUt()));
 
         return params;
     }
 
     public static HashMap<String, String> generateParams(Store store) {
         HashMap<String, String> params = new HashMap<>();
-        params.put(GetPickupPointsUseCase.PARAM_DISTRICT_ID, String.valueOf(store.getDistrictId()));
-        params.put(GetPickupPointsUseCase.PARAM_PAGE, GetPickupPointsUseCase.DEFAULT_PAGE);
+        params.put(PARAM_DISTRICT_ID, String.valueOf(store.getDistrictId()));
+        params.put(PARAM_PAGE, DEFAULT_PAGE);
 //        params.put(GetPickupPointsUseCase.PARAM_TOKEN,
 //                atcFormData.getShop().getTokenPickup() != null ? atcFormData.getShop().getTokenPickup() : "");
 //        params.put(GetPickupPointsUseCase.PARAM_UT, String.valueOf(atcFormData.getShop().getUt()));
@@ -68,6 +65,7 @@ public class GetPickupPointsUseCase extends UseCase<PickupPointResponse> {
         return params;
     }
 
+/*  TODO : Next implementation
     public static HashMap<String, String> generateParams(MultipleAddressShipmentAdapterData data) {
         HashMap<String, String> params = new HashMap<>();
         params.put(GetPickupPointsUseCase.PARAM_DISTRICT_ID,
@@ -91,5 +89,6 @@ public class GetPickupPointsUseCase extends UseCase<PickupPointResponse> {
 
         return params;
     }
+*/
 
 }

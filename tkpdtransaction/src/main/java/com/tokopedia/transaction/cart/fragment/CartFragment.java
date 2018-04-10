@@ -92,12 +92,12 @@ import com.tokopedia.transaction.cart.model.cartdata.CartPromo;
 import com.tokopedia.transaction.cart.model.cartdata.CartShop;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
-import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
+import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
-import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
+import com.tokopedia.transaction.common.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
@@ -112,8 +112,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_CART_ITEM;
-
+import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART_SRC;
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_CART_ITEM;
 
 /**
  * @author anggaprasetiyo on 11/1/16.
@@ -210,7 +210,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     private boolean hasLogisticInsurance;
     private boolean hasPromotion;
-    public static final String TOPADS_CART_SRC = "empty_cart";
 
     public static Fragment newInstance() {
         return new CartFragment();

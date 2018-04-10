@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.purchase.listener;
 
-import com.tokopedia.transaction.base.IBaseView;
+import com.tokopedia.transaction.common.base.IBaseView;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
 
 import java.util.List;

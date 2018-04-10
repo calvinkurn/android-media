@@ -233,7 +233,8 @@ ext {
             mitraToppers    : ":features:fintech:mitra_toppers",
             event           : ":tkpdevents",
             home            : ":tkpdhome",
-            content         : ":tkpdcontent"
+            content         : ":tkpdcontent",
+            checkout        : ":features:transaction:checkout"
     ]
 
     libraries = [

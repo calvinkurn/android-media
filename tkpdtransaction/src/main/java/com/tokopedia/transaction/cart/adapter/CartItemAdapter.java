@@ -39,15 +39,14 @@ import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.CartPartialDeliver;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
-import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartShop;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLinearLayout;
 import com.tokopedia.transaction.customview.expandablelayout.Utils;
-import com.tokopedia.transaction.pickuppoint.domain.model.Store;
-import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
+import com.tokopedia.transaction.common.view.customview.PickupPointLayout;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;

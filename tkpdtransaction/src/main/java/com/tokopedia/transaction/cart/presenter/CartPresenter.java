@@ -40,7 +40,7 @@ import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartRatesData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperData;
-import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
+import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.services.TopPayIntentService;
 import com.tokopedia.transaction.exception.HttpErrorException;
@@ -49,8 +49,6 @@ import com.tokopedia.transaction.pickuppoint.di.CartPickupPointComponent;
 import com.tokopedia.transaction.pickuppoint.di.DaggerCartPickupPointComponent;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.EditCartPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.RemoveCartPickupPointsUseCase;
-
-import org.json.JSONArray;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;

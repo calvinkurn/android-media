@@ -1,0 +1,45 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'android-apt'
+apply plugin: 'com.jakewharton.butterknife'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+    }
+}
+
+dependencies {
+    compile project(':tkpdtransaction-common')
+
+    compile(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile rootProject.ext.supportLibDependencies.appCompactV7
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile 'junit:junit:4.12'
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.testDependencies.junit
+
+    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    compile rootProject.ext.butterKnifeDependencies.butterKnife
+    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}

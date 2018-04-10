@@ -2,9 +2,6 @@ package com.tokopedia.transaction.cart.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
@@ -13,7 +10,6 @@ import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
 import com.tokopedia.transaction.cart.interactor.data.ShipmentCartDataRepository;
 import com.tokopedia.transaction.cart.interactor.domain.IShipmentCartRepository;
@@ -23,10 +19,9 @@ import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartRatesData;
-import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
-import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
+import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.exception.HttpErrorException;
@@ -36,7 +31,6 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Observable;

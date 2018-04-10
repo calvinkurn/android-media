@@ -31,7 +31,7 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.pickuppoint.di.DaggerPickupPointComponent;
 import com.tokopedia.transaction.pickuppoint.di.PickupPointComponent;
-import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
 import com.tokopedia.transaction.pickuppoint.view.adapter.PickupPointAdapter;
 import com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract;
 import com.tokopedia.transaction.pickuppoint.view.model.StoreViewModel;
@@ -45,11 +45,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_CART_ITEM;
-import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_POSITION;
-import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
-import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DISTRICT_NAME;
-import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_REQ_PARAMS;
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_CART_ITEM;
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_DATA_POSITION;
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_DATA_STORE;
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_DISTRICT_NAME;
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_REQ_PARAMS;
 
 public class PickupPointActivity extends BaseActivity
         implements PickupPointContract.View, PickupPointAdapter.Listener {

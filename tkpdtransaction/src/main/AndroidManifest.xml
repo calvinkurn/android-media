@@ -38,34 +38,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".checkout.view.view.cartlist.CartActivity"
-            android:label="@string/title_activity_cart"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".checkout.view.view.shipmentform.CartShipmentActivity"
-            android:label="@string/title_activity_cart"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".checkout.view.view.shippingoptions.ShipmentDetailActivity"
-            android:label="@string/title_activity_shipment_detail"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".checkout.view.view.addressoptions.CartAddressChoiceActivity"
-            android:label="@string/title_shipping_dest"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".checkout.view.view.multipleaddressform.MultipleAddressFormActivity"
-            android:label="@string/title_shipping_dest"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".cart.activity.ShipmentCartActivity"
             android:label="@string/title_activity_cart_shipment"
             android:screenOrientation="portrait" />
@@ -112,9 +84,6 @@
         <activity
             android:name=".purchase.detail.activity.CustomScannerBarcodeActivity"
             android:label="@string/title_scan_awb" />
-        <activity
-            android:name=".checkout.view.view.multipleaddressform.AddShipmentAddressActivity"
-            android:label="@string/title_activity_people_tx_details" />
         <activity
             android:name=".pickuppoint.view.activity.PickupPointActivity"
             android:label="@string/title_send_to_pick_up_booth"

@@ -69,10 +69,10 @@ import com.tokopedia.transaction.addtocart.presenter.AddToCartPresenterImpl;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
-import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
-import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
+import com.tokopedia.transaction.common.view.customview.PickupPointLayout;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -88,7 +88,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity.RESULT_NOT_SELECTED_DESTINATION;
-import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_DATA_STORE;
 
 /**
  * @author Angga.Prasetiyo on 11/03/2016.

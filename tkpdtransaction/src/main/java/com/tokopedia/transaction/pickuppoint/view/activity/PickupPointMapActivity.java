@@ -17,7 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,8 +25,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
-import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DISTRICT_NAME;
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_DATA_STORE;
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_DISTRICT_NAME;
 
 public class PickupPointMapActivity extends BasePresenterActivity implements OnMapReadyCallback {
 

@@ -37,17 +37,4 @@ public interface PickupPointContract {
 
         ArrayList<StoreViewModel> getPickupPoints();
     }
-
-    interface Constant {
-        String INTENT_REQ_PARAMS = "params";
-
-        String INTENT_DISTRICT_NAME = "district_name";
-
-        String INTENT_DATA_STORE = "store";
-
-        String INTENT_CART_ITEM = "cart_item";
-
-        String INTENT_DATA_POSITION = "position";
-
-    }
 }

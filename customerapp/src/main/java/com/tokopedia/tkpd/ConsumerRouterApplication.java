@@ -26,6 +26,18 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.checkout.data.apiservice.CartService;
+import com.tokopedia.checkout.data.entity.response.addtocart.AddToCartDataResponse;
+import com.tokopedia.checkout.data.repository.CartRepository;
+import com.tokopedia.checkout.domain.mapper.MapperUtil;
+import com.tokopedia.checkout.domain.mapper.VoucherCouponMapper;
+import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
+import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
+import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
+import com.tokopedia.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
+import com.tokopedia.transaction.common.router.ICartCheckoutModuleRouter;
+import com.tokopedia.checkout.view.view.cartlist.CartActivity;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -230,19 +242,9 @@ import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
-import com.tokopedia.transaction.apiservice.CartService;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
-import com.tokopedia.transaction.checkout.data.entity.response.addtocart.AddToCartDataResponse;
-import com.tokopedia.transaction.checkout.data.repository.CartRepository;
-import com.tokopedia.transaction.checkout.domain.mapper.MapperUtil;
-import com.tokopedia.transaction.checkout.domain.mapper.VoucherCouponMapper;
-import com.tokopedia.transaction.checkout.domain.usecase.AddToCartUseCase;
-import com.tokopedia.transaction.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.transaction.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
-import com.tokopedia.transaction.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
-import com.tokopedia.transaction.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
-import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
-import com.tokopedia.transaction.checkout.view.view.cartlist.CartActivity;
+import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
+import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
@@ -336,7 +338,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         context.startActivity(
                 PeopleInfoNoDrawerActivity.createInstance(context, userId)
         );
-	}
+    }
 
     private ContentConsumerComponent getContentConsumerComponent() {
         if (contentConsumerComponent == null) {
@@ -1578,6 +1580,26 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent navigateToInsuranceTncActivity() {
+        return new Intent(this, InsuranceTnCActivity.class);
+    }
+
+    @Override
+    public Intent navigateToPickupPointActivityFromCartMultipleAddress(Activity activity,
+                                                                       int cartPosition,
+                                                                       String districtName,
+                                                                       HashMap<String, String> params) {
+        return PickupPointActivity.createInstance(activity, cartPosition, districtName, params);
+    }
+
+    @Override
+    public Intent navigateToPickupPointActivityFromCartSingleAddress(Activity activity,
+                                                                     String districtName,
+                                                                     HashMap<String, String> params) {
+        return PickupPointActivity.createInstance(activity, districtName, params);
+    }
+
+    @Override
     public Observable<CashBackData> getPendingCashbackUseCase(Context context) {
         SessionHandler sessionHandler = new SessionHandler(context);
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
@@ -1650,7 +1672,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToAddProduct(Context context) {
-        if(context != null && context instanceof Activity){
+        if (context != null && context instanceof Activity) {
             ProductAddActivity.start((Activity) context);
         }
     }
@@ -1677,7 +1699,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
             ((Activity) context).startActivityForResult(intent, 100);
         }
-	}
+    }
 
     public void init() {
         ShakeDetectManager.getShakeDetectManager().init();
@@ -1815,7 +1837,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
         return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId);
-	}
+    }
 
     public void showForceHockeyAppDialog() {
         ServerErrorHandler.showForceHockeyAppDialog();
@@ -1859,7 +1881,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void generateBranchLink(String channelId, String title, String contentMessage, String
             imgUrl, String
-            shareUrl, Activity activity, final ShareListener
+                                           shareUrl, Activity activity, final ShareListener
                                            listener) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setId(channelId)

@@ -8,12 +8,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
 import com.tokopedia.transaction.pickuppoint.data.repository.CartPickupPointRepository;
-import com.tokopedia.transaction.pickuppoint.data.repository.PickupPointRepository;
-import com.tokopedia.transaction.pickuppoint.domain.model.PickupPointResponse;
-
-import java.util.HashMap;
 
 import javax.inject.Inject;
 

@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
 import com.tokopedia.transaction.pickuppoint.view.model.StoreViewModel;
 
 import java.util.ArrayList;

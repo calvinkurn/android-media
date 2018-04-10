@@ -265,6 +265,7 @@ dependencies {
     compile project(':tkpdshop')
     compile project(rootProject.ext.libraries.reactNative)
     compile project(rootProject.ext.features.content)
+    compile project(rootProject.ext.features.checkout)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

@@ -1,14 +1,13 @@
 package com.tokopedia.transaction.pickuppoint.view.presenter;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.pickuppoint.domain.model.PickupPointResponse;
-import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.common.data.pickuppoint.PickupPointResponse;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract;
 import com.tokopedia.transaction.pickuppoint.view.mapper.PickupPointViewModelMapper;
@@ -19,11 +18,12 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
+
+import static com.tokopedia.transaction.common.constant.PickupPointConstant.Params.PARAM_QUERY;
 
 /**
  * Created by Irfan Khoirul on 22/12/17.
@@ -122,7 +122,7 @@ public class PickupPointPresenter extends BaseDaggerPresenter<PickupPointContrac
     private RequestParams getParams(HashMap<String, String> params) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(params);
-        requestParams.putString(GetPickupPointsUseCase.PARAM_QUERY, "");
+        requestParams.putString(PARAM_QUERY, "");
 
         return requestParams;
     }

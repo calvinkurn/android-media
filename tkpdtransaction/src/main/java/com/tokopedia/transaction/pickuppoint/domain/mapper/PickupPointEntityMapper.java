@@ -1,11 +1,11 @@
 package com.tokopedia.transaction.pickuppoint.domain.mapper;
 
+import com.tokopedia.transaction.common.data.pickuppoint.Data;
 import com.tokopedia.transaction.pickuppoint.data.entity.DataEntity;
 import com.tokopedia.transaction.pickuppoint.data.entity.PickupPointResponseEntity;
 import com.tokopedia.transaction.pickuppoint.data.entity.StoreEntity;
-import com.tokopedia.transaction.pickuppoint.domain.model.Data;
-import com.tokopedia.transaction.pickuppoint.domain.model.PickupPointResponse;
-import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.common.data.pickuppoint.PickupPointResponse;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 import java.util.ArrayList;
 
