@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -16,6 +18,8 @@ import com.tokopedia.gamification.cracktoken.fragment.CrackTokenFragment;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 
 public class CrackTokenActivity extends BaseSimpleActivity implements CrackTokenFragment.ActionListener {
+
+    private ImageView ivCoverShadow;
 
     @SuppressWarnings("unused")
     @DeepLink(ApplinkConstant.GAMIFICATION)
@@ -40,6 +44,8 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.toko_points_title));
+
+        ivCoverShadow = findViewById(R.id.iv_cover_shadow);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
@@ -78,11 +84,13 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
     @Override
     public void hideToolbar() {
         getSupportActionBar().hide();
+        ivCoverShadow.setVisibility(View.GONE);
     }
 
     @Override
     public void showToolbar() {
         getSupportActionBar().show();
+        ivCoverShadow.setVisibility(View.VISIBLE);
     }
 
     private void onBackPressedRoot(){
