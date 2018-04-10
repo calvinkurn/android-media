@@ -8,13 +8,14 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.domain.usecase.GetCategoryHeaderUseCase;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.helper.CategoryModelHelper;
+import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
@@ -36,12 +37,15 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
     GetProductUseCase getProductUseCase;
     SessionHandler sessionHandler;
     GCMHandler gcmHandler;
+    GetImageSearchUseCase getImageSearchUseCase;
 
-    public CategoryPresenter(Context context, GetProductUseCase getProductUseCase) {
-        super(getProductUseCase);
+    public CategoryPresenter(Context context, GetProductUseCase getProductUseCase,
+                             GetImageSearchUseCase getImageSearchUseCase) {
+        super(getProductUseCase, getImageSearchUseCase);
         this.getProductUseCase = getProductUseCase;
         this.sessionHandler = new SessionHandler(context);
         this.gcmHandler = new GCMHandler(context);
+        this.getImageSearchUseCase = getImageSearchUseCase;
         CategoryComponent categoryComponent = DaggerCategoryComponent.builder()
                 .appComponent(getComponent(context))
                 .build();
@@ -49,10 +53,10 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
     }
 
     @Override
-    public void getCategoryHeader(String categoryId, HashMap<String,String> filterParam) {
+    public void getCategoryHeader(String categoryId, HashMap<String, String> filterParam) {
         getCategoryHeaderUseCase.setCategoryId(categoryId);
         getView().showLoading();
-        getCategoryHeaderUseCase.execute(RequestParams.EMPTY,new CategoryHeaderSubscriber(filterParam));
+        getCategoryHeaderUseCase.execute(RequestParams.EMPTY, new CategoryHeaderSubscriber(filterParam));
     }
 
     @Override
@@ -82,7 +86,7 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
 
     private class CategoryHeaderSubscriber extends DefaultSubscriber<CategoryHeaderModel> {
 
-        private final  HashMap<String,String> filterParam;
+        private final HashMap<String, String> filterParam;
 
         private CategoryHeaderSubscriber(HashMap<String, String> filterParam) {
             this.filterParam = filterParam;
@@ -95,7 +99,7 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
-            ((DiscoveryActivity)getView()).onHandleResponseError();
+            ((DiscoveryActivity) getView()).onHandleResponseError();
         }
 
         @Override
@@ -115,7 +119,7 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
                                 null
                 );
                 RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false);
-                if (filterParam != null && filterParam.size()>0) {
+                if (filterParam != null && filterParam.size() > 0) {
                     requestParams.putAll(filterParam);
                 }
                 getProductUseCase.execute(
@@ -142,13 +146,13 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
-            ((DiscoveryActivity)getView()).onHandleResponseError();
+            ((DiscoveryActivity) getView()).onHandleResponseError();
         }
 
         @Override
         public void onNext(SearchResultModel searchResultModel) {
             ProductViewModel productViewModel
-                    = CategoryModelHelper.convertToProductViewModel(searchResultModel,categoryHeaderModel);
+                    = CategoryModelHelper.convertToProductViewModel(searchResultModel, categoryHeaderModel);
             getView().prepareFragment(productViewModel);
 
         }
