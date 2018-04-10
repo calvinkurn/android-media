@@ -43,7 +43,7 @@ public class PosReactNativeHostFactory {
 
             @Override
             protected String getJSBundleFile() {
-                return "index.android.bundle"
+                return "index.android.bundle";
             }
         };
     }
