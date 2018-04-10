@@ -1561,7 +1561,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     private String getEnhanceVariant() {
         if (productVariant != null) {
-            return "none / other";
+            String variantValue = productVariant.generateVariantValue(productData.getInfo().getProductId());
+            return variantValue.isEmpty() ? "none / other" : variantValue;
         } else {
             return "none / other";
         }
