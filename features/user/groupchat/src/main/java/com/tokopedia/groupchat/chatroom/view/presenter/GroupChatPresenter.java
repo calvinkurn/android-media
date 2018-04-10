@@ -63,7 +63,11 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
             @Override
             public void onNext(ChannelInfoViewModel channelInfoViewModel) {
-                getView().onSuccessRefreshChannelInfo(channelInfoViewModel);
+                if (getView() != null && channelInfoViewModel.isFreeze()) {
+                    getView().onChannelFrozen();
+                } else {
+                    getView().onSuccessRefreshChannelInfo(channelInfoViewModel);
+                }
             }
         });
     }
@@ -93,7 +97,9 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
                     @Override
                     public void onNext(ChannelInfoViewModel channelInfoViewModel) {
-                        if (getView() != null) {
+                        if (getView() != null && channelInfoViewModel.isFreeze()) {
+                            getView().onChannelFrozen();
+                        } else if (getView() != null) {
                             getView().onSuccessGetChannelInfo(channelInfoViewModel);
                         }
                     }
@@ -107,6 +113,6 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
     public void setHandler(String channelUrl, String channelHandlerId, ChannelHandlerUseCase.ChannelHandlerListener listener) {
-        channelHandlerUseCase.execute(channelUrl,channelHandlerId, listener);
+        channelHandlerUseCase.execute(channelUrl, channelHandlerId, listener);
     }
 }

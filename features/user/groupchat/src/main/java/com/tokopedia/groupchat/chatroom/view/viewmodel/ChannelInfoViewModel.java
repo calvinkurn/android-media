@@ -34,6 +34,7 @@ public class ChannelInfoViewModel implements Parcelable {
     private List<ChannelPartnerViewModel> channelPartnerViewModels;
     private String bannedMessage;
     private String kickedMessage;
+    private boolean isFreeze;
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
@@ -52,7 +53,7 @@ public class ChannelInfoViewModel implements Parcelable {
                                 List<ChannelPartnerViewModel> channelPartnerViewModels,
                                 @Nullable VoteInfoViewModel voteInfoViewModel,
                                 @Nullable SprintSaleViewModel sprintSaleViewModel,
-                                String bannedMessage, String kickedMessage) {
+                                String bannedMessage, String kickedMessage, boolean isFreeze) {
         this.title = title;
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
@@ -73,6 +74,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.sprintSaleViewModel = sprintSaleViewModel;
         this.bannedMessage = bannedMessage;
         this.kickedMessage = kickedMessage;
+        this.isFreeze = isFreeze;
     }
 
     protected ChannelInfoViewModel(Parcel in) {
@@ -94,9 +96,41 @@ public class ChannelInfoViewModel implements Parcelable {
         channelPartnerViewModels = in.createTypedArrayList(ChannelPartnerViewModel.CREATOR);
         bannedMessage = in.readString();
         kickedMessage = in.readString();
+        isFreeze = in.readByte() != 0;
         voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
         sprintSaleViewModel = in.readParcelable(SprintSaleViewModel.class.getClassLoader());
         groupChatPointsViewModel = in.readParcelable(GroupChatPointsViewModel.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(channelUrl);
+        dest.writeString(bannerUrl);
+        dest.writeString(blurredBannerUrl);
+        dest.writeString(adsImageUrl);
+        dest.writeString(adsLink);
+        dest.writeString(adsId);
+        dest.writeString(adsName);
+        dest.writeString(bannerName);
+        dest.writeString(sendBirdToken);
+        dest.writeString(adminName);
+        dest.writeString(image);
+        dest.writeString(adminPicture);
+        dest.writeString(description);
+        dest.writeString(totalView);
+        dest.writeTypedList(channelPartnerViewModels);
+        dest.writeString(bannedMessage);
+        dest.writeString(kickedMessage);
+        dest.writeByte((byte) (isFreeze ? 1 : 0));
+        dest.writeParcelable(voteInfoViewModel, flags);
+        dest.writeParcelable(sprintSaleViewModel, flags);
+        dest.writeParcelable(groupChatPointsViewModel, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
@@ -222,34 +256,9 @@ public class ChannelInfoViewModel implements Parcelable {
         return kickedMessage;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public boolean isFreeze() {
+        return isFreeze;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(channelUrl);
-        dest.writeString(bannerUrl);
-        dest.writeString(blurredBannerUrl);
-        dest.writeString(adsImageUrl);
-        dest.writeString(adsLink);
-        dest.writeString(adsId);
-        dest.writeString(adsName);
-        dest.writeString(bannerName);
-        dest.writeString(sendBirdToken);
-        dest.writeString(adminName);
-        dest.writeString(image);
-        dest.writeString(adminPicture);
-        dest.writeString(description);
-        dest.writeString(totalView);
-        dest.writeTypedList(channelPartnerViewModels);
-        dest.writeString(bannedMessage);
-        dest.writeString(kickedMessage);
-        dest.writeParcelable(voteInfoViewModel, flags);
-        dest.writeParcelable(sprintSaleViewModel, flags);
-        dest.writeParcelable(groupChatPointsViewModel, flags);
-    }
+
 }

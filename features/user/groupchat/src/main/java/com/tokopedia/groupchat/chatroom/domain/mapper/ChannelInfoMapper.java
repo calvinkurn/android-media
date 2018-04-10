@@ -67,14 +67,16 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()),
                 mapToSprintSaleViewModel(pojo.getChannel().getFlashsale()),
                 pojo.getChannel().getBannedMessage() != null ? pojo.getChannel().getBannedMessage() : "",
-                pojo.getChannel().getKickedMessage() != null ? pojo.getChannel().getKickedMessage() : ""
+                pojo.getChannel().getKickedMessage() != null ? pojo.getChannel().getKickedMessage
+                        () : "",
+                pojo.getChannel().isIsFreeze()
         );
     }
 
     private SprintSaleViewModel mapToSprintSaleViewModel(Flashsale flashsale) {
         if (hasSprintSale(flashsale)) {
             return new SprintSaleViewModel(
-                    flashsale.getCampaignId() != null? flashsale.getCampaignId() : "",
+                    flashsale.getCampaignId() != null ? flashsale.getCampaignId() : "",
                     mapToListFlashSaleProducts(flashsale.getCampaignId(), flashsale.getProducts()),
                     flashsale.getCampaignName() != null ? flashsale.getCampaignName() : "",
                     flashsale.getStartDate() * 1000L,

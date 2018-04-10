@@ -999,6 +999,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onSuccessLogin() {
         initData();
+        refreshTab();
     }
 
     private void showPushNotif(GroupChatPointsViewModel model) {
@@ -1335,7 +1336,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onChannelFrozen() {
         onChannelNotFound(getString(R.string.channel_deactivated));
-
     }
 
     @Override

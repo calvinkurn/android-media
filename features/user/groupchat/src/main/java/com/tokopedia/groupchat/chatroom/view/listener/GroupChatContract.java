@@ -64,6 +64,8 @@ public interface GroupChatContract {
         void removeGroupChatPoints();
 
         void onSuccessLogin();
+
+        void onChannelFrozen();
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {
