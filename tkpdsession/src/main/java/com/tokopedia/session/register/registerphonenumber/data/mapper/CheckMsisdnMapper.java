@@ -26,20 +26,14 @@ public class CheckMsisdnMapper implements Func1<Response<TkpdResponse>, CheckMsi
     @Override
     public CheckMsisdnDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if ((!response.body().isNullData()
-                    && response.body().getErrorMessageJoined().equals(""))
-                    || (!response.body().isNullData()
-                    && response.body().getErrorMessages() == null)) {
+            if (response.body().getErrorMessages() != null && !response.body().getErrorMessages().isEmpty()) {
                 CheckMsisdnResponse pojo = response.body().convertDataObj(CheckMsisdnResponse
                         .class);
                 return mappingToViewModel(pojo, response.body().getStatusMessageJoined());
+            } else if (response.body().isNullData()) {
+                throw new ErrorMessageException(response.body().getErrorMessageJoined());
             } else {
-                if (response.body().getErrorMessages() != null
-                        && !response.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                } else {
-                    throw new ErrorMessageException("");
-                }
+                throw new ErrorMessageException("");
             }
         } else {
             String messageError = ErrorHandler.getErrorMessage(response);

@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.network.ErrorMessageException;
-import com.tokopedia.otp.domain.pojo.ValidateOtpPojo;
 import com.tokopedia.otp.registerphonenumber.data.pojo.verifyotp.VerifyOtpResponse;
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.VerifyOtpViewModel;
 
@@ -27,26 +26,14 @@ public class VerifyOtpMapper implements Func1<Response<TkpdResponse>, VerifyOtpV
     @Override
     public VerifyOtpViewModel call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if ((!response.body().isNullData()
-                    && response.body().getErrorMessageJoined().equals(""))
-                    || (!response.body().isNullData()
-                    && response.body().getErrorMessages() == null)) {
-                if (responseIsSecurityQuestion(response.body())) {
-                    VerifyOtpResponse validateOtpSQData = response.body().convertDataObj(
-                            VerifyOtpResponse.class);
-                    return convertToDomain(validateOtpSQData.isSuccess(), validateOtpSQData.getUuid());
-                } else {
-                    ValidateOtpPojo validateOtpData = response.body().convertDataObj(
-                            ValidateOtpPojo.class);
-                    return convertToDomain(validateOtpData.isSuccess(), "");
-                }
+            if (response.body().getErrorMessages() != null && !response.body().getErrorMessages().isEmpty()) {
+                VerifyOtpResponse validateOtpSQData = response.body().convertDataObj(
+                        VerifyOtpResponse.class);
+                return convertToDomain(validateOtpSQData.isSuccess(), validateOtpSQData.getUuid());
+            } else if (response.body().isNullData()) {
+                throw new ErrorMessageException(response.body().getErrorMessageJoined());
             } else {
-                if (response.body().getErrorMessages() != null
-                        && !response.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                } else {
-                    throw new ErrorMessageException("");
-                }
+                throw new ErrorMessageException("");
             }
         } else {
             String messageError = ErrorHandler.getErrorMessage(response);

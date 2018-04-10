@@ -48,8 +48,9 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
     @Override
     public void onNext(LoginSosmedDomain registerSosmedDomain) {
         if (!registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
-            viewListener.onGoToCreatePasswordPage(registerSosmedDomain.getInfo()
-                    .getGetUserInfoDomainData());
+            viewListener.onGoToCreatePasswordPage(
+                    registerSosmedDomain.getInfo().getGetUserInfoDomainData(),
+                    methodName);
         } else if (registerSosmedDomain.getMakeLoginModel() != null
                 && !isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
                 && isMsisdnVerified(registerSosmedDomain.getInfo())) {

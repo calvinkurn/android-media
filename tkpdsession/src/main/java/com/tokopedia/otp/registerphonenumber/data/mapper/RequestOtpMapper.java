@@ -27,20 +27,15 @@ public class RequestOtpMapper implements Func1<Response<TkpdResponse>, RequestOt
 
     @Override
     public RequestOtpViewModel call(Response<TkpdResponse> response) {
+
         if (response.isSuccessful()) {
-            if ((!response.body().isNullData()
-                    && response.body().getErrorMessageJoined().equals(""))
-                    || (!response.body().isNullData()
-                    && response.body().getErrorMessages() == null)) {
+            if (response.body().getErrorMessages() != null && !response.body().getErrorMessages().isEmpty()) {
                 RequestOtpResponse pojo = response.body().convertDataObj(RequestOtpResponse.class);
                 return convertToDomain(pojo, response);
+            } else if (response.body().isNullData()) {
+                throw new ErrorMessageException(response.body().getErrorMessageJoined());
             } else {
-                if (response.body().getErrorMessages() != null
-                        && !response.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                } else {
-                    throw new ErrorMessageException("");
-                }
+                throw new ErrorMessageException("");
             }
         } else {
             String messageError = ErrorHandler.getErrorMessage(response);
@@ -50,6 +45,7 @@ public class RequestOtpMapper implements Func1<Response<TkpdResponse>, RequestOt
                 throw new RuntimeException(String.valueOf(response.code()));
             }
         }
+
     }
 
     private RequestOtpViewModel convertToDomain(RequestOtpResponse pojo, Response<TkpdResponse> response) {

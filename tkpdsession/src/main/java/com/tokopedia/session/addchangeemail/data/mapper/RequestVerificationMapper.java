@@ -26,20 +26,15 @@ public class RequestVerificationMapper implements Func1<Response<TkpdResponse>, 
     @Override
     public RequestVerificationViewModel call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if ((!response.body().isNullData()
-                    && response.body().getErrorMessageJoined().equals(""))
-                    || (!response.body().isNullData()
-                    && response.body().getErrorMessages() == null)) {
+            if (response.body().getErrorMessages() != null && !response.body().getErrorMessages().isEmpty()) {
+
                 RequestVerificationResponse pojo = response.body().convertDataObj(RequestVerificationResponse
                         .class);
                 return mappingToViewModel(pojo);
+            } else if (response.body().isNullData()) {
+                throw new ErrorMessageException(response.body().getErrorMessageJoined());
             } else {
-                if (response.body().getErrorMessages() != null
-                        && !response.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                } else {
-                    throw new ErrorMessageException("");
-                }
+                throw new ErrorMessageException("");
             }
         } else {
             String messageError = ErrorHandler.getErrorMessage(response);

@@ -37,7 +37,7 @@ public interface RegisterInitial {
 
         void onSuccessRegisterSosmed(String methodName);
 
-        void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData);
+        void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData, String methodName);
 
         void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone);
 

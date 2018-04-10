@@ -29,9 +29,8 @@ public class RegisterPhoneNumberMapper implements Func1<Response<TkpdResponse>, 
 
     private RegisterPhoneNumberModel mappingResponse(Response<TkpdResponse> response) {
         RegisterPhoneNumberModel model = new RegisterPhoneNumberModel();
-
         if (response.isSuccessful()) {
-            if (!response.body().isNullData()) {
+            if (response.body().getErrorMessages() != null && !response.body().getErrorMessages().isEmpty()) {
                 RegisterPhoneNumberData data = response.body().convertDataObj(RegisterPhoneNumberData.class);
                 if (data.getIsSuccess() == 1 || data.getAction() != 0) {
                     model.setSuccess(true);
@@ -39,16 +38,11 @@ public class RegisterPhoneNumberMapper implements Func1<Response<TkpdResponse>, 
                 } else if (response.body().getErrorMessages().size() > 0)
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
 
+            } else if (response.body().isNullData()) {
+                throw new ErrorMessageException(response.body().getErrorMessageJoined());
             } else {
-                if (response.body().getErrorMessages() == null
-                        && response.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(DEFAULT_ERROR);
-                } else {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                }
+                throw new ErrorMessageException("");
             }
-            model.setStatusMessage(response.body().getStatusMessageJoined());
-            model.setResponseCode(response.code());
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }

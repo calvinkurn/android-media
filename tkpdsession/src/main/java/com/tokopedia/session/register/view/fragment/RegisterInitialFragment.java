@@ -99,6 +99,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     ScrollView container;
     RelativeLayout progressBar;
 
+    private String socmedMethod = "";
+
     @Inject
     RegisterInitialPresenter presenter;
 
@@ -266,6 +268,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
+            UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterSosmed(socmedMethod));
+
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
@@ -467,14 +471,14 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRegisterSosmed(String methodName) {
-        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterSosmed(methodName));
-
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
 
     @Override
-    public void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData) {
+    public void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData,
+                                         String methodName) {
+        socmedMethod = methodName;
         Intent intent = CreatePasswordActivity.getCallingIntent(getActivity(),
                 new CreatePasswordViewModel(
                         userInfoDomainData.getEmail(),

@@ -8,8 +8,6 @@ import android.os.Bundle;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
-import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
-import com.tokopedia.session.addchangeemail.view.fragment.AddEmailFragment;
 import com.tokopedia.session.changename.view.fragment.ChangeNameFragment;
 
 /**
@@ -56,12 +54,12 @@ public class ChangeNameActivity extends BasePresenterActivity implements HasComp
         ChangeNameFragment fragment = ChangeNameFragment.newInstance(new Bundle());
         if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(com.tokopedia.core.R.id.container,
+                    .replace(R.id.container,
                             getSupportFragmentManager().findFragmentByTag(TAG))
                     .commit();
         } else {
             getSupportFragmentManager().beginTransaction()
-                    .add(com.tokopedia.core.R.id.container, fragment, TAG)
+                    .add(R.id.container, fragment, TAG)
                     .commit();
         }
     }

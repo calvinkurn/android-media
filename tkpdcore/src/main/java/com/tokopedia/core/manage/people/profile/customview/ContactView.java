@@ -20,6 +20,7 @@ import com.tokopedia.core.util.SessionHandler;
  */
 public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPresenter> {
 
+
     public TextView messenger;
     public View changeEmailBtn;
     public EditText email;
@@ -88,37 +89,28 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
         tvEmailHint.setVisibility(GONE);
         tvEmail.setVisibility(GONE);
         changeEmailBtn.setVisibility(GONE);
-        int emailCase  = 0;
-        //case 0, phone not verified and email is empty, thus show edit text email (email) and hint
-        //case 1, phone not verified and email available, this not showing any button, but show email
-        //case 2, phone verified and email is empty, thus show tv email
-        //case 3, phone verified and email is available, thus show change button and text view email (tvEmail)
-        if (!SessionHandler.isMsisdnVerified() && TextUtils.isEmpty(userEmail)) emailCase = 0;
-        else if (!SessionHandler.isMsisdnVerified() && !TextUtils.isEmpty(userEmail)) emailCase = 1;
-        else if (SessionHandler.isMsisdnVerified() && TextUtils.isEmpty(userEmail)) emailCase = 2;
-        else if (SessionHandler.isMsisdnVerified() && !TextUtils.isEmpty(userEmail)) emailCase = 3;
-        switch (emailCase) {
-            case 0:
-            case 2:
-                email.setVisibility(VISIBLE);
-                email.setClickable(true);
-                email.setEnabled(true);
-                email.setOnClickListener(new AddEmailClick());
-                tvEmailHint.setVisibility(VISIBLE);
-                break;
-            case 1:
-                tvEmail.setText(userEmail);
-                tvEmail.setVisibility(VISIBLE);
-                break;
-            case 3:
-                tvEmail.setText(userEmail);
-                tvEmail.setVisibility(VISIBLE);
-                changeEmailBtn.setVisibility(VISIBLE);
-                changeEmailBtn.setOnClickListener(new ChangeEmailButtonClick(userEmail));
-                break;
-            default:
-                break;
-        }
+        if (!SessionHandler.isMsisdnVerified() && !TextUtils.isEmpty(userEmail)) showEmail(userEmail);
+        else if (SessionHandler.isMsisdnVerified() && !TextUtils.isEmpty(userEmail)) showEmailAndChangeButton(userEmail);
+        else showDefaultEmailField();
+    }
+
+    public void showDefaultEmailField() {
+        email.setVisibility(VISIBLE);
+        email.setClickable(true);
+        email.setEnabled(true);
+        email.setOnClickListener(new AddEmailClick());
+        tvEmailHint.setVisibility(VISIBLE);
+    }
+
+    public void showEmail(String userEmail) {
+        tvEmail.setText(userEmail);
+        tvEmail.setVisibility(VISIBLE);
+    }
+
+    public void showEmailAndChangeButton(String userEmail) {
+        showEmail(userEmail);
+        changeEmailBtn.setVisibility(VISIBLE);
+        changeEmailBtn.setOnClickListener(new ChangeEmailButtonClick(userEmail));
     }
 
     private void renderPhoneView(String userPhone, String email) {

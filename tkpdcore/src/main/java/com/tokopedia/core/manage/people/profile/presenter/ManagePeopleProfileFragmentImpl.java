@@ -96,8 +96,6 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
         param.setGender(
                 generateGenderCode(view.getGender())
         );
-//        param.setHobby(view.getHobby());
-//        param.setMessenger(view.getMessanger());
         param.setMsisdn(view.getPhone());
         param.setVerifiedPhone(view.getVerifiedPhone());
 
@@ -128,20 +126,6 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
 
     private boolean isValid(Context context) {
         boolean validation = true;
-
-//        if (view.getPhone().isEmpty()) {
-//            view.setPhoneError(context.getString(R.string.error_field_required));
-//            validation = false;
-//        }
-//
-//        if (view.getEmail().isEmpty()) {
-//            view.setEmailError(context.getString(R.string.error_field_required));
-//            validation = false;
-//        } else if (!CommonUtils.EmailValidation(view.getEmail())) {
-//            view.setEmailError(context.getString(R.string.error_invalid_email));
-//            validation = false;
-//        }
-
         if (view.getBirthDay().isEmpty()) {
             view.setBirthDayError(context.getString(R.string.error_field_required));
             validation = false;

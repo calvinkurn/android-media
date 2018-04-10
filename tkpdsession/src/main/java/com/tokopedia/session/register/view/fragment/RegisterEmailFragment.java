@@ -613,8 +613,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRegister(RegisterEmailViewModel registerResult) {
-
-        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterEmail());
         dismissLoadingProgress();
         setActionsEnabled(true);
         presenter.startAction(registerResult);
@@ -648,24 +646,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     public void showInfo() {
         dismissLoadingProgress();
-//        TextView view = (TextView) redirectView.findViewById(R.id.body);
-//        final String emailString = email.getText().toString();
-//        String text = getString(R.string.account_registered_body, emailString);
-//        String part = getString(R.string.account_registered_body_part);
-//        Spannable spannable = getSpannable(text, part);
-//        spannable.setSpan(new StyleSpan(Typeface.BOLD), text.indexOf(emailString)
-//                , text.indexOf(emailString) + emailString.length()
-//                , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        view.setText(spannable, TextView.BufferType.SPANNABLE);
-//        view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(ForgotPasswordActivity.getCallingIntent(getActivity(), emailString));
-//            }
-//        });
-//        redirectView.setVisibility(View.VISIBLE);
-//        container.setVisibility(View.GONE);
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getResources().getString(R.string.email_already_registered));
         builder.setMessage(String.format(getResources().getString(R.string.email_already_registered_info), getEmail().getText().toString()));
@@ -761,6 +741,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             case REQUEST_ACTIVATE_ACCOUNT:
                 if (resultCode == Activity.RESULT_OK) {
+                    UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterEmail());
+
                     getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
                 } else {
