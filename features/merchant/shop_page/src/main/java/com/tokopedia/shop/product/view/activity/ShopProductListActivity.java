@@ -54,7 +54,7 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopProductListActivity.class)
                 .setData(uri.build())
-                .putExtras(extras);
+                .putExtra(ShopParamConstant.EXTRA_SHOP_ID, extras.getString("shop_id"));
     }
 
     @Override
