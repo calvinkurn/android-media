@@ -193,9 +193,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private boolean canBroadcastPointReceived(String tkpCode) {
-        return tkpCode.equals(String.valueOf(TkpdState.GCMServiceState.GCM_GROUP_CHAT_POINTS))
-                || tkpCode.equals(String.valueOf(TkpdState.GCMServiceState.GCM_GROUP_CHAT_LOYALTY))
-                || tkpCode.equals(String.valueOf(TkpdState.GCMServiceState.GCM_GROUP_CHAT_COUPON));
+        return tkpCode.startsWith("140");
     }
 
     private void broadcastPointReceived(Bundle data) {

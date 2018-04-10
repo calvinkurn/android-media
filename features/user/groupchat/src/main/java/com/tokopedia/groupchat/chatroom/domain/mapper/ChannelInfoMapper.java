@@ -74,7 +74,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     private SprintSaleViewModel mapToSprintSaleViewModel(Flashsale flashsale) {
         if (hasSprintSale(flashsale)) {
             return new SprintSaleViewModel(
-                    mapToListFlashSaleProducts(flashsale.getProducts()),
+                    flashsale.getCampaignId() != null? flashsale.getCampaignId() : "",
+                    mapToListFlashSaleProducts(flashsale.getCampaignId(), flashsale.getProducts()),
                     flashsale.getCampaignName() != null ? flashsale.getCampaignName() : "",
                     flashsale.getStartDate() * 1000L,
                     flashsale.getEndDate() * 1000L,
@@ -92,16 +93,17 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 && !flashsale.getProducts().isEmpty();
     }
 
-    private ArrayList<SprintSaleProductViewModel> mapToListFlashSaleProducts(List<Product> products) {
+    private ArrayList<SprintSaleProductViewModel> mapToListFlashSaleProducts(String campaignId, List<Product> products) {
         ArrayList<SprintSaleProductViewModel> list = new ArrayList<>();
         for (Product product : products) {
-            list.add(mapToFlashSaleProduct(product));
+            list.add(mapToFlashSaleProduct(campaignId, product));
         }
         return list;
     }
 
-    private SprintSaleProductViewModel mapToFlashSaleProduct(Product product) {
+    private SprintSaleProductViewModel mapToFlashSaleProduct(String campaignId, Product product) {
         return new SprintSaleProductViewModel(
+                campaignId != null ? campaignId : "",
                 product.getProductId() != null ? product.getProductId() : "",
                 product.getName() != null ? product.getName() : "",
                 product.getImageUrl() != null ? product.getImageUrl() : "",

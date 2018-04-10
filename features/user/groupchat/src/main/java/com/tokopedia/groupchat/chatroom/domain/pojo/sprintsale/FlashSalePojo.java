@@ -11,6 +11,9 @@ public class FlashSalePojo {
     @SerializedName("applink")
     @Expose
     private String appLink;
+    @SerializedName("campaign_id")
+    @Expose
+    private String campaignId;
     @SerializedName("campaign_name")
     @Expose
     private String campaignName;
@@ -51,4 +54,7 @@ public class FlashSalePojo {
         return products;
     }
 
+    public String getCampaignId() {
+        return campaignId;
+    }
 }

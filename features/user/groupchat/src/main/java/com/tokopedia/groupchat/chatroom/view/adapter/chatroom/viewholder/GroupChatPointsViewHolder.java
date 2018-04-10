@@ -70,6 +70,8 @@ public class GroupChatPointsViewHolder extends BaseChatViewHolder<GroupChatPoint
             case GroupChatPointsViewModel.TYPE_LOYALTY:
                 loadIcon(R.drawable.ic_gratification_loyalty);
                 break;
+            default:
+                loadIcon(R.drawable.ic_gratification_loyalty);
         }
     }
 

@@ -25,12 +25,14 @@ public class SprintSaleViewModel implements Parcelable {
     private String formattedStartDate;
     private String formattedEndDate;
     private String sprintSaleType;
+    private String campaignId;
 
-    public SprintSaleViewModel(ArrayList<SprintSaleProductViewModel> listProduct,
+    public SprintSaleViewModel(String campaignId, ArrayList<SprintSaleProductViewModel> listProduct,
                                String campaignName, long startDate, long endDate, String
                                        redirectUrl, String sprintSaleType) {
         Locale localeID = new Locale("in", "ID");
         SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
+        this.campaignId = campaignId;
         this.listProduct = listProduct;
         this.campaignName = campaignName;
         this.startDate = startDate;
@@ -51,23 +53,7 @@ public class SprintSaleViewModel implements Parcelable {
         formattedStartDate = in.readString();
         formattedEndDate = in.readString();
         sprintSaleType = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(listProduct);
-        dest.writeString(campaignName);
-        dest.writeLong(startDate);
-        dest.writeLong(endDate);
-        dest.writeString(redirectUrl);
-        dest.writeString(formattedStartDate);
-        dest.writeString(formattedEndDate);
-        dest.writeString(sprintSaleType);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        campaignId = in.readString();
     }
 
     public static final Creator<SprintSaleViewModel> CREATOR = new Creator<SprintSaleViewModel>() {
@@ -142,5 +128,31 @@ public class SprintSaleViewModel implements Parcelable {
 
     public String getSprintSaleType() {
         return sprintSaleType;
+    }
+
+    public String getCampaignId() {
+        return campaignId;
+    }
+
+    public void setCampaignId(String campaignId) {
+        this.campaignId = campaignId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(listProduct);
+        dest.writeString(campaignName);
+        dest.writeLong(startDate);
+        dest.writeLong(endDate);
+        dest.writeString(redirectUrl);
+        dest.writeString(formattedStartDate);
+        dest.writeString(formattedEndDate);
+        dest.writeString(sprintSaleType);
+        dest.writeString(campaignId);
     }
 }

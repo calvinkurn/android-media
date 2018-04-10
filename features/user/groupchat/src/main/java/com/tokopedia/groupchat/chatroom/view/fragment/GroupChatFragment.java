@@ -259,7 +259,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private void setSendButtonEnabled(boolean isEnabled) {
         if (isEnabled) {
-
             sendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -272,6 +271,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                                         false);
 //                        adapter.addDummyReply(pendingChatViewModel);
                         presenter.sendReply(pendingChatViewModel, mChannel);
+                        setSendButtonEnabled(false);
                     }
                 }
             });
@@ -359,6 +359,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 @Override
                 public void run() {
                     SprintSaleAnnouncementViewModel sprintSaleAnnouncementViewModel = new SprintSaleAnnouncementViewModel(
+                            sprintSaleViewModel.getCampaignId(),
                             new Date().getTime(),
                             new Date().getTime(),
                             "0",
@@ -521,7 +522,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         adapter.notifyDataSetChanged();
         replyEditText.setText("");
         scrollToBottom();
-
+        setSendButtonEnabled(true);
     }
 
     @Override
@@ -714,26 +715,35 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     @Override
-    public void onSprintSaleProductClicked(SprintSaleProductViewModel sprintSaleViewModel, int
+    public void onSprintSaleProductClicked(SprintSaleProductViewModel productViewModel, int
             position) {
 
         ArrayList<EEPromotion> list = new ArrayList<>();
-        list.add(new EEPromotion(sprintSaleViewModel.getProductId(),
+        list.add(new EEPromotion(productViewModel.getProductId(),
                 EEPromotion.NAME_GROUPCHAT,
                 position,
-                sprintSaleViewModel.getProductName(),
-                sprintSaleViewModel.getProductImage(),
+                productViewModel.getProductName(),
+                productViewModel.getProductImage(),
                 ((GroupChatContract.View) getActivity()).getAttributionTracking(GroupChatAnalytics
                         .ATTRIBUTE_FLASH_SALE)
         ));
 
         ((GroupChatContract.View) getActivity()).eventClickComponentEnhancedEcommerce(GroupChatAnalytics
-                .COMPONENT_FLASH_SALE, sprintSaleViewModel.getProductName(), GroupChatAnalytics
+                .COMPONENT_FLASH_SALE, productViewModel.getProductName(), GroupChatAnalytics
                 .ATTRIBUTE_FLASH_SALE, list);
 
-        ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
-                , ((GroupChatContract.View) getActivity()).generateAttributeApplink
-                        (sprintSaleViewModel.getProductUrl(), GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
+        if (((GroupChatContract.View) getActivity()).getSprintSaleViewModel() != null
+                && ((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getCampaignId() != null
+                && productViewModel.getSprintSaleCampaignId().equals(((GroupChatContract.View) getActivity())
+                .getSprintSaleViewModel().getCampaignId())
+                && !((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getSprintSaleType().equals
+                (SprintSaleAnnouncementViewModel.SPRINT_SALE_FINISH)) {
+
+
+            ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
+                    , ((GroupChatContract.View) getActivity()).generateAttributeApplink
+                            (productViewModel.getProductUrl(), GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
+        }
     }
 
     @Override
@@ -759,10 +769,18 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 .COMPONENT_FLASH_SALE, sprintSaleAnnouncementViewModel.getCampaignName(), GroupChatAnalytics
                 .ATTRIBUTE_FLASH_SALE, list);
 
-        ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
-                , ((GroupChatContract.View) getActivity()).generateAttributeApplink
-                        (sprintSaleAnnouncementViewModel.getRedirectUrl(),
-                                GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
+        if (((GroupChatContract.View) getActivity()).getSprintSaleViewModel() != null
+                && ((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getCampaignId() != null
+                && sprintSaleAnnouncementViewModel.getCampaignId().equals(((GroupChatContract.View) getActivity())
+                .getSprintSaleViewModel().getCampaignId())
+                && !((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getSprintSaleType().equals
+                (SprintSaleAnnouncementViewModel.SPRINT_SALE_FINISH)) {
+
+            ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
+                    , ((GroupChatContract.View) getActivity()).generateAttributeApplink
+                            (sprintSaleAnnouncementViewModel.getRedirectUrl(),
+                                    GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
+        }
 
     }
 
@@ -817,8 +835,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
         if (getActivity() != null
                 && ((GroupChatActivity) getActivity()).getChannelInfoViewModel() != null
-                && ((GroupChatActivity) getActivity())
-                .getChannelInfoViewModel().getTitle() != null) {
+                && ((GroupChatActivity) getActivity()).getChannelInfoViewModel().getTitle() != null) {
             String channelName = ((GroupChatActivity) getActivity())
                     .getChannelInfoViewModel().getTitle();
             analytics.eventClickLoyaltyWidget(channelName);

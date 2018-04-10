@@ -9,6 +9,7 @@ import android.os.Parcelable;
 
 public class SprintSaleProductViewModel implements Parcelable {
 
+    private String sprintSaleCampaignId;
     private String productId;
     String productName;
     String productImage;
@@ -19,10 +20,13 @@ public class SprintSaleProductViewModel implements Parcelable {
     String stockText;
     private String productUrl;
 
-    public SprintSaleProductViewModel(String productId, String productName, String productImage,
+    public SprintSaleProductViewModel(String sprintSaleCampaignId,
+                                      String productId, String productName,
+                                      String productImage,
                                       String discountLabel,
                                       String productPrice, String productPriceBeforeDiscount,
                                       double stockPercentage, String stockText, String productUrl) {
+        this.sprintSaleCampaignId = sprintSaleCampaignId;
         this.productId = productId;
         this.productName = productName;
         this.productImage = productImage;
@@ -34,8 +38,8 @@ public class SprintSaleProductViewModel implements Parcelable {
         this.productUrl = productUrl;
     }
 
-
     protected SprintSaleProductViewModel(Parcel in) {
+        sprintSaleCampaignId = in.readString();
         productId = in.readString();
         productName = in.readString();
         productImage = in.readString();
@@ -49,6 +53,7 @@ public class SprintSaleProductViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(sprintSaleCampaignId);
         dest.writeString(productId);
         dest.writeString(productName);
         dest.writeString(productImage);
@@ -109,11 +114,13 @@ public class SprintSaleProductViewModel implements Parcelable {
         return stockText;
     }
 
-
     public String getProductUrl() {
         return productUrl;
     }
 
+    public String getSprintSaleCampaignId() {
+        return sprintSaleCampaignId;
+    }
 
 
 }

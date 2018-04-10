@@ -1437,6 +1437,8 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && this.viewModel.getChannelInfoViewModel() != null
                 && this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel() != null) {
             this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
+                    .setCampaignId(messageItem.getCampaignId());
+            this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
                     .setListProduct(messageItem.getListProducts());
             this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
                     .setCampaignName(messageItem.getCampaignName());
@@ -1451,6 +1453,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else if (this.viewModel != null
                 && this.viewModel.getChannelInfoViewModel() != null) {
             this.viewModel.getChannelInfoViewModel().setSprintSaleViewModel(new SprintSaleViewModel(
+                    messageItem.getCampaignId(),
                     messageItem.getListProducts(),
                     messageItem.getCampaignName(),
                     messageItem.getStartDate(),

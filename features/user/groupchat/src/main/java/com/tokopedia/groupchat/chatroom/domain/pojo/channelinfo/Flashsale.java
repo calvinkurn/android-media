@@ -14,6 +14,9 @@ public class Flashsale {
     @SerializedName("applink")
     @Expose
     private String appLink;
+    @SerializedName("campaign_id")
+    @Expose
+    private String campaignId;
     @SerializedName("campaign_name")
     @Expose
     private String campaignName;
@@ -29,6 +32,10 @@ public class Flashsale {
     @SerializedName("products")
     @Expose
     private List<Product> products = null;
+
+    public String getCampaignId() {
+        return campaignId;
+    }
 
     public String getStatus() {
         return status;

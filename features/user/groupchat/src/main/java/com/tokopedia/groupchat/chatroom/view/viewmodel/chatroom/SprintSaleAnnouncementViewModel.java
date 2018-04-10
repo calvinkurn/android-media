@@ -21,8 +21,11 @@ public class SprintSaleAnnouncementViewModel extends BaseChatViewModel implement
     private long startDate;
     private long endDate;
     private String sprintSaleType;
+    private String campaignId;
 
-    public SprintSaleAnnouncementViewModel(long createdAt, long updatedAt, String messageId,
+
+    public SprintSaleAnnouncementViewModel(String campaignId, long createdAt, long updatedAt,
+                                           String messageId,
                                            String senderId, String senderName, String senderIconUrl,
                                            boolean isInfluencer, boolean isAdministrator, String redirectUrl,
                                            ArrayList<SprintSaleProductViewModel> listProducts,
@@ -30,6 +33,7 @@ public class SprintSaleAnnouncementViewModel extends BaseChatViewModel implement
                                            String sprintSaleType) {
         super("", createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl,
                 isInfluencer, isAdministrator);
+        this.campaignId = campaignId;
         this.redirectUrl = redirectUrl;
         this.listProducts = listProducts;
         this.campaignName = campaignName;
@@ -69,5 +73,9 @@ public class SprintSaleAnnouncementViewModel extends BaseChatViewModel implement
 
     public void setRedirectUrl(String redirectUrl) {
         this.redirectUrl = redirectUrl;
+    }
+
+    public String getCampaignId() {
+        return campaignId;
     }
 }

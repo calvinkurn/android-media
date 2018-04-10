@@ -149,6 +149,7 @@ public class GroupChatMessagesMapper {
         FlashSalePojo pojo = gson.fromJson(json, FlashSalePojo.class);
 
         return new SprintSaleAnnouncementViewModel(
+                pojo.getCampaignId() != null ? pojo.getCampaignId() : "",
                 message.getCreatedAt(),
                 message.getCreatedAt(),
                 String.valueOf(message.getMessageId()),
@@ -158,24 +159,25 @@ public class GroupChatMessagesMapper {
                 false,
                 true,
                 pojo.getAppLink() != null ? pojo.getAppLink() : "",
-                mapToListSprintSaleProducts(pojo.getProducts()),
+                mapToListSprintSaleProducts(pojo.getCampaignId(), pojo.getProducts()),
                 pojo.getCampaignName() != null ? pojo.getCampaignName() : "",
-                pojo.getStartDate() * 1000L ,
-                pojo.getEndDate() * 1000L ,
+                pojo.getStartDate() * 1000L,
+                pojo.getEndDate() * 1000L,
                 message.getCustomType()
         );
     }
 
-    private ArrayList<SprintSaleProductViewModel> mapToListSprintSaleProducts(List<Product> pojo) {
+    private ArrayList<SprintSaleProductViewModel> mapToListSprintSaleProducts(String campaignId, List<Product> pojo) {
         ArrayList<SprintSaleProductViewModel> list = new ArrayList<>();
         for (Product product : pojo) {
-            list.add(mapToSprintSaleProduct(product));
+            list.add(mapToSprintSaleProduct(campaignId, product));
         }
         return list;
     }
 
-    private SprintSaleProductViewModel mapToSprintSaleProduct(Product product) {
+    private SprintSaleProductViewModel mapToSprintSaleProduct(String campaignId, Product product) {
         return new SprintSaleProductViewModel(
+                campaignId != null ? campaignId : "",
                 product.getProductId() != null ? product.getProductId() : "",
                 product.getName() != null ? product.getName() : "",
                 product.getImageUrl() != null ? product.getImageUrl() : "",
