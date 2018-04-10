@@ -225,10 +225,6 @@ android {
     }
 
     productFlavors {
-        staging {
-
-        }
-
         live {
 
         }
