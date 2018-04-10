@@ -75,21 +75,34 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     @Override
-    public void notifyReceiverBackgroundMessage(Bundle bundle) {
-        if (isAllowedNotification(bundle)) {
-            mFCMCacheManager.setCache();
-            //TODO this function for divide the new and old flow(that still supported)
-            // next if complete new plz to delete
-            if (isSupportedApplinkNotification(bundle)) {
-                handleApplinkNotification(bundle);
-            } else {
-                if (isDedicatedNotification(bundle)) {
-                    handleDedicatedNotification(bundle);
-                } else {
-                    prepareAndExecutePromoNotification(bundle);
+    public void notifyReceiverBackgroundMessage(Observable<Bundle> data) {
+        data.map(new Func1<Bundle, Boolean>() {
+            @Override
+            public Boolean call(Bundle bundle) {
+                if (isAllowedNotification(bundle)) {
+                    mFCMCacheManager.setCache();
+                    //TODO this function for divide the new and old flow(that still supported)
+                    // next if complete new plz to delete
+                    if (isSupportedApplinkNotification(bundle)) {
+                        handleApplinkNotification(bundle);
+                    } else {
+                        if (isDedicatedNotification(bundle)) {
+                            handleDedicatedNotification(bundle);
+                        } else {
+                            prepareAndExecutePromoNotification(bundle);
+                        }
+                    }
                 }
+                return true;
             }
-        }
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(Actions.empty(), new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
     }
 
     private boolean isAllowedNotification(Bundle data) {
@@ -102,9 +115,10 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private void handleApplinkNotification(Bundle data) {
         if (data.getString(Constants.ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED, "false").equals("true")) {
-            if (SessionHandler.getLoginID(mContext).equals(
+            if (SessionHandler.isV4Login(mContext)
+                    && SessionHandler.getLoginID(mContext).equals(
                     data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))
-            ) {
+                    ) {
                 resetNotificationStatus(data);
                 prepareAndExecuteApplinkNotification(data);
                 refreshUI(data);
@@ -155,7 +169,13 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     } else {
                         String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
                         String fullname = data.getString("full_name");
-                        applink = String.format("%s?fullname=%s", applink, fullname);
+                        boolean isHaveQueryField = applink.contains("?");
+                        if(isHaveQueryField) {
+                            applink = String.format("%s&fullname=%s", applink, fullname);
+                        }
+                        else {
+                            applink = String.format("%s?fullname=%s", applink, fullname);
+                        }
                         data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
                         buildNotifByData(data);
 

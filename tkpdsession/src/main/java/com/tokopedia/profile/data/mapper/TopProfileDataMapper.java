@@ -35,16 +35,16 @@ public class TopProfileDataMapper
         ProfileGraphql profileGraphql = getDataOrError(graphqlResponse);
         TopProfileViewModel model = new TopProfileViewModel();
 
-        setUserData(model, profileGraphql.getProfileData().getData());
+        setUserData(model, profileGraphql.getProfileData().getData(), profileGraphql.getProfileInfo());
         setUserInfo(model, profileGraphql.getProfileInfo());
         setReputation(model, profileGraphql.getProfileReputation());
         setShopInfo(model, profileGraphql.getProfileShopInfo().getData());
         return model;
     }
 
-    private void setUserData(TopProfileViewModel model, ProfileData.Data data) {
+    private void setUserData(TopProfileViewModel model, ProfileData.Data data, ProfileInfo info) {
         model.setUserId(data.getId());
-        model.setName(data.getName());
+        model.setName(info.getFullName());
         model.setTitle(data.getInfo());
         model.setBiodata(data.getBio() != null ? data.getBio().replace("\n", "") : "");
         model.setFollowing(data.getFollowingFmt());
