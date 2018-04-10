@@ -32,6 +32,7 @@ import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -520,22 +521,15 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     }
 
     @Override
-    public void onProductImageFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
+    public void onProductFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
         if (shopInfo != null) {
-            shopPageTracking.eventClickProductPictureFeaturedImpression(getString(R.string.shop_info_title_tab_product), shopProductViewModel.getName(),
-                    shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), adapterPosition,
-                    shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
+            shopPageTracking.eventClickProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
+                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), adapterPosition, true,
+                    shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
         }
+        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
     }
 
-    @Override
-    public void onProductTitleFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
-        if (shopInfo != null) {
-            shopPageTracking.eventClickProductTitleFeaturedImpression(getString(R.string.shop_info_title_tab_product), shopProductViewModel.getName(),
-                    shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), adapterPosition,
-                    shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
-        }
-    }
 
     public void onLastItemVisibleTracking() {
         if (shopInfo != null) {
