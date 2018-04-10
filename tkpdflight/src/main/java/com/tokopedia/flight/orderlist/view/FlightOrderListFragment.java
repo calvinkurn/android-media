@@ -315,7 +315,8 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     public void goToCancellationPage(String invoiceId, List<FlightCancellationJourney> item) {
         startActivityForResult(FlightCancellationActivity.createIntent(getContext(),
                 invoiceId,
-                item),
+                item, 0
+                ),
                 REQUEST_CODE_CANCELLATION);
     }
 }

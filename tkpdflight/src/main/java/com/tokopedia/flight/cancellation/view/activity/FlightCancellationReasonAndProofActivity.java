@@ -56,7 +56,7 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
             cancellationComponent = DaggerFlightCancellationComponent.builder()
                     .flightComponent(getFlightComponent())
                     .build();
-        }else {
+        } else {
             throw new RuntimeException("Application must implement FlightModuleRouter");
         }
     }
@@ -78,8 +78,7 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
+    public void goToEstimateReview(FlightCancellationWrapperViewModel viewModel) {
+        startActivity(FlightCancellationRefundDetailActivity.getCallingIntent(this, viewModel));
     }
-
 }

@@ -13,6 +13,7 @@ public class FlightUrl {
     public static final String FLIGHT_SEARCH_SINGLE = FLIGHT_PATH + "search/single";
     public static final String FLIGHT_CLASS_PATH = FLIGHT_PATH + "dropdown/class";
     public static final String FLIGHT_CART_PATH = FLIGHT_PATH + "cart";
+    public static final String FLIGHT_CANCELLATION_ESTIMATE_REFUND = FLIGHT_PATH + "cancel/estimate";
     public static final String FLIGHT_CHECK_VOUCHER_CODE = FLIGHT_PATH + "voucher/check";
     public static final String FLIGHT_PASSENGER_SAVED = FLIGHT_PATH + "passenger";
     public static final String FLIGHT_CANCELLATION_PATH = FLIGHT_PATH + "cancel/";

@@ -12,10 +12,12 @@ import java.util.List;
  * @author  by alvarisi on 3/26/18.
  */
 
-public class FlightCancellationReasonAndAttachmentViewModel implements Parcelable {
+public class FlightCancellationReasonAndAttachmentViewModel implements Parcelable{
 
     private List<FlightCancellationAttachmentViewModel> attachments;
     private String reason;
+    private long estimateRefund;
+    private String estimateFmt;
 
     public FlightCancellationReasonAndAttachmentViewModel() {
     }
@@ -24,6 +26,21 @@ public class FlightCancellationReasonAndAttachmentViewModel implements Parcelabl
     protected FlightCancellationReasonAndAttachmentViewModel(Parcel in) {
         attachments = in.createTypedArrayList(FlightCancellationAttachmentViewModel.CREATOR);
         reason = in.readString();
+        estimateRefund = in.readLong();
+        estimateFmt = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(attachments);
+        dest.writeString(reason);
+        dest.writeLong(estimateRefund);
+        dest.writeString(estimateFmt);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<FlightCancellationReasonAndAttachmentViewModel> CREATOR = new Creator<FlightCancellationReasonAndAttachmentViewModel>() {
@@ -54,14 +71,19 @@ public class FlightCancellationReasonAndAttachmentViewModel implements Parcelabl
         this.reason = reason;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public long getEstimateRefund() {
+        return estimateRefund;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeTypedList(attachments);
-        parcel.writeString(reason);
+    public void setEstimateRefund(long estimateRefund) {
+        this.estimateRefund = estimateRefund;
+    }
+
+    public String getEstimateFmt() {
+        return estimateFmt;
+    }
+
+    public void setEstimateFmt(String estimateFmt) {
+        this.estimateFmt = estimateFmt;
     }
 }
