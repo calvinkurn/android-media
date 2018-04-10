@@ -139,6 +139,7 @@ public class TokoCashUtil {
         }else{
             data.setAppLinkActionButton(WALLET_ACTIVATION);
             data.setLabelActionButton(context.getString(R.string.title_activation));
+            data.setLabelTitle(context.getString(R.string.label_tokocash));
         }
 
         data.setRedirectUrlActionButton(tokoCashData.getAction().getRedirectUrl() == null ? ""
@@ -191,6 +192,7 @@ public class TokoCashUtil {
         }else{
             data.setAppLinkActionButton(WALLET_ACTIVATION);
             data.setLabelActionButton(context.getString(R.string.title_activation));
+            data.setLabelTitle(context.getString(R.string.label_tokocash));
         }
 
         return data;

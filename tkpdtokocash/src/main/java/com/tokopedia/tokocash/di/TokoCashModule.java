@@ -73,7 +73,7 @@ public class TokoCashModule {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(tokoCashAuthInterceptor)
                 .addInterceptor(new TokoCashErrorResponseInterceptor(TokoCashErrorResponse.class, gson))
-                .addInterceptor(new TokoCashErrorResponseInterceptor(ActivateTokoCashErrorResponse.class, gson))
+                .addInterceptor(new TokoCashErrorResponseInterceptor(ActivateTokoCashErrorResponse.class, gson));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             LocalCacheHandler cache = new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
@@ -111,7 +111,7 @@ public class TokoCashModule {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(walletAuthInterceptor)
                 .addInterceptor(new WalletErrorResponseInterceptor(WalletErrorResponse.class, gson,
-                        walletTokenRefresh, walletUserSession))
+                        walletTokenRefresh, walletUserSession));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             LocalCacheHandler cache = new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
