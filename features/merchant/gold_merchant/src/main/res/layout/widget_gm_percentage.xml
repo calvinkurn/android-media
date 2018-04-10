@@ -9,8 +9,8 @@
         android:layout_width="10dp"
         android:layout_height="8dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_5"
         android:scaleType="fitXY"
         tools:src="@drawable/ic_rectangle_up" />
 
@@ -18,8 +18,8 @@
         android:id="@+id/tv_percentage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_5"
         android:gravity="start"
         android:minWidth="40dp"
         android:textSize="14sp"

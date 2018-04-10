@@ -3,10 +3,10 @@
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:padding="@dimen/padding_vs"
-    android:layout_marginTop="@dimen/margin_vs"
-    android:layout_marginRight="@dimen/margin_small"
-    android:layout_marginLeft="@dimen/margin_small"
+    android:padding="@dimen/dp_5"
+    android:layout_marginTop="@dimen/dp_5"
+    android:layout_marginRight="@dimen/dp_10"
+    android:layout_marginLeft="@dimen/dp_10"
     android:gravity="center">
 
     <ImageView

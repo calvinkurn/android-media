@@ -1,11 +1,16 @@
 package com.tokopedia.abstraction.base.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -14,12 +19,17 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int MAX_PROGRESS = 100;
 
     private TkpdWebView webView;
     private ProgressBar progressBar;
+    private ValueCallback<Uri> uploadMessageBeforeLolipop;
+    public ValueCallback<Uri[]> uploadMessageAfterLolipop;
+    public final static int ATTACH_FILE_REQUEST = 1;
 
     /**
      * return the url to load in the webview
@@ -37,6 +47,61 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     protected void initInjector() {
 
+    }
+
+    private class MyWebViewClient extends WebChromeClient {
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            if (newProgress == MAX_PROGRESS) {
+                onLoadFinished();
+            }
+            super.onProgressChanged(view, newProgress);
+        }
+        //For Android 3.0+
+        public void openFileChooser(ValueCallback<Uri> uploadMsg) {
+            openFileChooserBeforeLolipop(uploadMsg);
+        }
+
+        // For Android 3.0+, above method not supported in some android 3+ versions, in such case we use this
+        public void openFileChooser(ValueCallback uploadMsg, String acceptType) {
+            openFileChooserBeforeLolipop(uploadMsg);
+        }
+
+        //For Android 4.1+
+        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+            openFileChooserBeforeLolipop(uploadMsg);
+        }
+
+        //For Android 5.0+
+        public boolean onShowFileChooser(
+                WebView webView, ValueCallback<Uri[]> filePathCallback,
+                WebChromeClient.FileChooserParams fileChooserParams) {
+            if (uploadMessageAfterLolipop != null) {
+                uploadMessageAfterLolipop.onReceiveValue(null);
+            }
+            uploadMessageAfterLolipop = filePathCallback;
+
+            Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+            contentSelectionIntent.setType("*/*");
+            Intent[] intentArray = new Intent[0];
+
+            Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
+            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
+            chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+            startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
+            return true;
+
+        }
+    }
+
+    private void openFileChooserBeforeLolipop(ValueCallback<Uri> uploadMessage){
+        uploadMessageBeforeLolipop = uploadMessage;
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("*/*");
+        startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
     }
 
     @Nullable
@@ -62,6 +127,37 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Uri[] results = null;
+            //Check if response is positive
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == ATTACH_FILE_REQUEST) {
+                    if (null == uploadMessageAfterLolipop) {
+                        return;
+                    }
+
+                    String dataString = intent.getDataString();
+                    if (dataString != null) {
+                        results = new Uri[]{Uri.parse(dataString)};
+
+                    }
+                }
+            }
+            uploadMessageAfterLolipop.onReceiveValue(results);
+            uploadMessageAfterLolipop = null;
+        } else {
+            if (requestCode == ATTACH_FILE_REQUEST) {
+                if (null == uploadMessageBeforeLolipop) return;
+                Uri result = intent == null || resultCode != RESULT_OK ? null : intent.getData();
+                uploadMessageBeforeLolipop.onReceiveValue(result);
+                uploadMessageBeforeLolipop = null;
+            }
+        }
+    }
+
     private void loadWeb() {
         webView.clearCache(true);
         webView.getSettings().setJavaScriptEnabled(true);
@@ -69,16 +165,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setDisplayZoomControls(true);
         webView.setWebViewClient(new WebViewClient());
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                if (newProgress == MAX_PROGRESS) {
-                    onLoadFinished();
-                }
-                super.onProgressChanged(view, newProgress);
-            }
-        });
-        webView.loadAuthUrlWithFlags(getUrl(), getUserIdForHeader());
+        webView.setWebChromeClient(new MyWebViewClient());
+        webView.loadAuthUrl(getUrl(), getUserIdForHeader());
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

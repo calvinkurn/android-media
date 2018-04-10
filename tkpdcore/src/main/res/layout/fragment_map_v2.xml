@@ -74,7 +74,7 @@
                 android:layout_toStartOf="@id/submit"
                 android:text="@string/wait_generate_address"
                 android:padding="@dimen/padding_small"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 />
 
             <RelativeLayout

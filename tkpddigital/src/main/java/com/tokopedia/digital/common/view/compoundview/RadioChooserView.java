@@ -3,6 +3,9 @@ package com.tokopedia.digital.common.view.compoundview;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -22,6 +25,8 @@ import butterknife.BindView;
 
 public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
 
+    private static final int EMPTY_MARGIN_VALUE = 0;
+    private static final int RADIO_DIVIDER_MARGIN_VALUE = 40;
     @BindView(R2.id.radio_group_container)
     LinearLayout radioGroupContainer;
 
@@ -73,14 +78,24 @@ public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
 
     @Override
     public void renderInitDataList(final List<Operator> data, String defaultOperatorId) {
-        radioGroup = new RadioGroup(getContext());
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View viewRadioGroup = inflater.inflate(R.layout.view_digital_radio_group_button,null, false);
+        radioGroup  = (RadioGroup) viewRadioGroup.findViewById(R.id.radio_group_button);
         radioGroupContainer.addView(radioGroup);
         radioGroup.setOrientation(LinearLayout.HORIZONTAL);
 
         this.operators = data;
-
+        RadioGroup.LayoutParams layoutParams = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(
+                EMPTY_MARGIN_VALUE,
+                EMPTY_MARGIN_VALUE,
+                RADIO_DIVIDER_MARGIN_VALUE,
+                EMPTY_MARGIN_VALUE
+        );
         for (int i = 0; i < data.size(); i++) {
-            RadioButton radioButton = new RadioButton(getContext());
+            View radioView = inflater.inflate(R.layout.view_digital_radio_button,null, false);
+            RadioButton radioButton  = (RadioButton) radioView.findViewById(R.id.radio_button);
+            radioButton.setLayoutParams(layoutParams);
             radioButton.setId(i);
             radioButton.setText(data.get(i).getName());
             radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_small) /

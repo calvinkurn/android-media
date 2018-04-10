@@ -225,6 +225,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
         public static final String REFERRAL_CODE = "REFERRAL_CODE";
         public static final String KEY_ADVANCED_APP_RATING_VERSION = "ADVANCED_APP_RATING_VERSION";
+        public static final String KEY_RATING = "RATING";
         public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
 
 
@@ -257,6 +258,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String NOTIFICATION_LOGGER = "notification_logger";
         public static final String MAINAPP_NATIVE_PROMO_LIST ="mainapp_native_promo_list";
         public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
+        public static final String SHOW_IMAGE_SEARCH = "enable_image_search";
     }
 
 }

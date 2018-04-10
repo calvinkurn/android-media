@@ -42,7 +42,7 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
         if (isAllowedNotification(data)){
             cacheManager.setCache();
             CommonUtils.dumper("isAllowedNotification");
-            mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(data);
+            mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(Observable.just(data));
         }
         mNotificationAnalyticsReceiver.onNotificationReceived(Observable.just(data));
     }

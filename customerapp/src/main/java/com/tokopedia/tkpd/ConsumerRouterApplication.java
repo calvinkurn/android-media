@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.tkpd.library.utils.AnalyticsLog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -56,6 +57,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.onboarding.OnboardingActivity;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
@@ -75,6 +77,8 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -121,6 +125,7 @@ import com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerifica
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
+import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -150,10 +155,14 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
+import com.tokopedia.shop.ShopModuleRouter;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
+import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
@@ -217,6 +226,7 @@ import com.tokopedia.transaction.wallet.WalletActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -244,7 +254,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
-        DigitalRouter, KolRouter, StreamModuleRouter {
+        DigitalRouter, KolRouter, StreamModuleRouter, ShopModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -297,6 +307,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
         return flightConsumerComponent;
     }
+
+    @Override
+    public void goToProfileShop(Context context, String userId) {
+        context.startActivity(
+                PeopleInfoNoDrawerActivity.createInstance(context, userId)
+        );
+	}
 
     private ContentConsumerComponent getContentConsumerComponent() {
         if (contentConsumerComponent == null) {
@@ -765,6 +782,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void sendEventTrackingShopPage(HashMap<String, Object> eventTracking) {
+        UnifyTracking.sendGTMEvent(eventTracking);
+        CommonUtils.dumper(eventTracking.toString());
+    }
+
+    @Override
     public Intent getRegisterIntent(Context context) {
         Intent intent = RegisterInitialActivity.getCallingIntent(context);
         return intent;
@@ -850,17 +873,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getLoginGoogleIntent(Context context) {
-        return null;
+        return LoginActivity.getAutoLoginGoogle(context);
     }
 
     @Override
     public Intent getLoginFacebookIntent(Context context) {
-        return null;
+        return LoginActivity.getAutoLoginFacebook(context);
+
     }
 
     @Override
     public Intent getLoginWebviewIntent(Context context, String name, String url) {
-        return null;
+        return LoginActivity.getAutoLoginWebview(context, name, url);
     }
 
     @Override
@@ -1445,6 +1469,69 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Fragment getShopReputationFragmentShop(String shopId, String shopDomain) {
+        return TkpdReputationInternalRouter.getReviewShopInfoFragment(shopId, shopDomain);
+    }
+
+    @Override
+    public Fragment getShopTalkFragment() {
+        return ShopTalkLimitedFragment.createInstance();
+    }
+
+    @Override
+    public void goToShareShop(Context context, String shopId, String shopUrl, String shareLabel) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(ShareData.SHOP_TYPE)
+                .setName(getString(R.string.message_share_shop))
+                .setTextContent(shareLabel)
+                .setUri(shopUrl)
+                .setId(shopId)
+                .build();
+        context.startActivity(ShareActivity.createIntent(context, shareData));
+    }
+
+    @Override
+    public void goToManageShop(Context context) {
+        context.startActivity(getIntentManageShop(context));
+    }
+
+    @Override
+    public void goToEditShopNote(Context context) {
+        Intent intent = new Intent(context, ManageShopNotesActivity.class);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToAddProduct(Context context) {
+        if(context != null && context instanceof Activity){
+            ProductAddActivity.start((Activity) context);
+        }
+    }
+
+    @Override
+    public void goToWebview(Context context, String url) {
+        Intent intent = new Intent(this, BannerWebView.class);
+        intent.putExtra(BannerWebView.EXTRA_URL, url);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToProductDetailById(Context activity, String productId) {
+        activity.startActivity(ProductInfoActivity.createInstance(activity, productId));
+    }
+
+    @Override
+    public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
+        if (getSession().isLoggedIn()) {
+            UnifyTracking.eventShopSendChat();
+            Intent intent = getAskSellerIntent(this, shopId, shopName, TkpdInboxRouter.SHOP, avatar);
+            context.startActivity(intent);
+        } else {
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
+            ((Activity) context).startActivityForResult(intent, 100);
+        }
+	}
+
     public void init() {
         ShakeDetectManager.getShakeDetectManager().init();
     }
@@ -1569,6 +1656,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getShopPageIntent(Context context, String shopId) {
+        return ShopPageActivity.createIntent(context, shopId);
+    }
+
+    @Override
+    public Intent getShopPageIntentByDomain(Context context, String domain) {
+        return ShopPageActivity.createIntentWithDomain(context, domain);
+    }
+
+    @Override
+    public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
+        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
+	}
+	
     public void showForceHockeyAppDialog() {
         ServerErrorHandler.showForceHockeyAppDialog();
     }
@@ -1628,5 +1729,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 listener.onGenerateLink(shareContents, shareUri);
             }
         });
+    }
+
+    @Override
+    public Intent getTopProfileIntent(Context context, String userId) {
+        return TopProfileActivity.newInstance(context, userId);
     }
 }
