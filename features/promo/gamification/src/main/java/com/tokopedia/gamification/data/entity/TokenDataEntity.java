@@ -9,6 +9,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class TokenDataEntity {
 
+    @SerializedName("resultStatus")
+    @Expose
+    private ResultStatusEntity resultStatus;
+
     @SerializedName("offFlag")
     @Expose
     private Boolean offFlag;
@@ -32,6 +36,10 @@ public class TokenDataEntity {
     @SerializedName("home")
     @Expose
     private TokenHomeEntity home;
+
+    public ResultStatusEntity getResultStatus() {
+        return resultStatus;
+    }
 
     public Boolean getOffFlag() {
         return offFlag;

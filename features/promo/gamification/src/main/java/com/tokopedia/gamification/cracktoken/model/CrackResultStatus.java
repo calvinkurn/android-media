@@ -9,7 +9,7 @@ public class CrackResultStatus {
 
     private String code;
     private List<String> message;
-    private String reason;
+    private String status;
 
     public String getCode() {
         return code;
@@ -27,11 +27,11 @@ public class CrackResultStatus {
         this.message = message;
     }
 
-    public String getReason() {
-        return reason;
+    public String getStatus() {
+        return status;
     }
 
-    public void setReason(String reason) {
-        this.reason = reason;
+    public void setStatus(String reason) {
+        this.status = reason;
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
  * Created by nabillasabbaha on 3/28/18.
  */
 
-public class CrackResultStatusEntity {
+public class ResultStatusEntity {
 
     @SerializedName("code")
     @Expose
@@ -19,9 +19,9 @@ public class CrackResultStatusEntity {
     @Expose
     private List<String> message;
 
-    @SerializedName("reason")
+    @SerializedName("status")
     @Expose
-    private String reason;
+    private String status;
 
     public String getCode() {
         return code;
@@ -31,7 +31,7 @@ public class CrackResultStatusEntity {
         return message;
     }
 
-    public String getReason() {
-        return reason;
+    public String getStatus() {
+        return status;
     }
 }
