@@ -31,6 +31,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
@@ -208,7 +209,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (SessionHandler.isV4Login(getActivity()) && showRecomendation) {
                     int firstVisibleItemPos = layoutManager.findLastVisibleItemPosition();
                     Visitable visitable = adapter.getItem(firstVisibleItemPos);
-                    if ((visitable instanceof InspirationViewModel || visitable instanceof TopAdsViewModel)) {
+                    if ((visitable instanceof InspirationViewModel
+                            || visitable instanceof TopAdsViewModel)
+                            || visitable instanceof LoadingModel) {
                         floatingTextButton.setVisibility(View.INVISIBLE);
                     } else {
                         floatingTextButton.setVisibility(View.VISIBLE);
@@ -661,6 +664,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onShowRetryGetFeed() {
         adapter.hideLoading();
         adapter.showRetry();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
