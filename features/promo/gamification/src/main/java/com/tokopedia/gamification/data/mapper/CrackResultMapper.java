@@ -51,7 +51,7 @@ public class CrackResultMapper implements Func1<CrackResultEntity, CrackResult> 
                 CrackResultStatus crackResultStatus = new CrackResultStatus();
                 crackResultStatus.setCode(crackResultEntity.getResultStatus().getCode());
                 crackResultStatus.setMessage(crackResultEntity.getResultStatus().getMessage());
-                crackResultStatus.setReason(crackResultEntity.getResultStatus().getReason());
+                crackResultStatus.setStatus(crackResultEntity.getResultStatus().getStatus());
                 crackResult.setResultStatus(crackResultStatus);
             }
 

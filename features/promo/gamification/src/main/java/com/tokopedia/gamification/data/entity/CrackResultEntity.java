@@ -13,7 +13,7 @@ public class CrackResultEntity {
     
     @SerializedName("resultStatus")
     @Expose
-    private CrackResultStatusEntity resultStatus;
+    private ResultStatusEntity resultStatus;
 
     @SerializedName("imageUrl")
     @Expose
@@ -35,7 +35,7 @@ public class CrackResultEntity {
     @Expose
     private CrackButtonEntity returnButton;
 
-    public CrackResultStatusEntity getResultStatus() {
+    public ResultStatusEntity getResultStatus() {
         return resultStatus;
     }
 
