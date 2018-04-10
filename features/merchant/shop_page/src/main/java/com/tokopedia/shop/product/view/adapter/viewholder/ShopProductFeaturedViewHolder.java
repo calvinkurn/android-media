@@ -27,6 +27,12 @@ public class ShopProductFeaturedViewHolder extends ShopProductViewHolder {
     @Override
     public void bind(final ShopProductViewModel shopProductViewModel) {
         super.bind(shopProductViewModel);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shopProductFeaturedListener.onProductFeaturedClickedTracking(shopProductViewModel, getAdapterPosition());
+            }
+        });
     }
 
     @Override
@@ -37,5 +43,6 @@ public class ShopProductFeaturedViewHolder extends ShopProductViewHolder {
 
     public interface ShopProductFeaturedListener {
         void onFeatureWishlistClickedTracking(ShopProductViewModel shopProductViewModel);
+        void onProductFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition);
     }
 }

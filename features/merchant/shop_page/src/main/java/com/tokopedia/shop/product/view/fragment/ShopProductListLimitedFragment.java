@@ -32,6 +32,7 @@ import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -518,6 +519,17 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                     ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
     }
+
+    @Override
+    public void onProductFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
+        if (shopInfo != null) {
+            shopPageTracking.eventClickProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
+                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), adapterPosition, true,
+                    shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
+        }
+        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
+    }
+
 
     public void onLastItemVisibleTracking() {
         if (shopInfo != null) {
