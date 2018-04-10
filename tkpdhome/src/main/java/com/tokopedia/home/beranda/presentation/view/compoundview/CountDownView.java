@@ -17,8 +17,6 @@ import android.widget.TextView;
 
 import com.tokopedia.home.R;
 
-import org.w3c.dom.Text;
-
 import java.util.Date;
 import java.util.Locale;
 
