@@ -23,6 +23,7 @@ public class FlightOrderToCancellationJourneyMapper {
         List<FlightCancellationJourney> flightCancellationJourneyList = new ArrayList<>();
 
         FlightCancellationJourney flightCancellationJourney = new FlightCancellationJourney();
+        flightCancellationJourney.setJourneyId(String.valueOf(flightOrderJourney.getJourneyId()));
         flightCancellationJourney.setDepartureTime(flightOrderJourney.getDepartureTime());
         flightCancellationJourney.setDepartureCity(flightOrderJourney.getDepartureCity());
         flightCancellationJourney.setDepartureCityCode(flightOrderJourney.getDepartureCityCode());
@@ -59,6 +60,7 @@ public class FlightOrderToCancellationJourneyMapper {
 
         for (FlightOrderJourney flightOrderJourney : flightOrderJourneyList) {
             FlightCancellationJourney flightCancellationJourney = new FlightCancellationJourney();
+            flightCancellationJourney.setJourneyId(String.valueOf(flightOrderJourney.getJourneyId()));
             flightCancellationJourney.setDepartureTime(flightOrderJourney.getDepartureTime());
             flightCancellationJourney.setDepartureCity(flightOrderJourney.getDepartureCity());
             flightCancellationJourney.setDepartureCityCode(flightOrderJourney.getDepartureCityCode());

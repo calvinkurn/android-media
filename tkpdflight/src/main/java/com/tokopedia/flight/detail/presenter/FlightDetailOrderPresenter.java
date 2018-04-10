@@ -362,7 +362,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         }
 
         if (canGoToCancelPage) {
-            getView().navigateToCancellationPage(invoiceId, items);
+            getView().navigateToCancellationPage(invoiceId, items, totalPrice);
         } else {
             getView().showLessThan6HoursDialog();
         }

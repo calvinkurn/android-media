@@ -111,6 +111,11 @@
             android:label="@string/activity_label_flight_review_cancellation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".cancellation.view.activity.FlightCancellationRefundDetailActivity"
+            android:label="@string/flight_cancellation_refund_detail_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
 
         <service
             android:name=".airport.service.GetAirportListService"

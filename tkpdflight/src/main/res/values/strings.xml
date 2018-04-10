@@ -359,6 +359,7 @@
     <string name="flight_cancellation_next_button">Selanjutnya</string>
     <string name="flight_cancellation_recommendation_to_contact_airlines_description"><![CDATA[Tiket dengan jadwal penerbangan kurang dari 6 jam, hanya bisa dibatalkan melalui counter maskapai terkait.<br /><br />Silakan hubungi customer care maskapai <font color="%1$s"><a href="%2$s>disini</a></font>]]>.</string>
     <string name="flight_cancellation_step_2_header_title">2. Input Alasan Pembatalan Tiket</string>
+    <string name="flight_cancellation_step_3_header_title">3. Detail Total Refund</string>
     <string name="flight_cancellation_reason_label">Alasan Pembatalan Tiket</string>
     <string name="flight_cancellation_support_docs_label">Dokumen Penunjang</string>
     <string name="flight_cancellation_reason_hint_label">Isi alasan pembatalan</string>
@@ -367,6 +368,7 @@
     <string name="flight_cancellation_attachment_required_error_message">Lampiran gambar belum diisi</string>
     <string name="flight_cancellation_attachment_more_than_max_error_message">Maksimal lampiran gambar %1$d</string>
     <string name="activity_label_flight_review_cancellation">Rincian Pembatalan Pesanan</string>
+    <string name="flight_cancellation_refund_detail_toolbar_title">Pembatalan Pesanan</string>
     <string name="flight_cancellation_review_description">Dengan menekan tombol di bawah, saya telah menyetujui <![CDATA[<font color="%1$s"><b>Syarat dan Ketentuan Pembatalan Pesanan</b></font>]]> untuk tiket dengan atas nama di atas, dan mengerti bahwa tiket yang telah diterbitkan oleh PT XYZ akan dibatalkan atas kehendak saya.</string>
     <string name="flight_cancellation_review_button">Ajukan Pembatalan</string>
     <string name="flight_cancellation_dialog_title">Batalkan Pesanan</string>

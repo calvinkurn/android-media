@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReasonAndProofActivity;
@@ -35,6 +36,7 @@ import javax.inject.Inject;
 public class FlightCancellationFragment extends BaseListFragment<FlightCancellationViewModel, FlightCancellationAdapterTypeFactory>
         implements FlightCancellationContract.View, FlightCancellationViewHolder.FlightCancellationListener {
 
+    public static final String EXTRA_TOTAL_PRICE = "EXTRA_TOTAL_PRICE";
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
 
@@ -43,7 +45,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     private String invoiceId;
     private List<FlightCancellationViewModel> flightCancellationViewModelList;
-    private FlightCancellationWrapperViewModel selectedCancellationViewModelList;
+    private FlightCancellationWrapperViewModel flightCancellationWrapperViewModel;
     List<FlightCancellationJourney> flightCancellationJourneyList;
 
     @Inject
@@ -52,10 +54,12 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     private AppCompatButton btnSubmit;
 
     public static FlightCancellationFragment createInstance(String invoiceId,
+                                                            int totalPrice,
                                                             List<FlightCancellationJourney> flightCancellationJourneyList) {
         FlightCancellationFragment fragment = new FlightCancellationFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_INVOICE_ID, invoiceId);
+        bundle.putInt(EXTRA_TOTAL_PRICE, totalPrice);
         bundle.putParcelableArrayList(EXTRA_CANCEL_JOURNEY, (ArrayList<? extends Parcelable>) flightCancellationJourneyList);
         fragment.setArguments(bundle);
         return fragment;
@@ -81,13 +85,21 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        invoiceId = getArguments().getString(EXTRA_INVOICE_ID);
-        flightCancellationJourneyList = getArguments().getParcelableArrayList(EXTRA_CANCEL_JOURNEY);
-
-        selectedCancellationViewModelList = new FlightCancellationWrapperViewModel();
+        initialVariable();
 
         flightCancellationPresenter.attachView(this);
         flightCancellationPresenter.onViewCreated();
+    }
+
+    private void initialVariable() {
+        invoiceId = getArguments().getString(EXTRA_INVOICE_ID);
+        flightCancellationJourneyList = getArguments().getParcelableArrayList(EXTRA_CANCEL_JOURNEY);
+        flightCancellationWrapperViewModel = new FlightCancellationWrapperViewModel();
+        flightCancellationWrapperViewModel.setInvoice(invoiceId);
+        flightCancellationWrapperViewModel.setTotalPrice(
+                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
+                        getArguments().getInt(EXTRA_TOTAL_PRICE))
+        );
     }
 
     @Override
@@ -127,7 +139,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @Override
     public void setSelectedCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList) {
-        this.selectedCancellationViewModelList.setViewModels(flightCancellationViewModelList);
+        this.flightCancellationWrapperViewModel.setViewModels(flightCancellationViewModelList);
     }
 
     @Override
@@ -147,7 +159,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @Override
     public List<FlightCancellationViewModel> getSelectedCancellationViewModel() {
-        return selectedCancellationViewModelList.getViewModels();
+        return flightCancellationWrapperViewModel.getViewModels();
     }
 
     @Override
@@ -181,7 +193,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     public void navigateToReviewCancellationPage() {
         startActivityForResult(
                 FlightReviewCancellationActivity.createIntent(getContext(),
-                        invoiceId, selectedCancellationViewModelList),
+                        invoiceId, flightCancellationWrapperViewModel),
                 REQUEST_REVIEW_CANCELLATION
         );
     }
@@ -190,7 +202,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     public void navigateToReasonAndProofPage() {
         startActivityForResult(
                 FlightCancellationReasonAndProofActivity.getCallingIntent(
-                        getActivity(), selectedCancellationViewModelList
+                        getActivity(), flightCancellationWrapperViewModel
                 ),
                 REQUEST_REASON_AND_PROOF_CANCELLATION
         );

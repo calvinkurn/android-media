@@ -13,7 +13,7 @@ import rx.Observable;
 public class FlightCancellationUploadImageUseCase extends UseCase<String> {
     private static final String PATH_FILE = "PATH_FILE";
     private static final String PATH_UPLOAD = "PATH_UPLOAD";
-    private static final String DEFAULT_FOLDER_UPLOAD = "/web-service/travel/flight/cancellation";
+    private static final String DEFAULT_FOLDER_UPLOAD = "/upload/attachment";
     private FlightModuleRouter flightModuleRouter;
 
     public FlightCancellationUploadImageUseCase(FlightModuleRouter flightModuleRouter) {

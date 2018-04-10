@@ -22,13 +22,17 @@ import java.util.List;
 
 import static com.tokopedia.flight.cancellation.view.fragment.FlightCancellationFragment.EXTRA_CANCEL_JOURNEY;
 import static com.tokopedia.flight.cancellation.view.fragment.FlightCancellationFragment.EXTRA_INVOICE_ID;
+import static com.tokopedia.flight.cancellation.view.fragment.FlightCancellationFragment.EXTRA_TOTAL_PRICE;
 
 public class FlightCancellationActivity extends BaseFlightActivity implements HasComponent<FlightCancellationComponent> {
 
-    public static Intent createIntent(Context context, String invoiceId,
-                                      List<FlightCancellationJourney> flightCancellationJourneyList) {
+    public static Intent createIntent(Context context,
+                                      String invoiceId,
+                                      List<FlightCancellationJourney> flightCancellationJourneyList,
+                                      int totalPrice) {
         Intent intent = new Intent(context, FlightCancellationActivity.class);
         intent.putExtra(EXTRA_INVOICE_ID, invoiceId);
+        intent.putExtra(EXTRA_TOTAL_PRICE, totalPrice);
         intent.putParcelableArrayListExtra(EXTRA_CANCEL_JOURNEY, (ArrayList<? extends Parcelable>) flightCancellationJourneyList);
         return intent;
     }
@@ -55,6 +59,7 @@ public class FlightCancellationActivity extends BaseFlightActivity implements Ha
         List<FlightCancellationJourney> flightCancellationJourneyList = getIntent().getExtras().getParcelableArrayList(EXTRA_CANCEL_JOURNEY);
         return FlightCancellationFragment.createInstance(
                 getIntent().getExtras().getString(EXTRA_INVOICE_ID),
+                getIntent().getExtras().getInt(EXTRA_TOTAL_PRICE),
                 flightCancellationJourneyList
         );
     }
