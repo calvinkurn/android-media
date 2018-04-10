@@ -502,6 +502,9 @@ public interface AppEventTracking {
 
         String LOGIN_NOW = "masuk sekarang";
         String CHECKOUT = "Checkout";
+
+        String USSD_ATTEMPT = "ussd attempt";
+
         String QUICK_FILTER = "quick filter";
         String CLICK_BAR = "click - bar - ";
         String CLICK_CHANGE_GRID = "click - ";
