@@ -275,7 +275,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         }
 
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
-        UnifyTracking.eventDigitalEventProductImpression(EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION,data.getTitle());
+        UnifyTracking.eventDigitalEventProductImpression(EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION, data.getTitle());
     }
 
     @Override
@@ -369,11 +369,16 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK,mPresenter.getSCREEN_NAME());
+        UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public String getScreenName() {
+        return mPresenter.getSCREEN_NAME();
     }
 }
