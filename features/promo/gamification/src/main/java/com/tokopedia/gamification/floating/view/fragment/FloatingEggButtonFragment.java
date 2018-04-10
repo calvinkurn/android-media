@@ -83,7 +83,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Inject
     public FloatingEggPresenter floatingEggPresenter;
     private boolean isHideAnimating;
-    private boolean serverOffFlag = true;
+    private boolean needHideFloatingToken = true;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -173,7 +173,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     }
 
     public void showFloatingEggAnimate(boolean hasDelay) {
-        if (serverOffFlag) {
+        if (needHideFloatingToken) {
             return;
         }
         if (vgFloatingEgg.getVisibility() == View.VISIBLE && !isHideAnimating) {
@@ -355,9 +355,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         final boolean isShowTime = tokenFloating.getShowTime();
         String imageUrl = tokenFloating.getTokenAsset().getFloatingImgUrl();
 
-        serverOffFlag = tokenData.getOffFlag() || TextUtils.isEmpty(imageUrl);
+        needHideFloatingToken = tokenData.getOffFlag() || tokenData.getSumToken() == 0 ||
+                TextUtils.isEmpty(imageUrl);
 
-        if (serverOffFlag) {
+        if (needHideFloatingToken) {
             hideFLoatingEgg();
         } else {
             showFloatingEgg();
@@ -427,7 +428,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     public void onErrorGetToken(Throwable throwable) {
         stopCountdownTimer();
         vgFloatingEgg.setVisibility(View.GONE);
-        serverOffFlag = true;
+        needHideFloatingToken = true;
     }
 
     private void startCountdownTimer(long timeRemainingSeconds) {

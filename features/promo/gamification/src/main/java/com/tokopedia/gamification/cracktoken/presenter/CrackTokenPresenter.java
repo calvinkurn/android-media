@@ -56,6 +56,9 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
                     @Override
                     public void onError(Throwable e) {
+                        if (!isViewAttached()) {
+                            return;
+                        }
                         CrackResult errorCrackResult = createGeneralErrorCrackResult();
 
                         getView().onErrorCrackToken(errorCrackResult);
@@ -63,6 +66,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
                     @Override
                     public void onNext(CrackResult crackResult) {
+
                         // check result status
                         if (crackResult.getResultStatus().getCode().equals("200")) {
                             // success
@@ -144,6 +148,10 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
             @Override
             public void onError(Throwable e) {
+                if (!isViewAttached()) {
+                    return;
+                }
+
                 getView().hideLoading();
 
                 CrackResult crackResult = createGeneralErrorCrackResult();
@@ -170,8 +178,8 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         List<String> imageUrls = tokenAsset.getImageUrls();
         String full = imageUrls.get(0);
         String cracked = imageUrls.get(4);
-        String imageRightUrl = imageUrls.get(5);
-        String imageLeftUrl = imageUrls.get(6);
+        String imageRightUrl = imageUrls.get(6);
+        String imageLeftUrl = imageUrls.get(5);
 
         assetUrls.add(tokenUser.getBackgroundAsset().getBackgroundImgUrl());
         assetUrls.add(full);
