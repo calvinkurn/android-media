@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.loyalty.R;
@@ -161,11 +160,15 @@ public class PromoDetailFragment extends BaseDaggerFragment
 
     @Override
     public void renderPromoDetail(PromoData promoData) {
-        this.promoDetailAnalytics.userViewPromo(promoData.getTitle(),
-                -1,
-                "",
-                -1,
-                promoData);
+        this.promoDetailAnalytics.userViewPromo(
+                promoData.getTitle(),
+                promoData.getId(),
+                0,
+                0,
+                promoData.getTitle(),
+                promoData.getThumbnailImage(),
+                promoData.getPromoCode()
+        );
 
         this.refreshHandler.finishRefresh();
 
@@ -264,11 +267,15 @@ public class PromoDetailFragment extends BaseDaggerFragment
         this.tvPromoDetailAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                promoDetailAnalytics.userClickCta(promoData.getTitle(),
-                        -1,
-                        "",
-                        -1,
-                        promoData);
+                promoDetailAnalytics.userClickCta(
+                        promoData.getTitle(),
+                        promoData.getId(),
+                        0,
+                        0,
+                        promoData.getTitle(),
+                        promoData.getThumbnailImage(),
+                        promoData.getPromoCode()
+                );
 
                 String appLink = promoData.getAppLink();
                 String redirectUrl = promoData.getPromoLink();

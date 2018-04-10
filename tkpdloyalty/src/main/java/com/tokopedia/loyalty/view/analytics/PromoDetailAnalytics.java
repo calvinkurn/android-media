@@ -1,11 +1,8 @@
 package com.tokopedia.loyalty.view.analytics;
 
-import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.loyalty.view.data.PromoData;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -35,40 +32,36 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
     }
 
     @Override
-    public void userViewPromo(String promoName, int page, String categoryName, int position,
-                              PromoData promoData) {
-        List<Object> list = new ArrayList<>();
+    public void userViewPromo(String promoName, final String id, final int page, final int position,
+                              final String creative, final String creativeUrl, final String promoCode) {
 
-        list.add(DataLayer.mapOf(
-                "id", promoData.getId(),
-                "name", "promo detail - P" + String.valueOf(page) + " - " + categoryName,
-                "creative", promoData.getThumbnailImage(),
-                "position", position,
-                "promo_id", "0",
-                "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
-        );
-
-        analyticTracker.sendEventTracking(
-                DataLayer.mapOf(
-                        "event", EVENT_PROMO_VIEW,
-                        "eventCategory", EVENT_CATEGORY_PROMO_DETAIL,
-                        "eventAction", EVENT_ACTION_IMPRESSION_PROMO,
-                        "eventLabel", promoName,
-                        "ecommerce", DataLayer.mapOf(
-                                "promoView", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(
-                                                list.toArray(new Object[list.size()]
-                                                )
-                                        )
+        this.analyticTracker.sendEventTracking(
+                new EventTracking(
+                        EVENT_PROMO_VIEW,
+                        EVENT_CATEGORY_PROMO_DETAIL,
+                        EVENT_ACTION_IMPRESSION_PROMO,
+                        promoName,
+                        new Ecommerce(
+                                new PromoView(
+                                        new ArrayList<Object>() {{
+                                            add((new Promotion(
+                                                    id,
+                                                    page,
+                                                    position,
+                                                    creative,
+                                                    creativeUrl,
+                                                    promoCode)
+                                            ).getEventMap());
+                                        }}
                                 )
                         )
-                )
+                ).getEventMap()
         );
     }
 
     @Override
     public void userClickCopyIcon(String promoName) {
-        analyticTracker.sendEventTracking(
+        this.analyticTracker.sendEventTracking(
                 new EventTracking(
                         EVENT_PROMO_CLICK_MICROSITE,
                         EVENT_CATEGORY_PROMO_LIST,
@@ -78,40 +71,36 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
     }
 
     @Override
-    public void userClickCta(String promoName, int page, String categoryName, int position,
-                             PromoData promoData) {
+    public void userClickCta(String promoName, final String id, final int page, final int position,
+                             final String creative, final String creativeUrl, final String promoCode) {
 
-        List<Object> list = new ArrayList<>();
-        list.add(DataLayer.mapOf(
-                "id", promoData.getId(),
-                "name", "promo detail - P" + String.valueOf(page) + " - " + categoryName,
-                "creative", promoData.getThumbnailImage(),
-                "position", String.valueOf(position + 1),
-                "promo_id", "0",
-                "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
-        );
-
-        analyticTracker.sendEventTracking(
-                DataLayer.mapOf(
-                        "event", EVENT_PROMO_CLICK,
-                        "eventCategory", EVENT_CATEGORY_PROMO_DETAIL,
-                        "eventAction", EVENT_ACTION_CTA,
-                        "eventLabel", promoName,
-                        "ecommerce", DataLayer.mapOf(
-                                "promoClick", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(
-                                                list.toArray(new Object[list.size()]
-                                                )
-                                        )
+        this.analyticTracker.sendEventTracking(
+                new EventTracking(
+                        EVENT_PROMO_CLICK,
+                        EVENT_CATEGORY_PROMO_DETAIL,
+                        EVENT_ACTION_CTA,
+                        promoName,
+                        new Ecommerce(
+                                new PromoClick(
+                                        new ArrayList<Object>() {{
+                                            add((new Promotion(
+                                                    id,
+                                                    page,
+                                                    position,
+                                                    creative,
+                                                    creativeUrl,
+                                                    promoCode)
+                                            ).getEventMap());
+                                        }}
                                 )
                         )
-                )
+                ).getEventMap()
         );
     }
 
     @Override
     public void userSharePromo(String socialMediaName) {
-        analyticTracker.sendEventTracking(
+        this.analyticTracker.sendEventTracking(
                 new EventTracking(
                         EVENT_PROMO_CLICK_MICROSITE,
                         EVENT_CATEGORY_PROMO_SHARING,
@@ -123,7 +112,7 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
 
     @Override
     public void userClickTooltip() {
-        analyticTracker.sendEventTracking(
+        this.analyticTracker.sendEventTracking(
                 new EventTracking(
                         EVENT_PROMO_CLICK_MICROSITE,
                         EVENT_CATEGORY_PROMO_TOOLTIP,
@@ -134,7 +123,7 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
 
     @Override
     public void userCloseTooltip() {
-        analyticTracker.sendEventTracking(
+        this.analyticTracker.sendEventTracking(
                 new EventTracking(
                         EVENT_PROMO_CLICK_MICROSITE,
                         EVENT_CATEGORY_PROMO_TOOLTIP,

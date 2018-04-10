@@ -1,16 +1,14 @@
 package com.tokopedia.loyalty.view.analytics;
 
-import com.tokopedia.loyalty.view.data.PromoData;
-
 public interface IPromoDetailAnalytics {
 
-    void userViewPromo(String promoName, int page, String categoryName, int position,
-                       PromoData promoData);
+    void userViewPromo(String promoName, String id, int page, int position, String creative,
+                       String creativeUrl, String promoCode);
 
     void userClickCopyIcon(String promoName);
 
-    void userClickCta(String promoName, int page, String categoryName, int position,
-                      PromoData promoData);
+    void userClickCta(String promoName, String id, int page, int position, String creative,
+                      String creativeUrl, String promoCode);
 
     void userSharePromo(String socialMediaName);
 
