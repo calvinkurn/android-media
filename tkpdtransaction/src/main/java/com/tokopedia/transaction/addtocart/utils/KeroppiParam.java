@@ -29,6 +29,7 @@ public class KeroppiParam {
     public static final String PRODUCT_INSURANCE = "product_insurance";
     public static final String INSURANCE = "insurance";
     public static final String APP_VERSION = "app_version";
+    public static final String PARAM_OS_TYPE = "os_type";
 
     private static final String SEPARATOR = "|";
     private static final String CO_SEPARATOR = ",";

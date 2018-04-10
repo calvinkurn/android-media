@@ -14,6 +14,7 @@ import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
 import com.tokopedia.core.network.apiservices.transaction.TXService;
 import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
@@ -490,8 +491,8 @@ public class CartDataInteractor implements ICartDataInteractor {
         TKPDMapParam<String, String> params = KeroppiParam.paramsKeroCart(token, ut, cartItem);
 
 
-        return logisticsAuthService.getApi()
-                .getLogisticsData(getRequestPayload(context, params));
+        return logisticsAuthService.getApi().getLogisticsData(getRequestPayload(context,
+                AuthUtil.generateParamsNetwork(context, params)));
     }
 
     private String getRequestPayload(Context context, TKPDMapParam<String, String> params) {
@@ -508,7 +509,8 @@ public class CartDataInteractor implements ICartDataInteractor {
                 params.get(KeroppiParam.PRODUCT_INSURANCE),
                 params.get(KeroppiParam.TOKEN),
                 params.get(KeroppiParam.UT),
-                params.get(KeroppiParam.WEIGHT));
+                params.get(KeroppiParam.WEIGHT),
+                params.get(KeroppiParam.PARAM_OS_TYPE));
     }
 
     private String loadRawString(Resources resources, int resId) {

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.network.apiservices.logistics.LogisticsAuthService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.addtocart.model.kero.LogisticsData;
@@ -43,7 +44,7 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
                                   @NonNull final CalculationListener listener) {
 
         Observable<Response<String>> observable = logisticsAuthService.getApi()
-                .getLogisticsData(getRequestPayload(context, params));
+                .getLogisticsData(getRequestPayload(context, AuthUtil.generateParamsNetwork(context, params)));
 
 
         Subscriber<Response<String>> subscriber = new Subscriber<Response<String>>() {
@@ -95,7 +96,7 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
 
 
         Observable<Response<String>> observable = logisticsAuthService.getApi()
-                .getLogisticsData(getRequestPayload(context, params));
+                .getLogisticsData(getRequestPayload(context, AuthUtil.generateParamsNetwork(context, params)));
 
         Subscriber<Response<String>> subscriber = new Subscriber<Response<String>>() {
             @Override
@@ -141,7 +142,8 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
                 params.get(KeroppiParam.PRODUCT_INSURANCE),
                 params.get(KeroppiParam.TOKEN),
                 params.get(KeroppiParam.UT),
-                params.get(KeroppiParam.WEIGHT));
+                params.get(KeroppiParam.WEIGHT),
+                params.get(KeroppiParam.PARAM_OS_TYPE));
     }
 
     private String loadRawString(Resources resources, int resId) {
