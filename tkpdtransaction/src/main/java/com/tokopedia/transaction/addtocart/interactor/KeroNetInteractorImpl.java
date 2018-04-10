@@ -10,7 +10,6 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.addtocart.model.kero.LogisticsData;
-import com.tokopedia.transaction.addtocart.model.kero.RatesError;
 import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
 
 import java.io.BufferedReader;
@@ -70,11 +69,11 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
                     }
 
                 } else {
-                    RatesError error = null;
+                    LogisticsData logisticsData = null;
                     try {
-                        error = new Gson()
-                                .fromJson(stringResponse.errorBody().string(), RatesError.class);
-                        listener.onFailed(error.getErrors().get(0).getTitle());
+                        logisticsData = new Gson()
+                                .fromJson(stringResponse.errorBody().string(), LogisticsData.class);
+                        listener.onFailed(logisticsData.getLogisticsError().get(0).getMessage());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -114,7 +113,11 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             public void onNext(Response<String> response) {
                 if (response.isSuccessful()) {
                     LogisticsData logisticsData = new Gson().fromJson(response.body(), LogisticsData.class);
-                    listener.onSuccess(logisticsData.getOngkirData().getOngkir().getData().getAttributes());
+                    if (logisticsData.getLogisticsError() != null && !logisticsData.getLogisticsError().get(0).getMessage().isEmpty()) {
+                        listener.onFailure();
+                    } else {
+                        listener.onSuccess(logisticsData.getOngkirData().getOngkir().getData().getAttributes());
+                    }
                 } else {
                     listener.onFailure();
                 }

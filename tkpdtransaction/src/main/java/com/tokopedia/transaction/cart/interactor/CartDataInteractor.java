@@ -439,15 +439,16 @@ public class CartDataInteractor implements ICartDataInteractor {
                                 }.getType()));
                     cartRatesData.setErrorResponse("");
                 } else {
-                    // TODO: 4/6/18 errorhandling
+
                     try {
-                        cartRatesData.setErrorResponse(stringResponse.errorBody().string());
+                        logisticsData = new Gson()
+                                .fromJson(stringResponse.errorBody().string(), LogisticsData.class);
+                        cartRatesData.setErrorResponse(logisticsData.getLogisticsError().get(0).getMessage());
                         cartRatesData.setRatesResponse("");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-
 
                 return Observable.just(cartRatesData);
             }
