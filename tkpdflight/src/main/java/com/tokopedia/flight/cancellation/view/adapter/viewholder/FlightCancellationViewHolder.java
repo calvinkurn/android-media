@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +36,14 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
 
     public interface FlightCancellationListener {
         void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position);
+
         void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position);
+
         boolean shouldCheckAll();
+    }
+
+    interface FlightPassengerAdapterListener {
+        void checkIfAllPassengerIsChecked();
     }
 
     private Context context;
@@ -50,6 +55,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
     private PassengerAdapter passengerAdapter;
     private CheckBox checkBoxFlight;
     private boolean isJourneyChecked = false;
+    private boolean uncheckAllData = true;
 
     private FlightCancellationListener listener;
 
@@ -118,14 +124,21 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
 
         passengerAdapter.addData(element.getPassengerViewModelList());
 
+        checkBoxFlight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uncheckAllData = true;
+            }
+        });
+
         checkBoxFlight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 isJourneyChecked = isChecked;
 
-                if (isChecked) {
+                if (isJourneyChecked) {
                     passengerAdapter.checkAllData();
-                } else {
+                } else if (uncheckAllData) {
                     passengerAdapter.uncheckAllData();
                 }
             }
@@ -134,17 +147,19 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleCheckJourney();
+                toggleCheckJourney(true);
             }
         });
 
     }
 
-    private void toggleCheckJourney() {
+    private void toggleCheckJourney(boolean uncheckAllData) {
+        this.uncheckAllData = uncheckAllData;
         checkBoxFlight.setChecked(!isJourneyChecked);
     }
 
-    private class PassengerAdapter extends RecyclerView.Adapter<PassengerViewHolder> {
+    private class PassengerAdapter extends RecyclerView.Adapter<PassengerViewHolder>
+            implements FlightPassengerAdapterListener {
 
         List<FlightCancellationPassengerViewModel> passengerViewModelList;
         List<PassengerViewHolder> passengerViewHolderList = new ArrayList<>();
@@ -157,7 +172,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         public PassengerViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             View view = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.item_flight_cancellation_passenger, viewGroup, false);
-            return new PassengerViewHolder(view);
+            return new PassengerViewHolder(view, this);
         }
 
         @Override
@@ -166,7 +181,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
             passengerViewHolderList.add(passengerViewHolder);
 
             if (listener.shouldCheckAll()) {
-                toggleCheckJourney();
+                toggleCheckJourney(true);
             }
         }
 
@@ -192,6 +207,19 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
                 passengerViewHolderList.get(index).updateCheckedButton(false);
             }
         }
+
+        @Override
+        public void checkIfAllPassengerIsChecked() {
+            boolean allChecked = true;
+            for (int index = 0; index < passengerViewHolderList.size(); index++) {
+                if (!passengerViewHolderList.get(index).isPassengerChecked()) {
+                    allChecked = false;
+                }
+            }
+
+            isJourneyChecked = !allChecked;
+            toggleCheckJourney(false);
+        }
     }
 
     private class PassengerViewHolder extends RecyclerView.ViewHolder {
@@ -202,37 +230,27 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         private boolean isPassengerChecked = false;
         private FlightCancellationPassengerViewModel passengerViewModel;
         private int adapterPosition = -1;
+        private FlightPassengerAdapterListener passengerListener;
 
-        public PassengerViewHolder(View itemView) {
+        public PassengerViewHolder(View itemView, FlightPassengerAdapterListener passengerListener) {
             super(itemView);
+
+            this.passengerListener = passengerListener;
+
             txtPassengerName = itemView.findViewById(R.id.tv_passenger_name);
             txtPassengerType = itemView.findViewById(R.id.tv_passenger_type);
             checkBoxPassenger = itemView.findViewById(R.id.checkbox);
             checkBoxPassenger.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    isPassengerChecked = isChecked;
-
-                    if (isChecked) {
-                        listener.onPassengerChecked(passengerViewModel, adapterPosition);
-                    } else {
-                        listener.onPassengerUnchecked(passengerViewModel, adapterPosition);
-                    }
+                    onCheck(isChecked);
                 }
             });
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    isPassengerChecked = !isPassengerChecked;
-
-                    if (isPassengerChecked) {
-                        listener.onPassengerChecked(passengerViewModel, adapterPosition);
-                    } else {
-                        listener.onPassengerUnchecked(passengerViewModel, adapterPosition);
-                    }
-
-                    updateCheckedButton(isPassengerChecked);
+                    onCheck(!isPassengerChecked);
                 }
             });
         }
@@ -257,6 +275,19 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
                 default:
                     txtPassengerType.setText(R.string.flightbooking_price_adult_label);
             }
+        }
+
+        private void onCheck(boolean checkStatus) {
+            isPassengerChecked = checkStatus;
+
+            if (isPassengerChecked) {
+                listener.onPassengerChecked(passengerViewModel, adapterPosition);
+            } else {
+                listener.onPassengerUnchecked(passengerViewModel, adapterPosition);
+            }
+
+            updateCheckedButton(isPassengerChecked);
+            passengerListener.checkIfAllPassengerIsChecked();
         }
 
         public void updateCheckedButton(boolean checkedStatus) {
