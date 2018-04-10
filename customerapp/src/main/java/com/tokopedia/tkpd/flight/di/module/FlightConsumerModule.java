@@ -30,6 +30,7 @@ import com.tokopedia.seller.product.edit.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
 import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
 import com.tokopedia.seller.shop.open.di.scope.ShopOpenDomainScope;
+import com.tokopedia.tkpd.flight.domain.AttachmentImageModel;
 
 import javax.inject.Named;
 
@@ -53,14 +54,14 @@ public class FlightConsumerModule {
     }
 
     @Provides
-    UploadImageUseCase<UploadShopImageModel> provideUploadImageUseCase(ThreadExecutor threadExecutor,
+    UploadImageUseCase<AttachmentImageModel> provideUploadImageUseCase(ThreadExecutor threadExecutor,
                                                                        PostExecutionThread postExecutionThread,
                                                                        UploadImageRepository uploadImageRepository,
                                                                        GenerateHostRepository generateHostRepository,
                                                                        Gson gson,
                                                                        NetworkCalculator networkCalculator) {
-        return new UploadImageUseCase<UploadShopImageModel>(threadExecutor, postExecutionThread, uploadImageRepository,
-                generateHostRepository, gson, networkCalculator, UploadShopImageModel.class);
+        return new UploadImageUseCase<AttachmentImageModel>(threadExecutor, postExecutionThread, uploadImageRepository,
+                generateHostRepository, gson, networkCalculator, AttachmentImageModel.class);
     }
 
     @Provides
