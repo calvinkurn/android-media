@@ -122,6 +122,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="error_phone_wrong_format">Nomor Telepon tidak benar</string>
     <string name="error_phone_too_long">Nomor Terlalu Panjang</string>
     <string name="error_download_provider">"Gagal mendownload provider"</string>
+    <string name="string_change">Ubah</string>
 
     <!-- Strings related to add product -->
     <string name="title_activity_add_product">Tambah Produk</string>
@@ -457,6 +458,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_shop_owner">Pemilik Toko</string>
     <string name="title_name">Nama</string>
     <string name="title_email">Email</string>
+    <string name="title_email_input">Masukkan email</string>
+    <string name="title_email_hint">Jaga akun dan transaksi Anda tetap aman dengan menambahkan email.</string>
     <string name="title_email_optional">Email (Optional)</string>
     <string name="title_email_long">Alamat Email</string>
     <string name="title_phone_number">Nomor Ponsel</string>
@@ -577,6 +580,13 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_sort_by">Urutkan</string>
     <string name="success_change_phone_number">Nomor Ponsel Berhasil Diubah</string>
     <string name="check_email_change_phone_number">Segera konfirmasi perubahan nomor ponsel melalui email Anda.</string>
+    <string name="string_verified">Terverifikasi</string>
+    <string name="error_bank_no_password_title">Anda tidak memiliki kata sandi</string>
+    <string name="error_bank_no_password_content">Silahkan buat kata sandi Tokopedia terlebih dahulu untuk menambah rekening.</string>
+    <string name="error_no_password_no">Tutup</string>
+    <string name="error_no_password_yes">Buat kata sandi</string>
+    <string name="error_changeemail_no_password_title">Anda tidak memiliki kata sandi</string>
+    <string name="error_changeemail_no_password_content">Silahkan buat kata sandi terlebih dahulu untuk mengubah email.</string>
     <!-- Strings related Manage People -->
 
 
@@ -1619,6 +1629,8 @@ di Tokopedia Sekarang!</string>
 
     <string name="error_invalid_date">Tanggal tidak valid</string>
     <string name="error_no_amount_deposit">Maaf, Anda tidak memiliki saldo pada akun Anda saat ini.</string>
+    <string name="error_deposit_no_password_title">Anda tidak memiliki kata sandi</string>
+    <string name="error_deposit_no_password_content">Silahkan buat kata sandi terlebih dahulu untuk melakukan penarikan dana.</string>
 
     <string name="reputation_system_sub_for_user">Nilai untuk Anda : </string>
     <string name="reputation_system_sub_for_buyer">Nilai untuk Pembeli</string>

@@ -155,6 +155,9 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
+import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
+import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
@@ -1669,7 +1672,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
         return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
 	}
-	
+
     public void showForceHockeyAppDialog() {
         ServerErrorHandler.showForceHockeyAppDialog();
     }
@@ -1729,6 +1732,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 listener.onGenerateLink(shareContents, shareUri);
             }
         });
+    }
+
+    @Override
+    public Intent getChangeNameIntent(Context context) {
+        return ChangeNameActivity.newInstance(context);
+    }
+
+    @Override
+    public Intent getAddEmailIntent(Context context) {
+        return AddEmailActivity.newInstance(context);
+    }
+
+    @Override
+    public Intent getAddPasswordIntent(Context context) {
+        return AddPasswordActivity.newInstance(context);
     }
 
     @Override
