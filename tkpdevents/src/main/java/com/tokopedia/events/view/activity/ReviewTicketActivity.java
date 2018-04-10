@@ -422,6 +422,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvEmailID.clearFocus();
             mainContent.requestFocus();
         }
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_EMAIL, "");
         mPresenter.updateEmail(tvEmailID.getText().toString());
     }
 
@@ -452,6 +453,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvTelephone.clearFocus();
             mainContent.requestFocus();
         }
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_NUMBER, "");
         mPresenter.updateNumber(tvTelephone.getText().toString());
     }
 

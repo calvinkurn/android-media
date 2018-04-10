@@ -325,7 +325,6 @@ public class EventsHomeActivity extends TActivity
     public void onBackPressed() {
         super.onBackPressed();
         UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
-        //UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

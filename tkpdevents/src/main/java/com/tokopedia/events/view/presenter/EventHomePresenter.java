@@ -50,7 +50,6 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     private String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
     private String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
     private String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
-    private String SCREEN_NAME = "Digital_Events_Home";
 
     @Inject
     public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase, GetEventsListByLocationRequestUseCase getEventsListByLocationRequestUseCase, GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase) {
@@ -99,8 +98,11 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                             currentPage = 0;
                         }
                         mTouchViewPager.setCurrentItem(currentPage, true);
-                        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, mTouchViewPager.getAdapter().getPageTitle(currentPage).toString() +
-                                " - " + currentPage);
+                        if (!carousel.getItems().get(currentPage).isTrack()) {
+                            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage) +
+                                    " - " + currentPage);
+                            carousel.getItems().get(currentPage).setTrack(true);
+                        }
                     }
                 });
     }
@@ -108,6 +110,11 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     @Override
     public void onBannerSlide(int page) {
         currentPage = page;
+        if (!carousel.getItems().get(currentPage).isTrack()) {
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage) +
+                    " - " + currentPage);
+            carousel.getItems().get(currentPage).setTrack(true);
+        }
     }
 
     @Override
