@@ -1401,6 +1401,8 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_activity_product_history">Terakhir Dilihat</string>
     <string name="title_activity_reputation">Ulasan</string>
     <string name="title_activity_shop_statistic_detail">Detil Statistik Toko</string>
+    <string name="title_activity_deals">Deals</string>
+
 
     <string name="title_ss_satisfaction">Data Penilaian Kepuasan Toko</string>
     <string name="title_ss_response">Data Penilaian Kecepatan Response</string>

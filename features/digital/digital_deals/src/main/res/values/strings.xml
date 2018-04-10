@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">digital_deals</string>
+    <string name="promo_button_text">Lihat Semua Promo</string>
+    <string name="search">Search</string>
+    <string name="daftar_transaksi">Daftar Transaksi</string>
+    <string name="bantuan">Bantuan</string>
+    <string name="promo">Promo</string>
 </resources>

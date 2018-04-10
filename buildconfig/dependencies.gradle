@@ -228,7 +228,7 @@ ext {
             event           : ":tkpdevents",
             home            : ":tkpdhome",
             content         : ":tkpdcontent",
-            digitalDeals    : "features:digital:digital_deals"
+            digitalDeals    : ":features:digital:digital_deals"
     ]
 
     libraries = [

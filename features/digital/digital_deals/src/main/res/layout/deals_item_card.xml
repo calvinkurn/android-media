@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:layout_marginBottom="@dimen/new_margin_med"
     app:cardCornerRadius="@dimen/card_corner_default">
 
 
@@ -33,13 +34,13 @@
             android:textStyle="normal"
             app:layout_constraintLeft_toRightOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="@+id/imageView"
-            tools:text="123 Hari Lagi" />
+            android:text="123 Hari Lagi" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/new_margin_small"
+            android:layout_marginRight="@dimen/new_margin_small"
             android:background="@drawable/background_green_oval"
             android:fontFamily="sans-serif"
             android:gravity="center"
@@ -49,7 +50,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/textView1"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView1"
-            tools:text="DISKON 10%" />
+            android:text="DISKON 10%" />
 
         <TextView
             android:id="@+id/textView3"
@@ -64,7 +65,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toBottomOf="@+id/textView1"
-            tools:text="1 Set Jumbo Bento for 2 persons on Weekdays (Monday - Friday)" />
+            android:text="1 Set Jumbo Bento for 2 persons on Weekdays (Monday - Friday)" />
 
         <TextView
             android:id="@+id/textView4"
@@ -75,9 +76,10 @@
             android:textColor="@color/black_40"
             android:textSize="@dimen/font_micro"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            android:layout_marginTop="@dimen/new_margin_small"
+            app:layout_constraintTop_toBottomOf="@+id/textView3"
             app:layout_constraintStart_toEndOf="@+id/imageView"
-            tools:text="Donburi Ichiya" />
+            android:text="Donburi Ichiya" />
 
         <View
             android:id="@+id/divider"
@@ -98,13 +100,13 @@
             android:textStyle="normal"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider"
-            tools:text="Tersedia di 50 lokasi" />
+            android:text="Tersedia di 50 lokasi" />
 
         <TextView
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/new_margin_small"
+            android:layout_marginRight="@dimen/new_margin_small"
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:textColor="@color/black_38"
@@ -112,7 +114,7 @@
             android:textStyle="normal"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView5"
-            tools:text="Rp40.000.000" />
+            android:text="Rp40.000.000" />
 
         <TextView
             android:id="@+id/textView7"
@@ -126,7 +128,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/textView5"
             app:layout_constraintTop_toTopOf="@+id/textView8"
             app:layout_constraintVertical_bias="0.52"
-            tools:text="Terjual 150 kali" />
+            android:text="Terjual 150 kali" />
 
         <TextView
             android:id="@+id/textView8"
@@ -141,7 +143,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView6"
-            tools:text="Rp50.000.000" />
+            android:text="Rp50.000.000" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
+
