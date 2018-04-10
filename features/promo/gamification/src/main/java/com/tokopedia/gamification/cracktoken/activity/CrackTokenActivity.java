@@ -57,8 +57,35 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
                     CrackEmptyTokenFragment.newInstance(tokenData)).commit();
     }
 
+    private CrackTokenFragment getCrackFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.parent_view);
+        if (fragment != null && fragment instanceof CrackTokenFragment) {
+            return (CrackTokenFragment) fragment;
+        }
+        return null;
+    }
+
     @Override
     public void onBackPressed() {
+        CrackTokenFragment crackTokenFragment = getCrackFragment();
+        if (crackTokenFragment != null && crackTokenFragment.isShowReward()) {
+            crackTokenFragment.dimissReward();
+        } else {
+            onBackPressedRoot();
+        }
+    }
+
+    @Override
+    public void hideToolbar() {
+        getSupportActionBar().hide();
+    }
+
+    @Override
+    public void showToolbar() {
+        getSupportActionBar().show();
+    }
+
+    private void onBackPressedRoot(){
         if (isTaskRoot()) {
             ((GamificationRouter) getApplication()).goToHome(this);
             finish();

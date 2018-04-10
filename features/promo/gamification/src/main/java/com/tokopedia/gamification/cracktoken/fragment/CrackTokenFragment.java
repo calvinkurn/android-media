@@ -149,9 +149,20 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
             @Override
             public void onClickCloseButton() {
+
                 widgetCrackResult.clearCrackResult();
 
                 crackTokenPresenter.getGetTokenTokopoints();
+            }
+
+            @Override
+            public void showToolbar() {
+                listener.showToolbar();
+            }
+
+            @Override
+            public void hideToolbar() {
+                listener.hideToolbar();
             }
 
             @Override
@@ -415,6 +426,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }, widgetTokenView.isCrackPercentageFull() ? 1 : 1000);
     }
 
+    public boolean isShowReward(){
+        return widgetCrackResult.isShown();
+    }
+
+    public void dimissReward(){
+        widgetCrackResult.dismissReward();
+    }
+
     @Override
     public void onErrorCrackToken(final CrackResult crackResult) {
         final Handler handler = new Handler();
@@ -536,5 +555,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     public interface ActionListener {
         void directPageToCrackEmpty(TokenData tokenData);
+        void hideToolbar();
+        void showToolbar();
     }
 }
