@@ -12,8 +12,6 @@ import rx.Observable;
 
 public class FlightCancellationUploadImageUseCase extends UseCase<String> {
     private static final String PATH_FILE = "PATH_FILE";
-    private static final String PATH_UPLOAD = "PATH_UPLOAD";
-    private static final String DEFAULT_FOLDER_UPLOAD = "/upload/attachment";
     private FlightModuleRouter flightModuleRouter;
 
     public FlightCancellationUploadImageUseCase(FlightModuleRouter flightModuleRouter) {
@@ -22,7 +20,7 @@ public class FlightCancellationUploadImageUseCase extends UseCase<String> {
 
     @Override
     public Observable<String> createObservable(RequestParams requestParams) {
-        return flightModuleRouter.uploadImage(DEFAULT_FOLDER_UPLOAD, requestParams.getString(PATH_FILE, ""));
+        return flightModuleRouter.uploadImage(requestParams.getString(PATH_FILE, ""));
     }
 
     public RequestParams createParam(String pathFile) {

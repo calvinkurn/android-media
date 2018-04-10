@@ -53,7 +53,5 @@ public interface FlightModuleRouter {
 
     FlightCancellationCameraPassData startCaptureWithCamera(FragmentActivity activity);
 
-    int getCameraRequestCode();
-
-    Observable<String> uploadImage(String destinationFolderPath, String localFilePath);
+    Observable<String> uploadImage(String localFilePath);
 }

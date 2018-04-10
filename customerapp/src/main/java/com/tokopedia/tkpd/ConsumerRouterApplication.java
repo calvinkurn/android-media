@@ -716,12 +716,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public int getCameraRequestCode() {
-        return ImageUploadHandler.REQUEST_CODE;
-    }
-
-    @Override
-    public Observable<String> uploadImage(String destinationFolderPath, String localFilePath) {
+    public Observable<String> uploadImage(String localFilePath) {
         UploadImageUseCase<AttachmentImageModel> uploadImageUseCase = getFlightConsumerComponent().uploadImageUseCase();
         return uploadImageUseCase.createObservable(uploadImageUseCase.createAttachmentsRequestParams(
                 localFilePath))
