@@ -968,6 +968,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         setChannelInfoView(channelInfoViewModel);
         refreshTab();
+        tabAdapter.setActiveFragment(initialFragment);
         if (currentFragmentIsChat()) {
             refreshChat();
         } else if (currentFragmentIsVote() && checkPollValid()) {
