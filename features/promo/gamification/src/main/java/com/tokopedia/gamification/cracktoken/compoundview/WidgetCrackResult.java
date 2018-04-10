@@ -271,7 +271,7 @@ public class WidgetCrackResult extends RelativeLayout {
     }
 
     public boolean isShown(){
-        return backgroundViewCrackResult.isShown();
+        return imageViewBgCrackResult.isShown();
     }
 
     public void dismissReward(){
