@@ -104,7 +104,7 @@ public class EventSearchPresenter
             if (searchText.length() > 2) {
                 getEventsListBySearch(searchText);
                 searchTag = searchText;
-                UnifyTracking.eventDigitalEventSearch(EventsGAConst.EVENT_SEARCH,searchText);
+                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH,searchText);
             }
             if (searchText.length() == 0) {
                 getView().setTopEvents(mTopEvents);
@@ -118,7 +118,7 @@ public class EventSearchPresenter
     public void searchSubmitted(String searchText) {
         getEventsListBySearch(searchText);
         searchTag = searchText;
-        UnifyTracking.eventDigitalEventSearch(EventsGAConst.EVENT_SEARCH,searchText);
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH,searchText);
     }
 
     @Override
@@ -170,7 +170,7 @@ public class EventSearchPresenter
 
     @Override
     public void onSearchResultClick(SearchViewModel searchViewModel, int position) {
-        UnifyTracking.eventDigitalSearchResultClick(EventsGAConst.EVENT_SEARCH_CLICK,searchTag + " - " +
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK,searchTag + " - " +
                 searchViewModel.getTitle() + " - " + position);
         CategoryItemsViewModel detailsViewModel = new CategoryItemsViewModel();
         detailsViewModel.setTitle(searchViewModel.getTitle());

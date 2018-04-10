@@ -99,7 +99,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                             currentPage = 0;
                         }
                         mTouchViewPager.setCurrentItem(currentPage, true);
-                        UnifyTracking.eventDigitalEventPromoImpression(EventsGAConst.EVENT_PROMO_IMPRESSION,mTouchViewPager.getAdapter().getPageTitle(currentPage).toString() +
+                        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, mTouchViewPager.getAdapter().getPageTitle(currentPage).toString() +
                                 " - " + currentPage);
                     }
                 });
@@ -119,23 +119,24 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             searchIntent.putParcelableArrayListExtra("TOPEVENTS", searchViewModelList);
             getView().navigateToActivityRequest(searchIntent,
                     EventsHomeActivity.REQUEST_CODE_EVENTSEARCHACTIVITY);
-            UnifyTracking.eventDigitalEventClickSearch(EventsGAConst.EVENT_CLICK_SEARCH);
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_SEARCH, "");
             return true;
         } else if (id == R.id.action_promo) {
             startGeneralWebView(PROMOURL);
-            UnifyTracking.eventDigitalEventClickPromo(EventsGAConst.EVENT_CLICK_PROMO);
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_PROMO, "");
             return true;
         } else if (id == R.id.action_booked_history) {
             startGeneralWebView(TRANSATIONSURL);
-            UnifyTracking.eventDigitalEventClickDaftarTransaksi(EventsGAConst.EVENT_CLICK_DAFTAR_TRANSAKSI);
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_DAFTAR_TRANSAKSI, "");
             return true;
         } else if (id == R.id.action_faq) {
             startGeneralWebView(FAQURL);
-            UnifyTracking.eventDigitalEventClickBantaun(EventsGAConst.EVENT_CLICK_BANTUAN);
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BANTUAN, "");
+
             return true;
         } else {
             getView().getActivity().onBackPressed();
-            UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK, getSCREEN_NAME());
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getSCREEN_NAME());
             return true;
         }
     }
@@ -219,7 +220,8 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             intent.putExtra("homedata", categoryItemsViewModel);
             getView().getActivity().startActivity(intent);
         }
-        UnifyTracking.eventDigitalEventClickPromo(EventsGAConst.EVENT_PROMO_CLICK, categoryItemsViewModel.getTitle() + "-" + String.valueOf(currentPage));
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_CLICK,
+                categoryItemsViewModel.getTitle() + "-" + String.valueOf(currentPage));
     }
 
     private void getCarousel(List<CategoryViewModel> categoryViewModels) {

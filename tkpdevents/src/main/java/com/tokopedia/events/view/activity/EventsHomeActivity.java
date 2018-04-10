@@ -303,7 +303,7 @@ public class EventsHomeActivity extends TActivity
 
             @Override
             public void onPageSelected(int position) {
-                UnifyTracking.eventDigitalEventClickTab(EventsGAConst.EVENT_CLICK_TAB, categoryViewPager.getAdapter().getPageTitle(position) + "-"
+                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_TAB, categoryViewPager.getAdapter().getPageTitle(position) + "-"
                         + String.valueOf(position));
             }
 
@@ -322,7 +322,8 @@ public class EventsHomeActivity extends TActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        //UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

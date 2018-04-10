@@ -275,7 +275,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         }
 
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
-        UnifyTracking.eventDigitalEventProductImpression(EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION, data.getTitle());
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION, data.getTitle());
     }
 
     @Override
@@ -313,13 +313,12 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         if (tvExpandableDescription.isExpanded()) {
             seemorebutton.setText(R.string.expand);
             ivArrowSeating.animate().rotation(0f);
-            UnifyTracking.eventDigitalEventShowHideDescription("deskripsi - " + R.string.expand,
+            UnifyTracking.eventDigitalEventTracking("deskripsi - " + R.string.expand,
                     textViewTitle.getText().toString());
-
         } else {
             seemorebutton.setText(R.string.collapse);
             ivArrowSeating.animate().rotation(180f);
-            UnifyTracking.eventDigitalEventShowHideDescription("deskripsi - " + R.string.collapse,
+            UnifyTracking.eventDigitalEventTracking("deskripsi - " + R.string.collapse,
                     textViewTitle.getText().toString());
         }
         tvExpandableDescription.toggle();
@@ -330,13 +329,13 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         if (tvExpandableTermsNCondition.isExpanded()) {
             seemorebuttonTnC.setText(R.string.expand);
             ivArrowSeatingTnC.animate().rotation(0f);
-            UnifyTracking.eventDigitalEventShowHideDescription("syarat dan ketentuan - " + R.string.expand,
+            UnifyTracking.eventDigitalEventTracking("syarat dan ketentuan - " + R.string.expand,
                     textViewTitle.getText().toString());
 
         } else {
             seemorebuttonTnC.setText(R.string.collapse);
             ivArrowSeatingTnC.animate().rotation(180f);
-            UnifyTracking.eventDigitalEventShowHideDescription("syarat dan ketentuan - " + R.string.collapse,
+            UnifyTracking.eventDigitalEventTracking("syarat dan ketentuan - " + R.string.collapse,
                     textViewTitle.getText().toString());
         }
         tvExpandableTermsNCondition.toggle();
@@ -369,7 +368,8 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        // UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

@@ -129,7 +129,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         super.onViewAttachedToWindow(holder);
         if (!holder.isShown()) {
             holder.setShown(true);
-            UnifyTracking.eventDigitalEventFeedImpression(EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryItems.get(holder.getIndex()).getTitle()
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryItems.get(holder.getIndex()).getTitle()
                     + " - " + holder.getIndex());
         }
     }
@@ -148,7 +148,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(mViewHolder.getIndex()));
             context.startActivity(detailsIntent);
-            UnifyTracking.eventDigitalEventClickProduct(EventsGAConst.EVENT_PRODUCT_CLICK, categoryItems.get(mViewHolder.getIndex()).getTitle()
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_CLICK, categoryItems.get(mViewHolder.getIndex()).getTitle()
                     + "-" + String.valueOf(mViewHolder.getIndex()));
         }
     }

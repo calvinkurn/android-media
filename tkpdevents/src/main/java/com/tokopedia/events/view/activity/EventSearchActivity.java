@@ -186,7 +186,7 @@ public class EventSearchActivity extends TActivity implements
             tvTopevents.setVisibility(View.GONE);
             rvTopEventSuggestions.setVisibility(View.VISIBLE);
             rvSearchResults.setVisibility(View.GONE);
-            UnifyTracking.eventDigitalEventSearchImpression(EventsGAConst.EVENT_SEARCH_IMPRESSION, mPresenter.getSearchTag()
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_IMPRESSION, mPresenter.getSearchTag()
                     + " - " + suggestions.get(0).getTitle() + " - " + "0");
         } else {
             rvSearchResults.setVisibility(View.GONE);
@@ -251,7 +251,8 @@ public class EventSearchActivity extends TActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+       // UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

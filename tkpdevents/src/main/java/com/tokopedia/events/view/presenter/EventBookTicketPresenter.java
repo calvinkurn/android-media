@@ -191,7 +191,7 @@ public class EventBookTicketPresenter
         validateShow.setScheduleId(selectedPackageViewModel.getProductScheduleId());
         validateShow.setProductId(selectedPackageViewModel.getProductId());
         postValidateShowUseCase.setValidateShowModel(validateShow);
-        UnifyTracking.eventDigitalEventCheckout(EventsGAConst.EVENT_CHECKOUT,selectedPackageViewModel.getTitle() + " - " +
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHECKOUT,selectedPackageViewModel.getTitle() + " - " +
                 selectedPackageViewModel.getCategoryId() + " - " +
                 selectedPackageViewModel.getSalesPrice());
         getProfile();
@@ -226,7 +226,7 @@ public class EventBookTicketPresenter
             selectedViewHolder.toggleMaxTicketWarning(View.VISIBLE, selectedPackageViewModel.getSelectedQuantity());
         }
         getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
-        UnifyTracking.eventDigitalEventAddTicket(EventsGAConst.EVENT_ADD_TICKET,"add - " + selectedPackageViewModel.getTitle() + " - " +
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET,"add - " + selectedPackageViewModel.getTitle() + " - " +
                 selectedPackageViewModel.getCategoryId() + " - " +
                 selectedPackageViewModel.getSalesPrice());
     }
@@ -246,7 +246,7 @@ public class EventBookTicketPresenter
             mChildFragment.setDecorationHeight(0);
             getView().hidePayButton();
         }
-        UnifyTracking.eventDigitalEventRemoveTicket(EventsGAConst.EVENT_REMOVE_TICKET,"remove - " + selectedPackageViewModel.getTitle() + " - " +
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_REMOVE_TICKET,"remove - " + selectedPackageViewModel.getTitle() + " - " +
                 selectedPackageViewModel.getCategoryId() + " - " +
                 selectedPackageViewModel.getSalesPrice());
     }
