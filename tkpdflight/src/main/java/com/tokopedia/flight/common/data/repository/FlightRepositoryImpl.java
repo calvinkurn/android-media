@@ -8,12 +8,9 @@ import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
-import com.tokopedia.flight.booking.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
-import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
-import com.tokopedia.flight.booking.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -22,6 +19,10 @@ import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderMapper;
+import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
+import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
@@ -376,8 +377,13 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightPassengerDb>> getSavedPassenger(String passengerId) {
+    public Observable<List<FlightPassengerDb>> getPassengerList(String passengerId) {
         return flightPassengerFactorySource.getPassengerList(passengerId);
+    }
+
+    @Override
+    public Observable<FlightPassengerDb> getSinglePassengerById(String passengerId) {
+        return flightPassengerFactorySource.getSinglePassenger(passengerId);
     }
 
     @Override
@@ -391,8 +397,13 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<Response<Object>> deletePassenger(DeletePassengerRequest request, String idempotencyKey) {
+    public Observable<Boolean> deletePassenger(DeletePassengerRequest request, String idempotencyKey) {
         return flightPassengerFactorySource.deletePassenger(request, idempotencyKey);
+    }
+
+    @Override
+    public Observable<Boolean> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey) {
+        return flightPassengerFactorySource.updatePassenger(request, idempotencyKey);
     }
 
     @Override

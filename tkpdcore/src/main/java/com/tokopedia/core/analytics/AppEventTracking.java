@@ -53,6 +53,7 @@ public interface AppEventTracking {
         String HOTLIST = "clickHotlist";
         String FAVORITE = "clickFavorite";
         String SEARCH = "clickSearch";
+        String IMAGE_SEARCH_CLICK = "imageSearchClick";
         String PULSA = "clickPulsa";
         String WISHLIST = "clickWishlist";
         String FEED = "clickFeed";
@@ -194,6 +195,7 @@ public interface AppEventTracking {
         String HOTLIST = "Hotlist";
         String REGISTER = "Register";
         String SEARCH = "Search";
+        String IMAGE_SEARCH = "image search";
         String SEARCH_RESULT = "Search Result";
         String SORT = "Sort";
         String FILTER = "Filter";
@@ -302,7 +304,12 @@ public interface AppEventTracking {
         String HOME_BOTTOM_NAV = "bottom nav";
         String ECOMMERCE = "Ecommerce";
         String APPSHARE = "App share";
+
         String DIGITAL_EVENT = "digital-event";
+      
+        String SEARCH_SHARE = "search share";
+        String GRID_MENU = "grid menu";
+        String SEARCH_TAB = "search tab";
     }
 
     interface Action {
@@ -311,6 +318,10 @@ public interface AppEventTracking {
         String CLICK_CHANNEL = "Click Channel";
         String SEARCH = "Search";
         String VOICE_SEARCH = "Voice Search";
+        String CAMERA_SEARCH = "click image search by camera";
+        String GALLERY_SEARCH = "click image search from gallery";
+        String CAMERA_SEARCH_RESULT = "query search by camera";
+        String GALLERY_SEARCH_RESULT = "query search by gallery";
         String VIEW = "View";
         String VIEW_RECENT = "View Recent";
         String VIEW_ALL = "Lihat Semua";
@@ -497,7 +508,14 @@ public interface AppEventTracking {
         String LOGIN_NOW = "masuk sekarang";
         String CHECKOUT = "Checkout";
 
+        String USSD_ATTEMPT = "ussd attempt";
+
         String QUICK_FILTER = "quick filter";
+        String CLICK_BAR = "click - bar - ";
+        String CLICK_CHANGE_GRID = "click - ";
+        String FAVORITE_SHOP_CLICK = "click - favoritkan";
+        String CLICK_CATALOG = "click - catalog";
+        String CLICK_TAB = "click - tab";
     }
 
     interface ImageEditor {

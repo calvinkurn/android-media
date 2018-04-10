@@ -31,7 +31,7 @@ def getAPKArchiveFolder(variant) {
 }
 
 def allowSplit() {
-    return gradle.startParameter.taskNames.contains("assembleRelease") &&
+    return gradle.startParameter.taskNames.contains("Release") &&
             (project.hasProperty('tkpdBuildType') && tkpdBuildType == "production");
 }
 
@@ -91,8 +91,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 218001101;
-        defaultVersionName = "2.20";
+        defaultVersionCode = 221001101;
+        defaultVersionName = "2.21";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -231,13 +231,6 @@ android {
 
         live {
 
-        }
-    }
-
-    variantFilter { variant ->
-
-        if(variant.buildType.name.equals('release') && variant.getFlavors().get(0).name.equals('staging')) {
-            variant.setIgnore(true);
         }
     }
 }
