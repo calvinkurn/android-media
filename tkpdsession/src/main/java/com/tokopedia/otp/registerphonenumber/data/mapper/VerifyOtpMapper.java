@@ -26,14 +26,15 @@ public class VerifyOtpMapper implements Func1<Response<TkpdResponse>, VerifyOtpV
     @Override
     public VerifyOtpViewModel call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if (response.body().getErrorMessages() != null && !response.body().getErrorMessages().isEmpty()) {
+            if (response.body().isNullData()) {
+                throw new ErrorMessageException("");
+            }
+            else if (TextUtils.isEmpty(response.body().getErrorMessageJoined())) {
                 VerifyOtpResponse validateOtpSQData = response.body().convertDataObj(
                         VerifyOtpResponse.class);
                 return convertToDomain(validateOtpSQData.isSuccess(), validateOtpSQData.getUuid());
-            } else if (response.body().isNullData()) {
-                throw new ErrorMessageException(response.body().getErrorMessageJoined());
             } else {
-                throw new ErrorMessageException("");
+                throw new ErrorMessageException(response.body().getErrorMessageJoined());
             }
         } else {
             String messageError = ErrorHandler.getErrorMessage(response);

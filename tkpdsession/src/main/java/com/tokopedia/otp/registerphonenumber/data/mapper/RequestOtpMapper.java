@@ -27,15 +27,15 @@ public class RequestOtpMapper implements Func1<Response<TkpdResponse>, RequestOt
 
     @Override
     public RequestOtpViewModel call(Response<TkpdResponse> response) {
-
         if (response.isSuccessful()) {
-            if (response.body().getErrorMessages() != null && !response.body().getErrorMessages().isEmpty()) {
+            if (response.body().isNullData()) {
+                throw new ErrorMessageException("");
+            }
+            else if (TextUtils.isEmpty(response.body().getErrorMessageJoined())) {
                 RequestOtpResponse pojo = response.body().convertDataObj(RequestOtpResponse.class);
                 return convertToDomain(pojo, response);
-            } else if (response.body().isNullData()) {
-                throw new ErrorMessageException(response.body().getErrorMessageJoined());
             } else {
-                throw new ErrorMessageException("");
+                throw new ErrorMessageException(response.body().getErrorMessageJoined());
             }
         } else {
             String messageError = ErrorHandler.getErrorMessage(response);
