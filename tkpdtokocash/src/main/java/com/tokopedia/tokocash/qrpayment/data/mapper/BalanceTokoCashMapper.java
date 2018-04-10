@@ -33,7 +33,7 @@ public class BalanceTokoCashMapper implements Func1<Wallet, BalanceTokoCash> {
                 actionBalance.setVisibility(balanceTokoCashEntity.getAction().getVisibility());
                 balanceTokoCash.setActionBalance(actionBalance);
             }
-            //balanceTokoCash.setAbTags(balanceTokoCashEntity.getAbTags());
+            balanceTokoCash.setAbTags(balanceTokoCashEntity.getAbTags());
             balanceTokoCash.setApplinks(balanceTokoCashEntity.getApplinks());
             balanceTokoCash.setBalance(balanceTokoCashEntity.getBalance());
             balanceTokoCash.setHoldBalance(balanceTokoCashEntity.getHoldBalance());

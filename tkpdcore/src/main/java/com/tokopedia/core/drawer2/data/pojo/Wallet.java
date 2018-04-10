@@ -1,9 +1,10 @@
 
 package com.tokopedia.core.drawer2.data.pojo;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class Wallet {
 
@@ -45,7 +46,7 @@ public class Wallet {
     private String applinks;
     @SerializedName("ab_tags")
     @Expose
-    private List<Object> abTags = null;
+    private List<String> abTags = null;
     @SerializedName("action")
     @Expose
     private Action action;
@@ -146,11 +147,11 @@ public class Wallet {
         this.applinks = applinks;
     }
 
-    public List<Object> getAbTags() {
+    public List<String> getAbTags() {
         return abTags;
     }
 
-    public void setAbTags(List<Object> abTags) {
+    public void setAbTags(List<String> abTags) {
         this.abTags = abTags;
     }
 
