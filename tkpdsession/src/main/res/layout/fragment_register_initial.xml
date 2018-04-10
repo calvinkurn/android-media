@@ -33,31 +33,7 @@
         android:layout_height="@dimen/dp_1"
         android:background="@color/button_border_grey"/>
 
-    <RelativeLayout
-        android:id="@+id/progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
 
-        <ProgressBar
-            android:id="@+id/progress_login"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/status_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/progress_login"
-            android:layout_centerInParent="true"
-            android:fontFamily="sans-serif-light"
-            android:text="@string/login_progress_signing_in"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:visibility="gone" />
-    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -100,7 +76,7 @@
             app:backgroundColor="@color/black"
             app:cornerSize="5"
             app:customText="@string/register_with_phone_number_button"
-            app:iconButton="@drawable/ic_phone"
+            app:iconButton="@drawable/bg_transparent"
             app:textColor="@color/black_70" />
 
         <com.tokopedia.core.customView.LoginTextView
@@ -118,5 +94,29 @@
 
 
     </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
+        <ProgressBar
+            android:id="@+id/progress_login"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/status_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/progress_login"
+            android:layout_centerInParent="true"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/login_progress_signing_in"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="gone" />
+    </RelativeLayout>
 </RelativeLayout>

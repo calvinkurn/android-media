@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,7 +23,7 @@ public class WelcomePageFragment extends BaseDaggerFragment {
             = "https://ecs7.tokopedia.net/img/android/icon_welcome/xxhdpi/welcome.png";
 
     private ImageView background;
-    private Button btnContinue;
+    private TextView btnContinue;
     private TextView btnProfileCompletion;
 
     public static WelcomePageFragment newInstance() {
@@ -36,7 +35,7 @@ public class WelcomePageFragment extends BaseDaggerFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_welcome_page, container, false);
         background = (ImageView) view.findViewById(R.id.background);
-        btnContinue = (Button) view.findViewById(R.id.btn_continue);
+        btnContinue = (TextView) view.findViewById(R.id.btn_continue);
         btnProfileCompletion = (TextView) view.findViewById(R.id.btn_profile_completion);
         return view;
     }

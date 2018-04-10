@@ -178,7 +178,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     protected void prepareView(View view) {
         UserAuthenticationAnalytics.setActiveRegister();
-        registerPhoneNumberButton.setVisibility(View.GONE);
+        registerPhoneNumberButton.setVisibility(View.VISIBLE);
 
         registerButton.setColor(Color.WHITE);
         registerButton.setBorderColor(Color.BLACK);
@@ -198,11 +198,10 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         registerPhoneNumberButton.setColor(Color.WHITE);
         registerPhoneNumberButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
         registerPhoneNumberButton.setRoundCorner(10);
+        registerPhoneNumberButton.setImageResource(R.drawable.ic_phone);
         registerPhoneNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                UnifyTracking.eventTracking(LoginAnalytics.getEventClickRegisterEmail());
-//                UnifyTracking.eventMoRegistrationStart(AppEventTracking.GTMCacheValue.EMAIL);
                 showProgressBar();
                 Intent intent = RegisterPhoneNumberActivity.getCallingIntent(getActivity());
                 startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);

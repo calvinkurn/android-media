@@ -17,8 +17,10 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.analytics.RegisterAnalytics;
@@ -26,11 +28,13 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
-import com.tokopedia.otp.registerphonenumber.view.activity.VerificationActivity;
-import com.tokopedia.otp.registerphonenumber.view.viewmodel.MethodItem;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
@@ -38,8 +42,6 @@ import com.tokopedia.session.register.registerphonenumber.view.activity.WelcomeP
 import com.tokopedia.session.register.registerphonenumber.view.listener.RegisterPhoneNumber;
 import com.tokopedia.session.register.registerphonenumber.view.presenter.RegisterPhoneNumberPresenter;
 import com.tokopedia.session.register.registerphonenumber.view.viewmodel.LoginRegisterPhoneNumberModel;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -161,10 +163,24 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void goToVerifyAccountPage(String phoneNumber) {
-        startActivityForResult(VerificationActivity.getRegisterPhoneNumberVerificationIntent(
-                getActivity(),
-                phoneNumber,
-                getListVerificationMethod()),
+//        startActivityForResult(VerificationActivity.getRegisterPhoneNumberVerificationIntent(
+//                getActivity(),
+//                phoneNumber,
+//                getListVerificationMethod()),
+//                REQUEST_VERIFY_PHONE);
+        VerificationPassModel passModel = new
+                VerificationPassModel(phoneNumber,
+                RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
+                true
+        );
+        GlobalCacheManager cacheManager = new GlobalCacheManager();
+        cacheManager.setKey(VerificationActivity.PASS_MODEL);
+        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
+                new TypeToken<VerificationPassModel>() {
+                }.getType()));
+        cacheManager.store();
+        startActivityForResult(VerificationActivity.getCallingIntent(getActivity(),
+                RequestOtpUseCase.MODE_SMS),
                 REQUEST_VERIFY_PHONE);
     }
 
@@ -187,21 +203,6 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
                     .NORMAL_PROGRESS);
 
         progressDialog.showDialog();
-    }
-
-    private ArrayList<MethodItem> getListVerificationMethod() {
-        ArrayList<MethodItem> list = new ArrayList<>();
-        list.add(new MethodItem(
-                VerificationActivity.TYPE_SMS,
-                R.drawable.ic_verification_sms,
-                MethodItem.getSmsMethodText(phoneNumber.getText().toString())
-        ));
-        list.add(new MethodItem(
-                VerificationActivity.TYPE_PHONE_CALL,
-                R.drawable.ic_verification_call,
-                MethodItem.getCallMethodText(phoneNumber.getText().toString())
-        ));
-        return list;
     }
 
     @Override
