@@ -250,11 +250,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
                 FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
                 if (floatingEggButtonFragment != null) {
-                    if (dy > 0) {
-                        floatingEggButtonFragment.hideFloatingEggAnimate();
-                    } else {
-                        floatingEggButtonFragment.showFloatingEggAnimate(false);
-                    }
+                    floatingEggButtonFragment.hideOnScrolling();
                 }
             }
         };
