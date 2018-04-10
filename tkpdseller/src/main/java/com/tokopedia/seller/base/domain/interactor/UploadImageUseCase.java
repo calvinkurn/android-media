@@ -12,7 +12,6 @@ import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
 import com.tokopedia.seller.product.common.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.edit.domain.model.GenerateHostDomainModel;
-import com.tokopedia.seller.shop.setting.constant.ShopSettingNetworkConstant;
 
 import java.io.File;
 import java.util.Map;
@@ -28,16 +27,20 @@ import rx.functions.Func1;
 
 public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
 
-    public static final String PARAM_PATH_UPLOAD = "PATH_UPLOAD";
-    public static final String HTTPS = "https://";
-    public static final String PARAM_BODY = "PARAM_BODY";
-
+    private static final String PARAM_PATH_UPLOAD = "PATH_UPLOAD";
+    private static final String HTTPS = "https://";
+    private static final String PARAM_BODY = "PARAM_BODY";
     private static final String PARAM_SERVER_ID = "server_id";
     private static final String PARAM_SERVER_LANGUAGE = "new_add";
-    public static final String PARAM_RESOLUTION = "resolution";
+    private static final String PARAM_RESOLUTION = "resolution";
+    private static final String PARAM_ATTACHMENT_TYPE_KEY_VALUE = "fileToUpload\"; filename=\"image.jpg";
+    private static final String PARAM_WEB_SERVICE = "web_service";
+    private static final String PARAM_OS_TYPE = "os_type";
+    private static final String PARAM_ID = "id";
+
     private static final String DEFAULT_GOLANG_VALUE = "2";
     private static final String DEFAULT_RESOLUTION_VALUE = "300";
-    private static final String ATTACHMENT_TYPE_KEY_VALUE = "fileToUpload\"; filename=\"image.jpg";
+    private static final String DEFAULT_ATTACHMENT_URL = "/upload/attachment";
 
     private UploadImageRepository uploadImageRepository;
     private GenerateHostRepository generateHostRepository;
@@ -144,13 +147,13 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
         paramsUploadImage.put(NetworkCalculator.DEVICE_ID, deviceId);
         paramsUploadImage.put(NetworkCalculator.HASH, hash);
         paramsUploadImage.put(NetworkCalculator.DEVICE_TIME, deviceTime);
-        paramsUploadImage.put(ATTACHMENT_TYPE_KEY_VALUE, fileToUpload);
-        paramsUploadImage.put("web_service", webservice);
-        paramsUploadImage.put("os_type", osType);
-        paramsUploadImage.put("id", id);
+        paramsUploadImage.put(PARAM_ATTACHMENT_TYPE_KEY_VALUE, fileToUpload);
+        paramsUploadImage.put(PARAM_WEB_SERVICE, webservice);
+        paramsUploadImage.put(PARAM_OS_TYPE, osType);
+        paramsUploadImage.put(PARAM_ID, id);
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(PARAM_PATH_UPLOAD, "/upload/attachment");
+        requestParams.putString(PARAM_PATH_UPLOAD, DEFAULT_ATTACHMENT_URL);
         requestParams.putObject(PARAM_BODY, paramsUploadImage);
         return requestParams;
     }
