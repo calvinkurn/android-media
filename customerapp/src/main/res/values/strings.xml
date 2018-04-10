@@ -91,5 +91,5 @@
     <!-- Shake Shake Campaign -->
 
     <string name="shake_shake_success">Berhasil shake shake</string>
-    <string name="shake_shake_wrong_deeplink">maaf, campaign tidak terbuka</string>
+    <string name="shake_shake_wrong_deeplink">Sedang terjadi kendala. Mohon coba beberapa saat lagi.</string>
 </resources>

@@ -53,7 +53,9 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(IS_AUDIO, "false");
-        requestParams.putString(SCREEN_NAME,ShakeDetectManager.sTopActivity);
+        if(ShakeDetectManager.sTopActivity !=null) {
+            requestParams.putString(SCREEN_NAME, ShakeDetectManager.sTopActivity.trim().replaceAll(" ","_"));
+        }
         shakeUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
             public void onCompleted() {
@@ -67,7 +69,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 } else if (e instanceof SocketTimeoutException) {
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else if (e instanceof CampaignException) {
-                    getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                    getView().showErrorGetInfo(e.getMessage());
+                    return;
                 } else if (e instanceof ResponseDataNullException) {
                     getView().showErrorNetwork(e.getMessage());
                 } else if (e instanceof HttpErrorException) {
@@ -77,9 +80,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 } else {
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
-                Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                // Vibrate for 500 milliseconds
-                Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
+                   Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
 
                 intent.putExtra("isSuccess",false);
 

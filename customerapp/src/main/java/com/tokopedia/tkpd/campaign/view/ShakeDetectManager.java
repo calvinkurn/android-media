@@ -41,7 +41,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     public static final int MESSAGE_ENABLE_SHAKE = 1;
     public static final int MESSAGE_DISABLE_SHAKE = 2;
 
-    public static final int SHAKE_SHAKE_WAIT_FOR_SECOND = 2000;
+    public static final int SHAKE_SHAKE_WAIT_FOR_SECOND = 5000;
     private boolean  isShakeShakeEnable = true;
 
     public static String sTopActivity = null;
