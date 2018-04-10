@@ -53,7 +53,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
                 .setPositiveButton(R.string.app_rating_button_rate, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        openPlayStore();
+                        openPlayStore(activity);
                         saveVersionCodeForState();
                         UnifyTracking.eventClickAppRating(AppEventTracking.Event.CLICK_APP_RATING);
                         dialog.dismiss();

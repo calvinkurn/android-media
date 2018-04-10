@@ -7,11 +7,13 @@ import android.util.Base64;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.nytimes.android.external.cache.Stopwatch;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
+import com.tokopedia.core.analytics.fingerprint.domain.usecase.CacheGetFingerprintUseCase;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -74,18 +76,14 @@ public class FingerprintInterceptor implements Interceptor {
 
     private String getFingerPrintJson() {
         String json = "";
+        Stopwatch stopwatch = Stopwatch.createStarted();
         CommonUtils.dumper("Fingerpint is running");
         try {
             GetFingerprintUseCase getFingerprintUseCase;
             FingerprintRepository fpRepo = new FingerprintDataRepository();
-            getFingerprintUseCase = new GetFingerprintUseCase(fpRepo);
+            getFingerprintUseCase = new CacheGetFingerprintUseCase(fpRepo);
             json = getFingerprintUseCase.createObservable(RequestParams.EMPTY)
                     .map(new Func1<String, String>() {
-                        @Override
-                        public String call(String s) {
-                            return s;
-                        }
-                    }).map(new Func1<String, String>() {
                         @Override
                         public String call(String s) {
                             try {
@@ -109,7 +107,10 @@ public class FingerprintInterceptor implements Interceptor {
                     }).toBlocking().single();
         } catch (Throwable t) {
             t.printStackTrace();
+        }finally {
+            CommonUtils.dumper("fingerprint execution time : "+stopwatch.stop());
         }
+
         return json;
     }
 

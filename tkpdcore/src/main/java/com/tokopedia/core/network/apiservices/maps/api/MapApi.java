@@ -28,4 +28,9 @@ public interface MapApi {
             @QueryMap TKPDMapParam<String, Object> params
     );
 
+    @GET(TkpdBaseURL.Maps.PATH_MAPS_GEOCODE)
+    Observable<Response<TkpdResponse>> getLatLngGeocode(
+            @QueryMap TKPDMapParam<String, Object> params
+    );
+
 }
