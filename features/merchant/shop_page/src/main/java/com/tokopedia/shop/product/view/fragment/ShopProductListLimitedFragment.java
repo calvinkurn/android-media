@@ -519,24 +519,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         }
     }
 
-    @Override
-    public void onProductImageFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
-        if (shopInfo != null) {
-            shopPageTracking.eventClickProductPictureFeaturedImpression(getString(R.string.shop_info_title_tab_product), shopProductViewModel.getName(),
-                    shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), adapterPosition,
-                    shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
-        }
-    }
-
-    @Override
-    public void onProductTitleFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
-        if (shopInfo != null) {
-            shopPageTracking.eventClickProductTitleFeaturedImpression(getString(R.string.shop_info_title_tab_product), shopProductViewModel.getName(),
-                    shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), adapterPosition,
-                    shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
-        }
-    }
-
     public void onLastItemVisibleTracking() {
         if (shopInfo != null) {
             shopPageTracking.eventViewBottomNavigation(getString(R.string.shop_info_title_tab_product), shopInfo.getInfo().getShopId(),
