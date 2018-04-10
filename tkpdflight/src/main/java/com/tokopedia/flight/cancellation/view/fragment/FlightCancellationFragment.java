@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     FlightCancellationPresenter flightCancellationPresenter;
 
     private AppCompatButton btnSubmit;
+    private AppCompatTextView txtCancellationSteps;
 
     public static FlightCancellationFragment createInstance(String invoiceId,
                                                             int totalPrice,
@@ -69,6 +71,8 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_cancellation, container, false);
+
+        txtCancellationSteps = view.findViewById(R.id.txt_cancellation_steps);
         btnSubmit = view.findViewById(R.id.button_submit);
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -130,6 +134,14 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     @Override
     public void renderCancelableList() {
         renderList(flightCancellationViewModelList);
+
+        if (flightCancellationViewModelList.size() > 0) {
+            txtCancellationSteps.setVisibility(View.VISIBLE);
+            btnSubmit.setVisibility(View.VISIBLE);
+        } else {
+            txtCancellationSteps.setVisibility(View.GONE);
+            btnSubmit.setVisibility(View.GONE);
+        }
     }
 
     @Override
