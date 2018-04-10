@@ -64,6 +64,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
     @Override
     public void processCheckFlightPromoCode(Activity activity, String voucherCode, String cartId) {
+        view.showProgressLoading();
         flightCheckVoucherUseCase.execute(
                 flightCheckVoucherUseCase.createVoucherRequest(cartId, voucherCode),
                 checkFlightVoucherSubscriber()
