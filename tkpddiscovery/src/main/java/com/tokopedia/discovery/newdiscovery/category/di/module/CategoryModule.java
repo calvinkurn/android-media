@@ -3,6 +3,7 @@ package com.tokopedia.discovery.newdiscovery.category.di.module;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.discovery.imagesearch.di.module.ImageSearchModule;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.category.di.scope.CategoryScope;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryPresenter;
@@ -25,6 +26,7 @@ import dagger.Provides;
         ApiModule.class,
         BannerModule.class,
         AttributeModule.class,
+        ImageSearchModule.class,
         CatalogModule.class,
         CategoryHeaderModule.class})
 public class CategoryModule {
