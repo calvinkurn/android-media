@@ -18,10 +18,12 @@ import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsSortByActivity;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyKeywordAdDataBinder;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
+import com.tokopedia.topads.dashboard.view.model.TopAdsSortByModel;
 import com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordModule;
@@ -46,6 +48,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     protected int filterStatus;
     protected GroupAd groupAd;
     protected int selectedPosition;
+
     @Inject
     TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
     private boolean hasData;
@@ -108,6 +111,9 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         if (groupAd != null) {
             baseKeywordParam.groupId = Integer.parseInt(groupAd.getId());
         }
+        if (selectedSort != null) {
+            baseKeywordParam.sortingParam = Integer.parseInt(selectedSort.getId());
+        }
         baseKeywordParam.keywordStatus = filterStatus;
         searchData(baseKeywordParam);
     }
@@ -135,6 +141,11 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
             filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
             selectedPosition = intent.getIntExtra(TopAdsFilterListFragment.EXTRA_ITEM_SELECTED_POSITION, 0);
             resetPageAndSearch();
+        } else if (requestCode == REQUEST_CODE_AD_SORT_BY && intent != null){
+            if (resultCode == Activity.RESULT_OK){
+                selectedSort = intent.getParcelableExtra(TopAdsSortByActivity.EXTRA_SORT_SELECTED);
+                resetPageAndSearch();
+            }
         }
 
         if (requestCode == TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS) {

@@ -137,6 +137,9 @@ public class TopAdsKeywordListPresenterImpl extends
         if (baseKeywordParam.groupId > 0)
             requestParams.putString(KeywordTypeDef.GROUP_ID, Long.toString(baseKeywordParam.groupId));
 
+        if (baseKeywordParam.sortingParam > 0)
+            requestParams.putString(KeywordTypeDef.SORTING, Integer.toString(baseKeywordParam.sortingParam));
+
         requestParams.putString(KeywordTypeDef.KEYWORD_STATUS, Integer.toString(baseKeywordParam.keywordStatus));
 //        requestParams.putString("keyword_type_id", Integer.toString(baseKeywordParam.keywordTypeId));
 //        requestParams.putString("sorting", Integer.toString(baseKeywordParam.sortingParam));
