@@ -121,15 +121,15 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
     private void showConfirmationDialog(final String name) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(String.format(getResources().getString(R.string.name_confirmation), name));
+        builder.setTitle(getResources().getString(R.string.name_confirmation));
         builder.setMessage(getResources().getString(R.string.name_confirmation_content));
-        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getResources().getString(R.string.name_confirmation_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
                 presenter.submitName(name);
             }
         });
-        builder.setNegativeButton(getResources().getString(R.string.phone_number_already_registered_no), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getResources().getString(R.string.name_confirmation_no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
                 dialog.dismiss();
