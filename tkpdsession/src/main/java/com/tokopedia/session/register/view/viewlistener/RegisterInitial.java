@@ -37,9 +37,7 @@ public interface RegisterInitial {
 
         void onSuccessRegisterSosmed(String methodName);
 
-        void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData);
-
-        void clearToken();
+        void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData, String methodName);
 
         void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone);
 
@@ -59,8 +57,6 @@ public interface RegisterInitial {
         void getFacebookCredential(Fragment fragment, CallbackManager callbackManager);
 
         void registerFacebook(AccessToken accessToken);
-
-        void clearToken();
 
         void registerGoogle(String model);
     }

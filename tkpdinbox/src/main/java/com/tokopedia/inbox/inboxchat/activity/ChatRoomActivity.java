@@ -25,6 +25,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.R;
@@ -289,6 +290,17 @@ public class ChatRoomActivity extends BasePresenterActivity
         bundle.putString(PARAM_CUSTOM_SUBJECT, customSubject);
         bundle.putString(PARAM_CUSTOM_MESSAGE, customMessage);
         bundle.putBoolean(IS_HAS_ATTACH_BUTTON, false);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getChatBotIntent(Context context, String messageId){
+        Intent intent = new Intent(context, ChatRoomActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_MESSAGE_ID, messageId);
+        bundle.putBoolean(TkpdInboxRouter.IS_CHAT_BOT,true);
+        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, true);
+        bundle.putBoolean(PARAM_WEBSOCKET, true);
         intent.putExtras(bundle);
         return intent;
     }

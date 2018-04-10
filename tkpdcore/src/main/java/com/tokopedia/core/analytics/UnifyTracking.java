@@ -655,6 +655,42 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventDiscoveryCameraImageSearch() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.CAMERA_SEARCH,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventDiscoveryGalleryImageSearch() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.GALLERY_SEARCH,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventDiscoveryCameraImageSearchResult(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.CAMERA_SEARCH_RESULT,
+                label
+        ).getEvent());
+    }
+
+    public static void eventDiscoveryGalleryImageSearchResult(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.GALLERY_SEARCH_RESULT,
+                label
+        ).getEvent());
+    }
+
     public static void eventSearchWishlist(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.HOME_WISHLIST,
@@ -3247,15 +3283,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSearchResultShopItemClick(String keyword, String shopName) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH_RESULT,
-                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                AppEventTracking.Action.CLICK_SHOP,
-                keyword + " - " + shopName
-        ).setUserId().getEvent());
-    }
-
     public static void eventSearchResultProductWishlistClick(boolean isWishlisted, String keyword) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.PRODUCT_VIEW,
@@ -3285,6 +3312,15 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FILTER_PRODUCT,
                 AppEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
                 generateFilterEventLabel(selectedFilter)
+        ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.FILTER_PRODUCT,
+                AppEventTracking.Action.QUICK_FILTER,
+                filterName + " - " + filterValue + " - " + Boolean.toString(isSelected)
         ).setUserId().getEvent());
     }
 
@@ -3331,5 +3367,4 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.TAKE_TO_SHOP
         ).setUserId().getEvent());
     }
-
 }

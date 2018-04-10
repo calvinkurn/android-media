@@ -13,7 +13,7 @@
         android:textColor="@color/black"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/bg_yellow_border_yelow"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:gravity="center"
         />
 

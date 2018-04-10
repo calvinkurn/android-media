@@ -4,18 +4,18 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_vs"
-    android:paddingTop="@dimen/padding_small"
-    android:paddingBottom="@dimen/padding_small"
+    android:paddingLeft="@dimen/dp_10"
+    android:paddingRight="@dimen/dp_5"
+    android:paddingTop="@dimen/dp_10"
+    android:paddingBottom="@dimen/dp_10"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/label_seller_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
         android:text="@string/informasi_produk"
         android:textColor="@color/black_70"
         android:textStyle="bold" />
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/padding_med"
+        android:paddingTop="@dimen/dp_20"
         android:weightSum="1">
 
         <LinearLayout
@@ -150,6 +150,6 @@
         android:id="@+id/view_free_return"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_small" />
+        android:layout_margin="@dimen/dp_10" />
 
 </LinearLayout>
