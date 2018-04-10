@@ -39,6 +39,14 @@ public interface FlightCancellationReasonAndProofContract {
         void showFailedToNextStepErrorMessage(String errorMessage);
 
         void navigateToNextStep(FlightCancellationWrapperViewModel viewModel);
+
+        void hideFullPageContainer();
+
+        void showLoading();
+
+        void showFullPageContainer();
+
+        void hideLoading();
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -48,5 +56,7 @@ public interface FlightCancellationReasonAndProofContract {
         void onSuccessGetImage(String filepath);
 
         void onNextButtonClicked();
+
+        void onDestroy();
     }
 }

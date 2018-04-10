@@ -38,7 +38,7 @@ public class FlightCancellationEstimateRefundUseCase extends UseCase<EstimateRef
         FlightEstimateRefundRequest requestBody = new FlightEstimateRefundRequest();
         requestBody.setType(DEFAULT_TYPE);
         FlightEstimateRefundAttribute attribute = new FlightEstimateRefundAttribute();
-        attribute.setUserId(userId);
+        attribute.setUserId(Long.parseLong(userId));
         attribute.setInvoiceId(invoiceId);
         List<FlightCancellationDetailRequestBody> details = transformIntoDetails(journeyCancellations);
         attribute.setDetails(details);
@@ -52,8 +52,8 @@ public class FlightCancellationEstimateRefundUseCase extends UseCase<EstimateRef
         for (FlightCancellationViewModel viewModel : journeyCancellations ){
             for (FlightCancellationPassengerViewModel passengerViewModel : viewModel.getPassengerViewModelList()) {
                 FlightCancellationDetailRequestBody detailRequestBody = new FlightCancellationDetailRequestBody();
-                detailRequestBody.setJourneyId(viewModel.getFlightCancellationJourney().getJourneyId());
-                detailRequestBody.setPassengerId(passengerViewModel.getPassengerId());
+                detailRequestBody.setJourneyId(Long.parseLong(viewModel.getFlightCancellationJourney().getJourneyId()));
+                detailRequestBody.setPassengerId(Long.parseLong(passengerViewModel.getPassengerId()));
                 detailRequestBodies.add(detailRequestBody);
             }
         }

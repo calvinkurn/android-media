@@ -10,28 +10,28 @@ import com.google.gson.annotations.SerializedName;
 public class FlightCancellationDetailRequestBody {
     @SerializedName("journey_id")
     @Expose
-    private String journeyId;
+    private long journeyId;
 
     @SerializedName("passenger_id")
     @Expose
-    private String passengerId;
+    private long passengerId;
 
     public FlightCancellationDetailRequestBody() {
     }
 
-    public String getJourneyId() {
+    public long getJourneyId() {
         return journeyId;
     }
 
-    public void setJourneyId(String journeyId) {
+    public void setJourneyId(long journeyId) {
         this.journeyId = journeyId;
     }
 
-    public String getPassengerId() {
+    public long getPassengerId() {
         return passengerId;
     }
 
-    public void setPassengerId(String passengerId) {
+    public void setPassengerId(long passengerId) {
         this.passengerId = passengerId;
     }
 }

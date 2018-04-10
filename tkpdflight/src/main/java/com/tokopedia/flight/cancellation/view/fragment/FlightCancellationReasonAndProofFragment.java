@@ -205,6 +205,26 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void hideFullPageContainer() {
+        container.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showFullPageContainer() {
+        container.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onUploadAttachmentButtonClicked() {
         AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
         myAlertDialog.setMessage("Bagaimana Anda ingin mengatur gambar Anda ?");
@@ -274,5 +294,12 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     public interface OnFragmentInteractionListener {
 
         void goToEstimateReview(FlightCancellationWrapperViewModel viewModel);
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.onDestroy();
+        presenter.detachView();
+        super.onDestroyView();
     }
 }

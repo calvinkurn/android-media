@@ -5,7 +5,6 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
-import com.tokopedia.flight.booking.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationDetailRequestBody;

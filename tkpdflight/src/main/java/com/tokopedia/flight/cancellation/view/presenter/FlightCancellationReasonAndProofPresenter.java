@@ -59,6 +59,8 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     @Override
     public void onNextButtonClicked() {
         if (validateFields()) {
+            getView().hideFullPageContainer();
+            getView().showLoading();
             List<FlightCancellationAttachmentViewModel> attachments = getView().getAttachments();
             compositeSubscription.add(Observable.from(attachments)
                     .flatMap(new Func1<FlightCancellationAttachmentViewModel, Observable<FlightCancellationAttachmentViewModel>>() {
@@ -101,6 +103,8 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                         public void onError(Throwable e) {
                             e.printStackTrace();
                             if (isViewAttached() && !isUnsubscribed()) {
+                                getView().showFullPageContainer();
+                                getView().hideLoading();
                                 getView().showFailedToNextStepErrorMessage(ErrorHandler.getErrorMessage(getView().getActivity(), e));
                             }
                         }
@@ -112,6 +116,11 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                     })
             );
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
     }
 
     private boolean validateFields() {

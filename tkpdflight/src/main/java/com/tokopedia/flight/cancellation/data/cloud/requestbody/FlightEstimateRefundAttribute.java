@@ -15,7 +15,7 @@ public class FlightEstimateRefundAttribute {
     private String invoiceId;
     @SerializedName("user_id")
     @Expose
-    private String userId;
+    private long userId;
     @SerializedName("details")
     @Expose
     private List<FlightCancellationDetailRequestBody> details;
@@ -28,11 +28,11 @@ public class FlightEstimateRefundAttribute {
         this.invoiceId = invoiceId;
     }
 
-    public String getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 public class FlightOrderJourney implements Visitable<FlightDetailOrderTypeFactory> {
-
+    private long journeyId;
     private String departureCity;
     private String departureCityCode;
     private String departureAiportId;
@@ -109,5 +109,13 @@ public class FlightOrderJourney implements Visitable<FlightDetailOrderTypeFactor
     @Override
     public int type(FlightDetailOrderTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public long getJourneyId() {
+        return journeyId;
+    }
+
+    public void setJourneyId(long journeyId) {
+        this.journeyId = journeyId;
     }
 }
