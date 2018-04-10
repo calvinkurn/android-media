@@ -7,6 +7,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.posapp.react.datasource.ReactDataSource;
 import com.tokopedia.tkpdreactnative.react.CoreReactPackage;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
@@ -25,7 +26,7 @@ public class PosReactNativeHostFactory {
     public static ReactNativeHost init(Application application) {
         if(instance == null) instance = new PosReactNativeHostFactory();
 
-        return instance.createReactNativeHostDev(application);
+        return instance.createReactNativeHost(application);
     }
 
     private ReactNativeHost createReactNativeHost(final Application application) {
@@ -42,12 +43,7 @@ public class PosReactNativeHostFactory {
 
             @Override
             protected String getJSBundleFile() {
-                return "index.android.bundle";
-            }
-
-            @Override
-            protected String getJSMainModuleName() {
-                return "index.android";
+                return "index.android.bundle"
             }
         };
     }
@@ -67,11 +63,6 @@ public class PosReactNativeHostFactory {
             @Override
             protected String getJSBundleFile() {
                 return "index.android.bundle";
-            }
-
-            @Override
-            protected String getJSMainModuleName() {
-                return "index.android";
             }
         };
     }
