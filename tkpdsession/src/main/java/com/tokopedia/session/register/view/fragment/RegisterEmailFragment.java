@@ -97,6 +97,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     TextInputEditText registerPassword;
     TextView registerButton;
     EditText phone;
+    TextView phoneHelper, emailHelper, passwordHelper;
     TkpdHintTextInputLayout wrapperName;
     TkpdHintTextInputLayout wrapperEmail;
     TkpdHintTextInputLayout wrapperPassword;
@@ -160,6 +161,9 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         wrapperPassword = view.findViewById(R.id.wrapper_password);
         wrapperPhone = view.findViewById(R.id.wrapper_phone);
         name = view.findViewById(R.id.name);
+        passwordHelper = (TextView) view.findViewById(R.id.password_helper);
+        emailHelper = (TextView) view.findViewById(R.id.email_helper);
+        phoneHelper = (TextView) view.findViewById(R.id.phone_helper);
         registerNextTAndC = view.findViewById(R.id.register_next_detail_t_and_p);
 
         prepareView(view);
@@ -256,7 +260,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                     setWrapperError(wrapper, getString(R.string.error_illegal_character));
                 } else if (RegisterUtil.isExceedMaxCharacter(name.getText().toString())) {
                     setWrapperError(wrapper, getString(R.string.error_max_35_character));
-
                 }
 
                 checkIsValidForm();
@@ -280,10 +283,13 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                passwordHelper.setVisibility(View.VISIBLE);
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
+                    passwordHelper.setVisibility(View.GONE);
                 } else if (registerPassword.getText().toString().length() < PASSWORD_MINIMUM_LENGTH) {
                     setWrapperError(wrapper, getString(R.string.error_minimal_password));
+                    passwordHelper.setVisibility(View.GONE);
                 }
 
                 checkIsValidForm();
@@ -307,10 +313,13 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                emailHelper.setVisibility(View.VISIBLE);
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
+                    emailHelper.setVisibility(View.GONE);
                 } else if (!CommonUtils.EmailValidation(email.getText().toString())) {
                     setWrapperError(wrapper, getString(R.string.wrong_email_format));
+                    emailHelper.setVisibility(View.GONE);
                 }
 
                 checkIsValidForm();
@@ -395,14 +404,17 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                phoneHelper.setVisibility(View.VISIBLE);
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
+                    phoneHelper.setVisibility(View.GONE);
                 } else if (s.length() < 3) {
                     setWrapperError(wrapper, getString(R.string.error_minimal_phone));
+                    phoneHelper.setVisibility(View.GONE);
                 } else if (!RegisterUtil.isValidPhoneNumber(
                         phone.getText().toString().replace("-", ""))) {
                     setWrapperError(wrapper, getString(R.string.error_invalid_phone_number));
-
+                    phoneHelper.setVisibility(View.GONE);
                 }
 
                 checkIsValidForm();

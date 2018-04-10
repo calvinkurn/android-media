@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -40,7 +39,6 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
 
     private EditText etName;
     private Button btnContinue;
-    private TextView error;
     private TkpdProgressDialog progressDialog;
 
     @Inject
@@ -58,7 +56,6 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
         View view = inflater.inflate(R.layout.fragment_change_name, container, false);
         etName = (EditText) view.findViewById(R.id.et_name);
         btnContinue = (Button) view.findViewById(R.id.btn_continue);
-        error = (TextView) view.findViewById(R.id.tv_error);
         return view;
     }
 
@@ -91,10 +88,8 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (isValidName(charSequence.toString())) {
-                    error.setVisibility(View.GONE);
                     enableNextButton();
                 } else {
-                    error.setVisibility(View.VISIBLE);
                     disableNextButton();
                 }
             }
@@ -108,11 +103,9 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
 
     private boolean isValidName(String name) {
         if (name.length() < COUNT_CHAR_MIN) {
-            error.setText(getResources().getString(R.string.error_name_too_short));
             return false;
         }
         else if (name.length() > COUNT_CHAR_MAX) {
-            error.setText(getResources().getString(R.string.error_name_too_long));
             return false;
         }
         return true;
@@ -207,7 +200,7 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
     }
 
     private void disableButton(Button button) {
-        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
+        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_12));
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable));
         button.setEnabled(false);
     }

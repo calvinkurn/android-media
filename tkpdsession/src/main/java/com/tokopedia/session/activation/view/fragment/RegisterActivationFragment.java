@@ -206,8 +206,8 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
                 } else {
                     activateButton.setEnabled(false);
                     MethodChecker.setBackground(activateButton,
-                            MethodChecker.getDrawable(getActivity(), R.drawable.green_button_rounded));
-                    activateButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
+                            MethodChecker.getDrawable(getActivity(), R.drawable.grey_button_rounded));
+                    activateButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_12));
                 }
             }
         });

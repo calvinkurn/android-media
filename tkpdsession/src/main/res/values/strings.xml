@@ -52,7 +52,7 @@
     <string name="default_error_upload_image">Gagal mengupload gambar</string>
     <string name="title_activate_account">Aktivasi Akun Tokopedia</string>
     <string name="activation_resend_email">Belum menerima email? Kirim ulang email</string>
-    <string name="activation_resend_email_2">Belum menerima email? Kirim ulang</string>
+    <string name="activation_resend_email_2">Tidak menerima kode? Kirim ulang</string>
     <string name="activation_header_text">Kode aktivasi akun telah dikirimkan ke</string>
     <string name="activation_header_text_2">Kode aktivasi akun telah dikirimkan melalui \nemail ke</string>
     <string name="resend_activation_email">Kirim Ulang Email</string>
@@ -97,6 +97,7 @@
     <string name="error_register_webview">Terjadi kesalahan. Mohon coba kembali.</string>
     <string name="hi">Hai</string>
     <string name="success_request_otp">Kode verifikasi telah dikirim.</string>
+    <string name="title_activity_register_2">Daftar dengan Email</string>
 
     <!-- LOGIN PHONE NUMBER -->
     <string name="login_with_phone_number">Masuk dengan Nomor Ponsel</string>
@@ -173,7 +174,7 @@
     <string name="phone_example">Contoh: 08XXXXXXXXX</string>
     <string name="wrong_email_format">Format email salah</string>
     <string name="send_verif_to_email">Kami akan mengirimkan kode melalui email</string>
-    <string name="error_minimal_name">Nama lengkap terlalu pendek, minimum 3 karakter</string>
+    <string name="error_minimal_name">Minimum 3 karakter</string>
     <string name="error_minimal_phone">Nomor ponsel terlalu pendek, minimum 8 angka</string>
     <string name="error_minimal_password">Kata sandi terlalu pendek, minimum 6 karakter</string>
     <string name="minimal_6_character">Minimal 6 karakter</string>
@@ -254,6 +255,7 @@
     <string name="button_continue">Lanjutkan</string>
 
     <!--ADD CHANGE NAME-->
+    <string name="title_name_full">Nama Lengkap</string>
     <string name="title_change_name">Ubah Nama Lengkap</string>
     <string name="title_complete_name">Nama Lengkap</string>
     <string name="email_name_top">Masukkan nama lengkap Anda dengan benar.\nNama lengkap hanya dapat diubah satu kali.</string>
@@ -270,7 +272,7 @@
     <string name="title_add_password">Buat Kata Sandi</string>
     <string name="add_password_top">Membuat kata sandi membantu Anda menjaga keamanan akun dan transaksi di Tokopedia.</string>
     <string name="title_add_password_hint">Masukkan Kata Sandi Baru</string>
-    <string name="info_password_min_char">Minimum 6 karakter dan maksimal 32 karakter</string>
+    <string name="info_password_min_char">Minimum 6 karakter</string>
     <string name="button_password_continue">Buat Kata Sandi</string>
 
 

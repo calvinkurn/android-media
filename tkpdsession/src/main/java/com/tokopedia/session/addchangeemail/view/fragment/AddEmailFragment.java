@@ -168,7 +168,7 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
     }
 
     private void disableButton(Button button) {
-        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
+        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_12));
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable));
         button.setEnabled(false);
     }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:padding="@dimen/margin_sm">
+    android:paddingTop="@dimen/dp_24"
+    android:paddingLeft="@dimen/margin_sm"
+    android:paddingRight="@dimen/margin_sm">
 
     <include
         layout="@layout/layout_name_top"
@@ -16,38 +17,34 @@
         android:id="@+id/wrapper_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/HintTextInputLayout"
-        android:hint="@string/phone_number"
-        android:paddingLeft="-5dp"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_3">
+        style="@style/TextInputLayout"
+        android:hint="@string/title_name_full"
+        android:paddingLeft="-3dp"
+        android:layout_marginTop="@dimen/dp_32">
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/et_name"
-            android:hint="@string/title_name"
             android:textColorHint="@color/black_54"
             android:textColor="@color/black_70"
             android:inputType="textPersonName"
             android:textSize="@dimen/font_medium"
-            android:layout_marginTop="@dimen/margin_sm"
+            android:maxLength="128"
             />
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <TextView
-        android:id="@+id/tv_error"
+        android:id="@+id/message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_small"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
-        android:textColor="@color/red_500"
-        android:lineSpacingExtra="4sp"
-        android:visibility="gone"
-        tools:visibility="visible"
-        tools:text="Nomor ponsel belum terdaftar"
+        android:textColor="@color/black_38"
+        android:text="@string/error_minimal_name"
+        android:layout_marginTop="@dimen/dp_3"
         />
 
     <Button
@@ -58,6 +55,6 @@
         android:textColor="@color/white"
         android:textAllCaps="false"
         android:background="@drawable/bg_button_enable"
-        android:layout_marginTop="@dimen/margin_sm"/>
+        android:layout_marginTop="@dimen/dp_16"/>
 
 </LinearLayout>

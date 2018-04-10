@@ -51,6 +51,7 @@
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                 <TextView
+                    android:id="@+id/email_helper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_med"
@@ -107,6 +108,7 @@
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                 <TextView
+                    android:id="@+id/phone_helper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_20"
@@ -144,6 +146,7 @@
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                 <TextView
+                    android:id="@+id/password_helper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_20"
