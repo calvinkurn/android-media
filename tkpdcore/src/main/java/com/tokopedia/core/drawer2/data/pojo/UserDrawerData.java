@@ -27,6 +27,9 @@ public class UserDrawerData {
     @SerializedName("topadsDeposit")
     @Expose
     private TopadsDeposit topadsDeposit;
+    @SerializedName("notifications")
+    @Expose
+    private Notifications notifications;
 
     public ShopInfoMoengage getShopInfoMoengage() {
         return shopInfoMoengage;
@@ -84,4 +87,11 @@ public class UserDrawerData {
         this.topadsDeposit = topadsDeposit;
     }
 
+    public Notifications getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Notifications notifications) {
+        this.notifications = notifications;
+    }
 }

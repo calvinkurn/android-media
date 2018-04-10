@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.drawer2.data.pojo.SellerDrawerData;
 import com.tokopedia.core.drawer2.data.pojo.UserDrawerData;
 import com.tokopedia.core.drawer2.domain.interactor.GetUserAttributesUseCase;
 import com.tokopedia.core.network.apiservices.drawer.DrawerService;
@@ -58,12 +57,12 @@ public class CloudAttrDataSource {
                 .doOnNext(setToCache());
     }
 
-    public Observable<SellerDrawerData> getSellerUserAttributes(RequestParams requestParams) {
+    public Observable<UserDrawerData> getSellerUserAttributes(RequestParams requestParams) {
         return drawerService.getApi()
                 .getSellerDrawerData(String.format(getRequestSellerDataPayload(), requestParams.getInt(GetUserAttributesUseCase.PARAM_USER_ID, 0)))
-                .map(new Func1<Response<GraphqlResponse<SellerDrawerData>>, SellerDrawerData>() {
+                .map(new Func1<Response<GraphqlResponse<UserDrawerData>>, UserDrawerData>() {
                     @Override
-                    public SellerDrawerData call(Response<GraphqlResponse<SellerDrawerData>> graphqlResponseResponse) {
+                    public UserDrawerData call(Response<GraphqlResponse<UserDrawerData>> graphqlResponseResponse) {
 
                         if (graphqlResponseResponse != null) {
                             if (graphqlResponseResponse.isSuccessful()) {

@@ -206,7 +206,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
             //getDrawerProfile();
             //getDrawerDeposit();
-            getDrawerNotification();
+            //getDrawerNotification();
 
             if (!GlobalConfig.isSellerApp()) {
                 //getDrawerTokoCash();
@@ -250,15 +250,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     public void setDrawerEnabled(boolean isEnabled) {
         drawerHelper.setEnabled(isEnabled);
-    }
-
-    private void getDrawerNotification() {
-        drawerDataManager.getNotification();
-    }
-
-
-    protected void getDrawerTokoCash() {
-        drawerDataManager.getTokoCash();
     }
 
     @Override

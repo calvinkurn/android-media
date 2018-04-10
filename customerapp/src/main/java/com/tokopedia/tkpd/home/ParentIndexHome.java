@@ -308,7 +308,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 if (shopID.equalsIgnoreCase(SessionHandler.DEFAULT_EMPTY_SHOP_ID)) {
                     shopIntent = ShopOpenDomainActivity.getIntent(this);
                 } else {
-                    shopIntent = ShopInfoActivity.createIntent(this, shopID);
+                    shopIntent = ((TkpdCoreRouter) getApplication()).getShopPageIntent(this, shopID);
                 }
 
                 shopIntent.setAction(Intent.ACTION_VIEW);
