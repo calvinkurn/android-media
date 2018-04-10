@@ -240,7 +240,7 @@ public class FingerPrintDialog extends BottomSheets {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, FingerprintConstant.ANDROID_KEY_STORE);
             KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder(FingerprintConstant.FINGERPRINT,
                     KeyProperties.PURPOSE_SIGN)
-                    .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PSS)
+                    .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
                     .setDigests(KeyProperties.DIGEST_SHA1)
                     .setUserAuthenticationRequired(false);
             keyPairGenerator.initialize(builder.build());

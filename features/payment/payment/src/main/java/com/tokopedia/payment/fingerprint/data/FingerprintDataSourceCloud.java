@@ -1,5 +1,7 @@
 package com.tokopedia.payment.fingerprint.data;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.payment.fingerprint.data.model.DataResponseSavePublicKey;
 import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint;
@@ -10,6 +12,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -35,7 +39,7 @@ public class FingerprintDataSourceCloud {
         this.accountFingerprintApi = accountFingerprintApi;
     }
 
-    public Observable<Boolean> saveFingerPrint(HashMap<String, String> params) {
+    public Observable<Boolean> saveFingerPrint(HashMap<String, Object> params) {
         return fingerprintApi.saveFingerPrint(params).map(new Func1<Response<ResponseRegisterFingerprint>, Boolean>() {
             @Override
             public Boolean call(Response<ResponseRegisterFingerprint> dataResponseResponse) {
@@ -49,7 +53,7 @@ public class FingerprintDataSourceCloud {
         });
     }
 
-    public Observable<ResponsePaymentFingerprint> paymentWithFingerPrint(HashMap<String, String> params) {
+    public Observable<ResponsePaymentFingerprint> paymentWithFingerPrint(HashMap<String, Object> params) {
         return fingerprintApi.paymentWithFingerPrint(params).map(new Func1<Response<ResponsePaymentFingerprint>, ResponsePaymentFingerprint>() {
             @Override
             public ResponsePaymentFingerprint call(Response<ResponsePaymentFingerprint> dataResponseResponse) {
@@ -78,13 +82,19 @@ public class FingerprintDataSourceCloud {
 
     public Observable<HashMap<String, String>> getDataPostOtp(String transactionId) {
         return fingerprintApi.getPostDataOtp(generateMapPostData(transactionId))
-                .map(new Func1<Response<DataResponse<JSONObject>>, HashMap<String, String>>() {
+                .map(new Func1<Response<JsonElement>, HashMap<String, String>>() {
                     @Override
-                    public HashMap<String, String> call(Response<DataResponse<JSONObject>> dataResponseResponse) {
-                        if (dataResponseResponse.isSuccessful() && dataResponseResponse.body() != null
-                                && dataResponseResponse.body().getData() != null) {
+                    public HashMap<String, String> call(Response<JsonElement> dataResponseResponse) {
+                        if (dataResponseResponse.isSuccessful() && dataResponseResponse.body() != null) {
                             try {
-                                return jsonToMap(dataResponseResponse.body().getData());
+                                JsonObject jsonObject = dataResponseResponse.body().getAsJsonObject();
+                                Boolean isSuccess = jsonObject.get("success").getAsBoolean();
+                                if (isSuccess) {
+                                    JsonObject jsonObjectData = jsonObject.get("data").getAsJsonObject();
+                                    return jsonToMap(jsonObjectData);
+                                } else {
+                                    return null;
+                                }
                             } catch (JSONException e) {
                                 return null;
                             }
@@ -95,7 +105,7 @@ public class FingerprintDataSourceCloud {
                 });
     }
 
-    public static HashMap<String, String> jsonToMap(JSONObject json) throws JSONException {
+    public static HashMap<String, String> jsonToMap(JsonObject json) throws JSONException {
         HashMap<String, String> retMap = new HashMap<String, String>();
 
         if (json != JSONObject.NULL) {
@@ -104,16 +114,14 @@ public class FingerprintDataSourceCloud {
         return retMap;
     }
 
-    public static HashMap<String, String> toMap(JSONObject object) throws JSONException {
+    public static HashMap<String, String> toMap(JsonObject object) throws JSONException {
         HashMap<String, String> map = new HashMap<String, String>();
 
-        Iterator<String> keysItr = object.keys();
+        Set<Map.Entry<String, JsonElement>> entrySet = object.entrySet();
+        Iterator<Map.Entry<String, JsonElement>> keysItr = entrySet.iterator();
         while (keysItr.hasNext()) {
-            String key = keysItr.next();
-            Object value = object.get(key);
-            if(value instanceof String){
-                map.put(key, (String)value);
-            }
+            Map.Entry<String, JsonElement> key = keysItr.next();
+            map.put(key.getKey(), key.getValue().getAsString());
         }
         return map;
     }

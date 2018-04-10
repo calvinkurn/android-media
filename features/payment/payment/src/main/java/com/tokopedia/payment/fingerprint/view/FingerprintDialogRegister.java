@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.payment.R;
 
@@ -51,7 +52,7 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     @Override
     public void startListening() {
         super.startListening();
-        setTextToEncrypt(generateDate() + userId);
+        setTextToEncrypt(userId + generateDate());
     }
 
     @Override
@@ -62,7 +63,7 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     private String generateDate() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+                "EEE, dd MMM yyyy HH:mm:ss ZZZ", Locale.ENGLISH);
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         return dateFormat.format(calendar.getTime());
     }
@@ -81,6 +82,8 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
                 updateTitle(getString(R.string.fingerprint_label_try_again));
             }
             if (counterError > MAX_ERROR) {
+                stopListening();
+                listenerRegister.showErrorRegisterSnackbar();
                 dismiss();
                 return false;
             } else {
@@ -111,7 +114,15 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
         updateCounterError();
     }
 
+    public void onErrorRegisterFingerPrint() {
+        if(updateCounterError()){
+            startListening();
+        }
+    }
+
     public interface ListenerRegister {
         void onRegisterFingerPrint(String transactionId, String publicKey, String date, String signature, String userId);
+
+        void showErrorRegisterSnackbar();
     }
 }

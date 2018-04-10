@@ -20,12 +20,12 @@ public class FingerprintRepositoryImpl implements FingerprintRepository {
     }
 
     @Override
-    public Observable<Boolean> saveFingerprint(HashMap<String, String> params) {
+    public Observable<Boolean> saveFingerprint(HashMap<String, Object> params) {
         return fingerprintDataSourceCloud.saveFingerPrint(params);
     }
 
     @Override
-    public Observable<ResponsePaymentFingerprint> paymentWithFingerPrint(HashMap<String, String> params) {
+    public Observable<ResponsePaymentFingerprint> paymentWithFingerPrint(HashMap<String, Object> params) {
         return fingerprintDataSourceCloud.paymentWithFingerPrint(params);
     }
 

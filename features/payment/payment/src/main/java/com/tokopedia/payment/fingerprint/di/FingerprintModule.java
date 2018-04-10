@@ -2,6 +2,7 @@ package com.tokopedia.payment.fingerprint.di;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.payment.fingerprint.data.AccountFingerprintApi;
 import com.tokopedia.payment.fingerprint.data.FingerprintApi;
 import com.tokopedia.payment.fingerprint.data.FingerprintDataSourceCloud;
@@ -13,6 +14,8 @@ import com.tokopedia.payment.fingerprint.domain.SaveFingerPrintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SavePublicKeyUseCase;
 import com.tokopedia.payment.fingerprint.util.FingerprintConstant;
 import com.tokopedia.payment.presenter.TopPayPresenter;
+
+import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
@@ -27,6 +30,9 @@ import retrofit2.Retrofit;
 @FingerprintScope
 @Module
 public class FingerprintModule {
+
+    public static final int READ_TIMEOUT = 30;
+    public static final int WRITE_TIMEOUT = 30;
 
     @FingerprintScope
     @Provides
@@ -76,9 +82,13 @@ public class FingerprintModule {
     @FingerprintScope
     @Provides
     public OkHttpClient provideOkHttpClient(TkpdAuthInterceptor tkpdAuthInterceptor, HttpLoggingInterceptor httpLoggingInterceptor){
-        return new OkHttpClient.Builder()
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .build();
+                .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
+        if(GlobalConfig.isAllowDebuggingTools()){
+            builder.addInterceptor(httpLoggingInterceptor);
+        }
+        return builder.build();
     }
 }

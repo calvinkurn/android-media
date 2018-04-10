@@ -52,7 +52,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     @Override
     public void startListening() {
         super.startListening();
-        setTextToEncrypt(generateDate() + userId);
+        setTextToEncrypt( userId + generateDate());
     }
 
     public void setListenerPayment(ListenerPayment listenerPayment) {
@@ -81,7 +81,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     private String generateDate() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+                "EEE, dd MMM yyyy HH:mm:ss ZZZ", Locale.ENGLISH);
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         return dateFormat.format(calendar.getTime());
     }

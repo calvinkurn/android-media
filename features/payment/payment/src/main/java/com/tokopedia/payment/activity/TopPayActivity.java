@@ -91,6 +91,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     public static final int REQUEST_CODE = TopPayActivity.class.hashCode();
     private FingerPrintDialogPayment fingerPrintDialogPayment;
     private FingerprintDialogRegister fingerPrintDialogRegister;
+    private boolean isInterceptOtp = true;
 
     public static Intent createInstance(Context context, PaymentPassData paymentPassData) {
         Intent intent = new Intent(context, TopPayActivity.class);
@@ -324,6 +325,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     @Override
     public void onSuccessGetPostDataOTP(String postData, String urlOtp) {
         try {
+            isInterceptOtp = false;
             scroogeWebView.postUrl(urlOtp, postData.getBytes(CHARSET_UTF_8));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -438,7 +440,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             if((request.getUrl().toString().contains(FingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA) ||
-                    request.getUrl().toString().contains(FingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_VERITRANS) ) &&
+                    request.getUrl().toString().contains(FingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_VERITRANS) ) && isInterceptOtp &&
                     request.getUrl().getQueryParameter(FingerprintConstant.ENABLE_FINGERPRINT).equalsIgnoreCase("true")){
                 fingerPrintDialogPayment = FingerPrintDialogPayment.createInstance(presenter.getUserId(), request.getUrl().toString(),
                         request.getUrl().getQueryParameter(FingerprintConstant.TRANSACTION_ID), request.getUrl().getQueryParameter(FingerprintConstant.PARTNER));
@@ -614,8 +616,11 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
     @Override
     public void onErrorRegisterFingerPrint(Throwable e) {
-        fingerPrintDialogRegister.stopListening();
-        fingerPrintDialogRegister.dismiss();
+        fingerPrintDialogRegister.onErrorRegisterFingerPrint();
+    }
+
+    @Override
+    public void showErrorRegisterSnackbar() {
         NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.fingerprint_label_failed_fingerprint));
     }
 
