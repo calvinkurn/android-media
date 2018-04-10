@@ -194,7 +194,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 viewModel.setMessage(voucherViewModel.getMessage());
                 viewModel.setTitle(data.getTitle());
                 viewModel.setSuccess(true);
-                view.receiveResult(viewModel);
+                view.receiveDigitalResult(viewModel);
                 view.hideProgressLoading();
             }
         };
