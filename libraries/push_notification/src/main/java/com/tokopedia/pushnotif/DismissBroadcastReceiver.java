@@ -12,7 +12,6 @@ import android.util.Log;
 public class DismissBroadcastReceiver extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i("PUSH NOTIF", "KEHAPUS NEEEH");
         int notificationType = intent.getIntExtra(Constant.EXTRA_NOTIFICATION_TYPE, 0);
         HistoryNotification.clearHistoryNotification(context, notificationType);
     }

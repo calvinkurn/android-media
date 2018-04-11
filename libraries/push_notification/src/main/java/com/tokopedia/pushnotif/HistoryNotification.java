@@ -14,16 +14,6 @@ import java.util.List;
 
 public class HistoryNotification {
 
-    private int notificationType;
-
-    public HistoryNotification(Context context, int notificationType) {
-        /*this.key = key;
-        localCacheHandler = new LocalCacheHandler(context, NOTIFICATION_STORAGE);
-        ArrayList<String> notificationString = localCacheHandler.getArrayListString(key);
-
-        convertToHistoryNotificationModel(notificationString);*/
-
-    }
 
     public static void storeNotification(String senderName, String message, int notificationType) {
         HistoryNotificationDB historyNotificationDB = new HistoryNotificationDB();

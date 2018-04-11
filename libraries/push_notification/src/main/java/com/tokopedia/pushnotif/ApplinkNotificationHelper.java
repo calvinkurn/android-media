@@ -47,7 +47,7 @@ public class ApplinkNotificationHelper {
 
     public static ApplinkNotificationModel convertToApplinkModel(Bundle data) {
         ApplinkNotificationModel model = new ApplinkNotificationModel();
-        model.setApplinks(data.getString("applinks", "tokopedia://home"));
+        model.setApplinks(data.getString("applinks", ApplinkConst.HOME));
         model.setCounter(data.getString("counter", ""));
         model.setCreateTime(data.getString("create_time", ""));
         model.setDesc(data.getString("desc", ""));
