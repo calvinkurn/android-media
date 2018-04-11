@@ -107,7 +107,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private RemoteConfig firebaseRemoteConfig;
     private Trace trace;
     private SnackbarRetry messageSnackbar;
-    private HomeAdapterFactory adapterFactory;
     private String[] tabSectionTitle;
     private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
     private EndlessRecyclerviewListener feedLoadMoreTriggerListener;
@@ -261,6 +260,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onDestroy();
         getActivity().unregisterReceiver(homeFragmentBroadcastReceiver);
         presenter.detachView();
+        feedLoadMoreTriggerListener = null;
+        homeFragmentBroadcastReceiver = null;
+        presenter = null;
     }
 
     private void initRefreshLayout() {
@@ -307,7 +309,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getItemAnimator().setChangeDuration(0);
-        adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this);
+        HomeAdapterFactory adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
     }
