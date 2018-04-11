@@ -24,7 +24,6 @@ import com.tokopedia.flight.common.data.model.FlightErrorResponse;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
 import com.tokopedia.flight.common.data.source.FlightAuthInterceptor;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
-import com.tokopedia.flight.common.di.qualifier.BookingQualifier;
 import com.tokopedia.flight.common.di.qualifier.FlightChuckQualifier;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
@@ -133,7 +132,7 @@ public class FlightModule {
     }
 
     @Provides
-    @BookingQualifier
+    @FlightQualifier
     public Gson provideGson() {
         return new GsonBuilder().create();
     }
