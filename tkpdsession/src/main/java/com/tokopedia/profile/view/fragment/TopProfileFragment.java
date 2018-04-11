@@ -21,6 +21,8 @@ import com.tokopedia.session.R;
 public class TopProfileFragment extends TkpdBaseV4Fragment
         implements TopProfileFragmentListener.View {
 
+    private static final String SAVED_MODEL = "MODEL";
+
     private View rootView;
     private PartialUserDataView partialUserDataView;
     private PartialUserInfoView partialUserInfoView;
@@ -48,8 +50,21 @@ public class TopProfileFragment extends TkpdBaseV4Fragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getParcelable(SAVED_MODEL) != null) {
+                this.topProfileViewModel = savedInstanceState.getParcelable(SAVED_MODEL);
+            }
+        }
         populateData();
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVED_MODEL, topProfileViewModel);
+    }
+
+
 
     @Override
     protected String getScreenName() {

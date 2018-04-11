@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/new_margin_med"
+    android:padding="@dimen/dp_16"
     android:background="@color/white">
 
     <RelativeLayout
@@ -20,8 +20,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:paddingBottom="@dimen/new_margin_small"
-            android:paddingTop="@dimen/new_margin_small"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_8"
             tools:text="36/500" />
 
         <TextView
@@ -31,8 +31,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:paddingBottom="@dimen/new_margin_small"
-            android:paddingTop="@dimen/new_margin_small"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_8"
             android:textColor="#d50000"
             android:maxLength="200"
             android:layout_toLeftOf="@id/counter"

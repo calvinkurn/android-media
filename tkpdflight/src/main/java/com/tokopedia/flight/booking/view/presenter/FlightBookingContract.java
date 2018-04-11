@@ -120,6 +120,7 @@ public interface FlightBookingContract {
 
         void setSameAsContactChecked(boolean isChecked);
 
+        Date getExpiredTransactionDate();
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View> {
@@ -159,8 +160,6 @@ public interface FlightBookingContract {
         void toggleSameAsContactCheckbox();
 
         void onSameAsContactClicked(boolean navigateToPassengerInfo);
-
-        void deleteAllPassengerList();
 
     }
 }

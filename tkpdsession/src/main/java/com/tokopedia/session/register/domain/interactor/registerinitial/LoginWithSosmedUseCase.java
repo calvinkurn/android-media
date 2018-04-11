@@ -6,7 +6,6 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.interactor.GetTokenUseCase;
@@ -17,7 +16,6 @@ import com.tokopedia.session.register.domain.model.LoginSosmedDomain;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -29,17 +27,14 @@ public class LoginWithSosmedUseCase extends UseCase<LoginSosmedDomain> {
     protected final GetTokenUseCase getTokenUseCase;
     protected final GetUserInfoUseCase getUserInfoUseCase;
     protected final MakeLoginUseCase makeLoginUseCase;
-    private final SessionHandler sessionHandler;
 
     @Inject
     public LoginWithSosmedUseCase(ThreadExecutor threadExecutor,
                                   PostExecutionThread postExecutionThread,
-                                  SessionHandler sessionHandler,
                                   GetTokenUseCase getTokenUseCase,
                                   GetUserInfoUseCase getUserInfoUseCase,
                                   MakeLoginUseCase makeLoginUseCase) {
         super(threadExecutor, postExecutionThread);
-        this.sessionHandler = sessionHandler;
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
@@ -68,17 +63,7 @@ public class LoginWithSosmedUseCase extends UseCase<LoginSosmedDomain> {
                             return Observable.just(registerSosmedDomain);
                         }
                     }
-                })
-                .doOnError(clearToken());
-    }
-
-    private Action1<Throwable> clearToken() {
-        return new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                sessionHandler.clearToken();
-            }
-        };
+                });
     }
 
     protected Observable<LoginSosmedDomain> makeLogin(final LoginSosmedDomain

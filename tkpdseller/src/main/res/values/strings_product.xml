@@ -6,18 +6,20 @@
     <string name="product_label_po">PO</string>
     <string name="product_label_product_info">Info Produk</string>
     <string name="product_label_name">Nama Produk</string>
+    <string name="product_enter_label_name">Tulis Nama Produk</string>
     <string name="product_label_catalog">Katalog</string>
     <string name="product_label_category">Kategori</string>
-    <string name="product_label_shop_window">Etalase</string>
+    <string name="product_label_etalase">Etalase</string>
     <string name="product_label_choose">Pilih</string>
     <string name="product_label_product_recommendation">Rekomendasi Kategori</string>
     <string name="product_label_product_about">Tentang Produk</string>
     <string name="product_label_product_price">Harga Produk</string>
+    <string name="product_label_variant_price">Harga Variant</string>
     <string name="product_label_wholesale_price">Harga Grosir</string>
     <string name="product_label_product_weight">Berat Produk</string>
     <string name="product_label_add_wholesale">+ Tambah Harga Grosir</string>
     <string name="product_label_time_process">Waktu Proses</string>
-    <string name="product_label_minimum_buy">Minimal Pembelian</string>
+    <string name="product_label_minimum_buy">Pemesanan Minimum</string>
     <string name="product_label_minimum_whole_sale">Jumlah Minimal</string>
     <string name="product_label_price_whole_sale">Harga Produk</string>
     <string name="product_label_maximum_whole_sale">Jumlah Maximal</string>
@@ -26,11 +28,15 @@
     <string name="product_label_stock_total">Jumlah Stok</string>
     <string name="product_label_status">Status</string>
     <string name="product_label_condition">Kondisi</string>
-    <string name="product_label_insurance">Asuransi</string>
+    <string name="product_label_delivery_insurance">Asuransi Pengiriman</string>
     <string name="product_label_free_returns">Free Returns</string>
+    <string name="product_add_label_sku">SKU (Stock Keeping Unit)</string>
+    <string name="product_add_sku_hint">Tulis SKU Produk</string>
+    <string name="product_add_sku_allowed_character">123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ./-</string>
     <string name="product_label_product_description">Deskripsi Produk</string>
-    <string name="product_label_save_and_add">Simpan dan Tambah</string>
-    <string name="product_label_save">Simpan</string>
+    <string name="product_label_enter_product_description">Tulis dengan lengkap dan jelas deskripsi produk Anda</string>
+    <string name="product_label_upload_and_add_new_product">Upload dan Tambah Produk Baru</string>
+    <string name="product_label_upload_this_product">Upload Produk Ini</string>
     <string name="product_default_counter_text">0</string>
     <string name="product_default_counter_minimum_order_text">1</string>
     <string name="product_label_preorder">Preorder</string>
@@ -39,7 +45,6 @@
     <string name="product_upload_product_image">Upload Gambar Produk</string>
 
     <string name="product_etalase_picker_add_etalase_title_dialog">Tambah Etalase</string>
-    <string name="product_etalase_picker_add_etalase_add_button_dialog">Tambah</string>
     <string name="product_etalase_picker_add_etalase_cancel_button_dialog">Batal</string>
     <string name="product_etalase_picker_add_etalase_name_hint">Nama Etalase</string>
     <string name="product_etalase_picker_add_etalase_name_empty">Nama etalase harus diisi</string>
@@ -59,7 +64,9 @@
     <string name="product_weight_value_kg">2</string>
 
     <string name="product_stock_available_value">1</string>
-    <string name="product_stock_not_available_value">2</string>
+    <string name="product_stock_limited_value">2</string>
+    <string name="product_stock_not_available_value">3</string>
+
     <string name="product_stock_value_default">@string/product_stock_available_value</string>
 
     <string name="product_pre_order_value_day">1</string>
@@ -91,7 +98,7 @@
     <string name="product_maximum_price_rp_general">100,000,000</string>
     <string name="product_minimum_price_usd">1</string>
     <string name="product_maximum_price_usd_official_store">37,000</string>
-    <string name="product_maximum_price_usd_general">7,500</string>
+    <string name="product_maximum_price_usd_general">7,400</string>
     <string name="product_error_product_price_not_valid">Harga harus diisi antara %1$s &#8212; %2$s</string>
     <string name="product_minimum_weight_gram">1</string>
     <string name="product_maximum_weight_gram">500,000</string>
@@ -100,7 +107,7 @@
     <string name="product_minimum_order">1</string>
     <string name="product_maximum_order">10,000</string>
     <string name="product_error_product_weight_not_valid">Berat harus diisi antara %1$s &#8212; %2$s</string>
-    <string name="product_error_product_minimum_order_not_valid">Minimum order harus diisi antara %1$s &#8212; %2$s</string>
+    <string name="product_error_product_minimum_order_not_valid">Minimum pemesanan harus diisi antara %1$s &#8212; %2$s</string>
     <string name="product_error_product_etalase_empty">Etalase harus diisi</string>
     <string name="product_error_product_picture_empty">Gambar harus diisi</string>
     <string name="product_minimum_pre_order_day">1</string>
@@ -111,8 +118,8 @@
     <string name="product_minimum_total_stock">1</string>
     <string name="product_maximum_total_stock">10,000</string>
     <string name="product_error_total_stock_not_valid">Jumlah stok harus diisi antara %1$s &#8212; %2$s</string>
-    <string name="product_title_confirmation_change_wholesale_price">Apakah Anda ingin mengubah harga?</string>
-    <string name="product_confirmation_change_wholesale_price">Harga grosir akan otomatis terhapus saat harga diubah.</string>
+    <string name="product_title_confirmation_change_wholesale_price">Harga Produk Terkunci</string>
+    <string name="product_confirmation_change_wholesale_price">Harga grosir akan otomatis terhapus. Anda yakin untuk mengubah harga Produk?</string>
     <string name="product_confirmation_delete_video">Anda akan menghapus Video ini, lanjutkan?</string>
     <string name="product_title_confirmation_delete_video">Hapus Video</string>
 
@@ -138,7 +145,7 @@
     <string name="product_price_should_be_cheaper_than_fix_price">Harga harus lebih murah dari harga pas.</string>
     <string name="product_price_should_be_cheaper_than_previous_wholesale_price">Harga harus lebih murah dari harga grosir sebelumnya.</string>
     <string name="product_quantity_range_is_not_valid">Kelompok Jumlah tidak valid.</string>
-    <string name="product_wholesale_range_format">%1$s - %2$s buah</string>
+    <string name="product_wholesale_range_format">≥ %1$s buah</string>
     <string name="product_from_to_video">%1$d dari %2$d Video</string>
     <string name="product_add_till_three_product_video">Tambah Hingga 3 Video Produk</string>
     <string name="product_add_till_three_product_video_description">Untuk menjelaskan atau mendemokan produk ini</string>
@@ -162,6 +169,7 @@
 
     <!-- Variant -->
     <string name="product_variant_label_title">Varian</string>
+    <string name="product_variant_detail_label_title">Detail Varian</string>
     <string name="product_variant_item_picker_selected_title">%1$s %2$s terpilih</string>
     <string name="product_variant_item_picker_add_image">Tambah Gambar</string>
     <string name="product_variant_item_picker_add_variant_title_dialog">Tambah %1$s</string>
@@ -171,8 +179,8 @@
     <string name="product_variant_item_picker_add_variant_error_name_existed">Nama varian sudah ada</string>
     <string name="product_variant_stock_empty">Kosong</string>
     <string name="product_variant_stock_available">Tersedia</string>
-    <string name="product_variant_dialog_cancel_title">Perubahan tidak akan tersimpan</string>
-    <string name="product_variant_dialog_cancel_message">Yakin untuk keluar?</string>
+    <string name="product_variant_stock_limited">Stok Terbatas</string>
+    <string name="product_variant_stock_always_available">Selalu Tersedia</string>
     <string name="product_variant_status">Status Produk</string>
     <string name="product_variant_status_available">Tersedia</string>
     <string name="product_variant_status_not_available">Kosong</string>
@@ -181,6 +189,9 @@
     <string name="product_variant_standard_unit_x">Standar %1$s</string>
     <string name="product_variant_manage_variant">Atur Varian</string>
     <string name="product_variant_add_new_x">Tambah %1$s baru</string>
+    <string name="product_variant_see_detail">Lihat Detil</string>
+    <string name="product_variant_price_label">Harga</string>
+    <string name="product_variant_stock_total_label">Jumlah Stok</string>
     <string name="product_variant_max_limit">%1$d batas maksimum varian</string>
     <string name="product_variant_max_variant_has_been_reached">Jumlah variant yang ditambahkan sudah mencapai maksimum</string>
     <string name="product_variant_search_x">Cari %1$s</string>

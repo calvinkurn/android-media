@@ -94,6 +94,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     List<String> rowIds = new ArrayList<>();
     List<String> physicalRowIds = new ArrayList<>();
     List<String> seatIds = new ArrayList<>();
+    List<String> actualseat = new ArrayList<>();
     String areaId;
     private int quantity;
 
@@ -172,29 +173,22 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
             areaId = seatLayoutViewModel.getArea().get(0).getAreaCode() + "-" + String.valueOf(seatLayoutViewModel.getArea().get(0).getAreaNo());
         }
         int numOfRows = seatLayoutViewModel.getLayoutDetail().size();
-        char prevChr = '\0';
-        char currentChar = '\0';
+        String currentChar = "";
         for (int i = 0; i < numOfRows; ) {
             CustomSeatAreaLayout customSeatAreaLayout = new CustomSeatAreaLayout(this, mPresenter);
             int rowId = seatLayoutViewModel.getLayoutDetail().get(i).getRowId();
             if (Utils.isNotNullOrEmpty(seatLayoutViewModel.getLayoutDetail().get(i).getPhysicalRowId())) {
-                currentChar = seatLayoutViewModel.getLayoutDetail().get(i).getPhysicalRowId().charAt(0);
-                if (prevChr != '\0' && currentChar - prevChr > 1) {
-                    customSeatAreaLayout.setSeatRow("");
-                    prevChr++;
-                    seatTextLayout.addView(customSeatAreaLayout);
-                    continue;
-                } else {
-                    customSeatAreaLayout.setSeatRow(currentChar + "");
-                    prevChr = currentChar;
-                }
+                currentChar = seatLayoutViewModel.getLayoutDetail().get(i).getPhysicalRowId();
+                customSeatAreaLayout.setSeatRow(currentChar);
             }
             int numOfColumns = seatLayoutViewModel.getLayoutDetail().get(i).getSeat().size();
             for (int j = 0; j < numOfColumns; j++) {
                 if (seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getNo() != 0) {
-                    customSeatAreaLayout.addColumn("" + seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getNo(), seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getStatus(), maxTickets, rowId, currentChar);
+                    customSeatAreaLayout.addColumn(String.valueOf(seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getActualSeat()),
+                            seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getStatus(),
+                            maxTickets, rowId, currentChar);
                 } else {
-                    customSeatAreaLayout.addColumn("", 0, 0, 0, '\0');
+                    customSeatAreaLayout.addColumn("", 0, 0, 0, "");
                 }
             }
             seatTextLayout.addView(customSeatAreaLayout);
@@ -253,9 +247,10 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     }
 
     @Override
-    public void initializeSeatLayoutModel(List<String> selectedSeatTextList, List<String> rowIds) {
+    public void initializeSeatLayoutModel(List<String> selectedSeatTextList, List<String> rowIds, List<String> actualSeats) {
         selectedSeats = selectedSeatTextList;
         this.rowIds = rowIds;
+        actualseat = actualSeats;
         selectedSeatViewModel.setAreaCodes(areacodes);
         selectedSeatViewModel.setPrice(price);
         selectedSeatViewModel.setSeatRowIds(this.rowIds);
@@ -263,6 +258,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         selectedSeatViewModel.setSeatIds(seatIds);
         selectedSeatViewModel.setAreaId(areaId);
         selectedSeatViewModel.setPhysicalRowIds(physicalRowIds);
+        selectedSeatViewModel.setActualSeatNos(actualseat);
     }
 
     @Override
@@ -289,14 +285,16 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         physicalRowIds.clear();
         if (selectedSeats.size() > 0 && selectedSeats.size() == maxTickets) {
             for (int i = 0; i < selectedSeats.size(); i++) {
-                Character firstChar = selectedSeats.get(i).charAt(0);
-
-                if (Character.isLetter(firstChar)) {
-                    physicalRowIds.add("" + selectedSeats.get(i).charAt(0));
-                    seatIds.add(selectedSeats.get(i).substring(1, selectedSeats.get(i).length()));
-                } else {
-                    seatIds.add(selectedSeats.get(i).substring(0, selectedSeats.get(i).length()));
+                int k = 0;
+                Character firstChar = selectedSeats.get(i).charAt(k);
+                StringBuilder physicalRowID = new StringBuilder();
+                while (Character.isLetter(firstChar)) {
+                    physicalRowID.append(firstChar);
+                    k++;
+                    firstChar = selectedSeats.get(i).charAt(k);
                 }
+                physicalRowIds.add(physicalRowID.toString());
+                seatIds.add(selectedSeats.get(i).substring(k, selectedSeats.get(i).length()));
                 areacodes.add(seatLayoutViewModel.getArea().get(0).getAreaCode());
             }
             mPresenter.verifySeatSelection(selectedSeatViewModel);

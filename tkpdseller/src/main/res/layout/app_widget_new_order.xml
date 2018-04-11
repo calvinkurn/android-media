@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:foreground="?android:attr/selectableItemBackground"
         android:orientation="vertical"
-        android:padding="@dimen/padding_ms">
+        android:padding="@dimen/dp_8">
 
         <TextView
             android:id="@+id/count_order"
@@ -58,7 +58,7 @@
             android:text="@string/app_widget_new_order_wording_empty"
             android:layout_below="@id/image_no_result"
             android:layout_centerHorizontal="true"
-            android:layout_margin="@dimen/margin_vs"/>
+            android:layout_margin="@dimen/dp_5"/>
     </RelativeLayout>
 
 </LinearLayout>

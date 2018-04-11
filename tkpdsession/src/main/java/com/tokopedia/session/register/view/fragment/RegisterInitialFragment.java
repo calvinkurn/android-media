@@ -37,6 +37,9 @@ import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
@@ -51,6 +54,7 @@ import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
+import com.tokopedia.session.register.registerphonenumber.view.activity.RegisterPhoneNumberActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.view.presenter.RegisterInitialPresenter;
@@ -77,19 +81,24 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private static final int REQUEST_REGISTER_EMAIL = 101;
     private static final int REQUEST_CREATE_PASSWORD = 102;
     private static final int REQUEST_SECURITY_QUESTION = 103;
+    private static final int REQUEST_REGISTER_PHONE_NUMBER = 104;
 
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";
+    private static final String PHONE_NUMBER = "phonenumber";
+    private static final String REMOTE_CONFIG_SHOW_REGISTER_PHONE_NUMBER = "mainapp_show_register_phone_number";
     private static final String COLOR_WHITE = "#FFFFFF";
 
     public static final int TYPE_SQ_PHONE = 1;
     public static final int TYPE_SQ_EMAIL = 2;
 
     LinearLayout registerContainer;
-    LoginTextView registerButton;
+    LoginTextView registerButton, registerPhoneNumberButton;
     TextView loginButton;
     ScrollView container;
     RelativeLayout progressBar;
+
+    private String socmedMethod = "";
 
     @Inject
     RegisterInitialPresenter presenter;
@@ -101,6 +110,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     SessionHandler sessionHandler;
 
     CallbackManager callbackManager;
+    RemoteConfig remoteConfig;
 
     public static RegisterInitialFragment createInstance() {
         return new RegisterInitialFragment();
@@ -134,7 +144,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         callbackManager = CallbackManager.Factory.create();
-        sessionHandler.clearToken();
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     @Nullable
@@ -145,6 +155,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
         registerContainer = (LinearLayout) view.findViewById(R.id.register_container);
         registerButton = (LoginTextView) view.findViewById(R.id.register);
+        registerPhoneNumberButton = (LoginTextView) view.findViewById(R.id.register_phone_number);
         loginButton = (TextView) view.findViewById(R.id.login_button);
         container = (ScrollView) view.findViewById(R.id.container);
         progressBar = (RelativeLayout) view.findViewById(R.id.progress_bar);
@@ -166,6 +177,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     protected void prepareView(View view) {
         UserAuthenticationAnalytics.setActiveRegister();
+        registerPhoneNumberButton.setVisibility(View.GONE);
 
         registerButton.setColor(Color.WHITE);
         registerButton.setBorderColor(R.color.black);
@@ -177,6 +189,19 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 showProgressBar();
                 Intent intent = RegisterEmailActivity.getCallingIntent(getActivity());
                 startActivityForResult(intent, REQUEST_REGISTER_EMAIL);
+
+            }
+        });
+        registerPhoneNumberButton.setColor(Color.WHITE);
+        registerPhoneNumberButton.setBorderColor(R.color.black);
+        registerPhoneNumberButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                UnifyTracking.eventTracking(LoginAnalytics.getEventClickRegisterEmail());
+//                UnifyTracking.eventMoRegistrationStart(AppEventTracking.GTMCacheValue.EMAIL);
+                showProgressBar();
+                Intent intent = RegisterPhoneNumberActivity.getCallingIntent(getActivity());
+                startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
 
             }
         });
@@ -228,24 +253,30 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
+        }  else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
         } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
             sessionHandler.clearToken();
+        } else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
+            dismissProgressBar();
+            getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
+            UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterSosmed(socmedMethod));
+
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -302,22 +333,24 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         layoutParams.setMargins(0, 20, 0, 15);
 
         for (int i = 0; i < listProvider.size(); i++) {
-            String color = listProvider.get(i).getColor();
-            int colorInt;
-            if (color == null) {
-                colorInt = Color.parseColor(COLOR_WHITE);
-            } else {
+            DiscoverItemViewModel item = listProvider.get(i);
+            if (!item.getId().equals(PHONE_NUMBER)) {
+                String color = item.getColor();
+                int colorInt;
                 colorInt = Color.parseColor(color);
-            }
-            LoginTextView loginTextView = new LoginTextView(getActivity(), colorInt);
-            loginTextView.setTextRegister(listProvider.get(i).getName());
-            loginTextView.setImage(listProvider.get(i).getImage());
-            loginTextView.setRoundCorner(10);
+                LoginTextView loginTextView = new LoginTextView(getActivity(), colorInt);
+                loginTextView.setTextRegister(item.getName());
+                loginTextView.setImage(item.getImage());
+                loginTextView.setRoundCorner(10);
 
-            setDiscoverOnClickListener(listProvider.get(i), loginTextView);
+                setDiscoverOnClickListener(item, loginTextView);
 
-            if (registerContainer != null) {
-                registerContainer.addView(loginTextView, registerContainer.getChildCount(), layoutParams);
+                if (registerContainer != null) {
+                    registerContainer.addView(loginTextView, registerContainer.getChildCount(), layoutParams);
+                }
+            } else if (!GlobalConfig.isSellerApp() && remoteConfig.getBoolean(REMOTE_CONFIG_SHOW_REGISTER_PHONE_NUMBER)) {
+                registerPhoneNumberButton.setVisibility(View.VISIBLE);
+                registerPhoneNumberButton.setImage(item.getImage());
             }
         }
 
@@ -434,14 +467,14 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRegisterSosmed(String methodName) {
-        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterSosmed(methodName));
-
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
 
     @Override
-    public void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData) {
+    public void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData,
+                                         String methodName) {
+        socmedMethod = methodName;
         Intent intent = CreatePasswordActivity.getCallingIntent(getActivity(),
                 new CreatePasswordViewModel(
                         userInfoDomainData.getEmail(),
@@ -452,11 +485,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                         userInfoDomainData.getCreatePasswordList(),
                         String.valueOf(userInfoDomainData.getUserId())));
         startActivityForResult(intent, REQUEST_CREATE_PASSWORD);
-    }
-
-    @Override
-    public void clearToken() {
-        presenter.clearToken();
     }
 
     @Override

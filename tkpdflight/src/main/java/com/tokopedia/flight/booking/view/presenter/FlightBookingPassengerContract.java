@@ -85,7 +85,7 @@ public interface FlightBookingPassengerContract {
 
         void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected);
 
-        int getPassengerTitleId();
+        int getTitleSpinnerPosition();
 
         void showPassengerFirstNameShouldNoMoreThanMaxError(@StringRes int resId);
 
@@ -103,13 +103,13 @@ public interface FlightBookingPassengerContract {
 
         void hideKeyboard();
 
-        boolean isAirAsiaAirline();
+        boolean isMandatoryDoB();
 
         String getDepartureDateString();
 
         void showPassengerLastNameShouldSameWithFirstNameError(int resId);
 
-        void canGoBack();
+        String getString(int resId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -136,8 +136,9 @@ public interface FlightBookingPassengerContract {
 
         void onSavedPassengerClicked();
 
+        void onNewPassengerChoosed();
+
         void onChangeFromSavedPassenger(FlightBookingPassengerViewModel selectedPassenger);
 
-        void onUnselectPassengerList(String passengerId);
     }
 }

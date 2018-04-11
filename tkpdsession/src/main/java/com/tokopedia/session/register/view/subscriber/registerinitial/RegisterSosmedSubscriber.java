@@ -1,7 +1,6 @@
 package com.tokopedia.session.register.view.subscriber.registerinitial;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.network.ErrorCode;
@@ -48,10 +47,10 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
 
     @Override
     public void onNext(LoginSosmedDomain registerSosmedDomain) {
-        viewListener.dismissProgressBar();
         if (!registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
-            viewListener.onGoToCreatePasswordPage(registerSosmedDomain.getInfo()
-                    .getGetUserInfoDomainData());
+            viewListener.onGoToCreatePasswordPage(
+                    registerSosmedDomain.getInfo().getGetUserInfoDomainData(),
+                    methodName);
         } else if (registerSosmedDomain.getMakeLoginModel() != null
                 && !isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
                 && isMsisdnVerified(registerSosmedDomain.getInfo())) {
@@ -68,7 +67,6 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
                     registerSosmedDomain.getInfo().getGetUserInfoDomainData().getPhone());
         } else {
             viewListener.onErrorRegisterSosmed(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
-            viewListener.clearToken();
         }
     }
 

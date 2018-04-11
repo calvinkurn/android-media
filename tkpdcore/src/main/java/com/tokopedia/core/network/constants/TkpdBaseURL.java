@@ -17,7 +17,6 @@ public class TkpdBaseURL {
     public static String ACE_STAGING_DOMAIN = "http://ace-staging.tokopedia.com/";
     public static String ACE_DOMAIN = "https://ace.tokopedia.com/";
     public static String TOME_DOMAIN = "https://tome.tokopedia.com/";
-    public static String CLOVER_DOMAIN = "https://points.tokopedia.com/";
     public static String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
     public static String TOPADS_STAGING_DOMAIN = "http://ta-staging.tokopedia.com/";
     public static String MOJITO_DOMAIN = "https://mojito.tokopedia.com/";
@@ -408,6 +407,7 @@ public class TkpdBaseURL {
         public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
         public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
         public static final String PATH_PRODUCT_VARIANT = "v2/product/{productId}/variant";
+        public static final String PATH_PRODUCT_STOCK = "v2/product/{productId}/stock";
     }
 
     public static class ResCenter {
@@ -471,7 +471,6 @@ public class TkpdBaseURL {
         public static final String URL_DEPOSIT_ACTION = BASE_DOMAIN + "v4/action/deposit/";
         public static final String PATH_DEPOSIT = "v4/deposit/";
         public static final String URL_DEPOSIT = BASE_DOMAIN + PATH_DEPOSIT;
-        public static final String URL_DEPOSIT_CLOVER = CLOVER_DOMAIN + "app/";
         public static final String URL_TRACKING_ORDER = BASE_DOMAIN + "v4/tracking-order/";
         public static final String URL_TX_ACTION = BASE_DOMAIN + "v4/action/tx/";
         public static final String URL_TX = BASE_DOMAIN + "v4/";
@@ -491,8 +490,6 @@ public class TkpdBaseURL {
         public static final String PATH_GET_DEPOSIT = "get_deposit.pl";
         public static final String PATH_GET_SUMMARY = "get_summary.pl";
         public static final String PATH_GET_WITHDRAW_FORM = "get_withdraw_form.pl";
-        public static final String PATH_GET_TOPPOINTS = "get_lp.pl";
-        public static final String PATH_GET_TOPPOINTS_CLOVER = "v4";
 
 
         public static final String PATH_TRACK_ORDER = "track_order.pl";
@@ -942,6 +939,7 @@ public class TkpdBaseURL {
     public class Maps {
         public static final String PATH_MAPS_PLACES = "maps/places/autocomplete";
         public static final String PATH_MAPS_PLACES_DETAIL = "maps/places/place-details";
+        public static final String PATH_MAPS_GEOCODE = "maps/geocode";
     }
 
     public class TokoPoint {

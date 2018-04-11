@@ -43,6 +43,9 @@ import java.io.IOException;
 
 public class ImageHandler {
 
+    public static final int IMAGE_WIDTH_HD = 1280;
+    public static final int IMAGE_WIDTH_MIN = 480;
+
     public static Bitmap ResizeBitmap(Bitmap bitmap, float bounding) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
@@ -121,6 +124,22 @@ public class ImageHandler {
         }
     }
 
+    public static void loadImageWithoutPlaceholder(ImageView imageview, String url, Drawable drawable) {
+        if (url != null && !TextUtils.isEmpty(url)) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .error(drawable)
+                    .into(imageview);
+        } else {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .placeholder(drawable)
+                    .error(drawable)
+                    .into(imageview);
+        }
+    }
+
     public static void loadImageWithPlaceholder(ImageView imageview, String url, int resId) {
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.getContext())
@@ -143,12 +162,12 @@ public class ImageHandler {
         final int width = options.outWidth;
         int inSampleSize = 1;
 
-        if (height > 960 || width > 1280) {
+        if (height > IMAGE_WIDTH_HD || width > IMAGE_WIDTH_HD) {
 
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
-            while ((halfHeight / inSampleSize) > 360
-                    && (halfWidth / inSampleSize) > 480) {
+            while ((halfHeight / inSampleSize) > IMAGE_WIDTH_MIN
+                    && (halfWidth / inSampleSize) > IMAGE_WIDTH_MIN) {
                 inSampleSize = inSampleSize * 2;
             }
         }
@@ -193,7 +212,6 @@ public class ImageHandler {
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(imageview);
     }

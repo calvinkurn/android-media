@@ -33,14 +33,13 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -448,10 +447,10 @@ public class DrawerBuyerHelper extends DrawerHelper
     @Override
     public void onItemClicked(DrawerItem item) {
         if (item.getId() == selectedPosition) {
-                if (item.getId() == TkpdState.DrawerPosition.INDEX_HOME) {
-                    selectTabHome();
-                }
-                closeDrawer();
+            if (item.getId() == TkpdState.DrawerPosition.INDEX_HOME) {
+                selectTabHome();
+            }
+            closeDrawer();
         } else {
             Intent intent;
             switch (item.getId()) {
@@ -516,8 +515,11 @@ public class DrawerBuyerHelper extends DrawerHelper
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.ADD_PRODUCT:
-                    intent = new Intent(context, ProductAddActivity.class);
-                    context.startActivity(intent);
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) context.getApplication();
+                        tkpdCoreRouter.goToManageProduct(context);
+                        tkpdCoreRouter.goToAddProduct(context);
+                    }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PRODUCT:
                     if (context.getApplication() instanceof TkpdCoreRouter) {
@@ -673,8 +675,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private void onGoToShop() {
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(sessionHandler.getShopID(), ""));
+        Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, sessionHandler.getShopID());
         context.startActivity(intent);
         sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
     }

@@ -1,13 +1,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/deposit_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:fitsSystemWindows="true"
-                android:orientation="vertical"
-                android:padding="@dimen/padding_small"
-    >
+    android:id="@+id/deposit_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_small">
 
     <TextView
         android:id="@+id/txt_depo"
@@ -42,7 +40,7 @@
         android:text="@string/title_withdraw"
         android:textColor="@color/white"
         android:textSize="@dimen/fonts"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/topup_button"
@@ -70,7 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/topup_button"
-        android:layout_marginTop="@dimen/font_small"
+        android:layout_marginTop="@dimen/sp_14"
         android:background="@color/red_100"
         android:orientation="vertical"
         android:padding="@dimen/padding_small"

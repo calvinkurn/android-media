@@ -5,6 +5,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -14,8 +15,9 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.KolGlideRequestListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 
 import java.util.ArrayList;
@@ -30,18 +32,17 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.kol_layout;
 
-    private static final int MAX_CHAR = 250;
+    private static final int MAX_CHAR = 175;
     private final FeedPlus.View.Kol viewListener;
     private TextView title;
     private TextView name;
     private ImageView avatar;
     private TextView label;
-    private ImageView followIcon;
     private TextView followText;
     private View followButton;
     private ImageView reviewImage;
     private TextView tooltip;
-    private View tooltipClickArea;
+    private RelativeLayout tooltipClickArea;
     private TextView kolText;
     private ImageView likeIcon;
     private TextView likeText;
@@ -57,17 +58,16 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         name = (TextView) itemView.findViewById(R.id.name);
         avatar = (ImageView) itemView.findViewById(R.id.avatar);
         label = (TextView) itemView.findViewById(R.id.label);
-        followIcon = (ImageView) itemView.findViewById(R.id.follow_icon);
         followText = (TextView) itemView.findViewById(R.id.follow_text);
         followButton = itemView.findViewById(R.id.follow_button);
-        reviewImage = (ImageView) itemView.findViewById(R.id.image);
+        reviewImage = itemView.findViewById(R.id.image);
         tooltip = (TextView) itemView.findViewById(R.id.tooltip);
         tooltipClickArea = itemView.findViewById(R.id.tooltip_area);
         kolText = (TextView) itemView.findViewById(R.id.kol_text);
         likeIcon = (ImageView) itemView.findViewById(R.id.like_icon);
         likeText = (TextView) itemView.findViewById(R.id.like_text);
         commentText = (TextView) itemView.findViewById(R.id.comment_text);
-        topSeparator = itemView.findViewById(R.id.separator);
+        topSeparator = itemView.findViewById(R.id.separator2);
         commentButton = itemView.findViewById(R.id.comment_button);
         likeButton = itemView.findViewById(R.id.like_button);
     }
@@ -97,18 +97,18 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             followText.setText(R.string.following);
             followText.setTextColor(MethodChecker.getColor(followText.getContext(),
                     R.color.black_54));
-            ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_tick);
             topSeparator.setVisibility(View.VISIBLE);
         } else {
             followButton.setVisibility(View.VISIBLE);
-            ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_plus_green);
             followText.setTextColor(MethodChecker.getColor(followText.getContext(),
                     R.color.green_500));
             followText.setText(R.string.action_follow_english);
             topSeparator.setVisibility(View.VISIBLE);
         }
 
-        MethodChecker.loadImageFitCenter(reviewImage, element.getKolImage());
+        ImageHandler.loadImageChat(reviewImage,
+                element.getKolImage(),
+                new KolGlideRequestListener());
 
         if (TextUtils.isEmpty(element.getProductTooltip())) {
             tooltipClickArea.setVisibility(View.GONE);
@@ -239,20 +239,20 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
                     MAX_CHAR);
             return MethodChecker.fromHtml(
                     subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
-                            + "<font color='#42b549'>"
+                            + "<font color='#42b549'><b>"
                             + kolText.getContext().getString(R.string.read_more_english)
-                            + "</font>");
+                            + "</b></font>");
         } else {
-            return MethodChecker.fromHtml(element.getReview());
+            return MethodChecker.fromHtml(element.getReview().replaceAll("(\r\n|\n)", "<br />"));
         }
     }
 
     private void tooltipAreaClicked(KolViewModel element) {
         UnifyTracking.eventKolContentCtaClick(element.isFollowed(), element.getTagsType());
-        List<KolTracking.Promotion> list = new ArrayList<>();
-        list.add(new KolTracking.Promotion(
+        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
+        list.add(new FeedEnhancedTracking.Promotion(
                 element.getId(),
-                KolTracking.Promotion.createContentName(
+                FeedEnhancedTracking.Promotion.createContentName(
                         element.getTagsType(),
                         element.getCardType())
                 ,
@@ -263,7 +263,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
                 element.getContentLink().equals("")? "-" : element.getContentLink()
         ));
 
-        TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolClickTracking(list,
+        TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking.getClickTracking(list,
                 Integer.parseInt(SessionHandler.getLoginID(avatar.getContext()))));
 
         viewListener.onOpenKolTooltip(element.getPage(), getAdapterPosition(),

@@ -475,9 +475,10 @@ public class ActivitySellingTransaction extends TkpdActivity
             LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart_active);
+                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new_active);
             } else {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart);
+                menu.findItem(R.id.action_cart).setIcon(R.drawable.
+                        ic_cart_white_new);
             }
             return true;
         } else {
