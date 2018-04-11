@@ -52,7 +52,8 @@ public class CloudGetUserInfoSource {
                     sessionHandler.setTempLoginEmail(getUserInfoDomainModel
                             .getGetUserInfoDomainData().getEmail());
                 }
-
+                sessionHandler.setHasPassword(getUserInfoDomainModel.getGetUserInfoDomainData()
+                        .isCreatedPassword());
                 sessionHandler.setProfilePicture(getUserInfoDomainModel
                         .getGetUserInfoDomainData().getProfilePicture());
             }

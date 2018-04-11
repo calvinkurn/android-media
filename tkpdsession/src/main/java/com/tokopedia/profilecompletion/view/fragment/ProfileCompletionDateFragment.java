@@ -1,11 +1,12 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,9 @@ import android.widget.AutoCompleteTextView;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.profilecompletion.view.util.Events;
 import com.tokopedia.profilecompletion.view.util.Properties;
-import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.session.R;
 
 import java.text.DateFormatSymbols;
@@ -38,6 +39,8 @@ import rx.functions.Func3;
 
 public class ProfileCompletionDateFragment extends BaseDaggerFragment {
 
+    private final static int YEAR_MIN = 1937;
+    private final static int YEAR_MAX = 2007;
 
     public static final String TAG = "date";
     private AutoCompleteTextView month;
@@ -139,6 +142,30 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
                 presenter.skipView(TAG);
             }
         });
+
+        year.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() == 4) {
+                    int theYear = Integer.parseInt(charSequence.toString());
+                    if (theYear < YEAR_MIN) {
+                        year.setText(String.valueOf(YEAR_MIN));
+                    } else if (theYear > YEAR_MAX) {
+                        year.setText(String.valueOf(YEAR_MAX));
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     protected void initialVar() {
@@ -210,4 +237,5 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
     protected void initInjector() {
 
     }
+
 }

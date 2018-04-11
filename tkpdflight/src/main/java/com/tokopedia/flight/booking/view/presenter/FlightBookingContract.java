@@ -161,7 +161,5 @@ public interface FlightBookingContract {
 
         void onSameAsContactClicked(boolean navigateToPassengerInfo);
 
-        void deleteAllPassengerList();
-
     }
 }

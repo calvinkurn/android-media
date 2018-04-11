@@ -2,7 +2,7 @@ package com.tokopedia.flight.review.view.presenter;
 
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.booking.domain.FlightBookingDeleteAllPassengerListUseCase;
+import com.tokopedia.flight.passenger.domain.FlightPassengerDeleteAllListUseCase;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
@@ -38,7 +38,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
     private final FlightBookingCheckoutUseCase flightBookingCheckoutUseCase;
     private final FlightBookingVerifyUseCase flightBookingVerifyUseCase;
-    private final FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase;
+    private final FlightPassengerDeleteAllListUseCase flightPassengerDeleteAllListUseCase;
     private FlightAnalytics flightAnalytics;
 
     @Inject
@@ -46,12 +46,12 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                                         FlightAddToCartUseCase flightAddToCartUseCase,
                                         FlightBookingCartDataMapper flightBookingCartDataMapper,
                                         FlightBookingVerifyUseCase flightBookingVerifyUseCase,
-                                        FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase,
+                                        FlightPassengerDeleteAllListUseCase flightPassengerDeleteAllListUseCase,
                                         FlightAnalytics flightAnalytics) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightBookingCheckoutUseCase = flightBookingCheckoutUseCase;
         this.flightBookingVerifyUseCase = flightBookingVerifyUseCase;
-        this.flightBookingDeleteAllPassengerListUseCase = flightBookingDeleteAllPassengerListUseCase;
+        this.flightPassengerDeleteAllListUseCase = flightPassengerDeleteAllListUseCase;
         this.flightAnalytics = flightAnalytics;
     }
 
@@ -218,8 +218,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     }
 
     private void deleteListPassenger() {
-        flightBookingDeleteAllPassengerListUseCase.execute(
-                flightBookingDeleteAllPassengerListUseCase.createEmptyRequestParams(),
+        flightPassengerDeleteAllListUseCase.execute(
+                flightPassengerDeleteAllListUseCase.createEmptyRequestParams(),
                 new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {

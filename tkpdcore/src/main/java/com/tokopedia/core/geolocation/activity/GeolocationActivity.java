@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
 import com.tokopedia.core.geolocation.listener.GeolocationView;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.presenter.GeolocationPresenter;
@@ -57,6 +58,13 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
                     .add(R.id.container, fragment, tag)
                     .commit();
         }
+    }
+
+    @Override
+    public void replaceFragment(Fragment fragment, String tag) {
+        getFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment, tag)
+                .commit();
     }
 
     @Override
@@ -110,6 +118,7 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        presenter.replaceFragment(this, bundleData);
     }
 
     @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)

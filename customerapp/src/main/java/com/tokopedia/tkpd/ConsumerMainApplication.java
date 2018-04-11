@@ -33,6 +33,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
+import com.tokopedia.inbox.inboxchat.data.network.ChatBotUrl;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.network.SessionUrl;
@@ -154,6 +155,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         ProfileUrl.BASE_URL = ConsumerAppBaseUrl.TOPPROFILE_DOMAIN;
         DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         StreamUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
+        ChatBotUrl.BASE_URL = ConsumerAppBaseUrl.CHATBOT_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {
@@ -234,36 +236,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SoLoader.init(this, false);
     }
 
-    @Override
-    public Intent getSellerHomeIntent(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public Intent getLoginGoogleIntent(Context context) {
-        return LoginActivity.getAutoLoginGoogle(context);
-    }
-
-    @Override
-    public Intent getLoginFacebookIntent(Context context) {
-        return LoginActivity.getAutoLoginFacebook(context);
-
-    }
-
-    @Override
-    public Intent getLoginWebviewIntent(Context context, String name, String url) {
-        return LoginActivity.getAutoLoginWebview(context, name, url);
-    }
-
-    @Override
-    public Intent getTopProfileIntent(Context context, String userId) {
-        return TopProfileActivity.newInstance(context, userId);
-    }
-    
     private void initCacheApi() {
         CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
         new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
                 CacheApiWhiteList.getWhiteList(),
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
-	}
+    }
 }
