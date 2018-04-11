@@ -50,6 +50,8 @@ import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
 
 import java.util.Map;
 
+import rx.Observable;
+
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
 

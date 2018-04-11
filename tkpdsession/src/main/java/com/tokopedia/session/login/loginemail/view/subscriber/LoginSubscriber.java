@@ -2,7 +2,6 @@ package com.tokopedia.session.login.loginemail.view.subscriber;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.network.ErrorCode;
@@ -79,7 +78,6 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
                     loginEmailDomain.getInfo().getGetUserInfoDomainData().getPhone());
         } else {
             view.dismissLoadingLogin();
-            view.resetToken();
             view.onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
     }

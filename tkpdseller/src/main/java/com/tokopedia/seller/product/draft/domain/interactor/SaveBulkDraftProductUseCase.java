@@ -8,15 +8,10 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.constant.FreeReturnTypeDef;
-import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.constant.ProductConditionTypeDef;
-import com.tokopedia.seller.product.edit.constant.ProductInsuranceValueTypeDef;
-import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
 import com.tokopedia.seller.product.edit.constant.WeightUnitTypeDef;
-import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,66 +37,47 @@ public class SaveBulkDraftProductUseCase extends UseCase<List<Long>> {
 
     @Override
     public Observable<List<Long>> createObservable(RequestParams requestParams) {
-        ArrayList<UploadProductInputDomainModel> inputModelList =
-                (ArrayList<UploadProductInputDomainModel>) requestParams.getObject(UPLOAD_PRODUCT_INPUT_MODEL_LIST);
+        ArrayList<ProductViewModel> inputModelList =
+                (ArrayList<ProductViewModel>) requestParams.getObject(UPLOAD_PRODUCT_INPUT_MODEL_LIST);
         return Observable.from(inputModelList)
-                .flatMap(new SaveDraft(0, false))
+                .flatMap(new Func1<ProductViewModel, Observable<Long>>() {
+                    @Override
+                    public Observable<Long> call(ProductViewModel productViewModel) {
+                        return productDraftRepository.saveDraft(productViewModel, false);
+                    }
+                })
                 .toList();
     }
 
     public static RequestParams generateUploadProductParam(@NonNull ArrayList<String> localPathList,
                                                            @NonNull ArrayList<String> instagramDescList){
 
-        ArrayList<UploadProductInputDomainModel> uploadProductInputDomainModelList = new ArrayList<>();
+        ArrayList<ProductViewModel> productViewModels = new ArrayList<>();
 
         for (int i=0, sizei = localPathList.size(); i < sizei ; i++) {
             String localPath = localPathList.get(i);
 
-            UploadProductInputDomainModel uploadProductInputDomainModel = new UploadProductInputDomainModel();
+            ProductViewModel productViewModel = new ProductViewModel();
 
-            uploadProductInputDomainModel.setProductDescription(instagramDescList.get(i) == null? "": instagramDescList.get(i));
+            productViewModel.setProductDescription(instagramDescList.get(i) == null? "": instagramDescList.get(i));
 
-            ProductPhotoListDomainModel productPhotoListDomainModel = new ProductPhotoListDomainModel();
-            productPhotoListDomainModel.setProductDefaultPicture(0);
-            ArrayList<ImageProductInputDomainModel> imageProductInputDomainModelArrayList = new ArrayList<>();
-            ImageProductInputDomainModel imageProductInputDomainModel = new ImageProductInputDomainModel();
-            imageProductInputDomainModel.setImagePath(localPath);
-            imageProductInputDomainModelArrayList.add(imageProductInputDomainModel);
-            productPhotoListDomainModel.setPhotos(imageProductInputDomainModelArrayList);
-            uploadProductInputDomainModel.setProductPhotos(productPhotoListDomainModel);
+            List<ProductPictureViewModel> productPictureViewModelList = new ArrayList<>();
+            ProductPictureViewModel productPictureViewModel = new ProductPictureViewModel();
+            productPictureViewModel.setFilePath(localPath);
+            productPictureViewModel.setId(0);
 
-            uploadProductInputDomainModel.setProductPriceCurrency( CurrencyTypeDef.TYPE_IDR);
-            uploadProductInputDomainModel.setProductWeightUnit(WeightUnitTypeDef.TYPE_GRAM);
+            productPictureViewModelList.add(productPictureViewModel);
+            productViewModel.setProductPictureViewModelList(productPictureViewModelList);
 
-            uploadProductInputDomainModel.setProductUploadTo(UploadToTypeDef.TYPE_NOT_ACTIVE);
-            uploadProductInputDomainModel.setProductReturnable(FreeReturnTypeDef.TYPE_ACTIVE);
+            productViewModel.setProductPriceCurrency( CurrencyTypeDef.TYPE_IDR);
+            productViewModel.setProductWeightUnit(WeightUnitTypeDef.TYPE_GRAM);
 
-            uploadProductInputDomainModel.setProductInvenageSwitch(
-                    InvenageSwitchTypeDef.TYPE_NOT_ACTIVE);
-            uploadProductInputDomainModel.setProductCondition(ProductConditionTypeDef.TYPE_NEW);
-
-            uploadProductInputDomainModel.setProductMustInsurance(ProductInsuranceValueTypeDef.TYPE_OPTIONAL);
-            uploadProductInputDomainModelList.add(uploadProductInputDomainModel);
+            productViewModel.setProductCondition(ProductConditionTypeDef.TYPE_NEW);
+            productViewModels.add(productViewModel);
         }
         RequestParams params = RequestParams.create();
-        params.putObject(UPLOAD_PRODUCT_INPUT_MODEL_LIST, uploadProductInputDomainModelList);
+        params.putObject(UPLOAD_PRODUCT_INPUT_MODEL_LIST, productViewModels);
         return params;
     }
 
-    private class SaveDraft implements Func1<UploadProductInputDomainModel, Observable<Long>> {
-        boolean isUploading;
-        long previousDraftId;
-        SaveDraft(long previousDraftId, boolean isUploading){
-            this.previousDraftId = previousDraftId;
-            this.isUploading = isUploading;
-        }
-        @Override
-        public Observable<Long> call(UploadProductInputDomainModel inputModel) {
-            if (previousDraftId <= 0) {
-                return productDraftRepository.saveDraft(inputModel, isUploading);
-            } else {
-                return productDraftRepository.updateDraftToUpload(previousDraftId, inputModel, isUploading);
-            }
-        }
-    }
 }

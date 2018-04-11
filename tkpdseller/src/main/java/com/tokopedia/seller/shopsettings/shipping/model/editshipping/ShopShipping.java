@@ -56,6 +56,14 @@ public class ShopShipping implements Parcelable{
         return longitude;
     }
 
+    public String getDistrictName() {
+        return districtName;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
     public void setShopProvinceName(String provinceName){
         this.provinceName = provinceName;
     }
