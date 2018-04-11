@@ -1,5 +1,6 @@
 package com.tokopedia.gamification.cracktoken.contract;
 
+import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -29,6 +30,8 @@ public interface CrackTokenContract {
         void hideLoading();
 
         Resources getResources();
+
+        Context getContext();
     }
 
     interface Presenter extends CustomerPresenter<View> {

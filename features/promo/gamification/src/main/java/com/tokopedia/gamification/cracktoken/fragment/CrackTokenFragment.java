@@ -150,11 +150,13 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
 
             @Override
-            public void onClickCloseButton() {
-
+            public void onClickCloseButton(boolean isGeneralErrorType) {
                 widgetCrackResult.clearCrackResult();
-
-                crackTokenPresenter.getGetTokenTokopoints();
+                if (isGeneralErrorType) { // backpress
+                    getActivity().onBackPressed();
+                } else {
+                    crackTokenPresenter.getGetTokenTokopoints();
+                }
             }
 
             @Override
