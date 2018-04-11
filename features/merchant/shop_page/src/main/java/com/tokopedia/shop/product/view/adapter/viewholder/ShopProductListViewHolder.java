@@ -23,10 +23,6 @@ public class ShopProductListViewHolder extends ShopProductViewHolder {
 
     @Override
     protected String getImageUrl(ShopProductViewModel shopProductViewModel) {
-        String imageUrl = super.getImageUrl(shopProductViewModel);
-        if (!TextUtils.isEmpty(shopProductViewModel.getImageUrl300())) {
-            imageUrl = shopProductViewModel.getImageUrl300();
-        }
-        return imageUrl;
+        return super.getImageUrl(shopProductViewModel);
     }
 }
