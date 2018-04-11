@@ -33,6 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/title_email"
+                    style="@style/HintTextInputLayout"
                     android:inputType="textCapWords"
                     android:layout_marginBottom="@dimen/dp_20"
                     >
@@ -69,6 +70,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/title_full_name"
+                    style="@style/HintTextInputLayout"
                     android:inputType="textCapWords"
                     android:layout_marginBottom="@dimen/dp_20">
 
@@ -88,6 +90,7 @@
                     android:id="@+id/wrapper_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    style="@style/HintTextInputLayout"
                     android:hint="@string/title_phone_number"
                     android:layout_marginBottom="@dimen/dp_20"
                     >
@@ -124,6 +127,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"
+                    style="@style/HintTextInputLayout"
                     app:passwordToggleDrawable="@drawable/asl_password_visibility"
                     android:layout_marginBottom="@dimen/dp_20"
                     app:passwordToggleEnabled="true">

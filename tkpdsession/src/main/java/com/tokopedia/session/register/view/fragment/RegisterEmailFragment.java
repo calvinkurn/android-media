@@ -263,6 +263,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                 } else if (RegisterUtil.isExceedMaxCharacter(name.getText().toString())) {
                     setWrapperError(wrapper, getString(R.string.error_max_35_character));
                 }
+                showNameHint();
 
                 checkIsValidForm();
             }
