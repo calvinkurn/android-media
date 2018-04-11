@@ -23,11 +23,11 @@ public class CatalogAdapterTypeFactory extends SearchSectionTypeFactoryImpl
         implements CatalogTypeFactory {
 
     private final ItemClickListener mItemClickListener;
-    private final String query;
+    private final Config topAdsConfig;
 
-    public CatalogAdapterTypeFactory(ItemClickListener listener, String query) {
+    public CatalogAdapterTypeFactory(ItemClickListener listener, Config topAdsConfig) {
         this.mItemClickListener = listener;
-        this.query = query;
+        this.topAdsConfig = topAdsConfig;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class CatalogAdapterTypeFactory extends SearchSectionTypeFactoryImpl
         } else if (type == EmptyViewHolder.LAYOUT) {
             viewHolder = new EmptyViewHolder(parent, mItemClickListener);
         } else if (type == CatalogHeaderViewHolder.LAYOUT) {
-            viewHolder = new CatalogHeaderViewHolder(parent, mItemClickListener, query);
+            viewHolder = new CatalogHeaderViewHolder(parent, mItemClickListener, topAdsConfig);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }

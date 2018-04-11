@@ -53,4 +53,6 @@ public interface DepositFragmentView {
     void showEmptyState(String error);
 
     void setRetry(String error);
+
+    void showWithdrawalNoPassword();
 }

@@ -722,6 +722,26 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
+    public void enhanceClickImageSearchResultProduct(Object object, String actionField) {
+        clearEnhanceEcommerce();
+
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", "productClick",
+                        "eventCategory", "search result",
+                        "eventAction", "click - product",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf("click",
+                                DataLayer.mapOf("actionField",
+                                        DataLayer.mapOf("list", actionField),
+                                        "products", DataLayer.listOf(object)
+                                )
+                        )
+                )
+        );
+    }
+
+    @Override
     public void enhanceImpressionSearchResultProduct(List<Object> objects, String keyword) {
         clearEnhanceEcommerce();
 
@@ -731,6 +751,25 @@ public class GTMContainer implements IGTMContainer {
                         "eventCategory", "search result",
                         "eventAction", "impression - product",
                         "eventLabel", keyword,
+                        "ecommerce", DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", DataLayer.listOf(
+                                        objects.toArray(new Object[objects.size()])
+                                ))
+                )
+        );
+    }
+
+    @Override
+    public void enhanceImpressionImageSearchResultProduct(List<Object> objects) {
+        clearEnhanceEcommerce();
+
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", "productView",
+                        "eventCategory", "search result",
+                        "eventAction", "impression - product",
+                        "eventLabel", "",
                         "ecommerce", DataLayer.mapOf(
                                 "currencyCode", "IDR",
                                 "impressions", DataLayer.listOf(
