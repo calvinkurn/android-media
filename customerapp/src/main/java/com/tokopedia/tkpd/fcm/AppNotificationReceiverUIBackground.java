@@ -134,7 +134,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private void prepareAndExecuteApplinkNotification(Bundle data) {
 
-        if (canBroadcastPointReceived(data.getString(Constants.ARG_NOTIFICATION_CODE, "0"))) {
+        if (canBroadcastPointReceived(
+                data.getString(Constants.ARG_NOTIFICATION_CODE, "0"))) {
             broadcastPointReceived(data);
         }
 
@@ -175,10 +176,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                         String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
                         String fullname = data.getString("full_name");
                         boolean isHaveQueryField = applink.contains("?");
-                        if(isHaveQueryField) {
+                        if (isHaveQueryField) {
                             applink = String.format("%s&fullname=%s", applink, fullname);
-                        }
-                        else {
+                        } else {
                             applink = String.format("%s?fullname=%s", applink, fullname);
                         }
                         data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
@@ -199,7 +199,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private boolean canBroadcastPointReceived(String tkpCode) {
-        return tkpCode.startsWith("140");
+        final String GROUP_CHAT_BROADCAST_TKP_CODE = "140";
+        return tkpCode.startsWith(GROUP_CHAT_BROADCAST_TKP_CODE);
     }
 
     private void broadcastPointReceived(Bundle data) {

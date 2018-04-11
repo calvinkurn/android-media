@@ -54,7 +54,6 @@ import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity;
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel;
-import com.tokopedia.groupchat.chatroom.GroupChatNotifInterface;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.groupchat.chatroom.domain.ConnectionManager;
 import com.tokopedia.groupchat.chatroom.domain.usecase.ChannelHandlerUseCase;
@@ -104,7 +103,7 @@ import javax.inject.Inject;
 public class GroupChatActivity extends BaseSimpleActivity
         implements GroupChatTabAdapter.TabListener, GroupChatContract.View,
         LoginGroupChatUseCase.LoginGroupChatListener, ChannelHandlerUseCase.ChannelHandlerListener
-        , ToolTipUtils.ToolTipListener, GroupChatNotifInterface {
+        , ToolTipUtils.ToolTipListener {
 
     private static final String TOKOPEDIA_APPLINK = "tokopedia://";
 
@@ -1516,8 +1515,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 (attributeBanner, channelUrl, channelName);
     }
 
-    @Override
-    public void onGetNotif(Bundle data) {
+    private void onGetNotif(Bundle data) {
         GroupChatPointsViewModel model = new GroupChatPointsViewModel(
                 data.getString("desc", ""),
                 data.getString("applinks", ""),

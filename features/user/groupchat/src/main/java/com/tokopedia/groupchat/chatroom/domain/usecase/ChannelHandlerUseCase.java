@@ -46,7 +46,8 @@ public class ChannelHandlerUseCase {
         void onChannelFrozen();
     }
 
-    public void execute(final String mChannelUrl, final String channelHandlerId, final ChannelHandlerListener listener) {
+    public void execute(final String mChannelUrl, final String channelHandlerId,
+                        final ChannelHandlerListener listener) {
         SendBird.addChannelHandler(channelHandlerId, new SendBird.ChannelHandler() {
 
             @Override

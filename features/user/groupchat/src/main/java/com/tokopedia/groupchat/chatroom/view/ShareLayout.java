@@ -1,7 +1,6 @@
 package com.tokopedia.groupchat.chatroom.view;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -24,8 +23,8 @@ import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.plus.PlusShare;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
+import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 
 import java.util.ArrayList;
@@ -43,8 +42,6 @@ public class ShareLayout {
     private final BottomSheetDialog dialog;
     private final RecyclerView appGrid;
     private final CallbackManager callbackManager;
-    private final Fragment fragment;
-    private final android.support.v4.app.Fragment fragmentV4;
     private final GroupChatAnalytics analytics;
 
     private ShareData shareModel;
@@ -55,8 +52,6 @@ public class ShareLayout {
 
     public ShareLayout(Activity activity, CallbackManager callbackManager, String channelUrl, String
             channelName, GroupChatAnalytics analytics) {
-        this.fragment = null;
-        this.fragmentV4 = null;
         this.activity = activity;
         this.dialog = new BottomSheetDialog(activity);
         this.callbackManager = callbackManager;
@@ -259,12 +254,7 @@ public class ShareLayout {
                             if (!TextUtils.isEmpty(shareUri))
                                 builder.setContentUrl(Uri.parse(shareUri));
 
-                            if (fragment != null)
-                                fragment.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
-                            else if (fragmentV4 != null)
-                                fragmentV4.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
-                            else
-                                activity.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
+                            activity.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
 
                         }
                     });
@@ -328,12 +318,7 @@ public class ShareLayout {
 
         final ShareDialog shareDialog;
 
-        if (fragment != null)
-            shareDialog = new ShareDialog(fragment);
-        else if (fragmentV4 != null)
-            shareDialog = new ShareDialog(fragmentV4);
-        else
-            shareDialog = new ShareDialog(activity);
+        shareDialog = new ShareDialog(activity);
 
         shareDialog.registerCallback(callbackManager, new
                 FacebookCallback<Sharer.Result>() {
