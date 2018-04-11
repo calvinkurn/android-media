@@ -162,10 +162,6 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     protected String getImageUrl(ShopProductViewModel shopProductViewModel) {
-        String imageUrl = shopProductViewModel.getImageUrl();
-        if (!TextUtils.isEmpty(shopProductViewModel.getImageUrl300())) {
-            imageUrl = shopProductViewModel.getImageUrl300();
-        }
-        return imageUrl;
+        return shopProductViewModel.getImageUrl();
     }
 }
