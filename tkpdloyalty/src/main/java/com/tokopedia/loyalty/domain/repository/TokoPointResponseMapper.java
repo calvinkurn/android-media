@@ -37,6 +37,7 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
     @Override
     public List<CouponData> convertCouponListData(CouponListDataResponse couponListDataResponse) {
         List<CouponData> couponDataList = new ArrayList<>();
+        if(couponListDataResponse != null && couponListDataResponse.getCoupons() != null)
         for (Coupon coupon : couponListDataResponse.getCoupons()) {
             couponDataList.add(
                     new CouponData.Builder()
