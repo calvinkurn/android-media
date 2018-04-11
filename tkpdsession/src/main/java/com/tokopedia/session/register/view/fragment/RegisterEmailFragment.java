@@ -57,6 +57,7 @@ import com.tokopedia.session.register.view.adapter.AutoCompleteTextAdapter;
 import com.tokopedia.session.register.view.di.RegisterEmailDependencyInjector;
 import com.tokopedia.session.register.view.presenter.RegisterEmailPresenter;
 import com.tokopedia.session.register.view.util.RegisterUtil;
+import com.tokopedia.session.register.view.util.ViewUtil;
 import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
 import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
 import com.tokopedia.util.CustomPhoneNumberUtil;
@@ -184,6 +185,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
         registerNextTAndC.setText(MethodChecker.fromHtml(joinString));
         registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
+        ViewUtil.stripUnderlines(registerNextTAndC);
     }
 
     private Spannable getSpannable(String sourceString, String hyperlinkString) {

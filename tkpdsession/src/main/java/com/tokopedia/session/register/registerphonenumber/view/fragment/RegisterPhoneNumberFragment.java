@@ -42,6 +42,7 @@ import com.tokopedia.session.register.registerphonenumber.view.activity.WelcomeP
 import com.tokopedia.session.register.registerphonenumber.view.listener.RegisterPhoneNumber;
 import com.tokopedia.session.register.registerphonenumber.view.presenter.RegisterPhoneNumberPresenter;
 import com.tokopedia.session.register.registerphonenumber.view.viewmodel.LoginRegisterPhoneNumberModel;
+import com.tokopedia.session.register.view.util.ViewUtil;
 
 import javax.inject.Inject;
 
@@ -142,6 +143,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
         bottomInfo.setText(MethodChecker.fromHtml(joinString));
         bottomInfo.setMovementMethod(LinkMovementMethod.getInstance());
+        ViewUtil.stripUnderlines(bottomInfo);
     }
 
     public boolean isValidNumber(String phoneNumber) {
@@ -163,11 +165,6 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void goToVerifyAccountPage(String phoneNumber) {
-//        startActivityForResult(VerificationActivity.getRegisterPhoneNumberVerificationIntent(
-//                getActivity(),
-//                phoneNumber,
-//                getListVerificationMethod()),
-//                REQUEST_VERIFY_PHONE);
         VerificationPassModel passModel = new
                 VerificationPassModel(phoneNumber,
                 RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
