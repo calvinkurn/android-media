@@ -12,8 +12,10 @@ import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
+import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
+import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
@@ -431,5 +433,10 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<EstimateRefundResultEntity> estimateRefund(FlightEstimateRefundRequest request) {
         return flightCancellationCloudDataSource.getEstimateRefund(request);
+    }
+
+    @Override
+    public Observable<CancellationRequestEntity> cancellationRequest(FlightCancellationRequestBody request) {
+        return flightCancellationCloudDataSource.requestCancellation(request);
     }
 }

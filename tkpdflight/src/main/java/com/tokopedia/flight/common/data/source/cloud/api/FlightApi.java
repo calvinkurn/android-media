@@ -9,6 +9,7 @@ import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancelPassengerEntity;
+import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.constant.FlightUrl;
@@ -108,10 +109,14 @@ public interface FlightApi {
     Observable<Response<FlightDataResponse<PassengerListEntity>>> updatePassengerListData(@Body DataRequest<UpdatePassengerRequest> request,
                                                                                           @Header("Idempotency-Key") String idemPotencyKeyHeader);
 
-    @GET(FlightUrl.FLIGHT_CANCEL_PASSENGER_PATH)
+    @GET(FlightUrl.FLIGHT_CANCELLATION_PASSENGER)
     Observable<Response<DataResponse<CancelPassengerEntity>>> getCancellablePassenger(@Query("invoice_id") String invoiceId);
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CANCELLATION_ESTIMATE_REFUND)
     Observable<Response<DataResponse<EstimateRefundResultEntity>>> getEstimateRefund(@Body DataRequest<FlightEstimateRefundRequest> flightEstimateRefundRequestDataRequest);
+
+    @Headers({"Content-Type: application/json"})
+    @POST(FlightUrl.FLIGHT_CANCELLATION_REQUEST)
+    Observable<Response<DataResponse<CancellationRequestEntity>>> requestCancellation(@Body JsonObject cancellationRequest);
 }

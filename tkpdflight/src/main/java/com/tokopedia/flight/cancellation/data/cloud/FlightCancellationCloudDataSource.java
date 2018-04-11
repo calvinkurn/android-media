@@ -1,11 +1,14 @@
 package com.tokopedia.flight.cancellation.data.cloud;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancelPassengerEntity;
+import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
+import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
@@ -49,6 +52,17 @@ public class FlightCancellationCloudDataSource {
                     @Override
                     public EstimateRefundResultEntity call(Response<DataResponse<EstimateRefundResultEntity>> dataResponseResponse) {
                         return dataResponseResponse.body().getData();
+                    }
+                });
+    }
+
+    public Observable<CancellationRequestEntity> requestCancellation(FlightCancellationRequestBody request) {
+        return flightApi.requestCancellation(gson
+                .fromJson(gson.toJson(request), JsonElement.class).getAsJsonObject())
+                .flatMap(new Func1<Response<DataResponse<CancellationRequestEntity>>, Observable<CancellationRequestEntity>>() {
+                    @Override
+                    public Observable<CancellationRequestEntity> call(Response<DataResponse<CancellationRequestEntity>> dataResponseResponse) {
+                        return Observable.just(dataResponseResponse.body().getData());
                     }
                 });
     }
