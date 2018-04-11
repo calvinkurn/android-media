@@ -324,7 +324,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @Override
     public void showPinPointMap(ShipmentDetailData shipmentDetailData) {
-        setupMapView();
         if (shipmentDetailData.getShipmentCartData() != null) {
             setText(tvShipmentAddress, shipmentDetailData.getShipmentCartData().getDestinationAddress());
             if (shipmentDetailData.getShipmentCartData().getDestinationLatitude() == null ||
@@ -337,6 +336,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             renderNoPinpoint();
         }
         llPinpoint.setVisibility(View.VISIBLE);
+        setupMapView();
     }
 
     @Override
@@ -820,46 +820,48 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     @OnCheckedChanged(R2.id.switch_insurance)
     void onSwitchInsuranceChanged(CompoundButton view, boolean checked) {
         presenter.getShipmentDetailData().setUseInsurance(checked);
-        if (checked) {
-            llInsuranceFee.setVisibility(View.VISIBLE);
-            if (presenter.getSelectedCourier().getInsuranceType() ==
-                    InsuranceConstant.InsuranceType.MUST ||
-                    presenter.getSelectedCourier().getInsuranceType() ==
-                            InsuranceConstant.InsuranceType.OPTIONAL) {
-                renderInsuranceTncView(presenter.getSelectedCourier());
+        if (presenter.getSelectedCourier() != null) {
+            if (checked) {
+                llInsuranceFee.setVisibility(View.VISIBLE);
+                if (presenter.getSelectedCourier().getInsuranceType() ==
+                        InsuranceConstant.InsuranceType.MUST ||
+                        presenter.getSelectedCourier().getInsuranceType() ==
+                                InsuranceConstant.InsuranceType.OPTIONAL) {
+                    renderInsuranceTncView(presenter.getSelectedCourier());
+                    if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
+                        tvInsurancePrice.setText(
+                                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                        presenter.getSelectedCourier().getInsurancePrice(), true));
+                        presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
+                                presenter.getSelectedCourier().getAdditionalPrice() +
+                                        presenter.getSelectedCourier().getDeliveryPrice() +
+                                        presenter.getSelectedCourier().getInsurancePrice());
+                    }
+                }
+            } else {
                 if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
-                    tvInsurancePrice.setText(
-                            CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                    presenter.getSelectedCourier().getInsurancePrice(), true));
                     presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
-                            presenter.getSelectedCourier().getAdditionalPrice() +
-                                    presenter.getSelectedCourier().getDeliveryPrice() +
+                            presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal() -
                                     presenter.getSelectedCourier().getInsurancePrice());
                 }
+                llInsuranceFee.setVisibility(View.GONE);
+                tvInsuranceTerms.setVisibility(View.GONE);
             }
-        } else {
-            if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
-                presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
-                        presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal() -
-                                presenter.getSelectedCourier().getInsurancePrice());
-            }
-            llInsuranceFee.setVisibility(View.GONE);
-            tvInsuranceTerms.setVisibility(View.GONE);
-        }
-        updateFeesGroupLayout();
-        if (hasPinpoint()) {
-            if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
-                setText(tvDeliveryFeeTotal, CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal(), true));
+            updateFeesGroupLayout();
+            if (hasPinpoint()) {
+                if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
+                    setText(tvDeliveryFeeTotal, CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal(), true));
+                }
             }
         }
     }
 
     private boolean hasPinpoint() {
-        if (presenter.getSelectedCourier().isUsePinPoint() &&
+        if (presenter.getSelectedCourier() != null && (presenter.getSelectedCourier().isUsePinPoint() &&
                 (presenter.getShipmentDetailData().getShipmentCartData().getDestinationLatitude() == null ||
                         presenter.getShipmentDetailData().getShipmentCartData().getDestinationLongitude() == null ||
-                        presenter.getShipmentDetailData().getShipmentCartData().getDestinationAddress() == null)) {
+                        presenter.getShipmentDetailData().getShipmentCartData().getDestinationAddress() == null))) {
             return false;
         }
         return true;

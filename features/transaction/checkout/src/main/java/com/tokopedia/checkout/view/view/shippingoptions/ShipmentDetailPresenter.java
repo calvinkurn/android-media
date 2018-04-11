@@ -16,6 +16,7 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,9 +30,14 @@ import rx.Subscriber;
 public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetailView>
         implements IShipmentDetailPresenter {
 
+    private static final String PINPOINT_CACHE_KEY_LATITUDE = "latitude";
+    private static final String PINPOINT_CACHE_KEY_LONGITUDE = "longitude";
+    private static final String PINPOINT_CACHE_KEY_ADDRESS = "address";
+
     private ShipmentDetailData shipmentDetailData;
     private List<CourierItemData> couriers = new ArrayList<>();
     private GetRatesUseCase getRatesUseCase;
+    private HashMap<String, Object> pinpointCache = new HashMap<>();
 
     @Inject
     public ShipmentDetailPresenter(GetRatesUseCase getRatesUseCase) {
@@ -97,9 +103,18 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     @Override
     public void updatePinPoint(LocationPass locationPass) {
         if (shipmentDetailData.getShipmentCartData() != null) {
+            String address;
+            if (getView().getActivity().getResources().getString(R.string.choose_this_location).equals(locationPass.getGeneratedAddress())) {
+                address = locationPass.getLatitude() + ", " + locationPass.getLongitude();
+            } else {
+                address = locationPass.getGeneratedAddress();
+            }
+            pinpointCache.put(PINPOINT_CACHE_KEY_LATITUDE, shipmentDetailData.getShipmentCartData().getDestinationLatitude());
+            pinpointCache.put(PINPOINT_CACHE_KEY_LONGITUDE, shipmentDetailData.getShipmentCartData().getDestinationLongitude());
+            pinpointCache.put(PINPOINT_CACHE_KEY_ADDRESS, shipmentDetailData.getShipmentCartData().getDestinationAddress());
             shipmentDetailData.getShipmentCartData().setDestinationLatitude(Double.parseDouble(locationPass.getLatitude()));
             shipmentDetailData.getShipmentCartData().setDestinationLongitude(Double.parseDouble(locationPass.getLongitude()));
-            shipmentDetailData.getShipmentCartData().setDestinationAddress(locationPass.getGeneratedAddress());
+            shipmentDetailData.getShipmentCartData().setDestinationAddress(address);
             loadShipmentData(shipmentDetailData);
         }
     }
@@ -144,9 +159,12 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
                     getView().hideLoading();
                     boolean canRenderShipmentData = checkPreviouslySelectedShipmentAndCourier(shipmentDetailData);
                     if (!canRenderShipmentData) {
-                        shipmentDetailData.getShipmentCartData().setDestinationLatitude(null);
-                        shipmentDetailData.getShipmentCartData().setDestinationLongitude(null);
-                        shipmentDetailData.getShipmentCartData().setDestinationAddress(null);
+                        ShipmentDetailPresenter.this.shipmentDetailData.getShipmentCartData()
+                                .setDestinationLatitude((Double) pinpointCache.get(PINPOINT_CACHE_KEY_LATITUDE));
+                        ShipmentDetailPresenter.this.shipmentDetailData.getShipmentCartData()
+                                .setDestinationLongitude((Double) pinpointCache.get(PINPOINT_CACHE_KEY_LONGITUDE));
+                        ShipmentDetailPresenter.this.shipmentDetailData.getShipmentCartData()
+                                .setDestinationAddress((String) pinpointCache.get(PINPOINT_CACHE_KEY_ADDRESS));
                         getView().showErrorSnackbar(getView().getActivity().getResources().getString(R.string.message_pinpoint_too_far));
                     } else {
                         if (ShipmentDetailPresenter.this.shipmentDetailData.getSelectedShipment() == null) {
