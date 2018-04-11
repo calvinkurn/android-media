@@ -234,7 +234,7 @@
     <string name="register_with_phone_number">Daftar dengan Nomor Ponsel</string>
     <string name="register_with_phone_number_button">Nomor Ponsel</string>
     <string name="register_with_email">Email</string>
-    <string name="register_we_will_send_verification_code">Kami akan mengirimkan kode melalui SMS</string>
+    <string name="register_we_will_send_verification_code">Kami akan mengirimkan SMS kode verifikasi</string>
     <string name="error_field_required_phone">Masukkan nomor ponsel untuk mendaftar</string>
     <string name="error_char_count_under">Nomor ponsel terlalu pendek, minimum 8 angka</string>
     <string name="error_char_count_over">Nomor ponsel terlalu panjang, maksimal 15 angka</string>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -137,12 +138,13 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
             }
         });
 
-        String joinString = getString(com.tokopedia.core.R.string.detail_term_and_privacy) +
-                "<br>" + getString(com.tokopedia.core.R.string.link_term_condition) +
-                " serta " + getString(com.tokopedia.core.R.string.link_privacy_policy);
+        String joinString = getString(R.string.detail_term_and_privacy) +
+                "<br>" + getString(R.string.link_term_condition) +
+                " serta " + getString(R.string.link_privacy_policy);
 
         bottomInfo.setText(MethodChecker.fromHtml(joinString));
         bottomInfo.setMovementMethod(LinkMovementMethod.getInstance());
+        nextButton.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         ViewUtil.stripUnderlines(bottomInfo);
     }
 

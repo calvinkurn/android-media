@@ -3,6 +3,7 @@ package com.tokopedia.session.changename.view.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -10,8 +11,8 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -38,7 +39,7 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
 
 
     private EditText etName;
-    private Button btnContinue;
+    private TextView btnContinue;
     private TkpdProgressDialog progressDialog;
 
     @Inject
@@ -55,7 +56,7 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_change_name, container, false);
         etName = (EditText) view.findViewById(R.id.et_name);
-        btnContinue = (Button) view.findViewById(R.id.btn_continue);
+        btnContinue = (TextView) view.findViewById(R.id.btn_continue);
         return view;
     }
 
@@ -68,7 +69,8 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
     }
 
     private void setView() {
-        disableButton(btnContinue);
+        disableNextButton();
+        btnContinue.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
     }
 
     private void setViewListener() {
@@ -193,13 +195,13 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
         presenter.detachView();
     }
 
-    private void enableButton(Button button) {
+    private void enableButton(TextView button) {
         button.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_enable));
         button.setEnabled(true);
     }
 
-    private void disableButton(Button button) {
+    private void disableButton(TextView button) {
         button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_12));
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable));
         button.setEnabled(false);

@@ -3,6 +3,7 @@ package com.tokopedia.session.register.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -93,7 +94,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public static final int TYPE_SQ_PHONE = 1;
     public static final int TYPE_SQ_EMAIL = 2;
 
-    LinearLayout registerContainer;
+    LinearLayout registerContainer, llLayout;
     LoginTextView registerButton, registerPhoneNumberButton;
     TextView loginButton;
     ScrollView container;
@@ -160,6 +161,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         loginButton = (TextView) view.findViewById(R.id.login_button);
         container = (ScrollView) view.findViewById(R.id.container);
         progressBar = (RelativeLayout) view.findViewById(R.id.progress_bar);
+        llLayout = (LinearLayout) view.findViewById(R.id.ll_layout);
         prepareView(view);
         setViewListener();
         presenter.attachView(this);
@@ -224,6 +226,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                                           getActivity(), R.color.tkpd_main_green
                                           )
                                   );
+                                  ds.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
                               }
                           }
                 , sourceString.indexOf("Masuk")

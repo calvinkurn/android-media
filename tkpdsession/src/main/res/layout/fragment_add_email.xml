@@ -58,13 +58,14 @@
         tools:text="Nomor ponsel belum terdaftar"
         />
     
-    <Button
+    <TextView
         android:id="@+id/btn_continue"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="@string/button_continue"
         android:textColor="@color/white"
         android:textAllCaps="false"
+        android:gravity="center"
         android:background="@drawable/bg_button_enable"
         android:layout_marginTop="@dimen/dp_16"/>
 

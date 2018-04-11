@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="@dimen/dp_20"
-        android:textColor="@color/black_70"
+        android:textColor="@color/black_54"
         android:lineSpacingExtra="3dp"
         android:layout_centerHorizontal="true"
         android:layout_marginRight="@dimen/dp_20"
@@ -47,33 +47,69 @@
         android:gravity="center"
         tools:text="Kode aktivasi akun telah dikirimkan ke tjangjialie@gmail.com" />
 
-
-    <com.tkpd.library.ui.widget.PinEntryEditText
-        android:id="@+id/input_verify_code"
-        android:layout_width="200dp"
+    <LinearLayout
+        android:id="@+id/llotp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/activation_text"
-        android:background="@null"
-        android:cursorVisible="false"
-        android:digits="1234567890"
-        android:layout_marginTop="@dimen/dp_24"
-        android:fontFamily="sans-serif-medium"
-        android:imeOptions="actionDone"
-        android:inputType="number"
-        android:maxLength="5"
-        android:paddingBottom="@dimen/dp_10"
-        android:textColor="@color/black_70"
-        android:textIsSelectable="false"
-        android:textSize="32sp"
+        android:orientation="horizontal">
+
+        <com.tkpd.library.ui.widget.PinEntryEditText
+            android:id="@+id/input_verify_code"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:cursorVisible="false"
+            android:digits="1234567890"
+            android:fontFamily="sans-serif-medium"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:maxLength="5"
+            android:paddingBottom="@dimen/dp_10"
+            android:textColor="@color/black_70"
+            android:textIsSelectable="false"
+            android:textSize="32sp"
+            android:textStyle="normal"
+            android:visibility="visible"
+            app:pinLineColors="@color/pin_line_colors"
+            tools:text="123123" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_toRightOf="@id/llotp"
+        android:id="@+id/error_image"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_15"
+        app:srcCompat="@drawable/ic_cancel_red"
+        android:layout_alignBottom="@id/llotp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/error_otp"
+        android:layout_below="@id/llotp"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="sans-serif"
+        android:text="@string/error_wrong_otp"
+        android:textColor="@color/red_500"
+        android:textSize="@dimen/text_size_small"
         android:textStyle="normal"
-        android:visibility="visible"
-        app:pinLineColors="@color/pin_line_colors"
-        tools:text="123123" />
+        android:visibility="invisible"
+        tools:visibility="visible"
+        />
 
     <TextView
         android:id="@+id/verify_button"
-        android:layout_below="@id/input_verify_code"
+        android:layout_below="@id/llotp"
         android:layout_width="240dp"
         android:layout_height="@dimen/btn_height"
         android:layout_marginTop="@dimen/dp_40"

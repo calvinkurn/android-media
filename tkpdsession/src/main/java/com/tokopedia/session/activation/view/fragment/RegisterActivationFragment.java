@@ -3,6 +3,7 @@ package com.tokopedia.session.activation.view.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -12,13 +13,15 @@ import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.ui.widget.PinEntryEditText;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -46,10 +49,12 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     private static final int REQUEST_AUTO_LOGIN = 101;
     TextView activationText;
-    EditText verifyCode;
+    PinEntryEditText verifyCode;
     TextView activateButton;
     TextView footer;
     TkpdProgressDialog progressDialog;
+    TextView errorOtp;
+    ImageView errorImage;
 
     String email;
     String password;
@@ -137,10 +142,12 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     @Override
     protected void initView(View view) {
         activationText = (TextView) view.findViewById(R.id.activation_text);
-        verifyCode = (EditText) view.findViewById(R.id.input_verify_code);
+        verifyCode = (PinEntryEditText) view.findViewById(R.id.input_verify_code);
         activateButton = (TextView) view.findViewById(R.id.verify_button);
         footer = (TextView) view.findViewById(R.id.footer);
-
+        errorImage = (ImageView) view.findViewById(R.id.error_image);
+        errorOtp = (TextView) view.findViewById(R.id.error_otp);
+        activateButton.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         setActivateText();
 
         Spannable spannable = new SpannableString(getString(R.string.activation_resend_email_2));
@@ -168,10 +175,17 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     }
 
     private void setActivateText() {
-        String activateText = getString(R.string.activation_header_text_2) + " <font color='#000000'>" + getEmail() + "</font>";
-        activationText.setText(MethodChecker.fromHtml(activateText));
+        activationText.setText(getString(R.string.activation_header_text_2));
+        activationText.append(" ");
+        activationText.append(getColoredString(getEmail(), getActivity().getResources().getColor(R.color.black_70)));
         verifyCode.requestFocus();
         KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
+    }
+
+    public final Spannable getColoredString(CharSequence text, int color) {
+        Spannable spannable = new SpannableString(text);
+        spannable.setSpan(new ForegroundColorSpan(color), 0, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannable;
     }
 
     @Override
@@ -226,6 +240,19 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
                 return false;
             }
         });
+        errorImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                verifyCode.setText("");
+                removeErrorOtp();
+            }
+        });
+    }
+
+    private void removeErrorOtp() {
+        verifyCode.setError(false);
+        errorOtp.setVisibility(View.INVISIBLE);
+        errorImage.setVisibility(View.GONE);
     }
 
     private void showChangeEmailDialog() {
@@ -289,6 +316,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     @Override
     public void onSuccessResendActivation(String statusMessage) {
         KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
+        removeErrorOtp();
         finishLoadingProgress();
         SnackbarManager.make(getActivity(), statusMessage,
                 Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.title_ok),
@@ -312,7 +340,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     public void onErrorActivateWithUnicode(String errorMessage) {
-        verifyCode.setText("");
+        verifyCode.setError(true);
         KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
         finishLoadingProgress();
         if (errorMessage.equals("")) {
@@ -320,6 +348,9 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         }
+
+        errorImage.setVisibility(View.VISIBLE);
+        errorOtp.setVisibility(View.VISIBLE);
     }
 
     @Override

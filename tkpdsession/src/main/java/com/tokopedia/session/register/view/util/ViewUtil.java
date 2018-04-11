@@ -3,8 +3,11 @@ package com.tokopedia.session.register.view.util;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
 import android.widget.TextView;
+
+import com.tokopedia.session.R;
 
 /**
  * @author by yfsx on 11/04/18.
@@ -21,6 +24,7 @@ public class ViewUtil {
             s.removeSpan(span);
             span = new URLSpanNoUnderline(span.getURL());
             s.setSpan(span, start, end, 0);
+            s.setSpan(new ForegroundColorSpan(textView.getContext().getResources().getColor(R.color.tkpd_main_green)),start, end, 0);
         }
         textView.setText(s);
     }

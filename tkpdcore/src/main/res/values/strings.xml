@@ -1386,8 +1386,8 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_activity_credit_card">Informasi Credit Card</string>
     <string name="title_activity_term_and_privacy">Kebijakan Privasi</string>
     <string name="detail_term_and_privacy">Dengan mendaftar, saya menyetujui  </string>
-    <string name="link_term_condition">&lt;font color=\'#5eba46\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt;</string>
-    <string name="link_privacy_policy">&lt;font color=\'#5eba46\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
+    <string name="link_term_condition">&lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt;</string>
+    <string name="link_privacy_policy">&lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
     <string name="privacy_pl">https://m.tokopedia.com/privacy.pl?device=android&amp;flag_app=1</string>
     <string name="term_pl">https://m.tokopedia.com/terms.pl?device=android&amp;flag_app=1</string>
     <string name="custom_string_rate_us">Review</string>

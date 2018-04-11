@@ -2,6 +2,7 @@ package com.tokopedia.session.addchangeemail.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -10,7 +11,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerUserComponent;
 import com.tokopedia.di.UserComponent;
 import com.tokopedia.session.R;
@@ -40,7 +41,8 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
 
     private EditText etEmail;
     private TextView tvMessage, tvError;
-    private Button btnContinue;
+    private TkpdHintTextInputLayout emailWrapper;
+    private TextView btnContinue;
     private TkpdProgressDialog progressDialog;
 
     @Inject
@@ -65,7 +67,8 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
         etEmail = (EditText) view.findViewById(R.id.et_email);
         tvMessage = (TextView) view.findViewById(R.id.tv_message);
         tvError = (TextView) view.findViewById(R.id.tv_error);
-        btnContinue = (Button) view.findViewById(R.id.btn_continue);
+        btnContinue = (TextView) view.findViewById(R.id.btn_continue);
+        emailWrapper = (TkpdHintTextInputLayout) view.findViewById(R.id.wrapper_email);
         presenter.attachView(this);
         return view;
     }
@@ -89,6 +92,7 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
 
     private void initView() {
         disableNextButton();
+        btnContinue.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
     }
 
     private void initViewListener() {
@@ -161,13 +165,13 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
         progressDialog.showDialog();
     }
 
-    private void enableButton(Button button) {
+    private void enableButton(TextView button) {
         button.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_enable));
         button.setEnabled(true);
     }
 
-    private void disableButton(Button button) {
+    private void disableButton(TextView button) {
         button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_12));
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable));
         button.setEnabled(false);
@@ -175,11 +179,13 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
 
     private void setTextError(String s) {
         if (TextUtils.isEmpty(s)) {
+            emailWrapper.setErrorEnabled(false);
             tvError.setText(s);
             tvError.setVisibility(View.GONE);
             tvMessage.setVisibility(View.VISIBLE);
             enableNextButton();
         } else {
+            emailWrapper.setErrorEnabled(true);
             tvError.setText(s);
             tvError.setVisibility(View.VISIBLE);
             tvMessage.setVisibility(View.GONE);
