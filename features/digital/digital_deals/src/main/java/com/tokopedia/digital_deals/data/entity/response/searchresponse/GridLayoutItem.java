@@ -1,11 +1,25 @@
-
-package com.tokopedia.digital_deals.domain.model;
+package com.tokopedia.digital_deals.data.entity.response.searchresponse;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class DealsItemDomain {
+public class GridLayoutItem {
 
+    @SerializedName("id")
+    @Expose
+    private Integer id;
+    @SerializedName("category_id")
+    @Expose
+    private Integer categoryId;
+    @SerializedName("provider_id")
+    @Expose
+    private Integer providerId;
+    @SerializedName("provider_product_id")
+    @Expose
+    private String providerProductId;
+    @SerializedName("provider_product_name")
+    @Expose
+    private String providerProductName;
     @SerializedName("display_name")
     @Expose
     private String displayName;
@@ -48,6 +62,12 @@ public class DealsItemDomain {
     @SerializedName("is_featured")
     @Expose
     private Integer isFeatured;
+    @SerializedName("is_searchable")
+    @Expose
+    private Integer isSearchable;
+    @SerializedName("status")
+    @Expose
+    private Integer status;
     @SerializedName("min_start_date")
     @Expose
     private Integer minStartDate;
@@ -66,6 +86,18 @@ public class DealsItemDomain {
     @SerializedName("updated_at")
     @Expose
     private String updatedAt;
+    @SerializedName("min_start_time")
+    @Expose
+    private String minStartTime;
+    @SerializedName("max_end_time")
+    @Expose
+    private String maxEndTime;
+    @SerializedName("sale_start_time")
+    @Expose
+    private String saleStartTime;
+    @SerializedName("sale_end_time")
+    @Expose
+    private String saleEndTime;
     @SerializedName("date_range")
     @Expose
     private Boolean dateRange;
@@ -87,34 +119,46 @@ public class DealsItemDomain {
     @SerializedName("media")
     @Expose
     private Object media;
-    @SerializedName("id")
-    @Expose
-    private Integer id;
-    @SerializedName("is_searchable")
-    @Expose
-    private Integer isSearchable;
-    @SerializedName("category_id")
-    @Expose
-    private Integer categoryId;
-    @SerializedName("provider_id")
-    @Expose
-    private Integer providerId;
-    @SerializedName("provider_product_id")
-    @Expose
-    private String providerProductId;
-    @SerializedName("provider_product_name")
-    @Expose
-    private String providerProductName;
-    @SerializedName("sale_start_time")
-    @Expose
-    private String saleStartTime;
-    @SerializedName("sale_end_time")
-    @Expose
-    private String saleEndTime;
-    @SerializedName("status")
-    @Expose
-    private Integer status;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Integer getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(Integer providerId) {
+        this.providerId = providerId;
+    }
+
+    public String getProviderProductId() {
+        return providerProductId;
+    }
+
+    public void setProviderProductId(String providerProductId) {
+        this.providerProductId = providerProductId;
+    }
+
+    public String getProviderProductName() {
+        return providerProductName;
+    }
+
+    public void setProviderProductName(String providerProductName) {
+        this.providerProductName = providerProductName;
+    }
 
     public String getDisplayName() {
         return displayName;
@@ -228,6 +272,22 @@ public class DealsItemDomain {
         this.isFeatured = isFeatured;
     }
 
+    public Integer getIsSearchable() {
+        return isSearchable;
+    }
+
+    public void setIsSearchable(Integer isSearchable) {
+        this.isSearchable = isSearchable;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public Integer getMinStartDate() {
         return minStartDate;
     }
@@ -276,6 +336,38 @@ public class DealsItemDomain {
         this.updatedAt = updatedAt;
     }
 
+    public String getMinStartTime() {
+        return minStartTime;
+    }
+
+    public void setMinStartTime(String minStartTime) {
+        this.minStartTime = minStartTime;
+    }
+
+    public String getMaxEndTime() {
+        return maxEndTime;
+    }
+
+    public void setMaxEndTime(String maxEndTime) {
+        this.maxEndTime = maxEndTime;
+    }
+
+    public String getSaleStartTime() {
+        return saleStartTime;
+    }
+
+    public void setSaleStartTime(String saleStartTime) {
+        this.saleStartTime = saleStartTime;
+    }
+
+    public String getSaleEndTime() {
+        return saleEndTime;
+    }
+
+    public void setSaleEndTime(String saleEndTime) {
+        this.saleEndTime = saleEndTime;
+    }
+
     public Boolean getDateRange() {
         return dateRange;
     }
@@ -308,79 +400,6 @@ public class DealsItemDomain {
         this.likes = likes;
     }
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getIsSearchable() {
-        return isSearchable;
-    }
-
-    public void setIsSearchable(Integer isSearchable) {
-        this.isSearchable = isSearchable;
-    }
-
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public Integer getProviderId() {
-        return providerId;
-    }
-
-    public void setProviderId(Integer providerId) {
-        this.providerId = providerId;
-    }
-
-    public String getProviderProductId() {
-        return providerProductId;
-    }
-
-    public void setProviderProductId(String providerProductId) {
-        this.providerProductId = providerProductId;
-    }
-
-    public String getProviderProductName() {
-        return providerProductName;
-    }
-
-    public void setProviderProductName(String providerProductName) {
-        this.providerProductName = providerProductName;
-    }
-
-    public String getSaleStartTime() {
-        return saleStartTime;
-    }
-
-    public void setSaleStartTime(String saleStartTime) {
-        this.saleStartTime = saleStartTime;
-    }
-
-    public String getSaleEndTime() {
-        return saleEndTime;
-    }
-
-    public void setSaleEndTime(String saleEndTime) {
-        this.saleEndTime = saleEndTime;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
     public Object getSchedules() {
         return schedules;
     }
@@ -405,7 +424,48 @@ public class DealsItemDomain {
         this.media = media;
     }
 
-
-
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("id : "+id);
+        builder.append("categoryId : "+categoryId);
+        builder.append("providerId : "+providerId);
+        builder.append("providerProductId : "+providerProductId);
+        builder.append("providerProductName : "+providerProductName);
+        builder.append("displayName : "+displayName);
+        builder.append("url : "+url);
+        builder.append("seoUrl : "+seoUrl);
+        builder.append("imageWeb : "+imageWeb);
+        builder.append("thumbnailWeb : "+thumbnailWeb);
+        builder.append("longRichDesc : "+longRichDesc);
+        builder.append("mrp : "+mrp);
+        builder.append("salesPrice : "+salesPrice);
+        builder.append("quantity : "+quantity);
+        builder.append("soldQuantity : "+soldQuantity);
+        builder.append("sellRate : "+sellRate);
+        builder.append("thumbsUp : "+thumbsUp);
+        builder.append("thumbsDown : "+thumbsDown);
+        builder.append("isFeatured : "+isFeatured);
+        builder.append("isSearchable : "+isSearchable);
+        builder.append("status : "+status);
+        builder.append("minStartDate : "+minStartDate);
+        builder.append("maxEndDate : "+maxEndDate);
+        builder.append("saleStartDate : "+saleStartDate);
+        builder.append("saleEndDate : "+saleEndDate);
+        builder.append("createdAt : "+createdAt);
+        builder.append("updatedAt : "+updatedAt);
+        builder.append("minStartTime : "+minStartTime);
+        builder.append("maxEndTime : "+maxEndTime);
+        builder.append("saleStartTime : "+saleStartTime);
+        builder.append("saleEndTime : "+saleEndTime);
+        builder.append("dateRange : "+dateRange);
+        builder.append("cityName : "+cityName);
+        builder.append("rating : "+rating);
+        builder.append("likes : "+likes);
+        builder.append("schedules : "+schedules);
+        builder.append("forms : "+forms);
+        builder.append("media : "+media);
+        return  builder.toString();
+    }
 
 }

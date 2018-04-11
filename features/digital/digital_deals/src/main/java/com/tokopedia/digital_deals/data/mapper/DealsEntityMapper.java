@@ -1,4 +1,4 @@
-package com.tokopedia.digital_deals.data;
+package com.tokopedia.digital_deals.data.mapper;
 
 import android.util.Log;
 
@@ -17,7 +17,6 @@ public class DealsEntityMapper {
 
     public List<DealsCategoryDomain> transform(DealsResponseEntity dealsResponseEntity) {
         HomeResponseEntity homeResponseEntity = dealsResponseEntity.getData().getHome();
-        Log.d("Mydataaaa ", " mfmfmfm "+ homeResponseEntity.toString());
 
         JsonObject layout = homeResponseEntity.getLayout();
         List<DealsCategoryDomain> dealsCategoryDomains = new ArrayList<>();

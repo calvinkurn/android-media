@@ -72,6 +72,9 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     private final static String TOP = "top";
 
 
+    public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
+    public static final int REQUEST_CODE_EVENTSEARCHACTIVITY = 901;
+
     public final static String EXTRA_SECTION = "extra_section";
 
     private SlidingImageAdapter adapter;
@@ -155,7 +158,7 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
-
+        startActivityForResult(intent, requestCode);
     }
 
     @Override

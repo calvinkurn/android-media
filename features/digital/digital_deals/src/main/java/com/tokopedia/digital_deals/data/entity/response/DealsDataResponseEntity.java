@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName;
 public class DealsDataResponseEntity {
 
     @SerializedName("home")
-    @Expose
     private HomeResponseEntity home;
 
     public HomeResponseEntity getHome() {

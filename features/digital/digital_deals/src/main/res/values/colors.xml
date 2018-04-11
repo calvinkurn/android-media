@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="search_background">#f6f6f6</color>
+    <color name="toolbar_home">#666666</color>
 </resources>

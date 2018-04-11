@@ -2,20 +2,18 @@ package com.tokopedia.digital_deals.di;
 
 import android.content.Context;
 
-
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital_deals.data.DealsDataStoreFactory;
 import com.tokopedia.digital_deals.data.DealsRepositoryData;
 import com.tokopedia.digital_deals.data.source.DealsApi;
 import com.tokopedia.digital_deals.di.scope.DealsScope;
 import com.tokopedia.digital_deals.domain.DealsRepository;
 import com.tokopedia.digital_deals.domain.GetDealsListRequestUseCase;
+import com.tokopedia.digital_deals.domain.GetSearchDealsListRequestUseCase;
+import com.tokopedia.digital_deals.domain.GetSearchNextUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -56,6 +54,17 @@ public class DealsModule {
         return new GetDealsListRequestUseCase(dealsRepository);
     }
 
+    @Provides
+    @DealsScope
+    GetSearchDealsListRequestUseCase provideGetSearchDealsListRequestUseCase(DealsRepository dealsRepository) {
+        return new GetSearchDealsListRequestUseCase( dealsRepository);
+    }
+
+    @Provides
+    @DealsScope
+    GetSearchNextUseCase providesGetSearchNextUseCase(DealsRepository dealsRepository){
+        return new GetSearchNextUseCase(dealsRepository);
+    }
 
     @Provides
     @DealsQualifier

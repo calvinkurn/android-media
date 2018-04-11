@@ -7,7 +7,6 @@ import com.google.gson.annotations.SerializedName;
 public class HomeResponseEntity {
 
     @SerializedName("layout")
-    @Expose
     private JsonObject layout;
 
     public JsonObject getLayout() {

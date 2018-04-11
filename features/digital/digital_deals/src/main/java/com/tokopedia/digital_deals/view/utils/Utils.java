@@ -14,6 +14,7 @@ import com.tokopedia.digital_deals.domain.model.DealsCategoryDomain;
 import com.tokopedia.digital_deals.domain.model.DealsItemDomain;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.SearchViewModel;
 
 
 import java.io.File;
@@ -43,7 +44,6 @@ public class Utils {
 
     public List<CategoryViewModel> convertIntoCategoryListViewModel(List<DealsCategoryDomain> categoryList) {
 
-        Log.d("MyListSize", " "+categoryList.size());
         List<CategoryViewModel> categoryViewModels = new ArrayList<>();
         if (categoryList != null) {
             for (DealsCategoryDomain eventsCategoryDomain : categoryList) {
@@ -69,8 +69,6 @@ public class Utils {
 
             }
         }
-        Log.d("MyListSize1234", " "+categoryViewModels.get(0).getName()+"  "+categoryViewModels.get(1).getName());
-        Log.d("MyListSizeReturn", " "+categoryViewModels.size());
         return categoryViewModels;
     }
 
@@ -86,6 +84,9 @@ public class Utils {
                 categoryItemsViewModel.setSeoUrl(categoryEntity.getSeoUrl());
                 categoryItemsViewModel.setSoldQuantity(categoryEntity.getSoldQuantity());
                 categoryItemsViewModel.setImageWeb(categoryEntity.getImageWeb());
+                categoryItemsViewModel.setMrp(categoryEntity.getMrp());
+                categoryItemsViewModel.setThumbnailWeb(categoryEntity.getThumbnailWeb());
+
 //                categoryItemsViewModel.setThumbnailApp(categoryEntity.getThumbnailApp());
 //                categoryItemsViewModel.setMinStartTime(categoryEntity.getMinStartTime());
                 categoryItemsViewModel.setCityName(categoryEntity.getCityName());
@@ -103,6 +104,64 @@ public class Utils {
         return categoryItemsViewModelList;
     }
 
+
+
+    public ArrayList<SearchViewModel> convertIntoSearchViewModel(List<CategoryViewModel> source) {
+        ArrayList<SearchViewModel> searchViewModels = new ArrayList<>();
+        if (source != null) {
+            SearchViewModel searchModelItem;
+            for (CategoryViewModel item : source) {
+                if (item.getItems() != null) {
+                    List<CategoryItemsViewModel> sourceModels = item.getItems();
+                    for (CategoryItemsViewModel sourceItem : sourceModels) {
+//                        if (sourceItem.getIsTop() == 1 && !isPresent(searchViewModels, sourceItem.getTitle())) {
+                            searchModelItem = new SearchViewModel();
+                            searchModelItem.setCityName(sourceItem.getCityName());
+                            searchModelItem.setDisplayName(sourceItem.getDisplayName());
+//                            searchModelItem.setImageApp(sourceItem.getImageApp());
+                            searchModelItem.setMaxEndDate(sourceItem.getMaxEndDate());
+                            searchModelItem.setMinStartDate(sourceItem.getMinStartDate());
+                            searchModelItem.setSalesPrice(sourceItem.getSalesPrice());
+                            searchModelItem.setTitle(sourceItem.getDisplayName());
+                            searchModelItem.setUrl(sourceItem.getUrl());
+                            searchViewModels.add(searchModelItem);
+//                        }
+                    }
+                }
+
+            }
+        }
+        return searchViewModels;
+    }
+
+    private boolean isPresent(ArrayList<SearchViewModel> searchViewModels, String title) {
+        for (SearchViewModel viewModel : searchViewModels) {
+            if (viewModel.getTitle().equals(title))
+                return true;
+        }
+        return false;
+    }
+
+    public List<SearchViewModel> convertSearchResultsToModel(List<CategoryItemsViewModel> categoryItemsViewModels) {
+        List<SearchViewModel> searchResults = null;
+        if (categoryItemsViewModels != null && !categoryItemsViewModels.isEmpty()) {
+            SearchViewModel searchModelItem;
+            searchResults = new ArrayList<>();
+            for (CategoryItemsViewModel sourceItem : categoryItemsViewModels) {
+                searchModelItem = new SearchViewModel();
+                searchModelItem.setCityName(sourceItem.getCityName());
+                searchModelItem.setDisplayName(sourceItem.getDisplayName());
+//                searchModelItem.setImageApp(sourceItem.getImageApp());
+                searchModelItem.setMaxEndDate(sourceItem.getMaxEndDate());
+                searchModelItem.setMinStartDate(sourceItem.getMinStartDate());
+                searchModelItem.setSalesPrice(sourceItem.getSalesPrice());
+                searchModelItem.setTitle(sourceItem.getDisplayName());
+                searchModelItem.setUrl(sourceItem.getUrl());
+                searchResults.add(searchModelItem);
+            }
+        }
+        return searchResults;
+    }
 
     public static boolean containsIgnoreCase(String src, String what) {
         final int length = what.length();

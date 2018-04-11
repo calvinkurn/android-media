@@ -1,6 +1,8 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 
+import android.content.Intent;
+
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -10,10 +12,13 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.GetDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.model.DealsCategoryDomain;
+import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
+import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.SearchViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,12 +101,11 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.action_menu_search) {
-//            ArrayList<SearchViewModel> searchViewModelList = Utils.getSingletonInstance()
-//                    .convertIntoSearchViewModel(categoryViewModels);
-//            Intent searchIntent = EventSearchActivity.getCallingIntent(getView().getActivity());
-//            searchIntent.putParcelableArrayListExtra("TOPEVENTS", searchViewModelList);
-//            getView().navigateToActivityRequest(searchIntent,
-//                    EventsHomeActivity.REQUEST_CODE_EVENTSEARCHACTIVITY);
+            ArrayList<SearchViewModel> searchViewModelList = Utils.getSingletonInstance().convertIntoSearchViewModel(categoryViewModels);
+            Intent searchIntent = DealsSearchActivity.getCallingIntent(getView().getActivity());
+            searchIntent.putParcelableArrayListExtra("TOPDEALS", searchViewModelList);
+            getView().navigateToActivityRequest(searchIntent,
+                    DealsHomeActivity.REQUEST_CODE_EVENTSEARCHACTIVITY);
         } else if (id == R.id.action_promo) {
             startGeneralWebView(PROMOURL);
         } else if (id == R.id.action_booked_history) {

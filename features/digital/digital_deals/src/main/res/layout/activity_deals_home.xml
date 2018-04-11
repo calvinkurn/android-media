@@ -54,7 +54,7 @@
 
                     <include
 
-                        layout="@layout/activity_deals_category" />
+                        layout="@layout/deals_category" />
 
                 </LinearLayout>
             </android.support.design.widget.CollapsingToolbarLayout>

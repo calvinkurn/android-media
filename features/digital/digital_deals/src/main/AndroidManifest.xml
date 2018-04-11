@@ -10,6 +10,10 @@
             android:label="@string/title_activity_deals"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity
+            android:name=".view.activity.DealsSearchActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>
