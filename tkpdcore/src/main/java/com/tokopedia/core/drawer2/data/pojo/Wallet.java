@@ -22,7 +22,7 @@ public class Wallet {
     private Integer rawBalance;
     @SerializedName("errors")
     @Expose
-    private List<Object> errors = null;
+    private List<ErrorEntity> errors = null;
     @SerializedName("text")
     @Expose
     private String text;
@@ -83,11 +83,11 @@ public class Wallet {
         this.rawBalance = rawBalance;
     }
 
-    public List<Object> getErrors() {
+    public List<ErrorEntity> getErrors() {
         return errors;
     }
 
-    public void setErrors(List<Object> errors) {
+    public void setErrors(List<ErrorEntity> errors) {
         this.errors = errors;
     }
 
