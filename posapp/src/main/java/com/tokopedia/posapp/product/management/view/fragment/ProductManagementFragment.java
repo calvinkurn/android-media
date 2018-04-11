@@ -34,7 +34,6 @@ public class ProductManagementFragment
     public static final String TAG = ProductManagementFragment.class.getSimpleName();
     @Inject
     ProductManagement.Presenter presenter;
-    private String selectedEtalaseId = "";
 
     public static Fragment newInstance() {
         return new ProductManagementFragment();
@@ -112,5 +111,10 @@ public class ProductManagementFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_product_management, container, false);
+    }
+
+    @Override
+    protected boolean isLoadMoreEnabledByDefault() {
+        return true;
     }
 }

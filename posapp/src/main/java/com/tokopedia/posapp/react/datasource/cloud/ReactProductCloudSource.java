@@ -6,20 +6,15 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.base.data.pojo.Paging;
-import com.tokopedia.posapp.etalase.data.repository.EtalaseRepository;
-import com.tokopedia.posapp.etalase.data.repository.EtalaseRepositoryImpl;
 import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.posapp.product.common.data.pojo.ProductDetail;
 import com.tokopedia.posapp.product.common.data.repository.ProductCloudRepository;
 import com.tokopedia.posapp.product.common.data.repository.ProductRepository;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
-import com.tokopedia.posapp.product.productdetail.view.Product;
-import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 import com.tokopedia.posapp.react.datasource.ReactDataSource;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 import com.tokopedia.posapp.react.datasource.model.ProductSearchRequest;
 import com.tokopedia.posapp.shop.data.ShopProductResponse;
-import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,16 +102,16 @@ public class ReactProductCloudSource extends ReactDataSource {
     }
 
     public Observable<String> search(final ProductSearchRequest request) {
+        if (request.getPage() == null) request.setPage(1);
+        if (request.getLimit() == null) request.setLimit(20);
+
         RequestParams requestParams = RequestParams.EMPTY;
         requestParams.putString(ProductConstant.Key.KEYWORD, request.getKeyword());
         requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
         if (!TextUtils.isEmpty(request.getEtalaseId())) {
             requestParams.putString(ProductConstant.Key.ETALASE, request.getEtalaseId());
         }
-        if (request.getPage() == null || request.getLimit() == null) {
-            request.setPage(1);
-            request.setLimit(20);
-        }
+
         requestParams.putString(ProductConstant.Key.PAGE, request.getPage().toString());
         requestParams.putString(ProductConstant.Key.PER_PAGE, request.getLimit().toString());
         requestParams.putString(ProductConstant.Key.OUTLET_ID, sessionHandler.getOutletId());
@@ -125,12 +120,12 @@ public class ReactProductCloudSource extends ReactDataSource {
 
     private ProductDetail domainToResponse(ProductDomain productDomain) {
         ProductDetail item = new ProductDetail();
-        item.setProductName(productDomain.getProductName());
-        item.setProductPrice(productDomain.getProductPrice());
-        item.setProductId(productDomain.getProductId());
-        item.setProductImage(productDomain.getProductImage());
-        item.setProductImage300(productDomain.getProductImage300());
-        item.setProductImageFull(productDomain.getProductImageFull());
+        item.setProductName(productDomain.getName());
+        item.setProductPrice(productDomain.getPrice());
+        item.setProductId(productDomain.getId());
+        item.setProductImage(productDomain.getImage());
+        item.setProductImage300(productDomain.getImage300());
+        item.setProductImageFull(productDomain.getImageFull());
         return item;
     }
 }

@@ -21,7 +21,7 @@ public class ProductManagementPresenter implements ProductManagement.Presenter {
     private GetProductListManagementUseCase getProductListManagementUseCase;
     private UserSession userSession;
     private PosSessionHandler posSession;
-    private int page = 0;
+    private int page = 1;
 
     @Inject
     public ProductManagementPresenter(GetProductListManagementUseCase getProductListManagementUseCase,
@@ -44,7 +44,7 @@ public class ProductManagementPresenter implements ProductManagement.Presenter {
 
     @Override
     public void reload() {
-        getProductListManagementUseCase.execute(getRequestParam(page = 0), new GetProductManagementSubscriber(view));
+        getProductListManagementUseCase.execute(getRequestParam(page = 1), new GetProductManagementSubscriber(view));
     }
 
     @Override

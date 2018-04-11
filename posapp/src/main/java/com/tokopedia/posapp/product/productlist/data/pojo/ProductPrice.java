@@ -11,9 +11,6 @@ public class ProductPrice {
     @SerializedName("value_idr")
     @Expose
     private double value;
-    @SerializedName("outlet_status")
-    @Expose
-    private int outletStatus;
 
     public double getValue() {
         return value;
@@ -21,13 +18,5 @@ public class ProductPrice {
 
     public void setValue(double value) {
         this.value = value;
-    }
-
-    public int getOutletStatus() {
-        return outletStatus;
-    }
-
-    public void setOutletStatus(int outletStatus) {
-        this.outletStatus = outletStatus;
     }
 }

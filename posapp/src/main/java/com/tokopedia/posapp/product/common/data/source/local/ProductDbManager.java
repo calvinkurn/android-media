@@ -21,15 +21,15 @@ public class ProductDbManager extends PosDbOperation<ProductDomain, ProductDb> {
     protected ProductDb mapToDb(ProductDomain data) {
         if(data != null) {
             ProductDb productDb = new ProductDb();
-            productDb.setProductId(data.getProductId());
-            productDb.setProductName(data.getProductName());
-            productDb.setProductPrice(data.getProductPrice());
-            productDb.setProductPriceUnformatted(data.getProductPriceUnformatted());
-            productDb.setProductDescription(data.getProductDescription());
-            productDb.setProductUrl(data.getProductUrl());
-            productDb.setProductImage(data.getProductImage());
-            productDb.setProductImage300(data.getProductImage300());
-            productDb.setProductImageFull(data.getProductImageFull());
+            productDb.setProductId(data.getId());
+            productDb.setProductName(data.getName());
+            productDb.setProductPrice(data.getPrice());
+            productDb.setProductPriceUnformatted(data.getPriceUnformatted());
+            productDb.setProductDescription(data.getDescription());
+            productDb.setProductUrl(data.getUrl());
+            productDb.setProductImage(data.getImage());
+            productDb.setProductImage300(data.getImage300());
+            productDb.setProductImageFull(data.getImageFull());
             productDb.setEtalaseId(data.getEtalaseId());
             return productDb;
         }
@@ -53,15 +53,15 @@ public class ProductDbManager extends PosDbOperation<ProductDomain, ProductDb> {
     protected ProductDomain mapToDomain(ProductDb db) {
         if(db != null) {
             ProductDomain productDomain = new ProductDomain();
-            productDomain.setProductId(db.getProductId());
-            productDomain.setProductName(db.getProductName());
-            productDomain.setProductPrice(db.getProductPrice());
-            productDomain.setProductPriceUnformatted(db.getProductPriceUnformatted());
-            productDomain.setProductDescription(db.getProductDescription());
-            productDomain.setProductUrl(db.getProductUrl());
-            productDomain.setProductImage(db.getProductImage());
-            productDomain.setProductImage300(db.getProductImage300());
-            productDomain.setProductImageFull(db.getProductImageFull());
+            productDomain.setId(db.getProductId());
+            productDomain.setName(db.getProductName());
+            productDomain.setPrice(db.getProductPrice());
+            productDomain.setPriceUnformatted(db.getProductPriceUnformatted());
+            productDomain.setDescription(db.getProductDescription());
+            productDomain.setUrl(db.getProductUrl());
+            productDomain.setImage(db.getProductImage());
+            productDomain.setImage300(db.getProductImage300());
+            productDomain.setImageFull(db.getProductImageFull());
             productDomain.setEtalaseId(db.getEtalaseId());
             return productDomain;
         }
@@ -90,7 +90,7 @@ public class ProductDbManager extends PosDbOperation<ProductDomain, ProductDb> {
     public Observable<DataStatus> delete(ProductDomain domain) {
         return executeDelete(
                 getDbClass(),
-                ConditionGroup.clause().and(ProductDb_Table.productId.eq(domain.getProductId()))
+                ConditionGroup.clause().and(ProductDb_Table.productId.eq(domain.getId()))
         );
     }
 }

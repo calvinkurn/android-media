@@ -37,14 +37,17 @@ public class GetProductListMapper implements Func1<Response<PosResponse<ProductL
 
         for (ProductItem item : data.getData().getData()) {
             ProductDomain productDomain = new ProductDomain();
-            productDomain.setProductId(item.getProductId());
-            productDomain.setProductName(item.getName());
-            productDomain.setProductPrice(CurrencyFormatUtil.convertPriceValueToIdrFormat(item.getPrice().getValue(), true));
-            productDomain.setProductPriceUnformatted(item.getPrice().getValue());
-            productDomain.setProductUrl(item.getProductUrl());
-            productDomain.setProductImage(item.getPrimaryImage().getOriginal());
-            productDomain.setProductImage300(item.getPrimaryImage().getThumbnail());
-            productDomain.setProductImageFull(item.getPrimaryImage().getOriginal());
+            productDomain.setId(item.getProductId());
+            productDomain.setName(item.getName());
+            productDomain.setOriginalPriceUnformatted(item.getPrice().getValue());
+            productDomain.setOriginalPrice(CurrencyFormatUtil.convertPriceValueToIdrFormat(item.getPrice().getValue(), true));
+            productDomain.setPrice(CurrencyFormatUtil.convertPriceValueToIdrFormat(item.getOutlet().getLocalPrice(), true));
+            productDomain.setPriceUnformatted(item.getOutlet().getLocalPrice());
+            productDomain.setUrl(item.getProductUrl());
+            productDomain.setImage(item.getPrimaryImage().getOriginal());
+            productDomain.setImage300(item.getPrimaryImage().getThumbnail());
+            productDomain.setImageFull(item.getPrimaryImage().getOriginal());
+            productDomain.setStatus(item.getOutlet().getLocalProductStatus());
             domains.add(productDomain);
         }
 

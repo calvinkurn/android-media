@@ -25,6 +25,9 @@ public class ProductItem {
     @SerializedName("price")
     @Expose
     private ProductPrice price;
+    @SerializedName("outlet")
+    @Expose
+    private OutletProperties outlet;
     @SerializedName("showcase")
     @Expose
     private ProductShowcase showcase;
@@ -102,5 +105,13 @@ public class ProductItem {
 
     public void setPrimaryImage(ProductPrimaryImage primaryImage) {
         this.primaryImage = primaryImage;
+    }
+
+    public OutletProperties getOutlet() {
+        return outlet;
+    }
+
+    public void setOutlet(OutletProperties outlet) {
+        this.outlet = outlet;
     }
 }

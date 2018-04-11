@@ -4,90 +4,90 @@ package com.tokopedia.posapp.product.common.domain.model;
  * Created by okasurya on 8/9/17.
  */
 public class ProductDomain {
-    private long productId;
-    private String productName;
-    private String productPrice;
-    private double productPriceUnformatted;
-    private String productUrl;
-    private String productDescription;
-    private String productImage;
-    private String productImage300;
-    private String productImageFull;
+    private long id;
+    private String name;
+    private String price;
+    private double priceUnformatted;
+    private String url;
+    private String description;
+    private String image;
+    private String image300;
+    private String imageFull;
     private String etalaseId;
-    private String productOriginalPrice;
-    private double productOriginalPriceUnformatted;
+    private String originalPrice;
+    private double originalPriceUnformatted;
     private int status;
 
-    public long getProductId() {
-        return productId;
+    public long getId() {
+        return id;
     }
 
-    public void setProductId(long productId) {
-        this.productId = productId;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public String getProductName() {
-        return productName;
+    public String getName() {
+        return name;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getProductPrice() {
-        return productPrice;
+    public String getPrice() {
+        return price;
     }
 
-    public void setProductPrice(String productPrice) {
-        this.productPrice = productPrice;
+    public void setPrice(String price) {
+        this.price = price;
     }
 
-    public double getProductPriceUnformatted() {
-        return productPriceUnformatted;
+    public double getPriceUnformatted() {
+        return priceUnformatted;
     }
 
-    public void setProductPriceUnformatted(double productPriceUnformatted) {
-        this.productPriceUnformatted = productPriceUnformatted;
+    public void setPriceUnformatted(double priceUnformatted) {
+        this.priceUnformatted = priceUnformatted;
     }
 
-    public String getProductUrl() {
-        return productUrl;
+    public String getUrl() {
+        return url;
     }
 
-    public void setProductUrl(String productUrl) {
-        this.productUrl = productUrl;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public String getProductDescription() {
-        return productDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setProductDescription(String productDescription) {
-        this.productDescription = productDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getProductImage() {
-        return productImage;
+    public String getImage() {
+        return image;
     }
 
-    public void setProductImage(String productImage) {
-        this.productImage = productImage;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public String getProductImage300() {
-        return productImage300;
+    public String getImage300() {
+        return image300;
     }
 
-    public void setProductImage300(String productImage300) {
-        this.productImage300 = productImage300;
+    public void setImage300(String image300) {
+        this.image300 = image300;
     }
 
-    public String getProductImageFull() {
-        return productImageFull;
+    public String getImageFull() {
+        return imageFull;
     }
 
-    public void setProductImageFull(String productImageFull) {
-        this.productImageFull = productImageFull;
+    public void setImageFull(String imageFull) {
+        this.imageFull = imageFull;
     }
 
     public String getEtalaseId() {
@@ -98,20 +98,20 @@ public class ProductDomain {
         this.etalaseId = etalaseId;
     }
 
-    public String getProductOriginalPrice() {
-        return productOriginalPrice;
+    public String getOriginalPrice() {
+        return originalPrice;
     }
 
-    public void setProductOriginalPrice(String productOriginalPrice) {
-        this.productOriginalPrice = productOriginalPrice;
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
     }
 
-    public double getProductOriginalPriceUnformatted() {
-        return productOriginalPriceUnformatted;
+    public double getOriginalPriceUnformatted() {
+        return originalPriceUnformatted;
     }
 
-    public void setProductOriginalPriceUnformatted(double productOriginalPriceUnformatted) {
-        this.productOriginalPriceUnformatted = productOriginalPriceUnformatted;
+    public void setOriginalPriceUnformatted(double originalPriceUnformatted) {
+        this.originalPriceUnformatted = originalPriceUnformatted;
     }
 
     public int getStatus() {

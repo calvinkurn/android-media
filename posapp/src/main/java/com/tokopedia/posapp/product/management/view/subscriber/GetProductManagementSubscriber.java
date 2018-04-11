@@ -4,9 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.management.view.ProductManagement;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
-import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,11 +40,11 @@ public class GetProductManagementSubscriber extends Subscriber<List<ProductDomai
         List<Visitable> visitables = new ArrayList<>();
         for(ProductDomain productDomain : productList) {
             ProductViewModel productViewModel = new ProductViewModel();
-            productViewModel.setId(Long.toString(productDomain.getProductId()));
-            productViewModel.setName(productDomain.getProductName());
-            productViewModel.setImageUrl(productDomain.getProductImage300());
-            productViewModel.setOnlinePrice(productDomain.getProductOriginalPriceUnformatted());
-            productViewModel.setOutletPrice(productDomain.getProductPriceUnformatted());
+            productViewModel.setId(Long.toString(productDomain.getId()));
+            productViewModel.setName(productDomain.getName());
+            productViewModel.setImageUrl(productDomain.getImage300());
+            productViewModel.setOnlinePrice(productDomain.getOriginalPriceUnformatted());
+            productViewModel.setOutletPrice(productDomain.getPriceUnformatted());
             visitables.add(productViewModel);
         }
         return visitables;
