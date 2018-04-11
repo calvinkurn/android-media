@@ -387,6 +387,12 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
 
         //SELLER INFO
         public static final int GCM_SELLER_INFO = 1300;
+
+        //GROUP CHAT
+        public static final int GCM_GROUP_CHAT = 1400;
+        public static final int GCM_GROUP_CHAT_POINTS = 1401;
+        public static final int GCM_GROUP_CHAT_LOYALTY = 1402;
+        public static final int GCM_GROUP_CHAT_COUPON = 1403;
     }
 
     public class RecyclerView {
