@@ -47,4 +47,9 @@
         android:key="notification_seller_info"
         android:title="@string/pref_receive_seller_info" />
 
+    <com.tkpd.library.ui.utilities.CustomCheckBoxPreference
+        android:defaultValue="false"
+        android:key="notification_group_chat"
+        android:title="@string/pref_receive_group_chat" />
+
 </PreferenceScreen>
