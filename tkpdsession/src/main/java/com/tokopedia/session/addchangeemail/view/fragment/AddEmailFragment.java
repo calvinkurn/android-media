@@ -40,8 +40,8 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
     private static final int REQUEST_VERIFY_EMAIL = 1234;
 
     private EditText etEmail;
-    private TextView tvMessage, tvError;
     private TkpdHintTextInputLayout emailWrapper;
+    private TextView tvMessage, tvError;
     private TextView btnContinue;
     private TkpdProgressDialog progressDialog;
 
@@ -65,9 +65,9 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_email, container, false);
         etEmail = (EditText) view.findViewById(R.id.et_email);
+        btnContinue = (TextView) view.findViewById(R.id.btn_continue);
         tvMessage = (TextView) view.findViewById(R.id.tv_message);
         tvError = (TextView) view.findViewById(R.id.tv_error);
-        btnContinue = (TextView) view.findViewById(R.id.btn_continue);
         emailWrapper = (TkpdHintTextInputLayout) view.findViewById(R.id.wrapper_email);
         presenter.attachView(this);
         return view;
@@ -92,7 +92,13 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
 
     private void initView() {
         disableNextButton();
+        setDefaultHelper();
         btnContinue.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+    }
+
+    private void setDefaultHelper() {
+        tvMessage.setVisibility(View.VISIBLE);
+        tvError.setVisibility(View.GONE);
     }
 
     private void initViewListener() {
@@ -148,6 +154,7 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
     @Override
     public void onErrorCheckEmail(String error) {
         NetworkErrorHelper.showSnackbar(getActivity(), error);
+        tvError.setText(error);
     }
 
     @Override
@@ -179,15 +186,13 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
 
     private void setTextError(String s) {
         if (TextUtils.isEmpty(s)) {
-            emailWrapper.setErrorEnabled(false);
-            tvError.setText(s);
-            tvError.setVisibility(View.GONE);
-            tvMessage.setVisibility(View.VISIBLE);
+            setDefaultHelper();
             enableNextButton();
         } else {
-            emailWrapper.setErrorEnabled(true);
-            tvError.setText(s);
             tvError.setVisibility(View.VISIBLE);
+            tvError.setText(s);
+            emailWrapper.setErrorEnabled(true);
+            emailWrapper.setError(s);
             tvMessage.setVisibility(View.GONE);
             disableNextButton();
         }

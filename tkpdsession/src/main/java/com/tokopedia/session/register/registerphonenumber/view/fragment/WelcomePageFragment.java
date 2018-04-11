@@ -1,6 +1,7 @@
 package com.tokopedia.session.register.registerphonenumber.view.fragment;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -49,6 +50,7 @@ public class WelcomePageFragment extends BaseDaggerFragment {
 
     public void initView() {
         loadImage(background, URL_BACKGROUND);
+        btnContinue.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
     }
 
     public void initViewListener() {
