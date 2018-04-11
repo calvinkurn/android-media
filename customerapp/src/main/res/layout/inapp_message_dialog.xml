@@ -28,9 +28,12 @@
                 android:id="@+id/tv_inapp_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/margin_layout_medium"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:layout_marginLeft="@dimen/margin_4"
+                android:layout_marginRight="@dimen/margin_4"
+                android:layout_marginStart="@dimen/margin_4"
                 android:gravity="center_horizontal"
+                android:paddingTop="@dimen/margin_layout_medium"
                 android:textColor="@color/black"
                 android:textSize="@dimen/fonts" />
 
@@ -38,9 +41,13 @@
                 android:id="@+id/tv_inapp_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:layout_marginLeft="@dimen/margin_4"
+                android:layout_marginRight="@dimen/margin_4"
+                android:layout_marginStart="@dimen/margin_4"
                 android:gravity="center_horizontal"
+                android:paddingBottom="@dimen/margin_vs"
                 android:paddingTop="@dimen/margin_vs"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:textSize="@dimen/font_small" />
 
         </LinearLayout>
@@ -48,39 +55,40 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_inapp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs" />
+            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:id="@+id/ll_action_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/gray_background"
-            android:visibility="gone"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
+
             <TextView
                 android:id="@+id/btn_action_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="1dp"
-                android:text="kjdwkqjq"
-                android:paddingTop="@dimen/padding_vs"
-                android:paddingBottom="@dimen/padding_small"
-                android:gravity="center_horizontal"
-                android:textColor="@color/black"
+                android:layout_weight="1"
                 android:background="@color/white"
-                android:layout_weight="1" />
+                android:gravity="center_horizontal"
+                android:paddingBottom="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_vs"
+                android:text="kjdwkqjq"
+                android:textColor="@color/black" />
+
             <TextView
                 android:id="@+id/btn_action_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:gravity="center_horizontal"
-                android:paddingTop="@dimen/padding_vs"
-                android:paddingBottom="@dimen/padding_small"
+                android:layout_weight="1"
                 android:background="@color/white"
+                android:gravity="center_horizontal"
+                android:paddingBottom="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_vs"
                 android:text="kjdwkqjq"
-                android:layout_weight="1" />
+                android:textColor="@color/black" />
 
         </LinearLayout>
     </LinearLayout>
