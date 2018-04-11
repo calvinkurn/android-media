@@ -18,7 +18,7 @@ public class ModeList {
     @SerializedName("after_otp_list_text")
     @Expose
     private String afterOtpListText;
-    @SerializedName("new_after_otp_list_text")
+    @SerializedName("after_otp_list_html")
     @Expose
     private String newAfterOtpListText;
     @SerializedName("otp_list_img_url")
