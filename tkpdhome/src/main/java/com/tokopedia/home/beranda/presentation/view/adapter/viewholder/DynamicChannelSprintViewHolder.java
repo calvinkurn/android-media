@@ -54,11 +54,13 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     private View itemContainer3;
     private CountDownView countDownView;
     private String sprintSaleExpiredText;
+    private CountDownView.CountDownListener countDownListener;
 
-    public DynamicChannelSprintViewHolder(View itemView, HomeCategoryListener listener) {
+    public DynamicChannelSprintViewHolder(View itemView, HomeCategoryListener listener, CountDownView.CountDownListener countDownListener) {
         super(itemView);
         context = itemView.getContext();
         this.listener = listener;
+        this.countDownListener = countDownListener;
         initResources(itemView.getContext());
         findViews(itemView);
     }
@@ -118,7 +120,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
         if (isSprintSale(channel)) {
             Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
-            countDownView.setup(expiredTime, null);
+            countDownView.setup(expiredTime, countDownListener);
             countDownView.setVisibility(View.VISIBLE);
         } else {
             countDownView.setVisibility(View.GONE);
