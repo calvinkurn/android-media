@@ -150,13 +150,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
 
             @Override
-            public void onClickCloseButton(boolean isGeneralErrorType) {
+            public void onClickCloseButton() {
                 widgetCrackResult.clearCrackResult();
-                if (isGeneralErrorType) { // backpress
-                    getActivity().onBackPressed();
-                } else {
-                    crackTokenPresenter.getGetTokenTokopoints();
-                }
+                crackTokenPresenter.getGetTokenTokopoints();
             }
 
             @Override
@@ -258,9 +254,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         showInfoTitle();
     }
 
-    private void vibrate(){
+    private void vibrate() {
         Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-        if (v!=null) {
+        if (v != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 v.vibrate(VibrationEffect.createOneShot(VIBRATE_DURATION, VibrationEffect.DEFAULT_AMPLITUDE));
             } else {
@@ -269,11 +265,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }
     }
 
-    private void hideInfoTitle(){
+    private void hideInfoTitle() {
         infoTitlePage.setVisibility(View.GONE);
     }
 
-    private void showInfoTitle(){
+    private void showInfoTitle() {
         infoTitlePage.setVisibility(View.VISIBLE);
     }
 
@@ -288,8 +284,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private void initTimerBound() {
         int rootWidth = rootView.getWidth();
         int rootHeight = rootView.getHeight();
-        int imageHeight = TokenMarginUtil.getEggWidth (rootWidth, rootHeight);
-        int marginTop = TokenMarginUtil.getEggMarginBottom (rootHeight) - imageHeight
+        int imageHeight = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
+        int marginTop = TokenMarginUtil.getEggMarginBottom(rootHeight) - imageHeight
                 - getContext().getResources().getDimensionPixelOffset(R.dimen.dp_112);
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) layoutTimer.getLayoutParams();
@@ -383,6 +379,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onSuccessGetToken(TokenData tokenData) {
+        listener.showToolbar();
         if (tokenData.getSumToken() == 0) {
             listener.directPageToCrackEmpty(tokenData);
         } else {
@@ -400,6 +397,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onErrorGetToken(CrackResult crackResult) {
+        listener.hideToolbar();
         widgetCrackResult.showCrackResult(crackResult);
     }
 
@@ -445,11 +443,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }, widgetTokenView.isCrackPercentageFull() ? 1 : 1000);
     }
 
-    public boolean isShowReward(){
-        return widgetCrackResult.isShown();
+    public boolean isShowReward() {
+        return widgetCrackResult.isShowReward();
     }
 
-    public void dismissReward(){
+    public void dismissReward() {
         widgetCrackResult.dismissReward();
     }
 
@@ -574,7 +572,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     public interface ActionListener {
         void directPageToCrackEmpty(TokenData tokenData);
+
         void hideToolbar();
+
         void showToolbar();
     }
 }

@@ -50,6 +50,7 @@ public class WidgetCrackResult extends RelativeLayout {
     private TextView buttonCta;
     private ImageView closeRewardBtn;
     private String benefitType;
+    private CrackResult crackResult;
 
     private WidgetCrackResultListener listener;
 
@@ -60,7 +61,7 @@ public class WidgetCrackResult extends RelativeLayout {
 
         void onClickReturnButton(CrackResult crackResult, String titleBtn);
 
-        void onClickCloseButton(boolean isError);
+        void onClickCloseButton();
 
         void showToolbar();
     }
@@ -94,6 +95,7 @@ public class WidgetCrackResult extends RelativeLayout {
     }
 
     public void showCrackResult(CrackResult crackResult) {
+        this.crackResult = crackResult;
         this.benefitType = crackResult.getBenefitType();
         showCrackResultImageAnimation(crackResult);
         showCrackResultBackgroundAnimation();
@@ -242,13 +244,7 @@ public class WidgetCrackResult extends RelativeLayout {
         closeRewardBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isErrorType = false;
-                if (crackResult!=null && crackResult.getBenefits()!= null && crackResult.getBenefits().size() > 0 &&
-                        crackResult.getBenefits().get(0).isGeneralErrorType()){
-                    listener.onClickCloseButton(true);
-                } else {
-                    listener.onClickCloseButton(false);
-                }
+                listener.onClickCloseButton();
                 listener.onTrackingCloseRewardButton(crackResult);
             }
         });
@@ -272,11 +268,26 @@ public class WidgetCrackResult extends RelativeLayout {
         listener.showToolbar();
     }
 
-    public boolean isShown(){
-        return imageViewBgCrackResult.isShown();
+    public boolean isShowReward() {
+        return imageViewBgCrackResult.isShown() && isShowCrackError() ;
     }
 
-    public void dismissReward(){
+    /**
+     * to check is the error is actually generated custom error crack or actual crack result from server.
+     */
+    private boolean isShowCrackError(){
+        if (crackResult == null) {
+            return false;
+        }
+        List<CrackBenefit> crackBenefitList = crackResult.getBenefits();
+        if (crackBenefitList== null ||crackBenefitList.size() ==0) {
+            return false;
+        }
+        CrackBenefit crackBenefit= crackBenefitList.get(0);
+        return crackBenefit!= null &&crackBenefit.isGeneralErrorType();
+    }
+
+    public void dismissReward() {
         listener.onClickCloseButton();
     }
 
