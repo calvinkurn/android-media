@@ -10,6 +10,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
 import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
@@ -38,11 +39,33 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
     private GetTokenTokopointsUseCase getTokenTokopointsUseCase;
     private GetCrackResultEggUseCase getCrackResultEggUseCase;
+    private UserSession userSession;
 
     @Inject
-    public CrackTokenPresenter(GetTokenTokopointsUseCase getTokenTokopointsUseCase, GetCrackResultEggUseCase getCrackResultEggUseCase) {
+    public CrackTokenPresenter(GetTokenTokopointsUseCase getTokenTokopointsUseCase,
+                               GetCrackResultEggUseCase getCrackResultEggUseCase,
+                               UserSession userSession) {
         this.getTokenTokopointsUseCase = getTokenTokopointsUseCase;
         this.getCrackResultEggUseCase = getCrackResultEggUseCase;
+        this.userSession = userSession;
+    }
+
+    @Override
+    public void initializePage() {
+        if (userSession.isLoggedIn()) {
+            getGetTokenTokopoints();
+        } else {
+            getView().navigateToLoginPage();
+        }
+    }
+
+    @Override
+    public void onLoginDataReceived() {
+        if (userSession.isLoggedIn()) {
+            getGetTokenTokopoints();
+        } else {
+            getView().closePage();
+        }
     }
 
     @Override
@@ -138,6 +161,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         return crackResult;
     }
 
+    @Override
     public void getGetTokenTokopoints() {
         getView().showLoading();
         getTokenTokopointsUseCase.execute(new Subscriber<TokenData>() {
@@ -167,6 +191,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         });
     }
 
+    @Override
     public void downloadAllAsset(Context context, TokenData tokenData) {
         getView().showLoading();
 

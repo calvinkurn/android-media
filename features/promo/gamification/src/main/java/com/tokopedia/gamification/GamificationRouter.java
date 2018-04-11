@@ -22,4 +22,6 @@ public interface GamificationRouter {
 
     void goToHome(Context context);
 
+    Intent getLoginIntent();
+
 }

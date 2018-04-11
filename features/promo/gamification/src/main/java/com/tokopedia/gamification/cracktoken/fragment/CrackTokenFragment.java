@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.cracktoken.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -32,6 +33,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.GamificationEventTracking;
+import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
@@ -55,8 +57,9 @@ import javax.inject.Inject;
 
 public class CrackTokenFragment extends BaseDaggerFragment implements CrackTokenContract.View {
 
-    private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
     public static final int VIBRATE_DURATION = 500;
+    private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
+    private static final int REQUEST_CODE_LOGIN = 112;
 
     @Inject
     CrackTokenPresenter crackTokenPresenter;
@@ -182,7 +185,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        crackTokenPresenter.getGetTokenTokopoints();
+        crackTokenPresenter.initializePage();
     }
 
     @Override
@@ -256,9 +259,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         showInfoTitle();
     }
 
-    private void vibrate(){
+    private void vibrate() {
         Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-        if (v!=null) {
+        if (v != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 v.vibrate(VibrationEffect.createOneShot(VIBRATE_DURATION, VibrationEffect.DEFAULT_AMPLITUDE));
             } else {
@@ -267,11 +270,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }
     }
 
-    private void hideInfoTitle(){
+    private void hideInfoTitle() {
         infoTitlePage.setVisibility(View.GONE);
     }
 
-    private void showInfoTitle(){
+    private void showInfoTitle() {
         infoTitlePage.setVisibility(View.VISIBLE);
     }
 
@@ -286,8 +289,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private void initTimerBound() {
         int rootWidth = rootView.getWidth();
         int rootHeight = rootView.getHeight();
-        int imageHeight = TokenMarginUtil.getEggWidth (rootWidth, rootHeight);
-        int marginTop = TokenMarginUtil.getEggMarginBottom (rootHeight) - imageHeight
+        int imageHeight = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
+        int marginTop = TokenMarginUtil.getEggMarginBottom(rootHeight) - imageHeight
                 - getContext().getResources().getDimensionPixelOffset(R.dimen.dp_112);
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) layoutTimer.getLayoutParams();
@@ -380,6 +383,19 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     @Override
+    public void navigateToLoginPage() {
+        if (getActivity().getApplication() instanceof GamificationRouter
+                && ((GamificationRouter) getActivity().getApplication()).getLoginIntent() != null) {
+            startActivityForResult(((GamificationRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
+        }
+    }
+
+    @Override
+    public void closePage() {
+        getActivity().finish();
+    }
+
+    @Override
     public void onSuccessGetToken(TokenData tokenData) {
         if (tokenData.getSumToken() == 0) {
             listener.directPageToCrackEmpty(tokenData);
@@ -443,11 +459,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }, widgetTokenView.isCrackPercentageFull() ? 1 : 1000);
     }
 
-    public boolean isShowReward(){
+    public boolean isShowReward() {
         return widgetCrackResult.isShown();
     }
 
-    public void dismissReward(){
+    public void dismissReward() {
         widgetCrackResult.dismissReward();
     }
 
@@ -570,9 +586,21 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_LOGIN:
+                crackTokenPresenter.onLoginDataReceived();
+                break;
+        }
+    }
+
     public interface ActionListener {
         void directPageToCrackEmpty(TokenData tokenData);
+
         void hideToolbar();
+
         void showToolbar();
     }
 }
