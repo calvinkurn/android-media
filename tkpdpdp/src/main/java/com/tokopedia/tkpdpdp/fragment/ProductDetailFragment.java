@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,8 +35,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -112,6 +115,7 @@ import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import permissions.dispatcher.NeedsPermission;
@@ -163,11 +167,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_PRODUCT_VARIANT = "STATE_PRODUCT_VARIANT";
+    public static final String STATE_PRODUCT_STOCK_NON_VARIANT = "STATE_PRODUCT_STOCK_NON_VARIANT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
     public static final String STATE_PROMO_WIDGET = "STATE_PROMO_WIDGET";
     public static final String STATE_APP_BAR_COLLAPSED = "STATE_APP_BAR_COLLAPSED";
     public static final String TAG_SHOWCASE_VARIANT = "-SHOWCASE_VARIANT";
+    private static final String STATIC_VALUE_ENHANCE_NONE_OTHER = "none / other";
 
     private CoordinatorLayout coordinatorLayout;
     private HeaderInfoView headerInfoView;
@@ -208,6 +214,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ProductDetailData productData;
     private boolean useVariant = true;
     private ProductVariant productVariant;
+    private Child productStockNonVariant;
     private List<ProductOther> productOthers;
     private VideoData videoData;
     private PromoAttributes promoAttributes;
@@ -436,8 +443,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                     productData.getInfo().getHasVariant() && productVariant == null) {
                 onClickBuyWhileRequestingVariant = true;
                 buttonBuyView.changeToLoading();
-            } else if ( productData != null && !productData.getInfo().getHasVariant() && productVariant==null ||
-                    productData.getInfo().getHasVariant() && productVariant!=null && variantLevel1!=null) {
+            } else if (productData != null && !productData.getInfo().getHasVariant() && productVariant == null ||
+                    productData.getInfo().getHasVariant() && productVariant != null && variantLevel1 != null) {
                 String weightProduct = "";
                 switch (productData.getInfo().getProductWeightUnit()) {
                     case "gr":
@@ -467,14 +474,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 bundle.putParcelable(VariantActivity.KEY_PRODUCT_DETAIL_DATA, productData);
                 onVariantClicked(bundle);
             }
-            if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && productData.getInfo().getHasVariant() && variantLevel1 != null ) {
+            if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && productData.getInfo().getHasVariant() && variantLevel1 != null) {
                 UnifyTracking.eventBuyPDPVariant(generateVariantString());
             } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && productData.getInfo().getHasVariant()) {
                 UnifyTracking.eventBuyPDPVariant("");
             } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && !productData.getInfo().getHasVariant()) {
                 UnifyTracking.eventBuyPDPVariant(NON_VARIANT);
             } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_VARIANT) && productData.getInfo().getHasVariant()) {
-                Long timestamp = System.currentTimeMillis()/1000;
+                Long timestamp = System.currentTimeMillis() / 1000;
                 UnifyTracking.eventBuyPageVariant(timestamp.toString() + "-" + generateVariantString());
             }
         } else {
@@ -582,15 +589,15 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onVariantClicked(@NonNull Bundle bundle) {
         Intent intent = new Intent(context, VariantActivity.class);
         intent.putExtras(bundle);
-        intent.putExtra(KEY_LEVEL1_SELECTED,variantLevel1);
-        intent.putExtra(KEY_LEVEL2_SELECTED,variantLevel2);
+        intent.putExtra(KEY_LEVEL1_SELECTED, variantLevel1);
+        intent.putExtra(KEY_LEVEL2_SELECTED, variantLevel2);
         if (productData.getShopInfo().getShopIsOwner() == 1
                 || (productData.getShopInfo().getShopIsAllowManage() == 1 || GlobalConfig.isSellerApp())) {
             intent.putExtra(VariantActivity.KEY_SELLER_MODE, true);
         }
-        startActivityForResult(intent,REQUEST_VARIANT);
-        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up,0);
-        if (productData.getInfo().getHasVariant() && productVariant !=null && variantLevel1 != null) {
+        startActivityForResult(intent, REQUEST_VARIANT);
+        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
+        if (productData.getInfo().getHasVariant() && productVariant != null && variantLevel1 != null) {
             UnifyTracking.eventClickVariant(generateVariantString());
         }
 
@@ -747,10 +754,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     public void updateWishlistStatusVariant(int status) {
-        if (productVariant!=null && productVariant.getChildren()!=null ) {
-            for (Child child: productVariant.getChildren()) {
-                if (child.getProductId()==productData.getInfo().getProductId()) {
-                    child.setWishlist(status==1?true:false);
+        if (productVariant != null && productVariant.getChildren() != null) {
+            for (Child child : productVariant.getChildren()) {
+                if (child.getProductId() == productData.getInfo().getProductId()) {
+                    child.setWishlist(status == 1 ? true : false);
                     break;
                 }
             }
@@ -779,7 +786,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void showErrorVariant() {
         Snackbar snack = Snackbar.make(coordinatorLayout, getString(R.string.error_variant), Snackbar.LENGTH_INDEFINITE);
         TextView tv = snack.getView().findViewById(com.tokopedia.core.R.id.snackbar_text);
-        tv.setTextColor(ContextCompat.getColor(context,R.color.black_54));
+        tv.setTextColor(ContextCompat.getColor(context, R.color.black_54));
         tv.setMaxLines(5);
 
         Button snackBarAction = snack.getView().findViewById(android.support.design.R.id.snackbar_action);
@@ -904,7 +911,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void showToastMessage(String message) {
         if (message == null) {
-             message = getString(R.string.default_request_error_unknown_short);
+            message = getString(R.string.default_request_error_unknown_short);
         }
         Snackbar snackbar = Snackbar.make(coordinatorLayout,
                 message.replace("\n", " "),
@@ -979,9 +986,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onSaveState(Bundle outState) {
-        Log.d(TAG, "onSaveState");
         presenter.saveStateProductDetail(outState, STATE_DETAIL_PRODUCT, productData);
         presenter.saveStateProductVariant(outState, STATE_PRODUCT_VARIANT, productVariant);
+        presenter.saveStateProductStockNonVariant(outState, STATE_PRODUCT_STOCK_NON_VARIANT, productStockNonVariant);
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
         presenter.saveStatePromoWidget(outState, STATE_PROMO_WIDGET, promoAttributes);
@@ -991,7 +998,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onRestoreState(Bundle savedInstanceState) {
         Log.d(TAG, "onRestoreState");
-        presenter.processStateData(savedInstanceState,getActivity());
+        presenter.processStateData(savedInstanceState, getActivity());
     }
 
     @Override
@@ -1019,10 +1026,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 Intent intent = ((PdpRouter) MainApplication.getAppContext()).getLoginIntent
                         (getActivity());
                 navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
-                if (productData.getInfo().getHasVariant()) UnifyTracking.eventClickCartVariant(generateVariantString());
+                if (productData.getInfo().getHasVariant())
+                    UnifyTracking.eventClickCartVariant(generateVariantString());
             } else {
                 startActivity(TransactionCartRouter.createInstanceCartActivity(getActivity()));
-                if (productData.getInfo().getHasVariant()) UnifyTracking.eventClickCartVariant(generateVariantString());
+                if (productData.getInfo().getHasVariant())
+                    UnifyTracking.eventClickCartVariant(generateVariantString());
             }
             return true;
         } else if (i == R.id.action_report) {
@@ -1059,7 +1068,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 break;
             case REQUEST_CODE_LOGIN:
                 videoDescriptionLayout.refreshVideo();
-                if (SessionHandler.isV4Login(getActivity())) presenter.requestProductDetail(context, productPass, RE_REQUEST, true, useVariant);
+                if (SessionHandler.isV4Login(getActivity()))
+                    presenter.requestProductDetail(context, productPass, RE_REQUEST, true, useVariant);
                 break;
             case REQUEST_VARIANT:
                 if (data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA) != null) {
@@ -1068,27 +1078,28 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 if (productVariant == null && data.getParcelableExtra(KEY_VARIANT_DATA) != null) {
                     productVariant = data.getParcelableExtra(KEY_VARIANT_DATA);
                 }
-                if (data!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
+                if (data != null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) != null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
                     variantLevel1 = data.getParcelableExtra(KEY_LEVEL1_SELECTED);
-                    if (data.getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option) {
+                    if (data.getParcelableExtra(KEY_LEVEL2_SELECTED) != null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option) {
                         variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
                     }
                     priceSimulationView.updateVariant(generateVariantString());
                     if (productVariant != null) {
                         pictureView.renderData(productData);
                         headerInfoView.renderData(productData);
+                        headerInfoView.renderStockAvailability(productData.getInfo());
                         shopInfoView.renderData(productData);
-                        presenter.updateRecentView(context,productData.getInfo().getProductId());
+                        presenter.updateRecentView(context, productData.getInfo().getProductId());
                         ratingTalkCourierView.renderData(productData);
                         latestTalkView.renderData(productData);
                         buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
-                                productData.getInfo().getProductId()).isIsBuyable(),productData);
+                                productData.getInfo().getProductId()).isIsBuyable(), productData);
                         updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
                         productPass.setProductId(Integer.toString(productData.getInfo().getProductId()));
                     }
-                    if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
+                    if (resultCode == VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
                         onBuyClick(SOURCE_BUTTON_BUY_VARIANT);
-                    } else if (resultCode==VariantActivity.KILL_PDP_BACKGROUND) {
+                    } else if (resultCode == VariantActivity.KILL_PDP_BACKGROUND) {
                         getActivity().finish();
                     }
                 }
@@ -1098,9 +1109,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     public String generateVariantString() {
-        String variantText = variantLevel1 !=null ? variantLevel1.getValue() : "";
-        if (variantLevel2!=null && variantLevel2 instanceof Option) {
-            variantText+= (", "+((Option) variantLevel2).getValue());
+        String variantText = variantLevel1 != null ? variantLevel1.getValue() : "";
+        if (variantLevel2 != null && variantLevel2 instanceof Option) {
+            variantText += (", " + ((Option) variantLevel2).getValue());
         }
         return variantText;
     }
@@ -1186,9 +1197,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void moveToEditFragment(boolean isEdit, String productId) {
+    public void moveToEditFragment(boolean isEdit) {
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-            Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).goToEditProduct(context, isEdit, productId);
+                        Integer productId = productData.getInfo().getProductId();
+                        if (productData != null && productData.getInfo().getHasVariant() && productVariant != null) {
+                                productId = productVariant.getParentId();
+                            }
+                        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).goToEditProduct(context, isEdit, Integer.toString(productId));
             navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
         }
     }
@@ -1199,6 +1214,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 .setAction(context.getString(R.string.go_to_wishlist), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if (!isAdded() || context == null) {
+                            return;
+                        }
                         Intent intent = new Intent(context, SimpleHomeRouter.getSimpleHomeActivityClass());
                         intent.putExtra(
                                 SimpleHomeRouter.FRAGMENT_TYPE,
@@ -1264,15 +1282,21 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void addProductVariant(ProductVariant productVariant) {
-        this.productVariant=productVariant;
-        this.priceSimulationView.addProductVariant(productVariant,productData);
-        if (variantLevel1!=null && variantLevel1 instanceof Option) {
+        this.productVariant = productVariant;
+        this.priceSimulationView.addProductVariant(productVariant, productData);
+        if (variantLevel1 != null && variantLevel1 instanceof Option) {
             priceSimulationView.updateVariant(generateVariantString());
         }
         int defaultChild =  productVariant.getParentId() == productData.getInfo().getProductId()
                 ?  productVariant.getDefaultChild() : productData.getInfo().getProductId();
+        if(productVariant.getChildFromProductId(defaultChild).isEnabled()){
+            productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
+            productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
+            headerInfoView.renderStockAvailability(productData.getInfo());
+        }
+
         buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
-                defaultChild).isIsBuyable(),productData);
+                defaultChild).isIsBuyable(), productData);
 
         startShowCase();
 
@@ -1282,6 +1306,16 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void setVariantFalse() {
         useVariant = false;
         productData.getInfo().setHasVariant(false);
+    }
+
+    @Override
+    public void addProductStock(Child productStock) {
+        productStockNonVariant = productStock;
+        if(productStock.isEnabled()){
+            productData.getInfo().setProductStockWording(productStockNonVariant.getStockWording());
+            productData.getInfo().setLimitedStock(productStockNonVariant.isLimitedStock());
+            headerInfoView.renderStockAvailability(productData.getInfo());
+        }
     }
 
     @Override
@@ -1453,7 +1487,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     private void startShowCase() {
-        final String showCaseTag = ProductInfoActivity.class.getName()+TAG_SHOWCASE_VARIANT;
+        final String showCaseTag = ProductInfoActivity.class.getName() + TAG_SHOWCASE_VARIANT;
         if (ShowCasePreference.hasShown(getActivity(), showCaseTag) || showCaseDialog != null) {
             return;
         }
@@ -1473,7 +1507,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 priceSimulationView,
                 getResources().getString(R.string.product_variant),
                 getResources().getString(R.string.product_variant_onboarding),
-                ShowCaseContentPosition.TOP).withCustomTarget(new int[]{ rectToShowCase.left + SHOWCASE_MARGIN,
+                ShowCaseContentPosition.TOP).withCustomTarget(new int[]{rectToShowCase.left + SHOWCASE_MARGIN,
                 rectToShowCase.top - 50, rectToShowCase.right - SHOWCASE_MARGIN, rectToShowCase.top + SHOWCASE_HEIGHT}));
         showCaseDialog.show(getActivity(), showCaseTag, showCaseObjectList);
     }
@@ -1492,6 +1526,57 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 .clickable(true)
                 .useArrow(true)
                 .build();
+    }
+
+    @Override
+    public void trackingEnhanceProductDetail() {
+        ProductPageTracking.eventEnhanceProductDetail(
+                DataLayer.mapOf(
+                        "event", "viewProduct",
+                        "eventCategory", "product page",
+                        "eventAction", "view product page",
+                        "eventLabel", String.format(
+                                Locale.getDefault(),
+                                "%s - %s - %s",
+                                productData.getEnhanceShopType(), productData.getShopInfo().getShopName(), productData.getInfo().getProductName()
+                        ),
+                        "ecommerce", DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "detail", DataLayer.mapOf(
+                                        "actionField", DataLayer.mapOf("list", productPass.getTrackerListName()),
+                                        "products", DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        "name", productData.getInfo().getProductName(),
+                                                        "id", productData.getInfo().getProductId(),
+                                                        "price", productData.getInfo().getProductPriceUnformatted(),
+                                                        "brand", "none / other",
+                                                        "category", productData.getEnhanceCategoryFormatted(),
+                                                        "variant", getEnhanceVariant(),
+                                                        "dimension38", productPass.getTrackerAttribution()
+                                                )
+                                        )
+                                )
+                        ),
+                        "key", productData.getEnhanceUrl(productData.getInfo().getProductUrl()),
+                        "shop_name", productData.getShopInfo().getShopName(),
+                        "shop_id", productData.getShopInfo().getShopId(),
+                        "shop_domain", productData.getShopInfo().getShopDomain(),
+                        "shop_location", productData.getShopInfo().getShopLocation(),
+                        "shop_is_gold", String.valueOf(productData.getShopInfo().shopIsGoldBadge() ? 1 : 0),
+                        "category_id", productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1).getDepartmentId(),
+                        "url", productData.getInfo().getProductUrl(),
+                        "shop_type", productData.getEnhanceShopType()
+                )
+        );
+    }
+
+    private String getEnhanceVariant() {
+        if (productVariant != null) {
+            String variantValue = productVariant.generateVariantValue(productData.getInfo().getProductId());
+            return variantValue.isEmpty() ? STATIC_VALUE_ENHANCE_NONE_OTHER : variantValue;
+        } else {
+            return STATIC_VALUE_ENHANCE_NONE_OTHER;
+        }
     }
 
 }

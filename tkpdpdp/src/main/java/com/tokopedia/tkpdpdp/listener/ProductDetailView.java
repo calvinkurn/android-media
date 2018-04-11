@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.listener.ViewListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
@@ -278,7 +279,7 @@ public interface ProductDetailView extends ViewListener {
 
     void showFullScreenError();
 
-    void moveToEditFragment(boolean isEdit, String productId);
+    void moveToEditFragment(boolean isEdit);
 
     void showSuccessWishlistSnackBar();
 
@@ -295,6 +296,8 @@ public interface ProductDetailView extends ViewListener {
     void addProductVariant(ProductVariant productVariant);
 
     void setVariantFalse();
+
+    void addProductStock(Child productStock);
 
     void actionSuccessAddToWishlist(Integer productId);
 
@@ -313,4 +316,6 @@ public interface ProductDetailView extends ViewListener {
     boolean isSellerApp();
 
     void updateButtonBuyListener();
+
+    void trackingEnhanceProductDetail();
 }

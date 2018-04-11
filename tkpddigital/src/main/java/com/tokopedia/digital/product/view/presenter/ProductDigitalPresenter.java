@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
@@ -263,6 +264,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 renderCheckPulsa();
                 view.showMessageAlert(activity.getString(R.string.error_message_ussd_msg_not_parsed),
                         activity.getString(R.string.message_ussd_title));
+                UnifyTracking.eventUssdAttempt(activity.getString(R.string.status_failed_label) + activity.getString(R.string.error_message_ussd_msg_not_parsed));
             }
         } else {
             view.showAccessibilityAlertDialog();

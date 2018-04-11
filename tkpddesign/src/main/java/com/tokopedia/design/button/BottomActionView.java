@@ -3,17 +3,11 @@ package com.tokopedia.design.button;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.DrawableRes;
-import android.support.v4.view.animation.FastOutLinearInInterpolator;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.Interpolator;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
 
@@ -38,6 +32,8 @@ public class BottomActionView extends BaseCustomView {
     private View vMark1;
     private View vMark2;
     private boolean isBav1Display, isBav2Display;
+    private ImageView icon2ImageView;
+    private ImageView icon1ImageView;
 
     public BottomActionView(Context context) {
         super(context);
@@ -70,16 +66,16 @@ public class BottomActionView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_bottom_action_view, this);
+        View view = inflate(getContext(), getLayout(), this);
         linearLayoutButton1 = view.findViewById(R.id.linear_layout_button_1);
-        ImageView icon1ImageView = (ImageView) linearLayoutButton1.findViewById(R.id.image_view_icon_1);
+        icon1ImageView = (ImageView) linearLayoutButton1.findViewById(R.id.image_view_icon_1);
         TextView label1textView = (TextView) linearLayoutButton1.findViewById(R.id.text_view_label_1);
         vMark1 = linearLayoutButton1.findViewById(R.id.v_mark_1);
 
         View separatorView = (View) view.findViewById(R.id.view_separator);
 
         linearLayoutButton2 = view.findViewById(R.id.linear_layout_button_2);
-        ImageView icon2ImageView = (ImageView) linearLayoutButton2.findViewById(R.id.image_view_icon_2);
+        icon2ImageView = (ImageView) linearLayoutButton2.findViewById(R.id.image_view_icon_2);
         TextView label2textView = (TextView) linearLayoutButton2.findViewById(R.id.text_view_label_2);
         vMark2 = linearLayoutButton2.findViewById(R.id.v_mark_2);
 
@@ -114,6 +110,18 @@ public class BottomActionView extends BaseCustomView {
         }
         invalidate();
         requestLayout();
+    }
+
+    protected int getLayout() {
+        return R.layout.widget_bottom_action_view;
+    }
+
+    public void setSecondImageDrawable(@DrawableRes int secondImageDrawable) {
+        icon2ImageView.setImageResource(secondImageDrawable);
+    }
+
+    public void setFirstImageDrawable(@DrawableRes int secondImageDrawable) {
+        icon1ImageView.setImageResource(secondImageDrawable);
     }
 
     public void setMarkLeft(boolean isVisible) {

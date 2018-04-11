@@ -29,6 +29,8 @@ import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseService;
 import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.entity.intermediary.Product;
+import com.tokopedia.core.network.entity.variant.Child;
+import com.tokopedia.core.network.entity.variant.ProductStockResponse;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.network.entity.variant.ProductVariantResponse;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -825,6 +827,50 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     public ProductVariant call(Response<ProductVariantResponse> productVariantResponse) {
                         if (productVariantResponse != null && productVariantResponse.body()!=null) {
                             return productVariantResponse.body().getData();
+                        }
+                        return null;
+                    }
+                };
+
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(mapper)
+                        .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void getProductStock(@NonNull Context context, @NonNull String productId, final @NonNull ProductStockListener listener) {
+        Observable<Response<ProductStockResponse>> observable = tomeService.getApi().getProductStock(productId);
+        Subscriber<Child> subscriber = new Subscriber<Child>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                listener.onError("");
+            }
+
+            @Override
+            public void onNext(Child productStock) {
+                if (productStock!=null) {
+                    listener.onSucccess(productStock);
+                } else {
+                    listener.onError("");
+                }
+            }
+        };
+
+        Func1<Response<ProductStockResponse>, Child> mapper =
+                new Func1<Response<ProductStockResponse>, Child>() {
+                    @Override
+                    public Child call(Response<ProductStockResponse> productStockResponse) {
+                        if (productStockResponse != null && productStockResponse.body()!=null) {
+                            return productStockResponse.body().getData();
                         }
                         return null;
                     }
