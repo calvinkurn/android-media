@@ -113,8 +113,6 @@ public interface ICartView extends IBaseView {
 
     void setCartError(int cartIndex);
 
-    void setCartErrorWithMessage(int cartIndex, String errorTitle, String errorMessage);
-
     void showRatesCompletion();
 
     void setCartNoGrandTotal();

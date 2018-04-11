@@ -61,21 +61,10 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             public void onNext(Response<String> stringResponse) {
                 if (stringResponse.isSuccessful()) {
                     LogisticsData logisticsData = new Gson().fromJson(stringResponse.body(), LogisticsData.class);
-
-                    if (logisticsData.getLogisticsError() != null && !logisticsData.getLogisticsError().get(0).getMessage().isEmpty()) {
-                        listener.onFailed(logisticsData.getLogisticsError().get(0).getMessage());
-                    } else {
+                    if (logisticsData.getOngkirData() != null &&
+                            logisticsData.getOngkirData().getOngkir() != null &&
+                            logisticsData.getOngkirData().getOngkir().getData() != null) {
                         listener.onSuccess(logisticsData.getOngkirData().getOngkir().getData());
-                    }
-
-                } else {
-                    LogisticsData logisticsData = null;
-                    try {
-                        logisticsData = new Gson()
-                                .fromJson(stringResponse.errorBody().string(), LogisticsData.class);
-                        listener.onFailed(logisticsData.getLogisticsError().get(0).getMessage());
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
                 }
             }
