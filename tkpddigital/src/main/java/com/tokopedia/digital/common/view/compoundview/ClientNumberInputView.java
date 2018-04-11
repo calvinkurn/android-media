@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.support.annotation.NonNull;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -84,44 +86,12 @@ public class ClientNumberInputView extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.view_holder_client_number_input, this, true);
         ButterKnife.bind(this);
         initialTextWatcher();
-        initBackgroundContactButtonAndClearButton();
         setImgOperatorInvisible();
         setBtnClearInvisible();
     }
 
     private void initialTextWatcher() {
 
-    }
-
-    @SuppressWarnings("deprecation")
-    private void initBackgroundContactButtonAndClearButton() {
-        Glide.with(getContext()).load(com.tokopedia.core.R.drawable.ic_clear_widget)
-                .asBitmap().into(
-                new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource,
-                                                GlideAnimation<? super Bitmap> glideAnimation) {
-                        Drawable drawableClear = new BitmapDrawable(
-                                getContext().getResources(), resource
-                        );
-                        btnClear.setBackgroundDrawable(drawableClear);
-                    }
-                });
-
-        Glide.with(getContext()).load(com.tokopedia.core.R.drawable.ic_phonebook_widget)
-                .asBitmap().into(
-                new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource,
-                                                GlideAnimation<? super Bitmap> glideAnimation) {
-
-                        Drawable drawablePhoneBook = new BitmapDrawable(
-                                getContext().getResources(), resource
-                        );
-                        btnContactPicker.setBackgroundDrawable(drawablePhoneBook);
-                    }
-                }
-        );
     }
 
     private OnFocusChangeListener getFocusChangeListener() {
@@ -232,7 +202,7 @@ public class ClientNumberInputView extends LinearLayout {
                 0, ViewGroup.LayoutParams.WRAP_CONTENT);
         if (clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_TEL)) {
             btnContactPicker.setVisibility(View.VISIBLE);
-            layoutParams.weight = 0.92f;
+            layoutParams.weight = 0.88f;
         } else {
             btnContactPicker.setVisibility(View.GONE);
             layoutParams.weight = 1;
