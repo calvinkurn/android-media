@@ -36,17 +36,14 @@ import rx.functions.Func1;
 public class ReactProductCloudSource extends ReactDataSource {
 
     private ProductRepository productRepository;
-    private EtalaseRepository etalaseRepository;
     private PosSessionHandler sessionHandler;
 
     @Inject
     ReactProductCloudSource(ProductCloudRepository productRepository,
-                            EtalaseRepositoryImpl etalaseRepository,
                             Gson gson,
                             PosSessionHandler sessionHandler) {
         super(gson);
         this.productRepository = productRepository;
-        this.etalaseRepository = etalaseRepository;
         this.sessionHandler = sessionHandler;
     }
 
@@ -59,9 +56,6 @@ public class ReactProductCloudSource extends ReactDataSource {
     public Observable<String> getDataList(int offset, int limit) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
-//        requestParams.putString(START_OFFSET, Integer.toString(offset));
-//        requestParams.putString(ROW_OFFSET, Integer.toString(limit));
-//        requestParams.putInt(DATA_PER_ROW, limit);
         return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
     }
 
@@ -69,9 +63,6 @@ public class ReactProductCloudSource extends ReactDataSource {
     public Observable<String> getDataAll() {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
-//        requestParams.putString(START_OFFSET, Integer.toString(0));
-//        requestParams.putString(ROW_OFFSET, Integer.toString(10));
-//        requestParams.putInt(DATA_PER_ROW, 10);
         return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
     }
 
