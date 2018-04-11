@@ -10,21 +10,21 @@ public class Product extends BaseGTMModel {
 
     private Map<String, Object> Product = new HashMap<>();
 
-    public static final String KEY_NAME     = "name";
-    public static final String KEY_ID       = "id";
-    public static final String KEY_PRICE    = "price";
-    public static final String KEY_BRAND    = "brand";
-    public static final String KEY_CAT      = "category";
-    public static final String KEY_VARIANT  = "variant";
-    public static final String KEY_QTY      = "quantity";
-    public static final String KEY_SHOP_ID  = "shop_id";
-    public static final String KEY_SHOP_TYPE     = "shop_type";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_ID = "id";
+    public static final String KEY_PRICE = "price";
+    public static final String KEY_BRAND = "brand";
+    public static final String KEY_CAT = "category";
+    public static final String KEY_VARIANT = "variant";
+    public static final String KEY_QTY = "quantity";
+    public static final String KEY_SHOP_ID = "shop_id";
+    public static final String KEY_SHOP_TYPE = "shop_type";
     public static final String KEY_SHOP_NAME = "shop_name";
     public static final String KEY_CATEGORY_ID = "category_id";
     public static final String KEY_CART_ID = "cart_id";
-    public static final String KEY_POS      = "position";
-    public static final String KEY_LIST     = "list";
-    public static final String KEY_HOME_ATTRIBUTION     = "home_attribution";
+    public static final String KEY_POS = "position";
+    public static final String KEY_LIST = "list";
+    public static final String KEY_HOME_ATTRIBUTION = "dimension38";
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none/other";
 

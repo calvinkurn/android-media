@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by kris on 4/4/18. Tokopedia
  */
 
-public class ProductTrackerData implements Parcelable{
+public class ProductTrackerData implements Parcelable {
 
     @SerializedName("attribution")
     @Expose
