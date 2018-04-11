@@ -216,10 +216,11 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
-import com.tokopedia.tkpdstream.StreamModuleRouter;
-import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
-import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
-import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
+import com.tokopedia.groupchat.GroupChatModuleRouter;
+import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
+import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
+import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
+import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
@@ -258,7 +259,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
-        DigitalRouter, KolRouter, StreamModuleRouter, ApplinkRouter, ShopModuleRouter {
+        DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -317,7 +318,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         context.startActivity(
                 PeopleInfoNoDrawerActivity.createInstance(context, userId)
         );
-	}
+    }
 
     private ContentConsumerComponent getContentConsumerComponent() {
         if (contentConsumerComponent == null) {
@@ -1255,7 +1256,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new AnalyticTracker() {
             @Override
             public void sendEventTracking(Map<String, Object> events) {
-
+                UnifyTracking.sendGTMEvent(events);
             }
 
             @Override
@@ -1507,7 +1508,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToAddProduct(Context context) {
-        if(context != null && context instanceof Activity){
+        if (context != null && context instanceof Activity) {
             ProductAddActivity.start((Activity) context);
         }
     }
@@ -1534,7 +1535,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
             ((Activity) context).startActivityForResult(intent, 100);
         }
-	}
+    }
 
     public void init() {
         ShakeDetectManager.getShakeDetectManager().init();
@@ -1637,7 +1638,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getChannelFragment(Bundle bundle) {
-        return ChannelFragment.createInstance(bundle);
+        return ChannelFragment.createInstance();
     }
 
     @Override
@@ -1653,7 +1654,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void openRedirectUrl(Activity activity, String url) {
         if (isSupportedDelegateDeepLink(url)) {
-            actionAppLink(activity, url);
+            actionApplinkFromActivity(activity, url);
         } else {
             actionOpenGeneralWebView(activity, url);
         }
@@ -1672,7 +1673,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
         return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
-	}
+    }
 
     public void showForceHockeyAppDialog() {
         ServerErrorHandler.showForceHockeyAppDialog();
@@ -1705,19 +1706,33 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public boolean isEnabledGroupChatRoom() {
+        return remoteConfig.getBoolean(GroupChatModuleRouter.ENABLE_GROUPCHAT_ROOM);
+    }
+
+    @Override
+    public boolean isEnabledIdleKick() {
+        return remoteConfig.getBoolean(GroupChatModuleRouter.ENABLE_GROUPCHAT_IDLE_KICK);
+    }
+
+    @Override
     public void sendTrackingGroupChatLeftNavigation() {
-        getAnalyticTracker().sendEventTracking(StreamAnalytics.EVENT_NAME_CLICK_NAVIGATION_DRAWER,
-                StreamAnalytics.EVENT_CATEGORY_LEFT_NAVIGATION,
-                StreamAnalytics.EVENT_ACTION_CLICK_GROUP_CHAT,
+        getAnalyticTracker().sendEventTracking(GroupChatAnalytics.EVENT_NAME_CLICK_NAVIGATION_DRAWER,
+                GroupChatAnalytics.EVENT_CATEGORY_LEFT_NAVIGATION,
+                GroupChatAnalytics.EVENT_ACTION_CLICK_GROUP_CHAT,
                 ""
         );
     }
 
     @Override
-    public void generateBranchLink(String channelId, String title, String contentMessage, String
-            imgUrl, String
-            shareUrl, Activity activity, final ShareListener
-                                           listener) {
+    public String getNotificationPreferenceConstant() {
+        return Constants.Settings.NOTIFICATION_GROUP_CHAT;
+    }
+
+    @Override
+    public void generateBranchLink(String channelId, String title, String contentMessage,
+                                   String imgUrl, String shareUrl,
+                                   Activity activity, final ShareListener listener) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setId(channelId)
                 .setName(title)
@@ -1775,5 +1790,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getTopProfileIntent(Context context, String userId) {
         return TopProfileActivity.newInstance(context, userId);
+    }
+
+    @Override
+    public String getDesktopLinkGroupChat() {
+        return ChatroomUrl.DESKTOP_URL;
     }
 }

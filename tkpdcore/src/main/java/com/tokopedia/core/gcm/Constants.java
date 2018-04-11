@@ -27,6 +27,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_RIDE = "ride";
     String ARG_NOTIFICATION_APPLINK_PROMO_LABEL = "promo";
     String ARG_NOTIFICATION_APPLINK_TOPCHAT = "topchat";
+    String ARG_NOTIFICATION_APPLINK_GROUPCHAT = "groupchat";
     String KEY_ORIGIN = "origin";
     int REGISTRATION_STATUS_OK = 1;
     int REGISTRATION_STATUS_ERROR = 2;
@@ -174,6 +175,7 @@ public interface Constants {
         String NOTIFICATION_PURCHASE = "notification_purchase";
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
         String NOTIFICATION_SELLER_INFO = "notification_seller_info";
+        String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
     }
 
     interface AppLinkQueryParameter {
