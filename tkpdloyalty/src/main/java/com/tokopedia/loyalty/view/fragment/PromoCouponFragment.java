@@ -34,6 +34,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CART_ID;
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.FLIGHT_STRING;
 
 /**
  * @author anggaprasetiyo on 29/11/17.
@@ -332,11 +334,26 @@ public class PromoCouponFragment extends BasePresenterFragment
         refreshHandler.setPullEnabled(true);
     }
 
+    @Override
+    public String getCategoryId() {
+        return getArguments().getString(CATEGORY_KEY);
+    }
+
     public static PromoCouponFragment newInstance(String platform, String categoryKey) {
         PromoCouponFragment fragment = new PromoCouponFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PLATFORM_KEY, platform);
         bundle.putString(CATEGORY_KEY, categoryKey);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static PromoCouponFragment newInstance(String platform, String categoryKey, String cartId) {
+        PromoCouponFragment fragment = new PromoCouponFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PLATFORM_KEY, platform);
+        bundle.putString(CATEGORY_KEY, categoryKey);
+        bundle.putString(EXTRA_CART_ID, cartId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -347,7 +364,9 @@ public class PromoCouponFragment extends BasePresenterFragment
         UnifyTracking.eventCouponChosen(data.getTitle());
         if (getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING)) {
             dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY));
-        } else {
+        }  else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(FLIGHT_STRING)){
+            dPresenter.submitFlightVoucher(data, getArguments().getString(EXTRA_CART_ID));
+        }else {
             dPresenter.submitVoucher(data);
         }
     }
@@ -376,8 +395,9 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void onRefresh(View view) {
-        if (refreshHandler.isRefreshing())
+        if (refreshHandler.isRefreshing()) {
             dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
+        }
     }
 
     @Override
