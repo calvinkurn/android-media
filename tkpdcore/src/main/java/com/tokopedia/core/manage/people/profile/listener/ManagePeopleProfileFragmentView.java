@@ -79,5 +79,9 @@ public interface ManagePeopleProfileFragmentView {
 
     void startChangePhoneNumber();
 
+    void startAddEmailActivity();
+
+    void startChangeNameActivity();
+
     void storeImageToUserSession(String userImage);
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.cracktoken.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -32,6 +33,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.GamificationEventTracking;
+import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
@@ -55,8 +57,9 @@ import javax.inject.Inject;
 
 public class CrackTokenFragment extends BaseDaggerFragment implements CrackTokenContract.View {
 
-    private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
     public static final int VIBRATE_DURATION = 500;
+    private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
+    private static final int REQUEST_CODE_LOGIN = 112;
 
     @Inject
     CrackTokenPresenter crackTokenPresenter;
@@ -180,7 +183,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        crackTokenPresenter.getGetTokenTokopoints();
+        crackTokenPresenter.initializePage();
     }
 
     @Override
@@ -378,6 +381,19 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     @Override
+    public void navigateToLoginPage() {
+        if (getActivity().getApplication() instanceof GamificationRouter
+                && ((GamificationRouter) getActivity().getApplication()).getLoginIntent() != null) {
+            startActivityForResult(((GamificationRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
+        }
+    }
+
+    @Override
+    public void closePage() {
+        getActivity().finish();
+    }
+
+    @Override
     public void onSuccessGetToken(TokenData tokenData) {
         listener.showToolbar();
         if (tokenData.getSumToken() == 0) {
@@ -567,6 +583,16 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                             GamificationEventTracking.Action.CLICK_CLOSE_BUTTON,
                             ""
                     );
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_LOGIN:
+                crackTokenPresenter.onLoginDataReceived();
+                break;
         }
     }
 

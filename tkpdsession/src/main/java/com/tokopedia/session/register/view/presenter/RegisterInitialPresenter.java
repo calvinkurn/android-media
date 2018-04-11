@@ -7,11 +7,12 @@ import android.support.v4.app.Fragment;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
-import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.LoginWebviewUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.LoginWithSosmedUseCase;
@@ -19,7 +20,6 @@ import com.tokopedia.session.register.view.subscriber.registerinitial.GetFaceboo
 import com.tokopedia.session.register.view.subscriber.registerinitial.RegisterDiscoverSubscriber;
 import com.tokopedia.session.register.view.subscriber.registerinitial.RegisterSosmedSubscriber;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
-import com.tokopedia.session.WebViewLoginFragment;
 
 import javax.inject.Inject;
 

@@ -95,6 +95,10 @@ public class CrackResult {
         return resultStatus.getCode().equals("500");
     }
 
+    public boolean isCrackButtonVisible(CrackButton crackButton) {
+        return !crackButton.getType().equals("invisible");
+    }
+
     public boolean isCrackButtonDismiss(CrackButton crackButton) {
         return crackButton.getType().equals("dismiss");
     }
