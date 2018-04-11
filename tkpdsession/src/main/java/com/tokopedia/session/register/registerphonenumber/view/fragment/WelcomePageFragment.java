@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.session.R;
 
 /**
@@ -20,7 +20,7 @@ import com.tokopedia.session.R;
 public class WelcomePageFragment extends BaseDaggerFragment {
 
     private final static String URL_BACKGROUND
-            = "https://ecs7.tokopedia.net/img/android/icon_welcome/xxhdpi/welcome.png";
+            = "https://ecs7.tokopedia.net/img/android/welcome_baloon/xhdpi/welcome_baloon.png";
 
     private ImageView background;
     private TextView btnContinue;
@@ -48,7 +48,7 @@ public class WelcomePageFragment extends BaseDaggerFragment {
     }
 
     public void initView() {
-        ImageHandler.LoadImage(background, URL_BACKGROUND);
+        loadImage(background, URL_BACKGROUND);
     }
 
     public void initViewListener() {
@@ -76,5 +76,17 @@ public class WelcomePageFragment extends BaseDaggerFragment {
     @Override
     protected void initInjector() {
 
+    }
+
+    public void loadImage(ImageView imageview, String url) {
+        if (imageview.getContext() != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .fitCenter()
+                    .dontAnimate()
+                    .placeholder(com.tokopedia.abstraction.R.drawable.loading_page)
+                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
+                    .into(imageview);
+        }
     }
 }

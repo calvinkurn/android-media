@@ -55,7 +55,7 @@ import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
-import com.tokopedia.session.register.registerphonenumber.view.activity.RegisterPhoneNumberActivity;
+import com.tokopedia.session.register.registerphonenumber.view.activity.WelcomePageActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.view.presenter.RegisterInitialPresenter;
@@ -203,7 +203,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
                 showProgressBar();
-                Intent intent = RegisterPhoneNumberActivity.getCallingIntent(getActivity());
+//                Intent intent = RegisterPhoneNumberActivity.getCallingIntent(getActivity());
+                Intent intent = WelcomePageActivity.newInstance(getActivity());
                 startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
 
             }
