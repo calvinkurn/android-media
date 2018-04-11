@@ -6,23 +6,23 @@
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
     android:clickable="true"
     android:foreground="?attr/selectableItemBackground">
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/image_catalog"
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
         tools:src="@mipmap/ic_launcher"/>
     <TextView
         android:id="@+id/text_catalog_name"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
         android:textSize="16sp"
         tools:text="@string/title_catalog"/>
 

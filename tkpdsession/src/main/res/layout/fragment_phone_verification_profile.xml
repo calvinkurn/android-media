@@ -11,7 +11,7 @@
         <!--<TextView-->
             <!--android:layout_width="0dp"-->
             <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginBottom="@dimen/margin_vs"-->
+            <!--android:layout_marginBottom="@dimen/dp_5"-->
             <!--android:layout_weight="1"-->
             <!--android:text="@string/profile_completion" />-->
 
@@ -26,7 +26,7 @@
         <!--style="@android:style/Widget.ProgressBar.Horizontal"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="10dp"-->
-        <!--android:layout_marginBottom="@dimen/margin_large"-->
+        <!--android:layout_marginBottom="@dimen/dp_30"-->
         <!--android:progress="79"-->
         <!--android:progressDrawable="@drawable/grey_progress" />-->
 
@@ -35,11 +35,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:lineSpacingExtra="@dimen/margin_vs"
-        android:layout_marginBottom="@dimen/margin_large"
-        android:layout_marginTop="@dimen/margin_large"
-        android:layout_marginLeft="@dimen/margin_large"
-        android:layout_marginRight="@dimen/margin_large"
+        android:lineSpacingExtra="@dimen/dp_5"
+        android:layout_marginBottom="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_30"
         android:gravity="center"
         android:text="@string/protect_your_account_with_phone_verification"
         />

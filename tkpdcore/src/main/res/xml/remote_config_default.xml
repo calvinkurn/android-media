@@ -181,4 +181,8 @@
         <key>mainapp_flight_transaction_menu</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>mainapp_show_recomendation_button</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

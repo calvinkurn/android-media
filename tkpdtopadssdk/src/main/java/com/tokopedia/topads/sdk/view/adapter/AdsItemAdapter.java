@@ -12,6 +12,7 @@ import com.tokopedia.topads.sdk.data.ModelConverter;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.AdsAdapterTypeFactory;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ProductFeedViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ShopFeedViewHolder;
 
 import java.util.ArrayList;
@@ -69,6 +70,8 @@ public class AdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         holder.bind(list.get(position));
         if (holder instanceof ShopFeedViewHolder) {
             ((ShopFeedViewHolder) holder).setAdapterPosition(adapterPosition);
+        } else if (holder instanceof ProductFeedViewHolder) {
+            ((ProductFeedViewHolder) holder).setAdapterPosition(adapterPosition);
         }
     }
 

@@ -26,6 +26,10 @@ def allowDistribution() {
     return "false";
 }
 
+def allowProguard() {
+    return project.hasProperty('tkpdBuildType')
+}
+
 def getTkpdVersionCode() {
     return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
@@ -66,13 +70,11 @@ buildscript {
 }
 
 
-
-
 android {
 
     project.ext {
-        defaultVersionCode = 113000400;
-        defaultVersionName = "1.13.0";
+        defaultVersionCode = 1000404;
+        defaultVersionName = "1.0.4";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -124,7 +126,11 @@ android {
             zipAlignEnabled true
             shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles  'proguard-rules.txt'
+            if (allowProguard()) {
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            } else {
+                proguardFiles 'proguard-rules.txt'
+            }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
             if (allowSplit()) {
@@ -176,7 +182,8 @@ android {
 
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
+        keepRuntimeAnnotatedClasses false
     }
 
     compileOptions {
@@ -220,6 +227,7 @@ dependencies {
     compile project(rootProject.ext.features.transaction)
     compile project(rootProject.ext.features.reputation)
     compile project(rootProject.ext.features.mitraToppers)
+    compile project(rootProject.ext.features.shopPage)
 
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'

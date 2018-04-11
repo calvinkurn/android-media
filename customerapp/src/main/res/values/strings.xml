@@ -89,4 +89,7 @@
     <string name="drawer_title_shopping_list">Daftar Belanja</string>
     <string name="drawer_title_digital_transaction_list"><![CDATA[Daftar Top-Up & Tagihan]]></string>
     <string name="drawer_title_travel_flight_transaction_list">Daftar Tiket Pesawat</string>
+
+    <string name="exit_message">Tekan sekali lagi untuk keluar</string>
+
 </resources>

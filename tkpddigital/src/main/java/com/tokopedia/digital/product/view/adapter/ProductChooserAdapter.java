@@ -146,8 +146,8 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         private void enableView() {
-            tvTitlePrice.setTextColor(hostFragment.getResources().getColor(R.color.black));
-            tvPrice.setTextColor(hostFragment.getResources().getColor(R.color.black));
+            tvTitlePrice.setTextColor(hostFragment.getResources().getColor(R.color.digital_item_title));
+            tvPrice.setTextColor(hostFragment.getResources().getColor(R.color.digital_item_title));
         }
     }
 
@@ -219,11 +219,11 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         private void enableView() {
             tvProductPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.black));
+                    .getColor(R.color.digital_item_title));
             tvProductDescription.setTextColor(hostFragment.getResources()
                     .getColor(R.color.grey_500));
             tvProductTotalPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.black));
+                    .getColor(R.color.digital_item_title));
         }
     }
 
@@ -297,13 +297,13 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         private void enableView() {
             tvProductPromoTitle.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.black));
+                    .getColor(R.color.digital_item_title));
             tvProductPromoTag.setTextColor(hostFragment.getResources()
                     .getColor(R.color.deep_orange_500));
             tvProductPromoDescription.setTextColor(hostFragment.getResources()
                     .getColor(R.color.grey_500));
             tvProductPromoOldPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.black));
+                    .getColor(R.color.digital_item_title));
             tvPromoProductPrice.setTextColor(hostFragment.getResources()
                     .getColor(R.color.deep_orange_500));
         }

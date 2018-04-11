@@ -50,6 +50,10 @@ public interface SellerModuleRouter {
 
     Intent getPhoneVerificationActivityIntent(Context context);
 
+    Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
+
     Intent getTopProfileIntent(Context context, String userId);
 
     Intent getInboxMessageIntent(Context context);

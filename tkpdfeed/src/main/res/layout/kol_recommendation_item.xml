@@ -6,17 +6,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_view"
     android:layout_height="wrap_content"
-    android:layout_marginRight="@dimen/margin_small"
+    android:layout_marginRight="@dimen/dp_10"
     android:background="@drawable/cards_feed_rounded"
     android:orientation="vertical"
-    android:padding="@dimen/padding_small">
+    android:padding="@dimen/dp_10">
 
     <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/kol_avatar"
         android:layout_height="@dimen/kol_avatar"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/dp_10"
         android:background="@drawable/feed_container_circle_corners_border"
         tools:src="@drawable/ic_top_ads"
         />
@@ -31,8 +31,8 @@
             android:id="@+id/kol_badge"
             android:layout_width="14dp"
             android:layout_height="14dp"
-            android:layout_marginRight="@dimen/margin_vs"
-            android:layout_marginTop="@dimen/margin_vvvs"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_2"
             app:srcCompat="@drawable/ic_kol_badge"/>
 
         <TextView
@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/name"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/dp_10"
         android:ellipsize="end"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="6sp"

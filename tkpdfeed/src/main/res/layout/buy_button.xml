@@ -4,7 +4,7 @@
     android:id="@+id/buy_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/margin_small"
+    android:layout_margin="@dimen/dp_10"
     android:background="@drawable/orange_button_rounded"
     android:visibility="gone"
     tools:visibility="gone">
@@ -13,9 +13,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:drawablePadding="@dimen/padding_vs"
+        android:drawablePadding="@dimen/dp_5"
         android:gravity="center"
-        android:padding="@dimen/padding_vs"
+        android:padding="@dimen/dp_5"
         android:text="@string/action_buy"
         android:textColor="@color/white" />
 

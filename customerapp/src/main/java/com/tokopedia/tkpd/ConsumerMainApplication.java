@@ -20,16 +20,22 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.sendbird.android.SendBird;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
+import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
+import com.tokopedia.inbox.inboxchat.data.network.ChatBotUrl;
+import com.tokopedia.flight.TkpdFlight;
+import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
@@ -41,6 +47,9 @@ import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
+import com.tokopedia.tkpd.utils.CacheApiWhiteList;
+import com.tokopedia.shop.common.constant.ShopCommonUrl;
+import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.tkpdcontent.common.network.KolUrl;
 import com.tokopedia.tkpdstream.common.data.SendbirdKey;
 import com.tokopedia.tkpdstream.common.data.StreamUrl;
@@ -73,7 +82,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
-
+        initCacheApi();
         initSendbird();
     }
 
@@ -139,10 +148,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         WalletUrl.BaseUrl.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
+        ShopUrl.BASE_ACE_URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
+        ShopCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
+        ShopCommonUrl.BASE_WS_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
         KolUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         ProfileUrl.BASE_URL = ConsumerAppBaseUrl.TOPPROFILE_DOMAIN;
         DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         StreamUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
+        ChatBotUrl.BASE_URL = ConsumerAppBaseUrl.CHATBOT_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {
@@ -154,6 +167,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public void initializeDatabase() {
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
+                .build());
+        FlowManager.init(new FlowConfig.Builder(this)
+                .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
                 .build());
         TkpdFlight.initDatabase(getApplicationContext());
     }
@@ -220,29 +236,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SoLoader.init(this, false);
     }
 
-    @Override
-    public Intent getSellerHomeIntent(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public Intent getLoginGoogleIntent(Context context) {
-        return LoginActivity.getAutoLoginGoogle(context);
-    }
-
-    @Override
-    public Intent getLoginFacebookIntent(Context context) {
-        return LoginActivity.getAutoLoginFacebook(context);
-
-    }
-
-    @Override
-    public Intent getLoginWebviewIntent(Context context, String name, String url) {
-        return LoginActivity.getAutoLoginWebview(context, name, url);
-    }
-
-    @Override
-    public Intent getTopProfileIntent(Context context, String userId) {
-        return TopProfileActivity.newInstance(context, userId);
+    private void initCacheApi() {
+        CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
+        new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
+                CacheApiWhiteList.getWhiteList(),
+                String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 }
