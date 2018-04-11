@@ -27,6 +27,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
 
     private ImageView imageAirline;
     private TextView airlineName;
+    private TextView stopOverTextView;
     private TextView airlineCode;
     private TextView refundableInfo;
     private TextView departureTime;
@@ -67,6 +68,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
         containerPNR = itemView.findViewById(R.id.container_pnr);
         pnrCode = itemView.findViewById(R.id.pnr_code);
         copyPnr = itemView.findViewById(R.id.copy_pnr);
+        stopOverTextView = itemView.findViewById(R.id.tv_flight_stop_over);
         this.onFlightDetailListener = onFlightDetailListener;
     }
 
@@ -92,6 +94,13 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
         if (onFlightDetailListener != null) {
             bindLastPosition(onFlightDetailListener.getItemCount() == getAdapterPosition());
             bindTransitInfo(onFlightDetailListener.getItemCount());
+        }
+
+        if (route.getStopOver() > 0){
+            stopOverTextView.setVisibility(View.VISIBLE);
+            stopOverTextView.setText(String.format(getString(R.string.flight_detail_total_stop_over_label), route.getStopOver()));
+        }else {
+            stopOverTextView.setVisibility(View.GONE);
         }
     }
 

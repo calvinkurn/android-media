@@ -188,6 +188,14 @@ public class Route implements Parcelable{
     public Route() {
     }
 
+    public int getStops() {
+        return stops;
+    }
+
+    public void setStops(int stops) {
+        this.stops = stops;
+    }
+
     @Override
     public int describeContents() {
         return 0;

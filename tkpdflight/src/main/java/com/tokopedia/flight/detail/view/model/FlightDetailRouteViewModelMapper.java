@@ -43,6 +43,7 @@ public class FlightDetailRouteViewModelMapper {
             flightDetailRouteViewModel.setRefundable(route.getRefundable());
             flightDetailRouteViewModel.setInfos(flightDetailRouteInfoViewModelMapper.transform(route.getInfos()));
             flightDetailRouteViewModel.setAmenities(route.getAmenities());
+            flightDetailRouteViewModel.setStopOver(route.getStops());
         }
         return flightDetailRouteViewModel;
     }
@@ -77,6 +78,7 @@ public class FlightDetailRouteViewModelMapper {
             flightDetailRouteViewModel.setPnr(route.getPnr());
             flightDetailRouteViewModel.setFlightNumber(route.getFlightNumber());
             flightDetailRouteViewModel.setRefundable(route.isRefundable());
+            flightDetailRouteViewModel.setStopOver(route.getStops());
             flightDetailRouteViewModel.setInfos(flightDetailRouteInfoViewModelMapper.transform(route.getFreeAmenities()));
         }
         return flightDetailRouteViewModel;

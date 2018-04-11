@@ -32,6 +32,7 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
     private String arrivalAirportCode;
     private String arrivalAirportName;
     private String layover;
+    private int stopOver;
     private List<FlightDetailRouteInfoViewModel> infos;
     private List<Amenity> amenities = null;
 
@@ -56,6 +57,7 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
         arrivalAirportCode = in.readString();
         arrivalAirportName = in.readString();
         layover = in.readString();
+        stopOver = in.readInt();
         infos = in.createTypedArrayList(FlightDetailRouteInfoViewModel.CREATOR);
         amenities = in.createTypedArrayList(Amenity.CREATOR);
     }
@@ -229,31 +231,40 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
         return typeFactory.type(this);
     }
 
+    public int getStopOver() {
+        return stopOver;
+    }
+
+    public void setStopOver(int stopOver) {
+        this.stopOver = stopOver;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(pnr);
-        dest.writeString(airlineName);
-        dest.writeString(airlineCode);
-        dest.writeString(airlineLogo);
-        dest.writeInt(airlineMandatoryDOB);
-        dest.writeString(flightNumber);
-        dest.writeString(departureTimestamp);
-        dest.writeString(departureAirportCity);
-        dest.writeString(departureAirportCode);
-        dest.writeString(departureAirportName);
-        dest.writeByte((byte) (isRefundable ? 1 : 0));
-        dest.writeString(duration);
-        dest.writeString(arrivalTimestamp);
-        dest.writeString(arrivalAirportCity);
-        dest.writeString(arrivalAirportCode);
-        dest.writeString(arrivalAirportName);
-        dest.writeString(layover);
-        dest.writeTypedList(infos);
-        dest.writeTypedList(amenities);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(pnr);
+        parcel.writeString(airlineName);
+        parcel.writeString(airlineCode);
+        parcel.writeString(airlineLogo);
+        parcel.writeInt(airlineMandatoryDOB);
+        parcel.writeString(flightNumber);
+        parcel.writeString(departureTimestamp);
+        parcel.writeString(departureAirportCity);
+        parcel.writeString(departureAirportCode);
+        parcel.writeString(departureAirportName);
+        parcel.writeByte((byte) (isRefundable ? 1 : 0));
+        parcel.writeString(duration);
+        parcel.writeString(arrivalTimestamp);
+        parcel.writeString(arrivalAirportCity);
+        parcel.writeString(arrivalAirportCode);
+        parcel.writeString(arrivalAirportName);
+        parcel.writeString(layover);
+        parcel.writeInt(stopOver);
+        parcel.writeTypedList(infos);
+        parcel.writeTypedList(amenities);
     }
 }

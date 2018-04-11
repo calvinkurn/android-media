@@ -53,6 +53,9 @@ public class RouteEntity {
     @SerializedName("pnr")
     @Expose
     private String pnr;
+    @SerializedName("stops")
+    @Expose
+    private int stops;
 
     public String getDepartureAirportCode() {
         return departureAirportCode;
@@ -112,5 +115,9 @@ public class RouteEntity {
 
     public String getLayover() {
         return layover;
+    }
+
+    public int getStops() {
+        return stops;
     }
 }
