@@ -38,6 +38,8 @@ public interface FlightBaseBookingContact {
         void showExpireTransactionDialog();
 
         void setCartId(String id);
+
+        void showSoldOutDialog();
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T> {

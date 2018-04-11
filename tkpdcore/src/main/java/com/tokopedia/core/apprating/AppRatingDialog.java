@@ -1,6 +1,7 @@
 package com.tokopedia.core.apprating;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
@@ -27,6 +29,7 @@ public abstract class AppRatingDialog {
     protected Activity activity;
     protected RemoteConfig remoteConfig;
     protected LocalCacheHandler cacheHandler;
+    protected GlobalCacheManager globalCacheManager;
     @Nullable
     protected AppRatingListener listener;
 
@@ -34,18 +37,19 @@ public abstract class AppRatingDialog {
         this.activity = activity;
         this.remoteConfig = new FirebaseRemoteConfigImpl(activity);
         cacheHandler = new LocalCacheHandler(activity, TkpdCache.APP_RATING);
+        globalCacheManager = new GlobalCacheManager();
     }
 
-    protected void openPlayStore() {
+    public static void openPlayStore(Context context) {
         try {
-            activity.startActivity(
+            context.startActivity(
                     new Intent(
                             Intent.ACTION_VIEW,
                             Uri.parse(APPLINK_PLAYSTORE + getAppPackageName())
                     )
             );
         } catch (android.content.ActivityNotFoundException anfe) {
-            activity.startActivity(
+            context.startActivity(
                     new Intent(
                             Intent.ACTION_VIEW,
                             Uri.parse(URL_PLAYSTORE + getAppPackageName())
@@ -54,7 +58,7 @@ public abstract class AppRatingDialog {
         }
     }
 
-    private String getAppPackageName() {
+    public static String getAppPackageName() {
         if(GlobalConfig.isSellerApp()) {
             return PACKAGE_SELLER_APP;
         }

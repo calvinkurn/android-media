@@ -1,12 +1,19 @@
 package com.tokopedia.inbox.inboxchat.di;
 
 
+import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
+import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
+import com.tokopedia.core.network.di.qualifier.InboxQualifier;
+import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.ReplyFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.SearchFactory;
@@ -18,6 +25,8 @@ import com.tokopedia.inbox.inboxchat.data.mapper.ReplyMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.SearchChatMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.SendMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.template.TemplateChatMapper;
+import com.tokopedia.inbox.inboxchat.data.network.ChatBotApi;
+import com.tokopedia.inbox.inboxchat.data.network.ChatBotUrl;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepository;
@@ -31,10 +40,10 @@ import com.tokopedia.inbox.inboxchat.domain.usecase.AttachImageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.DeleteMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
-import com.tokopedia.inbox.inboxchat.domain.usecase.template.GetTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SearchMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.template.GetTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.uploadimage.data.factory.ImageUploadFactory;
 import com.tokopedia.inbox.inboxchat.uploadimage.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.inboxchat.uploadimage.data.mapper.UploadImageMapper;
@@ -43,8 +52,12 @@ import com.tokopedia.inbox.inboxchat.uploadimage.data.repository.ImageUploadRepo
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.UploadImageUseCase;
 
+import java.util.concurrent.TimeUnit;
+
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 /**
  * Created by stevenfredian on 9/14/17.
@@ -52,6 +65,11 @@ import dagger.Provides;
 
 @Module
 public class InboxChatModule {
+
+    private static final int NET_READ_TIMEOUT = 60;
+    private static final int NET_WRITE_TIMEOUT = 60;
+    private static final int NET_CONNECT_TIMEOUT = 60;
+    private static final int NET_RETRY = 1;
 
     @InboxChatScope
     @Provides
@@ -91,8 +109,8 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    GetReplyMapper provideGetReplyMapper() {
-        return new GetReplyMapper();
+    GetReplyMapper provideGetReplyMapper(SessionHandler sessionHandler) {
+        return new GetReplyMapper(sessionHandler);
     }
 
     @InboxChatScope
@@ -311,5 +329,42 @@ public class InboxChatModule {
         return new UploadImageService();
     }
 
+    @InboxChatScope
+    @Provides
+    OkHttpClient provideOkHttpClient(@InboxQualifier OkHttpRetryPolicy retryPolicy){
+        return new OkHttpClient.Builder()
+                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new CacheApiInterceptor())
+                .addInterceptor(new DigitalHmacAuthInterceptor(AuthUtil.KEY.KEY_WSV4))
+                .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
+                .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
+                .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
+                .build();
+    }
 
+    @InboxChatScope
+    @InboxQualifier
+    @Provides
+    OkHttpRetryPolicy provideOkHttpRetryPolicy() {
+        return new OkHttpRetryPolicy(NET_READ_TIMEOUT,
+                NET_WRITE_TIMEOUT,
+                NET_CONNECT_TIMEOUT,
+                NET_RETRY);
+    }
+
+    @InboxChatScope
+    @InboxQualifier
+    @Provides
+    Retrofit provideChatRetrofit(OkHttpClient okHttpClient,
+                                 Retrofit.Builder retrofitBuilder){
+        return retrofitBuilder.baseUrl(ChatBotUrl.BASE_URL)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @InboxChatScope
+    @Provides
+    ChatBotApi provideChatRatingApi(@InboxQualifier Retrofit retrofit){
+        return retrofit.create(ChatBotApi.class);
+    }
 }

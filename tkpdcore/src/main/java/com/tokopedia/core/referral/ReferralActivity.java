@@ -39,6 +39,18 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
                 .putExtras(extras);
     }
 
+    public static Intent getCallingIntent(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, ReferralActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        Intent intent = new Intent(context, ReferralActivity.class);
+        return intent;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,12 +61,6 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
             UnifyTracking.eventReferralLongClick();
         }
 
-    }
-
-    public static Intent getCallingIntent(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, ReferralActivity.class);
-        intent.putExtras(bundle);
-        return intent;
     }
 
     @Override

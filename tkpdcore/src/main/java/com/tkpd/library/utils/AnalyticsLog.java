@@ -90,9 +90,10 @@ public class AnalyticsLog {
     }
 
     private static AndroidLogger mInstance = null;
+
     private static AndroidLogger getAndroidNOTPLogger() {
         try {
-            if(mInstance == null) {
+            if (mInstance == null) {
                 mInstance = AndroidLogger.createInstance(
                         MainApplication.getAppContext(),
                         false,
@@ -113,6 +114,7 @@ public class AnalyticsLog {
         getAndroidNOTPLogger().log(msg + " - Phone Number:-" + SessionHandler.getPhoneNumber()
                 + " - LoginID - " + SessionHandler.getLoginID(MainApplication.getAppContext()));
     }
+
     private static void log(String message) {
         try {
             AndroidLogger logger = getAndroidLogger();
@@ -149,5 +151,24 @@ public class AnalyticsLog {
         }
 
         return instance;
+    }
+
+    public static void logInvalidGrant(String url) {
+        String baseUrl = getBaseUrl(url);
+
+        AnalyticsLog.log("ErrorType=Invalid Grant!"
+                + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
+                .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
+                + " Url=" + "'" + url + "'"
+                + " BaseUrl=" + "'" + baseUrl + "'"
+                + " AppPackage=" + GlobalConfig.getPackageApplicationName()
+                + " AppVersion=" + GlobalConfig.VERSION_NAME
+                + " AppCode=" + GlobalConfig.VERSION_CODE
+                + " OSVersion=" + Build.VERSION.RELEASE
+                + " DeviceModel=" + android.os.Build.MODEL
+                + " DeviceId=" + "'" + GCMHandler.getRegistrationId(MainApplication.getAppContext()) + "'"
+                + " Environment=" + isStaging(baseUrl)
+                + " RefreshToken=" + "'" + (SessionHandler.getRefreshToken(MainApplication.getAppContext())) + "'"
+        );
     }
 }

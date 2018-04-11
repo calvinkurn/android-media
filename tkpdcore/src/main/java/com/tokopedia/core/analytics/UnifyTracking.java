@@ -655,6 +655,42 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventDiscoveryCameraImageSearch() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.CAMERA_SEARCH,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventDiscoveryGalleryImageSearch() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.GALLERY_SEARCH,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventDiscoveryCameraImageSearchResult(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.CAMERA_SEARCH_RESULT,
+                label
+        ).getEvent());
+    }
+
+    public static void eventDiscoveryGalleryImageSearchResult(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.GALLERY_SEARCH_RESULT,
+                label
+        ).getEvent());
+    }
+
     public static void eventSearchWishlist(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.HOME_WISHLIST,
@@ -2175,6 +2211,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventUssdAttempt(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_IMPRESSION_HOME_PAGE,
+                AppEventTracking.Category.DIGITAL + AppEventTracking.Category.PULSA,
+                AppEventTracking.Action.USSD_ATTEMPT,
+                eventLabel
+        ).getEvent());
+    }
+
     public static void eventClickPaymentAndTopupOnDrawer() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
@@ -2492,6 +2537,11 @@ public class UnifyTracking extends TrackingUtils {
                 event, category, action, "").getEvent());
     }
 
+    public static void eventAttachment(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
     public static void eventInsertAttachment(String category, String action, String event) {
         sendGTMEvent(new EventTracking(
                 event, category, action, "").getEvent());
@@ -2568,12 +2618,12 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventAppShare() {
+    public static void eventAppShareWhenReferralOff(String action, String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_APP_SHARE_REFERRAL,
-                AppEventTracking.Category.REFERRAL,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.APP_SHARE_LABEL
+                AppEventTracking.Event.CLICK_APP_SHARE_WHEN_REFERRAL_OFF,
+                AppEventTracking.Category.APPSHARE,
+                action,
+                label
         ).getEvent());
     }
 
@@ -3178,6 +3228,24 @@ public class UnifyTracking extends TrackingUtils {
         sendGTMEvent(eventTracking.getEvent());
     }
 
+    public static EventTracking eventResoDetailClickBackEditAddressPage(String resolutionId) {
+        return new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_BACK_EDIT_ADDRESS_PAGE_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId);
+    }
+
+    public static EventTracking eventResoDetailClickBackInputAddressPage(String resolutionId) {
+        return new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_BACK_INPUT_ADDRESS_PAGE_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId);
+    }
+
 
     public static void eventPromoListClickCategory(String categoryName) {
         sendGTMEvent(new EventTracking(
@@ -3224,15 +3292,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSearchResultShopItemClick(String keyword, String shopName) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH_RESULT,
-                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                AppEventTracking.Action.CLICK_SHOP,
-                keyword + " - " + shopName
-        ).setUserId().getEvent());
-    }
-
     public static void eventSearchResultProductWishlistClick(boolean isWishlisted, String keyword) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.PRODUCT_VIEW,
@@ -3265,6 +3324,15 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
+    public static void eventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.FILTER_PRODUCT,
+                AppEventTracking.Action.QUICK_FILTER,
+                filterName + " - " + filterValue + " - " + Boolean.toString(isSelected)
+        ).setUserId().getEvent());
+    }
+
     private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
         List<String> filterList = new ArrayList<>();
         for (Map.Entry<String, String> entry : selectedFilter.entrySet()) {
@@ -3287,7 +3355,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.LONG_CLICK,
                 AppEventTracking.Category.LONG_PRESS,
                 AppEventTracking.Action.CLICK_REFERRAL,
-                AppEventTracking.EventLabel.REFERRAL
+                AppEventTracking.EventLabel.LONG_PRESS_SHORTCUT_REFERRAL
         ).setUserId().getEvent());
     }
 

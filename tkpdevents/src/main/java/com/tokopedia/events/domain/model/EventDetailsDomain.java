@@ -7,9 +7,9 @@ import java.util.List;
 
 public class EventDetailsDomain {
 
-    private Integer id;
-    private Integer parentId;
-    private Integer categoryId;
+    private int id;
+    private int parentId;
+    private int categoryId;
     private String displayName;
     private String title;
     private String duration;
@@ -26,26 +26,26 @@ public class EventDetailsDomain {
     private String searchTags;
     private String promotionText;
     private String autocode;
-    private Integer convenienceFee;
-    private Integer mrp;
-    private Integer salesPrice;
-    private Integer seatChartTypeId;
-    private Integer hasSeatLayout;
-    private Integer priority;
-    private Integer quantity;
-    private Integer soldQuantity;
-    private Integer sellRate;
-    private Integer thumbsUp;
-    private Integer thumbsDown;
-    private Integer rating;
-    private Integer isFeatured;
-    private Integer isPromo;
-    private Integer isFoodAvailable;
-    private Integer status;
-    private Integer minStartDate;
-    private Integer maxEndDate;
-    private Integer saleStartDate;
-    private Integer saleEndDate;
+    private int convenienceFee;
+    private int mrp;
+    private int salesPrice;
+    private int seatChartTypeId;
+    private int hasSeatLayout;
+    private int priority;
+    private int quantity;
+    private int soldQuantity;
+    private int sellRate;
+    private int thumbsUp;
+    private int thumbsDown;
+    private int rating;
+    private int isFeatured;
+    private int isPromo;
+    private int isFoodAvailable;
+    private int status;
+    private int minStartDate;
+    private int maxEndDate;
+    private int saleStartDate;
+    private int saleEndDate;
     private String customLabels;
     private String minStartTime;
     private String maxEndTime;
@@ -75,27 +75,27 @@ public class EventDetailsDomain {
 
     private List<Form> forms = null;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getParentId() {
+    public int getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(int parentId) {
         this.parentId = parentId;
     }
 
-    public Integer getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -203,163 +203,163 @@ public class EventDetailsDomain {
         this.autocode = autocode;
     }
 
-    public Integer getConvenienceFee() {
+    public int getConvenienceFee() {
         return convenienceFee;
     }
 
-    public void setConvenienceFee(Integer convenienceFee) {
+    public void setConvenienceFee(int convenienceFee) {
         this.convenienceFee = convenienceFee;
     }
 
-    public Integer getMrp() {
+    public int getMrp() {
         return mrp;
     }
 
-    public void setMrp(Integer mrp) {
+    public void setMrp(int mrp) {
         this.mrp = mrp;
     }
 
-    public Integer getSalesPrice() {
+    public int getSalesPrice() {
         return salesPrice;
     }
 
-    public void setSalesPrice(Integer salesPrice) {
+    public void setSalesPrice(int salesPrice) {
         this.salesPrice = salesPrice;
     }
 
-    public Integer getSeatChartTypeId() {
+    public int getSeatChartTypeId() {
         return seatChartTypeId;
     }
 
-    public void setSeatChartTypeId(Integer seatChartTypeId) {
+    public void setSeatChartTypeId(int seatChartTypeId) {
         this.seatChartTypeId = seatChartTypeId;
     }
 
-    public Integer getHasSeatLayout() {
+    public int getHasSeatLayout() {
         return hasSeatLayout;
     }
 
-    public void setHasSeatLayout(Integer hasSeatLayout) {
+    public void setHasSeatLayout(int hasSeatLayout) {
         this.hasSeatLayout = hasSeatLayout;
     }
 
-    public Integer getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(Integer priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
-    public Integer getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public Integer getSoldQuantity() {
+    public int getSoldQuantity() {
         return soldQuantity;
     }
 
-    public void setSoldQuantity(Integer soldQuantity) {
+    public void setSoldQuantity(int soldQuantity) {
         this.soldQuantity = soldQuantity;
     }
 
-    public Integer getSellRate() {
+    public int getSellRate() {
         return sellRate;
     }
 
-    public void setSellRate(Integer sellRate) {
+    public void setSellRate(int sellRate) {
         this.sellRate = sellRate;
     }
 
-    public Integer getThumbsUp() {
+    public int getThumbsUp() {
         return thumbsUp;
     }
 
-    public void setThumbsUp(Integer thumbsUp) {
+    public void setThumbsUp(int thumbsUp) {
         this.thumbsUp = thumbsUp;
     }
 
-    public Integer getThumbsDown() {
+    public int getThumbsDown() {
         return thumbsDown;
     }
 
-    public void setThumbsDown(Integer thumbsDown) {
+    public void setThumbsDown(int thumbsDown) {
         this.thumbsDown = thumbsDown;
     }
 
-    public Integer getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
-    public Integer getIsFeatured() {
+    public int getIsFeatured() {
         return isFeatured;
     }
 
-    public void setIsFeatured(Integer isFeatured) {
+    public void setIsFeatured(int isFeatured) {
         this.isFeatured = isFeatured;
     }
 
-    public Integer getIsPromo() {
+    public int getIsPromo() {
         return isPromo;
     }
 
-    public void setIsPromo(Integer isPromo) {
+    public void setIsPromo(int isPromo) {
         this.isPromo = isPromo;
     }
 
-    public Integer getIsFoodAvailable() {
+    public int getIsFoodAvailable() {
         return isFoodAvailable;
     }
 
-    public void setIsFoodAvailable(Integer isFoodAvailable) {
+    public void setIsFoodAvailable(int isFoodAvailable) {
         this.isFoodAvailable = isFoodAvailable;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
-    public Integer getMinStartDate() {
+    public int getMinStartDate() {
         return minStartDate;
     }
 
-    public void setMinStartDate(Integer minStartDate) {
+    public void setMinStartDate(int minStartDate) {
         this.minStartDate = minStartDate;
     }
 
-    public Integer getMaxEndDate() {
+    public int getMaxEndDate() {
         return maxEndDate;
     }
 
-    public void setMaxEndDate(Integer maxEndDate) {
+    public void setMaxEndDate(int maxEndDate) {
         this.maxEndDate = maxEndDate;
     }
 
-    public Integer getSaleStartDate() {
+    public int getSaleStartDate() {
         return saleStartDate;
     }
 
-    public void setSaleStartDate(Integer saleStartDate) {
+    public void setSaleStartDate(int saleStartDate) {
         this.saleStartDate = saleStartDate;
     }
 
-    public Integer getSaleEndDate() {
+    public int getSaleEndDate() {
         return saleEndDate;
     }
 
-    public void setSaleEndDate(Integer saleEndDate) {
+    public void setSaleEndDate(int saleEndDate) {
         this.saleEndDate = saleEndDate;
     }
 

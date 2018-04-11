@@ -7,12 +7,14 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 
@@ -25,12 +27,14 @@ import java.util.List;
 
 public class ProductListAdapter extends SearchSectionGeneralAdapter {
 
+    private static final int ADAPTER_POSITION_HEADER = 0;
     private List<Visitable> list = new ArrayList<>();
     private EmptySearchModel emptySearchModel;
     private ProductListTypeFactory typeFactory;
     private int startFrom;
     private int totalData;
     private Context context;
+    private GuidedSearchViewModel guidedSearch;
 
     public ProductListAdapter(Context context, OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
         super(itemChangeView);
@@ -74,6 +78,10 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         setStartFrom(getStartFrom() + Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS));
     }
 
+    public boolean isEvenPage() {
+        return getStartFrom() / Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS) % 2 == 0;
+    }
+
     public int getStartFrom() {
         return startFrom;
     }
@@ -98,6 +106,22 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         clearData();
         list.add(mappingEmptySearch(query));
         notifyDataSetChanged();
+    }
+
+    public void showEmpty() {
+        clearData();
+        list.add(mappingEmptySearch());
+        notifyDataSetChanged();
+    }
+
+
+    private EmptySearchModel mappingEmptySearch() {
+        emptySearchModel = new EmptySearchModel();
+        emptySearchModel.setImageRes(R.drawable.ic_empty_search);
+        emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_1));
+        emptySearchModel.setContent(context.getString(R.string.empty_search_content_template));
+        emptySearchModel.setButtonText(context.getString(R.string.empty_search_button_text));
+        return emptySearchModel;
     }
 
     private EmptySearchModel mappingEmptySearch(String query) {
@@ -149,5 +173,36 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     public boolean hasHeader() {
         return checkDataSize(0) && getItemList().get(0) instanceof HeaderViewModel;
+    }
+
+    public void addGuidedSearch(String currentKey, String currentPage) {
+        if (guidedSearch != null && !guidedSearch.getItemList().isEmpty()) {
+            for (GuidedSearchViewModel.Item item : guidedSearch.getItemList()) {
+                item.setPreviousKey(currentKey);
+                item.setCurrentPage(currentPage);
+            }
+            int start = getItemCount();
+            list.add(guidedSearch);
+            notifyItemInserted(start);
+        }
+    }
+
+    public void setGuidedSearch(GuidedSearchViewModel guidedSearch) {
+        this.guidedSearch = guidedSearch;
+    }
+
+    public boolean isGuidedSearch(int position) {
+        return checkDataSize(position) && getItemList().get(position) instanceof GuidedSearchViewModel;
+    }
+
+    public boolean hasGuidedSearch() {
+        return guidedSearch != null;
+    }
+
+    public void updateQuickFilter(List<Option> quickFilterOptions) {
+        if (!list.isEmpty() && list.get(ADAPTER_POSITION_HEADER) instanceof HeaderViewModel) {
+            ((HeaderViewModel) list.get(ADAPTER_POSITION_HEADER)).setQuickFilterList(quickFilterOptions);
+            notifyItemChanged(ADAPTER_POSITION_HEADER);
+        }
     }
 }

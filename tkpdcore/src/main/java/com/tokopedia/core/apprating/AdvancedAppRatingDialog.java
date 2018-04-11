@@ -9,21 +9,32 @@ import android.widget.Button;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.apprating.nps.FeedbackActivity;
+import com.tokopedia.core.apprating.nps.FeedbackThankPageActivity;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by okasurya on 1/10/18.
  */
 
 public class AdvancedAppRatingDialog extends AppRatingDialog {
+
+    public static final int MIN_RATING = 3;
+
+    private static final String LABEL_CLICK_ADVANCED_APP_RATING = "ClickAdvancedAppRating: ";
+    private static final String LABEL_CANCEL_ADVANCED_APP_RATING = "CancelAdvancedAppRating";
+    private static final String HIDE_ADVANCED_APP_RATING = "HideAdvancedAppRating";
+    private static final String DEFAULT_VALUE = "1";
+    private static final long EXPIRED_TIME = TimeUnit.DAYS.toSeconds(7);
+
     private AlertDialog dialog;
     private Button buttonSend;
     private Button buttonClose;
     private AppRatingView appRatingView;
-
-    private static final String LABEL_CLICK_ADVANCED_APP_RATING = "ClickAdvancedAppRating: ";
-    private static final String LABEL_CANCEL_ADVANCED_APP_RATING = "CancelAdvancedAppRating";
 
     public static void show(Activity activity) {
         AdvancedAppRatingDialog dialog = new AdvancedAppRatingDialog(activity);
@@ -58,8 +69,11 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
                 UnifyTracking.eventClickAppRating(LABEL_CLICK_ADVANCED_APP_RATING + appRatingView.getRating());
                 dialog.dismiss();
                 saveVersionCodeForState();
-                if(appRatingView.getRating() > 3) {
-                    openPlayStore();
+                saveRating(appRatingView.getRating());
+                if(appRatingView.getRating() > MIN_RATING) {
+                    FeedbackThankPageActivity.startActivity(activity, appRatingView.getRating());
+                } else {
+                    FeedbackActivity.startActivity(activity, appRatingView.getRating());
                 }
             }
         });
@@ -67,6 +81,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
         buttonClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideDialog();
                 UnifyTracking.eventCancelAppRating(LABEL_CANCEL_ADVANCED_APP_RATING);
                 dialog.dismiss();
             }
@@ -75,8 +90,20 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
         return dialog;
     }
 
+    private void hideDialog() {
+        globalCacheManager.setCacheDuration(EXPIRED_TIME);
+        globalCacheManager.setKey(HIDE_ADVANCED_APP_RATING);
+        globalCacheManager.setValue(DEFAULT_VALUE);
+        globalCacheManager.store();
+    }
+
     private void saveVersionCodeForState() {
         cacheHandler.putInt(getLocalKey(), GlobalConfig.VERSION_CODE);
+        cacheHandler.applyEditor();
+    }
+
+    private void saveRating(float rating) {
+        cacheHandler.putInt(TkpdCache.Key.KEY_RATING, Math.round(rating));
         cacheHandler.applyEditor();
     }
 
@@ -94,9 +121,13 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
 
     @Override
     protected boolean isDialogNeedToBeShown() {
-        if (remoteConfig.getBoolean(getRemoteConfigKey(), false)) {
+        if (remoteConfig.getBoolean(getRemoteConfigKey(), false)
+                && globalCacheManager.isExpired(HIDE_ADVANCED_APP_RATING)) {
             Integer appRatingVersion = cacheHandler.getInt(getLocalKey());
-            return appRatingVersion == null || appRatingVersion == -1;
+            Integer rating = cacheHandler.getInt(TkpdCache.Key.KEY_RATING);
+            if (appRatingVersion == null || appRatingVersion == -1 || appRatingVersion < GlobalConfig.VERSION_CODE) {
+                 return rating == null || rating <= MIN_RATING;
+            }
         }
         return false;
     }

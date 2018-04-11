@@ -22,8 +22,12 @@ public class ProductPass implements Parcelable {
     private String adR;
     private String productDesc;
     private Bitmap picToShare;
+    private long dateTimeInMilis;
+    private String trackerAttribution;
+    private String trackerListName;
 
     public ProductPass() {
+        dateTimeInMilis = 0;
     }
 
     public String getProductId() {
@@ -122,6 +126,14 @@ public class ProductPass implements Parcelable {
         this.picToShare = picToShare;
     }
 
+    public long getDateTimeInMilis() {
+        return dateTimeInMilis;
+    }
+
+    public void setDateTimeInMilis(long dateTimeInMilis) {
+        this.dateTimeInMilis = dateTimeInMilis;
+    }
+
     public static Creator<ProductPass> getCREATOR() {
         return CREATOR;
     }
@@ -139,6 +151,7 @@ public class ProductPass implements Parcelable {
         adR = in.readString();
         productDesc = in.readString();
         picToShare = (Bitmap) in.readValue(Bitmap.class.getClassLoader());
+        dateTimeInMilis = in.readLong();
     }
 
     @Override
@@ -160,6 +173,7 @@ public class ProductPass implements Parcelable {
         dest.writeString(adR);
         dest.writeString(productDesc);
         dest.writeValue(picToShare);
+        dest.writeLong(dateTimeInMilis);
     }
 
     @SuppressWarnings("unused")
@@ -179,6 +193,24 @@ public class ProductPass implements Parcelable {
         return (!productName.equals("") & !productPrice.equals("") & !productId.equals(""));
     }
 
+    public void setTrackerAttribution(String trackerAttribution) {
+        this.trackerAttribution = trackerAttribution;
+    }
+
+    public String getTrackerAttribution() {
+        if (trackerAttribution == null || trackerAttribution.isEmpty()) return "none / other";
+        return trackerAttribution;
+    }
+
+    public void setTrackerListName(String trackerListName) {
+        this.trackerListName = trackerListName;
+    }
+
+    public String getTrackerListName() {
+        if (trackerListName == null || trackerListName.isEmpty()) return "none / other";
+        else return trackerListName;
+    }
+
 
     public static class Builder {
         private String productId = "";
@@ -192,7 +224,10 @@ public class ProductPass implements Parcelable {
         private String adKey = "";
         private String adR = "";
         private String productDesc = "";
+        private String trackerAttribution = "";
+        private String trackerListName = "";
         private Bitmap picToShare;
+        private long dateTimeInMilis;
 
         private Builder() {
         }
@@ -247,6 +282,16 @@ public class ProductPass implements Parcelable {
             return this;
         }
 
+        public Builder setTrackerAttribution(String trackerAttribution) {
+            this.trackerAttribution = trackerAttribution;
+            return this;
+        }
+
+        public Builder setTrackerListName(String trackerListName) {
+            this.trackerListName = trackerListName;
+            return this;
+        }
+
         public Builder setAdKey(String adKey) {
             this.adKey = adKey;
             return this;
@@ -267,8 +312,13 @@ public class ProductPass implements Parcelable {
             return this;
         }
 
+        public Builder setDateTimeInMilis(long dateTimeInMilis){
+            this.dateTimeInMilis = dateTimeInMilis;
+            return this;
+        }
+
         public Builder but() {
-            return aProductPass().setProductId(productId).setProductName(productName).setProductPrice(productPrice).setProductImage(productImage).setShopName(shopName).setProductUri(productUri).setProductKey(productKey).setShopDomain(shopDomain).setAdKey(adKey).setAdR(adR).setProductDesc(productDesc).setPicToShare(picToShare);
+            return aProductPass().setProductId(productId).setProductName(productName).setProductPrice(productPrice).setProductImage(productImage).setShopName(shopName).setProductUri(productUri).setProductKey(productKey).setShopDomain(shopDomain).setAdKey(adKey).setAdR(adR).setProductDesc(productDesc).setPicToShare(picToShare).setDateTimeInMilis(dateTimeInMilis);
         }
 
         public ProductPass build() {
@@ -285,6 +335,9 @@ public class ProductPass implements Parcelable {
             productPass.setAdR(adR);
             productPass.setProductDesc(productDesc);
             productPass.setPicToShare(picToShare);
+            productPass.setDateTimeInMilis(dateTimeInMilis);
+            productPass.setTrackerAttribution(trackerAttribution);
+            productPass.setTrackerListName(trackerListName);
             return productPass;
         }
     }

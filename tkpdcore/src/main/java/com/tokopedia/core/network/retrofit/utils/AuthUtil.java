@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Base64;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -73,6 +74,7 @@ public class AuthUtil {
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
 
     public static final String HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps:";
+    private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
 
 
     /**
@@ -83,6 +85,8 @@ public class AuthUtil {
         private static final int[] RAW_SCROOGE_KEY = new int[]{49,50,69,56,77,105,69,55,89,69,54,86,122,115,69,80,66,80,101,77 };
         private static final int[] RAW_ZEUS_KEY = new int[]{102,100,100,98,100,56,49,101,101,52,49,49,54,98,56,99,98,55,97,52,48,56,100,55,102,98,102,98,57,99,49,55 };
         private static final int[] RAW_NOTP_KEY = new int[]{110,117,108,97,121,117,107,97,119,111,106,117};
+        private static final int[] RAW_ALIYUN_SECRET_KEY = new int[]{101,74,76,86,51,80,74,67,67,69,110,55,115,113,102,53,118,86,114,73,122,97,69,83,84,102,115,78,100,109};
+        private static final int[] RAW_ALIYUN_ACCESS_KEY_ID = new int[]{76,84,65,73,85,101,69,87,83,118,105,97,49,75,107,87};
         public static final String KEY_WSV4_NEW = convert(RAW_KEY_WSV4);
         public static final String KEY_WSV4 = "web_service_v4";
         public static final String KEY_MOJITO = "mojito_api_v1";
@@ -91,6 +95,8 @@ public class AuthUtil {
         public static String KEY_CREDIT_CARD_VAULT = convert(RAW_SCROOGE_KEY);
         public static String ZEUS_WHITELIST = convert(RAW_ZEUS_KEY);
         public static String KEY_NOTP = convert(RAW_NOTP_KEY);
+        public static String ALIYUN_SECRET_KEY = convert(RAW_ALIYUN_SECRET_KEY);
+        public static String ALIYUN_ACCESS_KEY_ID = convert(RAW_ALIYUN_ACCESS_KEY_ID);
     }
 
     public static Map<String, String> generateHeadersWithXUserId(
@@ -559,5 +565,22 @@ public class AuthUtil {
             finalKey = finalKey+Character.toString((char) i);
         }
         return finalKey;
+    }
+
+    public static String getHeaderRequestReactNative(Context context) {
+        SessionHandler session = new SessionHandler(context);
+        Map<String, String> header = new HashMap<>();
+        header.put(HEADER_TKPD_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(context));
+        header.put(HEADER_TKPD_USER_ID, session.isV4Login() ? session.getLoginID() : "0");
+        header.put(HEADER_ACCOUNTS_AUTHORIZATION, String.format("Bearer %s", SessionHandler.getAccessToken(context)));
+        header.put(PARAM_OS_TYPE, "1");
+        header.put(HEADER_DEVICE, String.format("android-%s", GlobalConfig.VERSION_NAME));
+        header.put(HEADER_USER_ID, session.isV4Login() ? session.getLoginID() : "0");
+        header.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        header.put(HEADER_X_TKPD_USER_ID, session.isV4Login() ? session.getLoginID() : "0");
+        header.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        header.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+        Gson gson = new Gson();
+        return gson.toJson(header);
     }
 }

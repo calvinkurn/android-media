@@ -51,7 +51,6 @@ import com.tokopedia.topads.sdk.view.TopAdsView;
 
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -184,15 +183,15 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
     public static class EmptyViewHolder extends RecyclerView.ViewHolder implements
             TopAdsItemClickListener {
-        @BindView(R.id.topads)
         TopAdsView topAdsView;
-        @BindView(R.id.action_btn)
         Button actionBtn;
         private Context context;
         private final String WISHLISH_SRC = "wishlist";
 
         public EmptyViewHolder(View itemView, View.OnClickListener clickListener) {
             super(itemView);
+            topAdsView = (TopAdsView) itemView.findViewById(R.id.topads);
+            actionBtn = (Button) itemView.findViewById(R.id.action_btn);
             context = itemView.getContext();
             ButterKnife.bind(this, itemView);
             TopAdsParams params = new TopAdsParams();
@@ -217,7 +216,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         @Override
-        public void onProductItemClicked(Product product) {
+        public void onProductItemClicked(int position, Product product) {
             ProductItem data = new ProductItem();
             data.setId(product.getId());
             data.setName(product.getName());
@@ -231,7 +230,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         @Override
-        public void onShopItemClicked(Shop shop) {
+        public void onShopItemClicked(int position, Shop shop) {
             Intent intent = ShopPageActivity.createIntent(context, shop.getId());
             context.startActivity(intent);
         }

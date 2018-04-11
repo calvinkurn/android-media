@@ -17,7 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.Pair;

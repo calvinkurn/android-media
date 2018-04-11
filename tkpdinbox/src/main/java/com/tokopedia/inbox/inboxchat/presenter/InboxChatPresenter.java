@@ -277,13 +277,16 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void goToProfile(int userId) {
-        getView().startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(getView().getActivity(), String.valueOf(userId))
-        );
+        if (getView().getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+            getView().startActivity(
+                    ((TkpdInboxRouter) getView().getActivity().getApplicationContext())
+                            .getTopProfileIntent(getView().getActivity(), String.valueOf(userId))
+            );
+        }
     }
 
     public void goToShop(int shopId) {
-        Intent intent = ((TkpdInboxRouter) getView().getActivity()).getShopPageIntent(getView().getActivity(), String.valueOf(shopId));
+        Intent intent = ((TkpdInboxRouter) getView().getActivity().getApplicationContext()).getShopPageIntent(getView().getActivity(), String.valueOf(shopId));
         getView().startActivity(intent);
     }
 

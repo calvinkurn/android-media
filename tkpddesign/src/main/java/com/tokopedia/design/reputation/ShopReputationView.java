@@ -55,7 +55,7 @@ public class ShopReputationView extends BaseCustomView {
         try {
             showTooltip = styledAttributes.getBoolean(R.styleable.ShopReputationView_srv_show_tooltip, false);
             medalWidth = (int) styledAttributes.getDimension(R.styleable.ShopReputationView_srv_medal_width,
-                    getContext().getResources().getDimensionPixelSize(R.dimen.image_medal_size));
+                    getContext().getResources().getDimensionPixelSize(R.dimen.dp_15));
         } finally {
             styledAttributes.recycle();
         }
@@ -87,7 +87,7 @@ public class ShopReputationView extends BaseCustomView {
     }
 
     private void updateMedalView(LinearLayout reputationLayout, @DrawableRes int imageResource, int levelMedal) {
-        int medalMargin = getContext().getResources().getDimensionPixelSize(R.dimen.margin_vvs);
+        int medalMargin = getContext().getResources().getDimensionPixelSize(R.dimen.dp_3);
         for (int i = 0; i < levelMedal; i++) {
             View medal = getGeneratedMedalImage(imageResource);
             if (i < levelMedal) {

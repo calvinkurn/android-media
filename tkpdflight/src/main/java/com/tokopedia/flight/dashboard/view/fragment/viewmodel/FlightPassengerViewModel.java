@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by alvarisi on 10/25/17.
  */
 
-public class FlightPassengerViewModel implements Parcelable, Cloneable  {
+public class FlightPassengerViewModel implements Parcelable, Cloneable {
     private int adult;
     private int children;
     private int infant;

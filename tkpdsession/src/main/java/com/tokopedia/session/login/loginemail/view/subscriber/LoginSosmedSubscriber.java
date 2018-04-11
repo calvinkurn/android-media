@@ -41,7 +41,17 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
             view.onGoToActivationPage(email);
         } else {
             view.dismissLoadingLogin();
-            view.onErrorLogin(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
+            ErrorHandler.getErrorMessage(new ErrorHandler.ErrorForbiddenListener() {
+                @Override
+                public void onForbidden() {
+                    view.onForbidden();
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    view.onErrorLogin(errorMessage);
+                }
+            }, e, view.getContext());
         }
     }
 
@@ -69,7 +79,6 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
                     loginSosmedDomain.getInfo().getGetUserInfoDomainData().getPhone());
         } else {
             view.dismissLoadingLogin();
-            view.resetToken();
             view.onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
     }

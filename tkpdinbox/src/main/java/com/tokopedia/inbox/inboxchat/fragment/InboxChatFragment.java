@@ -135,8 +135,6 @@ public class InboxChatFragment extends BaseDaggerFragment
         View parentView = inflater.inflate(R.layout.fragment_inbox_message, container, false);
 
         initView(parentView);
-//        adapter = InboxChatAdapter.createAdapter(getActivity(), presenter);
-
 
         return parentView;
     }
@@ -146,7 +144,6 @@ public class InboxChatFragment extends BaseDaggerFragment
         mainList = (RecyclerView) parentView.findViewById(R.id.chat_list);
         mainList.requestFocus();
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
-//        fab = (FloatingActionButton) parentView.findViewById(R.id.fab);
         refreshHandler = new RefreshHandler(getActivity(), parentView, new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
@@ -164,7 +161,6 @@ public class InboxChatFragment extends BaseDaggerFragment
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         callbackContext = initCallbackActionMode();
         notifier = parentView.findViewById(R.id.notifier);
-        ((InboxChatActivity) getActivity()).showTabLayout(false);
 
         typeFactory = new InboxChatTypeFactoryImpl(this, presenter);
     }
@@ -178,6 +174,9 @@ public class InboxChatFragment extends BaseDaggerFragment
                 getActivity().getMenuInflater().inflate(presenter.getMenuID(), menu);
                 isMultiActionEnabled = true;
                 presenter.setInActionMode(true);
+                if(getActivity() instanceof InboxChatActivity){
+                    ((InboxChatActivity)getActivity()).hideIndicators();
+                }
                 return true;
             }
 
@@ -206,6 +205,9 @@ public class InboxChatFragment extends BaseDaggerFragment
                 isMultiActionEnabled = false;
                 presenter.setInActionMode(false);
                 enableActions();
+                if(getActivity() instanceof InboxChatActivity){
+                    ((InboxChatActivity)getActivity()).showIndicators();
+                }
             }
         };
     }
@@ -316,10 +318,8 @@ public class InboxChatFragment extends BaseDaggerFragment
         }
         if (contextMenu != null) {
             contextMenu.invalidate();
-            ((InboxChatActivity) getActivity()).showTabLayout(false);
             if (presenter.getSelected() == 0) {
                 finishContextMode();
-                ((InboxChatActivity) getActivity()).showTabLayout(true);
             }
             contextMenu.setTitle(String.format("%s %s", String.valueOf(presenter.getSelected()), getActivity().getString(R.string.title_inbox_chat)));
         }
@@ -550,9 +550,11 @@ public class InboxChatFragment extends BaseDaggerFragment
             UnifyTracking.eventTopChatSearch(TopChatTrackingEventLabel.Category.INBOX_CHAT,
                     TopChatTrackingEventLabel.Action.INBOX_CHAT_SEARCH,
                     TopChatTrackingEventLabel.Name.INBOX_CHAT);
+            if(getActivity() instanceof InboxChatActivity){
+                ((InboxChatActivity)getActivity()).hideIndicators();
+            }
         } else {
             onSearchReset();
-
         }
         dropKeyboard();
     }
@@ -567,6 +569,9 @@ public class InboxChatFragment extends BaseDaggerFragment
         refreshHandler.setPullEnabled(true);
         presenter.resetSearch();
         setHasOptionsMenu(true);
+        if(getActivity() instanceof InboxChatActivity){
+            ((InboxChatActivity)getActivity()).showIndicators();
+        }
     }
 
     @Override

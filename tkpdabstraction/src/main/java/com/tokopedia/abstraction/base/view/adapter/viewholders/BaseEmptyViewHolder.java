@@ -47,6 +47,9 @@ public class BaseEmptyViewHolder<T extends EmptyModel> extends AbstractViewHolde
         if (element.getIconRes() != 0) {
             emptyIconImageView.setImageResource(element.getIconRes());
         }
+        if (element.getCallback() != null) {
+            callback = element.getCallback();
+        }
         if (TextUtils.isEmpty(element.getTitle())) {
             emptyTitleTextView.setVisibility(View.GONE);
         } else {
