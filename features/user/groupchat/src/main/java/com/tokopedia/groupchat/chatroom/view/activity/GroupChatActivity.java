@@ -460,12 +460,12 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void showFragment(int fragmentPosition) {
         try {
+            tabAdapter.setActiveFragment(fragmentPosition);
             if (fragmentPosition == initialFragment && !isFirstTime) {
                 return;
             }
             isFirstTime = false;
             this.initialFragment = fragmentPosition;
-            tabAdapter.setActiveFragment(fragmentPosition);
             switch (fragmentPosition) {
                 case CHATROOM_FRAGMENT:
                     showChatroomFragment(mChannel);
@@ -999,7 +999,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onSuccessLogin() {
         initData();
-        refreshTab();
     }
 
     private void showPushNotif(GroupChatPointsViewModel model) {
