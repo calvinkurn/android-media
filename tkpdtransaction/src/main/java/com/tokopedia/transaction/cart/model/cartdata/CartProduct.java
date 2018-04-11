@@ -340,6 +340,9 @@ public class CartProduct implements Parcelable {
         this.listNameProduct = listNameProduct;
     }
 
+    public CartProduct() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -379,9 +382,6 @@ public class CartProduct implements Parcelable {
         dest.writeString(this.listNameProduct);
     }
 
-    public CartProduct() {
-    }
-
     protected CartProduct(Parcel in) {
         this.productTotalWeight = in.readString();
         this.productErrorMsg = in.readString();
@@ -410,9 +410,9 @@ public class CartProduct implements Parcelable {
         this.productUseInsurance = (Integer) in.readValue(Integer.class.getClassLoader());
         this.productTotalPriceIdr = in.readString();
         this.productMinOrder = in.readString();
+        this.productCatId = in.readString();
         this.homeAttribution = in.readString();
         this.listNameProduct = in.readString();
-        this.productCatId = in.readString();
     }
 
     public static final Creator<CartProduct> CREATOR = new Creator<CartProduct>() {
