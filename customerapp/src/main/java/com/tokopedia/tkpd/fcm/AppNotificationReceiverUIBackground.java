@@ -200,7 +200,10 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private boolean canBroadcastPointReceived(String tkpCode) {
         final String GROUP_CHAT_BROADCAST_TKP_CODE = "140";
-        return tkpCode.startsWith(GROUP_CHAT_BROADCAST_TKP_CODE);
+        final String GROUP_CHAT_BROADCAST_TKP_CODE_GENERAL = "1400";
+
+        return tkpCode.startsWith(GROUP_CHAT_BROADCAST_TKP_CODE)
+                && !tkpCode.equals(GROUP_CHAT_BROADCAST_TKP_CODE_GENERAL);
     }
 
     private void broadcastPointReceived(Bundle data) {
