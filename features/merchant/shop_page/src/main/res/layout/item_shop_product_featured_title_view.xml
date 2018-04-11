@@ -11,7 +11,6 @@
     <com.tokopedia.design.label.LabelView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/label_view_etalase"
         style="@style/LabelLayout"
         android:layout_marginTop="@dimen/dp_8"
         app:lv_title="@string/shop_page_label_featured_product"
