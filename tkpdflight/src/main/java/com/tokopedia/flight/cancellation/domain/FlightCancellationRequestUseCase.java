@@ -39,12 +39,12 @@ public class FlightCancellationRequestUseCase extends UseCase<CancellationReques
         return flightRepository.cancellationRequest((FlightCancellationRequestBody) requestParams.getObject(FLIGHT_CANCELLATION_REQUEST_KEY));
     }
 
-    public RequestParams createRequest(String reason, List<FlightCancellationAttachmentViewModel> attachments,
-                                       long estimatedRefund, List<FlightCancellationViewModel> journeyCancellations) {
+    public RequestParams createRequest(String invoiceId, String reason, List<FlightCancellationAttachmentViewModel> attachments,
+                                       Long estimatedRefund, List<FlightCancellationViewModel> journeyCancellations) {
         RequestParams requestParams = RequestParams.create();
 
         FlightCancellationRequestAttribute flightCancellationRequestAttribute = new FlightCancellationRequestAttribute();
-        flightCancellationRequestAttribute.setInvoiceId(journeyCancellations.get(0).getInvoiceId());
+        flightCancellationRequestAttribute.setInvoiceId(invoiceId);
         flightCancellationRequestAttribute.setReason(reason);
         flightCancellationRequestAttribute.setEstimatedRefund(estimatedRefund);
         flightCancellationRequestAttribute.setAttachments(transformIntoRequestAttachments(attachments));
@@ -60,18 +60,22 @@ public class FlightCancellationRequestUseCase extends UseCase<CancellationReques
     }
 
     private List<String> transformIntoRequestAttachments(List<FlightCancellationAttachmentViewModel> attachments) {
-        List<String> requestAttachments = new ArrayList<>();
+        if (attachments != null) {
+            List<String> requestAttachments = new ArrayList<>();
 
-        for (FlightCancellationAttachmentViewModel item : attachments) {
-            requestAttachments.add(item.getImageurl());
+            for (FlightCancellationAttachmentViewModel item : attachments) {
+                requestAttachments.add(item.getImageurl());
+            }
+
+            return requestAttachments;
+        } else {
+            return null;
         }
-
-        return requestAttachments;
     }
 
     private List<FlightCancellationDetailRequestBody> transformIntoDetails(List<FlightCancellationViewModel> journeyCancellations) {
         List<FlightCancellationDetailRequestBody> detailRequestBodies = new ArrayList<>();
-        for (FlightCancellationViewModel viewModel : journeyCancellations ){
+        for (FlightCancellationViewModel viewModel : journeyCancellations) {
             for (FlightCancellationPassengerViewModel passengerViewModel : viewModel.getPassengerViewModelList()) {
                 FlightCancellationDetailRequestBody detailRequestBody = new FlightCancellationDetailRequestBody();
                 detailRequestBody.setJourneyId(Long.parseLong(viewModel.getFlightCancellationJourney().getJourneyId()));

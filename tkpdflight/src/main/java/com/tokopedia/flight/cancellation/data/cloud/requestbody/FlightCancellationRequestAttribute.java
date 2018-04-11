@@ -21,7 +21,7 @@ public class FlightCancellationRequestAttribute {
     private List<String> attachments;
     @SerializedName("estimated_refund")
     @Expose
-    private long estimatedRefund;
+    private Long estimatedRefund;
     @SerializedName("details")
     @Expose
     private List<FlightCancellationDetailRequestBody> details;
@@ -53,11 +53,11 @@ public class FlightCancellationRequestAttribute {
         this.attachments = attachments;
     }
 
-    public long getEstimatedRefund() {
+    public Long getEstimatedRefund() {
         return estimatedRefund;
     }
 
-    public void setEstimatedRefund(long estimatedRefund) {
+    public void setEstimatedRefund(Long estimatedRefund) {
         this.estimatedRefund = estimatedRefund;
     }
 

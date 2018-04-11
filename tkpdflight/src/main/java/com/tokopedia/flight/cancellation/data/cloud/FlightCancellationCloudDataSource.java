@@ -56,7 +56,7 @@ public class FlightCancellationCloudDataSource {
                 });
     }
 
-    public Observable<CancellationRequestEntity> requestCancellation(FlightCancellationRequestBody request) {
+    public Observable<CancellationRequestEntity> requestCancellation(DataRequest<FlightCancellationRequestBody> request) {
         return flightApi.requestCancellation(gson
                 .fromJson(gson.toJson(request), JsonElement.class).getAsJsonObject())
                 .flatMap(new Func1<Response<DataResponse<CancellationRequestEntity>>, Observable<CancellationRequestEntity>>() {

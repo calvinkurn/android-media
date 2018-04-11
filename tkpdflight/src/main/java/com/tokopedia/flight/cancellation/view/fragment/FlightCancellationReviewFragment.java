@@ -11,17 +11,23 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.adapter.FlightReviewCancellationAdapterTypeFactory;
+import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReviewContract;
+import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationReviewPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+
+import javax.inject.Inject;
 
 /**
  * @author by furqan on 29/03/18.
  */
 
-public class FlightCancellationReviewFragment extends BaseListFragment<FlightCancellationViewModel, FlightReviewCancellationAdapterTypeFactory> {
+public class FlightCancellationReviewFragment extends BaseListFragment<FlightCancellationViewModel, FlightReviewCancellationAdapterTypeFactory>
+        implements FlightCancellationReviewContract.View {
 
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
@@ -29,6 +35,8 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     private AppCompatButton btnSubmit;
     private AppCompatTextView txtDescription;
 
+    @Inject
+    FlightCancellationReviewPresenter presenter;
     private String invoiceId;
     private FlightCancellationWrapperViewModel flightCancellationPassData;
 
@@ -52,8 +60,15 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
 
         int color = getContext().getResources().getColor(R.color.green_500);
         txtDescription.setText(Html.fromHtml(
-            getContext().getString(R.string.flight_cancellation_review_description, color)
+                getContext().getString(R.string.flight_cancellation_review_description, color)
         ));
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.requestCancellation();
+            }
+        });
 
         return view;
     }
@@ -66,6 +81,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         flightCancellationPassData = getArguments().getParcelable(EXTRA_CANCEL_JOURNEY);
 
         renderReviewList();
+        presenter.attachView(this);
     }
 
     @Override
@@ -90,6 +106,31 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     @Override
     protected FlightReviewCancellationAdapterTypeFactory getAdapterTypeFactory() {
         return new FlightReviewCancellationAdapterTypeFactory();
+    }
+
+    @Override
+    public void showSuccessDialog(int resId) {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
+        dialog.setTitle(getString(R.string.flight_cancellation_review_dialog_success_title));
+        dialog.setDesc(getString(resId));
+        dialog.setBtnOk("OK");
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    @Override
+    public String getInvoiceId() {
+        return invoiceId;
+    }
+
+    @Override
+    public FlightCancellationWrapperViewModel getCancellationWrapperViewModel() {
+        return flightCancellationPassData;
     }
 
     private void renderReviewList() {

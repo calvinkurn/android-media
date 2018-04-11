@@ -376,5 +376,8 @@
     <string name="flight_cancellation_dialog_back_button_text">Kembali</string>
     <string name="flight_cancellation_dialog_refundable_description"><![CDATA[Dengan melakukan pembatalan pesanan, dana pembayaran Anda <b>akan dikembalikan</b> sesuai dengan syarat dan ketentuan pihak maskapai penerbangan.]]></string>
     <string name="flight_cancellation_should_choose_at_least_one_passenger_error">Harap pilih setidaknya satu penumpang untuk di batalkan.</string>
+    <string name="flight_cancellation_review_dialog_success_title">Pengajuan Pembatalan Pemesanan Telah Berhasil</string>
+    <string name="flight_cancellation_review_dialog_non_refundable_success_description">Pembatalan pesanan Anda akan segera diproses.</string>
+    <string name="flight_cancellation_review_dialog_refundable_success_description">Pembatalan pesanan Anda akan segera diproses. Mohon tunggu konfirmasi dari pihak maskapai terkait untuk proses pengembalian dana pemesanan tiket pesawat Anda.</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.tokopedia.flight.common.data.repository;
 
+import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
@@ -437,6 +438,7 @@ public class FlightRepositoryImpl implements FlightRepository {
 
     @Override
     public Observable<CancellationRequestEntity> cancellationRequest(FlightCancellationRequestBody request) {
-        return flightCancellationCloudDataSource.requestCancellation(request);
+        DataRequest<FlightCancellationRequestBody> requestBody = new DataRequest<>(request);
+        return flightCancellationCloudDataSource.requestCancellation(requestBody);
     }
 }
