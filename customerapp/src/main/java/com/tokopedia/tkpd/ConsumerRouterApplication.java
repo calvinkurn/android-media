@@ -1580,22 +1580,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent navigateToInsuranceTncActivity() {
+    public Intent tkpdTransactionInsuranceTncActivityIntent() {
         return new Intent(this, InsuranceTnCActivity.class);
     }
 
     @Override
-    public Intent navigateToPickupPointActivityFromCartMultipleAddress(Activity activity,
-                                                                       int cartPosition,
-                                                                       String districtName,
-                                                                       HashMap<String, String> params) {
+    public Intent tkpdTransactionPickupPointActivityFromCartMultipleAddressIntent(Activity activity,
+                                                                                  int cartPosition,
+                                                                                  String districtName,
+                                                                                  HashMap<String, String> params) {
         return PickupPointActivity.createInstance(activity, cartPosition, districtName, params);
     }
 
     @Override
-    public Intent navigateToPickupPointActivityFromCartSingleAddress(Activity activity,
-                                                                     String districtName,
-                                                                     HashMap<String, String> params) {
+    public Intent tkpdTransactionPickupPointActivityFromCartSingleAddressIntent(Activity activity,
+                                                                                String districtName,
+                                                                                HashMap<String, String> params) {
         return PickupPointActivity.createInstance(activity, districtName, params);
     }
 

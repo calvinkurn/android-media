@@ -37,13 +37,13 @@ public interface ICartCheckoutModuleRouter {
             Context context, String shopId
     );
 
-    Intent navigateToInsuranceTncActivity();
+    Intent tkpdTransactionInsuranceTncActivityIntent();
 
-    Intent navigateToPickupPointActivityFromCartMultipleAddress(Activity activity,
-                                                                int cartPosition,
-                                                                String districtName,
-                                                                HashMap<String, String> params);
+    Intent tkpdTransactionPickupPointActivityFromCartMultipleAddressIntent(Activity activity,
+                                                                           int cartPosition,
+                                                                           String districtName,
+                                                                           HashMap<String, String> params);
 
-    Intent navigateToPickupPointActivityFromCartSingleAddress(Activity activity, String districtName,
-                                                              HashMap<String, String> params);
+    Intent tkpdTransactionPickupPointActivityFromCartSingleAddressIntent(Activity activity, String districtName,
+                                                                         HashMap<String, String> params);
 }

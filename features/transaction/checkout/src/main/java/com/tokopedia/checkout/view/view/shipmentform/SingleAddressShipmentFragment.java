@@ -339,7 +339,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         HashMap<String, String> params = mSingleAddressShipmentPresenter.generatePickupPointParams(addressAdapterData);
 
         startActivityForResult(((ICartCheckoutModuleRouter) getActivity().getApplication())
-                .navigateToPickupPointActivityFromCartSingleAddress(getActivity(),
+                .tkpdTransactionPickupPointActivityFromCartSingleAddressIntent(getActivity(),
                         addressAdapterData.getDestinationDistrictName(), params), REQUEST_CHOOSE_PICKUP_POINT);
     }
 
@@ -353,7 +353,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         HashMap<String, String> params = mSingleAddressShipmentPresenter.generatePickupPointParams(addressAdapterData);
 
         startActivityForResult(((ICartCheckoutModuleRouter) getActivity().getApplication())
-                .navigateToPickupPointActivityFromCartSingleAddress(getActivity(),
+                .tkpdTransactionPickupPointActivityFromCartSingleAddressIntent(getActivity(),
                         addressAdapterData.getDestinationDistrictName(), params), REQUEST_CHOOSE_PICKUP_POINT);
     }
 

@@ -287,7 +287,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
         HashMap<String, String> params = presenter.generatePickupPointParams(addressAdapterData);
 
         startActivityForResult(((ICartCheckoutModuleRouter) getActivity().getApplication())
-                        .navigateToPickupPointActivityFromCartMultipleAddress(
+                        .tkpdTransactionPickupPointActivityFromCartMultipleAddressIntent(
                                 getActivity(), position, addressAdapterData.getDestinationDistrictName(), params),
                 REQUEST_CHOOSE_PICKUP_POINT);
     }
@@ -302,7 +302,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
         HashMap<String, String> params = presenter.generatePickupPointParams(addressAdapterData);
 
         startActivityForResult(((ICartCheckoutModuleRouter) getActivity().getApplication())
-                        .navigateToPickupPointActivityFromCartMultipleAddress(
+                        .tkpdTransactionPickupPointActivityFromCartMultipleAddressIntent(
                                 getActivity(), position, addressAdapterData.getDestinationDistrictName(), params),
                 REQUEST_CHOOSE_PICKUP_POINT);
     }

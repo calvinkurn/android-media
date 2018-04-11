@@ -515,7 +515,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         tosAgreementText.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                ((ICartCheckoutModuleRouter) getActivity().getApplication()).navigateToInsuranceTncActivity();
+                startActivity(((ICartCheckoutModuleRouter) getActivity().getApplication()).tkpdTransactionInsuranceTncActivityIntent());
             }
         }, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvInsuranceTerms.setMovementMethod(LinkMovementMethod.getInstance());
