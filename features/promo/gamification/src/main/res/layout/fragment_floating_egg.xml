@@ -21,8 +21,8 @@
 
         <TextView
             android:id="@+id/tv_floating_counter"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="@dimen/floating_counter_width"
+            android:layout_height="@dimen/floating_counter_width"
             tools:text="99+"
             android:layout_gravity="center_vertical|end"
             android:gravity="center"
