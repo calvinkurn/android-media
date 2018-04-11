@@ -27,12 +27,16 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
 
     private static final String EXTRA_PROMO_DATA = "promo_data";
     private static final String EXTRA_PROMO_SLUG = "slug";
+    private static final String EXTRA_PROMO_POSITION = "position";
+    private static final String EXTRA_PROMO_PAGE = "page";
 
     private PromoDetailComponent component;
 
-    public static Intent getCallingIntent(Context context, PromoData promoData) {
+    public static Intent getCallingIntent(Context context, PromoData promoData, int position, int page) {
         Intent intent = new Intent(context, PromoDetailActivity.class);
         intent.putExtra(EXTRA_PROMO_DATA, promoData);
+        intent.putExtra(EXTRA_PROMO_PAGE, page);
+        intent.putExtra(EXTRA_PROMO_POSITION, position);
         return intent;
     }
 
@@ -67,7 +71,9 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
             String slug = getIntent().getStringExtra(EXTRA_PROMO_SLUG);
             return PromoDetailFragment.newInstance(slug);
         } else {
-            return PromoDetailFragment.newInstance(promoData);
+            int position = getIntent().getIntExtra(EXTRA_PROMO_POSITION, 0);
+            int page = getIntent().getIntExtra(EXTRA_PROMO_PAGE, 0);
+            return PromoDetailFragment.newInstance(promoData, page, position);
         }
     }
 

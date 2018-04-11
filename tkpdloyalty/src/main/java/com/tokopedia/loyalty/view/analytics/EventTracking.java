@@ -1,5 +1,6 @@
 package com.tokopedia.loyalty.view.analytics;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,26 @@ public class EventTracking {
 
     public Map<String, Object> getEventMap() {
         return this.eventTracking;
+    }
+
+    public static Map<String, Object> getEventTracking(String event, String eventCategory,
+                                                       String eventAction, String eventLabel,
+                                                       final String id, final int page,
+                                                       final int position, final String creative,
+                                                       final String creativeUrl,
+                                                       final String promoCode) {
+
+        return new EventTracking(event, eventCategory, eventAction, eventLabel,
+                new Ecommerce(
+                        new PromoView(
+                                new ArrayList<Object>() {{
+                                    add((new Promotion(id, page, position, creative, creativeUrl,
+                                            promoCode)
+                                    ).getEventMap());
+                                }}
+                        )
+                )
+        ).getEventMap();
     }
 
 }

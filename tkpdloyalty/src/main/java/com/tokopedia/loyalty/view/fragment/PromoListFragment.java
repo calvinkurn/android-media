@@ -366,7 +366,8 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void onItemPromoClicked(PromoData promoData, int position) {
-        Intent intent = PromoDetailActivity.getCallingIntent(getActivity(), promoData);
+        int page = dPresenter.getPage();
+        Intent intent = PromoDetailActivity.getCallingIntent(getActivity(), promoData, position, page);
         startActivityForResult(intent, PROMO_DETAIL_REQUEST_CODE);
         dPresenter.sendClickItemPromoListTrackingData(promoData, position, promoMenuData.getTitle());
     }

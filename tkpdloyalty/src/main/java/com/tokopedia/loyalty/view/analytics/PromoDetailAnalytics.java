@@ -1,8 +1,12 @@
 package com.tokopedia.loyalty.view.analytics;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.loyalty.view.data.PromoData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -32,30 +36,34 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
     }
 
     @Override
-    public void userViewPromo(String promoName, final String id, final int page, final int position,
-                              final String creative, final String creativeUrl, final String promoCode) {
+    public void userViewPromo(String promoName, final String id, final String page,
+                              final String position, final String creative, final String creativeUrl,
+                              final String promoCode) {
+
+        List<Object> list = new ArrayList<>();
+
+        list.add(DataLayer.mapOf("id", id,
+                "name", "/promo - p" + page + " - promo list banner",
+                "position", position,
+                "creative", creative,
+                "creative_url", creativeUrl,
+                "promo_code", promoCode)
+        );
 
         this.analyticTracker.sendEventTracking(
-                new EventTracking(
-                        EVENT_PROMO_VIEW,
-                        EVENT_CATEGORY_PROMO_DETAIL,
-                        EVENT_ACTION_IMPRESSION_PROMO,
-                        promoName,
-                        new Ecommerce(
-                                new PromoView(
-                                        new ArrayList<Object>() {{
-                                            add((new Promotion(
-                                                    id,
-                                                    page,
-                                                    position,
-                                                    creative,
-                                                    creativeUrl,
-                                                    promoCode)
-                                            ).getEventMap());
-                                        }}
+                DataLayer.mapOf("event", EVENT_PROMO_VIEW,
+                        "eventCategory", EVENT_CATEGORY_PROMO_DETAIL,
+                        "eventAction", EVENT_ACTION_IMPRESSION_PROMO,
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
                                 )
                         )
-                ).getEventMap()
+                )
         );
     }
 
@@ -71,30 +79,35 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
     }
 
     @Override
-    public void userClickCta(String promoName, final String id, final int page, final int position,
-                             final String creative, final String creativeUrl, final String promoCode) {
+    public void userClickCta(String promoName, final String id, final String page,
+                             final String position, final String creative, final String creativeUrl,
+                             final String promoCode) {
+
+        List<Object> list = new ArrayList<>();
+
+        list.add(DataLayer.mapOf("id", id,
+                "name", "/promo - p" + page + " - promo list banner",
+                "position", position,
+                "creative", creative,
+                "creative_url", creativeUrl,
+                "promo_code", promoCode)
+        );
 
         this.analyticTracker.sendEventTracking(
-                new EventTracking(
-                        EVENT_PROMO_CLICK,
-                        EVENT_CATEGORY_PROMO_DETAIL,
-                        EVENT_ACTION_CTA,
-                        promoName,
-                        new Ecommerce(
-                                new PromoClick(
-                                        new ArrayList<Object>() {{
-                                            add((new Promotion(
-                                                    id,
-                                                    page,
-                                                    position,
-                                                    creative,
-                                                    creativeUrl,
-                                                    promoCode)
-                                            ).getEventMap());
-                                        }}
+                DataLayer.mapOf(
+                        "event", EVENT_PROMO_CLICK,
+                        "eventCategory", EVENT_CATEGORY_PROMO_DETAIL,
+                        "eventAction", EVENT_ACTION_CTA,
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
                                 )
                         )
-                ).getEventMap()
+                )
         );
     }
 

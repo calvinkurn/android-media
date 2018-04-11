@@ -24,12 +24,19 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
+import com.tokopedia.loyalty.domain.entity.response.promo.GroupCode;
+import com.tokopedia.loyalty.domain.entity.response.promo.PromoCode;
 import com.tokopedia.loyalty.view.adapter.PromoDetailAdapter;
+import com.tokopedia.loyalty.view.data.PromoCodeViewModel;
 import com.tokopedia.loyalty.view.data.PromoData;
+import com.tokopedia.loyalty.view.data.SingleCodeViewModel;
 import com.tokopedia.loyalty.view.data.mapper.PromoDataMapper;
 import com.tokopedia.loyalty.view.presenter.PromoDetailPresenter;
 import com.tokopedia.loyalty.view.analytics.PromoDetailAnalytics;
 import com.tokopedia.loyalty.view.view.IPromoDetailView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -43,6 +50,8 @@ public class PromoDetailFragment extends BaseDaggerFragment
     private static final String ARG_EXTRA_PROMO_FLAG = "flag";
     private static final String ARG_EXTRA_PROMO_DATA = "promo_data";
     private static final String ARG_EXTRA_PROMO_SLUG = "slug";
+    private static final String ARG_EXTRA_PROMO_POSITION = "position";
+    private static final String ARG_EXTRA_PROMO_PAGE = "page";
 
     private static final int DETAIL_PROMO_FROM_DATA = 0;
     private static final int DETAIL_PROMO_FROM_SLUG = 1;
@@ -57,6 +66,9 @@ public class PromoDetailFragment extends BaseDaggerFragment
 
     private String promoSlug;
     private OnFragmentInteractionListener actionListener;
+
+    private int page = 0;
+    private int position = 0;
 
     @Inject PromoDetailAnalytics promoDetailAnalytics;
     @Inject PromoDetailPresenter promoDetailPresenter;
@@ -77,10 +89,12 @@ public class PromoDetailFragment extends BaseDaggerFragment
         // Required empty public constructor
     }
 
-    public static PromoDetailFragment newInstance(PromoData promoData) {
+    public static PromoDetailFragment newInstance(PromoData promoData, int page, int position) {
         PromoDetailFragment fragment = new PromoDetailFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_EXTRA_PROMO_FLAG, DETAIL_PROMO_FROM_DATA);
+        args.putInt(ARG_EXTRA_PROMO_PAGE, page);
+        args.putInt(ARG_EXTRA_PROMO_POSITION, position);
         args.putParcelable(ARG_EXTRA_PROMO_DATA, promoData);
         fragment.setArguments(args);
         return fragment;
@@ -104,6 +118,8 @@ public class PromoDetailFragment extends BaseDaggerFragment
 
             if (flag == DETAIL_PROMO_FROM_DATA) {
                 PromoData promoData = getArguments().getParcelable(ARG_EXTRA_PROMO_DATA);
+                this.page = getArguments().getInt(ARG_EXTRA_PROMO_PAGE);
+                this.position = getArguments().getInt(ARG_EXTRA_PROMO_POSITION);
                 if (promoData != null) this.promoSlug = promoData.getSlug();
             } else if (flag == DETAIL_PROMO_FROM_SLUG) {
                 this.promoSlug = getArguments().getString(ARG_EXTRA_PROMO_SLUG);
@@ -163,11 +179,11 @@ public class PromoDetailFragment extends BaseDaggerFragment
         this.promoDetailAnalytics.userViewPromo(
                 promoData.getTitle(),
                 promoData.getId(),
-                0,
-                0,
-                promoData.getTitle(),
+                String.valueOf(this.page),
+                String.valueOf(this.position + 1),
                 promoData.getThumbnailImage(),
-                promoData.getPromoCode()
+                promoData.getThumbnailImage(),
+                parsePromoCodes(promoData)
         );
 
         this.refreshHandler.finishRefresh();
@@ -270,11 +286,11 @@ public class PromoDetailFragment extends BaseDaggerFragment
                 promoDetailAnalytics.userClickCta(
                         promoData.getTitle(),
                         promoData.getId(),
-                        0,
-                        0,
-                        promoData.getTitle(),
+                        String.valueOf(page),
+                        String.valueOf(position + 1),
                         promoData.getThumbnailImage(),
-                        promoData.getPromoCode()
+                        promoData.getThumbnailImage(),
+                        parsePromoCodes(promoData)
                 );
 
                 String appLink = promoData.getAppLink();
@@ -303,6 +319,22 @@ public class PromoDetailFragment extends BaseDaggerFragment
                         refreshHandler.startRefresh();
                     }
                 });
+    }
+
+    private String parsePromoCodes(PromoData promoData) {
+        List<String> promoCodes = new ArrayList<>();
+
+        if (!promoData.getPromoCodeList().isEmpty()) {
+            for (PromoCodeViewModel promoCode : promoData.getPromoCodeList()) {
+                for (SingleCodeViewModel groupCode : promoCode.getGroupCode()) {
+                    promoCodes.add(groupCode.getSingleCode());
+                }
+            }
+        } else {
+            promoCodes.add(promoData.getPromoCode());
+        }
+
+        return TextUtils.join(",", promoCodes);
     }
 
     @Override
