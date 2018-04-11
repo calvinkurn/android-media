@@ -182,6 +182,11 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         registerNextTAndC.setText(MethodChecker.fromHtml(joinString));
         registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
         ViewUtil.stripUnderlines(registerNextTAndC);
+
+        showPasswordHint();
+        showEmailHint();
+        showNameHint();
+        showPhoneHint();
     }
 
     private Spannable getSpannable(String sourceString, String hyperlinkString) {
@@ -509,6 +514,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
         wrapper.setHelperEnabled(false);
+        wrapper.setHelper(null);
         if (s == null) {
             wrapper.setError(s);
             wrapper.setErrorEnabled(false);
@@ -556,11 +562,11 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     public void showPasswordHint() {
-        setWrapperHint(wrapperPassword, "");
+        setWrapperHint(wrapperPassword, getResources().getString(R.string.minimal_6_character));
     }
 
     public void showNameHint() {
-        setWrapperHint(wrapperName, "");
+        setWrapperHint(wrapperName, "  ");
     }
 
     public void showEmailHint() {
