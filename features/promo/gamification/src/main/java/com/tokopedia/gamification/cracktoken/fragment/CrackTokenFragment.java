@@ -159,7 +159,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
 
             @Override
-            public void showToolbar() {
+            public void onClickCloseButtonWhenError() {
+                getActivity().onBackPressed();
+            }
+
+            @Override
+            public void onCrackResultCleared() {
                 listener.showToolbar();
             }
 

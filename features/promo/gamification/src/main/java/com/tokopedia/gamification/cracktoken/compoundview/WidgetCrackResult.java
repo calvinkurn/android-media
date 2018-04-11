@@ -65,8 +65,9 @@ public class WidgetCrackResult extends RelativeLayout {
         void onClickReturnButton(CrackResult crackResult, String titleBtn);
 
         void onClickCloseButton();
+        void onClickCloseButtonWhenError();
 
-        void showToolbar();
+        void onCrackResultCleared();
     }
 
     public WidgetCrackResult(Context context) {
@@ -255,8 +256,12 @@ public class WidgetCrackResult extends RelativeLayout {
         closeRewardBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onClickCloseButton();
-                listener.onTrackingCloseRewardButton(crackResult);
+                if (isShowCrackError()) {
+                    listener.onClickCloseButtonWhenError();
+                } else {
+                    listener.onClickCloseButton();
+                    listener.onTrackingCloseRewardButton(crackResult);
+                }
             }
         });
     }
@@ -276,7 +281,7 @@ public class WidgetCrackResult extends RelativeLayout {
         containerTextCrackResult.setVisibility(GONE);
         closeRewardBtn.setVisibility(GONE);
 
-        listener.showToolbar();
+        listener.onCrackResultCleared();
     }
 
     public boolean isShowReward() {
