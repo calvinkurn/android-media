@@ -720,6 +720,10 @@ public class TrackingUtils extends TrackingConfig {
         getGTMEngine().clickTncButtonHotlistPromo(hotlistName, promoName, promoCode);
     }
 
+    public static void eventClearEnhanceEcommerce() {
+        getGTMEngine().clearEnhanceEcommerce();
+    }
+
     public static void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
         getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
@@ -736,9 +740,6 @@ public class TrackingUtils extends TrackingConfig {
         getGTMEngine().eventClickPromoListItem(list, promoName);
     }
 
-    public static void eventClearEnhanceEcommerce() {
-        getGTMEngine().clearEnhanceEcommerce();
-    }
 
     public static void eventCategoryLifestyleImpression(List<Object> list) {
         getGTMEngine().eventImpressionCategoryLifestyle(list);
