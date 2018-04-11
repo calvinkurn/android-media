@@ -7,6 +7,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -54,6 +56,7 @@ import javax.inject.Inject;
 public class CrackTokenFragment extends BaseDaggerFragment implements CrackTokenContract.View {
 
     private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
+    public static final int VIBRATE_DURATION = 500;
 
     @Inject
     CrackTokenPresenter crackTokenPresenter;
@@ -233,6 +236,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             public void onClick() {
                 stopTimer();
                 hideInfoTitle();
+                vibrate();
                 widgetTokenOnBoarding.hideHandOnBoarding(true);
                 listener.hideToolbar();
                 TokenUser tokenUser = tokenData.getHome().getTokensUser();
@@ -250,6 +254,17 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         showTimer(tokenData);
         showInfoTitle();
+    }
+
+    private void vibrate(){
+        Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+        if (v!=null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                v.vibrate(VibrationEffect.createOneShot(VIBRATE_DURATION, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                v.vibrate(VIBRATE_DURATION);
+            }
+        }
     }
 
     private void hideInfoTitle(){
