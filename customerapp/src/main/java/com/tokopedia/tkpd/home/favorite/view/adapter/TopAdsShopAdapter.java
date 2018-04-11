@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.home.favorite.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -20,8 +21,9 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.util.TopAdsUtil;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
+import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;

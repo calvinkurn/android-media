@@ -21,11 +21,15 @@ dependencies {
     compile project(rootProject.ext.features.productDetail)
     compile project(rootProject.ext.libraries.design)
 
+    compile rootProject.ext.alibabaDependencies.coreLib
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler

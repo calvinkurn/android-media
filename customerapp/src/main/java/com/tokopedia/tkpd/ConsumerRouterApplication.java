@@ -155,6 +155,9 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
+import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
+import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
@@ -314,7 +317,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         context.startActivity(
                 PeopleInfoNoDrawerActivity.createInstance(context, userId)
         );
-    }
+	}
 
     private ContentConsumerComponent getContentConsumerComponent() {
         if (contentConsumerComponent == null) {
@@ -1504,7 +1507,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToAddProduct(Context context) {
-        if (context != null && context instanceof Activity) {
+        if(context != null && context instanceof Activity){
             ProductAddActivity.start((Activity) context);
         }
     }
@@ -1531,7 +1534,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
             ((Activity) context).startActivityForResult(intent, 100);
         }
-    }
+	}
 
     public void init() {
         ShakeDetectManager.getShakeDetectManager().init();
@@ -1668,8 +1671,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId);
-    }
+        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
+	}
 
     public void showForceHockeyAppDialog() {
         ServerErrorHandler.showForceHockeyAppDialog();
@@ -1748,6 +1751,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 listener.onGenerateLink(shareContents, shareUri);
             }
         });
+    }
+
+    @Override
+    public Intent getChangeNameIntent(Context context) {
+        return ChangeNameActivity.newInstance(context);
+    }
+
+    @Override
+    public Intent getAddEmailIntent(Context context) {
+        return AddEmailActivity.newInstance(context);
+    }
+
+    @Override
+    public Intent getAddPasswordIntent(Context context) {
+        return AddPasswordActivity.newInstance(context);
     }
 
     @Override
