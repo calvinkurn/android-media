@@ -24,10 +24,6 @@ import com.tokopedia.otp.phoneverification.data.source.ChangeMsisdnSource;
 import com.tokopedia.otp.phoneverification.data.source.VerifyMsisdnSource;
 import com.tokopedia.otp.phoneverification.domain.mapper.ChangePhoneNumberMapper;
 import com.tokopedia.otp.phoneverification.domain.mapper.VerifyPhoneNumberMapper;
-import com.tokopedia.otp.registerphonenumber.data.mapper.VerifyOtpMapper;
-import com.tokopedia.otp.registerphonenumber.data.source.RegisterPhoneNumberOtpSource;
-import com.tokopedia.otp.registerphonenumber.domain.usecase.RequestOtpUseCase;
-import com.tokopedia.otp.registerphonenumber.domain.usecase.VerifyOtpUseCase;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -388,31 +384,6 @@ SessionModule {
             GetUserInfoUseCase getUserInfoUseCase,
             MakeLoginUseCase makeLoginUseCase) {
         return new LoginRegisterPhoneNumberUseCase(threadExecutor, postExecutionThread, registerPhoneNumberUseCase, getUserInfoUseCase, makeLoginUseCase);
-    }
-
-    @SessionScope
-    @Provides
-    RegisterPhoneNumberOtpSource providesRegisterPhoneNumberOtpSource(
-            AccountsService service,
-            com.tokopedia.otp.registerphonenumber.data.mapper.RequestOtpMapper requestOtpMapper,
-            VerifyOtpMapper verifyOtpMapper) {
-        return new RegisterPhoneNumberOtpSource(service, requestOtpMapper, verifyOtpMapper);
-    }
-
-    @SessionScope
-    @Provides
-    RequestOtpUseCase providesRequestOtpUseCase(ThreadExecutor threadExecutor,
-                                                PostExecutionThread postExecutionThread,
-                                                RegisterPhoneNumberOtpSource source) {
-        return new RequestOtpUseCase(threadExecutor, postExecutionThread, source);
-    }
-
-    @SessionScope
-    @Provides
-    VerifyOtpUseCase providesVerifyOtpUseCase(ThreadExecutor threadExecutor,
-                                               PostExecutionThread postExecutionThread,
-                                               RegisterPhoneNumberOtpSource source) {
-        return new VerifyOtpUseCase(threadExecutor, postExecutionThread, source);
     }
 
 }
