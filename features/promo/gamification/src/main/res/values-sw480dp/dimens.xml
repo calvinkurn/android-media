@@ -4,8 +4,8 @@
     <dimen name="margin_bottom_text_countdown_timer">64dp</dimen>
     <dimen name="text_size_info_crack_egg">12sp</dimen>
 
-    <fraction name="to_x_scale_reward_anim">30000%</fraction>
-    <fraction name="to_y_scale_reward_anim">30000%</fraction>
+    <fraction name="to_x_scale_reward_anim">24000%</fraction>
+    <fraction name="to_y_scale_reward_anim">24000%</fraction>
     <fraction name="to_x_scale_bg_reward_anim">36000%</fraction>
     <fraction name="to_y_scale_bg_reward_anim">36000%</fraction>
 
