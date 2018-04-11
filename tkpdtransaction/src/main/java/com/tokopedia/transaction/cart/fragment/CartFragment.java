@@ -544,6 +544,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     @Override
                     public void onClick(View view) {
                         autoApplyView.setVisibility(View.GONE);
+                        presenter.cancelPromo();
                     }
                 });
             } else {
