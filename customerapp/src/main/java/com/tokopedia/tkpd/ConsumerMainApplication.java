@@ -1,18 +1,20 @@
 package com.tokopedia.tkpd;
 
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.media.AudioAttributes;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatDelegate;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.soloader.SoLoader;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -28,21 +30,22 @@ import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
+import com.tokopedia.digital.common.constant.DigitalUrl;
+import com.tokopedia.flight.TkpdFlight;
+import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.groupchat.common.data.GroupChatUrl;
+import com.tokopedia.groupchat.common.data.SendbirdKey;
 import com.tokopedia.inbox.inboxchat.data.network.ChatBotUrl;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
-import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
-import com.tokopedia.digital.common.constant.DigitalUrl;
-import com.tokopedia.flight.TkpdFlight;
-import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -51,8 +54,6 @@ import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.tkpdcontent.common.network.KolUrl;
-import com.tokopedia.tkpdstream.common.data.SendbirdKey;
-import com.tokopedia.tkpdstream.common.data.StreamUrl;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 
 /**
@@ -63,6 +64,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener {
 
+    private final String NOTIFICATION_CHANNEL_NAME = "Promo";
+    private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
+    private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
     @Override
     public void onCreate() {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
@@ -84,6 +88,24 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
         initCacheApi();
         initSendbird();
+        createCustomSoundNotificationChannel();
+    }
+
+    private void createCustomSoundNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the NotificationChannel
+            NotificationChannel mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
+                    NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+            mChannel.setDescription(NOTIFICATION_CHANNEL_DESC);
+            AudioAttributes att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" +
+                    R.raw.tokopedia_endtune), att);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(
+                    NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(mChannel);
+        }
     }
 
     private void setVersionCode() {
@@ -154,7 +176,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         KolUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         ProfileUrl.BASE_URL = ConsumerAppBaseUrl.TOPPROFILE_DOMAIN;
         DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
-        StreamUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
+        GroupChatUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
         ChatBotUrl.BASE_URL = ConsumerAppBaseUrl.CHATBOT_DOMAIN;
     }
 
@@ -162,6 +184,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
         WalletUrl.KeyHmac.HMAC_PENDING_CASHBACK = ConsumerAppNetworkKeys.HMAC_PENDING_CASHBACK;
+        SendbirdKey.APP_ID = ConsumerAppNetworkKeys.SENDBIRD_APP_ID;
+
     }
 
     public void initializeDatabase() {
@@ -172,6 +196,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
                 .build());
         TkpdFlight.initDatabase(getApplicationContext());
+        PushNotification.initDatabase(getApplicationContext());
     }
 
     @Override

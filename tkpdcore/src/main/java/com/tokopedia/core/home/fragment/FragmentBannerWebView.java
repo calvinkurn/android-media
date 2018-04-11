@@ -34,12 +34,16 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 
+import retrofit2.http.Url;
+
 /**
  * Created by Nisie on 8/25/2015.
  */
 public class FragmentBannerWebView extends Fragment {
 
     private static final String SEAMLESS = "seamless";
+    private static final String TOKOPEDIA_LINK = "tokopedia.com";
+    private static final String WWW = "www";
     private ProgressBar progressBar;
     private TkpdWebView webview;
     private static final String EXTRA_URL = "url";
@@ -209,7 +213,10 @@ public class FragmentBannerWebView extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         clearCache(webview);
-        if (!url.contains(SEAMLESS))
+        Uri uri = Uri.parse(url);
+        if (uri.getHost() != null && !uri.getHost().contains(TOKOPEDIA_LINK)) {
+            webview.loadOtherUrl(url);
+        } else if (!url.contains(SEAMLESS))
             webview.loadAuthUrl(URLGenerator.generateURLSessionLogin(url, getActivity()));
         else {
             webview.loadAuthUrl(url);
