@@ -42,6 +42,7 @@ import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
@@ -195,6 +196,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
                 .build());
         TkpdFlight.initDatabase(getApplicationContext());
+        PushNotification.initDatabase(getApplicationContext());
     }
 
     @Override
