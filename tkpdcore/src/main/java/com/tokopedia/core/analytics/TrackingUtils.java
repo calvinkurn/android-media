@@ -228,12 +228,6 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.LOGIN);
     }
 
-    public static void sendMoEngageOpenHomeEvent() {
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
-        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_BERANDA);
-    }
-
     public static void sendMoEngageOpenFeedEvent(int feedSize) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));

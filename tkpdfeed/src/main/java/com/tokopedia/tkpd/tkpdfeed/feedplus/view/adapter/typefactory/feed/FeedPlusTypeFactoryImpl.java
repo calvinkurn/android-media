@@ -45,7 +45,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromotedShopVie
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
-import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
 /**
@@ -56,6 +56,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
 
     private final FeedPlus.View viewListener;
     private final TopAdsItemClickListener topAdsItemClickListener;
+    private final TopAdsInfoClickListener topAdsInfoClickListener;
     private final FeedPlus.View.Toppicks toppicksListener;
     private final FeedPlus.View.Kol kolViewListener;
 
@@ -63,6 +64,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     public FeedPlusTypeFactoryImpl(FeedPlusFragment context) {
         this.viewListener = context;
         this.topAdsItemClickListener = context;
+        this.topAdsInfoClickListener = context;
         this.toppicksListener = context;
         this.kolViewListener = context;
     }
@@ -203,7 +205,9 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
         else if (type == KolRecommendationViewHolder.LAYOUT)
             viewHolder = new KolRecommendationViewHolder(view, kolViewListener);
         else if (type == FeedTopadsViewHolder.LAYOUT)
-            viewHolder = new FeedTopadsViewHolder(view, topAdsItemClickListener);
+            viewHolder = new FeedTopadsViewHolder(view,
+                    topAdsItemClickListener,
+                    topAdsInfoClickListener);
         else if (type == FavoriteCtaViewHolder.LAYOUT)
             viewHolder = new FavoriteCtaViewHolder(view, viewListener);
         else if (type == ContentProductViewHolder.LAYOUT)
