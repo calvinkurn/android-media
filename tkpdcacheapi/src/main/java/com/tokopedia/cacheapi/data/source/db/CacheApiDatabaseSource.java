@@ -45,9 +45,7 @@ public class CacheApiDatabaseSource {
                     return;
                 }
                 String storedVersionName = "";
-                CacheApiVersion cacheApiVersion = new Select()
-                        .from(CacheApiVersion.class)
-                        .querySingle();
+                CacheApiVersion cacheApiVersion = new Select().from(CacheApiVersion.class).querySingle();
                 if (cacheApiVersion != null) {
                     storedVersionName = cacheApiVersion.getVersion();
                 }

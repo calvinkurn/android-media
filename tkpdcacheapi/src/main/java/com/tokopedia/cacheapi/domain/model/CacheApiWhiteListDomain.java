@@ -30,6 +30,9 @@ public class CacheApiWhiteListDomain {
 
     public CacheApiWhiteListDomain(String host, String path, long expireTime, boolean dynamicUrl) {
         this.host = CacheApiUtils.getHost(host);
+        if (dynamicUrl) {
+            path = CacheApiUtils.getConvertedRegexBracePath(path);
+        }
         this.path = CacheApiUtils.generateCachePath(path);
         this.expireTime = expireTime;
         this.dynamicUrl = dynamicUrl;
