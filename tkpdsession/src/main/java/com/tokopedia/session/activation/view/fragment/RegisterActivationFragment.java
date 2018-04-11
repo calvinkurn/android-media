@@ -163,11 +163,15 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
                 , 0);
 
         footer.setText(spannable, TextView.BufferType.SPANNABLE);
+
+
     }
 
     private void setActivateText() {
         String activateText = getString(R.string.activation_header_text_2) + " <font color='#000000'>" + getEmail() + "</font>";
         activationText.setText(MethodChecker.fromHtml(activateText));
+        verifyCode.requestFocus();
+        KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
     }
 
     @Override

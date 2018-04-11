@@ -98,7 +98,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     TextInputEditText registerPassword;
     TextView registerButton;
     EditText phone;
-    TextView phoneHelper, emailHelper, passwordHelper;
     TkpdHintTextInputLayout wrapperName;
     TkpdHintTextInputLayout wrapperEmail;
     TkpdHintTextInputLayout wrapperPassword;
@@ -162,9 +161,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         wrapperPassword = view.findViewById(R.id.wrapper_password);
         wrapperPhone = view.findViewById(R.id.wrapper_phone);
         name = view.findViewById(R.id.name);
-        passwordHelper = (TextView) view.findViewById(R.id.password_helper);
-        emailHelper = (TextView) view.findViewById(R.id.email_helper);
-        phoneHelper = (TextView) view.findViewById(R.id.phone_helper);
         registerNextTAndC = view.findViewById(R.id.register_next_detail_t_and_p);
 
         prepareView(view);
@@ -219,7 +215,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             email.setText(savedInstanceState.getString(EMAIL, ""));
             registerPassword.setText(savedInstanceState.getString(PASSWORD, ""));
         }
-
     }
 
     @Override
@@ -285,13 +280,11 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
-                passwordHelper.setVisibility(View.VISIBLE);
+                showPasswordHint();
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
-                    passwordHelper.setVisibility(View.GONE);
                 } else if (registerPassword.getText().toString().length() < PASSWORD_MINIMUM_LENGTH) {
                     setWrapperError(wrapper, getString(R.string.error_minimal_password));
-                    passwordHelper.setVisibility(View.GONE);
                 }
 
                 checkIsValidForm();
@@ -315,13 +308,11 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
-                emailHelper.setVisibility(View.VISIBLE);
+                showEmailHint();
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
-                    emailHelper.setVisibility(View.GONE);
                 } else if (!CommonUtils.EmailValidation(email.getText().toString())) {
                     setWrapperError(wrapper, getString(R.string.wrong_email_format));
-                    emailHelper.setVisibility(View.GONE);
                 }
 
                 checkIsValidForm();
@@ -406,17 +397,14 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
-                phoneHelper.setVisibility(View.VISIBLE);
+                showPhoneHint();
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
-                    phoneHelper.setVisibility(View.GONE);
                 } else if (s.length() < 3) {
                     setWrapperError(wrapper, getString(R.string.error_minimal_phone));
-                    phoneHelper.setVisibility(View.GONE);
                 } else if (!RegisterUtil.isValidPhoneNumber(
                         phone.getText().toString().replace("-", ""))) {
                     setWrapperError(wrapper, getString(R.string.error_invalid_phone_number));
-                    phoneHelper.setVisibility(View.GONE);
                 }
 
                 checkIsValidForm();
@@ -520,6 +508,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
+        wrapper.setHelperEnabled(false);
         if (s == null) {
             wrapper.setError(s);
             wrapper.setErrorEnabled(false);
@@ -527,6 +516,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             wrapper.setErrorEnabled(true);
             wrapper.setError(s);
         }
+    }
+
+    private void setWrapperHint(TkpdHintTextInputLayout wrapper, String s) {
+        wrapper.setErrorEnabled(false);
+        wrapper.setHelperEnabled(true);
+        wrapper.setHelper(s);
     }
 
     @Override
@@ -554,7 +549,28 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         setWrapperError(wrapperName, null);
         setWrapperError(wrapperEmail, null);
         setWrapperError(wrapperPassword, null);
+        showPasswordHint();
+        showEmailHint();
+        showNameHint();
+        showPhoneHint();
     }
+
+    public void showPasswordHint() {
+        setWrapperHint(wrapperPassword, "");
+    }
+
+    public void showNameHint() {
+        setWrapperHint(wrapperName, "");
+    }
+
+    public void showEmailHint() {
+        setWrapperHint(wrapperEmail, getResources().getString(R.string.send_verif_to_email));
+    }
+
+    public void showPhoneHint() {
+        setWrapperHint(wrapperPhone, getResources().getString(R.string.phone_example));
+    }
+
 
     @Override
     public void setActionsEnabled(boolean isEnabled) {

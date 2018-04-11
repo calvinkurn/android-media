@@ -898,7 +898,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_activity_manage_people_profile">Pengaturan Profil</string>
     <string name="title_activity_people_favorited_shop">Toko Favorit</string>
     <string name="title_activity_manage_people_password">Ganti Kata Sandi</string>
-    <string name="title_activity_activation">Aktivasi kun</string>
+    <string name="title_activity_activation">Aktivasi Akun</string>
     <string name="title_manage">Pengaturan</string>
 
     <!-- Strings related to shop transaction -->
