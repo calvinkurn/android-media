@@ -26,4 +26,5 @@
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
     </style>
+
 </resources>

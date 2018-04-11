@@ -169,7 +169,13 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     } else {
                         String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
                         String fullname = data.getString("full_name");
-                        applink = String.format("%s?fullname=%s", applink, fullname);
+                        boolean isHaveQueryField = applink.contains("?");
+                        if(isHaveQueryField) {
+                            applink = String.format("%s&fullname=%s", applink, fullname);
+                        }
+                        else {
+                            applink = String.format("%s?fullname=%s", applink, fullname);
+                        }
                         data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
                         buildNotifByData(data);
 

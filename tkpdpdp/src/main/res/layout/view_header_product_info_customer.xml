@@ -139,5 +139,31 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/linear_stock_available"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_stock_available"
+        android:layout_marginTop="@dimen/margin_small"
+        android:paddingLeft="@dimen/padding_small"
+        android:paddingRight="@dimen/padding_small"
+        android:gravity="center_vertical"
+        android:visibility="gone">
 
+        <ImageView
+            android:id="@+id/iv_stock_available"
+            android:layout_width="@dimen/icon_stock_width"
+            android:layout_height="@dimen/icon_stock_height"
+            android:background="@drawable/ic_available_stock" />
+
+        <TextView
+            android:id="@+id/text_stock_available"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Stok tersedia (>100)"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:textColor="@color/black_70"/>
+
+    </LinearLayout>
 </LinearLayout>
