@@ -714,23 +714,4 @@ public class GTMContainer implements IGTMContainer {
                 )
         );
     }
-
-    @Override
-    public void enhanceImpressionImageSearchResultProduct(List<Object> objects) {
-        clearEnhanceEcommerce();
-
-        GTMDataLayer.pushGeneral(
-                context,
-                DataLayer.mapOf("event", "productView",
-                        "eventCategory", "search result",
-                        "eventAction", "impression - product",
-                        "eventLabel", "",
-                        "ecommerce", DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(
-                                        objects.toArray(new Object[objects.size()])
-                                ))
-                )
-        );
-    }
 }

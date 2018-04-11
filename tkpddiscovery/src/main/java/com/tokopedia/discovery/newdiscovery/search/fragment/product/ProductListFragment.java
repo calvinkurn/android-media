@@ -310,19 +310,16 @@ public class ProductListFragment extends SearchSectionFragment
                     dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayerForImageSearch(userId));
                 }
             }
-
-            SearchTracking.eventImpressionImageSearchResultProduct(dataLayerList);
-
         } else {
-
             for (Visitable object : list) {
                 if (object instanceof ProductItem) {
                     dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
                 }
             }
-
-            SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
         }
+
+        SearchTracking.eventImpressionSearchResultProduct(dataLayerList,
+                (getQueryKey() != null && !TextUtils.isEmpty(getQueryKey())) ? getQueryKey() : "imageSearch");
     }
 
     @Override

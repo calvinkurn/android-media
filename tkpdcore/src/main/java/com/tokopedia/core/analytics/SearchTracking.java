@@ -34,10 +34,6 @@ public class SearchTracking extends TrackingUtils {
         getGTMEngine().enhanceImpressionSearchResultProduct(list, eventLabel);
     }
 
-    public static void eventImpressionImageSearchResultProduct(List<Object> list) {
-        getGTMEngine().enhanceImpressionImageSearchResultProduct(list);
-    }
-
     public static void eventClickGuidedSearch(String previousKey, String page, String nextKey) {
         sendGTMEvent(new EventTracking(
                 "clickSearchResult",
