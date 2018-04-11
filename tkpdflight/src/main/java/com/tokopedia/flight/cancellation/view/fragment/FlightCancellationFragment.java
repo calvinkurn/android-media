@@ -15,7 +15,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReasonAndProofActivity;
-import com.tokopedia.flight.cancellation.view.activity.FlightReviewCancellationActivity;
+import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReviewActivity;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.adapter.viewholder.FlightCancellationViewHolder;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationContract;
@@ -204,7 +204,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     @Override
     public void navigateToReviewCancellationPage() {
         startActivityForResult(
-                FlightReviewCancellationActivity.createIntent(getContext(),
+                FlightCancellationReviewActivity.createIntent(getContext(),
                         invoiceId, flightCancellationWrapperViewModel),
                 REQUEST_REVIEW_CANCELLATION
         );

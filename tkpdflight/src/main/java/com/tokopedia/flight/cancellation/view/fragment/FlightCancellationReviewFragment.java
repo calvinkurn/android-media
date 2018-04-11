@@ -2,7 +2,6 @@ package com.tokopedia.flight.cancellation.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
@@ -15,18 +14,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.adapter.FlightReviewCancellationAdapterTypeFactory;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author by furqan on 29/03/18.
  */
 
-public class FlightReviewCancellationFragment extends BaseListFragment<FlightCancellationViewModel, FlightReviewCancellationAdapterTypeFactory> {
+public class FlightCancellationReviewFragment extends BaseListFragment<FlightCancellationViewModel, FlightReviewCancellationAdapterTypeFactory> {
 
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
@@ -37,9 +32,9 @@ public class FlightReviewCancellationFragment extends BaseListFragment<FlightCan
     private String invoiceId;
     private FlightCancellationWrapperViewModel flightCancellationPassData;
 
-    public static FlightReviewCancellationFragment createInstance(String invoiceId,
-                                                            FlightCancellationWrapperViewModel flightCancellationPassData) {
-        FlightReviewCancellationFragment fragment = new FlightReviewCancellationFragment();
+    public static FlightCancellationReviewFragment createInstance(String invoiceId,
+                                                                  FlightCancellationWrapperViewModel flightCancellationPassData) {
+        FlightCancellationReviewFragment fragment = new FlightCancellationReviewFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_INVOICE_ID, invoiceId);
         bundle.putParcelable(EXTRA_CANCEL_JOURNEY, flightCancellationPassData);

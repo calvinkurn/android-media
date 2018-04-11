@@ -3,7 +3,6 @@ package com.tokopedia.flight.cancellation.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.Menu;
@@ -14,23 +13,18 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationFragment;
-import com.tokopedia.flight.cancellation.view.fragment.FlightReviewCancellationFragment;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationReviewFragment;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.tokopedia.flight.cancellation.view.fragment.FlightCancellationReviewFragment.EXTRA_CANCEL_JOURNEY;
+import static com.tokopedia.flight.cancellation.view.fragment.FlightCancellationReviewFragment.EXTRA_INVOICE_ID;
 
-import static com.tokopedia.flight.cancellation.view.fragment.FlightReviewCancellationFragment.EXTRA_CANCEL_JOURNEY;
-import static com.tokopedia.flight.cancellation.view.fragment.FlightReviewCancellationFragment.EXTRA_INVOICE_ID;
-
-public class FlightReviewCancellationActivity extends BaseFlightActivity implements HasComponent<FlightCancellationComponent> {
+public class FlightCancellationReviewActivity extends BaseFlightActivity implements HasComponent<FlightCancellationComponent> {
 
     public static Intent createIntent(Context context, String invoiceId,
                                       FlightCancellationWrapperViewModel flightCancellationPassData) {
-        Intent intent = new Intent(context, FlightReviewCancellationActivity.class);
+        Intent intent = new Intent(context, FlightCancellationReviewActivity.class);
         intent.putExtra(EXTRA_INVOICE_ID, invoiceId);
         intent.putExtra(EXTRA_CANCEL_JOURNEY, flightCancellationPassData);
         return intent;
@@ -67,7 +61,7 @@ public class FlightReviewCancellationActivity extends BaseFlightActivity impleme
     protected Fragment getNewFragment() {
         FlightCancellationWrapperViewModel flightCancellationJourneyList = getIntent().getExtras()
                 .getParcelable(EXTRA_CANCEL_JOURNEY);
-        return FlightReviewCancellationFragment.createInstance(
+        return FlightCancellationReviewFragment.createInstance(
                 getIntent().getExtras().getString(EXTRA_INVOICE_ID),
                 flightCancellationJourneyList
         );

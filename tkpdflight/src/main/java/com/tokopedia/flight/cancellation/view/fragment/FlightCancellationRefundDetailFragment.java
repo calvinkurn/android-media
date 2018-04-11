@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
-import com.tokopedia.flight.cancellation.view.activity.FlightReviewCancellationActivity;
+import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReviewActivity;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationRefundDetailContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationRefundDetailPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
@@ -81,7 +81,7 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(FlightReviewCancellationActivity.createIntent(getActivity(), wrapperViewModel.getInvoice(), wrapperViewModel));
+                startActivity(FlightCancellationReviewActivity.createIntent(getActivity(), wrapperViewModel.getInvoice(), wrapperViewModel));
             }
         };
     }
