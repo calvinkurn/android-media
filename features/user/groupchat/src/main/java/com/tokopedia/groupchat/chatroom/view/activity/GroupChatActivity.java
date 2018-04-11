@@ -1295,8 +1295,8 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         try {
             if (!userActionViewModel.getUserId().equalsIgnoreCase(userSession.getUserId())) {
-                viewModel.setTotalView(String.valueOf(Integer.parseInt(viewModel.getTotalView()) +
-                        1));
+                viewModel.setTotalView(TextFormatter.format(
+                        String.valueOf(Integer.parseInt(viewModel.getTotalView()) + 1)));
             }
             setToolbarParticipantCount(viewModel.getTotalView());
         } catch (NumberFormatException e) {
