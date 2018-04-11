@@ -1391,6 +1391,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void sendMoEngageOpenShopEventTracking(String screenName) {
+        TrackingUtils.sendMoEngageCreateShopEvent(screenName);
+    }
+
+    @Override
     public void navigateToChooseAddressActivityRequest(Fragment var1, Intent var2, int var3) {
         Intent instance = ChooseAddressActivity.createInstance(var1.getContext());
         var1.startActivityForResult(instance, var3);
