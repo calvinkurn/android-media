@@ -655,6 +655,42 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventDiscoveryCameraImageSearch() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.CAMERA_SEARCH,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventDiscoveryGalleryImageSearch() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.GALLERY_SEARCH,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventDiscoveryCameraImageSearchResult(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.CAMERA_SEARCH_RESULT,
+                label
+        ).getEvent());
+    }
+
+    public static void eventDiscoveryGalleryImageSearchResult(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.GALLERY_SEARCH_RESULT,
+                label
+        ).getEvent());
+    }
+
     public static void eventSearchWishlist(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.HOME_WISHLIST,
@@ -2171,6 +2207,15 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE + AppEventTracking.Category.PULSA,
                 action,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventUssdAttempt(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_IMPRESSION_HOME_PAGE,
+                AppEventTracking.Category.DIGITAL + AppEventTracking.Category.PULSA,
+                AppEventTracking.Action.USSD_ATTEMPT,
                 eventLabel
         ).getEvent());
     }

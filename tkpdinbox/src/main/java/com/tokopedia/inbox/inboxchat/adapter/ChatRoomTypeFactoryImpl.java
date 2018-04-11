@@ -7,6 +7,8 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachImageViewHolder;
+import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSelectionViewHolder;
+import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSentViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedProductViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.OppositeChatViewHolder;
@@ -14,6 +16,8 @@ import com.tokopedia.inbox.inboxchat.viewholder.ThumbnailChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TimeMachineChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TypingChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachImageModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
@@ -69,6 +73,16 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
     }
 
     @Override
+    public int type(AttachInvoiceSentViewModel attachInvoiceSentViewModel) {
+        return AttachedInvoiceSentViewHolder.LAYOUT;
+    }
+
+
+    @Override
+    public int type(AttachInvoiceSelectionViewModel attachInvoiceSelectionViewModel) {
+        return AttachedInvoiceSelectionViewHolder.LAYOUT;
+    }
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
@@ -87,9 +101,14 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
             viewHolder = new ThumbnailChatViewHolder(view, viewListener);
         else if (type == AttachedProductViewHolder.LAYOUT)
             viewHolder = new AttachedProductViewHolder(view,viewListener);
+        else if(type == AttachedInvoiceSentViewHolder.LAYOUT)
+            viewHolder = new AttachedInvoiceSentViewHolder(view);
+        else if(type == AttachedInvoiceSelectionViewHolder.LAYOUT)
+            viewHolder = new AttachedInvoiceSelectionViewHolder(view, viewListener);
         else
             return super.createViewHolder(view, type);
 
         return viewHolder;
     }
+
 }

@@ -467,6 +467,11 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     }
 
+    protected void disableSwipeRefresh(){
+        refreshLayout.setEnabled(false);
+        refreshLayout.setRefreshing(false);
+    }
+
     protected void onSwipeToRefresh() {
 
     }

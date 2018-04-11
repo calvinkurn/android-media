@@ -15,7 +15,7 @@ public interface HomeCategoryListener {
 
     void onCloseTicker(int pos);
 
-    void onPromoClick(BannerSlidesModel slidesModel);
+    void onPromoClick(int position, BannerSlidesModel slidesModel);
 
     void openShop();
 
@@ -31,9 +31,11 @@ public interface HomeCategoryListener {
 
     void showNetworkError(String message);
 
-    void onDynamicChannelClicked(String applink);
+    void onDynamicChannelClicked(String applink, String trackingAttribution);
 
     void onRefreshTokoPointButtonClicked();
 
     void onRefreshTokoCashButtonClicked();
+
+    void onSixGridItemClicked(String actionLink, String trackingAttribution);
 }

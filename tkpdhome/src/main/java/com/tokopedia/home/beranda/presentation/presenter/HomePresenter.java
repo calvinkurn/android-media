@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -66,8 +67,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private String currentCursor = "";
     private PagingHandler pagingHandler;
     private HomeFeedListener feedListener;
-
     private HeaderViewModel headerViewModel;
+    private boolean fetchFirstData;
 
     public HomePresenter(Context context) {
         this.context = context;
@@ -91,6 +92,39 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         return getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public void onFirstLaunch() {
+        this.fetchFirstData = true;
+    }
+
+    @Override
+    public void onResume() {
+        if (isViewAttached() && !this.fetchFirstData) {
+            subscription = getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<List<Visitable>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<Visitable> visitables) {
+                            if (isViewAttached() && isDataValid(visitables)) {
+                                getView().updateListOnResume(visitables);
+                            }
+                        }
+                    });
+            compositeSubscription.add(subscription);
+        }
     }
 
     @Override
@@ -355,6 +389,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         public void onCompleted() {
             if (isViewAttached()) {
                 getView().hideLoading();
+                fetchFirstData = false;
             }
         }
 
@@ -373,6 +408,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     visitables.add(0, headerViewModel);
                 }
                 getView().setItems(visitables);
+                if (visitables.size() > 0) {
+                    getView().showRecomendationButton();
+                }
                 if (isDataValid(visitables)) {
                     getView().removeNetworkError();
                 } else {
@@ -381,19 +419,18 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             }
         }
 
-        private boolean isDataValid(List<Visitable> visitables) {
-            return containsInstance(visitables, BannerViewModel.class);
-        }
-
-        public <E> boolean containsInstance(List<E> list, Class<? extends E> clazz) {
-            for (E e : list) {
-                if (clazz.isInstance(e)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
     }
 
+    private boolean isDataValid(List<Visitable> visitables) {
+        return containsInstance(visitables, BannerViewModel.class);
+    }
+
+    public <E> boolean containsInstance(List<E> list, Class<? extends E> clazz) {
+        for (E e : list) {
+            if (clazz.isInstance(e)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
