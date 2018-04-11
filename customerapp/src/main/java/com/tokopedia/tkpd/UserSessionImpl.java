@@ -2,12 +2,7 @@ package com.tokopedia.tkpd;
 
 import android.content.Context;
 
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
-import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -74,4 +69,8 @@ public class UserSessionImpl implements UserSession {
         return sessionHandler.isMsisdnAlreadyVerified();
     }
 
+    @Override
+    public boolean isHasPassword() {
+        return sessionHandler.isHasPassword();
+    }
 }

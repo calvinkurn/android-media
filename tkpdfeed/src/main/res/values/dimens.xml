@@ -50,4 +50,19 @@
     <dimen name="button_width">200dp</dimen>
     <dimen name="img_width">250dp</dimen>
     <dimen name="img_height">150dp</dimen>
+
+    <!-- recent view -->
+    <dimen name="recent_view_image_size">106dp</dimen>
+    <dimen name="recent_view_product_name">80dp</dimen>
+    <dimen name="recent_view_item_height">180dp</dimen>
+
+    <dimen name="avatar_size_small">32dp</dimen>
+    <dimen name="feed_badge_size">12dp</dimen>
+    <dimen name="feed_kol_button">15dp</dimen>
+    <dimen name="content_product_margin">6dp</dimen>
+    <dimen name="product_padding_medium">10dp</dimen>
+    <dimen name="product_padding_small">8dp</dimen>
+    <dimen name="product_padding_very_small">6dp</dimen>
+    <dimen name="image_padding_for_border">0.5dp</dimen>
+
 </resources>
