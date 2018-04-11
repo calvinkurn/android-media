@@ -28,6 +28,8 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
+import com.tokopedia.pushnotif.ApplinkNotificationHelper;
+import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
@@ -49,11 +51,6 @@ import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
 import java.util.Map;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Actions;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
@@ -74,34 +71,29 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     @Override
-    public void notifyReceiverBackgroundMessage(Observable<Bundle> data) {
-        data.map(new Func1<Bundle, Boolean>() {
-            @Override
-            public Boolean call(Bundle bundle) {
-                if (isAllowedNotification(bundle)) {
-                    mFCMCacheManager.setCache();
-                    //TODO this function for divide the new and old flow(that still supported)
-                    // next if complete new plz to delete
-                    if (isSupportedApplinkNotification(bundle)) {
-                        handleApplinkNotification(bundle);
+    public void notifyReceiverBackgroundMessage(Bundle bundle) {
+        if (isAllowedNotification(bundle)) {
+            mFCMCacheManager.setCache();
+            if (isApplinkNotification(bundle)) {
+                PushNotification.notify(mContext, bundle);
+            } else {
+                //TODO this function for divide the new and old flow(that still supported)
+                // next if complete new plz to delete
+                if (isSupportedApplinkNotification(bundle)) {
+                    handleApplinkNotification(bundle);
+                } else {
+                    if (isDedicatedNotification(bundle)) {
+                        handleDedicatedNotification(bundle);
                     } else {
-                        if (isDedicatedNotification(bundle)) {
-                            handleDedicatedNotification(bundle);
-                        } else {
-                            prepareAndExecutePromoNotification(bundle);
-                        }
+                        prepareAndExecutePromoNotification(bundle);
                     }
                 }
-                return true;
             }
-        }).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Actions.empty(), new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+        }
+    }
+
+    private boolean isApplinkNotification(Bundle data) {
+        return !data.getString(Constants.ARG_NOTIFICATION_APPLINK, "").equals("");
     }
 
     private boolean isAllowedNotification(Bundle data) {
@@ -114,10 +106,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private void handleApplinkNotification(Bundle data) {
         if (data.getString(Constants.ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED, "false").equals("true")) {
-            if (SessionHandler.isV4Login(mContext)
-                    && SessionHandler.getLoginID(mContext).equals(
+            if (SessionHandler.getLoginID(mContext).equals(
                     data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))
-                    ) {
+            ) {
                 resetNotificationStatus(data);
                 prepareAndExecuteApplinkNotification(data);
                 refreshUI(data);
@@ -175,12 +166,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     } else {
                         String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
                         String fullname = data.getString("full_name");
-                        boolean isHaveQueryField = applink.contains("?");
-                        if (isHaveQueryField) {
-                            applink = String.format("%s&fullname=%s", applink, fullname);
-                        } else {
+
                             applink = String.format("%s?fullname=%s", applink, fullname);
-                        }
+
                         data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
                         buildNotifByData(data);
 
