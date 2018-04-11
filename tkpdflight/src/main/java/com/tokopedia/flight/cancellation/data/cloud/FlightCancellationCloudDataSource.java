@@ -1,5 +1,6 @@
 package com.tokopedia.flight.cancellation.data.cloud;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancelPassengerEntity;
@@ -7,6 +8,7 @@ import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultE
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
+import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 
 import java.util.List;
 
@@ -22,10 +24,12 @@ import rx.functions.Func1;
 
 public class FlightCancellationCloudDataSource {
     private FlightApi flightApi;
+    private Gson gson;
 
     @Inject
-    public FlightCancellationCloudDataSource(FlightApi flightApi) {
+    public FlightCancellationCloudDataSource(FlightApi flightApi, @FlightQualifier Gson gson) {
         this.flightApi = flightApi;
+        this.gson = gson;
     }
 
     public Observable<List<Passenger>> getCancelablePassenger(String invoiceId) {
