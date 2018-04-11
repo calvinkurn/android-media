@@ -167,11 +167,7 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
                                 .setDestinationAddress((String) pinpointCache.get(PINPOINT_CACHE_KEY_ADDRESS));
                         getView().showErrorSnackbar(getView().getActivity().getResources().getString(R.string.message_pinpoint_too_far));
                     } else {
-                        if (ShipmentDetailPresenter.this.shipmentDetailData.getSelectedShipment() == null) {
-                            getView().renderFirstLoadedRatesData(ShipmentDetailPresenter.this.shipmentDetailData);
-                        } else {
-                            getView().renderAfterReloadRatesData(ShipmentDetailPresenter.this.shipmentDetailData);
-                        }
+                        getView().renderAfterReloadRatesData(ShipmentDetailPresenter.this.shipmentDetailData);
                     }
                 }
             }

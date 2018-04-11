@@ -407,14 +407,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     @Override
-    public void renderFirstLoadedRatesData(ShipmentDetailData shipmentDetailData) {
-        initializeShipmentChoiceHandler();
-        renderShipmentWithoutMap(shipmentDetailData);
-    }
-
-    @Override
     public void renderAfterReloadRatesData(ShipmentDetailData shipmentDetailData) {
-        shipmentChoiceBottomSheet.updateData(shipmentDetailData.getShipmentItemData());
+        if (shipmentChoiceBottomSheet == null) {
+            initializeShipmentChoiceHandler();
+        } else {
+            shipmentChoiceBottomSheet.updateData(shipmentDetailData.getShipmentItemData());
+        }
         renderShipmentWithoutMap(shipmentDetailData);
     }
 
