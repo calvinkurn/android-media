@@ -52,10 +52,8 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
                 public void onClick(View view) {
                     if (onAdapterInteractionListener != null) {
                         try {
-                            if (holder.getAdapterPosition() >= 0) {
-                                T item = (T) visitables.get(holder.getAdapterPosition());
-                                onAdapterInteractionListener.onItemClicked(item);
-                            }
+                            T item = (T) visitables.get(holder.getAdapterPosition());
+                            onAdapterInteractionListener.onItemClicked(item);
                         } catch (ClassCastException e) {
                             e.printStackTrace();
                         }

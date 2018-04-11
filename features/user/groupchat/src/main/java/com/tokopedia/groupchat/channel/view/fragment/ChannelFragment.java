@@ -38,8 +38,6 @@ import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
 
 import javax.inject.Inject;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 /**
  * @author by nisie on 2/1/18.
  */

@@ -103,7 +103,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new EventsDeepLinkModuleLoader(),
                 new LoyaltyAppLinkModuleLoader(),
                 new ShopAppLinkModuleLoader(),
-                new ShopAppLinkModuleLoader(),
                 new GroupChatApplinkModuleLoader()
         );
     }
