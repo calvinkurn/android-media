@@ -20,12 +20,12 @@ import static com.tokopedia.topads.dashboard.constant.SortTopAdsOption.MOST_USED
 @Retention(RetentionPolicy.SOURCE)
 @StringDef({LATEST, MOST_USED, MOST_SHOWN, LEAST_SHOWN, MOST_CLICKED, LEAST_CLICKED, HIGHEST_MAX_PRICE, HIGHEST_DAILY_BUDGET})
 public @interface SortTopAdsOption {
-    String LATEST = "1";
-    String MOST_USED = "2";
-    String MOST_SHOWN = "3";
-    String LEAST_SHOWN = "4";
-    String MOST_CLICKED = "5";
-    String LEAST_CLICKED = "6";
-    String HIGHEST_MAX_PRICE = "7";
-    String HIGHEST_DAILY_BUDGET = "8";
+    String LATEST = "";
+    String MOST_USED = "-cpc";
+    String MOST_SHOWN = "-impression";
+    String LEAST_SHOWN = "impression";
+    String MOST_CLICKED = "-click";
+    String LEAST_CLICKED = "click";
+    String HIGHEST_MAX_PRICE = "-price_bid";
+    String HIGHEST_DAILY_BUDGET = "-avg_cost";
 }

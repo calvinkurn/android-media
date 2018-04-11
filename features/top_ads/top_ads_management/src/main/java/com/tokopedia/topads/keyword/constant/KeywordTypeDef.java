@@ -33,5 +33,5 @@ public @interface KeywordTypeDef {
     String IS_POSITIVE = "is_positive";
     String GROUP_ID = "group";
     String KEYWORD_STATUS = "status";
-    String SORTING = "sorting";
+    String SORTING = "sort";
 }

@@ -23,7 +23,6 @@ import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataB
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyKeywordAdDataBinder;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
-import com.tokopedia.topads.dashboard.view.model.TopAdsSortByModel;
 import com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordModule;
@@ -112,7 +111,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
             baseKeywordParam.groupId = Integer.parseInt(groupAd.getId());
         }
         if (selectedSort != null) {
-            baseKeywordParam.sortingParam = Integer.parseInt(selectedSort.getId());
+            baseKeywordParam.sortingParam = selectedSort.getId();
         }
         baseKeywordParam.keywordStatus = filterStatus;
         searchData(baseKeywordParam);

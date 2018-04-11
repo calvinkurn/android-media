@@ -16,7 +16,7 @@ public class TopAdsSortByModel implements ItemIdType, Parcelable {
     @SortTopAdsOption
     private String sortId;
 
-    String titleSort;
+    private String titleSort;
 
     public TopAdsSortByModel() {
     }
