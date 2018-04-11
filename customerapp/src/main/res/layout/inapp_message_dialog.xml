@@ -18,24 +18,32 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_inapp_title"
+        <LinearLayout
+            android:id="@+id/header_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_layout_medium"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:gravity="center_horizontal"
-            android:textColor="@color/black"
-            android:textSize="@dimen/fonts" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_inapp_desc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin_vs"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:textSize="@dimen/font_small" />
+            <TextView
+                android:id="@+id/tv_inapp_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/margin_layout_medium"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:gravity="center_horizontal"
+                android:textColor="@color/black"
+                android:textSize="@dimen/fonts" />
+
+            <TextView
+                android:id="@+id/tv_inapp_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingTop="@dimen/margin_vs"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:textSize="@dimen/font_small" />
+
+        </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_inapp"

@@ -26,6 +26,12 @@ public class InAppMessageModel implements Parcelable {
     @SerializedName("close_btn_show")
     public String closeButtonShow;
 
+    @SerializedName("header_background")
+    public String headerBackgroundColor;
+
+    @SerializedName("header_text_alignment")
+    public String headerTextAlignment;
+
     @SerializedName("color_title")
     public String colorTitle;
 
@@ -58,6 +64,15 @@ public class InAppMessageModel implements Parcelable {
         dest.writeString(this.title);
         dest.writeString(this.description);
         dest.writeString(this.type);
+        dest.writeString(this.closeButtonShow);
+        dest.writeString(this.headerBackgroundColor);
+        dest.writeString(this.headerTextAlignment);
+        dest.writeString(this.colorTitle);
+        dest.writeString(this.colorDesc);
+        dest.writeString(this.actionBtnText1);
+        dest.writeString(this.actionBtnText2);
+        dest.writeString(this.actionDeeplink1);
+        dest.writeString(this.actionDeeplink2);
         dest.writeTypedList(this.messageList);
     }
 
@@ -68,6 +83,15 @@ public class InAppMessageModel implements Parcelable {
         this.title = in.readString();
         this.description = in.readString();
         this.type = in.readString();
+        this.closeButtonShow = in.readString();
+        this.headerBackgroundColor = in.readString();
+        this.headerTextAlignment = in.readString();
+        this.colorTitle = in.readString();
+        this.colorDesc = in.readString();
+        this.actionBtnText1 = in.readString();
+        this.actionBtnText2 = in.readString();
+        this.actionDeeplink1 = in.readString();
+        this.actionDeeplink2 = in.readString();
         this.messageList = in.createTypedArrayList(InAppMessageItemModel.CREATOR);
     }
 

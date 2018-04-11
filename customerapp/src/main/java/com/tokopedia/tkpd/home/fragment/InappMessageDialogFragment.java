@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.gcm.Constants;
@@ -41,6 +42,10 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
     private ImageView closeBtn;
     private TextView tvTitle;
     private TextView tvDesc;
+    private LinearLayout headerLayout;
+    private final String LEFT = "left";
+    private final String RIGHT = "right";
+    private final String CENTER = "center";
 
     public static InappMessageDialogFragment newInstance(InAppMessageModel inAppMessageModel) {
         Bundle bundle = new Bundle();
@@ -91,6 +96,7 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
         }
 
         rv = view.findViewById(R.id.rv_inapp);
+        headerLayout = view.findViewById(R.id.header_layout);
         tvTitle = view.findViewById(R.id.tv_inapp_title);
         tvDesc = view.findViewById(R.id.tv_inapp_desc);
         tvTitle.setText(inAppMessageModel.title);
@@ -103,6 +109,9 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
             if (!TextUtils.isEmpty(inAppMessageModel.colorDesc)) {
                 tvDesc.setTextColor(Color.parseColor(inAppMessageModel.colorDesc));
             }
+            if (!TextUtils.isEmpty(inAppMessageModel.headerBackgroundColor)) {
+                headerLayout.setBackgroundColor(Color.parseColor(inAppMessageModel.headerBackgroundColor));
+            }
         } catch (Exception e) {
             tvTitle.setTextColor(Color.BLACK);
             tvDesc.setTextColor(Color.BLACK);
@@ -113,6 +122,31 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
     }
 
     private void renderView(View view) {
+
+        if (!TextUtils.isEmpty(inAppMessageModel.headerTextAlignment)) {
+
+            switch (inAppMessageModel.headerTextAlignment) {
+
+                case LEFT:
+                    tvTitle.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+                    tvDesc.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+                    break;
+                case RIGHT:
+                    tvTitle.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+                    tvDesc.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+                    break;
+                case CENTER:
+                    tvTitle.setTextAlignment((View.TEXT_ALIGNMENT_CENTER));
+                    tvDesc.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    break;
+
+                default:
+                    tvTitle.setTextAlignment((View.TEXT_ALIGNMENT_CENTER));
+                    tvDesc.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+            }
+        }
+
         if ("2".equalsIgnoreCase(inAppMessageModel.type)) {
             renderGridViewLayout();
         } else if ("3".equalsIgnoreCase(inAppMessageModel.type)) {
