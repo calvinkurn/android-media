@@ -11,13 +11,13 @@ public class SprintSaleProductViewModel implements Parcelable {
 
     private String sprintSaleCampaignId;
     private String productId;
-    String productName;
-    String productImage;
-    String discountLabel;
-    String productPrice;
-    String productPriceBeforeDiscount;
-    double stockPercentage;
-    String stockText;
+    private String productName;
+    private String productImage;
+    private String discountLabel;
+    private String productPrice;
+    private String productPriceBeforeDiscount;
+    private double stockPercentage;
+    private String stockText;
     private String productUrl;
 
     public SprintSaleProductViewModel(String sprintSaleCampaignId,

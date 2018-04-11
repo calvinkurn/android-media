@@ -32,12 +32,12 @@ public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleAnnouncem
     private static final int SPAN_COUNT = 2;
     private final ChatroomContract.View.SprintSaleViewHolderListener listener;
 
-    ImageView sprintSaleIcon;
-    TextView sprintSaleTitle;
-    RecyclerView listProducts;
-    SprintSaleAdapter productAdapter;
-    SpaceItemDecoration itemDecoration;
-    View mainLayout;
+    private ImageView sprintSaleIcon;
+    private TextView sprintSaleTitle;
+    private RecyclerView listProducts;
+    private SprintSaleAdapter productAdapter;
+    private SpaceItemDecoration itemDecoration;
+    private View mainLayout;
 
     public SprintSaleViewHolder(View itemView, ChatroomContract.View.SprintSaleViewHolderListener listener) {
         super(itemView);

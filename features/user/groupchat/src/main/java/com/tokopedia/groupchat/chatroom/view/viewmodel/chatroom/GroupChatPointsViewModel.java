@@ -18,10 +18,10 @@ public class GroupChatPointsViewModel implements Parcelable,
     public static final String TYPE_COUPON = "1403";
 
 
-    String image;
-    String text;
-    String span;
-    String url;
+    private String image;
+    private String text;
+    private String span;
+    private String url;
     String type;
 
     public GroupChatPointsViewModel(String text, String url) {
