@@ -486,27 +486,31 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
 
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-        HashMap<String, ProductItem> productItemHashMap = new HashMap<>();
-        for (ProductItem productItem : productViewModel.getProductList()) {
-            productItemHashMap.put(productItem.getProductID(), productItem);
-        }
-        List<ProductItem> productItemList = new ArrayList<>();
-        int count = 0;
-        for (int i = 0; i < productIDList.size(); i++) {
-            if (productItemHashMap.get(productIDList.get(i)) != null) {
-                ProductItem productItem = productItemHashMap.get(productIDList.get(i));
-                productItem.setPosition(++count);
-                productItemList.add(productItemHashMap.get(productIDList.get(i)));
-                productItemHashMap.remove(productItem.getProductID());
+        if (!productViewModel.isImageSearch()) {
+            super.onHandleResponseSearch(productViewModel);
+        } else {
+            if (tkpdProgressDialog != null) {
+                tkpdProgressDialog.dismiss();
             }
+            HashMap<String, ProductItem> productItemHashMap = new HashMap<>();
+            for (ProductItem productItem : productViewModel.getProductList()) {
+                productItemHashMap.put(productItem.getProductID(), productItem);
+            }
+            List<ProductItem> productItemList = new ArrayList<>();
+            int count = 0;
+            for (int i = 0; i < productIDList.size(); i++) {
+                if (productItemHashMap.get(productIDList.get(i)) != null) {
+                    ProductItem productItem = productItemHashMap.get(productIDList.get(i));
+                    productItem.setPosition(++count);
+                    productItemList.add(productItemHashMap.get(productIDList.get(i)));
+                    productItemHashMap.remove(productItem.getProductID());
+                }
+            }
+            productViewModel.setProductList(productItemList);
+            productViewModel.setTotalData(productItemList.size());
+            SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
+            finish();
         }
-        productViewModel.setProductList(productItemList);
-        productViewModel.setTotalData(productItemList.size());
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
-        finish();
     }
 
     @Override
