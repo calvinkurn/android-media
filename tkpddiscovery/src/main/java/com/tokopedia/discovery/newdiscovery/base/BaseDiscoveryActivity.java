@@ -3,6 +3,7 @@ package com.tokopedia.discovery.newdiscovery.base;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -104,6 +105,7 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
+        TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
         SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
         finish();
     }
