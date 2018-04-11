@@ -82,7 +82,6 @@ import com.tokopedia.gm.cashback.domain.SetCashbackUseCase;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
-import com.tokopedia.gm.common.logout.GMLogout;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
@@ -480,7 +479,6 @@ public abstract class SellerRouterApplication extends MainApplication
         new CacheApiClearAllUseCase().executeSync();
 
         TkpdSellerLogout.onLogOut(appComponent);
-        GMLogout.onLogOut(appComponent);
     }
 
     @Override

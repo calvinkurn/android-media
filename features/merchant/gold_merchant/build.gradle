@@ -2,12 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
-apt {
-    arguments {
-        targetModuleName 'TkpdGM'
-    }
-}
-
 dependencies {
 
     compile project(rootProject.ext.features.seller)
