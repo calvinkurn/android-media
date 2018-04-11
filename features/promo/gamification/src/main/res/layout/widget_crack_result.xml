@@ -9,7 +9,7 @@
         android:id="@+id/background_view_reward"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:background="#DD000000"/>
+        tools:background="@color/font_black_primary_70"/>
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/close_reward"

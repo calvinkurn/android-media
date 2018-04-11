@@ -168,7 +168,7 @@ public class WidgetCrackResult extends RelativeLayout {
         alphaAnimation.setDuration(1500);
 
         backgroundViewCrackResult.setAnimation(alphaAnimation);
-        backgroundViewCrackResult.setBackgroundColor(getResources().getColor(R.color.colorTransparent));
+        backgroundViewCrackResult.setBackgroundColor(getResources().getColor(R.color.font_black_primary_70));
         backgroundViewCrackResult.setVisibility(View.VISIBLE);
     }
 
