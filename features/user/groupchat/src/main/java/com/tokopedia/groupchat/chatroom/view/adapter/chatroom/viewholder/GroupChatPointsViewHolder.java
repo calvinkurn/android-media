@@ -27,10 +27,9 @@ public class GroupChatPointsViewHolder extends BaseChatViewHolder<GroupChatPoint
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_groupchat_points;
 
-    TextView messageView;
-    Context context;
-    View mainView;
-    ImageView icon;
+    private TextView messageView;
+    private View mainView;
+    private ImageView icon;
     private final ChatroomContract.View.GroupChatPointsViewHolderListener listener;
 
     public GroupChatPointsViewHolder(View itemView, ChatroomContract.View.GroupChatPointsViewHolderListener imageListener) {
@@ -47,7 +46,7 @@ public class GroupChatPointsViewHolder extends BaseChatViewHolder<GroupChatPoint
 
         setIcon(element.getType());
 
-        context = itemView.getContext();
+        Context context = itemView.getContext();
         String text = String.format("%s <b>" + context.getString(R.string.check_now) + "</b>",
                 element.getText());
         messageView.setText(MethodChecker.fromHtml(text));

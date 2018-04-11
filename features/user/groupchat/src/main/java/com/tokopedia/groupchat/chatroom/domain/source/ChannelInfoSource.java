@@ -16,8 +16,8 @@ import rx.Observable;
 
 public class ChannelInfoSource {
 
-    ChatroomApi chatroomApi;
-    ChannelInfoMapper mapper;
+    private ChatroomApi chatroomApi;
+    private ChannelInfoMapper mapper;
 
     @Inject
     public ChannelInfoSource(ChatroomApi chatroomApi, ChannelInfoMapper mapper) {

@@ -76,7 +76,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         ChatroomContract.View.GroupChatPointsViewHolderListener {
 
     private static final long DELAY_TIME_SPRINT_SALE = TimeUnit.SECONDS.toMillis(3);
-    private static final long MILIS_TO_SECOND = 1000;
+    private static final int REQUEST_LOGIN = 111;
 
     @Inject
     ChatroomPresenter presenter;
@@ -103,9 +103,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private PreviousMessageListQuery mPrevMessageListQuery;
     private UserSession userSession;
 
-    private CloseableBottomSheetDialog channelInfoDialog;
-
-    private static final int REQUEST_LOGIN = 111;
     private Handler sprintSaleHandler;
     private Runnable sprintSaleRunnable;
 
@@ -159,7 +156,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 scrollToBottom();
             }
         });
-        channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        CloseableBottomSheetDialog channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
         channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -381,7 +378,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                             && !(adapter.getItemAt(adapter.getItemCount() - 1) instanceof
                             SprintSaleAnnouncementViewModel)) {
                         addIncomingMessage(sprintSaleAnnouncementViewModel);
-                        if(getActivity() != null) {
+                        if (getActivity() != null) {
                             ((GroupChatContract.View) getActivity()).vibratePhone();
                         }
                     }
@@ -415,8 +412,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                                                groupChatPointsViewModel) {
         if (groupChatPointsViewModel != null) {
             if (adapter.getItemAt(adapter.getItemCount() - 1) != null
-                    && !(adapter.getItemAt(adapter.getItemCount() - 1) instanceof GroupChatPointsViewModel)
-                    && groupChatPointsViewModel != null) {
+                    && !(adapter.getItemAt(adapter.getItemCount() - 1) instanceof GroupChatPointsViewModel)) {
                 addIncomingMessage(groupChatPointsViewModel);
                 ((GroupChatContract.View) getActivity()).removeGroupChatPoints();
                 ((GroupChatContract.View) getActivity()).vibratePhone();
@@ -494,7 +490,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
 
             }
-            autoAddGroupChatPoints(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getGroupChatPointsViewModel());
+
+            if (getActivity() != null
+                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null
+                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel()
+                    .getGroupChatPointsViewModel() != null) {
+                autoAddGroupChatPoints(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getGroupChatPointsViewModel());
+            }
+
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -845,8 +848,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
     }
 
-    private void scrollToLastVisible(){
-        if(layoutManager.findFirstCompletelyVisibleItemPosition() == 0){
+    private void scrollToLastVisible() {
+        if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
             chatRecyclerView.scrollToPosition(0);
         }
     }

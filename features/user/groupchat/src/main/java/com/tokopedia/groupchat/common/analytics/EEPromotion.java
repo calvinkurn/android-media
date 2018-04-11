@@ -6,17 +6,12 @@ package com.tokopedia.groupchat.common.analytics;
 
 public class EEPromotion {
 
-    private static final String NAME_PROFILE_PAGE = "/profile page";
-    private static final String KOL_POST = "kolpost";
-
-    public static final String KEY_ID = "id";
-    public static final String KEY_NAME = "name";
-    public static final String KEY_CREATIVE = "creative";
-    public static final String KEY_POSITION = "position";
-    public static final String KEY_PROMO_ID = "promo_id";
-    public static final String KEY_PROMO_CODE = "promo_code";
-    public static final String KEY_CREATIVE_URL = "creative_url";
-    public static final String ATTRIBUTION = "attribution";
+    static final String KEY_ID = "id";
+    static final String KEY_NAME = "name";
+    static final String KEY_CREATIVE = "creative";
+    static final String KEY_POSITION = "position";
+    static final String KEY_CREATIVE_URL = "creative_url";
+    static final String ATTRIBUTION = "attribution";
     public static final String NAME_GROUPCHAT = "/groupchat";
 
     String id;

@@ -237,7 +237,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
         if (voteInfoViewModel.isVoted()) {
             setVoted(true);
-        }else {
+        } else {
             setVoted(false);
         }
 
@@ -292,9 +292,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     }
 
     /**
-     *
-     * @param voted
-     * commented per request from UI team.
+     * @param voted commented per request from UI team.
      */
     public void setVoted(boolean voted) {
 //        if(voted) {
@@ -395,11 +393,11 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         }
     }
 
-    private void setVoteAdapter(){
+    private void setVoteAdapter() {
         LinearLayoutManager voteLayoutManager;
         RecyclerView.ItemDecoration itemDecoration = null;
 
-        if(voteRecyclerView!= null && voteRecyclerView.getAdapter() !=null) {
+        if (voteRecyclerView != null && voteRecyclerView.getAdapter() != null) {
             for (int i = 0; i < voteRecyclerView.getAdapter().getItemCount(); i++) {
                 voteRecyclerView.removeItemDecoration(voteRecyclerView.getItemDecorationAt(i));
             }

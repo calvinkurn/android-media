@@ -54,4 +54,6 @@
     <dimen name="chat_tab_height">48dp</dimen>
     <dimen name="notification_circle_vote_size">22dp</dimen>
     <dimen name="channel_ads_height">48dp</dimen>
+    <dimen name="elevation_login_group_chat">40dp</dimen>
+    <dimen name="shadow_layer_group_chat_banner">128dp</dimen>
 </resources>

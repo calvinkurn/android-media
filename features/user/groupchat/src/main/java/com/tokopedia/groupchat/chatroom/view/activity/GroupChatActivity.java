@@ -94,6 +94,7 @@ import java.util.List;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /**
@@ -175,13 +176,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     public static final String EXTRA_SHOW_BOTTOM_DIALOG = "SHOW_BOTTOM";
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     public static final String INITIAL_FRAGMENT = "init_fragment";
-    private static final int REQUEST_LOGIN = 101;
     public static final String VOTE = "vote";
-    public static final String VOTE_ANNOUNCEMENT = "vote_announcement";
-    public static final String VOTE_TYPE = "vote_type";
     public static final String TOTAL_VIEW = "total_view";
     public static final String EXTRA_POSITION = "position";
-    private String voteType;
     private Runnable runnable;
     private Handler tooltipHandler;
     private boolean canShowDialog = true;
@@ -625,7 +622,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     /**
      * @param context          activity context
      * @param channelViewModel only to be used from channel list.
-     * @param position
+     * @param position         channel position from list
      * @return Intent
      */
     public static Intent getCallingIntent(Context context, ChannelViewModel channelViewModel, int position) {
@@ -801,7 +798,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             TextView temp = view.findViewById(R.id.text);
             MethodChecker.setBackground(temp, MethodChecker.getDrawable(this, R.drawable.ic_combined_shape));
             View anchorView = tabs.getChildAt(CHANNEL_VOTE_FRAGMENT);
-            if (view != null && anchorView != null) {
+            if (anchorView != null) {
                 ToolTipUtils.showToolTip(view, anchorView);
             }
         }
@@ -1413,7 +1410,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     @Override
-
     public ChannelInfoViewModel getChannelInfoViewModel() {
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
             return viewModel.getChannelInfoViewModel();
