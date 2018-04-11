@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightModuleRouter;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationRefundDetailFragment;
@@ -18,22 +20,22 @@ import com.tokopedia.flight.common.view.BaseFlightActivity;
  */
 
 public class FlightCancellationRefundDetailActivity extends BaseFlightActivity implements HasComponent<FlightCancellationComponent> {
-    private static final String FLIWGHT_WRAPPER_EXTRA = "FLIWGHT_WRAPPER_EXTRA";
+    private static final String FLIGHT_WRAPPER_EXTRA = "FLIGHT_WRAPPER_EXTRA";
     private FlightCancellationComponent cancellationComponent;
 
     private FlightCancellationWrapperViewModel wrapperViewModel;
 
     public static Intent getCallingIntent(Activity activity, FlightCancellationWrapperViewModel wrapperViewModel) {
         Intent intent = new Intent(activity, FlightCancellationRefundDetailActivity.class);
-        intent.putExtra(FLIWGHT_WRAPPER_EXTRA, wrapperViewModel);
+        intent.putExtra(FLIGHT_WRAPPER_EXTRA, wrapperViewModel);
         return intent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        wrapperViewModel = getIntent().getParcelableExtra(FLIWGHT_WRAPPER_EXTRA);
+        wrapperViewModel = getIntent().getParcelableExtra(FLIGHT_WRAPPER_EXTRA);
         super.onCreate(savedInstanceState);
-
+        setupToolbar();
     }
 
     @Override
@@ -58,4 +60,15 @@ public class FlightCancellationRefundDetailActivity extends BaseFlightActivity i
             throw new RuntimeException("Application must implement FlightModuleRouter");
         }
     }
+    private void setupToolbar() {
+        toolbar.setContentInsetStartWithNavigation(0);
+        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.grey_500));
+        String title = getString(R.string.activity_label_flight_cancellation);
+        String subtitle = String.format(
+                getString(R.string.flight_cancellation_subtitle_order_id),
+                wrapperViewModel.getInvoice()
+        );
+        updateTitle(title, subtitle);
+    }
+
 }

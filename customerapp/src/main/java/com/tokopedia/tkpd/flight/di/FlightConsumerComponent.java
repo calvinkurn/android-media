@@ -6,6 +6,7 @@ import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
 import com.tokopedia.tkpd.flight.FlightGetProfileInfoData;
 import com.tokopedia.tkpd.flight.di.module.FlightConsumerModule;
+import com.tokopedia.tkpd.flight.domain.AttachmentImageModel;
 
 import dagger.Component;
 
@@ -15,7 +16,7 @@ import dagger.Component;
 @FlightConsumerScope
 @Component(modules = FlightConsumerModule.class, dependencies = AppComponent.class)
 public interface FlightConsumerComponent {
-    UploadImageUseCase<UploadShopImageModel> uploadImageUseCase();
+    UploadImageUseCase<AttachmentImageModel> uploadImageUseCase();
 
     void inject(FlightGetProfileInfoData flightGetProfileInfoData);
 }
