@@ -57,7 +57,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
     private OnShopOpenLogisticFragmentListener onShopOpenLogisticFragmentListener;
     private TextView tvMakeSurePickupLoc;
-    private final String KURIR = "kurir"
+    private final String KURIR = "kurir";
 
     public interface OnShopOpenLogisticFragmentListener {
         void goToPickupLocation();
