@@ -53,6 +53,7 @@ public class WidgetCrackResult extends RelativeLayout {
     private TextView buttonCta;
     private ImageView closeRewardBtn;
     private String benefitType;
+    private CrackResult crackResult;
 
     private WidgetCrackResultListener listener;
 
@@ -97,6 +98,7 @@ public class WidgetCrackResult extends RelativeLayout {
     }
 
     public void showCrackResult(CrackResult crackResult) {
+        this.crackResult = crackResult;
         this.benefitType = crackResult.getBenefitType();
         showCrackResultImageAnimation(crackResult);
         showCrackResultBackgroundAnimation();
@@ -277,11 +279,26 @@ public class WidgetCrackResult extends RelativeLayout {
         listener.showToolbar();
     }
 
-    public boolean isShown(){
-        return imageViewBgCrackResult.isShown();
+    public boolean isShowReward() {
+        return imageViewBgCrackResult.isShown() && isShowCrackError() ;
     }
 
-    public void dismissReward(){
+    /**
+     * to check is the error is actually generated custom error crack or actual crack result from server.
+     */
+    private boolean isShowCrackError(){
+        if (crackResult == null) {
+            return false;
+        }
+        List<CrackBenefit> crackBenefitList = crackResult.getBenefits();
+        if (crackBenefitList== null ||crackBenefitList.size() ==0) {
+            return false;
+        }
+        CrackBenefit crackBenefit= crackBenefitList.get(0);
+        return crackBenefit!= null && !crackBenefit.isGeneralErrorType();
+    }
+
+    public void dismissReward() {
         listener.onClickCloseButton();
     }
 

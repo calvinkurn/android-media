@@ -17,6 +17,7 @@ import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
 import com.tokopedia.gamification.cracktoken.model.CrackButton;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.cracktoken.model.CrackResultStatus;
+import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackBenefit;
 import com.tokopedia.gamification.domain.GetCrackResultEggUseCase;
 import com.tokopedia.gamification.domain.GetTokenTokopointsUseCase;
 import com.tokopedia.gamification.floating.view.model.TokenAsset;
@@ -141,7 +142,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         crackResult.setBenefitLabel("Maaf, sayang sekali sepertinya");
 
         List<CrackBenefit> crackBenefits = new ArrayList<>();
-        crackBenefits.add(new CrackBenefit("Terjadi Kesalahan Teknis", "#ffffff", "medium"));
+        crackBenefits.add(new GeneralErrorCrackBenefit(getView().getContext()));
 
         Bitmap errorBitmap = BitmapFactory.decodeResource(getView().getResources(), R.drawable.image_error_crack_result);
 

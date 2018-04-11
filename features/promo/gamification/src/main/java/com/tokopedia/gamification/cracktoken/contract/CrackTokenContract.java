@@ -31,6 +31,8 @@ public interface CrackTokenContract {
 
         Resources getResources();
 
+        Context getContext();
+
         void navigateToLoginPage();
 
         void closePage();
