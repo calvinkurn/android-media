@@ -185,6 +185,7 @@ import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.flight.FlightGetProfileInfoData;
 import com.tokopedia.tkpd.flight.di.DaggerFlightConsumerComponent;
 import com.tokopedia.tkpd.flight.di.FlightConsumerComponent;
+import com.tokopedia.tkpd.flight.domain.AttachmentImageModel;
 import com.tokopedia.tkpd.flight.presentation.FlightPhoneVerificationActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
@@ -715,19 +716,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public int getCameraRequestCode() {
-        return ImageUploadHandler.REQUEST_CODE;
-    }
-
-    @Override
-    public Observable<String> uploadImage(String destinationFolderPath, String localFilePath) {
-        UploadImageUseCase<UploadShopImageModel> uploadImageUseCase = getFlightConsumerComponent().uploadImageUseCase();
-        return uploadImageUseCase.createObservable(uploadImageUseCase.createRequestParams(ShopSettingNetworkConstant.UPLOAD_SHOP_IMAGE_PATH,
-                localFilePath, ShopSettingNetworkConstant.LOGO_FILENAME_IMAGE_JPG, ""))
-                .map(new Func1<ImageUploadDomainModel<UploadShopImageModel>, String>() {
+    public Observable<String> uploadImage(String localFilePath) {
+        UploadImageUseCase<AttachmentImageModel> uploadImageUseCase = getFlightConsumerComponent().uploadImageUseCase();
+        return uploadImageUseCase.createObservable(uploadImageUseCase.createAttachmentsRequestParams(
+                localFilePath))
+                .map(new Func1<ImageUploadDomainModel<AttachmentImageModel>, String>() {
             @Override
-            public String call(ImageUploadDomainModel<UploadShopImageModel> uploadShopImageModelImageUploadDomainModel) {
-                return uploadShopImageModelImageUploadDomainModel.getDataResultImageUpload().getData().getImage().getPicSrc();
+            public String call(ImageUploadDomainModel<AttachmentImageModel> attachmentModel) {
+                return attachmentModel.getDataResultImageUpload().getData().getPicSrc();
             }
         });
     }

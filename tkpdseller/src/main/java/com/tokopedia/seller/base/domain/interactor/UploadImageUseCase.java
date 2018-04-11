@@ -1,22 +1,17 @@
 package com.tokopedia.seller.base.domain.interactor;
 
-import android.content.Context;
-
 import com.google.gson.Gson;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.seller.base.domain.UploadImageRepository;
 import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
 import com.tokopedia.seller.product.common.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.edit.domain.model.GenerateHostDomainModel;
-import com.tokopedia.seller.shop.setting.constant.ShopSettingNetworkConstant;
 
 import java.io.File;
 import java.util.Map;
@@ -32,18 +27,29 @@ import rx.functions.Func1;
 
 public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
 
-    public static final String PATH_FILE = "PATH_FILE";
-    public static final String PATH_UPLOAD = "PATH_UPLOAD";
-    public static final String HTTPS = "https://";
-    public static final String KEY_LABEL_UPLOAD_IMAGE = "KEY_LABEL_UPLOAD_IMAGE";
-    public static final String PRODUCT_ID = "PRODUCT_ID";
+    private static final String PARAM_PATH_UPLOAD = "PATH_UPLOAD";
+    private static final String HTTPS = "https://";
+    private static final String PARAM_BODY = "PARAM_BODY";
+    private static final String PARAM_SERVER_ID = "server_id";
+    private static final String PARAM_SERVER_LANGUAGE = "new_add";
+    private static final String PARAM_RESOLUTION = "resolution";
+    private static final String PARAM_ATTACHMENT_TYPE_KEY_VALUE = "fileToUpload\"; filename=\"image.jpg";
+    private static final String PARAM_WEB_SERVICE = "web_service";
+    private static final String PARAM_OS_TYPE = "os_type";
+    private static final String PARAM_ID = "id";
+
+    private static final String DEFAULT_GOLANG_VALUE = "2";
+    private static final String DEFAULT_RESOLUTION_VALUE = "300";
+    private static final String DEFAULT_ATTACHMENT_URL = "/upload/attachment";
+
     private UploadImageRepository uploadImageRepository;
     private GenerateHostRepository generateHostRepository;
     private Gson gson;
     private NetworkCalculator networkCalculator;
     private Class<T> imageUploadResultModel;
 
-    public UploadImageUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
+    public UploadImageUseCase(ThreadExecutor threadExecutor,
+                              PostExecutionThread postExecutionThread,
                               UploadImageRepository uploadImageRepository,
                               GenerateHostRepository generateHostRepository,
                               Gson gson,
@@ -63,10 +69,13 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
                 .flatMap(new Func1<GenerateHostDomainModel, Observable<ImageUploadDomainModel<T>>>() {
                     @Override
                     public Observable<ImageUploadDomainModel<T>> call(final GenerateHostDomainModel generateHostDomainModel) {
-                        return uploadImageRepository.uploadImage(getParamsUploadImage(generateHostDomainModel.getUrl(),
-                                requestParams.getString(PATH_FILE, ""), String.valueOf(generateHostDomainModel.getServerId()), requestParams.getString(PRODUCT_ID, null),
-                                requestParams.getString(KEY_LABEL_UPLOAD_IMAGE, "")),
-                                generateUploadUrl(requestParams.getString(PATH_UPLOAD, ""), generateHostDomainModel.getUrl()))
+                        return uploadImageRepository
+                                .uploadImage(
+                                        getParamsUploadImage(
+                                                String.valueOf(generateHostDomainModel.getServerId()),
+                                                (Map<String, RequestBody>) requestParams.getObject(PARAM_BODY)
+                                        ),
+                                        generateUploadUrl(requestParams.getString(PARAM_PATH_UPLOAD, ""), generateHostDomainModel.getUrl()))
                                 .map(new Func1<String, ImageUploadDomainModel<T>>() {
                                     @Override
                                     public ImageUploadDomainModel<T> call(String s) {
@@ -82,20 +91,17 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
                 });
     }
 
+    private Map<String, RequestBody> getParamsUploadImage(String serverIdUpload, Map<String, RequestBody> maps) {
+        RequestBody serverId = RequestBody.create(MediaType.parse("text/plain"), serverIdUpload);
+        maps.put(PARAM_SERVER_ID, serverId);
+        return maps;
+    }
+
     private String generateUploadUrl(String pathUpload, String urlUpload) {
         return HTTPS + urlUpload + pathUpload;
     }
 
-    public RequestParams createRequestParams(String pathUpload, String pathFile, String keyLabelUploadImage, String productId){
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(PATH_UPLOAD, pathUpload);
-        requestParams.putString(PATH_FILE, pathFile);
-        requestParams.putString(KEY_LABEL_UPLOAD_IMAGE, keyLabelUploadImage);
-        requestParams.putString(PRODUCT_ID, productId);
-        return requestParams;
-    }
-
-    public Map<String, RequestBody> getParamsUploadImage(String urlUploadImage, String pathFile, String serverIdUpload, String productId, String paramUploadImage) {
+    public RequestParams createRequestParams(String pathUpload, String pathFile, String keyLabelUploadImage, String productId) {
         Map<String, RequestBody> paramsUploadImage = new TKPDMapParam<>();
 
         File file = new File(pathFile);
@@ -105,24 +111,50 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
         RequestBody hash = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.HASH));
         RequestBody deviceTime = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.DEVICE_TIME));
         RequestBody fileToUpload = RequestBody.create(MediaType.parse("image/*"), file);
-        RequestBody newAdd = RequestBody.create(MediaType.parse("text/plain"), ShopSettingNetworkConstant.GOLANG_VALUE);
-        RequestBody resolution = RequestBody.create(MediaType.parse("text/plain"), ShopSettingNetworkConstant.RESOLUTION_DEFAULT_VALUE);
-        RequestBody serverId = RequestBody.create(MediaType.parse("text/plain"), serverIdUpload);
+        RequestBody newAdd = RequestBody.create(MediaType.parse("text/plain"), DEFAULT_GOLANG_VALUE);
+        RequestBody resolution = RequestBody.create(MediaType.parse("text/plain"), DEFAULT_RESOLUTION_VALUE);
         RequestBody productIdBody = RequestBody.create(MediaType.parse("text/plain"), productId);
 
         paramsUploadImage.put(NetworkCalculator.USER_ID, userId);
         paramsUploadImage.put(NetworkCalculator.DEVICE_ID, deviceId);
         paramsUploadImage.put(NetworkCalculator.HASH, hash);
         paramsUploadImage.put(NetworkCalculator.DEVICE_TIME, deviceTime);
-        paramsUploadImage.put(paramUploadImage, fileToUpload);
-        paramsUploadImage.put(ShopSettingNetworkConstant.SERVER_LANGUAGE, newAdd);
-        paramsUploadImage.put(ShopSettingNetworkConstant.RESOLUTION, resolution);
-        paramsUploadImage.put(ShopSettingNetworkConstant.SERVER_ID, serverId);
-        if(productId !=null && !productId.isEmpty()){
+        paramsUploadImage.put(keyLabelUploadImage, fileToUpload);
+        paramsUploadImage.put(PARAM_SERVER_LANGUAGE, newAdd);
+        paramsUploadImage.put(PARAM_RESOLUTION, resolution);
+        if (productId != null && !productId.isEmpty()) {
             paramsUploadImage.put(ProductNetworkConstant.PRODUCT_ID, productIdBody);
         }
-
-        return paramsUploadImage;
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_PATH_UPLOAD, pathUpload);
+        requestParams.putObject(PARAM_BODY, paramsUploadImage);
+        return requestParams;
     }
 
+
+    public RequestParams createAttachmentsRequestParams(String pathFile) {
+        Map<String, RequestBody> paramsUploadImage = new TKPDMapParam<>();
+        File file = new File(pathFile);
+        RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.USER_ID));
+        RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.DEVICE_ID));
+        RequestBody hash = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.HASH));
+        RequestBody deviceTime = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.DEVICE_TIME));
+        RequestBody fileToUpload = RequestBody.create(MediaType.parse("image/*"), file);
+        RequestBody webservice = RequestBody.create(MediaType.parse("text/plain"), "1");
+        RequestBody osType = RequestBody.create(MediaType.parse("text/plain"), "1");
+        RequestBody id = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getUserId());
+        paramsUploadImage.put(NetworkCalculator.USER_ID, userId);
+        paramsUploadImage.put(NetworkCalculator.DEVICE_ID, deviceId);
+        paramsUploadImage.put(NetworkCalculator.HASH, hash);
+        paramsUploadImage.put(NetworkCalculator.DEVICE_TIME, deviceTime);
+        paramsUploadImage.put(PARAM_ATTACHMENT_TYPE_KEY_VALUE, fileToUpload);
+        paramsUploadImage.put(PARAM_WEB_SERVICE, webservice);
+        paramsUploadImage.put(PARAM_OS_TYPE, osType);
+        paramsUploadImage.put(PARAM_ID, id);
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_PATH_UPLOAD, DEFAULT_ATTACHMENT_URL);
+        requestParams.putObject(PARAM_BODY, paramsUploadImage);
+        return requestParams;
+    }
 }
