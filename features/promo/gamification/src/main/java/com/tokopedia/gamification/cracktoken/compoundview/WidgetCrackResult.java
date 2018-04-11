@@ -285,7 +285,7 @@ public class WidgetCrackResult extends RelativeLayout {
     }
 
     public boolean isShowReward() {
-        return imageViewBgCrackResult.isShown() && isShowCrackError() ;
+        return imageViewBgCrackResult.isShown() && !isShowCrackError() ;
     }
 
     /**
@@ -300,7 +300,7 @@ public class WidgetCrackResult extends RelativeLayout {
             return false;
         }
         CrackBenefit crackBenefit= crackBenefitList.get(0);
-        return crackBenefit!= null && !crackBenefit.isGeneralErrorType();
+        return crackBenefit!= null && crackBenefit.isGeneralErrorType();
     }
 
     public void dismissReward() {
