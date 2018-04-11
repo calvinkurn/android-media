@@ -441,8 +441,16 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         product.setShopType(productCartPass.getShopType());
         product.setShopName(productCartPass.getShopName());
         product.setCategoryId(productCartPass.getCategoryId());
-        product.setHomeAttribution(productCartPass.getTrackerAttribution());
-        product.setList(productCartPass.getListName());
+        product.setHomeAttribution(
+                TextUtils.isEmpty(productCartPass.getTrackerAttribution())
+                        ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                        : productCartPass.getTrackerAttribution()
+        );
+        product.setList(
+                TextUtils.isEmpty(productCartPass.getListName())
+                        ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                        : productCartPass.getListName()
+        );
         GTMCart gtmCart = new GTMCart();
         gtmCart.addProduct(product.getProduct());
         gtmCart.setCurrencyCode("IDR");

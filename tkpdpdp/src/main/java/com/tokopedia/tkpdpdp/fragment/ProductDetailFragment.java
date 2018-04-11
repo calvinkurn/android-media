@@ -461,6 +461,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         .setShopId(productData.getShopInfo().getShopId())
                         .setPrice(String.valueOf(productData.getInfo().getProductPriceUnformatted()))
                         .setShopType(generateShopType(productData.getShopInfo()))
+                        .setListName(productPass.getTrackerListName())
+                        .setHomeAttribution(productPass.getTrackerAttribution())
                         .build();
                 pass.setNotes(generateVariantString());
                 if (!productData.getBreadcrumb().isEmpty()) {
