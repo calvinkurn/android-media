@@ -2,8 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
-apply from: "../buildconfig/reactnative/react.gradle"
-apply from: "../buildconfig/reactnative/codepush.gradle"
 
 
 def getDpiId(String density) {
@@ -93,9 +91,6 @@ android {
     project.ext {
         defaultVersionCode = 221001101;
         defaultVersionName = "2.21";
-        react = [
-                nodeExecutableAndArgs: $nodeExecutableAndArgs
-        ]
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -280,3 +275,10 @@ dependencies {
         exclude group: 'com.android.support'
     }
 }
+
+project.ext.react = [
+    nodeExecutableAndArgs: $nodeExecutableAndArgs
+]
+
+apply from: "../buildconfig/reactnative/react.gradle"
+apply from: "../buildconfig/reactnative/codepush.gradle"
