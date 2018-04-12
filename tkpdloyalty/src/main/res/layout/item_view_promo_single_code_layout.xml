@@ -13,7 +13,7 @@
         android:layout_height="@dimen/code_container_multiple_height"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginStart="@dimen/margin_vs"
-        android:layout_marginTop="@dimen/margin_padding_large"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@drawable/round_button">
 
         <TextView
@@ -31,8 +31,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/margin_padding_medium"
-            android:layout_marginRight="@dimen/margin_padding_medium"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
             app:srcCompat="@drawable/ic_copy_mobile"
             tools:ignore="ContentDescription" />
     </RelativeLayout>

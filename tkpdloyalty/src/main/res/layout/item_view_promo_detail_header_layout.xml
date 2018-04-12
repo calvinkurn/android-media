@@ -33,7 +33,7 @@
         android:id="@+id/fab_promo_detail_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_default"
+        android:layout_margin="@dimen/dp_16"
         android:clickable="true"
         android:focusable="true"
         app:backgroundTint="@color/white"

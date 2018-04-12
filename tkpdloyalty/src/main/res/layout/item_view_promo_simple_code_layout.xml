@@ -31,7 +31,7 @@
             android:layout_toRightOf="@id/iv_promo_code_icon"
             android:text="@string/label_promo_code_loyalty_module"
             android:textColor="@color/grey_600"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             tools:ignore="SmallSp" />
 
         <ImageView
@@ -56,7 +56,7 @@
             android:id="@+id/fl_single_code_group_layout"
             android:layout_width="@dimen/code_container_width"
             android:layout_height="@dimen/code_container_height"
-            android:layout_marginTop="@dimen/margin_default"
+            android:layout_marginTop="@dimen/dp_16"
             android:background="@drawable/round_button_left">
 
             <TextView
@@ -74,7 +74,7 @@
             android:id="@+id/rl_single_code_copy_layout"
             android:layout_width="@dimen/code_container_width"
             android:layout_height="@dimen/code_container_height"
-            android:layout_marginTop="@dimen/margin_default"
+            android:layout_marginTop="@dimen/dp_16"
             android:layout_toEndOf="@id/fl_single_code_group_layout"
             android:layout_toRightOf="@id/fl_single_code_group_layout"
             android:background="@drawable/round_button_right">
