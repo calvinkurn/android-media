@@ -15,7 +15,11 @@ import com.tokopedia.discovery.imagesearch.data.repository.ImageSearchRepository
 import com.tokopedia.discovery.imagesearch.data.repository.ImageSearchRepositoryImpl;
 import com.tokopedia.discovery.imagesearch.data.source.ImageSearchDataSource;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
+import com.tokopedia.discovery.imagesearch.search.ImageSearchPresenter;
 import com.tokopedia.discovery.newdiscovery.data.mapper.ProductMapper;
+import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
+import com.tokopedia.discovery.newdiscovery.search.SearchPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -47,5 +51,11 @@ public class ImageSearchModule {
     @Provides
     ImageSearchDataSource imageSearchDataSource(ProductMapper productMapper, BrowseApi browseApi) {
         return new ImageSearchDataSource(productMapper, browseApi);
+    }
+
+    @SearchScope
+    @Provides
+    ImageSearchPresenter provideImageSearchPresenter(GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
+        return new ImageSearchPresenter(getProductUseCase, getImageSearchUseCase);
     }
 }

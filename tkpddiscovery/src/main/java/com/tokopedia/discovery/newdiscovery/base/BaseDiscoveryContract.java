@@ -23,6 +23,8 @@ public interface BaseDiscoveryContract {
 
         void onHandleResponseSearch(ProductViewModel productViewModel);
 
+        void onHandleImageResponseSearch(ProductViewModel productViewModel);
+
         void onHandleImageSearchResponseError();
 
         void onHandleResponseIntermediary(String departmentId);
