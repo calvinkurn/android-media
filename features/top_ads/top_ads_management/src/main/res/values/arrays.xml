@@ -89,6 +89,6 @@
         <item>-click</item>
         <item>click</item>
         <item>-price_bid</item>
-        <item>-avg_cost</item>
+        <item>-price_daily</item>
     </string-array>
 </resources>

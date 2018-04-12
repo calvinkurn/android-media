@@ -27,5 +27,5 @@ public @interface SortTopAdsOption {
     String MOST_CLICKED = "-click";
     String LEAST_CLICKED = "click";
     String HIGHEST_MAX_PRICE = "-price_bid";
-    String HIGHEST_DAILY_BUDGET = "-avg_cost";
+    String HIGHEST_DAILY_BUDGET = "-price_daily";
 }
