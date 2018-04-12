@@ -14,6 +14,7 @@ import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.interactor.IPromoCouponInteractor;
 import com.tokopedia.loyalty.view.view.IPromoCouponView;
@@ -61,7 +62,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         promoCouponInteractor.getCouponList(
                 AuthUtil.generateParamsNetwork(view.getContext(), param),
                 //AuthUtil.generateDummyParamsNetwork(view.getContext(), param),
-                new Subscriber<List<CouponData>>() {
+                new Subscriber<CouponsDataWrapper>() {
                     @Override
                     public void onCompleted() {
                         view.enableSwipeRefresh();
@@ -89,11 +90,18 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                     }
 
                     @Override
-                    public void onNext(List<CouponData> couponData) {
-                        if (couponData.size() < 1) {
-                            view.couponDataNoResult();
+                    public void onNext(CouponsDataWrapper wrapper) {
+                        if (wrapper.getCoupons().size() < 1) {
+                            if (wrapper.getEmptyMessage() != null){
+                                view.couponDataNoResult(
+                                        wrapper.getEmptyMessage().getTitle(),
+                                        wrapper.getEmptyMessage().getSubTitle()
+                                );
+                            } else {
+                                view.couponDataNoResult();
+                            }
                         } else {
-                            view.renderCouponListDataResult(couponData);
+                            view.renderCouponListDataResult(wrapper.getCoupons());
                         }
                     }
                 });

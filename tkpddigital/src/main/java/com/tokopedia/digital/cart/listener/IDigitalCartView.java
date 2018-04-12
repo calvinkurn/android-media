@@ -28,7 +28,6 @@ public interface IDigitalCartView extends IBaseView {
 
     void renderErrorTimeoutConnectionAddToCart(String message);
 
-
     void renderLoadingGetCartInfo();
 
     void renderCartDigitalInfoData(CartDigitalInfoData cartDigitalInfoData);
@@ -41,8 +40,9 @@ public interface IDigitalCartView extends IBaseView {
 
     void renderErrorTimeoutConnectionGetCartData(String message);
 
-
     void renderVoucherInfoData(VoucherDigital voucherDigital);
+
+    void renderCouponInfoData(VoucherDigital voucherDigital);
 
 //    void renderErrorCheckVoucher(String message);
 
@@ -72,7 +72,6 @@ public interface IDigitalCartView extends IBaseView {
     void renderErrorNoConnectionInstantCheckout(String message);
 
     void renderErrorTimeoutConnectionInstantCheckout(String message);
-
 
     void closeViewWithMessageAlert(String message);
 
