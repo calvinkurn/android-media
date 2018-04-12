@@ -84,13 +84,13 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                         channel.setPromoName(String.format("/ - p%d - lego banner", position));
                         channel.setHomeAttribution(String.format("%d - legoBanner - $1 - $2", position));
                         HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
-                                channel.getEnhanceImpressionLegoBannerHomePage()
+                                channel.getEnhanceImpressionLegoBannerHomePage(position)
                         );
                     } else {
                         channel.setPromoName(String.format("/ - p%d - %s", position, channel.getHeader().getName()));
                         channel.setHomeAttribution(String.format("%d - curatedListBanner - %s - $1 - $2", position, channel.getHeader().getName()));
                         HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
-                                channel.getEnhanceImpressionDynamicChannelHomePage()
+                                channel.getEnhanceImpressionDynamicChannelHomePage(position)
                         );
                     }
                     list.add(mappingDynamicChannel(channel));
