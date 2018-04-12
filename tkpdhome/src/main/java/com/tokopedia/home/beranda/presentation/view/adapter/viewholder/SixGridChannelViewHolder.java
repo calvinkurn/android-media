@@ -64,27 +64,31 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
 
     @Override
     public void bind(DynamicChannelViewModel element) {
-        final DynamicHomeChannel.Channels channel = element.getChannel();
-        String titleText = element.getChannel().getHeader().getName();
-        if (!TextUtils.isEmpty(titleText)) {
-            channelTitleContainer.setVisibility(View.VISIBLE);
-            channelTitle.setText(titleText);
-        } else {
-            channelTitleContainer.setVisibility(View.GONE);
-        }
-        if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.getHeader()))) {
-            seeAllButton.setVisibility(View.VISIBLE);
-        } else {
-            seeAllButton.setVisibility(View.GONE);
-        }
-        seeAllButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), "");
+        try {
+            final DynamicHomeChannel.Channels channel = element.getChannel();
+            String titleText = element.getChannel().getHeader().getName();
+            if (!TextUtils.isEmpty(titleText)) {
+                channelTitleContainer.setVisibility(View.VISIBLE);
+                channelTitle.setText(titleText);
+            } else {
+                channelTitleContainer.setVisibility(View.GONE);
             }
-        });
+            if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.getHeader()))) {
+                seeAllButton.setVisibility(View.VISIBLE);
+            } else {
+                seeAllButton.setVisibility(View.GONE);
+            }
+            seeAllButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), "");
+                }
+            });
 
-        itemAdapter.setChannel(channel);
+            itemAdapter.setChannel(channel);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private static String getAvailableLink(String applink, String url) {
