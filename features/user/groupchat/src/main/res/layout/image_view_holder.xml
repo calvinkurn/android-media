@@ -60,6 +60,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="8"
+            android:background="@drawable/stroke_image_view_holder"
             >
 
             <android.support.v7.widget.CardView
@@ -70,15 +71,16 @@
                 app:cardElevation="0dp"
                 app:cardPreventCornerOverlap="false"
                 app:cardUseCompatPadding="true"
+                app:contentPadding="0dp"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/grey_300"
-                    android:padding="@dimen/dp_1">
+                <!--<FrameLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:background="@color/grey_300"-->
+                    <!--android:padding="@dimen/dp_1">-->
 
                     <ImageView
                         android:id="@+id/content_image"
@@ -87,7 +89,7 @@
                         android:scaleType="fitXY"
                         tools:src="@tools:sample/avatars"/>
 
-                </FrameLayout>
+                <!--</FrameLayout>-->
 
             </android.support.v7.widget.CardView>
 
