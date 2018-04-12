@@ -5,4 +5,9 @@
     <item name="font_alpha_38" type="dimen" format="float">0.38</item>
     <item name="font_alpha_70" type="dimen" format="float">0.7</item>
     <item name="font_alpha_100" type="dimen" format="float">1.0</item>
+
+    <!-- Topchat -->
+    <dimen name="max_width_chat_bubble">270dp</dimen>
+    <dimen name="margin_selected_rating">19dp</dimen>
+    <dimen name="rating_icon_size">28dp</dimen>
 </resources>

@@ -168,12 +168,12 @@
                         android:id="@+id/message"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="23dp"
-                        android:layout_marginRight="23dp"
+                        android:layout_marginEnd="@dimen/margin_selected_rating"
+                        android:layout_marginRight="@dimen/margin_selected_rating"
                         android:background="@drawable/left_bubble"
                         android:linksClickable="true"
-                        android:maxWidth="270dp"
-                        android:paddingBottom="8dp"
+                        android:maxWidth="@dimen/max_width_chat_bubble"
+                        android:paddingBottom="@dimen/dp_8"
                         android:paddingEnd="18dp"
                         android:paddingLeft="16dp"
                         android:paddingRight="18dp"
@@ -184,16 +184,17 @@
                         android:textIsSelectable="true"
                         android:textSize="@dimen/fonts"
                         android:visibility="visible"
-                        tools:text="opesjkajd asdfkj" />
+                        tools:text="opesjkajd aasdfkalskdjfla;ksdfajsdlfkjalsdjflaksjdfl;aks;dlfalskdfj;alksdflaksdjfsdfkj" />
                 </LinearLayout>
 
                 <ImageView
                     android:id="@+id/rating_selected"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="@dimen/rating_icon_size"
+                    android:layout_height="@dimen/rating_icon_size"
+                    android:layout_marginTop="@dimen/dp_4"
                     android:background="@drawable/circle_grey_border"
-                    android:padding="8dp"
-                    android:scaleType="center"
+                    android:padding="@dimen/dp_8"
+                    android:scaleType="fitCenter"
                     android:visibility="visible"
                     app:layout_constraintRight_toRightOf="@+id/message_text_holder"
                     app:layout_constraintTop_toTopOf="@id/message_text_holder"
@@ -221,9 +222,9 @@
                     android:id="@+id/rating_option_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="23dp"
-                    android:layout_marginRight="23dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="@dimen/margin_selected_rating"
+                    android:layout_marginRight="@dimen/margin_selected_rating"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:foregroundGravity="right"
                     android:gravity="end"
                     android:orientation="horizontal"
@@ -231,22 +232,22 @@
 
                     <ImageView
                         android:id="@+id/rating_option_yes"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
+                        android:layout_width="@dimen/rating_icon_size"
+                        android:layout_height="@dimen/rating_icon_size"
+                        android:layout_marginEnd="@dimen/dp_4"
+                        android:layout_marginRight="@dimen/dp_4"
                         android:background="@drawable/circle_green_border"
-                        android:padding="8dp"
-                        android:scaleType="center"
+                        android:padding="@dimen/dp_8"
+                        android:scaleType="fitCenter"
                         app:srcCompat="@drawable/ic_chat_rating_yes" />
 
                     <ImageView
                         android:id="@+id/rating_option_no"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
+                        android:layout_width="@dimen/rating_icon_size"
+                        android:layout_height="@dimen/rating_icon_size"
                         android:background="@drawable/circle_green_border"
-                        android:padding="8dp"
-                        android:scaleType="center"
+                        android:padding="@dimen/dp_8"
+                        android:scaleType="fitCenter"
                         app:srcCompat="@drawable/ic_chat_rating_no" />
 
                 </LinearLayout>
