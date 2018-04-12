@@ -1,11 +1,15 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
@@ -23,11 +27,15 @@ import rx.Subscriber;
 public class PromoCodePresenter implements IPromoCodePresenter {
     private final IPromoCodeView view;
     private final IPromoCodeInteractor promoCodeInteractor;
+    private FlightCheckVoucherUseCase flightCheckVoucherUseCase;
 
     @Inject
-    public PromoCodePresenter(IPromoCodeView view, IPromoCodeInteractor interactor) {
+    public PromoCodePresenter(IPromoCodeView view,
+                              IPromoCodeInteractor interactor,
+                              FlightCheckVoucherUseCase flightCheckVoucherUseCase) {
         this.view = view;
         this.promoCodeInteractor = interactor;
+        this.flightCheckVoucherUseCase = flightCheckVoucherUseCase;
     }
 
     @Override
@@ -54,6 +62,42 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                 makeDigitalVoucherViewModel());
     }
 
+    @Override
+    public void processCheckFlightPromoCode(Activity activity, String voucherCode, String cartId) {
+        view.showProgressLoading();
+        flightCheckVoucherUseCase.execute(
+                flightCheckVoucherUseCase.createVoucherRequest(cartId, voucherCode),
+                checkFlightVoucherSubscriber()
+        );
+    }
+
+    @NonNull
+    private Subscriber<VoucherViewModel> checkFlightVoucherSubscriber() {
+        return new Subscriber<VoucherViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                view.hideProgressLoading();
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                    view.onPromoCodeError(e.getMessage());
+                }else if (e instanceof MessageErrorException) {
+                    view.onGetGeneralError(e.getMessage());
+                } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+            }
+
+            @Override
+            public void onNext(VoucherViewModel voucherViewModel) {
+                view.hideProgressLoading();
+                view.checkDigitalVoucherSucessful(voucherViewModel);
+            }
+        };
+    }
+
     private Subscriber<VoucherViewModel> makeVoucherViewModel() {
         return new Subscriber<VoucherViewModel>() {
             @Override
@@ -64,7 +108,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
-                if(e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
                     view.onPromoCodeError(e.getMessage());
                 } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
@@ -87,7 +131,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
-                if(e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
+                if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
                     view.onPromoCodeError(e.getMessage());
                 } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
