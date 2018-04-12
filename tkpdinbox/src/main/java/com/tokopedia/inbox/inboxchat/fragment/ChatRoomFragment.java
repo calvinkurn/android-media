@@ -41,10 +41,13 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -101,6 +104,7 @@ import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -127,6 +131,9 @@ import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBS
 @RuntimePermissions
 public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
+    private static final String CONTACT_US_URL_SHORTENED = "https://tkp.me/contact-us";
+    private static final String CONTACT_US_URL_BASE_DOMAIN = TkpdBaseURL.BASE_CONTACT_US;
+
     private static final String ROLE_SHOP = "shop";
     private static final String ENABLE_TOPCHAT = "topchat_template";
     public static final String TAG = "ChatRoomFragment";
@@ -478,7 +485,16 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 id
         );
         KeyboardHandler.DropKeyboard(getActivity(), getView());
-        startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
+        if(url.equals(CONTACT_US_URL_BASE_DOMAIN) || url.equals(CONTACT_US_URL_SHORTENED)) {
+            Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                    .getContactUsIntent(getContext());
+            intent.putExtra(InboxRouter.PARAM_URL,
+                    URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, getContext()));
+            startActivity(intent);
+        }
+        else {
+            startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
+        }
     }
 
     @Override
@@ -1409,5 +1425,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
         Intent intent = AttachInvoiceActivity.createInstance(getActivity(), userId
                 , Integer.parseInt(msgId));
         startActivityForResult(intent, AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE);
+    }
+
+    @Override
+    public boolean shouldHandleUrlManually(String url) {
+        String urlManualHandlingList[] = {CONTACT_US_URL_BASE_DOMAIN,CONTACT_US_URL_SHORTENED};
+        return Arrays.asList(urlManualHandlingList).contains(url);
     }
 }
