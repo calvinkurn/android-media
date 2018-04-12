@@ -287,7 +287,7 @@ public class CartDataInteractor implements ICartDataInteractor {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             return jsonResponse.getJSONObject(DATA).getBoolean(SUCCESS);
-                        } catch (JSONException e) {
+                        } catch (JSONException | NullPointerException e) {
                             return false;
                         }
                     }
