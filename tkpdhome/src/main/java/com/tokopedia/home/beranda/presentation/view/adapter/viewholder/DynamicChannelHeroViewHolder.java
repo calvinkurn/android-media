@@ -13,6 +13,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
+import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 
@@ -35,8 +36,13 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     private ImageView channelImage4;
     private TextView channelCaption4;
     private TextView seeAllButton;
+    private TextView channelBadge1;
+    private TextView channelBadge2;
+    private TextView channelBadge3;
+    private TextView channelBadge4;
     private Context context;
     private HomeCategoryListener listener;
+    private View channelTitleContainer;
 
     public DynamicChannelHeroViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
@@ -47,6 +53,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
 
     private void findViews(View itemView) {
         channelTitle = (TextView)itemView.findViewById( R.id.channel_title );
+        channelTitleContainer = itemView.findViewById(R.id.channel_title_container);
         channelHeroImage = (ImageView)itemView.findViewById( R.id.channel_hero_image );
         channelImage1 = (ImageView)itemView.findViewById( R.id.channel_image_1 );
         channelCaption1 = (TextView)itemView.findViewById( R.id.channel_caption_1 );
@@ -56,13 +63,23 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         channelCaption3 = (TextView)itemView.findViewById( R.id.channel_caption_3 );
         channelImage4 = (ImageView)itemView.findViewById( R.id.channel_image_4 );
         channelCaption4 = (TextView)itemView.findViewById( R.id.channel_caption_4 );
+        channelBadge1 = (TextView) itemView.findViewById(R.id.channel_badge_1);
+        channelBadge2 = (TextView) itemView.findViewById(R.id.channel_badge_2);
+        channelBadge3 = (TextView) itemView.findViewById(R.id.channel_badge_3);
+        channelBadge4 = (TextView) itemView.findViewById(R.id.channel_badge_4);
         seeAllButton = (TextView)itemView.findViewById(R.id.see_all_button);
     }
 
     @Override
     public void bind(final DynamicChannelViewModel element) {
         final DynamicHomeChannel.Channels channel = element.getChannel();
-        channelTitle.setText(element.getChannel().getHeader().getName());
+        String titleText = element.getChannel().getHeader().getName();
+        if (!TextUtils.isEmpty(titleText)) {
+            channelTitleContainer.setVisibility(View.VISIBLE);
+            channelTitle.setText(titleText);
+        } else {
+            channelTitleContainer.setVisibility(View.GONE);
+        }
         channelCaption1.setText(element.getChannel().getGrids()[0].getName());
         channelCaption2.setText(element.getChannel().getGrids()[1].getName());
         channelCaption3.setText(element.getChannel().getGrids()[2].getName());
@@ -82,7 +99,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), "");
             }
         });
 
@@ -92,7 +109,8 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getHero()[0], 1)
                 );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]),
+                        element.getChannel().getHomeAttribution(1, element.getChannel().getHero()[0].getAttribution()));
             }
         });
         channelImage1.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +119,8 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[0], 2)
                 );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[0]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[0]),
+                        element.getChannel().getHomeAttribution(2, element.getChannel().getGrids()[0].getAttribution()));
             }
         });
         channelImage2.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +129,8 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[1], 3)
                 );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[1]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[1]),
+                        element.getChannel().getHomeAttribution(3, element.getChannel().getGrids()[1].getAttribution()));
             }
         });
         channelImage3.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +139,8 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[2], 4)
                 );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[2]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[2]),
+                        element.getChannel().getHomeAttribution(4, element.getChannel().getGrids()[2].getAttribution()));
             }
         });
         channelImage4.setOnClickListener(new View.OnClickListener() {
@@ -128,8 +149,14 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[3], 5)
                 );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[3]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[3]),
+                        element.getChannel().getHomeAttribution(5, element.getChannel().getGrids()[3].getAttribution()));
             }
         });
+
+        TextViewHelper.displayText(channelBadge1, channel.getGrids()[0].getLabel());
+        TextViewHelper.displayText(channelBadge2, channel.getGrids()[1].getLabel());
+        TextViewHelper.displayText(channelBadge3, channel.getGrids()[2].getLabel());
+        TextViewHelper.displayText(channelBadge4, channel.getGrids()[3].getLabel());
     }
 }

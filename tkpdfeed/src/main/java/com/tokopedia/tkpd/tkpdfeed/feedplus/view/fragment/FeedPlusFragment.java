@@ -62,10 +62,12 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard.AddFeedViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
@@ -82,6 +84,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -94,7 +97,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         FeedPlus.View.Toppicks,
         FeedPlus.View.Kol,
         SwipeRefreshLayout.OnRefreshListener,
-        TopAdsItemClickListener {
+        TopAdsItemClickListener, TopAdsInfoClickListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -121,6 +124,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String TOPADS_ITEM = "4,1";
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
     private String firstCursor = "";
+    private int loginIdInt;
 
     boolean hasLoadedOnce = false;
 
@@ -172,9 +176,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     presenter.fetchNextPage();
             }
         });
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        layoutManager = new NpaLinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL,
+                false);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
+        String loginIdString = SessionHandler.getLoginID(getActivity());
+        loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
     }
 
     @Nullable
@@ -699,20 +707,52 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
                 product.getId());
         getActivity().startActivity(intent);
         UnifyTracking.eventFeedClickProduct(product.getId(),
                 FeedTrackingEventLabel.Click.TOP_ADS_PRODUCT);
 
+        List<FeedEnhancedTracking.Promotion> listTopAds = new ArrayList<>();
+
+        listTopAds.add(new FeedEnhancedTracking.Promotion(
+                        Integer.valueOf(product.getAdId()),
+                        FeedEnhancedTracking.Promotion
+                                .createContentNameTopadsProduct(),
+                        (TextUtils.isEmpty(product.getAdRefKey()) ?
+                                FeedEnhancedTracking.Promotion.TRACKING_NONE :
+                                product.getAdRefKey()),
+                        position,
+                        String.valueOf(product.getCategory()),
+                        Integer.valueOf(product.getId()),
+                        FeedEnhancedTracking.Promotion.TRACKING_EMPTY));
+
+        TrackingUtils.eventTrackingEnhancedEcommerce(
+                FeedEnhancedTracking.getClickTracking(listTopAds, loginIdInt));
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
+    public void onShopItemClicked(int position, Shop shop) {
         Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
         startActivity(intent);
         UnifyTracking.eventFeedClickShop(shop.getId(), FeedTrackingEventLabel.Click.TOP_ADS_SHOP);
+  
+        List<FeedEnhancedTracking.Promotion> listTopAds = new ArrayList<>();
+
+        listTopAds.add(new FeedEnhancedTracking.Promotion(
+                Integer.valueOf(shop.getAdId()),
+                FeedEnhancedTracking.Promotion
+                        .createContentNameTopadsShop(),
+                shop.getAdRefKey(),
+                position,
+                FeedEnhancedTracking.Promotion.TRACKING_EMPTY,
+                Integer.valueOf(shop.getAdId()),
+                FeedEnhancedTracking.Promotion.TRACKING_EMPTY
+        ));
+
+        TrackingUtils.eventTrackingEnhancedEcommerce(
+                FeedEnhancedTracking.getClickTracking(listTopAds, loginIdInt));
     }
 
     @Override

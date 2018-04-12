@@ -2,7 +2,6 @@ package com.tokopedia.session.login.loginphonenumber.domain.interactor;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
@@ -16,7 +15,6 @@ import com.tokopedia.usecase.UseCase;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**

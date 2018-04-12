@@ -51,7 +51,6 @@ import com.tokopedia.topads.sdk.view.TopAdsView;
 
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -217,7 +216,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         @Override
-        public void onProductItemClicked(Product product) {
+        public void onProductItemClicked(int position, Product product) {
             ProductItem data = new ProductItem();
             data.setId(product.getId());
             data.setName(product.getName());
@@ -231,7 +230,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         @Override
-        public void onShopItemClicked(Shop shop) {
+        public void onShopItemClicked(int position, Shop shop) {
             Intent intent = ShopPageActivity.createIntent(context, shop.getId());
             context.startActivity(intent);
         }

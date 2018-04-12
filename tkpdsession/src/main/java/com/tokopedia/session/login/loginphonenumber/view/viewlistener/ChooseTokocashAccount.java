@@ -2,10 +2,9 @@ package com.tokopedia.session.login.loginphonenumber.view.viewlistener;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
-import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
 
 /**

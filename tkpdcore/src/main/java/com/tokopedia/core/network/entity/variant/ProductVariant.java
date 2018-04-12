@@ -3,6 +3,7 @@ package com.tokopedia.core.network.entity.variant;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -161,5 +162,28 @@ public class ProductVariant implements Parcelable {
         }
         return null;
 
+    }
+
+    public String generateVariantValue(Integer productId) {
+        List<String> optionValues = new ArrayList<>();
+
+        List<Integer> optionsIds = getChildFromProductId(productId).getOptionIds();
+
+        for (int i = 0; i < optionsIds.size(); i++) {
+            for (int j = 0; j < variant.size(); j++) {
+                for (int k = 0; k < variant.get(j).getOption().size(); k++) {
+                    Option objOption = variant.get(j).getOption().get(k);
+                    if (objOption.getId() == optionsIds.get(i)) {
+                        optionValues.add(objOption.getValue());
+                    }
+                }
+            }
+        }
+
+        if (optionValues.isEmpty()) {
+            return "";
+        } else {
+            return TextUtils.join(" - ", optionValues);
+        }
     }
 }

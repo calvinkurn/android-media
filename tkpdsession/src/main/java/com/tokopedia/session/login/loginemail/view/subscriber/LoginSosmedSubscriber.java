@@ -3,7 +3,6 @@ package com.tokopedia.session.login.loginemail.view.subscriber;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.network.ErrorCode;

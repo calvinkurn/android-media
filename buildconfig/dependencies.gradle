@@ -39,6 +39,7 @@ ext {
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
     reactNativeVersion = '0.51.0'
+    alibabaCoreLibVersion = '3.2.8'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -209,6 +210,10 @@ ext {
             showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.12"
     ]
 
+    alibabaDependencies = [
+            coreLib         : "com.aliyun:aliyun-java-sdk-core:${alibabaCoreLibVersion}"
+    ]
+
     features = [
             loyalty         : ":tkpdloyalty",
             ride            : ":tkpdride",
@@ -220,27 +225,37 @@ ext {
             transaction     : ":tkpdtransaction",
             session         : ":tkpdsession",
             topAdsSdk       : ":tkpdtopadssdk",
-            payment         : ":features:payment:payment",
             productDetail   : ":tkpdpdp",
             seller          : ":tkpdseller",
-            topAdsManagement: ":tkpdtopads",
+            payment         : ":features:payment:payment",
+            wishlistCommon  : ":features:discovery:wishlist_common",
+            goldMerchantCommon: ":features:merchant:gold_merchant_common",
             goldMerchant    : ":features:merchant:gold_merchant",
+            reputationCommon: ":features:merchant:reputation_common",
             reputation      : ":features:merchant:reputation",
+            shopCommon      : ":features:merchant:shop_common",
+            shopPage        : ":features:merchant:shop_page",
+            topAdsManagement: ":features:top_ads:top_ads_management",
             tokoCash        : ":tkpdtokocash",
-            useCase         : ":tkpdusecase",
             flight          : ":tkpdflight",
             flightNoOp      : ":features:digital:flight_no_op",
             mitraToppers    : ":features:fintech:mitra_toppers",
             event           : ":tkpdevents",
             home            : ":tkpdhome",
-            content         : ":tkpdcontent"
+            content         : ":tkpdcontent",
+            groupchat       : ":features:user:groupchat"
+
     ]
 
     libraries = [
             design          : ":tkpddesign",
             abstraction     : ":tkpdabstraction",
-            cacheApi        : ":tkpdcacheapi",
-            reactNative     : ":libraries:react_native"
+            reactNative     : ":libraries:react_native",
+            pushNotif       : ":libraries:push_notification",
+            applink         : ":libraries:applink",
+            cacheApi        : ":libraries:cache_api",
+            reactNative     : ":libraries:react_native",
+            useCase         : ":libraries:use_case"
     ]
 
 }

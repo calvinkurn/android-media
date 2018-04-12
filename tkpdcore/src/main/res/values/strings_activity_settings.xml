@@ -19,6 +19,7 @@
     <string name="pref_receive_review">Notifikasi Ulasan</string>
     <string name="pref_receive_promo">Notifikasi Promo</string>
     <string name="pref_receive_seller_info">Notifikasi Info Penjual</string>
+    <string name="pref_receive_group_chat">Notifikasi Group Chat</string>
 
     <string name="pref_about_version_title">Versi</string>
     <string name="pref_about_term_title">Syarat dan Ketentuan</string>

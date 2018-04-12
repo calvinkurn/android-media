@@ -11,15 +11,16 @@ import com.facebook.CallbackManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.network.ErrorCode;
-import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.SessionModule;
+import com.tokopedia.network.ErrorCode;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.R;
+import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
-import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.session.login.loginemail.domain.interactor.LoginEmailUseCase;
 import com.tokopedia.session.login.loginemail.view.subscriber.LoginDiscoverSubscriber;
 import com.tokopedia.session.login.loginemail.view.subscriber.LoginSosmedSubscriber;
@@ -29,7 +30,6 @@ import com.tokopedia.session.register.domain.interactor.registerinitial.GetFaceb
 import com.tokopedia.session.register.domain.interactor.registerinitial.LoginWebviewUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.LoginWithSosmedUseCase;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
-import com.tokopedia.session.WebViewLoginFragment;
 
 import java.util.ArrayList;
 
