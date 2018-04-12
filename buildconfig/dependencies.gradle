@@ -242,7 +242,7 @@ ext {
             mitraToppers    : ":features:fintech:mitra_toppers",
             event           : ":tkpdevents",
             home            : ":tkpdhome",
-            kol             : ":features:content:kol"
+            kol             : ":features:content:kol",
             groupchat       : ":features:user:groupchat"
     ]
 
