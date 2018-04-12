@@ -53,6 +53,7 @@ import rx.subscriptions.CompositeSubscription;
 public class PromoListFragment extends BasePresenterFragment implements IPromoListView,
         PromoListAdapter.ActionListener, RefreshHandler.OnRefreshHandlerListener {
     private static final String ARG_EXTRA_PROMO_MENU_DATA = "ARG_EXTRA_PROMO_MENU_DATA";
+    private static final String ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID = "ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID";
 
     private static final String EXTRA_STATE_PROMO_MENU_DATA = "EXTRA_STATE_PROMO_MENU_DATA";
     private static final String EXTRA_STATE_FILTER_SELECTED = "EXTRA_STATE_FILTER_SELECTED";
@@ -80,6 +81,8 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     private boolean isLoadMore;
     private String filterSelected = "";
     private EndlessRecyclerviewListener endlessRecyclerviewListener;
+
+    private String autoSelectedCategoryId;
 
     @Override
     protected void initInjector() {
@@ -269,6 +272,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     @Override
     protected void setupArguments(Bundle arguments) {
         this.promoMenuData = arguments.getParcelable(ARG_EXTRA_PROMO_MENU_DATA);
+        this.autoSelectedCategoryId = arguments.getString(ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID, "0");
     }
 
     @Override
@@ -301,7 +305,13 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     protected void initialVar() {
+        int indexAutoSelectCategoryFilter = 0;
         final List<QuickFilterItem> quickFilterItemList = setQuickFilterItems(promoMenuData.getPromoSubMenuDataList());
+        for (int i = 0; i < quickFilterItemList.size(); i++) {
+            QuickFilterItem item = quickFilterItemList.get(i);
+            if (autoSelectedCategoryId.equalsIgnoreCase(item.getType()))
+                indexAutoSelectCategoryFilter = i;
+        }
         quickSingleFilterView.renderFilter(quickFilterItemList);
         quickSingleFilterView.setDefaultItem(quickFilterItemList.get(0));
         quickSingleFilterView.setListener(new QuickSingleFilterView.ActionListener() {
@@ -321,7 +331,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
                 return "";
             }
         });
-        quickSingleFilterView.actionSelect(0);
+        quickSingleFilterView.actionSelect(indexAutoSelectCategoryFilter);
     }
 
     private List<QuickFilterItem> setQuickFilterItems(List<PromoSubMenuData> promoSubMenuDataList) {
@@ -342,10 +352,11 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     }
 
-    public static Fragment newInstance(PromoMenuData promoMenuData) {
+    public static Fragment newInstance(PromoMenuData promoMenuData, String autoSelectCategoryId) {
         Fragment fragment = new PromoListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_EXTRA_PROMO_MENU_DATA, promoMenuData);
+        bundle.putString(ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID, autoSelectCategoryId);
         fragment.setArguments(bundle);
         return fragment;
     }
