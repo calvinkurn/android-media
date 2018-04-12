@@ -72,9 +72,10 @@ public class UserModule {
                                                  SessionHandler sessionHandler) {
         Bundle bundle = new Bundle();
         String authKey = "";
-        if (!TextUtils.isEmpty(sessionHandler.getAccessToken(context)))
+        if (!TextUtils.isEmpty(sessionHandler.getAccessToken(context))) {
             authKey = sessionHandler.getTokenType(context) + " " + sessionHandler
                     .getAccessToken(context);
+        }
         bundle.putString(AccountsService.AUTH_KEY, authKey);
         return new AccountsService(bundle);
     }
@@ -139,12 +140,15 @@ public class UserModule {
     public OkHttpClient provideOkHttpClient(ChuckInterceptor chuckInterceptor,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor) {
-        return new OkHttpClient.Builder()
-//                .addInterceptor(chuckInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
+
+        OkHttpClient.Builder bulder = new OkHttpClient.Builder()
                 .addInterceptor(new ErrorResponseInterceptor(UserErrorResponse.class))
-                .addInterceptor(tkpdAuthInterceptor)
-                .build();
+                .addInterceptor(tkpdAuthInterceptor);
+        if(GlobalConfig.isAllowDebuggingTools()) {
+             bulder.addInterceptor(chuckInterceptor);
+             bulder.addInterceptor(httpLoggingInterceptor);
+         }
+        return bulder.build();
     }
 
     @UserScope
