@@ -133,7 +133,7 @@
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ShopStatistic"
             android:label="@string/title_activity_shop_statistic"

@@ -14,6 +14,7 @@ import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -552,7 +553,7 @@ public class SessionHandler {
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.apply();
         TrackingUtils.eventPushUserID();
-        if(!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
+        if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
 
         BranchSdkUtils.sendIdentityEvent(u_id);
 
