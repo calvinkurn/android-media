@@ -260,6 +260,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onDestroy();
         getActivity().unregisterReceiver(homeFragmentBroadcastReceiver);
         presenter.detachView();
+        recyclerView.setAdapter(null);
+        adapter = null;
+        recyclerView.setLayoutManager(null);
+        layoutManager = null;
         feedLoadMoreTriggerListener = null;
         homeFragmentBroadcastReceiver = null;
         presenter = null;
