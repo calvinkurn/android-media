@@ -3,8 +3,11 @@ package com.tokopedia.fingerprint.view;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
@@ -12,7 +15,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
-import android.support.v4.os.CancellationSignal;
 import android.util.Base64;
 import android.view.View;
 import android.widget.TextView;
@@ -22,11 +24,14 @@ import com.tokopedia.fingerprint.R;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
@@ -36,6 +41,12 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.spec.AlgorithmParameterSpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Formatter;
 
 
 /**
@@ -47,7 +58,7 @@ public class FingerPrintDialog extends BottomSheets {
 
     private TextView descFingerprint;
     private String textToEncrypt = "";
-    private FingerprintManagerCompat.CryptoObject cryptoObject;
+    private FingerprintManager.CryptoObject cryptoObject;
     private Signature signature;
     private KeyStore keyStore;
     private CancellationSignal cancellationSignal;
@@ -108,13 +119,13 @@ public class FingerPrintDialog extends BottomSheets {
     }
 
     public void startListening() {
-        FingerprintManagerCompat fingerprintManagerCompat =  FingerprintManagerCompat.from(context);
+        FingerprintManager fingerprintManager = context.getSystemService(FingerprintManager.class);
         cancellationSignal = new CancellationSignal();
-        fingerprintManagerCompat.authenticate(cryptoObject, 0, cancellationSignal, getAuthenticationCallback(), null);
+        fingerprintManager.authenticate(cryptoObject, cancellationSignal, 0, getAuthenticationCallback(), null);
     }
 
-    private FingerprintManagerCompat.AuthenticationCallback getAuthenticationCallback() {
-        return new FingerprintManagerCompat.AuthenticationCallback() {
+    private FingerprintManager.AuthenticationCallback getAuthenticationCallback() {
+        return new FingerprintManager.AuthenticationCallback() {
             @Override
             public void onAuthenticationError(int errMsgId, CharSequence errString) {
                 getCallback().onAuthenticationError(errMsgId, errString);
@@ -125,8 +136,9 @@ public class FingerPrintDialog extends BottomSheets {
                 getCallback().onAuthenticationHelp(helpMsgId, helpString);
             }
 
+
             @Override
-            public void onAuthenticationSucceeded(FingerprintManagerCompat.AuthenticationResult result) {
+            public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
                 getCallback().onAuthenticationSucceeded(getPublicKey(), getSignature());
             }
 
@@ -139,19 +151,37 @@ public class FingerPrintDialog extends BottomSheets {
     }
 
     private String getPublicKey(){
-        return new String(Base64.encode(generatePublicKey(getContext()).getEncoded(), 0));
+        String encoded = new String(Base64.encode(generatePublicKey(context).getEncoded(), 0));
+        String publicKey = "-----BEGIN PUBLIC KEY-----\r\n" + encoded + "\n-----END PUBLIC KEY-----";
+        return new String(Base64.encode(publicKey.getBytes(), 0));
     }
 
     private String getSignature() {
         Signature signature = cryptoObject.getSignature();
         String signText = "";
         try {
+//            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+//            crypt.reset();
+//            crypt.update(textToEncrypt.getBytes("UTF-8"));
             signature.update(textToEncrypt.getBytes());
-            signText = Base64.encodeToString(signature.sign(), 0);
+            signText = new String(Base64.encode(Base64.encode(signature.sign(),
+                    0), 0));
         } catch (SignatureException e) {
             e.printStackTrace();
         }
         return signText;
+    }
+
+    private static String byteToHex(final byte[] hash)
+    {
+        Formatter formatter = new Formatter();
+        for (byte b : hash)
+        {
+            formatter.format("%02x", b);
+        }
+        String result = formatter.toString();
+        formatter.close();
+        return result;
     }
 
     public void stopListening() {
@@ -159,6 +189,12 @@ public class FingerPrintDialog extends BottomSheets {
             cancellationSignal.cancel();
             cancellationSignal = null;
         }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        stopListening();
+        super.onDismiss(dialog);
     }
 
     @Override
@@ -188,7 +224,7 @@ public class FingerPrintDialog extends BottomSheets {
 
     private void initCryptoObject() {
         if (initSignature()) {
-            cryptoObject = new FingerprintManagerCompat.CryptoObject(signature);
+            cryptoObject = new FingerprintManager.CryptoObject(signature);
         }
     }
 
@@ -201,7 +237,7 @@ public class FingerPrintDialog extends BottomSheets {
         } catch (KeyPermanentlyInvalidatedException e) {
             return false;
         } catch (KeyStoreException | UnrecoverableKeyException
-                | NoSuchAlgorithmException | InvalidKeyException e) {
+                | NoSuchAlgorithmException | InvalidKeyException  e ) {
             throw new RuntimeException("Failed to init Cipher", e);
         }
     }
@@ -216,7 +252,10 @@ public class FingerPrintDialog extends BottomSheets {
                 keyStore.load(null);
                 generateKeyPair(keyStore);
 
-                return keyStore.getCertificate(FingerprintConstant.FINGERPRINT).getPublicKey();
+                publicKey = keyStore.getCertificate(FingerprintConstant.FINGERPRINT).getPublicKey();
+                KeyFactory factory = KeyFactory.getInstance(publicKey.getAlgorithm());
+                X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKey.getEncoded());
+                return factory.generatePublic(spec);
             } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
                 e.printStackTrace();
             } catch (NoSuchProviderException e) {
@@ -226,6 +265,8 @@ public class FingerPrintDialog extends BottomSheets {
             } catch (KeyStoreException e) {
                 e.printStackTrace();
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InvalidKeySpecException e) {
                 e.printStackTrace();
             }
             return publicKey;
@@ -240,8 +281,8 @@ public class FingerPrintDialog extends BottomSheets {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, FingerprintConstant.ANDROID_KEY_STORE);
             KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder(FingerprintConstant.FINGERPRINT,
                     KeyProperties.PURPOSE_SIGN)
-                    .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PSS)
-                    .setDigests(KeyProperties.DIGEST_SHA1)
+                    .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
+                    .setKeySize(2048)
                     .setUserAuthenticationRequired(false);
             keyPairGenerator.initialize(builder.build());
             keyPairGenerator.generateKeyPair();

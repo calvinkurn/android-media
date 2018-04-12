@@ -90,22 +90,22 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     @Override
     public void bind(final DynamicChannelViewModel element) {
         final DynamicHomeChannel.Channels channel = element.getChannel();
-        homeChannelTitle.setText(channel.getHeader().getName());
-        ImageHandler.loadImageThumbs(context, channelImage1, channel.getGrids()[0].getImageUrl());
-        ImageHandler.loadImageThumbs(context, channelImage2, channel.getGrids()[1].getImageUrl());
-        ImageHandler.loadImageThumbs(context, channelImage3, channel.getGrids()[2].getImageUrl());
-        channelPrice1.setText(channel.getGrids()[0].getPrice());
-        channelPrice2.setText(channel.getGrids()[1].getPrice());
-        channelPrice3.setText(channel.getGrids()[2].getPrice());
-        TextViewHelper.displayText(channelDiscount1, channel.getGrids()[0].getDiscount());
-        TextViewHelper.displayText(channelDiscount2, channel.getGrids()[1].getDiscount());
-        TextViewHelper.displayText(channelDiscount3, channel.getGrids()[2].getDiscount());
-        channelBeforeDiscPrice1.setText(channel.getGrids()[0].getSlashedPrice());
-        channelBeforeDiscPrice2.setText(channel.getGrids()[1].getSlashedPrice());
-        channelBeforeDiscPrice3.setText(channel.getGrids()[2].getSlashedPrice());
-        channelBeforeDiscPrice1.setPaintFlags(channelBeforeDiscPrice1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        channelBeforeDiscPrice2.setPaintFlags(channelBeforeDiscPrice2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        channelBeforeDiscPrice3.setPaintFlags(channelBeforeDiscPrice3.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+//        homeChannelTitle.setText(channel.getHeader().getName());
+//        ImageHandler.loadImageThumbs(context, channelImage1, channel.getGrids()[0].getImageUrl());
+//        ImageHandler.loadImageThumbs(context, channelImage2, channel.getGrids()[1].getImageUrl());
+////        ImageHandler.loadImageThumbs(context, channelImage3, channel.getGrids()[2].getImageUrl());
+//        channelPrice1.setText(channel.getGrids()[0].getPrice());
+//        channelPrice2.setText(channel.getGrids()[1].getPrice());
+//        channelPrice3.setText(channel.getGrids()[2].getPrice());
+//        TextViewHelper.displayText(channelDiscount1, channel.getGrids()[0].getDiscount());
+//        TextViewHelper.displayText(channelDiscount2, channel.getGrids()[1].getDiscount());
+//        TextViewHelper.displayText(channelDiscount3, channel.getGrids()[2].getDiscount());
+//        channelBeforeDiscPrice1.setText(channel.getGrids()[0].getSlashedPrice());
+//        channelBeforeDiscPrice2.setText(channel.getGrids()[1].getSlashedPrice());
+////        channelBeforeDiscPrice3.setText(channel.getGrids()[2].getSlashedPrice());
+//        channelBeforeDiscPrice1.setPaintFlags(channelBeforeDiscPrice1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+//        channelBeforeDiscPrice2.setPaintFlags(channelBeforeDiscPrice2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+//        channelBeforeDiscPrice3.setPaintFlags(channelBeforeDiscPrice3.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
         if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.getHeader()))) {
             seeAllButton.setVisibility(View.VISIBLE);

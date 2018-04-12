@@ -1,21 +1,21 @@
 package com.tokopedia.payment.fingerprint.di;
 
-import android.content.Context;
-
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.payment.fingerprint.data.AccountFingerprintApi;
 import com.tokopedia.payment.fingerprint.data.FingerprintApi;
 import com.tokopedia.payment.fingerprint.data.FingerprintDataSourceCloud;
 import com.tokopedia.payment.fingerprint.data.FingerprintRepositoryImpl;
 import com.tokopedia.payment.fingerprint.domain.FingerprintRepository;
+import com.tokopedia.payment.fingerprint.domain.GetPostDataOtpUseCase;
 import com.tokopedia.payment.fingerprint.domain.PaymentFingerprintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SaveFingerPrintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SavePublicKeyUseCase;
 import com.tokopedia.payment.fingerprint.util.FingerprintConstant;
 import com.tokopedia.payment.presenter.TopPayPresenter;
-import com.tokopedia.payment.router.IPaymentModuleRouter;
+
+import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
@@ -31,14 +31,18 @@ import retrofit2.Retrofit;
 @Module
 public class FingerprintModule {
 
+    public static final int READ_TIMEOUT = 30;
+    public static final int WRITE_TIMEOUT = 30;
+
     @FingerprintScope
     @Provides
     TopPayPresenter provideTopPayPresenter(SaveFingerPrintUseCase saveFingerPrintUseCase,
                                            SavePublicKeyUseCase savePublicKeyUseCase,
                                            PaymentFingerprintUseCase paymentFingerprintUseCase,
+                                           GetPostDataOtpUseCase getPostDataOtpUseCase,
                                            UserSession userSession){
         return new TopPayPresenter(saveFingerPrintUseCase, savePublicKeyUseCase,
-                paymentFingerprintUseCase, userSession);
+                paymentFingerprintUseCase, getPostDataOtpUseCase, userSession);
     };
 
     @FingerprintScope
@@ -78,9 +82,13 @@ public class FingerprintModule {
     @FingerprintScope
     @Provides
     public OkHttpClient provideOkHttpClient(TkpdAuthInterceptor tkpdAuthInterceptor, HttpLoggingInterceptor httpLoggingInterceptor){
-        return new OkHttpClient.Builder()
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .build();
+                .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
+        if(GlobalConfig.isAllowDebuggingTools()){
+            builder.addInterceptor(httpLoggingInterceptor);
+        }
+        return builder.build();
     }
 }

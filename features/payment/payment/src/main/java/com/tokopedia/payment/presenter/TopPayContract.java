@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.payment.model.PaymentPassData;
 
+import java.util.HashMap;
+
 /**
  * Created by zulfikarrahman on 3/27/18.
  */
@@ -19,6 +21,8 @@ public interface TopPayContract {
         void registerFingerPrint(String transactionId, String publicKey, String date, String accountSignature, String userId);
 
         void paymentFingerPrint(String transactionId, String partner, String publicKey, String date, String accountSignature, String userId);
+
+        void getPostDataOtp(String transactionId, String urlOtp);
 
         String getUserId();
     }
@@ -68,5 +72,9 @@ public interface TopPayContract {
         void onErrorPaymentFingerPrint(Throwable e);
 
         void onSuccessPaymentFingerprint(String url, String paramEncode);
+
+        void onErrorGetPostDataOtp(Throwable e);
+
+        void onSuccessGetPostDataOTP(String postData, String urlOtp);
     }
 }

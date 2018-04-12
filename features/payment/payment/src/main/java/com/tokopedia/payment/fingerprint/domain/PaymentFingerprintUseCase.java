@@ -32,7 +32,7 @@ public class PaymentFingerprintUseCase extends UseCase<ResponsePaymentFingerprin
 
     @Override
     public Observable<ResponsePaymentFingerprint> createObservable(RequestParams requestParams) {
-        return fingerprintRepository.paymentWithFingerPrint(requestParams.getParamsAllValueInString());
+        return fingerprintRepository.paymentWithFingerPrint(requestParams.getParameters());
     }
 
     public RequestParams createRequestParams(String transactionId, String partner, String publicKey, String date, String accountSignature, String userId) {
@@ -42,7 +42,7 @@ public class PaymentFingerprintUseCase extends UseCase<ResponsePaymentFingerprin
         requestParams.putString(PUBLIC_KEY, publicKey);
         requestParams.putString(DATE, date);
         requestParams.putString(ACCOUNT_SIGNATURE, accountSignature);
-        requestParams.putString(USER_ID, userId);
+        requestParams.putInt(USER_ID, Integer.valueOf(userId));
         requestParams.putString(OS, OS_ANDROID_VALUE);
         return requestParams;
     }

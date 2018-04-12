@@ -3,6 +3,7 @@ package com.tokopedia.payment.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint;
+import com.tokopedia.payment.fingerprint.domain.GetPostDataOtpUseCase;
 import com.tokopedia.payment.fingerprint.domain.PaymentFingerprintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SaveFingerPrintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SavePublicKeyUseCase;
@@ -10,6 +11,9 @@ import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 import rx.Subscriber;
 
@@ -21,14 +25,16 @@ public class TopPayPresenter extends BaseDaggerPresenter<TopPayContract.View> im
 
     private SaveFingerPrintUseCase saveFingerPrintUseCase;
     private PaymentFingerprintUseCase paymentFingerprintUseCase;
+    private GetPostDataOtpUseCase getPostDataOtpUseCase;
     private UserSession userSession;
 
     public TopPayPresenter(SaveFingerPrintUseCase saveFingerPrintUseCase,
                            SavePublicKeyUseCase savePublicKeyUseCase,
                            PaymentFingerprintUseCase paymentFingerprintUseCase,
-                           UserSession userSession) {
+                           GetPostDataOtpUseCase getPostDataOtpUseCase, UserSession userSession) {
         this.saveFingerPrintUseCase = saveFingerPrintUseCase;
         this.paymentFingerprintUseCase = paymentFingerprintUseCase;
+        this.getPostDataOtpUseCase = getPostDataOtpUseCase;
         this.userSession = userSession;
     }
 
@@ -57,8 +63,62 @@ public class TopPayPresenter extends BaseDaggerPresenter<TopPayContract.View> im
     }
 
     @Override
+    public void getPostDataOtp(String transactionId, String urlOtp) {
+        getView().showProgressDialog();
+        getPostDataOtpUseCase.execute(getPostDataOtpUseCase.createRequestParams(transactionId,urlOtp),
+                getSubscriberPostDataOTP(urlOtp));
+    }
+
+    @Override
     public String getUserId() {
         return userSession.getUserId();
+    }
+
+    private Subscriber<HashMap<String, String>> getSubscriberPostDataOTP(final String urlOtp) {
+        return new Subscriber<HashMap<String, String>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideProgressBarDialog();
+                getView().onErrorGetPostDataOtp(e);
+            }
+
+            @Override
+            public void onNext(HashMap<String, String> stringStringHashMap) {
+                getView().hideProgressBarDialog();
+                if(stringStringHashMap != null){
+                    getView().onSuccessGetPostDataOTP(urlEncodeUTF8(stringStringHashMap), urlOtp);
+                }else{
+                    getView().onErrorGetPostDataOtp(new RuntimeException());
+                }
+            }
+        };
+    }
+
+    private String urlEncodeUTF8(Map<String,String> map) {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String,String> entry : map.entrySet()) {
+            if (sb.length() > 0) {
+                sb.append("&");
+            }
+            sb.append(String.format("%s=%s",
+                    urlEncodeUTF8(entry.getKey().toString()),
+                    urlEncodeUTF8(entry.getValue().toString())
+            ));
+        }
+        return sb.toString();
+    }
+
+    private String urlEncodeUTF8(String s) {
+        try {
+            return URLEncoder.encode(s, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new UnsupportedOperationException(e);
+        }
     }
 
     public Subscriber<Boolean> getSubscriberRegisterFingerPrint() {
@@ -101,6 +161,7 @@ public class TopPayPresenter extends BaseDaggerPresenter<TopPayContract.View> im
 
             @Override
             public void onNext(ResponsePaymentFingerprint responsePaymentFingerprint) {
+                getView().hideProgressBarDialog();
                 if(responsePaymentFingerprint.isSuccess()){
                     getView().onSuccessPaymentFingerprint(responsePaymentFingerprint.getUrl(), responsePaymentFingerprint.getParamEncode());
                 }else{

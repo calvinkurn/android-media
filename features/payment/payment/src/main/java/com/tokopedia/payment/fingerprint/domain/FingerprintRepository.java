@@ -11,9 +11,11 @@ import rx.Observable;
  */
 
 public interface FingerprintRepository {
-    Observable<Boolean> saveFingerprint(HashMap<String, String> params);
+    Observable<Boolean> saveFingerprint(HashMap<String, Object> params);
 
-    Observable<ResponsePaymentFingerprint> paymentWithFingerPrint(HashMap<String, String> params);
+    Observable<ResponsePaymentFingerprint> paymentWithFingerPrint(HashMap<String, Object> params);
 
     Observable<Boolean> savePublicKey(HashMap<String, String> params);
+
+    Observable<HashMap<String,String>> getPostDataOtp(String transactionId);
 }

@@ -34,12 +34,12 @@ public class SaveFingerPrintUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(final RequestParams requestParams) {
-        return savePublicKeyUseCase.createObservable(savePublicKeyUseCase.createRequestParams(requestParams.getString(PUBLIC_KEY, ""),
-                requestParams.getString(USER_ID, "")))
+        return savePublicKeyUseCase.createObservable(savePublicKeyUseCase.createRequestParams(requestParams.getString(USER_ID, ""),
+                requestParams.getString(PUBLIC_KEY, "")))
                 .flatMap(new Func1<Boolean, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Boolean aBoolean) {
-                        return fingerprintRepository.saveFingerprint(requestParams.getParamsAllValueInString());
+                        return fingerprintRepository.saveFingerprint(requestParams.getParameters());
                     }
                 });
     }

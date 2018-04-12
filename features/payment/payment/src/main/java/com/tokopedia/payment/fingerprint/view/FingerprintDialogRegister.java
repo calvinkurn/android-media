@@ -1,12 +1,25 @@
 package com.tokopedia.payment.fingerprint.view;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.security.keystore.KeyProperties;
 import android.support.annotation.Nullable;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.payment.R;
 
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -27,6 +40,8 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     private int counterError = 0;
 
     private ListenerRegister listenerRegister;
+    private boolean isAttached;
+    private String date;
 
     public static FingerprintDialogRegister createInstance(String userId, String transactionId) {
         FingerprintDialogRegister fingerprintDialogRegister = new FingerprintDialogRegister();
@@ -50,8 +65,9 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
 
     @Override
     public void startListening() {
+        date = generateDate();
+        setTextToEncrypt(userId + date);
         super.startListening();
-        setTextToEncrypt(generateDate() + userId);
     }
 
     @Override
@@ -62,8 +78,7 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     private String generateDate() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+                "EEE, dd MMM yyyy HH:mm:ss ZZZ", Locale.ENGLISH);
         return dateFormat.format(calendar.getTime());
     }
 
@@ -74,17 +89,33 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     }
 
     private boolean updateCounterError() {
-        counterError++;
-        if (isVisible()) {
+        if (isAttached) {
+            counterError++;
             updateDesc(getString(R.string.fingerprint_label_desc_default));
             updateTitle(getString(R.string.fingerprint_label_try_again));
-        }
-        if (counterError > MAX_ERROR) {
-            dismiss();
-            return false;
+            if (counterError > MAX_ERROR) {
+                stopListening();
+                listenerRegister.showErrorRegisterSnackbar();
+                dismiss();
+                return false;
+            } else {
+                return true;
+            }
         } else {
             return true;
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        isAttached = true;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        isAttached = false;
+        super.onDismiss(dialog);
     }
 
     @Override
@@ -99,7 +130,7 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
 
     @Override
     public void onAuthenticationSucceeded(String publicKey, String signature) {
-        listenerRegister.onRegisterFingerPrint(transactionId,publicKey, generateDate(), signature, userId );
+        listenerRegister.onRegisterFingerPrint(transactionId, publicKey, date, signature, userId);
     }
 
     @Override
@@ -107,7 +138,15 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
         updateCounterError();
     }
 
+    public void onErrorRegisterFingerPrint() {
+        if (updateCounterError()) {
+            startListening();
+        }
+    }
+
     public interface ListenerRegister {
         void onRegisterFingerPrint(String transactionId, String publicKey, String date, String signature, String userId);
+
+        void showErrorRegisterSnackbar();
     }
 }

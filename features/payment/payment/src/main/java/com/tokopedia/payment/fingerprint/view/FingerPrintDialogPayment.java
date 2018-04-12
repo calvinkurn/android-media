@@ -1,5 +1,7 @@
 package com.tokopedia.payment.fingerprint.view;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -10,7 +12,6 @@ import com.tokopedia.payment.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -35,6 +36,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     private String transactionId;
     private String partner;
     private int counterError = 0;
+    private boolean isAttached;
 
     public static FingerPrintDialogPayment createInstance(String userId, String urlOtp, String transactionId, String partner){
         FingerPrintDialogPayment fingerPrintDialogPayment = new FingerPrintDialogPayment();
@@ -50,7 +52,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     @Override
     public void startListening() {
         super.startListening();
-        setTextToEncrypt(generateDate() + userId);
+        setTextToEncrypt( userId + generateDate());
     }
 
     public void setListenerPayment(ListenerPayment listenerPayment) {
@@ -79,8 +81,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     private String generateDate() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+                "EEE, dd MMM yyyy HH:mm:ss ZZZ", Locale.ENGLISH);
         return dateFormat.format(calendar.getTime());
     }
 
@@ -91,7 +92,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
         buttonUseOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listenerPayment.onGoToOtpPage(urlOtp);
+                listenerPayment.onGoToOtpPage(transactionId, urlOtp);
             }
         });
     }
@@ -106,16 +107,32 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     }
 
     private boolean updateCounterError() {
-        counterError++;
-        updateTitle(getString(R.string.fingerprint_label_failed_scan));
-        setVisibilityContainer(true);
-        if (counterError > MAX_ERROR) {
-            dismiss();
-            listenerPayment.onGoToOtpPage(urlOtp);
-            return false;
-        } else {
+        if(isAttached) {
+            counterError++;
+            updateTitle(getString(R.string.fingerprint_label_failed_scan));
+            setVisibilityContainer(true);
+            if (counterError > MAX_ERROR) {
+                dismiss();
+                listenerPayment.onGoToOtpPage(transactionId, urlOtp);
+                return false;
+            } else {
+                return true;
+            }
+        }else{
             return true;
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        isAttached = true;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        isAttached = false;
+        super.onDismiss(dialog);
     }
 
     @Override
@@ -146,7 +163,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
 
     public interface ListenerPayment {
 
-        void onGoToOtpPage(String urlOtp);
+        void onGoToOtpPage(String transactionId, String urlOtp);
 
         void onPaymentFingerPrint(String transactionId, String partner, String publicKey, String date, String signature, String userId);
     }
