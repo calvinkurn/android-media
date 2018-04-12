@@ -44,7 +44,7 @@
 
     <string name="title_product_ad_detail">Detil Promo Produk</string>
     <string name="title_shop_ad_detail">Detil Promo Toko</string>
-    <string name="title_group_ad_detail">Detil Promo Grup</string>
+    <string name="title_group_ad_detail">Detail Grup Promo</string>
     <string name="title_group_ad_edit">Ubah Promo Grup</string>
     <string name="title_product_ad_edit">Ubah Promo Produk</string>
     <string name="title_delete_promo">Hapus Promo?</string>

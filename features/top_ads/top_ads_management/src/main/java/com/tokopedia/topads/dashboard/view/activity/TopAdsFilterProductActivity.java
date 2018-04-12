@@ -39,7 +39,7 @@ public class TopAdsFilterProductActivity extends BaseFilterActivity {
         topAdsFilterStatusFragment.setActive(selectedFilterStatus > 0);
         filterContentFragmentList.add(topAdsFilterStatusFragment);
         TopAdsFilterGroupNameFragment topAdsFilterGroupNameFragment = TopAdsFilterGroupNameFragment.createInstance(selectedGroupId, currentGroupId, currentGroupName);
-        topAdsFilterGroupNameFragment.setActive(selectedGroupId > 0);
+        topAdsFilterGroupNameFragment.setActive(selectedGroupId != 0);
         filterContentFragmentList.add(topAdsFilterGroupNameFragment);
         return filterContentFragmentList;
     }
