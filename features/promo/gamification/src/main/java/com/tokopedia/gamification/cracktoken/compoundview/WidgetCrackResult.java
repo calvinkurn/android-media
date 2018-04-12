@@ -29,6 +29,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
+import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackResult;
 
 import java.util.List;
 
@@ -38,9 +39,9 @@ import java.util.List;
 
 public class WidgetCrackResult extends RelativeLayout {
 
-    private final String TEXT_SIZE_REWARD_LARGE = "large";
-    private final String TEXT_SIZE_REWARD_MEDIUM = "medium";
-    private final String TEXT_SIZE_REWARD_SMALL = "small";
+    private static final String TEXT_SIZE_REWARD_LARGE = "large";
+    private static final String TEXT_SIZE_REWARD_MEDIUM = "medium";
+    private static final String TEXT_SIZE_REWARD_SMALL = "small";
 
     private ImageView imageViewBgCrackResult;
     private ImageView imageViewCrackResult;
@@ -291,16 +292,8 @@ public class WidgetCrackResult extends RelativeLayout {
     /**
      * to check is the error is actually generated custom error crack or actual crack result from server.
      */
-    private boolean isShowCrackError(){
-        if (crackResult == null) {
-            return false;
-        }
-        List<CrackBenefit> crackBenefitList = crackResult.getBenefits();
-        if (crackBenefitList== null ||crackBenefitList.size() ==0) {
-            return false;
-        }
-        CrackBenefit crackBenefit= crackBenefitList.get(0);
-        return crackBenefit!= null && crackBenefit.isGeneralErrorType();
+    private boolean isShowCrackError() {
+        return crackResult != null && crackResult instanceof GeneralErrorCrackResult;
     }
 
     public void dismissReward() {

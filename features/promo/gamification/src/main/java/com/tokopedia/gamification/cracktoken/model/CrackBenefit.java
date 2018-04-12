@@ -23,10 +23,6 @@ public class CrackBenefit {
         this.size = size;
     }
 
-    public boolean isGeneralErrorType (){
-        return this instanceof GeneralErrorCrackBenefit;
-    }
-
     public String getText() {
         return text;
     }
