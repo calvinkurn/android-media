@@ -71,6 +71,9 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     public void startBannerSlide(TouchViewPager viewPager) {
         this.mTouchViewPager = viewPager;
         currentPage = viewPager.getCurrentItem();
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage).getTitle() +
+                " - " + currentPage);
+        carousel.getItems().get(currentPage).setTrack(true);
         try {
             totalPages = viewPager.getAdapter().getCount();
         } catch (Exception e) {
@@ -98,11 +101,6 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                             currentPage = 0;
                         }
                         mTouchViewPager.setCurrentItem(currentPage, true);
-                        if (!carousel.getItems().get(currentPage).isTrack()) {
-                            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage) +
-                                    " - " + currentPage);
-                            carousel.getItems().get(currentPage).setTrack(true);
-                        }
                     }
                 });
     }
@@ -111,7 +109,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     public void onBannerSlide(int page) {
         currentPage = page;
         if (!carousel.getItems().get(currentPage).isTrack()) {
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage) +
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage).getTitle() +
                     " - " + currentPage);
             carousel.getItems().get(currentPage).setTrack(true);
         }
@@ -143,7 +141,6 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             return true;
         } else {
             getView().getActivity().onBackPressed();
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getSCREEN_NAME());
             return true;
         }
     }

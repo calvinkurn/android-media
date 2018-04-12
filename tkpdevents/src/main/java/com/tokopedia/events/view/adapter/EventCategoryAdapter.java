@@ -29,6 +29,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
 
     private List<CategoryItemsViewModel> categoryItems;
     private Context context;
+    private boolean isTrackingEnabled = false;
 
     public EventCategoryAdapter(Context context, List<CategoryItemsViewModel> categoryItems) {
         this.context = context;
@@ -45,7 +46,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         public LinearLayout eventTimeLayout;
         public TextView tvDisplayTag;
         private int index;
-        private boolean isShown;
+        private boolean isShown = false;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
@@ -99,6 +100,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         holder.eventTitle.setText(model.getDisplayName());
         holder.eventPrice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(model.getSalesPrice()));
         holder.eventLocation.setText(model.getCityName());
+        holder.setShown(model.isTrack());
         if (model.getMinStartDate() == 0) {
             holder.eventTimeLayout.setVisibility(View.GONE);
         } else {
@@ -127,11 +129,17 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
     @Override
     public void onViewAttachedToWindow(ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        if (!holder.isShown()) {
+        if (!holder.isShown() && isTrackingEnabled) {
             holder.setShown(true);
+            categoryItems.get(holder.getIndex()).setTrack(true);
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryItems.get(holder.getIndex()).getTitle()
                     + " - " + holder.getIndex());
         }
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
     }
 
     class CategoryItemViewListener implements View.OnClickListener {
@@ -151,6 +159,14 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_CLICK, categoryItems.get(mViewHolder.getIndex()).getTitle()
                     + "-" + String.valueOf(mViewHolder.getIndex()));
         }
+    }
+
+    public void enableTracking() {
+        isTrackingEnabled = true;
+    }
+
+    public void disableTracking() {
+        isTrackingEnabled = false;
     }
 
 }

@@ -35,9 +35,11 @@ import com.tokopedia.events.view.adapter.CategoryFragmentPagerAdapter;
 import com.tokopedia.events.view.adapter.SlidingImageAdapter;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.customview.EventCategoryView;
+import com.tokopedia.events.view.fragment.CategoryFragment;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
 import com.tokopedia.events.view.utils.CirclePageIndicator;
 import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.utils.IFragmentLifecycleCallback;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import com.tokopedia.events.view.viewmodel.EventLocationViewModel;
 
@@ -55,14 +57,13 @@ import butterknife.Unbinder;
  */
 public class EventsHomeActivity extends TActivity
         implements HasComponent<EventComponent>,
-        EventsContract.View {
+        EventsContract.View, CategoryFragment.ICategoryFragmentCallbacks {
 
     private Unbinder unbinder;
     public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
     public static final int REQUEST_CODE_EVENTSEARCHACTIVITY = 901;
 
     private Menu mMenu;
-
 
     EventComponent eventComponent;
     @Inject
@@ -98,6 +99,7 @@ public class EventsHomeActivity extends TActivity
     public final static String EXTRA_SECTION = "extra_section";
 
     private SlidingImageAdapter adapter;
+    private CategoryFragmentPagerAdapter categoryTabsPagerAdapter;
 
     @DeepLink({Constants.Applinks.EVENTS, Constants.Applinks.EVENTS_HIBURAN})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
@@ -262,7 +264,7 @@ public class EventsHomeActivity extends TActivity
             }
         }
 
-        CategoryFragmentPagerAdapter categoryTabsPagerAdapter =
+        categoryTabsPagerAdapter =
                 new CategoryFragmentPagerAdapter(getSupportFragmentManager(), categoryList);
         categoryViewPager.setAdapter(categoryTabsPagerAdapter);
         setCategoryViewPagerListener();
@@ -270,6 +272,8 @@ public class EventsHomeActivity extends TActivity
         categoryViewPager.setCurrentItem(defaultViewPagerPos);
         categoryViewPager.setSaveFromParentEnabled(false);
         indicatorLayout.setVisibility(View.VISIBLE);
+        IFragmentLifecycleCallback fragmentToShow = (CategoryFragment) categoryTabsPagerAdapter.getItem(0);
+        fragmentToShow.fragmentResume();
     }
 
 
@@ -298,15 +302,25 @@ public class EventsHomeActivity extends TActivity
 
     private void setCategoryViewPagerListener() {
         categoryViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            int currentPosition = 0;
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
             }
 
             @Override
-            public void onPageSelected(int position) {
-                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_TAB, categoryViewPager.getAdapter().getPageTitle(position) + "-"
-                        + String.valueOf(position));
+            public void onPageSelected(int newPosition) {
+                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_TAB, categoryViewPager.getAdapter().getPageTitle(newPosition) + "-"
+                        + String.valueOf(newPosition));
+
+                IFragmentLifecycleCallback fragmentToShow = (CategoryFragment) categoryTabsPagerAdapter.getItem(newPosition);
+                fragmentToShow.fragmentResume();
+
+                IFragmentLifecycleCallback fragmentToHide = (CategoryFragment) categoryTabsPagerAdapter.getItem(currentPosition);
+                fragmentToHide.fragmentPause();
+
+                currentPosition = newPosition;
             }
 
             @Override
@@ -335,5 +349,10 @@ public class EventsHomeActivity extends TActivity
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public int getCurrentPagerPosition() {
+        return categoryViewPager.getCurrentItem();
     }
 }

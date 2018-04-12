@@ -1,6 +1,7 @@
 package com.tokopedia.core.analytics;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.appsflyer.AFInAppEventType;
 import com.moe.pushlibrary.PayloadBuilder;
@@ -3378,6 +3379,7 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventDigitalEventTracking(String action, String label) {
+        Log.d("EVENTSGA", action + " - " + label);
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,

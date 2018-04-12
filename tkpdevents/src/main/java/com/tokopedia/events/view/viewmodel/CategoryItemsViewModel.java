@@ -76,7 +76,7 @@ public class CategoryItemsViewModel implements Parcelable {
     private String cityName;
     private Object schedules;
     private Object forms;
-    private boolean isTrack;
+    private boolean isTrack = false;
 
     public CategoryItemsViewModel() {
     }

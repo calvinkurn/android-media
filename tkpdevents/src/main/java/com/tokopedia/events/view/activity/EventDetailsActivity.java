@@ -313,12 +313,12 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         if (tvExpandableDescription.isExpanded()) {
             seemorebutton.setText(R.string.expand);
             ivArrowSeating.animate().rotation(0f);
-            UnifyTracking.eventDigitalEventTracking("deskripsi - " + getString(R.string.expand),
+            UnifyTracking.eventDigitalEventTracking("deskripsi - " + getString(R.string.collapse),
                     textViewTitle.getText().toString());
         } else {
             seemorebutton.setText(R.string.collapse);
             ivArrowSeating.animate().rotation(180f);
-            UnifyTracking.eventDigitalEventTracking("deskripsi - " + getString(R.string.collapse),
+            UnifyTracking.eventDigitalEventTracking("deskripsi - " + getString(R.string.expand),
                     textViewTitle.getText().toString());
         }
         tvExpandableDescription.toggle();
@@ -329,13 +329,13 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         if (tvExpandableTermsNCondition.isExpanded()) {
             seemorebuttonTnC.setText(R.string.expand);
             ivArrowSeatingTnC.animate().rotation(0f);
-            UnifyTracking.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.expand),
+            UnifyTracking.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.collapse),
                     textViewTitle.getText().toString());
 
         } else {
             seemorebuttonTnC.setText(R.string.collapse);
             ivArrowSeatingTnC.animate().rotation(180f);
-            UnifyTracking.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.collapse),
+            UnifyTracking.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.expand),
                     textViewTitle.getText().toString());
         }
         tvExpandableTermsNCondition.toggle();
