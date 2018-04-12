@@ -68,7 +68,7 @@
                 app:backgroundColor="@color/black"
                 app:cornerSize="5"
                 app:customText="@string/register_with_email"
-                app:iconButton="@drawable/ic_email"
+                app:iconButton="@drawable/ic_email_register"
                 app:textColor="@color/black_70" />
 
 
