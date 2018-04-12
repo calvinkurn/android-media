@@ -1,7 +1,9 @@
 package com.tokopedia.core.deposit.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -19,6 +21,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deposit.adapter.DepositAdapter;
 import com.tokopedia.core.deposit.listener.DepositFragmentView;
 import com.tokopedia.core.deposit.presenter.DepositFragmentPresenter;
@@ -410,5 +413,37 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView();
+    }
+
+    @Override
+    public void showWithdrawalNoPassword() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(context.getResources().getString(R.string.error_deposit_no_password_title));
+        builder.setMessage(context.getResources().getString(R.string.error_deposit_no_password_content));
+        builder.setPositiveButton(context.getResources().getString(R.string.error_no_password_yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                intentToAddPassword(context);
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton(context.getResources().getString(R.string.error_no_password_no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(context, R.color.black_54));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(context, R.color.tkpd_main_green));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+    }
+
+    private void intentToAddPassword(Context context) {
+        context.startActivity(
+                ((TkpdCoreRouter)context.getApplicationContext())
+                        .getAddPasswordIntent(context));
     }
 }

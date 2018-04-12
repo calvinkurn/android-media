@@ -23,6 +23,7 @@ import com.tokopedia.loyalty.domain.entity.response.VoucherResponse;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
 import java.util.List;
@@ -61,11 +62,11 @@ public class TokoPointRepository implements ITokoPointRepository {
     }
 
     @Override
-    public Observable<List<CouponData>> getCouponList(TKPDMapParam<String, String> param) {
+    public Observable<CouponsDataWrapper> getCouponList(TKPDMapParam<String, String> param) {
         return tokoPointService.getApi().getCouponList(param)
-                .map(new Func1<Response<TokoPointResponse>, List<CouponData>>() {
+                .map(new Func1<Response<TokoPointResponse>, CouponsDataWrapper>() {
                     @Override
-                    public List<CouponData> call(Response<TokoPointResponse> tokoplusResponseResponse) {
+                    public CouponsDataWrapper call(Response<TokoPointResponse> tokoplusResponseResponse) {
                         if (tokoplusResponseResponse.body() == null) {
                             throw new LoyaltyErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         } else if (tokoplusResponseResponse
@@ -75,7 +76,7 @@ public class TokoPointRepository implements ITokoPointRepository {
                             throw new LoyaltyErrorException(tokoplusResponseResponse
                                     .body().getTokoPointHeaderResponse().getMessageFormatted());
                         }
-                        return tokoPointResponseMapper.convertCouponListData(
+                        return tokoPointResponseMapper.convertCouponsDataWraper(
                                 tokoplusResponseResponse.body().convertDataObj(
                                         CouponListDataResponse.class
                                 )

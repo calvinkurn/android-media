@@ -87,9 +87,9 @@ public class EventsHomeActivity extends TActivity
 
 
     private int mBannnerPos;
-    private int defaultViewPagerPos;
+    private int defaultViewPagerPos = -1;
     private String defaultSection;
-    private final static String THEMEPARK = "themepark";
+    private final static String THEMEPARK = "hiburan";
     private final static String TOP = "top";
 
 
@@ -251,10 +251,12 @@ public class EventsHomeActivity extends TActivity
                     tabLayout.setViewPager(viewPager);
                     mPresenter.startBannerSlide(viewPager);
                 }
-                if (defaultSection.equalsIgnoreCase(categoryViewModel.getName()))
-                    defaultViewPagerPos = categoryList.indexOf(categoryViewModel);
-                else
-                    defaultViewPagerPos = 0;
+                if (defaultViewPagerPos <= 0) {
+                    if (defaultSection.equalsIgnoreCase(categoryViewModel.getName()))
+                        defaultViewPagerPos = categoryList.indexOf(categoryViewModel);
+                    else
+                        defaultViewPagerPos = 0;
+                }
             }
         }
 

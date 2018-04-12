@@ -6,6 +6,7 @@ import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
 import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class PromoCouponInteractor implements IPromoCouponInteractor {
 
     @Override
     public void getCouponList(TKPDMapParam<String, String> param,
-                              Subscriber<List<CouponData>> subscriber) {
+                              Subscriber<CouponsDataWrapper> subscriber) {
         compositeSubscription.add(
                 tokoplusRepository.getCouponList(param)
                         .subscribeOn(Schedulers.newThread())

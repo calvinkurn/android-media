@@ -13,6 +13,7 @@ import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
+import com.tokopedia.home.beranda.helper.DateHelper;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -116,28 +117,11 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         setupClickListeners(channel);
 
         if (isSprintSale(channel)) {
-            Date expiredTime = getExpiredTime(element);
-            countDownView.setup(expiredTime, new CountDownView.CountDownListener() {
-                @Override
-                public void onCountDownFinished() {
-                    removeOnClickListeners();
-                }
-            });
+            Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
+            countDownView.setup(expiredTime, null);
             countDownView.setVisibility(View.VISIBLE);
         } else {
             countDownView.setVisibility(View.GONE);
-        }
-    }
-
-    private void removeOnClickListeners() {
-        if (itemContainer1 != null) {
-            itemContainer1.setOnClickListener(null);
-        }
-        if (itemContainer2 != null) {
-            itemContainer2.setOnClickListener(null);
-        }
-        if (itemContainer3 != null) {
-            itemContainer3.setOnClickListener(null);
         }
     }
 
@@ -150,7 +134,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventClickSeeAllDynamicChannel(DynamicLinkHelper.getActionLink(channel.getHeader()));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), "");
             }
         });
         itemContainer1.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +145,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[0], 1));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[0]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[0]),
+                        channel.getHomeAttribution(1, channel.getGrids()[0].getAttribution())
+                );
             }
         });
         itemContainer2.setOnClickListener(new View.OnClickListener() {
@@ -172,7 +158,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[1], 2));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[1]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[1]),
+                        channel.getHomeAttribution(2, channel.getGrids()[1].getAttribution())
+                );
             }
         });
         itemContainer3.setOnClickListener(new View.OnClickListener() {
@@ -183,23 +171,14 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[2], 3));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[2]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[2]),
+                        channel.getHomeAttribution(3, channel.getGrids()[2].getAttribution())
+                );
             }
         });
     }
 
     private boolean isSprintSale(DynamicHomeChannel.Channels channel) {
         return DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout());
-    }
-
-    private Date getExpiredTime(DynamicChannelViewModel model) {
-        String expiredTimeString = model.getChannel().getHeader().getExpiredTime();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZZZZ");
-        try {
-            return format.parse(expiredTimeString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return new Date();
-        }
     }
 }
