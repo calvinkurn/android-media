@@ -1,5 +1,6 @@
 package com.tokopedia.flight.cancellation.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -31,6 +32,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * @author by furqan on 21/03/18.
  */
@@ -43,7 +46,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
 
     private static final int REFUND_STEPS_NUMBER = 2;
-    public static final int REQUEST_REVIEW_CANCELLATION = 1;
+    public static final int REQUEST_REFUND_CANCELLATION = 1;
     public static final int REQUEST_REASON_AND_PROOF_CANCELLATION = 2;
 
     private String invoiceId;
@@ -209,7 +212,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         startActivityForResult(
                 FlightCancellationRefundDetailActivity.getCallingIntent(getActivity(),
                         flightCancellationWrapperViewModel, REFUND_STEPS_NUMBER),
-                REQUEST_REVIEW_CANCELLATION
+                REQUEST_REFUND_CANCELLATION
         );
     }
 
@@ -221,5 +224,28 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
                 ),
                 REQUEST_REASON_AND_PROOF_CANCELLATION
         );
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_REFUND_CANCELLATION:
+                if (resultCode == RESULT_OK) {
+                    closeCancellationPage();
+                }
+                break;
+            case REQUEST_REASON_AND_PROOF_CANCELLATION:
+                if (resultCode == RESULT_OK) {
+                    closeCancellationPage();
+                }
+                break;
+        }
+    }
+
+    private void closeCancellationPage() {
+        getActivity().setResult(RESULT_OK);
+        getActivity().finish();
     }
 }

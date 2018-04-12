@@ -1,6 +1,7 @@
 package com.tokopedia.flight.cancellation.view.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,8 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrappe
 
 import javax.inject.Inject;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -30,6 +33,7 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
 
     private static final String PARAM_CANCELLATION = "PARAM_CANCELLATION";
     private static final String PARAM_STEP_NUMBER = "PARAM_STEP_NUMBER";
+    private static final int REQUEST_REVIEW_CODE = 1;
 
     private FlightCancellationWrapperViewModel wrapperViewModel;
     private int stepsNumber;
@@ -92,7 +96,9 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(FlightCancellationReviewActivity.createIntent(getActivity(), wrapperViewModel.getInvoice(), wrapperViewModel));
+                startActivityForResult(FlightCancellationReviewActivity.createIntent(getActivity(),
+                        wrapperViewModel.getInvoice(), wrapperViewModel),
+                        REQUEST_REVIEW_CODE);
             }
         };
     }
@@ -157,5 +163,23 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
     @Override
     public void hideFullPageContainer() {
         container.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_REVIEW_CODE :
+                if (resultCode == RESULT_OK) {
+                    closeRefundPage();
+                }
+                break;
+        }
+    }
+
+    private void closeRefundPage() {
+        getActivity().setResult(RESULT_OK);
+        getActivity().finish();
     }
 }

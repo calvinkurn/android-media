@@ -1,6 +1,7 @@
 package com.tokopedia.flight.cancellation.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
@@ -143,6 +144,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                closeReviewCancellationPage();
             }
         });
         dialog.show();
@@ -180,5 +182,10 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     @Override
     public void deleteAttachement(FlightCancellationAttachmentViewModel element) {
 
+    }
+
+    private void closeReviewCancellationPage() {
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 }

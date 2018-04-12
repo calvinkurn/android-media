@@ -22,6 +22,7 @@ import com.tokopedia.flight.common.view.BaseFlightActivity;
  */
 public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity implements HasComponent<FlightCancellationComponent>, FlightCancellationReasonAndProofFragment.OnFragmentInteractionListener {
     private static final String EXTRA_CANCELLATION_VIEW_MODEL = "EXTRA_CANCELLATION_VIEW_MODEL";
+    public static final int REQUEST_REFUND_CANCELLATION = 1;
     private static final int REFUND_STEPS_NUMBER = 3;
     private FlightCancellationWrapperViewModel cancellationWrapperViewModel;
     private FlightCancellationComponent cancellationComponent;
@@ -80,6 +81,21 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
 
     @Override
     public void goToEstimateReview(FlightCancellationWrapperViewModel viewModel) {
-        startActivity(FlightCancellationRefundDetailActivity.getCallingIntent(this, viewModel, REFUND_STEPS_NUMBER));
+        startActivityForResult(FlightCancellationRefundDetailActivity
+                .getCallingIntent(this, viewModel, REFUND_STEPS_NUMBER), REQUEST_REFUND_CANCELLATION);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_REFUND_CANCELLATION && resultCode == Activity.RESULT_OK) {
+            closeReasonAndProofPage();
+        }
+    }
+
+    private void closeReasonAndProofPage() {
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 }
