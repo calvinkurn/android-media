@@ -73,12 +73,12 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
                         channel.setHomeAttribution(String.format("%d - sprintSaleProduct - $1 - $2", position));
                         HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
-                                channel.getEnhanceImpressionSprintSaleHomePage()
+                                channel.getEnhanceImpressionSprintSaleHomePage(position)
                         );
                     } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)){
                         channel.setHomeAttribution(String.format("%d - sprintSaleBanner - $1", position));
                         HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
-                                channel.getEnhanceImpressionSprintSaleCarouselHomePage()
+                                channel.getEnhanceImpressionSprintSaleCarouselHomePage(position)
                         );
                     } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
                         channel.setPromoName(String.format("/ - p%d - lego banner", position));
