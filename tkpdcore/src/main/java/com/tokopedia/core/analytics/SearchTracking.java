@@ -1,10 +1,8 @@
 package com.tokopedia.core.analytics;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -26,8 +24,14 @@ public class SearchTracking extends TrackingUtils {
                 eventLabel, getActionFieldString(pageNumber));
     }
 
-    public static void trackEventClickImageSearchResultProduct(Object item, int position){
+    public static void trackEventClickImageSearchResultProduct(Object item, int position) {
         getGTMEngine().enhanceClickImageSearchResultProduct(item, String.format(imageClick, position));
+        sendGTMEvent(new EventTracking(
+                "productClick",
+                "imageSearchResult",
+                "click-product",
+                ""
+        ).getEvent());
     }
 
     public static void eventImpressionSearchResultProduct(List<Object> list, String eventLabel) {

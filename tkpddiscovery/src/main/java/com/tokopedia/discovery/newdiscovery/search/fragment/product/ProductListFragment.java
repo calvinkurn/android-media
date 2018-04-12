@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -305,21 +306,31 @@ public class ProductListFragment extends SearchSectionFragment
         List<Object> dataLayerList = new ArrayList<>();
         if (productViewModel.isImageSearch()) {
 
-            for (Visitable object : list) {
-                if (object instanceof ProductItem) {
-                    dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayerForImageSearch(userId));
+            for (int j = 0; j < list.size(); ) {
+                int count = 0;
+                while (count < 12 && j < list.size()) {
+                    count++;
+                    if (list.get(j) instanceof ProductItem) {
+                        dataLayerList.add(((ProductItem) list.get(j)).getProductAsObjectDataLayer(userId));
+                    }
+                    j++;
                 }
+                SearchTracking.eventImpressionSearchResultProduct(dataLayerList, "imageSearch");
+                Log.e("ImgSrch Impression:", String.valueOf(count));
             }
+
+
         } else {
             for (Visitable object : list) {
                 if (object instanceof ProductItem) {
                     dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
                 }
             }
+
+            SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
         }
 
-        SearchTracking.eventImpressionSearchResultProduct(dataLayerList,
-                (getQueryKey() != null && !TextUtils.isEmpty(getQueryKey())) ? getQueryKey() : "imageSearch");
+
     }
 
     @Override
