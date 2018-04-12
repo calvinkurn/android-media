@@ -700,6 +700,13 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         donasiInfo.setOnClickListener(getDonasiInfoListener(donation));
     }
 
+    @Override
+    public void renderCandelPromoSuccess(){
+        promoResultLayout.setVisibility(View.GONE);
+        promoCodeLayout.setVisibility(View.VISIBLE);
+    }
+
+
     private View.OnClickListener insertCode(final String voucherCode) {
         return new View.OnClickListener() {
             @Override
@@ -1102,8 +1109,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                promoResultLayout.setVisibility(View.GONE);
-                promoCodeLayout.setVisibility(View.VISIBLE);
                 presenter.cancelPromo();
             }
         };

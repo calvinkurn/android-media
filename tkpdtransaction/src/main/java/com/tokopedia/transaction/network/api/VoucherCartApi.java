@@ -21,6 +21,6 @@ public interface VoucherCartApi {
 
     @FormUrlEncoded
     @POST(TransactionUrl.PATH_CLEAR_PROMO)
-    Observable<Response<TokopediaApiResponse>> checkVoucherCode(@FieldMap Map<String, String> params);
+    Observable<String> checkVoucherCode(@FieldMap Map<String, String> params);
 
 }

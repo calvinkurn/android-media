@@ -35,7 +35,6 @@ public class VoucherCartService extends AuthService<VoucherCartApi> {
                 .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .getClientBuilder();
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder);
-        // tkpdOkHttpBuilder.addInterceptor(loggingInterceptor);
         tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor());
         tkpdOkHttpBuilder.setOkHttpRetryPolicy(getOkHttpRetryPolicy());
         tkpdOkHttpBuilder.addDebugInterceptor();

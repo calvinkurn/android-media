@@ -102,7 +102,7 @@ public class CartPresenter implements ICartPresenter {
                 }
                 processRenderViewCartData(cartData);
                 view.renderVisibleMainCartContainer();
-                if(!cartData.getCartItemList().isEmpty()){
+                if (!cartData.getCartItemList().isEmpty()) {
                     autoApplyCouponIfAvailable(1);
 
                 }
@@ -553,7 +553,7 @@ public class CartPresenter implements ICartPresenter {
 
     @Override
     public void cancelPromo() {
-        cartDataInteractor.cancelVoucherCache(new Subscriber<String>() {
+        cartDataInteractor.cancelVoucherCache(new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -561,12 +561,16 @@ public class CartPresenter implements ICartPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                handleThrowableGeneral(e);
             }
 
             @Override
-            public void onNext(String s) {
-
+            public void onNext(Boolean status) {
+                if (status != null && status) {
+                    view.renderCandelPromoSuccess();
+                } else {
+                    view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
         });
     }
@@ -792,7 +796,7 @@ public class CartPresenter implements ICartPresenter {
         view.renderInstantPromo(data.getCartPromo());
         view.renderPromoView(data.getIsCouponActive() == 1);
         view.renderPartialOrder(data.isEnableCancelPartial());
-        if(promoAutoApplied(data)) {
+        if (promoAutoApplied(data)) {
             view.renderAutoApplyPromoView(data.getAutoApply());
         }
     }
@@ -904,9 +908,11 @@ public class CartPresenter implements ICartPresenter {
     private void removeBranchPromo() {
         BranchSdkUtils.removeCouponCode(view.getActivity());
     }
+
     private Checkout getCheckoutTrackingData() {
         return gson.fromJson(
                 cartCache.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
-                new TypeToken<Checkout>() {}.getType());
+                new TypeToken<Checkout>() {
+                }.getType());
     }
 }

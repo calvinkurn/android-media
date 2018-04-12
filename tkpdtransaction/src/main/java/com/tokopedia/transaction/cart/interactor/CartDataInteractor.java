@@ -2,10 +2,6 @@ package com.tokopedia.transaction.cart.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
-import com.tokopedia.abstraction.common.network.response.TokopediaApiResponse;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
@@ -14,7 +10,6 @@ import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
 import com.tokopedia.transaction.cart.interactor.data.ShipmentCartDataRepository;
 import com.tokopedia.transaction.cart.interactor.domain.IShipmentCartRepository;
@@ -24,7 +19,6 @@ import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartRatesData;
-import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
 import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
@@ -35,11 +29,11 @@ import com.tokopedia.transaction.exception.ResponseErrorException;
 import com.tokopedia.transaction.network.VoucherCartService;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -53,12 +47,13 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
- *         collabs with alvarisi
+ * collabs with alvarisi
  */
 public class CartDataInteractor implements ICartDataInteractor {
     private static final String KEY_FLAG_IS_SUCCESS = "is_success";
     private static final String COUPON = "coupon";
     private static final String DATA = "data";
+    private static final String SUCCESS = "success";
 
     private final TXService txService;
     private final TXActService txActService;
@@ -283,17 +278,20 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void cancelVoucherCache(Subscriber<String> subscriber) {
+    public void cancelVoucherCache(Subscriber<Boolean> subscriber) {
         compositeSubscription.add(voucherCartService.getApi()
                 .checkVoucherCode(new HashMap<String, String>())
-                .map(new Func1<Response<TokopediaApiResponse>, String>() {
-
-                         @Override
-                         public String call(Response<TokopediaApiResponse> tkpdResponseResponse) {
-                            return  "";
-                         }
-                     }
-                )
+                .map(new Func1<String, Boolean>() {
+                    @Override
+                    public Boolean call(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            return jsonResponse.getJSONObject(DATA).getBoolean(SUCCESS);
+                        } catch (JSONException e) {
+                            return false;
+                        }
+                    }
+                })
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
