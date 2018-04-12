@@ -32,10 +32,8 @@ public class PostVerifyCartUseCase extends UseCase<VerifyCartResponse> {
 
     @Override
     public Observable<VerifyCartResponse> createObservable(RequestParams requestParams) {
-        CartItems cartItems = (CartItems) requestParams.getObject("checkoutdata");
+        JsonObject requestBody = (JsonObject) requestParams.getObject("checkoutdata");
         boolean flag = requestParams.getBoolean("ispromocodecase", false);
-        JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(cartItems));
-        JsonObject requestBody = jsonElement.getAsJsonObject();
         return eventRepository.verifyCard(requestBody, flag);
     }
 }

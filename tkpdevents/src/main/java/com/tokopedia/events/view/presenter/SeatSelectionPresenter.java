@@ -3,6 +3,10 @@ package com.tokopedia.events.view.presenter;
 import android.content.Intent;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -10,7 +14,6 @@ import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
@@ -148,7 +151,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     }
 
     public void setSelectedSeatText(List<String> selectedSeatList, List<String> rowIds, List<String> actualSeatNo) {
-        getView().initializeSeatLayoutModel(selectedSeatList, rowIds,actualSeatNo);
+        getView().initializeSeatLayoutModel(selectedSeatList, rowIds, actualSeatNo);
     }
 
     public void setSeatData() {
@@ -194,7 +197,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     }
 
 
-    private CartItems convertPackageToCartItem(PackageViewModel packageViewModel) {
+    private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
         config.setPrice(packageViewModel.getSalesPrice() * quantity);
         com.tokopedia.events.domain.model.request.cart.SubConfig sub = new com.tokopedia.events.domain.model.request.cart.SubConfig();
@@ -282,6 +285,8 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         cart.setCartItems(cartItems);
         cart.setPromocode(promocode);
 
-        return cart;
+        JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(cart));
+        JsonObject requestBody = jsonElement.getAsJsonObject();
+        return requestBody;
     }
 }

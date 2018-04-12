@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -175,4 +176,6 @@ public interface TkpdCoreRouter {
     Intent getInboxMessageIntent(Context context);
 
     void sendTrackingGroupChatLeftNavigation();
+
+    Observable<TKPDMapParam<String,Object>> verifyEventPromo(RequestParams requestParams);
 }

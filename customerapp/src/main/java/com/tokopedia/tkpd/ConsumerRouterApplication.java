@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -96,6 +97,9 @@ import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.digital.tokocash.topup.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
+import com.tokopedia.events.di.EventComponent;
+import com.tokopedia.events.di.EventModule;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
@@ -255,6 +259,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private DaggerFlightConsumerComponent.Builder daggerFlightBuilder;
     private DaggerContentConsumerComponent.Builder daggerContentBuilder;
+    private EventComponent eventComponent;
     private FlightConsumerComponent flightConsumerComponent;
     private ContentConsumerComponent contentConsumerComponent;
     private ProductComponent productComponent;
@@ -331,6 +336,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         daggerContentBuilder = DaggerContentConsumerComponent.builder()
                 .feedPlusComponent(feedPlusComponent);
+
+        eventComponent = DaggerEventComponent.builder()
+                .appComponent(getApplicationComponent())
+                .eventModule(new EventModule(this))
+                .build();
     }
 
     private void initRemoteConfig() {
@@ -1611,7 +1621,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void generateBranchLink(String channelId, String title, String contentMessage, String
             imgUrl, String
-            shareUrl, Activity activity, final ShareListener
+                                           shareUrl, Activity activity, final ShareListener
                                            listener) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setId(channelId)
@@ -1626,6 +1636,23 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             @Override
             public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 listener.onGenerateLink(shareContents, shareUri);
+            }
+        });
+    }
+
+    @Override
+    public Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams) {
+        return eventComponent.getPostVerifyCartUseCase().getExecuteObservableAsync(requestParams).map(new Func1<VerifyCartResponse, TKPDMapParam<String, Object>>() {
+            @Override
+            public TKPDMapParam<String, Object> call(VerifyCartResponse verifyCartResponse) {
+                TKPDMapParam<String, Object> resultMap = new TKPDMapParam<>();
+                resultMap.put("promocode", verifyCartResponse.getCart().getPromocode());
+                resultMap.put("promocode_discount", verifyCartResponse.getCart().getPromocodeDiscount());
+                resultMap.put("promocode_cashback", verifyCartResponse.getCart().getPromocodeCashback());
+                resultMap.put("promocode_failure_message", verifyCartResponse.getCart().getPromocodeFailureMessage());
+                resultMap.put("promocode_success_message", verifyCartResponse.getCart().getPromocodeSuccessMessage());
+                resultMap.put("promocode_status", verifyCartResponse.getCart().getPromocodeStatus());
+                return resultMap;
             }
         });
     }

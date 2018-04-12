@@ -4,6 +4,10 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -171,7 +175,7 @@ public class EventReviewTicketPresenter
         getView().hideTooltip();
     }
 
-    private CartItems convertPackageToCartItem(PackageViewModel packageViewModel) {
+    private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
         config.setPrice(packageViewModel.getSalesPrice() * checkoutData.getSelectedQuantity());
         com.tokopedia.events.domain.model.request.cart.SubConfig sub = new com.tokopedia.events.domain.model.request.cart.SubConfig();
@@ -269,7 +273,9 @@ public class EventReviewTicketPresenter
         cart.setCartItems(cartItems);
         cart.setPromocode(promocode);
 
-        return cart;
+        JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(cart));
+        JsonObject requestBody = jsonElement.getAsJsonObject();
+        return requestBody;
     }
 
     @Override

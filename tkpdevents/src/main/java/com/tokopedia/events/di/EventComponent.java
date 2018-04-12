@@ -2,6 +2,7 @@ package com.tokopedia.events.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.events.di.scope.EventScope;
+import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.events.view.activity.EventBookTicketActivity;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventLocationActivity;
@@ -20,6 +21,8 @@ import dagger.Component;
 @EventScope
 @Component(modules = EventModule.class, dependencies = AppComponent.class)
 public interface EventComponent {
+
+    PostVerifyCartUseCase getPostVerifyCartUseCase();
 
     void inject(EventsHomeActivity activity);
 
