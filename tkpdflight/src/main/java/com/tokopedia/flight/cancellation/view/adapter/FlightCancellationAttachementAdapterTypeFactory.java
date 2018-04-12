@@ -22,9 +22,11 @@ public class FlightCancellationAttachementAdapterTypeFactory extends BaseAdapter
     }
 
     private OnAdapterInteractionListener interactionListener;
+    private boolean showDeleteButton;
 
-    public FlightCancellationAttachementAdapterTypeFactory(OnAdapterInteractionListener interactionListener) {
+    public FlightCancellationAttachementAdapterTypeFactory(OnAdapterInteractionListener interactionListener, boolean showDeleteButton) {
         this.interactionListener = interactionListener;
+        this.showDeleteButton = showDeleteButton;
     }
 
     @Override
@@ -42,7 +44,7 @@ public class FlightCancellationAttachementAdapterTypeFactory extends BaseAdapter
         if (type == FlightCancellationAttachmentButtonViewHolder.LAYOUT){
             return new FlightCancellationAttachmentButtonViewHolder(parent, interactionListener);
         }else if (type == FlightCancellationAttachmentViewHolder.LAYOUT){
-            return new FlightCancellationAttachmentViewHolder(parent, interactionListener);
+            return new FlightCancellationAttachmentViewHolder(parent, interactionListener, showDeleteButton);
         }else {
             return super.createViewHolder(parent, type);
         }

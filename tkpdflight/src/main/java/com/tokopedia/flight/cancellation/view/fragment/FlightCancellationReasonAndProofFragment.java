@@ -114,7 +114,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         etReason = (AppCompatEditText) view.findViewById(R.id.et_reason);
         rvAttachments = (RecyclerView) view.findViewById(R.id.rv_attachments);
         btnNext = (AppCompatButton) view.findViewById(R.id.btn_next);
-        FlightCancellationAttachmentTypeFactory adapterTypeFactory = new FlightCancellationAttachementAdapterTypeFactory(this);
+        FlightCancellationAttachmentTypeFactory adapterTypeFactory = new FlightCancellationAttachementAdapterTypeFactory(this, true);
         adapter = new FlightCancellationAttachmentAdapter(adapterTypeFactory);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);

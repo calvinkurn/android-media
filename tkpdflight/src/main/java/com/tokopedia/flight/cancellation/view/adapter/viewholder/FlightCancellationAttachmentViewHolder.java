@@ -1,6 +1,7 @@
 package com.tokopedia.flight.cancellation.view.adapter.viewholder;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -34,15 +35,20 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
     private AppCompatImageView ivCross;
     private FlightCancellationAttachmentViewModel element;
 
+    private boolean showDeleteButton = true;
+    private Context context;
+
     private FlightCancellationAttachementAdapterTypeFactory.OnAdapterInteractionListener interactionListener;
 
-    public FlightCancellationAttachmentViewHolder(View itemView, FlightCancellationAttachementAdapterTypeFactory.OnAdapterInteractionListener interactionListener) {
+    public FlightCancellationAttachmentViewHolder(View itemView, FlightCancellationAttachementAdapterTypeFactory.OnAdapterInteractionListener interactionListener, boolean showDeleteButton) {
         super(itemView);
         setupView(itemView);
         this.interactionListener = interactionListener;
+        this.showDeleteButton = showDeleteButton;
     }
 
     private void setupView(View view) {
+        context = view.getContext();
         ivAttachment = (AppCompatImageView) view.findViewById(R.id.iv_attachment);
         tvFilename = (AppCompatTextView) view.findViewById(R.id.tv_filename);
     }
@@ -66,12 +72,17 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
                 return false;
             }
         });
+
+        if (!showDeleteButton) {
+            tvFilename.setCompoundDrawables(null, null, null, null);
+        }
+
         if (element.getFilepath() != null)
-        Glide.with(itemView.getContext())
-                .load(new File(element.getFilepath()))
-                .asBitmap()
-                .centerCrop()
-                .into(getRoundedImageViewTarget(ivAttachment, 5.0f));
+            Glide.with(itemView.getContext())
+                    .load(new File(element.getFilepath()))
+                    .asBitmap()
+                    .centerCrop()
+                    .into(getRoundedImageViewTarget(ivAttachment, 5.0f));
     }
 
     private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {
