@@ -22,6 +22,7 @@ import com.tokopedia.flight.common.view.BaseFlightActivity;
  */
 public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity implements HasComponent<FlightCancellationComponent>, FlightCancellationReasonAndProofFragment.OnFragmentInteractionListener {
     private static final String EXTRA_CANCELLATION_VIEW_MODEL = "EXTRA_CANCELLATION_VIEW_MODEL";
+    private static final int REFUND_STEPS_NUMBER = 3;
     private FlightCancellationWrapperViewModel cancellationWrapperViewModel;
     private FlightCancellationComponent cancellationComponent;
 
@@ -79,6 +80,6 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
 
     @Override
     public void goToEstimateReview(FlightCancellationWrapperViewModel viewModel) {
-        startActivity(FlightCancellationRefundDetailActivity.getCallingIntent(this, viewModel));
+        startActivity(FlightCancellationRefundDetailActivity.getCallingIntent(this, viewModel, REFUND_STEPS_NUMBER));
     }
 }

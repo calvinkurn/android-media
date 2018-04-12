@@ -26,11 +26,11 @@
             tools:visibility="visible">
 
             <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_step_title"
                 style="@style/TextView.Micro.BlackDisabled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dp_16"
-                android:text="@string/flight_cancellation_step_3_header_title"/>
+                android:padding="@dimen/dp_16"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

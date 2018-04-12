@@ -21,19 +21,26 @@ import com.tokopedia.flight.common.view.BaseFlightActivity;
 
 public class FlightCancellationRefundDetailActivity extends BaseFlightActivity implements HasComponent<FlightCancellationComponent> {
     private static final String FLIGHT_WRAPPER_EXTRA = "FLIGHT_WRAPPER_EXTRA";
+    private static final String FLIGHT_STEPS_NUMBER_EXTRA = "FLIGHT_STEPS_NUMBER_EXTRA";
+    private static final int DEFAULT_STEPS_NUMBER = 3;
+
     private FlightCancellationComponent cancellationComponent;
 
     private FlightCancellationWrapperViewModel wrapperViewModel;
+    private int stepsNumber;
 
-    public static Intent getCallingIntent(Activity activity, FlightCancellationWrapperViewModel wrapperViewModel) {
+    public static Intent getCallingIntent(Activity activity, FlightCancellationWrapperViewModel wrapperViewModel,
+                                          int stepsNumber) {
         Intent intent = new Intent(activity, FlightCancellationRefundDetailActivity.class);
         intent.putExtra(FLIGHT_WRAPPER_EXTRA, wrapperViewModel);
+        intent.putExtra(FLIGHT_STEPS_NUMBER_EXTRA, stepsNumber);
         return intent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         wrapperViewModel = getIntent().getParcelableExtra(FLIGHT_WRAPPER_EXTRA);
+        stepsNumber = getIntent().getIntExtra(FLIGHT_STEPS_NUMBER_EXTRA, DEFAULT_STEPS_NUMBER);
         super.onCreate(savedInstanceState);
         setupToolbar();
     }
@@ -48,7 +55,7 @@ public class FlightCancellationRefundDetailActivity extends BaseFlightActivity i
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightCancellationRefundDetailFragment.newInstance(wrapperViewModel);
+        return FlightCancellationRefundDetailFragment.newInstance(wrapperViewModel, stepsNumber);
     }
 
     private void initInjector() {

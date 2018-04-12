@@ -29,16 +29,22 @@ import javax.inject.Inject;
 public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment implements FlightCancellationRefundDetailContract.View {
 
     private static final String PARAM_CANCELLATION = "PARAM_CANCELLATION";
-    private FlightCancellationWrapperViewModel wrapperViewModel;
+    private static final String PARAM_STEP_NUMBER = "PARAM_STEP_NUMBER";
 
-    public static FlightCancellationRefundDetailFragment newInstance(FlightCancellationWrapperViewModel wrapperViewModel) {
+    private FlightCancellationWrapperViewModel wrapperViewModel;
+    private int stepsNumber;
+
+    public static FlightCancellationRefundDetailFragment newInstance(FlightCancellationWrapperViewModel wrapperViewModel,
+                                                                     int stepNumber) {
         FlightCancellationRefundDetailFragment fragment = new FlightCancellationRefundDetailFragment();
         Bundle args = new Bundle();
         args.putParcelable(PARAM_CANCELLATION, wrapperViewModel);
+        args.putInt(PARAM_STEP_NUMBER, stepNumber);
         fragment.setArguments(args);
         return fragment;
     }
 
+    private AppCompatTextView tvStepTitle;
     private ProgressBar progressBar;
     private LinearLayout container;
     private AppCompatTextView tvTotalPrice;
@@ -57,6 +63,7 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             wrapperViewModel = getArguments().getParcelable(PARAM_CANCELLATION);
+            stepsNumber = getArguments().getInt(PARAM_STEP_NUMBER);
         }
     }
 
@@ -71,10 +78,14 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
     private void setupView(View view) {
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         container = (LinearLayout) view.findViewById(R.id.container);
+        tvStepTitle = (AppCompatTextView) view.findViewById(R.id.tv_step_title);
         tvTotalPrice = (AppCompatTextView) view.findViewById(R.id.tv_total_price);
         tvTotalRefund = (AppCompatTextView) view.findViewById(R.id.tv_total_refund);
         btnNext = (AppCompatButton) view.findViewById(R.id.btn_next);
         btnNext.setOnClickListener(getNextButtonClickListener());
+
+        tvStepTitle.setText(String.format(
+                getString(R.string.flight_cancellation_step_3_header_title), stepsNumber));
     }
 
     private View.OnClickListener getNextButtonClickListener() {
