@@ -1,19 +1,12 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by hangnadi on 9/28/17.
@@ -25,8 +18,6 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
 
     private GetProductUseCase getProductUseCase;
     private GetImageSearchUseCase getImageSearchUseCase;
-    private final int MAX_WIDTH = 600;
-    private final int MAX_HEIGHT = 600;
 
     public DiscoveryPresenter(GetProductUseCase getProductUseCase) {
         this.getProductUseCase = getProductUseCase;
@@ -48,35 +39,12 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
 
 
     @Override
-    public void requestImageSearchProduct(SearchParameter imageSearchProductParameter) {
-        super.requestImageSearchProduct(imageSearchProductParameter);
-        getImageSearchUseCase.execute(
-                GetImageSearchUseCase.initializeSearchRequestParam(imageSearchProductParameter),
-                new DefaultSearchSubscriber(imageSearchProductParameter, false, getBaseDiscoveryView(), true)
-        );
-    }
-
-    @Override
     public void requestImageSearch(String imagePath) {
-
-
-        super.requestImageSearch(imagePath);
-
-        File imgFile = new File(imagePath);
-
-        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        myBitmap = ImageHandler.resizeImage(myBitmap, MAX_WIDTH, MAX_HEIGHT);
-        try {
-            myBitmap = ImageHandler.RotatedBitmap(myBitmap, imagePath);
-        } catch (IOException exception) {
-
-        }
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-
-        getImageSearchUseCase.requestImageSearch(byteArray, new DefaultImageSearchSubscriber(getBaseDiscoveryView()));
+        getImageSearchUseCase.setImagePath(imagePath);
+        getImageSearchUseCase.execute(
+                RequestParams.EMPTY,
+                new DefaultImageSearchSubscriber(getBaseDiscoveryView())
+        );
     }
 
     @Override

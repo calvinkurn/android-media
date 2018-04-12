@@ -31,16 +31,12 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
-import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
@@ -481,54 +477,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         getPresenter().requestImageSearch(imagePath);
     }
 
-    List<String> productIDList = new ArrayList<>();
-
-    @Override
-    public void onHandleResponseSearch(ProductViewModel productViewModel) {
-
-        if (!productViewModel.isImageSearch()) {
-            super.onHandleResponseSearch(productViewModel);
-        } else {
-            if (tkpdProgressDialog != null) {
-                tkpdProgressDialog.dismiss();
-            }
-            HashMap<String, ProductItem> productItemHashMap = new HashMap<>();
-            for (ProductItem productItem : productViewModel.getProductList()) {
-                productItemHashMap.put(productItem.getProductID(), productItem);
-            }
-            List<ProductItem> productItemList = new ArrayList<>();
-            int count = 0;
-            for (int i = 0; i < productIDList.size(); i++) {
-                if (productItemHashMap.get(productIDList.get(i)) != null) {
-                    ProductItem productItem = productItemHashMap.get(productIDList.get(i));
-                    productItem.setPosition(++count);
-                    productItemList.add(productItemHashMap.get(productIDList.get(i)));
-                    productItemHashMap.remove(productItem.getProductID());
-                }
-            }
-            productViewModel.setProductList(productItemList);
-            productViewModel.setTotalData(productItemList.size());
-            SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
-            finish();
-        }
-    }
-
-    @Override
-    public void onHandleImageSearchResponseSuccess(List<String> productIDList, String productIDs) {
-        this.productIDList = productIDList;
-        if (fromCamera) {
-            sendCameraImageSearchResultGTM(SUCCESS);
-        } else {
-            sendGalleryImageSearchResultGTM(SUCCESS);
-        }
-
-        SearchParameter imageSearchProductParameter = new SearchParameter();
-        imageSearchProductParameter.setStartRow(productIDList.size());
-        imageSearchProductParameter.setQueryKey(String.valueOf(productIDs));
-        imageSearchProductParameter.setSource("imagesearch");
-        getPresenter().requestImageSearchProduct(imageSearchProductParameter);
-
-    }
 
     @Override
     public void onHandleImageSearchResponseError() {
