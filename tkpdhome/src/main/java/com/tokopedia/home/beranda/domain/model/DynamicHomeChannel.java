@@ -243,12 +243,12 @@ public class DynamicHomeChannel {
                                                     "name", "/ - p2 - sprint sale banner",
                                                     "position", String.valueOf(position + 1),
                                                     "creative", getGrids()[position].getName(),
-                                                    "creative_url", getGrids()[position].getImageUrl(),
-                                                    "attribution", getHomeAttribution(position + 1, "")
+                                                    "creative_url", getGrids()[position].getImageUrl()
                                             )
                                     )
                             )
-                    )
+                    ),
+                    "attribution", getHomeAttribution(position + 1, "")
             );
         }
 
@@ -346,12 +346,12 @@ public class DynamicHomeChannel {
                                                     "id", hero.getId(),
                                                     "name", getPromoName(),
                                                     "creative", hero.getAttribution(),
-                                                    "position", String.valueOf(position),
-                                                    "attribution", getHomeAttribution(position, hero.getAttribution())
+                                                    "position", String.valueOf(position)
                                             )
                                     )
                             )
-                    )
+                    ),
+                    "attribution", getHomeAttribution(position, hero.getAttribution())
             );
         }
 
@@ -368,12 +368,12 @@ public class DynamicHomeChannel {
                                                     "id", grid.getId(),
                                                     "name", getPromoName(),
                                                     "creative", grid.getAttribution(),
-                                                    "position", String.valueOf(position),
-                                                    "attribution", getHomeAttribution(position, grid.getAttribution())
+                                                    "position", String.valueOf(position)
                                             )
                                     )
                             )
-                    )
+                    ),
+                    "attribution", getHomeAttribution(position, grid.getAttribution())
             );
         }
 
@@ -391,12 +391,12 @@ public class DynamicHomeChannel {
                                                     "name", getPromoName(),
                                                     "creative", grid.getAttribution(),
                                                     "creative_url", grid.getImageUrl(),
-                                                    "position", String.valueOf(position),
-                                                    "attribution", getHomeAttribution(position, grid.getAttribution())
+                                                    "position", String.valueOf(position)
                                             )
                                     )
                             )
-                    )
+                    ),
+                    "attribution", getHomeAttribution(position, grid.getAttribution())
             );
         }
 
