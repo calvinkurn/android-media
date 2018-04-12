@@ -22,7 +22,6 @@ public class SaveFingerPrintUseCase extends UseCase<Boolean> {
     public static final String USER_ID = "user_id";
     public static final String OS = "os";
     public static final String OS_ANDROID_VALUE = "1";
-    public static final String USER_ID_SAVE_PUBLIC = "user_id_save_public";
     private FingerprintRepository fingerprintRepository;
     private SavePublicKeyUseCase savePublicKeyUseCase;
 
@@ -35,7 +34,7 @@ public class SaveFingerPrintUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(final RequestParams requestParams) {
-        return savePublicKeyUseCase.createObservable(savePublicKeyUseCase.createRequestParams(requestParams.getString(USER_ID_SAVE_PUBLIC, ""),
+        return savePublicKeyUseCase.createObservable(savePublicKeyUseCase.createRequestParams(requestParams.getString(USER_ID, ""),
                 requestParams.getString(PUBLIC_KEY, "")))
                 .flatMap(new Func1<Boolean, Observable<Boolean>>() {
                     @Override
@@ -51,8 +50,7 @@ public class SaveFingerPrintUseCase extends UseCase<Boolean> {
         requestParams.putString(PUBLIC_KEY, publicKey);
         requestParams.putString(DATE, date);
         requestParams.putString(ACCOUNT_SIGNATURE, accountSignature);
-        requestParams.putInt(USER_ID, Integer.valueOf(userId));
-        requestParams.putString(USER_ID_SAVE_PUBLIC, userId);
+        requestParams.putString(USER_ID, userId);
         requestParams.putString(OS, OS_ANDROID_VALUE);
         return requestParams;
     }

@@ -1,13 +1,25 @@
 package com.tokopedia.payment.fingerprint.view;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.security.keystore.KeyProperties;
 import android.support.annotation.Nullable;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.payment.R;
 
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -28,6 +40,8 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     private int counterError = 0;
 
     private ListenerRegister listenerRegister;
+    private boolean isAttached;
+    private String date;
 
     public static FingerprintDialogRegister createInstance(String userId, String transactionId) {
         FingerprintDialogRegister fingerprintDialogRegister = new FingerprintDialogRegister();
@@ -51,8 +65,9 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
 
     @Override
     public void startListening() {
+        date = generateDate();
+        setTextToEncrypt(userId + date);
         super.startListening();
-        setTextToEncrypt(userId + generateDate());
     }
 
     @Override
@@ -64,7 +79,6 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "EEE, dd MMM yyyy HH:mm:ss ZZZ", Locale.ENGLISH);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         return dateFormat.format(calendar.getTime());
     }
 
@@ -75,12 +89,10 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     }
 
     private boolean updateCounterError() {
-        if(!isDetached()) {
+        if (isAttached) {
             counterError++;
-            if (isVisible()) {
-                updateDesc(getString(R.string.fingerprint_label_desc_default));
-                updateTitle(getString(R.string.fingerprint_label_try_again));
-            }
+            updateDesc(getString(R.string.fingerprint_label_desc_default));
+            updateTitle(getString(R.string.fingerprint_label_try_again));
             if (counterError > MAX_ERROR) {
                 stopListening();
                 listenerRegister.showErrorRegisterSnackbar();
@@ -89,9 +101,21 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
             } else {
                 return true;
             }
-        }else{
+        } else {
             return true;
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        isAttached = true;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        isAttached = false;
+        super.onDismiss(dialog);
     }
 
     @Override
@@ -106,7 +130,31 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
 
     @Override
     public void onAuthenticationSucceeded(String publicKey, String signature) {
-        listenerRegister.onRegisterFingerPrint(transactionId,publicKey, generateDate(), signature, userId );
+        listenerRegister.onRegisterFingerPrint(transactionId, publicKey, date, signature, userId);
+        verifySignature(publicKey, date, signature, userId);
+    }
+
+    private void verifySignature(String publicKey, String date, String signature, String userId) {
+        try {
+            KeyFactory keyFactory = KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_RSA);
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(Base64.decode(new String(Base64.decode(publicKey, 0)).replace("-----BEGIN PUBLIC KEY-----\r\n", "")
+            .replace("-----END PUBLIC KEY-----", ""), 0));
+            PublicKey publicKey1 = keyFactory.generatePublic(spec);
+            Signature verificationFunction = Signature.getInstance("SHA1withRSA");
+            verificationFunction.initVerify(publicKey1);
+            verificationFunction.update((userId + date).getBytes());
+            if (verificationFunction.verify(Base64.decode(signature, 0))) {
+                Log.d("tes", "sukses signature");
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (SignatureException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -115,7 +163,7 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     }
 
     public void onErrorRegisterFingerPrint() {
-        if(updateCounterError()){
+        if (updateCounterError()) {
             startListening();
         }
     }

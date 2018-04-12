@@ -268,8 +268,9 @@ public class TopPayIntentService extends IntentService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PublicKey publicKey = FingerPrintDialog.generatePublicKey(this);
             if(publicKey != null){
-                byte[] publicKeyBytes = Base64.encode(publicKey.getEncoded(), 0);
-                params.put(FINGERPRINT_PUBLICKEY, new String(publicKeyBytes));
+                String encoded = new String(Base64.encode(publicKey.getEncoded(), 0));
+                String publicKeyString = "-----BEGIN PRIVATE KEY-----\r\n" + encoded + "-----END PRIVATE KEY-----";
+                params.put(FINGERPRINT_PUBLICKEY, new String(Base64.encode(publicKeyString.getBytes(), 0)));
                 params.put(FINGERPRINT_SUPPORT, true);
             }else{
                 params.put(FINGERPRINT_SUPPORT, false);
