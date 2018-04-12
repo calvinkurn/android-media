@@ -710,6 +710,10 @@ public class TrackingUtils extends TrackingConfig {
         getGTMEngine().clickTncButtonHotlistPromo(hotlistName, promoName, promoCode);
     }
 
+    public static void eventClearEnhanceEcommerce() {
+        getGTMEngine().clearEnhanceEcommerce();
+    }
+
     public static void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
         getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
