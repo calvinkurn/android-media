@@ -187,6 +187,7 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
     private void setTextError(String s) {
         if (TextUtils.isEmpty(s)) {
             setDefaultHelper();
+            emailWrapper.setErrorEnabled(false);
             enableNextButton();
         } else {
             tvError.setVisibility(View.VISIBLE);
