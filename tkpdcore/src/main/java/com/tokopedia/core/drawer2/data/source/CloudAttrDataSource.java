@@ -73,7 +73,6 @@ public class CloudAttrDataSource {
                         return null;
                     }
                 });
-        //.doOnNext(setToCache());
     }
 
     private Action1<UserData> setToCache() {

@@ -19,12 +19,12 @@ public class BalanceTokoCashMapper implements Func1<Wallet, BalanceTokoCash> {
     }
 
     @Override
-    public BalanceTokoCash call(Wallet balanceTokoCashEntity) {
-        if (balanceTokoCashEntity != null) {
+    public BalanceTokoCash call(Wallet wallet) {
+        if (wallet != null) {
             BalanceTokoCash balanceTokoCash = new BalanceTokoCash();
 
             //create an object if tokocash is not activated
-            if (!balanceTokoCashEntity.getLinked()) {
+            if (!wallet.getLinked()) {
                 ActionBalance action = new ActionBalance();
                 action.setLabelAction("Aktivasi TokoCash");
                 action.setApplinks("tokopedia://wallet/activation");
@@ -34,26 +34,26 @@ public class BalanceTokoCashMapper implements Func1<Wallet, BalanceTokoCash> {
                 return balanceTokoCash;
             }
 
-            if (balanceTokoCashEntity.getAction() != null) {
+            if (wallet.getAction() != null) {
                 ActionBalance actionBalance = new ActionBalance();
-                actionBalance.setApplinks(balanceTokoCashEntity.getAction().getApplinks());
-                actionBalance.setLabelAction(balanceTokoCashEntity.getAction().getText());
-                actionBalance.setRedirectUrl(balanceTokoCashEntity.getAction().getRedirectUrl());
-                actionBalance.setVisibility(balanceTokoCashEntity.getAction().getVisibility());
+                actionBalance.setApplinks(wallet.getAction().getApplinks());
+                actionBalance.setLabelAction(wallet.getAction().getText());
+                actionBalance.setRedirectUrl(wallet.getAction().getRedirectUrl());
+                actionBalance.setVisibility(wallet.getAction().getVisibility());
                 balanceTokoCash.setActionBalance(actionBalance);
             }
 
-            balanceTokoCash.setAbTags(balanceTokoCashEntity.getAbTags());
-            balanceTokoCash.setApplinks(balanceTokoCashEntity.getApplinks());
-            balanceTokoCash.setBalance(balanceTokoCashEntity.getBalance());
-            balanceTokoCash.setHoldBalance(balanceTokoCashEntity.getHoldBalance());
-            balanceTokoCash.setLink(balanceTokoCashEntity.getLinked() ? 1 : 0);
-            balanceTokoCash.setRawBalance(balanceTokoCashEntity.getRawBalance());
-            balanceTokoCash.setRawHoldBalance(balanceTokoCashEntity.getRawHoldBalance());
-            balanceTokoCash.setRawTotalBalance(balanceTokoCashEntity.getRawTotalBalance());
-            balanceTokoCash.setRedirectUrl(balanceTokoCashEntity.getRedirectUrl());
-            balanceTokoCash.setTitleText(balanceTokoCashEntity.getText());
-            balanceTokoCash.setTotalBalance(balanceTokoCashEntity.getTotalBalance());
+            balanceTokoCash.setAbTags(wallet.getAbTags());
+            balanceTokoCash.setApplinks(wallet.getApplinks());
+            balanceTokoCash.setBalance(wallet.getBalance());
+            balanceTokoCash.setHoldBalance(wallet.getHoldBalance());
+            balanceTokoCash.setLink(wallet.getLinked() ? 1 : 0);
+            balanceTokoCash.setRawBalance(wallet.getRawBalance());
+            balanceTokoCash.setRawHoldBalance(wallet.getRawHoldBalance());
+            balanceTokoCash.setRawTotalBalance(wallet.getRawTotalBalance());
+            balanceTokoCash.setRedirectUrl(wallet.getRedirectUrl());
+            balanceTokoCash.setTitleText(wallet.getText());
+            balanceTokoCash.setTotalBalance(wallet.getTotalBalance());
 
 
             return balanceTokoCash;

@@ -204,19 +204,19 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         if (sessionHandler.isV4Login()) {
             setDataDrawer();
 
-            //getDrawerProfile();
-            //getDrawerDeposit();
-            //getDrawerNotification();
+            getDrawerNotification();
 
             if (!GlobalConfig.isSellerApp()) {
-                //getDrawerTokoCash();
                 getTokoPointData();
-                //getProfileCompletion();
                 getDrawerUserAttrUseCase(sessionHandler);
             } else {
                 getDrawerSellerAttrUseCase(sessionHandler);
             }
         }
+    }
+
+    private void getDrawerNotification() {
+        drawerDataManager.getNotification();
     }
 
     private void getTokoPointData() {

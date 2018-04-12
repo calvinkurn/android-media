@@ -34,8 +34,8 @@ public class LocalBalanceDataSource implements BalanceDataSource {
             }
         }).map(new Func1<Wallet, Wallet>() {
             @Override
-            public Wallet call(Wallet balanceTokoCashEntity) {
-                return balanceTokoCashEntity;
+            public Wallet call(Wallet wallet) {
+                return wallet;
             }
         });
     }

@@ -3,17 +3,11 @@ package com.tokopedia.tokocash.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.core.DeveloperOptions;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.core.RetrofitFactory;
-import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.accountsetting.data.AccountSettingRepository;
@@ -49,6 +43,7 @@ import com.tokopedia.tokocash.qrpayment.domain.PostQrPaymentUseCase;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -72,23 +67,31 @@ public class TokoCashModule {
         return null;
     }
 
+    @TokoCashScope
+    @Provides
+    public TokoCashRouter provideFlightModuleRouter(@ApplicationContext Context context) {
+        if (context instanceof TokoCashRouter) {
+            return ((TokoCashRouter) context);
+        }
+        throw new RuntimeException("App should implement " + TokoCashRouter.class.getSimpleName());
+    }
+
+    @TokoCashScope
+    @Provides
+    @TokoCashChuckQualifier
+    public Interceptor provideChuckInterceptory(TokoCashRouter flightModuleRouter) {
+        return flightModuleRouter.getChuckInterceptor();
+    }
+
     @Provides
     @OkHttpTokoCashQualifier
-    OkHttpClient provideOkHttpClient(TokoCashAuthInterceptor tokoCashAuthInterceptor, Gson gson, @ApplicationContext Context context) {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+    OkHttpClient provideOkHttpClient(TokoCashAuthInterceptor tokoCashAuthInterceptor, Gson gson,
+                                     @TokoCashChuckQualifier Interceptor chuckIntereptor) {
+        return new OkHttpClient.Builder()
                 .addInterceptor(tokoCashAuthInterceptor)
                 .addInterceptor(new TokoCashErrorResponseInterceptor(TokoCashErrorResponse.class, gson))
-                .addInterceptor(new TokoCashErrorResponseInterceptor(ActivateTokoCashErrorResponse.class, gson));
-
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            LocalCacheHandler cache = new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
-            Boolean allowLogOnNotification = cache.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false);
-            builder.addInterceptor(new ChuckInterceptor(MainApplication.getAppContext())
-                    .showNotification(allowLogOnNotification));
-            builder.addInterceptor(new DebugInterceptor());
-        }
-
-        return builder.build();
+                .addInterceptor(new TokoCashErrorResponseInterceptor(ActivateTokoCashErrorResponse.class, gson))
+                .addInterceptor(chuckIntereptor).build();
     }
 
     @Provides
@@ -112,21 +115,13 @@ public class TokoCashModule {
     @Provides
     @OkHttpWalletQualifier
     OkHttpClient provideOkHttpClientWallet(WalletAuthInterceptor walletAuthInterceptor, Gson gson,
-                                           WalletTokenRefresh walletTokenRefresh, WalletUserSession walletUserSession, @ApplicationContext Context context) {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                                           WalletTokenRefresh walletTokenRefresh, WalletUserSession walletUserSession,
+                                           @TokoCashChuckQualifier Interceptor chuckIntereptor) {
+        return new OkHttpClient.Builder()
                 .addInterceptor(walletAuthInterceptor)
                 .addInterceptor(new WalletErrorResponseInterceptor(WalletErrorResponse.class, gson,
-                        walletTokenRefresh, walletUserSession));
-
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            LocalCacheHandler cache = new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
-            Boolean allowLogOnNotification = cache.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false);
-            builder.addInterceptor(new ChuckInterceptor(MainApplication.getAppContext())
-                    .showNotification(allowLogOnNotification));
-            builder.addInterceptor(new DebugInterceptor());
-        }
-
-        return builder.build();
+                        walletTokenRefresh, walletUserSession))
+                .addInterceptor(chuckIntereptor).build();
     }
 
     @Provides
