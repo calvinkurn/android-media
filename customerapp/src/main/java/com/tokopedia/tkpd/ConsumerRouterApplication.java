@@ -691,8 +691,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 );
 
         GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
-                new JobExecutor(),
-                new UIThread(),
                 new ProfileRepositoryImpl(profileSourceFactory)
         );
 

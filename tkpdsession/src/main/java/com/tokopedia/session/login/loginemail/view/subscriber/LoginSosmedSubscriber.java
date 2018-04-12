@@ -1,6 +1,7 @@
 package com.tokopedia.session.login.loginemail.view.subscriber;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.GlobalConfig;
@@ -35,6 +36,7 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
 
     @Override
     public void onError(Throwable e) {
+        Log.e("NORMANSYAH", e.toString());
         if (e.getLocalizedMessage() != null
                 && e.getLocalizedMessage().toLowerCase().contains(NOT_ACTIVATED)
                 && !TextUtils.isEmpty(email)) {
