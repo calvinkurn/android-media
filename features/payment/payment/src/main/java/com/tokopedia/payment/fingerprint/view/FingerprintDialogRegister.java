@@ -131,30 +131,6 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     @Override
     public void onAuthenticationSucceeded(String publicKey, String signature) {
         listenerRegister.onRegisterFingerPrint(transactionId, publicKey, date, signature, userId);
-        verifySignature(publicKey, date, signature, userId);
-    }
-
-    private void verifySignature(String publicKey, String date, String signature, String userId) {
-        try {
-            KeyFactory keyFactory = KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_RSA);
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(Base64.decode(new String(Base64.decode(publicKey, 0)).replace("-----BEGIN PUBLIC KEY-----\r\n", "")
-            .replace("-----END PUBLIC KEY-----", ""), 0));
-            PublicKey publicKey1 = keyFactory.generatePublic(spec);
-            Signature verificationFunction = Signature.getInstance("SHA1withRSA");
-            verificationFunction.initVerify(publicKey1);
-            verificationFunction.update((userId + date).getBytes());
-            if (verificationFunction.verify(Base64.decode(signature, 0))) {
-                Log.d("tes", "sukses signature");
-            }
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (SignatureException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

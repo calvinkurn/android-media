@@ -31,6 +31,7 @@ import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
@@ -45,6 +46,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Formatter;
 
 
 /**
@@ -150,7 +152,7 @@ public class FingerPrintDialog extends BottomSheets {
 
     private String getPublicKey(){
         String encoded = new String(Base64.encode(generatePublicKey(context).getEncoded(), 0));
-        String publicKey = "-----BEGIN PUBLIC KEY-----\r\n" + encoded + "-----END PUBLIC KEY-----";
+        String publicKey = "-----BEGIN PUBLIC KEY-----\r\n" + encoded + "\n-----END PUBLIC KEY-----";
         return new String(Base64.encode(publicKey.getBytes(), 0));
     }
 
@@ -158,13 +160,28 @@ public class FingerPrintDialog extends BottomSheets {
         Signature signature = cryptoObject.getSignature();
         String signText = "";
         try {
+//            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+//            crypt.reset();
+//            crypt.update(textToEncrypt.getBytes("UTF-8"));
             signature.update(textToEncrypt.getBytes());
-            signText = new String(Base64.encode(signature.sign(),
-                    0));
+            signText = new String(Base64.encode(Base64.encode(signature.sign(),
+                    0), 0));
         } catch (SignatureException e) {
             e.printStackTrace();
         }
         return signText;
+    }
+
+    private static String byteToHex(final byte[] hash)
+    {
+        Formatter formatter = new Formatter();
+        for (byte b : hash)
+        {
+            formatter.format("%02x", b);
+        }
+        String result = formatter.toString();
+        formatter.close();
+        return result;
     }
 
     public void stopListening() {
@@ -265,7 +282,7 @@ public class FingerPrintDialog extends BottomSheets {
             KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder(FingerprintConstant.FINGERPRINT,
                     KeyProperties.PURPOSE_SIGN)
                     .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
-                    .setDigests(KeyProperties.DIGEST_SHA1)
+                    .setKeySize(2048)
                     .setUserAuthenticationRequired(false);
             keyPairGenerator.initialize(builder.build());
             keyPairGenerator.generateKeyPair();

@@ -365,11 +365,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 fingerPrintDialogRegister.startListening();
                 return true;
             }
-            fingerPrintDialogRegister = FingerprintDialogRegister.createInstance(presenter.getUserId(), "");
-            fingerPrintDialogRegister.setListenerRegister(TopPayActivity.this);
-            fingerPrintDialogRegister.setContext(TopPayActivity.this);
-            fingerPrintDialogRegister.show(getSupportFragmentManager(), "fingerprintRegister");
-            fingerPrintDialogRegister.startListening();
 
             /*
               HANYA SEMENTARA HARCODE, NANTI PAKAI APPLINK
@@ -445,20 +440,14 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         @Override
         public WebResourceResponse shouldInterceptRequest(final WebView view, WebResourceRequest request) {
             if((request.getUrl().toString().contains(FingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA) ||
-                    request.getUrl().toString().contains(FingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_VERITRANS) ) && isInterceptOtp /*&&
-                    request.getUrl().getQueryParameter(FingerprintConstant.ENABLE_FINGERPRINT).equalsIgnoreCase("true")*/){
-//                String transactionId = uri.getQueryParameter(FingerprintConstant.TRANSACTION_ID);
-                fingerPrintDialogRegister = FingerprintDialogRegister.createInstance(presenter.getUserId(), request.getUrl().getQueryParameter(FingerprintConstant.TRANSACTION_ID));
-                fingerPrintDialogRegister.setListenerRegister(TopPayActivity.this);
-                fingerPrintDialogRegister.setContext(TopPayActivity.this);
-                fingerPrintDialogRegister.show(getSupportFragmentManager(), "fingerprintRegister");
-                fingerPrintDialogRegister.startListening();
-//                fingerPrintDialogPayment = FingerPrintDialogPayment.createInstance(presenter.getUserId(), request.getUrl().toString(),
-//                        request.getUrl().getQueryParameter(FingerprintConstant.TRANSACTION_ID), request.getUrl().getQueryParameter(FingerprintConstant.PARTNER));
-//                fingerPrintDialogPayment.setListenerPayment(TopPayActivity.this);
-//                fingerPrintDialogPayment.setContext(TopPayActivity.this);
-//                fingerPrintDialogPayment.show(getSupportFragmentManager(), "fingerprintPayment");
-//                fingerPrintDialogPayment.startListening();
+                    request.getUrl().toString().contains(FingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_VERITRANS) ) && isInterceptOtp &&
+                    request.getUrl().getQueryParameter(FingerprintConstant.ENABLE_FINGERPRINT).equalsIgnoreCase("true")){
+                fingerPrintDialogPayment = FingerPrintDialogPayment.createInstance(presenter.getUserId(), request.getUrl().toString(),
+                        request.getUrl().getQueryParameter(FingerprintConstant.TRANSACTION_ID), request.getUrl().getQueryParameter(FingerprintConstant.PARTNER));
+                fingerPrintDialogPayment.setListenerPayment(TopPayActivity.this);
+                fingerPrintDialogPayment.setContext(TopPayActivity.this);
+                fingerPrintDialogPayment.show(getSupportFragmentManager(), "fingerprintPayment");
+                fingerPrintDialogPayment.startListening();
                 view.post(new Runnable() {
                     @Override
                     public void run() {
