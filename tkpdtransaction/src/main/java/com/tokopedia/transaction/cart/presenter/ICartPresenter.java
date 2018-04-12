@@ -46,7 +46,7 @@ public interface ICartPresenter {
 
     void trackStep1CheckoutEE(Checkout checkoutData);
 
-    void trackStep2CheckoutEE(Checkout checkoutData);
+    void trackStep2CheckoutEE(String paymentId);
 
     void processPaymentAnalytics(LocalCacheHandler localCacheHandler, ThanksTopPayData data);
 

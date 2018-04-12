@@ -922,6 +922,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         } catch (Exception e) {
             e.printStackTrace();
         }
+        presenter.trackStep2CheckoutEE(data.getParameter().getPaymentId());
         hideProgressLoading();
         showToastMessage(getString(R.string.message_payment_succeded_transaction_module));
         navigateToActivity(TransactionPurchaseRouter.createIntentTxSummary(getActivity()));

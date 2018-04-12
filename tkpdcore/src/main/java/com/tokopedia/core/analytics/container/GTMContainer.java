@@ -192,6 +192,25 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
+    public GTMContainer eventCheckout(Checkout checkout, String paymentId) {
+        Log.i("Tag Manager", "UA-9801603-15: Send Checkout Event");
+        Log.i("Tag Manager", "UA-9801603-15: MAP: " + checkout.getCheckoutMap().toString());
+
+        GTMDataLayer.pushGeneral(context,
+                DataLayer.mapOf(
+                        AppEventTracking.EVENT, AppEventTracking.Event.EVENT_CHECKOUT,
+                        AppEventTracking.PAYMENT_ID, paymentId,
+                        AppEventTracking.EVENT_CATEGORY, AppEventTracking.Category.ECOMMERCE,
+                        AppEventTracking.EVENT_ACTION, AppEventTracking.Action.CHECKOUT,
+                        AppEventTracking.EVENT_LABEL, checkout.getStep(),
+                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                        AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
+        )));
+
+        return this;
+    }
+
+    @Override
     public GTMContainer eventCheckout(Checkout checkout) {
         Log.i("Tag Manager", "UA-9801603-15: Send Checkout Event");
         Log.i("Tag Manager", "UA-9801603-15: MAP: " + checkout.getCheckoutMap().toString());
@@ -203,8 +222,8 @@ public class GTMContainer implements IGTMContainer {
                         AppEventTracking.EVENT_ACTION, AppEventTracking.Action.CHECKOUT,
                         AppEventTracking.EVENT_LABEL, checkout.getStep(),
                         AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                        AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
-        )));
+                                AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
+                        )));
 
         return this;
     }

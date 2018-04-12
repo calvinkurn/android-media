@@ -54,6 +54,8 @@ public interface IGTMContainer {
      * @param checkout detail checkout values
      * @return GTM Container Instance
      */
+    GTMContainer eventCheckout(Checkout checkout, String paymentId);
+
     GTMContainer eventCheckout(Checkout checkout);
 
     void clearCheckoutDataLayer();

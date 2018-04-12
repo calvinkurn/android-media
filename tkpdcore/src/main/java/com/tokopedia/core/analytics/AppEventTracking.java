@@ -20,6 +20,7 @@ public interface AppEventTracking {
     String EVENT_ACTION = "eventAction";
     String EVENT_LABEL = "eventLabel";
     String ECOMMERCE = "ecommerce";
+    String PAYMENT_ID = "payment_id";
 
     interface GTMKey {
         String ACCOUNTS_TYPE = "ACCOUNTS_TYPE";

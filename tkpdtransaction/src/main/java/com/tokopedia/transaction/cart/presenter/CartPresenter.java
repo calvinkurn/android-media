@@ -46,8 +46,6 @@ import com.tokopedia.transaction.cart.services.TopPayIntentService;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
 
-import org.json.JSONArray;
-
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -64,9 +62,9 @@ public class CartPresenter implements ICartPresenter {
 
 
     private static final int MUST_INSURANCE_MODE = 3;
-    public static final int OPTIONAL_INSURANCE_MODE = 2;
-    public static final String VOUCHER_CODE = "voucher_code";
-    public static final String IS_SUGGESTED = "suggested";
+    private static final int OPTIONAL_INSURANCE_MODE = 2;
+    private static final String VOUCHER_CODE = "voucher_code";
+    private static final String IS_SUGGESTED = "suggested";
     private static final String PARAM_CART_PAGE_LOADED = "cart page loaded";
     private static final String PARAM_CLICK_PAYMENT_OPTION_BUTTON = "click payment option button";
     private final ICartView view;
@@ -110,7 +108,7 @@ public class CartPresenter implements ICartPresenter {
                 }
                 processRenderViewCartData(cartData);
                 view.renderVisibleMainCartContainer();
-                if(!cartData.getCartItemList().isEmpty()){
+                if (!cartData.getCartItemList().isEmpty()) {
                     autoApplyCouponIfAvailable(1);
 
                 }
@@ -260,7 +258,7 @@ public class CartPresenter implements ICartPresenter {
                         if (!responseTransform.getMessageSuccess().isEmpty())
                             messageSuccess = responseTransform.getMessageSuccess();
                         view.showToastMessage(messageSuccess);
-                        for(int i = 0; i < canceledCartItem.getCartProducts().size(); i++) {
+                        for (int i = 0; i < canceledCartItem.getCartProducts().size(); i++) {
                             cancelCartAnalytic(
                                     canceledCartItem.getCartProducts().get(i),
                                     canceledCartItem,
@@ -392,7 +390,7 @@ public class CartPresenter implements ICartPresenter {
 
                                 String additionalQuantity = String.valueOf(
                                         cartProductEditDataList.get(i).getProductQuantity()
-                                        - cartProductEditDataList.get(i).getOriginalQuantity());
+                                                - cartProductEditDataList.get(i).getOriginalQuantity());
 
                                 addToCartAnalytic(
                                         cartItem.getCartProducts().get(i),
@@ -622,10 +620,11 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void trackStep2CheckoutEE(Checkout checkoutData) {
+    public void trackStep2CheckoutEE(String paymentId) {
+        Checkout checkoutData = getCheckoutTrackingData();
         checkoutData.setStep("2");
         checkoutData.setCheckoutOption(PARAM_CLICK_PAYMENT_OPTION_BUTTON);
-        PaymentTracking.eventCartCheckoutStep2(checkoutData);
+        PaymentTracking.eventCartCheckoutStep2(checkoutData, paymentId);
     }
 
     @Override
@@ -784,7 +783,6 @@ public class CartPresenter implements ICartPresenter {
             bundle.putInt(TopPayIntentService.EXTRA_ACTION,
                     TopPayIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
             view.executeIntentService(bundle, TopPayIntentService.class);
-            trackStep2CheckoutEE(getCheckoutTrackingData());
         }
     }
 
@@ -966,7 +964,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
 
-    public void autoApplyCouponIfAvailable(Integer selectedProduct) {
+    private void autoApplyCouponIfAvailable(Integer selectedProduct) {
         String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(view.getActivity());
         if (!TextUtils.isEmpty(savedCoupon)) {
             processCheckVoucherCode(savedCoupon, selectedProduct);
@@ -977,9 +975,11 @@ public class CartPresenter implements ICartPresenter {
     private void removeBranchPromo() {
         BranchSdkUtils.removeCouponCode(view.getActivity());
     }
+
     private Checkout getCheckoutTrackingData() {
         return gson.fromJson(
                 cartCache.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
-                new TypeToken<Checkout>() {}.getType());
+                new TypeToken<Checkout>() {
+                }.getType());
     }
 }
