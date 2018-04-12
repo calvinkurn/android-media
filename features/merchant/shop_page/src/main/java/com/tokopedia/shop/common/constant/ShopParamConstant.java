@@ -15,4 +15,6 @@ public class ShopParamConstant {
     public static final String EXTRA_PAGE = "EXTRA_PAGE";
     public static final String EXTRA_SHOP_NOTE_ID = "EXTRA_SHOP_NOTE_ID";
     public static final String EXTRA_ETALASE_NAME = "EXTRA_ETALASE_NAME";
+
+    public static final String KEY_SHOP_ID = "shop_id";
 }
