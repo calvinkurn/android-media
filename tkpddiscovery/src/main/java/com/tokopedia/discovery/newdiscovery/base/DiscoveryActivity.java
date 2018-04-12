@@ -502,10 +502,17 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                 if (productItemHashMap.get(productIDList.get(i)) != null) {
                     ProductItem productItem = productItemHashMap.get(productIDList.get(i));
                     productItem.setPosition(++count);
-                    productItemList.add(productItemHashMap.get(productIDList.get(i)));
+                    productItemList.add(productItem);
                     productItemHashMap.remove(productItem.getProductID());
                 }
             }
+
+            for (String key : productItemHashMap.keySet()) {
+                ProductItem productItem = productItemHashMap.get(key);
+                productItem.setPosition(++count);
+                productItemList.add(productItem);
+            }
+
             productViewModel.setProductList(productItemList);
             productViewModel.setTotalData(productItemList.size());
             SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
