@@ -30,10 +30,6 @@ public class TopAdsCacheApiWhiteList {
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
                 TopAdsNetworkConstant.PATH_DASHBOARD_DEPOSIT, TEN_SECOND));
 
-        // TopAds Credit
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
-                TopAdsNetworkConstant.PATH_DASHBOARD_CREDIT, ONE_HOUR));
-
         // TopAds Statistic
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
                 TopAdsNetworkConstant.PATH_DASHBOARD_STATISTIC, FIVE_MINUTE));
