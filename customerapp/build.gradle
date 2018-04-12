@@ -229,6 +229,7 @@ android {
         live {
 
         }
+        staging {}
     }
 }
 
