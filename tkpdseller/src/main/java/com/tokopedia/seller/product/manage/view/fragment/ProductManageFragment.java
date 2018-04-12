@@ -33,6 +33,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.seller.R;
@@ -65,6 +66,7 @@ import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.constant.StatusProductOption;
 import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
 import com.tokopedia.seller.product.manage.di.ProductManageModule;
+import com.tokopedia.seller.product.manage.view.activity.ProductManageCheckPromoAdsActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageFilterActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageSortActivity;
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageListAdapter;
@@ -652,6 +654,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                     goToShareProduct(productManageViewModel);
                 } else if (itemId == R.id.set_cashback_product_menu) {
                     onSetCashbackClicked(productManageViewModel);
+                } else if (itemId == R.id.set_promo_ads_product_menu) {
+                    onPromoTopAdsClicked(productManageViewModel);
                 }
             }
         };
@@ -669,6 +673,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 });
         AlertDialog dialog = alertDialogBuilder.create();
         dialog.show();
+    }
+
+    private void onPromoTopAdsClicked(ProductManageViewModel productManageViewModel) {
+        startActivity(ProductManageCheckPromoAdsActivity.createIntent(getActivity(), productManageViewModel.getProductShopId(),
+                productManageViewModel.getItemId()));
     }
 
     private void onSetCashbackClicked(ProductManageViewModel productManageViewModel) {

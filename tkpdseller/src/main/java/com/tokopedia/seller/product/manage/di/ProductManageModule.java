@@ -3,7 +3,9 @@ package com.tokopedia.seller.product.manage.di;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.network.apiservices.product.apis.PromoTopAdsApi;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
+import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.manage.data.repository.ActionProductManageRepositoryImpl;
@@ -18,8 +20,12 @@ import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenterImpl;
 import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
 import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
+import com.tokopedia.seller.product.picker.data.repository.GetProductSellingPromoTopAdsRepositoryImpl;
 import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
+import com.tokopedia.seller.product.picker.data.source.GetProductSellingPromoTopAdsDataSource;
+import com.tokopedia.seller.product.picker.data.source.GetProductSellingPromoTopAdsDataSourceCloud;
 import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
+import com.tokopedia.seller.product.picker.domain.GetProductSellingPromoTopAdsRepository;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
@@ -55,14 +61,38 @@ public class ProductManageModule {
 
     @Provides
     @ProductManageScope
+    public GetProductSellingPromoTopAdsRepository provideGetProductSellingPromoTopAdsRepository(GetProductSellingPromoTopAdsDataSource dataSource){
+        return new GetProductSellingPromoTopAdsRepositoryImpl(dataSource);
+    }
+
+    @Provides
+    @ProductManageScope
     public GetProductListSellerApi provideGetProductListSellerApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(GetProductListSellerApi.class);
     }
 
     @Provides
     @ProductManageScope
+    public GetProductSellingPromoTopAdsDataSource provideGetProductSellingPromoTopAdsDataSource(GetProductSellingPromoTopAdsDataSourceCloud dataSourceCloud){
+        return new GetProductSellingPromoTopAdsDataSource(dataSourceCloud);
+    }
+
+    @Provides
+    @ProductManageScope
+    public GetProductSellingPromoTopAdsDataSourceCloud provideGetProductSellingPromoTopAdsDataSourceCloud(PromoTopAdsApi promoTopAdsApi){
+        return new GetProductSellingPromoTopAdsDataSourceCloud(promoTopAdsApi);
+    }
+
+    @Provides
+    @ProductManageScope
     public ActionProductManageRepository provideActionManageProductRepository(ActionProductManageDataSource actionProductManageDataSource){
         return new ActionProductManageRepositoryImpl(actionProductManageDataSource);
+    }
+
+    @Provides
+    @ProductManageScope
+    public PromoTopAdsApi providePromoTopAdsApi(@TopAdsQualifier Retrofit retrofit){
+        return retrofit.create(PromoTopAdsApi.class);
     }
 
     @Provides

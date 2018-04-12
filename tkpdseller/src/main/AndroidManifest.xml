@@ -120,6 +120,10 @@
             android:name=".product.manage.view.activity.ProductManageFilterActivity"
             android:label="@string/title_filter_but"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".product.manage.view.activity.ProductManageCheckPromoAdsActivity"
+            android:label="@string/title_activity_manage_product"
+            android:screenOrientation="portrait" />
 
         <!-- Product Add / Edit -->
         <activity
