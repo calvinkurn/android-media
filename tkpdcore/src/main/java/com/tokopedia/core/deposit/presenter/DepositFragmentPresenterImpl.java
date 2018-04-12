@@ -278,7 +278,7 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
     private void setData(SummaryWithdraw data) {
         viewListener.setBalance(data.getSummary().getSummaryUseableDepositIdr());
         if ((data.getSummary().getSummaryHoldDeposit()) > 0) {
-            viewListener.showHoldWarning(data.getSummary().getSummaryHoldDepositIdr());
+            viewListener.showHoldWarning(data.getWarningHoldDeposit());
         } else {
             viewListener.hideWarning();
         }

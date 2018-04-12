@@ -306,9 +306,9 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
     }
 
     @Override
-    public void showHoldWarning(String summaryHoldDepositIdr) {
+    public void showHoldWarning(String warningText) {
         reviewWarning.setVisibility(View.VISIBLE);
-        amountBeingReviewed.setText(MethodChecker.fromHtml(getString(R.string.message_deposit_review) + " <b>" + summaryHoldDepositIdr + "</b>" + " " + getString(R.string.message_time_deposit_return)));
+        amountBeingReviewed.setText(MethodChecker.fromHtml(warningText));
     }
 
     @Override
