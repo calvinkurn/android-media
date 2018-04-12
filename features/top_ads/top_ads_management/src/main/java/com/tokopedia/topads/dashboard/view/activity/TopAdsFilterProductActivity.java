@@ -3,7 +3,6 @@ package com.tokopedia.topads.dashboard.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
 import com.tokopedia.seller.base.view.activity.BaseFilterActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -31,12 +30,10 @@ public class TopAdsFilterProductActivity extends BaseFilterActivity {
         selectedGroupId = extras.getLong(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID);
         currentGroupId = extras.getLong(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_ID);
         currentGroupName = extras.getString(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_NAME);
-        Log.e(getClass().getCanonicalName(), "setup "+selectedGroupId);
     }
 
     @Override
     protected List<Fragment> getFilterContentList() {
-        Log.e(getClass().getCanonicalName(), "content filter "+selectedGroupId);
         List<Fragment> filterContentFragmentList = new ArrayList<>();
         TopAdsFilterStatusFragment topAdsFilterStatusFragment = TopAdsProductFilterStatusFragment.createInstance(selectedFilterStatus);
         topAdsFilterStatusFragment.setActive(selectedFilterStatus > 0);
