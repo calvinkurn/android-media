@@ -71,6 +71,13 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
                 .putExtra(EXTRA_AUTO_SELECTED_CATEGORY_ID, categoryId);
     }
 
+    public static Intent newInstance(Context context) {
+        return new Intent(context, PromoListActivity.class)
+                .putExtra(EXTRA_AUTO_SELECTED_MENU_ID, DEFAULT_AUTO_SELECTED_MENU_ID)
+                .putExtra(EXTRA_AUTO_SELECTED_CATEGORY_ID, DEFAULT_AUTO_SELECTED_CATEGORY_ID);
+    }
+
+
     @SuppressWarnings("unused")
     @DeepLink(LoyaltyAppLink.PROMO_NATIVE)
     public static Intent getAppLinkIntent(Context context, Bundle extras) {
