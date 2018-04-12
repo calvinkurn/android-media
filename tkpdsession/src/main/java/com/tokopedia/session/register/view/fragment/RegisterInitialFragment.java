@@ -94,11 +94,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public static final int TYPE_SQ_PHONE = 1;
     public static final int TYPE_SQ_EMAIL = 2;
 
-    LinearLayout registerContainer, llLayout;
-    LoginTextView registerButton, registerPhoneNumberButton;
-    TextView loginButton;
-    ScrollView container;
-    RelativeLayout progressBar;
+    private LinearLayout registerContainer, llLayout;
+    private LoginTextView registerButton, registerPhoneNumberButton;
+    private TextView loginButton;
+    private ScrollView container;
+    private RelativeLayout progressBar;
 
     private String socmedMethod = "";
 
@@ -211,7 +211,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
             }
         });
-        String sourceString = "Sudah punya akun Tokopedia? Masuk";
+        String sourceString = getActivity().getResources().getString(R.string.span_already_have_tokopedia_account);
 
         Spannable spannable = new SpannableString(sourceString);
 

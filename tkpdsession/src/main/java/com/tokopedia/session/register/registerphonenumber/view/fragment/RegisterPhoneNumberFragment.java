@@ -57,11 +57,11 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     private static final int REQUEST_VERIFY_PHONE = 101;
     private static final int REQUEST_WELCOME_PAGE = 102;
 
-    EditText phoneNumber;
-    TextView nextButton;
-    TextView message;
-    TextView bottomInfo;
-    TkpdHintTextInputLayout phoneNumberLayout;
+    private EditText phoneNumber;
+    private TextView nextButton;
+    private TextView message;
+    private TextView bottomInfo;
+    private TkpdHintTextInputLayout phoneNumberLayout;
 
     TkpdProgressDialog progressDialog;
 
@@ -146,13 +146,6 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         bottomInfo.setMovementMethod(LinkMovementMethod.getInstance());
         nextButton.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         ViewUtil.stripUnderlines(bottomInfo);
-    }
-
-    public boolean isValidNumber(String phoneNumber) {
-        if (phoneNumber.length() == 0) {
-            return false;
-        }
-        return true;
     }
 
     @Override

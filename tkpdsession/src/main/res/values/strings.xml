@@ -22,6 +22,7 @@
     <string name="ride_phone_verification_header">Anda harus Verifikasi nomor ponsel untuk melanjutkan.</string>
     <string name="protect_your_account_with_phone_verification">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel</string>
     <string name="title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
+    <string name="span_already_have_tokopedia_account">Sudah punya akun Tokopedia? Masuk</string>
     <string name="title_resend_otp_sms">Kirim SMS Ulang</string>
     <string name="change_number">Ubah Nomor</string>
     <string name="title_phone_number">Nomor Ponsel</string>

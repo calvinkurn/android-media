@@ -373,8 +373,6 @@ SessionModule {
         return new RegisterPhoneNumberUseCase(threadExecutor, postExecutionThread, context, source);
     }
 
-
-
     @SessionScope
     @Provides
     LoginRegisterPhoneNumberUseCase provideLoginRegisterPhoneNumberUseCase(
@@ -385,5 +383,4 @@ SessionModule {
             MakeLoginUseCase makeLoginUseCase) {
         return new LoginRegisterPhoneNumberUseCase(threadExecutor, postExecutionThread, registerPhoneNumberUseCase, getUserInfoUseCase, makeLoginUseCase);
     }
-
 }

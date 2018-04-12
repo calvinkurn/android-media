@@ -58,8 +58,6 @@
         android:textSize="@dimen/text_size_12"
         android:textColor="@color/red_error"/>
 
-
-
     <TextView
         android:layout_below="@id/wrapper_email"
         android:layout_centerHorizontal="true"

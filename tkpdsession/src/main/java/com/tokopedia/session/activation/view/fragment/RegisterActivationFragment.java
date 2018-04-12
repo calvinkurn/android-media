@@ -48,16 +48,16 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         implements RegisterConstant, RegisterActivationView {
 
     private static final int REQUEST_AUTO_LOGIN = 101;
-    TextView activationText;
-    PinEntryEditText verifyCode;
-    TextView activateButton;
-    TextView footer;
-    TkpdProgressDialog progressDialog;
-    TextView errorOtp;
-    ImageView errorImage;
+    private TextView activationText;
+    private PinEntryEditText verifyCode;
+    private TextView activateButton;
+    private TextView footer;
+    private TkpdProgressDialog progressDialog;
+    private TextView errorOtp;
+    private ImageView errorImage;
 
-    String email;
-    String password;
+    private String email;
+    private String password;
 
     @Inject
     SessionHandler sessionHandler;

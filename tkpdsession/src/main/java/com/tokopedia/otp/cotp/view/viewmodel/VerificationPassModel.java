@@ -30,7 +30,6 @@ public class VerificationPassModel {
         this.canUseOtherMethod = canUseOtherMethod;
     }
 
-
     public VerificationPassModel(String phoneNumber, String email, int otpType, boolean canUseOtherMethod) {
         this.phoneNumber = phoneNumber;
         this.email = email;

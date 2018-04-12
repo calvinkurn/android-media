@@ -50,7 +50,7 @@
         <TextView
             android:id="@+id/btn_continue"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/dp_48"
             android:textSize="@dimen/text_size_14"
             android:background="@drawable/bg_button_enable"
             android:textColor="@color/white"

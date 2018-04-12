@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.session.R;
 
 /**
@@ -49,7 +50,7 @@ public class WelcomePageFragment extends BaseDaggerFragment {
     }
 
     public void initView() {
-        loadImage(background, URL_BACKGROUND);
+        ImageHandler.LoadImage(background, URL_BACKGROUND);
         btnContinue.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
     }
 
@@ -78,17 +79,5 @@ public class WelcomePageFragment extends BaseDaggerFragment {
     @Override
     protected void initInjector() {
 
-    }
-
-    public void loadImage(ImageView imageview, String url) {
-        if (imageview.getContext() != null) {
-            Glide.with(imageview.getContext())
-                    .load(url)
-                    .fitCenter()
-                    .dontAnimate()
-                    .placeholder(com.tokopedia.abstraction.R.drawable.loading_page)
-                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
-                    .into(imageview);
-        }
     }
 }
