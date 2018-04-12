@@ -93,7 +93,6 @@
                 android:gravity="center_horizontal"
                 android:paddingBottom="@dimen/padding_small"
                 android:paddingTop="@dimen/padding_vs"
-                android:text="kjdwkqjq"
                 android:textColor="@color/black" />
 
         </LinearLayout>
