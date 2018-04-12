@@ -13,9 +13,9 @@ import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
+import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.domain.usecase.GetCategoryHeaderUseCase;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.helper.CategoryModelHelper;
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
@@ -37,15 +37,12 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
     GetProductUseCase getProductUseCase;
     SessionHandler sessionHandler;
     GCMHandler gcmHandler;
-    GetImageSearchUseCase getImageSearchUseCase;
 
-    public CategoryPresenter(Context context, GetProductUseCase getProductUseCase,
-                             GetImageSearchUseCase getImageSearchUseCase) {
+    public CategoryPresenter(Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
         super(getProductUseCase, getImageSearchUseCase);
         this.getProductUseCase = getProductUseCase;
         this.sessionHandler = new SessionHandler(context);
         this.gcmHandler = new GCMHandler(context);
-        this.getImageSearchUseCase = getImageSearchUseCase;
         CategoryComponent categoryComponent = DaggerCategoryComponent.builder()
                 .appComponent(getComponent(context))
                 .build();

@@ -481,62 +481,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         getPresenter().requestImageSearch(imagePath);
     }
 
-    List<String> productIDList = new ArrayList<>();
-
-    @Override
-    public void onHandleResponseSearch(ProductViewModel productViewModel) {
-
-        if (!productViewModel.isImageSearch()) {
-            super.onHandleResponseSearch(productViewModel);
-        } else {
-            if (tkpdProgressDialog != null) {
-                tkpdProgressDialog.dismiss();
-            }
-            HashMap<String, ProductItem> productItemHashMap = new HashMap<>();
-            for (ProductItem productItem : productViewModel.getProductList()) {
-                productItemHashMap.put(productItem.getProductID(), productItem);
-            }
-            List<ProductItem> productItemList = new ArrayList<>();
-            int count = 0;
-            for (int i = 0; i < productIDList.size(); i++) {
-                if (productItemHashMap.get(productIDList.get(i)) != null) {
-                    ProductItem productItem = productItemHashMap.get(productIDList.get(i));
-                    productItem.setPosition(++count);
-                    productItemList.add(productItem);
-                    productItemHashMap.remove(productItem.getProductID());
-                }
-            }
-
-            for (String key : productItemHashMap.keySet()) {
-                ProductItem productItem = productItemHashMap.get(key);
-                productItem.setPosition(++count);
-                productItemList.add(productItem);
-            }
-
-            productViewModel.setProductList(productItemList);
-            productViewModel.setTotalData(productItemList.size());
-            SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
-            finish();
-        }
-    }
-
-    @Override
-    public void onHandleImageSearchResponseSuccess(List<String> productIDList, String productIDs) {
-        this.productIDList = productIDList;
-        if (fromCamera) {
-            sendCameraImageSearchResultGTM(SUCCESS);
-        } else {
-            sendGalleryImageSearchResultGTM(SUCCESS);
-        }
-
-        SearchParameter imageSearchProductParameter = new SearchParameter();
-        imageSearchProductParameter.setStartRow(productIDList.size());
-        imageSearchProductParameter.setQueryKey(String.valueOf(productIDs));
-        imageSearchProductParameter.setSource("imagesearch");
-        getPresenter().requestImageSearchProduct(imageSearchProductParameter);
-
-    }
-
     @Override
     public void onHandleImageSearchResponseError() {
         if (tkpdProgressDialog != null) {
