@@ -24,7 +24,7 @@ public class ReactNativeSubPromoPageActivity extends ReactFragmentActivity<Gener
         return ReactNativeSubPromoPageActivity.createApplinkCallingIntent(
                 context,
                 ReactConst.Screen.SUB_PROMO,
-                "Promo",
+                "Tokopedia Promo",
                 bundle.getString(KEY_SLUG),
                 bundle.getString(CATEGORY_SLUG),
                 bundle
