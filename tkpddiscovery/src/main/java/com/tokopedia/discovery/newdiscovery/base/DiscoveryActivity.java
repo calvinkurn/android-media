@@ -481,46 +481,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         getPresenter().requestImageSearch(imagePath);
     }
 
-    List<String> productIDList = new ArrayList<>();
-
-    @Override
-    public void onHandleResponseSearch(ProductViewModel productViewModel) {
-
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-        HashMap<String, ProductItem> productItemHashMap = new HashMap<>();
-        for (ProductItem productItem : productViewModel.getProductList()) {
-            productItemHashMap.put(productItem.getProductID(), productItem);
-        }
-        List<ProductItem> productItemList = new ArrayList<>();
-        for (String productId : productIDList) {
-            if (productItemHashMap.get(productId) != null)
-                productItemList.add(productItemHashMap.get(productId));
-        }
-        productViewModel.setProductList(productItemList);
-        productViewModel.setTotalData(productItemList.size());
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
-        finish();
-    }
-
-    @Override
-    public void onHandleImageSearchResponseSuccess(List<String> productIDList, String productIDs) {
-        this.productIDList = productIDList;
-        if (fromCamera) {
-            sendCameraImageSearchResultGTM(SUCCESS);
-        } else {
-            sendGalleryImageSearchResultGTM(SUCCESS);
-        }
-
-        SearchParameter imageSearchProductParameter = new SearchParameter();
-        imageSearchProductParameter.setStartRow(productIDList.size());
-        imageSearchProductParameter.setQueryKey(String.valueOf(productIDs));
-        imageSearchProductParameter.setSource("imagesearch");
-        getPresenter().requestImageSearchProduct(imageSearchProductParameter);
-
-    }
-
     @Override
     public void onHandleImageSearchResponseError() {
         if (tkpdProgressDialog != null) {
