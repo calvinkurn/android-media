@@ -67,6 +67,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabe
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
@@ -79,6 +80,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsView
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
 import java.util.ArrayList;
@@ -95,7 +97,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         FeedPlus.View.Toppicks,
         FeedPlus.View.Kol,
         SwipeRefreshLayout.OnRefreshListener,
-        TopAdsItemClickListener {
+        TopAdsItemClickListener, TopAdsInfoClickListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -174,7 +176,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     presenter.fetchNextPage();
             }
         });
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        layoutManager = new NpaLinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL,
+                false);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         String loginIdString = SessionHandler.getLoginID(getActivity());
@@ -716,7 +720,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         Integer.valueOf(product.getAdId()),
                         FeedEnhancedTracking.Promotion
                                 .createContentNameTopadsProduct(),
-                        (product.getAdRefKey().equals("") ?
+                        (TextUtils.isEmpty(product.getAdRefKey()) ?
                                 FeedEnhancedTracking.Promotion.TRACKING_NONE :
                                 product.getAdRefKey()),
                         position,

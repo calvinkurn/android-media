@@ -17,9 +17,9 @@ import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundS
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
-import com.tokopedia.flight.booking.data.FlightPassengerFactorySource;
+import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
-import com.tokopedia.flight.booking.data.cloud.FlightSavedPassengerDataListCloudSource;
+import com.tokopedia.flight.passenger.data.cloud.FlightPassengerDataListCloudSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightErrorResponse;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
@@ -69,15 +69,20 @@ public class FlightModule {
         throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
     }
 
+    @FlightScope
+    @Provides
+    public FlightModuleRouter provideFlightModuleRouter(@ApplicationContext Context context){
+        if (context instanceof FlightModuleRouter) {
+            return ((FlightModuleRouter) context);
+        }
+        throw new RuntimeException("App should implement " + FlightModuleRouter.class.getSimpleName());
+    }
 
     @FlightScope
     @Provides
     @FlightChuckQualifier
-    public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-        if (context instanceof FlightModuleRouter) {
-            return ((FlightModuleRouter) context).getChuckInterceptor();
-        }
-        throw new RuntimeException("App should implement " + FlightModuleRouter.class.getSimpleName());
+    public Interceptor provideChuckInterceptory(FlightModuleRouter flightModuleRouter) {
+        return flightModuleRouter.getChuckInterceptor();
     }
 
     @FlightScope
@@ -116,7 +121,7 @@ public class FlightModule {
                                                     FlightSearchReturnDataSource flightSearchReturnDataListSource,
                                                     FlightClassesDataSource getFlightClassesUseCase,
                                                     FlightCartDataSource flightCartDataSource,
-                                                    FlightSavedPassengerDataListCloudSource flightSavedPassengerDataListCloudSource,
+                                                    FlightPassengerDataListCloudSource flightPassengerDataListCloudSource,
                                                     FlightMetaDataDBSource flightMetaDataDBSource,
                                                     FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource,
                                                     FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,

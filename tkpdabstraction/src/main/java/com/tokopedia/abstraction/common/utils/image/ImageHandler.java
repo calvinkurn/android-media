@@ -212,7 +212,6 @@ public class ImageHandler {
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(imageview);
     }
@@ -573,14 +572,14 @@ public class ImageHandler {
         }
 
         if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Glide
-                    .with(context)
+            Glide.with(context)
                     .load(imageUrl)
                     .asBitmap()
                     .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                        public void onResourceReady(Bitmap resource, GlideAnimation
+                                glideAnimation) {
                             Bitmap blurredBitmap = blur(context, resource);
                             imageView.setImageBitmap(blurredBitmap);
                         }
