@@ -29,6 +29,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;
@@ -227,6 +228,24 @@ public class TrackingUtils extends TrackingConfig {
         builder.putAttrString(AppEventTracking.MOENGAGE.MEDIUM, customerWrapper.getMethod());
         builder.putAttrString(AppEventTracking.MOENGAGE.EMAIL, customerWrapper.getEmailAddress());
         getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.LOGIN);
+    }
+
+    public static void sendMoEngageCreateShopEvent(String screenName){
+        PayloadBuilder builder = new PayloadBuilder();
+        SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
+        builder.putAttrString(AppEventTracking.MOENGAGE.SCREEN_NAME, screenName);
+        builder.putAttrString(AppEventTracking.MOENGAGE.USER_ID, sessionHandler.getLoginID() );
+        builder.putAttrString(AppEventTracking.MOENGAGE.EMAIL, sessionHandler.getEmail());
+        builder.putAttrString(AppEventTracking.MOENGAGE.MOBILE_NUM, SessionHandler.getPhoneNumber());
+        builder.putAttrString(AppEventTracking.MOENGAGE.APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        builder.putAttrString(AppEventTracking.MOENGAGE.PLATFORM, "android");
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_SHOP_SCREEN);
+    }
+
+    public static void sendMoEngageOpenHomeEvent() {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_BERANDA);
     }
 
     public static void sendMoEngageOpenFeedEvent(int feedSize) {

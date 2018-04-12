@@ -1003,6 +1003,11 @@ public abstract class SellerRouterApplication extends MainApplication
         UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
     }
 
+    @Override
+    public void sendMoEngageOpenShopEventTracking(String screenName) {
+        TrackingUtils.sendMoEngageCreateShopEvent(screenName);
+    }
+
     /**
      * Temporary Solution to send custom dimension for shop
      * should not pass the param, after tkpd common com in
