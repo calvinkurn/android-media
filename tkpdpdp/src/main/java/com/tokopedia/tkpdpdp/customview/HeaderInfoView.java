@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.TintableBackgroundView;
 import android.support.v4.view.ViewCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -162,15 +163,17 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     }
 
     public void renderStockAvailability(ProductInfo data) {
-        linearStockAvailable.setVisibility(VISIBLE);
-        if(data.getLimitedStock()){
-            ivStockAvailable.setBackground(getContext().getResources().getDrawable(R.drawable.ic_available_stock_red));
-            textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.tkpd_dark_red));
-        } else {
-            ivStockAvailable.setBackground(getContext().getResources().getDrawable(R.drawable.ic_available_stock));
-            textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.black_70));
+        if(!TextUtils.isEmpty(data.getProductStockWording())) {
+            linearStockAvailable.setVisibility(VISIBLE);
+            if (data.getLimitedStock()) {
+                ivStockAvailable.setBackground(getContext().getResources().getDrawable(R.drawable.ic_available_stock_red));
+                textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.tkpd_dark_red));
+            } else {
+                ivStockAvailable.setBackground(getContext().getResources().getDrawable(R.drawable.ic_available_stock));
+                textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.black_70));
+            }
+            textStockAvailable.setText(data.getProductStockWording());
         }
-        textStockAvailable.setText(data.getProductStockWording());
     }
 
     private void showCountdownTimer(final Campaign campaign) {
