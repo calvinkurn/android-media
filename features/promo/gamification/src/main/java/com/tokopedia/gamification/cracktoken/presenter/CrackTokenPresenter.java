@@ -86,7 +86,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
                     @Override
                     public void onNext(CrackResult crackResult) {
-
+                        crackResult.setBenefitLabel("Selamat anda mendapatkan");
                         // check result status
                         if (crackResult.getResultStatus().getCode().equals("200")) {
                             // success

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
 
@@ -19,10 +20,9 @@ public class ApplinkUtil {
 
         if (!TextUtils.isEmpty(applink) && ((GamificationRouter) activity.getApplicationContext())
                 .isSupportedDelegateDeepLink(applink)) {
-            ((GamificationRouter) activity.getApplicationContext())
-                    .actionApplink(activity, applink);
+            RouteManager.route(activity, applink);
         } else if (!TextUtils.isEmpty(url) && URLUtil.isNetworkUrl(url)) {
-            String defaultTitle =  activity.getResources().getString(R.string.toko_points_title);
+            String defaultTitle = activity.getResources().getString(R.string.toko_points_title);
             Intent intent = ((GamificationRouter) activity.getApplicationContext())
                     .getWebviewActivityWithIntent(activity, url, defaultTitle);
             activity.startActivity(intent);

@@ -6,6 +6,7 @@ dependencies {
     compile project(rootProject.ext.libraries.abstraction)
     compile project(rootProject.ext.libraries.design)
     compile project(rootProject.ext.libraries.useCase)
+    compile project(rootProject.ext.libraries.applink)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

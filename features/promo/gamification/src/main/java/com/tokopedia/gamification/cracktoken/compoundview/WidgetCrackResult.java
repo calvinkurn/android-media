@@ -53,7 +53,6 @@ public class WidgetCrackResult extends RelativeLayout {
     private Button buttonReturn;
     private TextView buttonCta;
     private ImageView closeRewardBtn;
-    private String benefitType;
     private CrackResult crackResult;
 
     private WidgetCrackResultListener listener;
@@ -101,7 +100,6 @@ public class WidgetCrackResult extends RelativeLayout {
 
     public void showCrackResult(CrackResult crackResult) {
         this.crackResult = crackResult;
-        this.benefitType = crackResult.getBenefitType();
         showCrackResultImageAnimation(crackResult);
         showCrackResultBackgroundAnimation();
         showListCrackResultText(crackResult.getBenefits(), crackResult.getBenefitLabel());
@@ -195,10 +193,6 @@ public class WidgetCrackResult extends RelativeLayout {
         alphaAnimation.setDuration(500);
         containerTextCrackResult.setAnimation(alphaAnimation);
         containerTextCrackResult.setVisibility(VISIBLE);
-    }
-
-    public String getBenefitType() {
-        return this.benefitType;
     }
 
     private int convertSize(String size) {
