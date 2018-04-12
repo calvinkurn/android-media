@@ -199,9 +199,15 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void couponDataNoResult() {
+        couponDataNoResult(getString(R.string.loyalty_default_empty_coupons_title),
+                getString(R.string.loyalty_default_empty_coupons_subtitle));
+    }
+
+    @Override
+    public void couponDataNoResult(String title, String subTitle) {
         NetworkErrorHelper.showEmptyState(context, mainView,
-                "Anda Tidak Memiliki Kupon",
-                "Tukar poin Anda dengan kupon di halaman TokoPoints.",
+                title,
+                subTitle,
                 "",
                 R.drawable.ic_coupon_image_big, null);
     }
