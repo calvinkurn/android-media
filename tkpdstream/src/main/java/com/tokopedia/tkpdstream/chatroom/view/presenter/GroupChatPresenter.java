@@ -1,7 +1,5 @@
 package com.tokopedia.tkpdstream.chatroom.view.presenter;
 
-import android.util.Log;
-
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.PreviousMessageListQuery;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -275,5 +273,9 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     public void setHandler(String channelUrl, ChannelHandlerUseCase.ChannelHandlerListener listener) {
         channelHandlerUseCase.execute(channelUrl, listener);
+    }
+
+    public String checkText(String replyText) {
+        return replyText.replace("<", "&lt;");
     }
 }

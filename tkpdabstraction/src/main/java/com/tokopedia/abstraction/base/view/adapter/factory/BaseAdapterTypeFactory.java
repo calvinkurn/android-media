@@ -8,10 +8,12 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder;
 
 
@@ -30,11 +32,6 @@ public class BaseAdapterTypeFactory implements AdapterTypeFactory {
     }
 
     @Override
-    public int type(LoadingModel viewModel) {
-        return LoadingViewholder.LAYOUT;
-    }
-
-    @Override
     public int type(EmptyResultViewModel viewModel) {
         return EmptyResultViewHolder.LAYOUT;
     }
@@ -44,18 +41,30 @@ public class BaseAdapterTypeFactory implements AdapterTypeFactory {
         return ErrorNetworkViewHolder.LAYOUT;
     }
 
+    @Override
+    public int type(LoadingModel viewModel) {
+        return LoadingViewholder.LAYOUT;
+    }
+
+    @Override
+    public int type(LoadingMoreModel viewModel) {
+        return LoadingMoreViewHolder.LAYOUT;
+    }
+
     @CallSuper
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder creatViewHolder;
-        if (type == EmptyViewHolder.LAYOUT) {
-            creatViewHolder = new EmptyViewHolder(parent);
+        if (type == LoadingMoreViewHolder.LAYOUT) {
+            creatViewHolder = new LoadingMoreViewHolder(parent);
         } else if (type == LoadingViewholder.LAYOUT) {
             creatViewHolder = new LoadingViewholder(parent);
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {
             creatViewHolder = new ErrorNetworkViewHolder(parent);
         } else if (type == EmptyResultViewHolder.LAYOUT) {
             creatViewHolder = new EmptyResultViewHolder(parent);
+        } else if (type == EmptyViewHolder.LAYOUT) {
+            creatViewHolder = new EmptyViewHolder(parent);
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }
