@@ -686,7 +686,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     public boolean showInAppMessage(InAppMessage inAppMessage) {
         try {
-            Log.e("inaap message", inAppMessage.content);
             InAppMessageModel inAppMessageModel= new GsonBuilder().create().fromJson(inAppMessage.content, InAppMessageModel.class);
             InappMessageDialogFragment dialog = InappMessageDialogFragment.newInstance(inAppMessageModel);
             dialog.show(getFragmentManager(), "inpp");

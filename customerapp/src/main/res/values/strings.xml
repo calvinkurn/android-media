@@ -88,5 +88,6 @@
     <string name="flight_phone_verification_header">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel.</string>
 
     <string name="exit_message">Tekan sekali lagi untuk keluar</string>
+    <string name="yes">yes</string>
 
 </resources>

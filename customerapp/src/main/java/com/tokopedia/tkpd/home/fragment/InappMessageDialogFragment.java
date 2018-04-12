@@ -46,6 +46,8 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
     private final String LEFT = "left";
     private final String RIGHT = "right";
     private final String CENTER = "center";
+    private final String type_2="2";
+    private final String type_3="3";
 
     public static InappMessageDialogFragment newInstance(InAppMessageModel inAppMessageModel) {
         Bundle bundle = new Bundle();
@@ -102,6 +104,13 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
         tvTitle.setText(inAppMessageModel.title);
         tvDesc.setText(inAppMessageModel.description);
         closeBtn = view.findViewById(R.id.img_inapp_cross);
+
+        renderView(view);
+
+    }
+
+    private void renderView(View view) {
+
         try {
             if (!TextUtils.isEmpty(inAppMessageModel.colorTitle)) {
                 tvTitle.setTextColor(Color.parseColor(inAppMessageModel.colorTitle));
@@ -116,12 +125,6 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
             tvTitle.setTextColor(Color.BLACK);
             tvDesc.setTextColor(Color.BLACK);
         }
-
-        renderView(view);
-
-    }
-
-    private void renderView(View view) {
 
         if (!TextUtils.isEmpty(inAppMessageModel.headerTextAlignment)) {
 
@@ -147,14 +150,14 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
             }
         }
 
-        if ("2".equalsIgnoreCase(inAppMessageModel.type)) {
+        if (type_2.equalsIgnoreCase(inAppMessageModel.type)) {
             renderGridViewLayout();
-        } else if ("3".equalsIgnoreCase(inAppMessageModel.type)) {
+        } else if (type_3.equalsIgnoreCase(inAppMessageModel.type)) {
             renderListAndButtonViewLayout(view);
         } else {
             renderListViewLayout();
         }
-        if ("yes".equalsIgnoreCase(inAppMessageModel.closeButtonShow)) {
+        if (getString(R.string.yes).equalsIgnoreCase(inAppMessageModel.closeButtonShow)) {
             closeBtn.setVisibility(View.VISIBLE);
             closeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -164,7 +167,12 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
             });
         } else {
             closeBtn.setVisibility(View.GONE);
+        }
 
+        if (getString(R.string.yes).equalsIgnoreCase(inAppMessageModel.headerVisibile)) {
+            headerLayout.setVisibility(View.VISIBLE);
+        } else {
+            headerLayout.setVisibility(View.GONE);
         }
 
         InAppMessageAdapter inAppMessageAdapter = new InAppMessageAdapter(getActivity(), (ArrayList<InAppMessageItemModel>) inAppMessageModel.messageList, this);
@@ -192,14 +200,14 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rv.setLayoutManager(layoutManager);
-        TextView btnAction1 = view.findViewById(R.id.btn_action_1);
-        TextView btnAction2 = view.findViewById(R.id.btn_action_2);
+        TextView actionButtonLeft = view.findViewById(R.id.btn_action_1);
+        TextView actionButtonRight = view.findViewById(R.id.btn_action_2);
         view.findViewById(R.id.ll_action_button).setVisibility(View.VISIBLE);
 
-        btnAction1.setText(inAppMessageModel.actionBtnText1);
-        btnAction2.setText(inAppMessageModel.actionBtnText2);
+        actionButtonLeft.setText(inAppMessageModel.actionBtnText1);
+        actionButtonRight.setText(inAppMessageModel.actionBtnText2);
 
-        btnAction1.setOnClickListener(new View.OnClickListener() {
+        actionButtonLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleDeepLink(Uri.parse(inAppMessageModel.actionDeeplink1));
@@ -207,7 +215,7 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
             }
         });
 
-        btnAction2.setOnClickListener(new View.OnClickListener() {
+        actionButtonRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleDeepLink(Uri.parse(inAppMessageModel.actionDeeplink2));

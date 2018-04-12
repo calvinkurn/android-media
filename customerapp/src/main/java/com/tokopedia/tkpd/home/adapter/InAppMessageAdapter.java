@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.model.InAppMessageItemModel;
 
@@ -42,7 +43,7 @@ public class InAppMessageAdapter extends RecyclerView.Adapter<InAppMessageAdapte
     @Override
     public void onBindViewHolder(MessageHolder holder, int position) {
         final InAppMessageItemModel inAppMessageItemModel = messageList.get(position);
-        com.tokopedia.abstraction.common.utils.image.ImageHandler.LoadImage(holder.img, inAppMessageItemModel.getImageUrl());
+        ImageHandler.LoadImage(holder.img, inAppMessageItemModel.getImageUrl());
         holder.img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,11 +59,9 @@ public class InAppMessageAdapter extends RecyclerView.Adapter<InAppMessageAdapte
         return messageList.size();
     }
 
-
     class MessageHolder extends RecyclerView.ViewHolder {
 
         ImageView img;
-
 
         public MessageHolder(View itemView) {
             super(itemView);
