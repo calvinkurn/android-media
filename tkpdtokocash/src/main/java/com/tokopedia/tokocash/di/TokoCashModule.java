@@ -67,20 +67,18 @@ public class TokoCashModule {
         return null;
     }
 
-    @TokoCashScope
     @Provides
-    public TokoCashRouter provideFlightModuleRouter(@ApplicationContext Context context) {
+    public TokoCashRouter provideTokoCashRouter(@ApplicationContext Context context) {
         if (context instanceof TokoCashRouter) {
             return ((TokoCashRouter) context);
         }
         throw new RuntimeException("App should implement " + TokoCashRouter.class.getSimpleName());
     }
 
-    @TokoCashScope
     @Provides
     @TokoCashChuckQualifier
-    public Interceptor provideChuckInterceptory(TokoCashRouter flightModuleRouter) {
-        return flightModuleRouter.getChuckInterceptor();
+    public Interceptor provideChuckInterceptor(TokoCashRouter tokoCashRouter) {
+        return tokoCashRouter.getChuckInterceptor();
     }
 
     @Provides
