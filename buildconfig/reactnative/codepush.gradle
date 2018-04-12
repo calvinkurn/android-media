@@ -54,7 +54,7 @@ gradle.projectsEvaluated {
             def recordFilesBeforeBundleCommand = tasks.create(
                     name: "recordFilesBeforeBundleCommand${targetName}",
                     type: Exec) {
-                commandLine(*nodeExecutableAndArgs.toString(), "../buildconfig/reactnative/scripts/recordFilesBeforeBundleCommand.js", resourcesDir, resourcesMapTempFileName)
+                commandLine(*nodeExecutableAndArgs, "../buildconfig/reactnative/scripts/recordFilesBeforeBundleCommand.js", resourcesDir, resourcesMapTempFileName)
             }
 
             recordFilesBeforeBundleCommand.dependsOn("merge${targetName}Resources")
@@ -65,7 +65,7 @@ gradle.projectsEvaluated {
             def generateBundledResourcesHash = tasks.create(
                     name: "generateBundledResourcesHash${targetName}",
                     type: Exec) {
-                commandLine(*nodeExecutableAndArgs.toString(), "../buildconfig/reactnative/scripts/generateBundledResourcesHash.js", resourcesDir, "$jsBundleDir/$bundleAssetName", jsBundleDir, resourcesMapTempFileName)
+                commandLine(*nodeExecutableAndArgs, "../buildconfig/reactnative/scripts/generateBundledResourcesHash.js", resourcesDir, "$jsBundleDir/$bundleAssetName", jsBundleDir, resourcesMapTempFileName)
             }
 
             // We need to generate and record the resources map, but we use it to generate the bundle hash
