@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
 import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
@@ -69,6 +70,22 @@ public class CartDigitalRepository implements ICartDigitalRepository {
         return digitalEndpointService.getApi()
                 .addToCart(requestBody, idemPotencyKeyHeader)
                 .map(getFuncResponseToCartDigitalInfoData());
+    }
+
+    @Override
+    public Observable<String> cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher) {
+        JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodyCancelVoucher));
+        JsonObject requestBody = new JsonObject();
+        requestBody.add("data", jsonElement);
+
+        return digitalEndpointService.getApi()
+                .cancelVoucher(requestBody)
+                .map(new Func1<Response<TkpdDigitalResponse>, String>() {
+                    @Override
+                    public String call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+                        return tkpdDigitalResponseResponse.body().getMessage();
+                    }
+                });
     }
 
     @NonNull

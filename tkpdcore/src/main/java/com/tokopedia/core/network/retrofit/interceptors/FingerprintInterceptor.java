@@ -7,7 +7,6 @@ import android.util.Base64;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.nytimes.android.external.cache.Stopwatch;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
@@ -76,7 +75,6 @@ public class FingerprintInterceptor implements Interceptor {
 
     private String getFingerPrintJson() {
         String json = "";
-        Stopwatch stopwatch = Stopwatch.createStarted();
         CommonUtils.dumper("Fingerpint is running");
         try {
             GetFingerprintUseCase getFingerprintUseCase;
@@ -107,8 +105,6 @@ public class FingerprintInterceptor implements Interceptor {
                     }).toBlocking().single();
         } catch (Throwable t) {
             t.printStackTrace();
-        }finally {
-            CommonUtils.dumper("fingerprint execution time : "+stopwatch.stop());
         }
 
         return json;

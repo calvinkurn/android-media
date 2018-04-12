@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
@@ -32,6 +33,7 @@ import com.tokopedia.inbox.common.applink.ApplinkConstant;
 import com.tokopedia.inbox.common.util.SpaceItemDecoration;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.adapter.IndicatorAdapter;
+import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
 import com.tokopedia.inbox.inboxchat.viewmodel.IndicatorItem;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
@@ -241,6 +243,9 @@ public class InboxChatActivity extends DrawerPresenterActivity
                 initTopChatFragment();
                 break;
             case POSITION_GROUP_CHAT:
+                AbstractionRouter abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
+                abstractionRouter.getAnalyticTracker().sendEventTracking(
+                        TopChatAnalytics.eventClickInboxChannel().getEvent());
                 initGroupChatFragment();
                 break;
             default:
