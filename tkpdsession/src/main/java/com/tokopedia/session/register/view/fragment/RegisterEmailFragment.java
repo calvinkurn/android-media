@@ -652,8 +652,17 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     public void onSuccessRegister(RegisterEmailViewModel registerResult) {
         dismissLoadingProgress();
         setActionsEnabled(true);
+        lostViewFocus();
         presenter.startAction(registerResult);
 
+    }
+
+    public void lostViewFocus() {
+        email.clearFocus();
+        phone.clearFocus();
+        name.clearFocus();
+        registerPassword.clearFocus();
+        registerButton.clearFocus();
     }
 
     @Override
