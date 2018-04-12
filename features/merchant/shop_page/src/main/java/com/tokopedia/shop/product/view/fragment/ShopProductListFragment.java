@@ -92,6 +92,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private String shopId;
     private String keyword;
     private String sortName = Integer.toString(Integer.MIN_VALUE);
+    private String attribution;
     private Pair<Integer, Integer> currentLayoutType = new Pair<>(ShopProductViewHolder.LAYOUT, 65);
     private int currentIndex = 0, currentImgBottomNav = 0;
     private String sortId;
@@ -99,13 +100,14 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private BottomActionView bottomActionView;
     private ShopInfo shopInfo;
 
-    public static ShopProductListFragment createInstance(String shopId, String keyword, String etalaseId, String sort) {
+    public static ShopProductListFragment createInstance(String shopId, String keyword, String etalaseId, String sort, String attribution) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         bundle.putString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, keyword);
         bundle.putString(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId);
         bundle.putString(ShopParamConstant.EXTRA_SORT_ID, sort);
+        bundle.putString(ShopParamConstant.EXTRA_ATTRIBUTION, attribution);
         shopProductListFragment.setArguments(bundle);
         return shopProductListFragment;
     }
@@ -151,6 +153,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         keyword = getArguments().getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, "");
         etalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID, "");
         sortName = getArguments().getString(ShopParamConstant.EXTRA_SORT_ID, Integer.toString(Integer.MIN_VALUE));
+        attribution = getArguments().getString(ShopParamConstant.EXTRA_ATTRIBUTION, "");
         shopProductListPresenter.attachView(this);
     }
 
@@ -282,8 +285,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         showBottomActionView();
         if (shopInfo != null) {
             shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
-                    list, false, shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()),
-                    (currentLayoutType.second == LAYOUT_GRID_TYPE), getCurrentPage());
+                    list, attribution, false, shopProductListPresenter.isMyShop(shopId),
+                    ShopPageTracking.getShopType(shopInfo.getInfo()), (currentLayoutType.second == LAYOUT_GRID_TYPE),
+                    getCurrentPage());
         }
     }
 
@@ -333,8 +337,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public void onProductClicked(ShopProductViewModel shopProductViewModel, int adapterPosition) {
         if (shopInfo != null) {
             shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
-                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), adapterPosition, false,
-                    shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()), (currentLayoutType.second == LAYOUT_GRID_TYPE));
+                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), attribution,
+                    adapterPosition, false, shopProductListPresenter.isMyShop(shopId),
+                    ShopPageTracking.getShopType(shopInfo.getInfo()), (currentLayoutType.second == LAYOUT_GRID_TYPE));
         }
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
     }

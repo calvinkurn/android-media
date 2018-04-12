@@ -29,18 +29,19 @@
                 android:id="@+id/searchTextView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/action_image_search_btn"
+                android:layout_toStartOf="@+id/action_image_search_btn"
                 android:background="@null"
+                android:drawablePadding="8dp"
                 android:hint="@string/cari_produk_atau_toko"
                 android:imeOptions="actionSearch"
                 android:inputType="textNoSuggestions"
                 android:paddingLeft="@dimen/search_view_text_padding"
-                android:drawablePadding="8dp"
-                app:drawableLeftCompat="@drawable/icon_magnifier"
-                android:paddingRight="@dimen/search_view_text_padding"
                 android:singleLine="true"
                 android:textColor="#212121"
                 android:textColorHint="@color/black_38"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                app:drawableLeftCompat="@drawable/icon_magnifier" />
 
             <ImageButton
                 android:id="@+id/action_up_btn"
@@ -48,6 +49,14 @@
                 android:layout_centerVertical="true"
                 android:tint="#4b4b4b"
                 app:srcCompat="@drawable/ic_navigation_arrow_back" />
+
+            <ImageButton
+                android:id="@+id/action_image_search_btn"
+                style="@style/MSV_ImageButton"
+                android:layout_toLeftOf="@+id/action_voice_btn"
+                android:layout_toStartOf="@+id/action_voice_btn"
+                android:tint="@color/grey"
+                app:srcCompat="@drawable/ic_camera_alt_black_24dp" />
 
             <ImageButton
                 android:id="@+id/action_voice_btn"
@@ -63,8 +72,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:tint="#4b4b4b"
-                app:srcCompat="@drawable/ic_clear_black"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_clear_black" />
         </RelativeLayout>
 
         <RelativeLayout

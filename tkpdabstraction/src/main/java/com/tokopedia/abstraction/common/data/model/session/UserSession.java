@@ -25,4 +25,6 @@ public interface UserSession {
     String getProfilePicture();
 
     boolean isMsisdnVerified();
+
+    boolean isHasPassword();
 }
