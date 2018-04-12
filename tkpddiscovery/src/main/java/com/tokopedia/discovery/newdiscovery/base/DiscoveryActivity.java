@@ -31,16 +31,12 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
-import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
@@ -509,6 +505,15 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
 
         Toast.makeText(this, "No Results Found", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onHandleImageSearchResponseSuccess() {
+        if (fromCamera) {
+            sendCameraImageSearchResultGTM(SUCCESS);
+        } else {
+            sendGalleryImageSearchResultGTM(SUCCESS);
+        }
     }
 
     public void showSnackBarView(String message) {
