@@ -863,7 +863,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     public void goToAddProduct(Activity activity) {
         if (activity != null) {
-             ProductAddActivity.start(activity);
+            ProductAddActivity.start(activity);
         }
     }
 
@@ -1145,7 +1145,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToAddProduct(Context context) {
-        if(context != null && context instanceof Activity){
+        if (context != null && context instanceof Activity) {
             ProductAddActivity.start((Activity) context);
         }
     }
@@ -1158,7 +1158,7 @@ public abstract class SellerRouterApplication extends MainApplication
             context.startActivity(intent);
         } else {
             Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
-            ((Activity)context).startActivityForResult(intent, 100);
+            ((Activity) context).startActivityForResult(intent, 100);
         }
     }
 
@@ -1174,7 +1174,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId);
+        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
     }
 
     public Intent getGroupChatIntent(Context context, String channelUrl) {
@@ -1255,6 +1255,10 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void sendTrackingGroupChatLeftNavigation() {
+    }
 
+    @Override
+    public String getDesktopLinkGroupChat() {
+        return "";
     }
 }

@@ -1,10 +1,9 @@
 package com.tokopedia.inbox.inboxchat.presenter;
 
-import com.google.gson.JsonArray;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
+import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.CreateTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.DeleteTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.EditTemplateUseCase;
@@ -69,9 +68,9 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
                 @Override
                 public void onNext(EditTemplateViewModel editTemplateViewModel) {
                     if(editTemplateViewModel.isSuccess()) {
-                        UnifyTracking.eventClickTemplate(TopChatTrackingEventLabel.Category.ADD_TEMPLATE,
-                                TopChatTrackingEventLabel.Action.UPDATE_TEMPLATE,
-                                TopChatTrackingEventLabel.Name.INBOX_CHAT);
+                        UnifyTracking.eventClickTemplate(TopChatAnalytics.Category.ADD_TEMPLATE,
+                                TopChatAnalytics.Action.UPDATE_TEMPLATE,
+                                TopChatAnalytics.Name.INBOX_CHAT);
                         getView().onResult(editTemplateViewModel, index, s);
                         getView().finish();
                     }else {
