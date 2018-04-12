@@ -147,6 +147,10 @@
         <value>3</value>
     </entry>
     <entry>
+        <key>flight_airline</key>
+        <value>1</value>
+    </entry>
+    <entry>
         <key>notification_logger</key>
         <value>false</value>
     </entry>

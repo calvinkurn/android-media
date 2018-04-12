@@ -84,7 +84,7 @@ public interface FlightBookingContract {
 
         void renderFinishTimeCountDown(Date date);
 
-        void showExpireTransactionDialog();
+        void showExpireTransactionDialog(String message);
 
         void showPriceChangesDialog(String newTotalPrice, String oldTotalPrice);
 

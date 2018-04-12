@@ -101,11 +101,16 @@ import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.digital.tokocash.topup.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
+import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.domain.FlightDeleteDashboardCacheUseCase;
+import com.tokopedia.flight.review.data.model.AttributesVoucher;
+import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
+import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
@@ -116,7 +121,11 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
+import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
+import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
@@ -181,6 +190,7 @@ import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.flight.FlightGetProfileInfoData;
+import com.tokopedia.tkpd.flight.FlightVoucherCodeWrapperImpl;
 import com.tokopedia.tkpd.flight.di.DaggerFlightConsumerComponent;
 import com.tokopedia.tkpd.flight.di.FlightConsumerComponent;
 import com.tokopedia.tkpd.flight.presentation.FlightPhoneVerificationActivity;
@@ -259,7 +269,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
-        DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter {
+        DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -698,6 +708,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Interceptor getChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
+    }
+
+    @Override
+    public Intent getLoyaltyWithCoupon(Activity activity, String platform, String categoryId, String cartId) {
+        return LoyaltyActivity.newInstanceCouponActive(activity, platform, categoryId, cartId);
+    }
+
+    @Override
+    public FlightVoucherCodeWrapper getFlightVoucherCodeWrapper() {
+        return new FlightVoucherCodeWrapperImpl();
     }
 
     @Override
@@ -1770,6 +1790,30 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         return intent;
 
+    }
+
+    @Override
+    public Observable<VoucherViewModel> checkFlightVoucher(String voucherCode, String cartId, String isCoupon) {
+        FlightRepository flightRepository = FlightComponentInstance.getFlightComponent(this).flightRepository();
+        FlightCheckVoucherCodeUseCase checkVoucherCodeUseCase = new FlightCheckVoucherCodeUseCase(flightRepository);
+        return checkVoucherCodeUseCase.createObservable(checkVoucherCodeUseCase.createRequestParams(cartId, voucherCode, isCoupon))
+                .map(new Func1<AttributesVoucher, VoucherViewModel>() {
+                    @Override
+                    public VoucherViewModel call(AttributesVoucher attributesVoucher) {
+                        VoucherViewModel voucherViewModel = new VoucherViewModel();
+                        voucherViewModel.setCode(attributesVoucher.getVoucherCode());
+                        voucherViewModel.setMessage(attributesVoucher.getMessage());
+                        voucherViewModel.setRawDiscount((long) attributesVoucher.getDiscountAmountPlain());
+                        voucherViewModel.setRawCashback((long) attributesVoucher.getCashbackAmountPlain());
+                        voucherViewModel.setSuccess(true);
+                        return voucherViewModel;
+                    }
+                });
+    }
+
+    @Override
+    public Intent getPromoListIntent(Activity activity) {
+        return PromoListActivity.newInstance(activity);
     }
 
     @Override
