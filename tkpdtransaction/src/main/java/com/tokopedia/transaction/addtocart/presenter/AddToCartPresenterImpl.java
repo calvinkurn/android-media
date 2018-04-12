@@ -43,6 +43,7 @@ import com.tokopedia.transaction.addtocart.model.kero.Data;
 import com.tokopedia.transaction.addtocart.model.kero.Product;
 import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
+import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Shipment;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ShipmentPackage;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
@@ -418,6 +419,43 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
             }
         }
         return true;
+    }
+
+    @Override
+    public void sendAddToCartCheckoutAnalytic(@NonNull Context context,
+                                              @NonNull ProductCartPass productCartPass,
+                                              @NonNull ProductDetail productDetail, String quantity) {
+        String categoryLevelStr = productDetail.getProductCatNameTracking();
+        com.tokopedia.core.analytics.nishikino.model.Product product =
+                new com.tokopedia.core.analytics.nishikino.model.Product();
+        product.setProductName(productCartPass.getProductName());
+        product.setProductID(productCartPass.getProductId());
+        product.setPrice(productCartPass.getPrice());
+        product.setBrand(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
+        product.setCategory(TextUtils.isEmpty(categoryLevelStr)
+                ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                : categoryLevelStr);
+        product.setVariant(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
+        product.setQty(quantity);
+        product.setShopId(productCartPass.getShopId());
+        product.setShopType(productCartPass.getShopType());
+        product.setShopName(productCartPass.getShopName());
+        product.setCategoryId(productCartPass.getCategoryId());
+        product.setHomeAttribution(
+                TextUtils.isEmpty(productCartPass.getTrackerAttribution())
+                        ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                        : productCartPass.getTrackerAttribution()
+        );
+        product.setList(
+                TextUtils.isEmpty(productCartPass.getListName())
+                        ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                        : productCartPass.getListName()
+        );
+        GTMCart gtmCart = new GTMCart();
+        gtmCart.addProduct(product.getProduct());
+        gtmCart.setCurrencyCode("IDR");
+        gtmCart.setAddAction(GTMCart.ADD_ACTION);
+        UnifyTracking.eventATCSuccess(gtmCart);
     }
 
     @Override
