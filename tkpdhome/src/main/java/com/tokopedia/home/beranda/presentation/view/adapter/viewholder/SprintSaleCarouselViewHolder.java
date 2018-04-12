@@ -63,7 +63,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     private RelativeLayout container;
     private RecyclerView recyclerView;
     private ItemAdapter itemAdapter;
-    private Context context;
+    private static Context context;
     private TextView title;
     private TextView seeMore;
     private CardView seeMoreContainer;
@@ -138,7 +138,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         HomePageTracking.eventClickSeeAllProductSprintBackground();
     }
 
-    private class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
+    private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
         private DynamicHomeChannel.Grid[] list;
         private GridItemClickListener gridItemClickListener;
@@ -211,7 +211,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         }
     }
 
-    private class ItemViewHolder extends RecyclerView.ViewHolder {
+    private static class ItemViewHolder extends RecyclerView.ViewHolder {
 
         public CardView countainer;
         public ImageView imageView;

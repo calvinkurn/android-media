@@ -34,9 +34,9 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
     public static final int LAYOUT = R.layout.layout_category_section;
     private RecyclerView recyclerView;
     private SectionItemAdapter adapter;
-    private Context context;
+    private static Context context;
     private static final int spanCount = 5;
-    private HomeCategoryListener listener;
+    private static HomeCategoryListener listener;
 
     public CategorySectionViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
@@ -57,7 +57,7 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         adapter.setSectionViewModel(element);
     }
 
-    public class SectionItemAdapter extends RecyclerView.Adapter<SectionItemViewHolder> {
+    public static class SectionItemAdapter extends RecyclerView.Adapter<SectionItemViewHolder> {
 
         private CategorySectionViewModel sectionViewModel;
 
@@ -101,7 +101,7 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         }
     }
 
-    public class SectionItemViewHolder extends RecyclerView.ViewHolder {
+    public static class SectionItemViewHolder extends RecyclerView.ViewHolder {
 
         private AppCompatImageView icon;
         private TextView title;

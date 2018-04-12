@@ -34,8 +34,8 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     private TextView channelTitle;
     private ImageView channelHeroImage;
     private TextView seeAllButton;
-    private Context context;
-    private HomeCategoryListener listener;
+    private static Context context;
+    private static HomeCategoryListener listener;
     private View channelTitleContainer;
     private ItemAdapter itemAdapter;
     private RecyclerView recyclerView;
@@ -89,7 +89,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         });
     }
 
-    private class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
+    private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
         private DynamicHomeChannel.Grid[] list;
         DynamicHomeChannel.Channels channel;

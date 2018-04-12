@@ -52,9 +52,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
     private TextView homeChannelTitle;
     private TextView seeAllButton;
-    private Context context;
-    private HomeCategoryListener listener;
-    private CountDownView countDownView;
+    private static Context context;
+    private static HomeCategoryListener listener;
+    private static CountDownView countDownView;
     private String sprintSaleExpiredText;
     private CountDownView.CountDownListener countDownListener;
     private ItemAdapter itemAdapter;
@@ -127,11 +127,11 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         });
     }
 
-    private boolean isSprintSale(DynamicHomeChannel.Channels channel) {
+    private static boolean isSprintSale(DynamicHomeChannel.Channels channel) {
         return DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout());
     }
 
-    private class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
+    private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
         private DynamicHomeChannel.Grid[] list;
         DynamicHomeChannel.Channels channel;

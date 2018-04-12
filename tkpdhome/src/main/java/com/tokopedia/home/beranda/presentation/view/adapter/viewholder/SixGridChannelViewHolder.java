@@ -39,8 +39,8 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
     private static final int spanCount = 3;
 
 
-    private Context context;
-    private HomeCategoryListener listener;
+    private static Context context;
+    private static HomeCategoryListener listener;
 
     public SixGridChannelViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
@@ -87,7 +87,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
         itemAdapter.setChannel(channel);
     }
 
-    private String getAvailableLink(String applink, String url) {
+    private static String getAvailableLink(String applink, String url) {
         if (!TextUtils.isEmpty(applink)) {
             return applink;
         } else {
@@ -95,7 +95,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
         }
     }
 
-    private class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
+    private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
         private DynamicHomeChannel.Grid[] list;
         DynamicHomeChannel.Channels channel;
