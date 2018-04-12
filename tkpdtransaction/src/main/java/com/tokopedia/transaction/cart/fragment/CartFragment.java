@@ -882,6 +882,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onGetParameterTopPaySuccess(TopPayParameterData data) {
         hideProgressLoading();
+        presenter.trackStep2CheckoutEE(data.getParameter().getTransactionId());
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.setRedirectUrl(data.getRedirectUrl());
         paymentPassData.setTransactionId(data.getParameter().getTransactionId());
@@ -922,7 +923,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         } catch (Exception e) {
             e.printStackTrace();
         }
-        presenter.trackStep2CheckoutEE(data.getParameter().getPaymentId());
         hideProgressLoading();
         showToastMessage(getString(R.string.message_payment_succeded_transaction_module));
         navigateToActivity(TransactionPurchaseRouter.createIntentTxSummary(getActivity()));
