@@ -21,13 +21,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.tkpd.R;
+
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.home.adapter.InAppMessageAdapter;
 import com.tokopedia.tkpd.home.model.InAppMessageItemModel;
 import com.tokopedia.tkpd.home.model.InAppMessageModel;
-
+import com.tokopedia.tkpd.R;
 import java.util.ArrayList;
 
 /**
@@ -48,6 +48,7 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
     private final String CENTER = "center";
     private final String type_2="2";
     private final String type_3="3";
+    private final String CERCLE="c";
 
     public static InappMessageDialogFragment newInstance(InAppMessageModel inAppMessageModel) {
         Bundle bundle = new Bundle();
@@ -159,6 +160,12 @@ public class InappMessageDialogFragment extends DialogFragment implements InAppM
         }
         if (getString(R.string.yes).equalsIgnoreCase(inAppMessageModel.closeButtonShow)) {
             closeBtn.setVisibility(View.VISIBLE);
+            if(CERCLE.equalsIgnoreCase(inAppMessageModel.closeButtonShape)){
+                closeBtn.setBackgroundResource(R.drawable.shape_bg_circle_black);
+            }else{
+                closeBtn.setBackgroundColor(getResources().getColor(R.color.black));
+            }
+
             closeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

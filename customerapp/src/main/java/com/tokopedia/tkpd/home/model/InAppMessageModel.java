@@ -53,6 +53,9 @@ public class InAppMessageModel implements Parcelable {
     @SerializedName("header_visibile")
     public String headerVisibile;
 
+    @SerializedName("close_btn_shape")
+    public String closeButtonShape;
+
     @SerializedName("body")
     public List<InAppMessageItemModel> messageList = new ArrayList<InAppMessageItemModel>();
 
@@ -77,6 +80,7 @@ public class InAppMessageModel implements Parcelable {
         dest.writeString(this.actionDeeplink1);
         dest.writeString(this.actionDeeplink2);
         dest.writeString(this.headerVisibile);
+        dest.writeString(this.closeButtonShape);
         dest.writeTypedList(this.messageList);
     }
 
@@ -97,6 +101,7 @@ public class InAppMessageModel implements Parcelable {
         this.actionDeeplink1 = in.readString();
         this.actionDeeplink2 = in.readString();
         this.headerVisibile = in.readString();
+        this.closeButtonShape = in.readString();
         this.messageList = in.createTypedArrayList(InAppMessageItemModel.CREATOR);
     }
 
