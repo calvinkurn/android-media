@@ -31,7 +31,7 @@ public interface FlightCancellationContract {
 
         List<FlightCancellationViewModel> getSelectedCancellationViewModel();
 
-        void navigateToReviewCancellationPage();
+        void navigateToRefundCancellationPage();
 
         void navigateToReasonAndProofPage();
 

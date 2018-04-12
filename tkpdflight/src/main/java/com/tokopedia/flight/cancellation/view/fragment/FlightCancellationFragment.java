@@ -15,13 +15,14 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReasonAndProofActivity;
-import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReviewActivity;
+import com.tokopedia.flight.cancellation.view.activity.FlightCancellationRefundDetailActivity;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.adapter.viewholder.FlightCancellationViewHolder;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonAndAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 
@@ -41,6 +42,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
 
+    private static final int REFUND_STEPS_NUMBER = 2;
     public static final int REQUEST_REVIEW_CANCELLATION = 1;
     public static final int REQUEST_REASON_AND_PROOF_CANCELLATION = 2;
 
@@ -104,6 +106,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
                 CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
                         getArguments().getInt(EXTRA_TOTAL_PRICE))
         );
+        flightCancellationWrapperViewModel.setCancellationReasonAndAttachment(new FlightCancellationReasonAndAttachmentViewModel());
     }
 
     @Override
@@ -202,10 +205,10 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     }
 
     @Override
-    public void navigateToReviewCancellationPage() {
+    public void navigateToRefundCancellationPage() {
         startActivityForResult(
-                FlightCancellationReviewActivity.createIntent(getContext(),
-                        invoiceId, flightCancellationWrapperViewModel),
+                FlightCancellationRefundDetailActivity.getCallingIntent(getActivity(),
+                        flightCancellationWrapperViewModel, REFUND_STEPS_NUMBER),
                 REQUEST_REVIEW_CANCELLATION
         );
     }

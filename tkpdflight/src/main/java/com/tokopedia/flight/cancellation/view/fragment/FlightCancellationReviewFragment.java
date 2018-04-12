@@ -159,7 +159,8 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     private void renderView() {
         renderList(flightCancellationPassData.getViewModels());
 
-        if (flightCancellationPassData.getCancellationReasonAndAttachment() != null) {
+        if (flightCancellationPassData.getCancellationReasonAndAttachment().getReason() != null &&
+                flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments() != null) {
             txtReason.setText(flightCancellationPassData.getCancellationReasonAndAttachment().getReason());
             attachmentAdapter.addElement(flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments());
         } else {

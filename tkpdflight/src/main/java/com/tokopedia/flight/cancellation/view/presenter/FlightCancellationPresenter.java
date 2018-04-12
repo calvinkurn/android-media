@@ -55,7 +55,7 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
         if (canGoToNext && isRefundable) {
             getView().navigateToReasonAndProofPage();
         } else if (canGoToNext && !isRefundable) {
-            getView().navigateToReviewCancellationPage();
+            getView().navigateToRefundCancellationPage();
         } else {
             getView().showShouldChooseAtLeastOnePassengerError();
         }
