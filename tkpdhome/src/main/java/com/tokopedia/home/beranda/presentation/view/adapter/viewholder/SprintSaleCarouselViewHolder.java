@@ -107,30 +107,34 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
 
     @Override
     public void bind(DynamicChannelViewModel element) {
-        this.channels = element.getChannel();
-        title.setText(channels.getHeader().getName());
-        if (channels.getHeader().getBackColor() != null) {
-            Glide.with(context).load(channels.getHeader().getBackImage()).into(headerBg);
-        }
-        String color = channels.getHeader().getBackColor();
-        if (color != null && !color.isEmpty()) {
-            container.setBackgroundColor(Color.parseColor(color));
-        }
-        itemAdapter.setList(channels.getGrids());
-        itemAdapter.setGridItemClickListener(this);
-        Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
-        countDownView.setup(expiredTime, null);
-        if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channels.getHeader()))) {
-            seeMoreContainer.setVisibility(View.VISIBLE);
-        } else {
-            seeMoreContainer.setVisibility(View.GONE);
-        }
-        seeMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClickSeeAll();
+        try {
+            this.channels = element.getChannel();
+            title.setText(channels.getHeader().getName());
+            if (channels.getHeader().getBackColor() != null) {
+                Glide.with(context).load(channels.getHeader().getBackImage()).into(headerBg);
             }
-        });
+            itemAdapter.setList(channels.getGrids());
+            itemAdapter.setGridItemClickListener(this);
+            Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
+            countDownView.setup(expiredTime, null);
+            if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channels.getHeader()))) {
+                seeMoreContainer.setVisibility(View.VISIBLE);
+            } else {
+                seeMoreContainer.setVisibility(View.GONE);
+            }
+            seeMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onClickSeeAll();
+                }
+            });
+            String color = channels.getHeader().getBackColor();
+            if (color != null && !color.isEmpty()) {
+                container.setBackgroundColor(Color.parseColor(color));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void onClickSeeAll() {
