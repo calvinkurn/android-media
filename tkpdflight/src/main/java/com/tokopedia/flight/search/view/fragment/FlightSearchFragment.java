@@ -688,16 +688,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
-    public void showSortRouteLoading() {
-        showLoading();
-    }
-
-    @Override
-    public void hideSortRouteLoading() {
-        hideLoading();
-    }
-
-    @Override
     protected String getMessageFromThrowable(Context context, Throwable t) {
         return FlightErrorUtil.getMessageFromException(context, t);
     }
