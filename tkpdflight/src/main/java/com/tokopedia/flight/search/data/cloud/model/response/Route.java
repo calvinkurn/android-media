@@ -12,7 +12,7 @@ import java.util.List;
  * Created by User on 10/26/2017.
  */
 
-public class Route implements Parcelable{
+public class Route implements Parcelable {
 
     @SerializedName("airline")
     @Expose
@@ -50,6 +50,9 @@ public class Route implements Parcelable{
     @SerializedName("stops")
     @Expose
     private int stops;
+    @SerializedName("stop_detail")
+    @Expose
+    private List<StopDetailEntity> stopDetails;
 
     private String airlineName; // mergeResult
     private String airlineLogo; // mergeResult
@@ -73,6 +76,7 @@ public class Route implements Parcelable{
         isRefundable = in.readByte() != 0;
         amenities = in.createTypedArrayList(Amenity.CREATOR);
         stops = in.readInt();
+        stopDetails = in.createTypedArrayList(StopDetailEntity.CREATOR);
         airlineName = in.readString();
         airlineLogo = in.readString();
         departureAirportName = in.readString();
@@ -196,6 +200,14 @@ public class Route implements Parcelable{
         this.stops = stops;
     }
 
+    public List<StopDetailEntity> getStopDetails() {
+        return stopDetails;
+    }
+
+    public void setStopDetails(List<StopDetailEntity> stopDetails) {
+        this.stopDetails = stopDetails;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -215,6 +227,7 @@ public class Route implements Parcelable{
         parcel.writeByte((byte) (isRefundable ? 1 : 0));
         parcel.writeTypedList(amenities);
         parcel.writeInt(stops);
+        parcel.writeTypedList(stopDetails);
         parcel.writeString(airlineName);
         parcel.writeString(airlineLogo);
         parcel.writeString(departureAirportName);

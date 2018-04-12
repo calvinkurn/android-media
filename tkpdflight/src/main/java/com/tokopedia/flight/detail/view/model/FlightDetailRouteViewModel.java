@@ -35,6 +35,7 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
     private int stopOver;
     private List<FlightDetailRouteInfoViewModel> infos;
     private List<Amenity> amenities = null;
+    private List<FlightStopOverViewModel> stopOverDetail;
 
     public FlightDetailRouteViewModel() {
     }
@@ -60,6 +61,7 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
         stopOver = in.readInt();
         infos = in.createTypedArrayList(FlightDetailRouteInfoViewModel.CREATOR);
         amenities = in.createTypedArrayList(Amenity.CREATOR);
+        stopOverDetail = in.createTypedArrayList(FlightStopOverViewModel.CREATOR);
     }
 
     public static final Creator<FlightDetailRouteViewModel> CREATOR = new Creator<FlightDetailRouteViewModel>() {
@@ -239,6 +241,14 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
         this.stopOver = stopOver;
     }
 
+    public List<FlightStopOverViewModel> getStopOverDetail() {
+        return stopOverDetail;
+    }
+
+    public void setStopOverDetail(List<FlightStopOverViewModel> stopOverDetail) {
+        this.stopOverDetail = stopOverDetail;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -266,5 +276,6 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
         parcel.writeInt(stopOver);
         parcel.writeTypedList(infos);
         parcel.writeTypedList(amenities);
+        parcel.writeTypedList(stopOverDetail);
     }
 }

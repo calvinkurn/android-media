@@ -8,6 +8,7 @@ import android.support.graphics.drawable.VectorDrawableCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
     private ImageView imageAirline;
     private TextView airlineName;
     private TextView stopOverTextView;
+    private LinearLayout stopOverContainerLayout;
     private TextView airlineCode;
     private TextView refundableInfo;
     private TextView departureTime;
@@ -69,6 +71,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
         pnrCode = itemView.findViewById(R.id.pnr_code);
         copyPnr = itemView.findViewById(R.id.copy_pnr);
         stopOverTextView = itemView.findViewById(R.id.tv_flight_stop_over);
+        stopOverContainerLayout = itemView.findViewById(R.id.container_flight_stop_over);
         this.onFlightDetailListener = onFlightDetailListener;
     }
 
@@ -96,11 +99,19 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
             bindTransitInfo(onFlightDetailListener.getItemCount());
         }
 
-        if (route.getStopOver() > 0){
-            stopOverTextView.setVisibility(View.VISIBLE);
-            stopOverTextView.setText(String.format(getString(R.string.flight_detail_total_stop_over_label), route.getStopOver()));
-        }else {
-            stopOverTextView.setVisibility(View.GONE);
+        if (route.getStopOver() > 0) {
+            if (route.getStopOverDetail() != null) {
+                stopOverContainerLayout.setVisibility(View.VISIBLE);
+                if (route.getStopOverDetail().size() < route.getStopOver()) {
+                    stopOverTextView.setText(String.format(getString(R.string.flight_detail_total_stop_over_label), route.getStopOver()));
+                } else {
+                    stopOverTextView.setText(TextUtils.join("\n", route.getStopOverDetail()));
+                }
+            } else {
+                stopOverContainerLayout.setVisibility(View.GONE);
+            }
+        } else {
+            stopOverContainerLayout.setVisibility(View.GONE);
         }
     }
 

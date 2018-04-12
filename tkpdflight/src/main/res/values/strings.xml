@@ -352,5 +352,5 @@
     <string name="flight_passenger_update_abort_dialog_description">Perubahan data penumpang akan dibatalkan. Anda yakin?</string>
     <string name="flight_passenger_update_ok_button">Lanjut ubah</string>
     <string name="flight_passenger_update_cancel_button">Ya, batalkan</string>
-    <string name="flight_detail_total_stop_over_label">Transit: %1$d kali berhenti</string>
+    <string name="flight_detail_total_stop_over_label">%1$d kali berhenti</string>
 </resources>

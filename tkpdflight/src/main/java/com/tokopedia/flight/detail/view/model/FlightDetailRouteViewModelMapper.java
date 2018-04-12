@@ -4,6 +4,7 @@ import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.orderlist.data.cloud.entity.JourneyEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
+import com.tokopedia.flight.search.data.cloud.model.response.StopDetailEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +45,32 @@ public class FlightDetailRouteViewModelMapper {
             flightDetailRouteViewModel.setInfos(flightDetailRouteInfoViewModelMapper.transform(route.getInfos()));
             flightDetailRouteViewModel.setAmenities(route.getAmenities());
             flightDetailRouteViewModel.setStopOver(route.getStops());
+            flightDetailRouteViewModel.setStopOverDetail(transform(route.getStopDetails()));
         }
         return flightDetailRouteViewModel;
+    }
+
+    private List<FlightStopOverViewModel> transform(List<StopDetailEntity> stopDetails) {
+        List<FlightStopOverViewModel> details = new ArrayList<>();
+        FlightStopOverViewModel viewModel = null;
+        if (stopDetails != null){
+            for (StopDetailEntity entity : stopDetails){
+                viewModel = transform(entity);
+                if (viewModel != null)
+                    details.add(viewModel);
+            }
+        }
+        return details;
+    }
+
+    private FlightStopOverViewModel transform(StopDetailEntity entity) {
+        FlightStopOverViewModel viewModel = null;
+        if (entity != null){
+            viewModel = new FlightStopOverViewModel();
+            viewModel.setAirportCode(entity.getCode());
+            viewModel.setCityName(entity.getCity());
+        }
+        return viewModel;
     }
 
     public List<FlightDetailRouteViewModel> transform(List<Route> routes, List<FlightAirlineDB> airlineList) {
