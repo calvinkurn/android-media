@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -200,7 +198,6 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
 
     @Override
     public void navigateToNextStep(FlightCancellationWrapperViewModel viewModel) {
-        Toast.makeText(getActivity(), "Next Step", Toast.LENGTH_SHORT).show();
         interactionListener.goToEstimateReview(viewModel);
     }
 

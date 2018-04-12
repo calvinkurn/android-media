@@ -5,18 +5,25 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
+import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
+import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachmentAdapter;
+import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachmentTypeFactory;
 import com.tokopedia.flight.cancellation.view.adapter.FlightReviewCancellationAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReviewContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationReviewPresenter;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 
@@ -27,13 +34,17 @@ import javax.inject.Inject;
  */
 
 public class FlightCancellationReviewFragment extends BaseListFragment<FlightCancellationViewModel, FlightReviewCancellationAdapterTypeFactory>
-        implements FlightCancellationReviewContract.View {
+        implements FlightCancellationReviewContract.View, FlightCancellationAttachementAdapterTypeFactory.OnAdapterInteractionListener {
 
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
 
+    private LinearLayout containerAdditionalData;
     private AppCompatButton btnSubmit;
     private AppCompatTextView txtDescription;
+    private AppCompatTextView txtReason;
+    private RecyclerView rvAttachments;
+    private FlightCancellationAttachmentAdapter attachmentAdapter;
 
     @Inject
     FlightCancellationReviewPresenter presenter;
@@ -55,6 +66,9 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_cancellation_review, container, false);
+        rvAttachments = view.findViewById(R.id.rv_attachments);
+        containerAdditionalData = view.findViewById(R.id.container_additional_data);
+        txtReason = view.findViewById(R.id.txt_cancellation_reason);
         txtDescription = view.findViewById(R.id.tv_description);
         btnSubmit = view.findViewById(R.id.button_submit);
 
@@ -70,6 +84,15 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
             }
         });
 
+        FlightCancellationAttachmentTypeFactory adapterTypeFactory = new FlightCancellationAttachementAdapterTypeFactory(this, false);
+        attachmentAdapter = new FlightCancellationAttachmentAdapter(adapterTypeFactory);
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        rvAttachments.setLayoutManager(layoutManager);
+        rvAttachments.setHasFixedSize(true);
+        rvAttachments.setNestedScrollingEnabled(false);
+        rvAttachments.setAdapter(attachmentAdapter);
+
         return view;
     }
 
@@ -80,7 +103,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         invoiceId = getArguments().getString(EXTRA_INVOICE_ID);
         flightCancellationPassData = getArguments().getParcelable(EXTRA_CANCEL_JOURNEY);
 
-        renderReviewList();
+        renderView();
         presenter.attachView(this);
     }
 
@@ -133,7 +156,24 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         return flightCancellationPassData;
     }
 
-    private void renderReviewList() {
+    private void renderView() {
         renderList(flightCancellationPassData.getViewModels());
+
+        if (flightCancellationPassData.getCancellationReasonAndAttachment() != null) {
+            txtReason.setText(flightCancellationPassData.getCancellationReasonAndAttachment().getReason());
+            attachmentAdapter.addElement(flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments());
+        } else {
+            containerAdditionalData.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onUploadAttachmentButtonClicked() {
+
+    }
+
+    @Override
+    public void deleteAttachement(FlightCancellationAttachmentViewModel element) {
+
     }
 }
