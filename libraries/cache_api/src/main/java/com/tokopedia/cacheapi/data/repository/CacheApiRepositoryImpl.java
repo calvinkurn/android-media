@@ -6,6 +6,7 @@ import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 
 import java.util.Collection;
+import java.util.List;
 
 import okhttp3.Response;
 import rx.Observable;
@@ -23,7 +24,7 @@ public class CacheApiRepositoryImpl implements CacheApiRepository {
     }
 
     @Override
-    public Observable<Boolean> insertWhiteList(final Collection<CacheApiWhiteListDomain> domainList, final String versionName) {
+    public Observable<Boolean> insertWhiteList(final List<CacheApiWhiteListDomain> domainList, final String versionName) {
         return cacheApiDataSource.bulkInsert(domainList, versionName);
     }
 

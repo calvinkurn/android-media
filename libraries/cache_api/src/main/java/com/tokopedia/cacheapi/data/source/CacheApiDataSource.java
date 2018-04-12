@@ -6,11 +6,8 @@ import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cacheapi.exception.WhiteListNotFoundException;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import okhttp3.Response;
@@ -30,7 +27,7 @@ public class CacheApiDataSource {
         this.cacheApiDatabaseSource = cacheApiDataManager;
     }
 
-    public Observable<Boolean> bulkInsert(final Collection<CacheApiWhiteListDomain> domainList, final String versionName) {
+    public Observable<Boolean> bulkInsert(final List<CacheApiWhiteListDomain> domainList, final String versionName) {
         return cacheApiDatabaseSource.isWhiteListVersionUpdated(versionName).flatMap(new Func1<Boolean, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(Boolean aBoolean) {
