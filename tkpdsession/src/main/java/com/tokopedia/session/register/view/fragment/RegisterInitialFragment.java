@@ -186,6 +186,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         registerButton.setBorderColor(Color.BLACK);
         registerButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
         registerButton.setRoundCorner(10);
+        registerButton.setImageResource(R.drawable.ic_email_register);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
