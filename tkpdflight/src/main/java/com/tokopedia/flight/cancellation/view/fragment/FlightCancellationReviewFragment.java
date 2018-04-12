@@ -43,6 +43,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     private AppCompatButton btnSubmit;
     private AppCompatTextView txtDescription;
     private AppCompatTextView txtReason;
+    private AppCompatTextView txtTotalRefund;
     private RecyclerView rvAttachments;
     private FlightCancellationAttachmentAdapter attachmentAdapter;
 
@@ -70,6 +71,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         containerAdditionalData = view.findViewById(R.id.container_additional_data);
         txtReason = view.findViewById(R.id.txt_cancellation_reason);
         txtDescription = view.findViewById(R.id.tv_description);
+        txtTotalRefund = view.findViewById(R.id.txt_total_refund);
         btnSubmit = view.findViewById(R.id.button_submit);
 
         int color = getContext().getResources().getColor(R.color.green_500);
@@ -166,6 +168,8 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         } else {
             containerAdditionalData.setVisibility(View.GONE);
         }
+
+        txtTotalRefund.setText(flightCancellationPassData.getCancellationReasonAndAttachment().getEstimateFmt());
     }
 
     @Override

@@ -380,5 +380,6 @@
     <string name="flight_cancellation_review_dialog_non_refundable_success_description">Pembatalan pesanan Anda akan segera diproses.</string>
     <string name="flight_cancellation_review_dialog_refundable_success_description">Pembatalan pesanan Anda akan segera diproses. Mohon tunggu konfirmasi dari pihak maskapai terkait untuk proses pengembalian dana pemesanan tiket pesawat Anda.</string>
     <string name="flight_label_additional_data">Data Penunjang</string>
+    <string name="flight_cancellation_review_total_refund_label">Total Refund</string>
 
 </resources>

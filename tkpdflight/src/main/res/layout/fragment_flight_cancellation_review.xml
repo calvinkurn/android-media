@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_apps"
@@ -24,15 +25,13 @@
             android:layout_marginBottom="@dimen/padding_16"
             android:background="@color/white"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/padding_16"
-            android:paddingRight="@dimen/padding_16">
+            android:padding="@dimen/padding_16">
 
             <TextView
                 android:id="@+id/tv_departure_label"
                 style="@style/TextView.Title.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/white"
                 android:text="@string/flight_label_additional_data" />
 
@@ -61,8 +60,34 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_attachments"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_16"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_16">
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.Small.Bold"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_16" />
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/flight_cancellation_review_total_refund_label" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/txt_total_refund"
+                style="@style/TextView.Title.OrangeRed.Bold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right|center_vertical"
+                tools:text="@string/flight_cancellation_review_total_refund_label" />
+
         </LinearLayout>
 
         <LinearLayout
