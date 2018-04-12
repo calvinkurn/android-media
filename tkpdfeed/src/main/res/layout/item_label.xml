@@ -9,12 +9,12 @@
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/margin_vvs"
-        android:layout_marginTop="@dimen/margin_vvs"
+        android:layout_marginRight="@dimen/dp_3"
+        android:layout_marginTop="@dimen/dp_3"
         android:background="@drawable/feed_container_rounded_corners_border"
         android:lineSpacingExtra="2sp"
-        android:padding="@dimen/padding_vvs"
-        android:textSize="@dimen/unify_font_small"
+        android:padding="@dimen/dp_3"
+        android:textSize="@dimen/sp_14"
         tools:text="Cashback 4%"
         />
 

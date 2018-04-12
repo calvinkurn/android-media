@@ -38,7 +38,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
-import com.tokopedia.design.ticker.TickerView;
+import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.constant.ShopStatusDef;

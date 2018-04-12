@@ -25,6 +25,7 @@ import java.util.List;
  * modified by m.normansyah on 06/01/2015 - set item id to distinct items
  */
 public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<HistoryProductRecyclerViewAdapter.ViewHolder> {
+    private static final int MAX_PRODUCT = 3;
 
     private final FeedPlus.View viewListener;
     private List<RecentViewProductViewModel> data;
@@ -101,7 +102,7 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
 
     @Override
     public int getItemCount() {
-        if (data.size() > 4) return 4;
+        if (data.size() > MAX_PRODUCT) return MAX_PRODUCT;
         else return data.size();
     }
 
@@ -120,7 +121,7 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
         if (data.getBadges() != null) {
             for (BadgeViewModel badge : data.getBadges()) {
                 View view = LayoutInflater.from(
-                        holder.getContext()).inflate(R.layout.badge_layout_small, null);
+                        holder.getContext()).inflate(R.layout.badge_layout_recentview, null);
                 ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
                 holder.badgesContainer.addView(view);
                 LuckyShopImage.loadImage(imageBadge, badge.getImgUrl());

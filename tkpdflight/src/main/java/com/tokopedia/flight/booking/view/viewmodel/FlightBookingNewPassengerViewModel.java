@@ -1,13 +1,13 @@
 package com.tokopedia.flight.booking.view.viewmodel;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.flight.booking.view.adapter.FlightBookingListPassengerTypeFactory;
+import com.tokopedia.flight.passenger.view.adapter.FlightPassengerListTypeFactory;
 
 /**
  * @author by furqan on 07/03/18.
  */
 
-public class FlightBookingNewPassengerViewModel implements Visitable<FlightBookingListPassengerTypeFactory> {
+public class FlightBookingNewPassengerViewModel implements Visitable<FlightPassengerListTypeFactory> {
 
     private String title;
 
@@ -24,7 +24,7 @@ public class FlightBookingNewPassengerViewModel implements Visitable<FlightBooki
     }
 
     @Override
-    public int type(FlightBookingListPassengerTypeFactory typeFactory) {
+    public int type(FlightPassengerListTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 }

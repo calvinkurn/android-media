@@ -14,10 +14,10 @@
     <dimen name="image_size">90dp</dimen>
 
     <dimen name="padding_textview_prof_comp">2dp</dimen>
-    <dimen name="padding_vsmall_prof_comp">6dp</dimen>
-    <dimen name="padding_small_prof_comp">8dp</dimen>
-    <dimen name="padding_small_med_prof_comp">8dp</dimen>
-    <dimen name="padding_medium_prof_comp">16dp</dimen>
+    <dimen name="dp_5mall_prof_comp">6dp</dimen>
+    <dimen name="dp_10_prof_comp">8dp</dimen>
+    <dimen name="dp_10_med_prof_comp">8dp</dimen>
+    <dimen name="dp_20ium_prof_comp">16dp</dimen>
     <dimen name="padding_large_prof_comp">18dp</dimen>
 
 

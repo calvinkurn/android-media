@@ -35,7 +35,7 @@ import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -54,6 +54,7 @@ import com.tokopedia.tkpd.deeplink.domain.GetShopInfoUseCase;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
+import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
@@ -504,10 +505,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onNext(ShopModel shopModel) {
                 viewListener.finishLoading();
                 if (shopModel != null && shopModel.info != null) {
-                    viewListener.goToActivity(
-                            ShopInfoActivity.class,
-                            ShopInfoActivity.createBundle(shopModel.info.getShopId(), linkSegment.get(0))
-                    );
+                    Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopModel.info.getShopId());
+                    context.startActivity(intent);
                 } else {
                     prepareOpenWebView(uriData);
                 }
@@ -517,15 +516,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openDetailProduct(List<String> linkSegment, Uri uriData) {
         CommonUtils.dumper("wvlogin opened product");
-        Fragment fragment = ProductDetailRouter.instanceDeeplink(
-                context,
-                ProductPass.Builder.aProductPass()
-                        .setProductKey(linkSegment.get(1))
-                        .setShopDomain(linkSegment.get(0))
-                        .setProductUri(uriData.toString())
-                        .build());
-        viewListener.inflateFragment(fragment, "DETAIL_PRODUCT");
-        viewListener.hideActionBar();
+        Intent productInfoIntent = ProductInfoActivity.createInstance(context, ProductPass.Builder.aProductPass()
+                .setProductKey(linkSegment.get(1))
+                .setShopDomain(linkSegment.get(0))
+                .setProductUri(uriData.toString())
+                .build());
+        viewListener.goToPage(productInfoIntent);
     }
 
     private void openCatalogDetail(List<String> linkSegment, Uri uriData) {
