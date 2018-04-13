@@ -485,9 +485,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 TopChatTrackingEventLabel.Name.INBOX_CHAT,
                 id
         );
+
         Uri uri = Uri.parse(url);
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         if(uri != null) {
+            boolean isTargetDomainTokopedia = uri.getHost().endsWith("tokopedia.com");
+            boolean isTargetTkpMeAndNotRedirect = (uri.getHost().equals(BASE_DOMAIN_SHORTENED) &&
+                    !uri.getEncodedPath().equals("/r"));
+            boolean isNeedAuthToken = (isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect);
+            
             if(uri.getScheme().equals(APPLINK_SCHEME)){
                 ((TkpdInboxRouter) getActivity().getApplicationContext())
                         .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
@@ -499,7 +505,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 intent.putExtra(ContactUsConstant.PARAM_URL,
                         URLGenerator.generateURLContactUs(url, getContext()));
                 startActivity(intent);
-            } else if(isChatBot) {
+            } else if(isChatBot && isNeedAuthToken) {
                 startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),
                         URLGenerator.generateURLSessionLoginV4(url,getContext())));
             }
