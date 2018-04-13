@@ -27,7 +27,6 @@
                 android:layout_height="wrap_content"
                 android:lines="1" />
 
-
         </android.support.design.widget.TextInputLayout>
 
         <TextView

@@ -17,6 +17,9 @@ public class CartProduct implements Parcelable {
     @SerializedName("product_preorder")
     @Expose
     private ProductPreorder productPreorder;
+    @SerializedName("product_tracker_data")
+    @Expose
+    private ProductTrackerData productTrackerData;
     @SerializedName("product_id")
     @Expose
     private String productId;
@@ -86,13 +89,9 @@ public class CartProduct implements Parcelable {
     @SerializedName("product_min_order")
     @Expose
     private String productMinOrder;
-    @SerializedName("home_attribution")
+    @SerializedName("product_cat_id")
     @Expose
-    private String homeAttribution;
-    @SerializedName("list_name_product")
-    @Expose
-    private String listNameProduct;
-
+    private String productCatId;
 
     public String getProductTotalWeight() {
         return productTotalWeight;
@@ -116,6 +115,14 @@ public class CartProduct implements Parcelable {
 
     public void setProductPreorder(ProductPreorder productPreorder) {
         this.productPreorder = productPreorder;
+    }
+
+    public ProductTrackerData getProductTrackerData() {
+        return productTrackerData;
+    }
+
+    public void setProductTrackerData(ProductTrackerData productTrackerData) {
+        this.productTrackerData = productTrackerData;
     }
 
     public String getProductId() {
@@ -302,20 +309,16 @@ public class CartProduct implements Parcelable {
         this.productMinOrder = productMinOrder;
     }
 
-    public String getHomeAttribution() {
-        return homeAttribution;
+    public String getProductCatId() {
+        return productCatId;
     }
 
-    public void setHomeAttribution(String homeAttribution) {
-        this.homeAttribution = homeAttribution;
+    public void setProductCatId(String productCatId) {
+        this.productCatId = productCatId;
     }
 
-    public String getListNameProduct() {
-        return listNameProduct;
-    }
 
-    public void setListNameProduct(String listNameProduct) {
-        this.listNameProduct = listNameProduct;
+    public CartProduct() {
     }
 
     @Override
@@ -328,6 +331,7 @@ public class CartProduct implements Parcelable {
         dest.writeString(this.productTotalWeight);
         dest.writeString(this.productErrorMsg);
         dest.writeParcelable(this.productPreorder, flags);
+        dest.writeParcelable(this.productTrackerData, flags);
         dest.writeString(this.productId);
         dest.writeValue(this.productHideEdit);
         dest.writeString(this.productPrice);
@@ -351,17 +355,14 @@ public class CartProduct implements Parcelable {
         dest.writeValue(this.productUseInsurance);
         dest.writeString(this.productTotalPriceIdr);
         dest.writeString(this.productMinOrder);
-        dest.writeString(this.homeAttribution);
-        dest.writeString(this.listNameProduct);
-    }
-
-    public CartProduct() {
+        dest.writeString(this.productCatId);
     }
 
     protected CartProduct(Parcel in) {
         this.productTotalWeight = in.readString();
         this.productErrorMsg = in.readString();
         this.productPreorder = in.readParcelable(ProductPreorder.class.getClassLoader());
+        this.productTrackerData = in.readParcelable(ProductTrackerData.class.getClassLoader());
         this.productId = in.readString();
         this.productHideEdit = (Integer) in.readValue(Integer.class.getClassLoader());
         this.productPrice = in.readString();
@@ -385,8 +386,7 @@ public class CartProduct implements Parcelable {
         this.productUseInsurance = (Integer) in.readValue(Integer.class.getClassLoader());
         this.productTotalPriceIdr = in.readString();
         this.productMinOrder = in.readString();
-        this.homeAttribution = in.readString();
-        this.listNameProduct = in.readString();
+        this.productCatId = in.readString();
     }
 
     public static final Creator<CartProduct> CREATOR = new Creator<CartProduct>() {

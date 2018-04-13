@@ -1,5 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber;
 
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -21,6 +23,8 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragme
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by hangnadi on 10/8/17.
@@ -29,9 +33,11 @@ import java.util.List;
 public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> {
 
     private final HotlistFragmentContract.View view;
+    private final int page;
 
-    public GetHotlistInitializeSubscriber(HotlistFragmentContract.View view) {
+    public GetHotlistInitializeSubscriber(HotlistFragmentContract.View view, int page) {
         this.view = view;
+        this.page = page;
     }
 
     @Override
@@ -71,10 +77,14 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
 
         HotlistHeaderViewModel header = mappingHotlistHeader(hotlistModel.getBanner(), hotlistModel.getAttribute().getHastTags());
 
+        view.clearLastProductTracker(page == 1);
+
         if (hotlistModel.getProductList() != null && !hotlistModel.getProductList().isEmpty()) {
             view.initTopAdsParams();
+            List<HotlistProductViewModel> list = mappingHotlistProduct(hotlistModel.getProductList());
+            view.trackImpressionProduct(createDataLayer(list));
             view.renderListView(
-                    mappingHotlist(header, mappingHotlistProduct(hotlistModel.getProductList()))
+                    mappingHotlist(header, list)
             );
         } else {
             view.renderEmptyHotlist(
@@ -84,6 +94,25 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         if (view.getStartFrom() > hotlistModel.getTotalData()){
             view.unSetTopAdsEndlessListener();
         }
+    }
+
+    private Map<String, Object> createDataLayer(List<HotlistProductViewModel> list) {
+        List<Map<String, Object>> productListDataLayer = new ArrayList<>();
+        for (HotlistProductViewModel model : list) {
+            productListDataLayer.add(model.generateImpressionDataLayer());
+        }
+        return DataLayer.mapOf(
+                "event", "productView",
+                "eventCategory", "hotlist page",
+                "eventAction", "product list impression",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "impressions", DataLayer.listOf(
+                                productListDataLayer.toArray(new Object[productListDataLayer.size()])
+
+                        ))
+        );
     }
 
     private List<Visitable> mappingEmptyHotlist(HotlistHeaderViewModel header, SearchEmptyViewModel emptyHotlist) {
@@ -106,7 +135,9 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
 
     private List<HotlistProductViewModel> mappingHotlistProduct(List<ProductModel> productList) {
         List<HotlistProductViewModel> list = new ArrayList<>();
+        int lastPositionProduct = view.getLastPositionProductTracker();
         for (ProductModel domain : productList) {
+            lastPositionProduct++;
             HotlistProductViewModel model = new HotlistProductViewModel();
             model.setBadgesList(mappingBadges(domain.getBadgesList()));
             model.setLabelList(mappingLabels(domain.getLabelList()));
@@ -124,8 +155,12 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             model.setWishlist(domain.isWishlisted());
             model.setWishlistButtonEnabled(true);
             model.setFeatured(domain.isFeatured());
+            model.setTrackerName(String.format(Locale.getDefault(), "/hot/%s - product %d", view.getHotlistAlias(), page));
+            model.setTrackerPosition(String.valueOf(lastPositionProduct));
+            model.setHomeAttribution(view.getHomeAttribution());
             list.add(model);
         }
+        view.setLastPositionProductTracker(lastPositionProduct);
         return list;
     }
 

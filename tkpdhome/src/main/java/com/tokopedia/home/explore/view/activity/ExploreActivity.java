@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -24,6 +26,7 @@ import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.explore.di.DaggerExploreComponent;
 import com.tokopedia.home.explore.di.ExploreComponent;
 import com.tokopedia.home.explore.view.adapter.ExploreFragmentAdapter;
@@ -53,6 +56,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     private SnackbarRetry messageSnackbar;
     private CoordinatorLayout root;
     private int position = 0;
+    private List<String> titleList = new ArrayList<>();
 
     @DeepLink(Constants.Applinks.EXPLORE)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -67,9 +71,6 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             position = savedInstanceState.getInt(POSTION);
-        } else if (getIntent().getExtras() != null) {
-            String section = getIntent().getStringExtra(SECTION);
-            position = sectionToPosition(section != null ? section : DEFAULT_SECTION);
         }
         ExploreComponent component = getComponent();
         component.inject(this);
@@ -147,8 +148,10 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     @Override
     public void renderData(List<ExploreSectionViewModel> list) {
         fragmentAdapter.setData(list);
-        for (int i = 0; i < list.size(); i++) {
-            setupTabIcon(i);
+        setupTabIcon(list);
+        if (getIntent().getExtras() != null) {
+            String section = getIntent().getStringExtra(SECTION);
+            position = sectionToPosition(section != null ? section : DEFAULT_SECTION);
         }
         viewPager.setCurrentItem(position);
     }
@@ -193,61 +196,25 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     }
 
     private int sectionToPosition(String section) {
-        int position;
-        switch (section) {
-            case "beli":
-                position = 0;
-                break;
-            case "bayar":
-                position = 1;
-                break;
-            case "pesan":
-                position = 2;
-                break;
-            case "ajukan":
-                position = 3;
-                break;
-            case "jual":
-                position = 4;
-                break;
-            default:
-                position = 0;
-        }
-        return position;
+        return titleList.indexOf(section.toLowerCase());
     }
 
 
-    private void setupTabIcon(int i) {
-        View view = LayoutInflater.from(this).inflate(R.layout.explore_tab_item, null, false);
-        TextView labelTxt = view.findViewById(R.id.label);
-        ImageView iconView = view.findViewById(R.id.icon);
-        String title = "";
-        switch (i) {
-            case 0:
-                title = getString(R.string.beli);
-                iconView.setImageResource(R.drawable.ic_beli);
-                break;
-            case 1:
-                title = getString(R.string.bayar);
-                iconView.setImageResource(R.drawable.ic_bayar);
-                break;
-            case 2:
-                title = getString(R.string.pesan);
-                iconView.setImageResource(R.drawable.ic_pesan);
-                break;
-            case 3:
-                title = getString(R.string.ajukan);
-                iconView.setImageResource(R.drawable.ic_ajukan);
-                break;
-            case 4:
-                title = getString(R.string.jual);
-                iconView.setImageResource(R.drawable.ic_jual);
-                break;
+    private void setupTabIcon(List<ExploreSectionViewModel> list) {
+        titleList = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            DynamicHomeIcon.UseCaseIcon model = list.get(i).getUseCaseIcon();
+            View view = LayoutInflater.from(this).inflate(R.layout.explore_tab_item, null, false);
+            TextView labelTxt = view.findViewById(R.id.label);
+            ImageView iconView = view.findViewById(R.id.icon);
+            String title = model.getName();
+            Glide.with(this).load(model.getImageUrl()).diskCacheStrategy(DiskCacheStrategy.RESULT).into(iconView);
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            labelTxt.setText(title);
+            view.setOnClickListener(new OnTabExplorerClickListener(title, tabLayout, i));
+            tab.setCustomView(view);
+            titleList.add(title.toLowerCase());
         }
-        TabLayout.Tab tab = tabLayout.getTabAt(i);
-        labelTxt.setText(title);
-        view.setOnClickListener(new OnTabExplorerClickListener(title, tabLayout, i));
-        tab.setCustomView(view);
     }
 
     @Override

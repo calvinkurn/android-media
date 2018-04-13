@@ -3,6 +3,7 @@ package com.tokopedia.session.register.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -10,6 +11,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +39,9 @@ import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
@@ -51,6 +56,7 @@ import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
+import com.tokopedia.session.register.registerphonenumber.view.activity.RegisterPhoneNumberActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.view.presenter.RegisterInitialPresenter;
@@ -77,19 +83,22 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private static final int REQUEST_REGISTER_EMAIL = 101;
     private static final int REQUEST_CREATE_PASSWORD = 102;
     private static final int REQUEST_SECURITY_QUESTION = 103;
+    private static final int REQUEST_REGISTER_PHONE_NUMBER = 104;
 
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";
+    private static final String PHONE_NUMBER = "phonenumber";
+    private static final String REMOTE_CONFIG_SHOW_REGISTER_PHONE_NUMBER = "mainapp_show_register_phone_number";
     private static final String COLOR_WHITE = "#FFFFFF";
 
     public static final int TYPE_SQ_PHONE = 1;
     public static final int TYPE_SQ_EMAIL = 2;
 
-    LinearLayout registerContainer;
-    LoginTextView registerButton;
-    TextView loginButton;
-    ScrollView container;
-    RelativeLayout progressBar;
+    private LinearLayout registerContainer, llLayout;
+    private LoginTextView registerButton, registerPhoneNumberButton;
+    private TextView loginButton;
+    private ScrollView container;
+    private RelativeLayout progressBar;
 
     private String socmedMethod = "";
 
@@ -103,6 +112,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     SessionHandler sessionHandler;
 
     CallbackManager callbackManager;
+    RemoteConfig remoteConfig;
 
     public static RegisterInitialFragment createInstance() {
         return new RegisterInitialFragment();
@@ -136,6 +146,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         callbackManager = CallbackManager.Factory.create();
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     @Nullable
@@ -146,9 +157,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
         registerContainer = (LinearLayout) view.findViewById(R.id.register_container);
         registerButton = (LoginTextView) view.findViewById(R.id.register);
+        registerPhoneNumberButton = (LoginTextView) view.findViewById(R.id.register_phone_number);
         loginButton = (TextView) view.findViewById(R.id.login_button);
         container = (ScrollView) view.findViewById(R.id.container);
         progressBar = (RelativeLayout) view.findViewById(R.id.progress_bar);
+        llLayout = (LinearLayout) view.findViewById(R.id.ll_layout);
         prepareView(view);
         setViewListener();
         presenter.attachView(this);
@@ -167,9 +180,13 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     protected void prepareView(View view) {
         UserAuthenticationAnalytics.setActiveRegister();
+        registerPhoneNumberButton.setVisibility(View.GONE);
 
         registerButton.setColor(Color.WHITE);
-        registerButton.setBorderColor(R.color.black);
+        registerButton.setBorderColor(Color.BLACK);
+        registerButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
+        registerButton.setRoundCorner(10);
+        registerButton.setImageResource(R.drawable.ic_email_register);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,7 +198,20 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
             }
         });
-        String sourceString = "Sudah punya akun? Masuk";
+        registerPhoneNumberButton.setColor(Color.WHITE);
+        registerPhoneNumberButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
+        registerPhoneNumberButton.setRoundCorner(10);
+        registerPhoneNumberButton.setImageResource(R.drawable.ic_phone);
+        registerPhoneNumberButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showProgressBar();
+                Intent intent = RegisterPhoneNumberActivity.getCallingIntent(getActivity());
+                startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
+
+            }
+        });
+        String sourceString = getActivity().getResources().getString(R.string.span_already_have_tokopedia_account);
 
         Spannable spannable = new SpannableString(sourceString);
 
@@ -197,6 +227,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                                           getActivity(), R.color.tkpd_main_green
                                           )
                                   );
+                                  ds.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
                               }
                           }
                 , sourceString.indexOf("Masuk")
@@ -229,7 +260,14 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
+        }  else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
         } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_CANCELED) {
+            dismissProgressBar();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
+        } else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
@@ -298,26 +336,28 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 getResources().getDimensionPixelSize(R.dimen.btn_login_height));
+        int topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
 
-        layoutParams.setMargins(0, 20, 0, 15);
+        layoutParams.setMargins(0, topMargin, 0, 0);
 
         for (int i = 0; i < listProvider.size(); i++) {
-            String color = listProvider.get(i).getColor();
-            int colorInt;
-            if (color == null) {
-                colorInt = Color.parseColor(COLOR_WHITE);
-            } else {
-                colorInt = Color.parseColor(color);
-            }
-            LoginTextView loginTextView = new LoginTextView(getActivity(), colorInt);
-            loginTextView.setTextRegister(listProvider.get(i).getName());
-            loginTextView.setImage(listProvider.get(i).getImage());
-            loginTextView.setRoundCorner(10);
+            DiscoverItemViewModel item = listProvider.get(i);
+            if (!item.getId().equals(PHONE_NUMBER)) {
+                LoginTextView loginTextView = new LoginTextView(getActivity()
+                        , MethodChecker.getColor(getActivity(), R.color.white));
+                loginTextView.setTextRegister(item.getName());
+                loginTextView.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
+                loginTextView.setImage(item.getImage());
+                loginTextView.setRoundCorner(10);
 
-            setDiscoverOnClickListener(listProvider.get(i), loginTextView);
+                setDiscoverOnClickListener(item, loginTextView);
 
-            if (registerContainer != null) {
-                registerContainer.addView(loginTextView, registerContainer.getChildCount(), layoutParams);
+                if (registerContainer != null) {
+                    registerContainer.addView(loginTextView, registerContainer.getChildCount(), layoutParams);
+                }
+            } else if (!GlobalConfig.isSellerApp() && remoteConfig.getBoolean(REMOTE_CONFIG_SHOW_REGISTER_PHONE_NUMBER)) {
+                registerPhoneNumberButton.setVisibility(View.VISIBLE);
+                registerPhoneNumberButton.setImage(item.getImage());
             }
         }
 
