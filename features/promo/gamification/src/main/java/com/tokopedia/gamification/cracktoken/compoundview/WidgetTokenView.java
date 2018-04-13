@@ -122,7 +122,9 @@ public class WidgetTokenView extends FrameLayout {
                 isTokenClicked = true;
             }
         });
-        setVisibility(View.INVISIBLE);
+
+        hide();
+
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -223,12 +225,17 @@ public class WidgetTokenView extends FrameLayout {
         ImageHandler.loadImageAndCache(imageViewLeft, imageLeftUrl);
 
         reset();
-
-        this.setVisibility(View.VISIBLE);
+        show();
     }
 
     public void hide() {
         this.setVisibility(View.INVISIBLE);
+        imageViewFull.setEnabled(false);
+    }
+
+    public void show() {
+        this.setVisibility(View.VISIBLE);
+        imageViewFull.setEnabled(true);
     }
 
     private void showLightAnimation() {
