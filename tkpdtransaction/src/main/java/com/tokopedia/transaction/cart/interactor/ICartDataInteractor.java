@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.cart.interactor;
 
 
+import android.content.Context;
+
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.cart.model.ResponseTransform;
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
@@ -65,7 +67,7 @@ public interface ICartDataInteractor {
 
     void calculateKeroRates(String token, String ut,
                             List<CartItem> cartItemList,
-                            KeroRatesListener listener);
+                            KeroRatesListener listener, Context context);
 
     interface KeroRatesListener {
         void onSuccess(CartRatesData cartRatesData);
