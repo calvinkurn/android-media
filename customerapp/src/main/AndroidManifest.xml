@@ -230,6 +230,8 @@
         <activity
             android:name=".thankyou.view.ReactNativeThankYouPageActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".home.ReactNativeSubPromoPageActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name="com.tokopedia.digital.product.service.USSDAccessibilityService"
