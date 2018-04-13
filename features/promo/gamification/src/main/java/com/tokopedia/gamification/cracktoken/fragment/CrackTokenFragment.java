@@ -580,10 +580,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private void trackingCloseRewardButtonClick(CrackResult crackResult) {
         if (getActivity().getApplication() instanceof AbstractionRouter) {
             String category = "";
-            if (crackResult.isCrackTokenExpired()) {
-                category = GamificationEventTracking.Category.EXPIRED_TOKEN;
-            } else if (crackResult.isTryAgainBtn()) {
-                category = GamificationEventTracking.Category.ERROR_PAGE;
+            if (!crackResult.isCrackTokenSuccess()) {
+                if (crackResult.isCrackTokenExpired()) {
+                    category = GamificationEventTracking.Category.EXPIRED_TOKEN;
+                } else {
+                    category = GamificationEventTracking.Category.ERROR_PAGE;
+                }
             }
             if (!category.equals("")) {
                 abstractionRouter
