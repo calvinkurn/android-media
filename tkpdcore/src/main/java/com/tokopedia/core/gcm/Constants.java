@@ -27,6 +27,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_RIDE = "ride";
     String ARG_NOTIFICATION_APPLINK_PROMO_LABEL = "promo";
     String ARG_NOTIFICATION_APPLINK_TOPCHAT = "topchat";
+    String ARG_NOTIFICATION_APPLINK_GROUPCHAT = "groupchat";
     String KEY_ORIGIN = "origin";
     int REGISTRATION_STATUS_OK = 1;
     int REGISTRATION_STATUS_ERROR = 2;
@@ -120,6 +121,7 @@ public interface Constants {
         String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
         String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
         String PROMO_SALE = "tokopedia://sale/{slug}/";
+        String PROMO_DETAIL = "tokopedia://promo/{slug}";
         String PROMO_SALE_TERMS = "tokopedia://promo-sale/promo-terms";
         String WALLET_HOME = "tokopedia://wallet";
         String WALLET_ACTIVATION = "tokopedia://wallet/activation";
@@ -132,7 +134,6 @@ public interface Constants {
         String EVENTS_DETAILS = "tokopedia://events/{event}";
         String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
-        String PROMO_LIST = "tokopedia://promoNative";
         String EXPLORE = "tokopedia://jump/{section}";
 
         String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
@@ -174,6 +175,7 @@ public interface Constants {
         String NOTIFICATION_PURCHASE = "notification_purchase";
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
         String NOTIFICATION_SELLER_INFO = "notification_seller_info";
+        String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
     }
 
     interface AppLinkQueryParameter {

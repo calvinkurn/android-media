@@ -66,6 +66,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     private static final String TAG = "ShopOpenMandatoryLocati";
     private LocationShippingViewHolder locationShippingViewHolder;
     private LocationMapViewHolder locationMapViewHolder;
+    private final String SCREEN_NAME = "Alamat Pengiriman";
 
     @Inject
     ShopOpenLocPresenterImpl shopOpenLocPresenter;
@@ -108,6 +109,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     private void initView(View root) {
 
+        trackingOpenShop.eventMoEngageOpenShop(SCREEN_NAME);
         new LocationHeaderViewHolder(root, new LocationHeaderViewHolder.ViewHolderListener() {
             @Override
             public void navigateToChooseAddressActivityRequest() {
