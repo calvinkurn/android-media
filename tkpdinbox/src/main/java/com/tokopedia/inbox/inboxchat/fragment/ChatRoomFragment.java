@@ -499,8 +499,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 intent.putExtra(ContactUsConstant.PARAM_URL,
                         URLGenerator.generateURLContactUs(url, getContext()));
                 startActivity(intent);
-            } else {
-                startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
+            } else if(isChatBot) {
+                startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),
+                        URLGenerator.generateURLSessionLoginV4(url,getContext())));
+            }
+            else {
+                startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),url));
             }
         }
     }
