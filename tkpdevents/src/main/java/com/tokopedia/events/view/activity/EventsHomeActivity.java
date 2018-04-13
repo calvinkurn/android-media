@@ -272,7 +272,7 @@ public class EventsHomeActivity extends TActivity
         categoryViewPager.setCurrentItem(defaultViewPagerPos);
         categoryViewPager.setSaveFromParentEnabled(false);
         indicatorLayout.setVisibility(View.VISIBLE);
-        IFragmentLifecycleCallback fragmentToShow = (CategoryFragment) categoryTabsPagerAdapter.getItem(0);
+        IFragmentLifecycleCallback fragmentToShow = (CategoryFragment) categoryTabsPagerAdapter.getItem(defaultViewPagerPos);
         fragmentToShow.fragmentResume();
     }
 
@@ -302,7 +302,7 @@ public class EventsHomeActivity extends TActivity
 
     private void setCategoryViewPagerListener() {
         categoryViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            int currentPosition = 0;
+            int currentPosition = defaultViewPagerPos;
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
