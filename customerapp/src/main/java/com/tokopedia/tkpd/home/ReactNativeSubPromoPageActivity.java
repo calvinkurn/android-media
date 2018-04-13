@@ -19,7 +19,7 @@ public class ReactNativeSubPromoPageActivity extends ReactFragmentActivity<Gener
     public static final String KEY_SLUG = "slug";
     public static final String CATEGORY_SLUG = "category_slug";
 
-    @DeepLink({Constants.Applinks.SUB_PROMO})
+    @DeepLink({Constants.Applinks.SUB_PROMO, Constants.Applinks.SUB_PROMO_WITH_SLASH})
     public static Intent getSubPromoApplinkCallingIntent(Context context, Bundle bundle){
         return ReactNativeSubPromoPageActivity.createApplinkCallingIntent(
                 context,
