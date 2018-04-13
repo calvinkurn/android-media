@@ -717,7 +717,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Override
     public void goToLoginEmail() {
-        startActivity(LoginActivity.getLoginFromRegister(getActivity(), email.getText().toString()));
+        startActivity(LoginActivity.getIntentLoginFromRegister(getActivity(), email.getText().toString()));
         getActivity().finish();
     }
 
