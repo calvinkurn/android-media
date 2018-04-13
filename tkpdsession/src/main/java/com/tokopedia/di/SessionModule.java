@@ -71,6 +71,7 @@ import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
+import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
 import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
 import com.tokopedia.session.register.registerphonenumber.data.mapper.CheckMsisdnMapper;
 import com.tokopedia.session.register.registerphonenumber.data.mapper.RegisterPhoneNumberMapper;
@@ -94,8 +95,7 @@ import retrofit2.Retrofit;
  */
 
 @Module
-public class
-SessionModule {
+public class SessionModule {
 
     public static final String HMAC_SERVICE = "HMAC_SERVICE";
     public static final String BEARER_SERVICE = "BEARER_SERVICE";
@@ -276,10 +276,8 @@ SessionModule {
 
     @SessionScope
     @Provides
-    GetUserInfoUseCase provideGetUserInfoUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutionThread,
-                                                 ProfileRepository profileRepository) {
-        return new GetUserInfoUseCase(threadExecutor, postExecutionThread, profileRepository);
+    GetUserInfoUseCase provideGetUserInfoUseCase(ProfileRepository profileRepository) {
+        return new GetUserInfoUseCase(profileRepository);
     }
 
     @SessionScope
@@ -326,6 +324,16 @@ SessionModule {
     @Named(LOGIN_CACHE)
     LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
         return new LocalCacheHandler(context, LOGIN_CACHE);
+    }
+
+    @SessionScope
+    @Provides
+    public GetFacebookCredentialUseCase provideGetFacebookCredentialUseCase(){
+        return provideOverridenGetFacebookCredentialUseCase();
+    }
+
+    public GetFacebookCredentialUseCase provideOverridenGetFacebookCredentialUseCase(){
+        return new GetFacebookCredentialUseCase();
     }
 
     @SessionScope
