@@ -59,7 +59,6 @@ public interface AppEventTracking {
         String WISHLIST = "clickWishlist";
         String FEED = "clickFeed";
         String SEARCH_RESULT = "clickSearchResult";
-        String IMAGE_SEARCH_RESULT = "imageSearchClick";
         String SORT = "clickSort";
         String FILTER = "clickFilter";
         String NO_RESULT = "noSearchResult";
@@ -178,6 +177,7 @@ public interface AppEventTracking {
         String ADD_TO_CART_PDP = "addToCart";
         String EVENT_CHECKOUT = "checkout";
         String CLICK_APP_SHARE_WHEN_REFERRAL_OFF = "clickAppShare";
+        String PRODUCT_CLICK = "productClick";
     }
 
     interface Category {
@@ -197,6 +197,7 @@ public interface AppEventTracking {
         String SEARCH = "Search";
         String IMAGE_SEARCH = "image search";
         String SEARCH_RESULT = "Search Result";
+        String IMAGE_SEARCH_RESULT = "image search result";
         String SORT = "Sort";
         String FILTER = "Filter";
         String WISHLIST = "Wishlist";
@@ -513,7 +514,7 @@ public interface AppEventTracking {
         String FAVORITE_SHOP_CLICK = "click - favoritkan";
         String CLICK_CATALOG = "click - catalog";
         String CLICK_TAB = "click - tab";
-        String CLICK_SWITCH_VIEW = "click switch view";
+        String CLICK_PRODUCT = "click-product";
     }
 
     interface ImageEditor {

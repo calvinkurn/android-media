@@ -27,15 +27,19 @@ public class SearchTracking extends TrackingUtils {
     public static void trackEventClickImageSearchResultProduct(Object item, int position) {
         getGTMEngine().enhanceClickImageSearchResultProduct(item, String.format(imageClick, position));
         sendGTMEvent(new EventTracking(
-                "productClick",
-                "imageSearchResult",
-                "click-product",
+                AppEventTracking.Event.PRODUCT_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH_RESULT,
+                AppEventTracking.Action.CLICK_PRODUCT,
                 ""
         ).getEvent());
     }
 
     public static void eventImpressionSearchResultProduct(List<Object> list, String eventLabel) {
         getGTMEngine().enhanceImpressionSearchResultProduct(list, eventLabel);
+    }
+
+    public static void eventImpressionImageSearchResultProduct(List<Object> list) {
+        getGTMEngine().enhanceImpressionImageSearchResultProduct(list);
     }
 
     public static void eventClickGuidedSearch(String previousKey, String page, String nextKey) {
