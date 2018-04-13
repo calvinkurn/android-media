@@ -500,7 +500,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         URLGenerator.generateURLContactUs(url, getContext()));
                 startActivity(intent);
             } else {
-                startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
+                startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),
+                        URLGenerator.generateURLSessionLoginV4(url,getContext())));
             }
         }
     }

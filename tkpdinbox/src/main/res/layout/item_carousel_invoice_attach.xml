@@ -8,7 +8,10 @@
     <include layout="@layout/item_include_invoice_attach"
         android:id="@+id/container_all_invoice_attach"
         android:layout_width="298dp"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"/>
+
     <RelativeLayout android:layout_width="68dp"
         android:layout_height="match_parent"
 
