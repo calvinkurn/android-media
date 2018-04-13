@@ -41,9 +41,9 @@ public class TopAdsProductAdsRepositoryImpl implements TopAdsProductAdsRepositor
     }
 
     @Override
-    public Observable<TopAdsDetailProductDomainModel> saveDetailListProduct(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels) {
+    public Observable<TopAdsDetailProductDomainModel> saveDetailListProduct(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels, String source) {
         TopAdsProductAdsDataSource dataSource = topAdsShopAdFactory.createProductAdsDataSource();
-        return dataSource.createDetailProductList(topAdsDetailProductDomainModels);
+        return dataSource.createDetailProductList(topAdsDetailProductDomainModels, source);
     }
 
 }

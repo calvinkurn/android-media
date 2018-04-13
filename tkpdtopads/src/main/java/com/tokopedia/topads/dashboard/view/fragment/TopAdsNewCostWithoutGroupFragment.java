@@ -85,7 +85,8 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
                 stepperModel = new TopAdsCreatePromoWithoutGroupModel();
             }
             stepperModel.setDetailGroupCostViewModel(detailAd);
-            topAdsDetailNewProductPresenter.saveAd(stepperModel.getDetailProductViewModel(), new ArrayList<>(stepperModel.getTopAdsProductViewModels()));
+            topAdsDetailNewProductPresenter.saveAd(stepperModel.getDetailProductViewModel(), new ArrayList<>(stepperModel.getTopAdsProductViewModels()),
+                    stepperModel.getSource());
         }
     }
 

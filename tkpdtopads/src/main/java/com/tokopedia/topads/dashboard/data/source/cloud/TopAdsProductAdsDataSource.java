@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.data.source.cloud;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
@@ -46,15 +47,15 @@ public class TopAdsProductAdsDataSource {
         return topAdsManagementApi.editProductAd(getSaveProductDetailRequest(topAdsDetailProductDomainModel)).map(topAdsDetailProductMapper);
     }
 
-    public Observable<TopAdsDetailProductDomainModel> createDetailProductList(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels){
-        return topAdsManagementApi.createProductAd(getSaveProductDetailRequestList(topAdsDetailProductDomainModels)).map(topAdsDetailProductMapper);
+    public Observable<TopAdsDetailProductDomainModel> createDetailProductList(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels, String source){
+        return topAdsManagementApi.createProductAd(getSaveProductDetailRequestList(topAdsDetailProductDomainModels, source)).map(topAdsDetailProductMapper);
     }
 
-    private DataRequest<List<TopAdsProductDetailDataSourceModel>> getSaveProductDetailRequestList(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels) {
+    private DataRequest<List<TopAdsProductDetailDataSourceModel>> getSaveProductDetailRequestList(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels, String source) {
         DataRequest<List<TopAdsProductDetailDataSourceModel>> dataRequest = new DataRequest<>();
         List<TopAdsProductDetailDataSourceModel> dataRequestList = new ArrayList<>();
         for(TopAdsDetailProductDomainModel topAdsDetailProductDomainModel : topAdsDetailProductDomainModels) {
-            dataRequestList.add(convert(topAdsDetailProductDomainModel));
+            dataRequestList.add(convert(topAdsDetailProductDomainModel, source));
         }
         dataRequest.setData(dataRequestList);
         return dataRequest;
@@ -63,12 +64,12 @@ public class TopAdsProductAdsDataSource {
     private DataRequest<List<TopAdsProductDetailDataSourceModel>> getSaveProductDetailRequest(TopAdsDetailProductDomainModel topAdsDetailShopDomainModel) {
         DataRequest<List<TopAdsProductDetailDataSourceModel>> dataRequest = new DataRequest<>();
         List<TopAdsProductDetailDataSourceModel> dataRequestList = new ArrayList<>();
-        dataRequestList.add(convert(topAdsDetailShopDomainModel));
+        dataRequestList.add(convert(topAdsDetailShopDomainModel, ""));
         dataRequest.setData(dataRequestList);
         return dataRequest;
     }
 
-    private TopAdsProductDetailDataSourceModel convert(TopAdsDetailProductDomainModel domainModel) {
+    private TopAdsProductDetailDataSourceModel convert(TopAdsDetailProductDomainModel domainModel, String source) {
         TopAdsProductDetailDataSourceModel dataModel = new TopAdsProductDetailDataSourceModel();
         dataModel.setAdId(domainModel.getAdId());
         dataModel.setAdType(domainModel.getAdType());
@@ -89,7 +90,11 @@ public class TopAdsProductAdsDataSource {
         dataModel.setAdTitle(domainModel.getAdTitle());
         dataModel.setSuggestionBidValue(domainModel.getSuggestionBidValue());
         dataModel.setSuggestionBidButton(domainModel.getSuggestionBidButton());
-        dataModel.setSource(TopAdsNetworkConstant.VALUE_SOURCE_ANDROID);
+        if(TextUtils.isEmpty(source)) {
+            dataModel.setSource(TopAdsNetworkConstant.VALUE_SOURCE_ANDROID);
+        }else{
+            dataModel.setSource(source);
+        }
         return dataModel;
     }
 

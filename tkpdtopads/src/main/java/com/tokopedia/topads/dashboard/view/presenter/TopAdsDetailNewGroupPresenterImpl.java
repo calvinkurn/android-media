@@ -40,7 +40,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
     }
 
     @Override
-    public void saveAdExisting(String groupId, final List<TopAdsProductViewModel> topAdsProductViewModelList) {
+    public void saveAdExisting(String groupId, final List<TopAdsProductViewModel> topAdsProductViewModelList, final String source) {
         super.getDetailAd(groupId, new Subscriber<TopAdsDetailGroupDomainModel>() {
             @Override
             public void onCompleted() {
@@ -58,7 +58,8 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
                 topAdsCreateDetailProductListUseCase.execute(
                         TopAdsCreateDetailProductListUseCase.createRequestParams(
                                 topAdsDetailGroupDomainModel,
-                                topAdsProductViewModelList
+                                topAdsProductViewModelList,
+                                source
                         ),
                         getSaveProductSubscriber()
                 );
@@ -91,9 +92,9 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
     @Override
     public void saveAdNew(String groupName,
                           TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
-                          List<TopAdsProductViewModel> topAdsProductViewModelList) {
+                          List<TopAdsProductViewModel> topAdsProductViewModelList, String source) {
         topAdsCreateNewGroupUseCase.execute(
-                TopAdsCreateNewGroupUseCase.createRequestParams(groupName, topAdsDetailProductViewModel, topAdsProductViewModelList),
+                TopAdsCreateNewGroupUseCase.createRequestParams(groupName, topAdsDetailProductViewModel, topAdsProductViewModelList, source),
                 new Subscriber<TopAdsDetailGroupViewModel>() {
                     @Override
                     public void onCompleted() {
