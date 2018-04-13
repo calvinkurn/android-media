@@ -52,6 +52,7 @@ public class GroupChatNetModule {
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor,
                                             AccountsAuthorizationInterceptor accountsAuthorizationInterceptor) {
+
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(new ErrorResponseInterceptor(StreamErrorResponse.class))
                 .addInterceptor(tkpdAuthInterceptor)
