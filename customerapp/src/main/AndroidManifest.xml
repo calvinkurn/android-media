@@ -272,6 +272,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
+        <activity
+            android:name=".home.ReactNativeBrandListOsActivity"
+            android:screenOrientation="portrait" />
+
+
+
     </application>
 
 </manifest>
