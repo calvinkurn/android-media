@@ -47,7 +47,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -134,6 +133,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
     private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
     private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
+    private static final String APPLINK_SCHEME = "tokopedia";
     private static final String CONTACT_US_URL_BASE_DOMAIN = TkpdBaseURL.BASE_CONTACT_US;
     private static final String ROLE_SHOP = "shop";
     private static final String ENABLE_TOPCHAT = "topchat_template";
@@ -488,7 +488,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
         Uri uri = Uri.parse(url);
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         if(uri != null) {
-            if (uri.getPathSegments().contains(CONTACT_US_PATH_SEGMENT)) {
+            if(uri.getScheme().equals(APPLINK_SCHEME)){
+                ((TkpdInboxRouter) getActivity().getApplicationContext())
+                        .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+            }
+            else if (uri.getPathSegments().contains(CONTACT_US_PATH_SEGMENT)) {
                 Intent intent = ((TkpdInboxRouter) MainApplication
                         .getAppContext())
                         .getContactUsIntent(getContext());
