@@ -101,4 +101,9 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
             super.onBackPressed();
         }
     }
+
+    @Override
+    public String getScreenName() {
+        return CrackTokenActivity.class.getName();
+    }
 }

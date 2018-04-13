@@ -10,6 +10,15 @@ import java.util.List;
 
 public class CrackResult {
 
+    public static final String TYPE_BTN_INVISIBLE = "invisible";
+    public static final String TYPE_BTN_DISMISS = "dismiss";
+    public static final String TYPE_BTN_REDIRECT = "redirect";
+    public static final String STATUS_CODE_SERVER_ERROR = "500";
+    public static final String STATUS_CODE_TOKEN_HAS_BEEN_CRACKED = "42501";
+    private static final String STATUS_CODE_SUCCESS = "200";
+    private static final String STATUS_CODE_TOKEN_EXPIRED = "42503";
+    private static final String STATUS_CODE_CAMPAIGN_EXPIRED = "42504";
+
     private CrackResultStatus resultStatus;
     private String imageUrl;
     private Bitmap imageBitmap;
@@ -84,26 +93,31 @@ public class CrackResult {
     }
 
     public boolean isCrackTokenSuccess() {
-        return resultStatus.getCode().equals("200");
+        return resultStatus.getCode().equals(STATUS_CODE_SUCCESS);
     }
 
     public boolean isCrackTokenExpired() {
-        return resultStatus.getCode().equals("42503") || resultStatus.getCode().equals("42504");
+        return resultStatus.getCode().equals(STATUS_CODE_TOKEN_EXPIRED) ||
+                resultStatus.getCode().equals(STATUS_CODE_CAMPAIGN_EXPIRED);
+    }
+
+    public boolean isTokenHasBeenCracked() {
+        return resultStatus.getCode().equals(STATUS_CODE_TOKEN_HAS_BEEN_CRACKED);
     }
 
     public boolean isTryAgainBtn() {
-        return resultStatus.getCode().equals("500");
+        return resultStatus.getCode().equals(STATUS_CODE_SERVER_ERROR);
     }
 
     public boolean isCrackButtonVisible(CrackButton crackButton) {
-        return !crackButton.getType().equals("invisible");
+        return !crackButton.getType().equals(TYPE_BTN_INVISIBLE);
     }
 
     public boolean isCrackButtonDismiss(CrackButton crackButton) {
-        return crackButton.getType().equals("dismiss");
+        return crackButton.getType().equals(TYPE_BTN_DISMISS);
     }
 
     public boolean isCrackButtonRedirect(CrackButton crackButton) {
-        return crackButton.getType().equals("redirect");
+        return crackButton.getType().equals(TYPE_BTN_REDIRECT);
     }
 }

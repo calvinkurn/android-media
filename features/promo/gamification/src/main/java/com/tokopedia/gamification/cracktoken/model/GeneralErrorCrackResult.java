@@ -17,24 +17,28 @@ public class GeneralErrorCrackResult extends CrackResult {
 
     public GeneralErrorCrackResult(Context context) {
 
-        setBenefitLabel("Maaf, sayang sekali sepertinya");
+        setBenefitLabel(context.getString(R.string.error_reward_title));
 
         List<CrackBenefit> crackBenefits = new ArrayList<>();
-        crackBenefits.add(new CrackBenefit(context.getString(R.string.crack_token_got_technical_difficulties),
-                "#ffffff", "medium"));
+        CrackBenefit crackBenefit = new CrackBenefit();
+        crackBenefit.setText(context.getString(R.string.error_reward_message));
+        crackBenefit.setColor(context.getString(R.string.expired_reward_color));
+        crackBenefit.setSize(context.getString(R.string.expired_reward_size));
+        crackBenefits.add(crackBenefit);
 
-        Bitmap errorBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.image_error_crack_result);
+        Bitmap errorBitmap = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.image_error_crack_result);
 
         CrackButton returnButton = new CrackButton();
-        returnButton.setTitle("Coba Lagi");
-        returnButton.setType("dismiss");
+        returnButton.setTitle(context.getString(R.string.try_again_btn));
+        returnButton.setType(CrackResult.TYPE_BTN_DISMISS);
 
         setBenefits(crackBenefits);
         setImageBitmap(errorBitmap);
         setReturnButton(returnButton);
 
         CrackResultStatus crackResultStatus = new CrackResultStatus();
-        crackResultStatus.setCode("500");
+        crackResultStatus.setCode(CrackResult.STATUS_CODE_SERVER_ERROR);
         setResultStatus(crackResultStatus);
     }
 }

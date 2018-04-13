@@ -42,6 +42,10 @@ public class WidgetCrackResult extends RelativeLayout {
     private static final String TEXT_SIZE_REWARD_LARGE = "large";
     private static final String TEXT_SIZE_REWARD_MEDIUM = "medium";
     private static final String TEXT_SIZE_REWARD_SMALL = "small";
+    private static final int DURATION_ROTATION_CRACK_RESULT = 15000;
+    private static final int DURATION_ANIM_BG_CRACK_RESULT = 1000;
+    private static final int DURATION_ALPHA_ANIM = 1500;
+    private static final int DURATION_ALPHA_ANIM_TEXT = 500;
 
     private ImageView imageViewBgCrackResult;
     private ImageView imageViewCrackResult;
@@ -152,15 +156,15 @@ public class WidgetCrackResult extends RelativeLayout {
         AnimationSet animationBgCrackResult = new AnimationSet(true);
 
         Animation rotateAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_bg_crack_result);
-        rotateAnimationCrackResult.setDuration(15000);
+        rotateAnimationCrackResult.setDuration(DURATION_ROTATION_CRACK_RESULT);
         animationBgCrackResult.addAnimation(rotateAnimationCrackResult);
 
         Animation scaleAnimationBgCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_bg_crack_result);
-        scaleAnimationBgCrackResult.setDuration(1000);
+        scaleAnimationBgCrackResult.setDuration(DURATION_ANIM_BG_CRACK_RESULT);
         animationBgCrackResult.addAnimation(scaleAnimationBgCrackResult);
 
         TranslateAnimation translateAnimationBgCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
-        translateAnimationBgCrackResult.setDuration(1000);
+        translateAnimationBgCrackResult.setDuration(DURATION_ANIM_BG_CRACK_RESULT);
         animationBgCrackResult.addAnimation(translateAnimationBgCrackResult);
 
         imageViewBgCrackResult.startAnimation(animationBgCrackResult);
@@ -170,7 +174,7 @@ public class WidgetCrackResult extends RelativeLayout {
     private void showCrackResultBackgroundAnimation() {
         AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
         alphaAnimation.setFillAfter(true);
-        alphaAnimation.setDuration(1500);
+        alphaAnimation.setDuration(DURATION_ALPHA_ANIM);
 
         backgroundViewCrackResult.setAnimation(alphaAnimation);
         backgroundViewCrackResult.setBackgroundColor(getResources().getColor(R.color.font_black_primary_70));
@@ -190,7 +194,7 @@ public class WidgetCrackResult extends RelativeLayout {
             listCrackResultText.addView(textView);
         }
         AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
-        alphaAnimation.setDuration(500);
+        alphaAnimation.setDuration(DURATION_ALPHA_ANIM_TEXT);
         containerTextCrackResult.setAnimation(alphaAnimation);
         containerTextCrackResult.setVisibility(VISIBLE);
     }

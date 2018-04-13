@@ -1,9 +1,5 @@
 package com.tokopedia.gamification.cracktoken.model;
 
-import android.content.Context;
-
-import com.tokopedia.gamification.R;
-
 /**
  * Created by nabillasabbaha on 3/28/18.
  */
@@ -15,12 +11,6 @@ public class CrackBenefit {
     private String size;
 
     public CrackBenefit() {
-    }
-
-    public CrackBenefit(String text, String color, String size) {
-        this.text = text;
-        this.color = color;
-        this.size = size;
     }
 
     public String getText() {
