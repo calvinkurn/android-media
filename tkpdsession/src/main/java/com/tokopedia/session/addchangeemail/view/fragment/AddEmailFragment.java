@@ -40,9 +40,9 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
     private static final int REQUEST_VERIFY_EMAIL = 1234;
 
     private EditText etEmail;
-    private TkpdHintTextInputLayout emailWrapper;
     private TextView tvMessage, tvError;
     private TextView btnContinue;
+    private TkpdHintTextInputLayout wrapperEmail;
     private TkpdProgressDialog progressDialog;
 
     @Inject
@@ -68,7 +68,7 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
         btnContinue = (TextView) view.findViewById(R.id.btn_continue);
         tvMessage = (TextView) view.findViewById(R.id.tv_message);
         tvError = (TextView) view.findViewById(R.id.tv_error);
-        emailWrapper = (TkpdHintTextInputLayout) view.findViewById(R.id.wrapper_email);
+        wrapperEmail = (TkpdHintTextInputLayout) view.findViewById(R.id.wrapper_email) ;
         presenter.attachView(this);
         return view;
     }
@@ -154,7 +154,7 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
     @Override
     public void onErrorCheckEmail(String error) {
         NetworkErrorHelper.showSnackbar(getActivity(), error);
-        tvError.setText(error);
+        setTextError(error);
     }
 
     @Override
@@ -187,13 +187,12 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
     private void setTextError(String s) {
         if (TextUtils.isEmpty(s)) {
             setDefaultHelper();
-            emailWrapper.setErrorEnabled(false);
             enableNextButton();
+            wrapperEmail.setErrorEnabled(true);
         } else {
+            wrapperEmail.setErrorEnabled(false);
             tvError.setVisibility(View.VISIBLE);
             tvError.setText(s);
-            emailWrapper.setErrorEnabled(true);
-            emailWrapper.setError(s);
             tvMessage.setVisibility(View.GONE);
             disableNextButton();
         }
