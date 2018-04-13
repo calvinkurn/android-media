@@ -46,6 +46,7 @@ import static com.tokopedia.inbox.inboxchat.domain.usecase.SearchMessageUseCase.
 public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.View>
         implements InboxChatContract.Presenter, InboxMessageConstant {
 
+    private final SessionHandler sessionHandler;
     private GetMessageListUseCase getMessageListUseCase;
     private SearchMessageUseCase searchMessageUseCase;
     private DeleteMessageListUseCase deleteMessageListUseCase;
@@ -67,10 +68,12 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     @Inject
     InboxChatPresenter(GetMessageListUseCase getMessageListUseCase,
                        SearchMessageUseCase searchMessageUseCase,
-                       DeleteMessageListUseCase deleteMessageListUseCase) {
+                       DeleteMessageListUseCase deleteMessageListUseCase,
+                       SessionHandler sessionHandler) {
         this.getMessageListUseCase = getMessageListUseCase;
         this.searchMessageUseCase = searchMessageUseCase;
         this.deleteMessageListUseCase = deleteMessageListUseCase;
+        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -404,6 +407,10 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         try {
             Request request = new Request.Builder().url(magicString)
                     .header("Origin", TkpdBaseURL.WEB_DOMAIN)
+                    .header("Accounts-Authorization",
+                            sessionHandler.getTokenType(getView().getContext())
+                                    + " " +
+                                    sessionHandler.getAuthAccessToken())
                     .build();
             ws = client.newWebSocket(request, listener);
             attempt++;
