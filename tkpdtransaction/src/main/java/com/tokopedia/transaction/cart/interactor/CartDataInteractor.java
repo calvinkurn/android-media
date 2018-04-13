@@ -36,14 +36,17 @@ import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
+import com.tokopedia.transaction.network.VoucherCartService;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Response;
@@ -58,12 +61,13 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
- *         collabs with alvarisi
+ * collabs with alvarisi
  */
 public class CartDataInteractor implements ICartDataInteractor {
     private static final String KEY_FLAG_IS_SUCCESS = "is_success";
     private static final String COUPON = "coupon";
     private static final String DATA = "data";
+    private static final String SUCCESS = "success";
 
     private final TXService txService;
     private final TXActService txActService;
@@ -71,6 +75,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     private final TXVoucherService txVoucherService;
     private final CompositeSubscription compositeSubscription;
     private final KeroAuthService keroAuthService;
+    private final VoucherCartService voucherCartService;
 
     private IShipmentCartRepository shipmentCartRepository;
     private LogisticsAuthService logisticsAuthService;
@@ -84,6 +89,7 @@ public class CartDataInteractor implements ICartDataInteractor {
         this.shipmentCartRepository = new ShipmentCartDataRepository();
         this.keroAuthService = new KeroAuthService(3);
         this.logisticsAuthService = new LogisticsAuthService();
+        this.voucherCartService = new VoucherCartService();
     }
 
     @Override
@@ -285,6 +291,28 @@ public class CartDataInteractor implements ICartDataInteractor {
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber));
+    }
+
+    @Override
+    public void cancelVoucherCache(Subscriber<Boolean> subscriber) {
+        compositeSubscription.add(voucherCartService.getApi()
+                .checkVoucherCode(new HashMap<String, String>())
+                .map(new Func1<String, Boolean>() {
+                    @Override
+                    public Boolean call(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            return jsonResponse.getJSONObject(DATA).getBoolean(SUCCESS);
+                        } catch (JSONException | NullPointerException e) {
+                            return false;
+                        }
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber)
+        );
     }
 
     @Override
