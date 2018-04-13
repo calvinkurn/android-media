@@ -1,7 +1,6 @@
 package com.tokopedia.session.changename.data.source;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
@@ -10,6 +9,7 @@ import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.session.changename.data.mapper.ChangeNameMapper;
 import com.tokopedia.session.changename.domain.usecase.ChangeNameUseCase;
 import com.tokopedia.session.changename.view.viewmodel.ChangeNameViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 import rx.functions.Action1;
