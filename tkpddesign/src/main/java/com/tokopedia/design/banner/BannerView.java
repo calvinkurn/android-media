@@ -106,6 +106,12 @@ public class BannerView extends BaseCustomView {
         stopAutoScrollBanner();
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        startAutoScrollBanner();
+    }
+
     public interface OnPromoClickListener {
         void onPromoClick(int position);
     }

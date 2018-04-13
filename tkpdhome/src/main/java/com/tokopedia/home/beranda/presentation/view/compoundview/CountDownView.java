@@ -161,6 +161,12 @@ public class CountDownView extends FrameLayout {
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        startAutoRefreshCounter();
+    }
+
+    @Override
     protected Parcelable onSaveInstanceState() {
         return super.onSaveInstanceState();
     }
