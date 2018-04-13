@@ -41,7 +41,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include layout="@layout/partial_separator_horizontal"/>
         <Button
             android:id="@+id/button_submit"
             style="@style/Button.Submit.Green"

@@ -9,12 +9,14 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailProductActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsFilterProductActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsSortByActivity;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyProductAdDataBinder;
 import com.tokopedia.topads.dashboard.view.model.Ad;
@@ -55,7 +57,8 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
 
     @Override
     protected void searchForPage(int page) {
-        presenter.searchAd(startDate, endDate, keyword, status, groupId, getCurrentPage());
+        presenter.searchAd(startDate, endDate, keyword, status, groupId, getCurrentPage(),
+                selectedSort != null ? selectedSort.getId() : SortTopAdsOption.LATEST);
     }
 
     @Override
@@ -99,6 +102,9 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
             groupId = intent.getLongExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, groupId);
+            resetPageAndSearch();
+        } else if (requestCode == REQUEST_CODE_AD_SORT_BY && intent != null) {
+            selectedSort = intent.getParcelableExtra(TopAdsSortByActivity.EXTRA_SORT_SELECTED);
             resetPageAndSearch();
         }
     }
