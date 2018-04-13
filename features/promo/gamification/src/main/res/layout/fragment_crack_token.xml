@@ -62,7 +62,9 @@
     <com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView
         android:id="@+id/widget_token_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <com.tokopedia.gamification.cracktoken.compoundview.WidgetRemainingToken
         android:id="@+id/widget_remaining_token_view"
