@@ -208,6 +208,7 @@ public class EventBookTicketPresenter
             selectedPackageViewModel.setSelectedQuantity(0);
             selectedViewHolder.setTvTicketCnt(selectedPackageViewModel.getSelectedQuantity());
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
+            selectedViewHolder.toggleMinTicketWarning(View.INVISIBLE, selectedPackageViewModel.getMinQty());
             mSelectedPackage = index;
             selectedPackageViewModel = packageVM;
             selectedViewHolder = ticketViewHolder;
@@ -219,14 +220,19 @@ public class EventBookTicketPresenter
             scrollToLastIfNeeded();
         }
         int selectedCount = selectedPackageViewModel.getSelectedQuantity();
-        if (selectedCount < selectedPackageViewModel.getAvailable() && selectedCount < selectedPackageViewModel.getMaxQty()) {
+        if (selectedCount < selectedPackageViewModel.getAvailable()
+                && selectedCount < selectedPackageViewModel.getMaxQty()) {
             selectedPackageViewModel.setSelectedQuantity(++selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.light_green));
         } else {
             selectedViewHolder.toggleMaxTicketWarning(View.VISIBLE, selectedPackageViewModel.getSelectedQuantity());
         }
-        getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
+        if (selectedCount < selectedPackageViewModel.getMinQty())
+            selectedViewHolder.toggleMinTicketWarning(View.VISIBLE, selectedPackageViewModel.getMinQty());
+        else {
+            getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
+        }
         UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET, "add - " + selectedPackageViewModel.getTitle() + " - " +
                 selectedPackageViewModel.getDisplayName() + " - " +
                 CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
@@ -237,11 +243,18 @@ public class EventBookTicketPresenter
         if (selectedCount != 0) {
             selectedPackageViewModel.setSelectedQuantity(--selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
-            selectedViewHolder.toggleMaxTicketWarning(View.INVISIBLE, 4);
-            getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
+            selectedViewHolder.toggleMaxTicketWarning(View.INVISIBLE, selectedPackageViewModel.getMaxQty());
+            if (selectedCount < selectedPackageViewModel.getMinQty()) {
+                selectedViewHolder.toggleMinTicketWarning(View.VISIBLE, selectedPackageViewModel.getMinQty());
+                getView().hidePayButton();
+            } else {
+                selectedViewHolder.toggleMinTicketWarning(View.INVISIBLE, selectedPackageViewModel.getMinQty());
+                getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
+            }
         }
         if (selectedCount == 0) {
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
+            selectedViewHolder.toggleMinTicketWarning(View.INVISIBLE, selectedPackageViewModel.getMinQty());
             mSelectedPackage = -1;
             selectedViewHolder = null;
             mChildFragment.setDecorationHeight(0);
