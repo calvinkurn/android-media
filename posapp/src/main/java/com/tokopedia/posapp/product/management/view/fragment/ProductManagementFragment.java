@@ -3,6 +3,7 @@ package com.tokopedia.posapp.product.management.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,17 +66,18 @@ public class ProductManagementFragment
     @Override
     public void onResume() {
         super.onResume();
-        reloadData();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         progressDialog = new TkpdProgressDialog(getContext(), TkpdProgressDialog.NORMAL_PROGRESS);
+        loadInitialData();
     }
 
     @Override
-    protected void loadInitialData() {
+    public void loadInitialData() {
+        setLoadingView();
         presenter.reload();
     }
 
@@ -117,13 +119,13 @@ public class ProductManagementFragment
     public void onReloadData(List<Visitable> list) {
         isLoadingInitialData = true;
         list.add(0, getHeaderModel());
-        renderList(list);
+        renderList(list, true);
     }
 
     @Override
     public void onLoadMore(List<Visitable> list) {
         isLoadingInitialData = false;
-        renderList(list);
+        renderList(list, list.size() != 0);
     }
 
     @Override
@@ -134,18 +136,12 @@ public class ProductManagementFragment
 
     @Override
     public void onSuccessEditStatus() {
-        reloadData();
+        loadInitialData();
     }
 
     @Override
     public void onErorEditStatus(String errorMessage) {
         Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_product_management, container, false);
     }
 
     @Override
@@ -158,12 +154,13 @@ public class ProductManagementFragment
         return false;
     }
 
-    public void reloadData() {
-        setLoading();
-        loadInitialData();
+    @Nullable
+    @Override
+    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        return super.getSwipeRefreshLayout(view);
     }
 
-    private void setLoading() {
+    private void setLoadingView() {
         isLoadingInitialData = true;
         List<Visitable> list = new ArrayList<>();
         list.add(getLoadingModel());

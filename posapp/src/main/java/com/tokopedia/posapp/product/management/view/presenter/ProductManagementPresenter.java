@@ -60,7 +60,7 @@ public class ProductManagementPresenter implements ProductManagement.Presenter {
 
     @Override
     public void loadMore() {
-        getProductListManagementUseCase.execute(getRequestParam(page++), new LoadMoreProductManagementSubscriber(view));
+        getProductListManagementUseCase.execute(getRequestParam(++page), new LoadMoreProductManagementSubscriber(view));
     }
 
     @Override

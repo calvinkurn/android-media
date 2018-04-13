@@ -27,7 +27,7 @@ public class ProductManagementActivity extends BaseSimpleActivity implements Edi
     public void onDialogDismiss() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
         if(fragment != null && fragment instanceof ProductManagementFragment) {
-            ((ProductManagementFragment) fragment).reloadData();
+            ((ProductManagementFragment) fragment).loadInitialData();
         }
     }
 }

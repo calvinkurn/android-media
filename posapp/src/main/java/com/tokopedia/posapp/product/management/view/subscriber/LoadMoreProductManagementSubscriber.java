@@ -1,8 +1,10 @@
 package com.tokopedia.posapp.product.management.view.subscriber;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.management.view.ProductManagement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -15,6 +17,11 @@ public class LoadMoreProductManagementSubscriber extends GetProductManagementSub
     @Inject
     public LoadMoreProductManagementSubscriber(ProductManagement.View view) {
         super(view);
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        view.onLoadMore(new ArrayList<Visitable>());
     }
 
     @Override
