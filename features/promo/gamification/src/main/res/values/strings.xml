@@ -6,5 +6,16 @@
     <string name="default_info_token_text_crack">Klik untuk pecahkan Lucky Egg dan raih hadiah menarik!</string>
     <string name="empty_token_text_crack">Dapatkan telur dengan bertransaksi di Tokopedia</string>
     <string name="get_more_token_btn_text">Belanja dan Dapatkan Lucky Egg</string>
-    <string name="crack_token_got_technical_difficulties">Terjadi Kesalahan Teknis</string>
+    <string name="success_reward_label">Selamat anda mendapatkan</string>
+
+    <string name="ok_button">Ok</string>
+    <string name="expired_reward_title">Maaf, Anda kurang cepat</string>
+    <string name="expired_reward_message">Tunggu Kesempatan Lainnya</string>
+    <string name="expired_reward_color">#ffffff</string>
+    <string name="expired_reward_size">medium</string>
+
+    <string name="error_reward_title">Maaf, sayang sekali sepertinya</string>
+    <string name="error_reward_message">Terjadi Kesalahan Teknis</string>
+    <string name="try_again_btn">Coba Lagi</string>
+
 </resources>

@@ -17,16 +17,21 @@ public class ExpiredCrackResult extends CrackResult {
 
     public ExpiredCrackResult(Context context, CrackResultStatus crackResultStatus) {
 
-        setBenefitLabel("Maaf, Anda kurang cepat");
+        setBenefitLabel(context.getString(R.string.expired_reward_title));
 
         List<CrackBenefit> crackBenefits = new ArrayList<>();
-        crackBenefits.add(new CrackBenefit("Tunggu Kesempatan Lainnya", "#ffffff", "medium"));
+        CrackBenefit crackBenefit = new CrackBenefit();
+        crackBenefit.setText(context.getString(R.string.expired_reward_message));
+        crackBenefit.setColor(context.getString(R.string.expired_reward_color));
+        crackBenefit.setSize(context.getString(R.string.expired_reward_size));
+        crackBenefits.add(crackBenefit);
 
-        Bitmap errorBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.image_error_crack_result_expired);
+        Bitmap errorBitmap = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.image_error_crack_result_expired);
 
         CrackButton returnButton = new CrackButton();
-        returnButton.setTitle("Ok");
-        returnButton.setType("dismiss");
+        returnButton.setTitle(context.getString(R.string.ok_button));
+        returnButton.setType(CrackResult.TYPE_BTN_DISMISS);
 
         setBenefits(crackBenefits);
         setImageBitmap(errorBitmap);

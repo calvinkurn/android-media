@@ -40,8 +40,8 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
     @Inject
     public CrackTokenPresenter(GetTokenTokopointsUseCase getTokenTokopointsUseCase,
-                               GetCrackResultEggUseCase getCrackResultEggUseCase,
-                               UserSession userSession) {
+            GetCrackResultEggUseCase getCrackResultEggUseCase,
+            UserSession userSession) {
         this.getTokenTokopointsUseCase = getTokenTokopointsUseCase;
         this.getCrackResultEggUseCase = getCrackResultEggUseCase;
         this.userSession = userSession;
@@ -86,23 +86,15 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
                     @Override
                     public void onNext(CrackResult crackResult) {
-                        crackResult.setBenefitLabel("Selamat anda mendapatkan");
-                        // check result status
-                        if (crackResult.getResultStatus().getCode().equals("200")) {
-                            // success
+                        crackResult.setBenefitLabel(getView().getSuccessRewardLabel());
+                        if (crackResult.isCrackTokenSuccess() || crackResult.isTokenHasBeenCracked()) {
                             getView().onSuccessCrackToken(crackResult);
-                        } else if (crackResult.getResultStatus().getCode().equals("42501")) {
-                            // token has been cracked
-                            getView().onSuccessCrackToken(crackResult);
-                        } else if (crackResult.getResultStatus().getCode().equals("42502") ||
-                                crackResult.getResultStatus().getCode().equals("42503")) {
-                            // token user expired or invalid
-                            // show expired page
-                            CrackResult expiredCrackResult = createExpiredCrackResult(crackResult.getResultStatus());
+                        } else if (crackResult.isCrackTokenExpired()) {
+                            CrackResult expiredCrackResult = createExpiredCrackResult(
+                                    crackResult.getResultStatus());
                             getView().onErrorCrackToken(expiredCrackResult);
                         } else {
                             CrackResult errorCrackResult = createGeneralErrorCrackResult();
-
                             getView().onErrorCrackToken(errorCrackResult);
                         }
                     }

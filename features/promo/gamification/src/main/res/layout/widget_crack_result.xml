@@ -39,8 +39,8 @@
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/image_bg_reward"
-                android:layout_width="1dp"
-                android:layout_height="1dp"
+                android:layout_width="@dimen/dp_1"
+                android:layout_height="@dimen/dp_1"
                 android:layout_gravity="bottom|center"
                 android:src="@drawable/bg_light_reward"
                 android:visibility="gone"
@@ -48,8 +48,8 @@
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/image_reward"
-                android:layout_width="1dp"
-                android:layout_height="1dp"
+                android:layout_width="@dimen/dp_1"
+                android:layout_height="@dimen/dp_1"
                 android:layout_gravity="bottom|center"
                 tools:src="@drawable/ic_empty_egg"
                 android:visibility="gone"
@@ -62,7 +62,7 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:padding="16dp"
+            android:padding="@dimen/dp_16"
             android:gravity="top|center"
             android:visibility="gone"
             tools:visibility="visible"
@@ -73,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size_reward_label"
-                android:text="Selamat anda mendapatkan"
+                tools:text="Selamat anda mendapatkan"
                 android:textColor="@android:color/white" />
 
             <LinearLayout
@@ -86,11 +86,11 @@
             <Button
                 android:id="@+id/button_return"
                 style="@style/Button.Submit.Green"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_32"
                 android:textSize="@dimen/text_size_cta_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,11 +99,11 @@
             <TextView
                 android:id="@+id/button_cta"
                 android:gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_32"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_cta_button"
                 android:layout_width="match_parent"

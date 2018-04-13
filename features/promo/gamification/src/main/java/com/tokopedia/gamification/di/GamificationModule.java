@@ -36,12 +36,15 @@ public class GamificationModule {
     @GamificationScope
     @Provides
     OkHttpClient provideOkHttpClient(GamificationAuthInterceptor gamificationAuthInterceptor,
-                                     @GamificationChuckQualifier Interceptor chuckInterceptor) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(gamificationAuthInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
-                .addInterceptor(chuckInterceptor)
-                .build();
+            @GamificationChuckQualifier Interceptor chuckInterceptor) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .addInterceptor(gamificationAuthInterceptor);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(getHttpLoggingInterceptor())
+                    .addInterceptor(chuckInterceptor);
+        }
+        return builder.build();
     }
 
     @GamificationScope

@@ -36,6 +36,8 @@ public interface CrackTokenContract {
         void navigateToLoginPage();
 
         void closePage();
+
+        String getSuccessRewardLabel();
     }
 
     interface Presenter extends CustomerPresenter<View> {

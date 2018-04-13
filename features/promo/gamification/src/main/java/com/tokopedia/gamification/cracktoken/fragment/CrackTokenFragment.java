@@ -399,6 +399,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     @Override
+    public String getSuccessRewardLabel() {
+        return getString(R.string.success_reward_label);
+    }
+
+    @Override
     public void onSuccessGetToken(TokenData tokenData) {
         listener.showToolbar();
         if (tokenData.getSumToken() == 0) {
@@ -577,17 +582,19 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             String category = "";
             if (crackResult.isCrackTokenExpired()) {
                 category = GamificationEventTracking.Category.EXPIRED_TOKEN;
-            } else {
+            } else if (crackResult.isTryAgainBtn()) {
                 category = GamificationEventTracking.Category.ERROR_PAGE;
             }
-            abstractionRouter
-                    .getAnalyticTracker()
-                    .sendEventTracking(
-                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
-                            category,
-                            GamificationEventTracking.Action.CLICK_CLOSE_BUTTON,
-                            ""
-                    );
+            if (!category.equals("")) {
+                abstractionRouter
+                        .getAnalyticTracker()
+                        .sendEventTracking(
+                                GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                                category,
+                                GamificationEventTracking.Action.CLICK_CLOSE_BUTTON,
+                                ""
+                        );
+            }
         }
     }
 
