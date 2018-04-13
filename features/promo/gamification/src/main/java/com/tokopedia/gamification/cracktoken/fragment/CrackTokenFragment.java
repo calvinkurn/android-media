@@ -463,7 +463,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void showCrackWidgetSuccess(final CrackResult crackResult) {
-        crackTokenSuccessHandler = new Handler();
+        initCrackTokenSuccessHandler();
         crackTokenSuccessHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -477,6 +477,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }, widgetTokenView.isCrackPercentageFull() ? 1 : 1000);
     }
 
+    private void initCrackTokenSuccessHandler(){
+        if (crackTokenSuccessHandler == null) {
+            crackTokenSuccessHandler = new Handler();
+        } else {
+            crackTokenSuccessHandler.removeCallbacksAndMessages(null);
+        }
+    }
+
     public boolean isShowReward() {
         return widgetCrackResult.isShowReward();
     }
@@ -487,7 +495,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onErrorCrackToken(final CrackResult crackResult) {
-        crackTokenErrorhandler = new Handler();
+        initCrackTokenErrorHandler();
         crackTokenErrorhandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -497,6 +505,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 widgetCrackResult.showCrackResult(crackResult);
             }
         }, 1000);
+    }
+
+    private void initCrackTokenErrorHandler(){
+        if (crackTokenErrorhandler == null) {
+            crackTokenErrorhandler = new Handler();
+        } else {
+            crackTokenErrorhandler.removeCallbacksAndMessages(null);
+        }
     }
 
     @Override
