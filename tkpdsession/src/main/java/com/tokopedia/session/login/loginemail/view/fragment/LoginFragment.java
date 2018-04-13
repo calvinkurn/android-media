@@ -56,6 +56,7 @@ import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.di.SessionModule;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
@@ -168,6 +169,18 @@ public class LoginFragment extends BaseDaggerFragment
                         .build();
 
         daggerSessionComponent.inject(this);
+    }
+
+    public void initOuterInjector(SessionModule sessionModule){
+        AppComponent appComponent = getComponent(AppComponent.class);
+        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
+                DaggerSessionComponent.builder()
+                        .appComponent(appComponent)
+                        .sessionModule(sessionModule)
+                        .build();
+        daggerSessionComponent.inject(this);
+
+        presenter.attachView(this);
     }
 
     @Override
@@ -506,6 +519,7 @@ public class LoginFragment extends BaseDaggerFragment
         for (int i = 0; i < listProvider.size(); i++) {
             int colorInt = Color.parseColor(COLOR_WHITE);
             LoginTextView tv = new LoginTextView(getActivity(), colorInt);
+            tv.setTag(listProvider.get(i).getId());
             tv.setText(listProvider.get(i).getName());
             if (!TextUtils.isEmpty(listProvider.get(i).getImage())) {
                 tv.setImage(listProvider.get(i).getImage());

@@ -853,7 +853,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onSubmitEditCartItem(CartItem cartData, List<ProductEditData> cartProductEditDataList) {
-        presenter.processSubmitEditCart(cartData, cartProductEditDataList);
+        presenter.processSubmitEditCart(getActivity(), cartData, cartProductEditDataList);
     }
 
     @Override
@@ -882,6 +882,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onGetParameterTopPaySuccess(TopPayParameterData data) {
         hideProgressLoading();
+        presenter.trackStep2CheckoutEE(data.getParameter().getTransactionId());
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.setRedirectUrl(data.getRedirectUrl());
         paymentPassData.setTransactionId(data.getParameter().getTransactionId());
