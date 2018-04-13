@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.gcm.Constants;
@@ -68,7 +66,6 @@ public class ReactNativeExplorePageActivity extends ReactFragmentActivity<ReactN
         extras.putString(EXTRA_TITLE, pageTitle);
         intent.putExtras(extras);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Log.d("Naveen", "inetnt is " + intent);
         return intent;
     }
 
@@ -82,7 +79,6 @@ public class ReactNativeExplorePageActivity extends ReactFragmentActivity<ReactN
         if (getIntent() != null && getIntent().getExtras() != null) {
             return getIntent().getExtras().getString(EXTRA_TITLE);
         }
-
         return "";
     }
 }

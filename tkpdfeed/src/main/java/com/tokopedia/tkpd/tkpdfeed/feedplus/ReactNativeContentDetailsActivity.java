@@ -63,10 +63,6 @@ public class ReactNativeContentDetailsActivity extends ReactFragmentActivity<Rea
 
     @Override
     protected String getToolbarTitle() {
-//        if (getIntent() != null &amp;&amp; getIntent().getExtras() != null) {
-//            return getIntent().getExtras().getString(EXTRA_TITLE);
-//        }
-
         return "Post Detail";
     }
 }
