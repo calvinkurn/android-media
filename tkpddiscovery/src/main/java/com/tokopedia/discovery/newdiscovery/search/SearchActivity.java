@@ -175,22 +175,14 @@ public class SearchActivity extends DiscoveryActivity
 
         if (productViewModel.isHasCatalog()) {
             populateThreeTabItem(searchSectionItemList, productViewModel);
-        } else if (!productViewModel.isImageSearch()) {
-            populateTwoTabItem(searchSectionItemList, productViewModel);
         } else {
-            populateOneTabItem(searchSectionItemList, productViewModel);
+            populateTwoTabItem(searchSectionItemList, productViewModel);
         }
         SearchSectionPagerAdapter searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
         searchSectionPagerAdapter.setData(searchSectionItemList);
         viewPager.setAdapter(searchSectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         setActiveTab(forceSwipeToShop);
-    }
-
-    private void populateOneTabItem(List<SearchSectionItem> searchSectionItemList, ProductViewModel productViewModel) {
-        productListFragment = getProductFragment(productViewModel);
-        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
-        tabLayout.setVisibility(View.GONE);
     }
 
     private void setActiveTab(final boolean swipeToShop) {

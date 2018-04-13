@@ -18,6 +18,7 @@ import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
+import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 
 import javax.inject.Inject;
 
@@ -86,7 +87,7 @@ public class ImageSearchActiviy extends DiscoveryActivity
 
     private void initInjector() {
         searchComponent =
-                DaggerImageSearchComponent.builder()
+                DaggerSearchComponent.builder()
                         .appComponent(getApplicationComponent())
                         .build();
 

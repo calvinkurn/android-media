@@ -127,6 +127,7 @@ public final class AppScreen {
     public static final String SCREEN_BROWSE_PRODUCT_FROM_CATEGORY = "Browse Category - ";
     public static final String SCREEN_SEARCH_PAGE = "Search page";
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
+    public static final String SCREEN_IMAGE_SEARCH_TAB = "Image Search result - Image tab";
     public static final String SCREEN_SEARCH_PAGE_CATALOG_TAB = "Search result - Catalog tab";
     public static final String SCREEN_SEARCH_PAGE_SHOP_TAB = "Search result - Store tab";
     public static final String SCREEN_NOTIFICATION = "Top notification center";
