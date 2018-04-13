@@ -84,6 +84,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private long prevTimeStamp;
 
     private ActionListener listener;
+    private Handler crackTokenErrorhandler;
+    private Handler crackTokenSuccessHandler;
 
     public static Fragment newInstance() {
         return new CrackTokenFragment();
@@ -226,6 +228,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
             stopTimer();
             widgetTokenOnBoarding.hideHandOnBoarding(false);
+        }
+        if (crackTokenSuccessHandler != null) {
+            crackTokenSuccessHandler.removeCallbacksAndMessages(null);
+        }
+        if (crackTokenErrorhandler != null) {
+            crackTokenErrorhandler.removeCallbacksAndMessages(null);
         }
     }
 
@@ -455,8 +463,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void showCrackWidgetSuccess(final CrackResult crackResult) {
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        initCrackTokenSuccessHandler();
+        crackTokenSuccessHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 // Do something after 1s = 1000ms
@@ -469,6 +477,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }, widgetTokenView.isCrackPercentageFull() ? 1 : 1000);
     }
 
+    private void initCrackTokenSuccessHandler(){
+        if (crackTokenSuccessHandler == null) {
+            crackTokenSuccessHandler = new Handler();
+        } else {
+            crackTokenSuccessHandler.removeCallbacksAndMessages(null);
+        }
+    }
+
     public boolean isShowReward() {
         return widgetCrackResult.isShowReward();
     }
@@ -479,8 +495,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onErrorCrackToken(final CrackResult crackResult) {
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        initCrackTokenErrorHandler();
+        crackTokenErrorhandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 // Do something after 1s = 1000ms
@@ -489,6 +505,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 widgetCrackResult.showCrackResult(crackResult);
             }
         }, 1000);
+    }
+
+    private void initCrackTokenErrorHandler(){
+        if (crackTokenErrorhandler == null) {
+            crackTokenErrorhandler = new Handler();
+        } else {
+            crackTokenErrorhandler.removeCallbacksAndMessages(null);
+        }
     }
 
     @Override
