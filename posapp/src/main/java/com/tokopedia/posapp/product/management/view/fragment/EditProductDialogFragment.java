@@ -1,26 +1,28 @@
 package com.tokopedia.posapp.product.management.view.fragment;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.design.intdef.CurrencyEnum;
-import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
-import com.tokopedia.design.text.watcher.NumberTextWatcher;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.posapp.R;
-import com.tokopedia.posapp.product.management.di.component.DaggerEditProductComponent;
-import com.tokopedia.posapp.product.management.di.component.EditProductComponent;
+import com.tokopedia.posapp.base.util.RupiahNumberTextWatcher;
+import com.tokopedia.posapp.product.management.di.component.DaggerProductManagementComponent;
+import com.tokopedia.posapp.product.management.di.component.ProductManagementComponent;
 import com.tokopedia.posapp.product.management.view.EditProduct;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
 import com.tokopedia.seller.common.widget.PrefixEditText;
@@ -39,12 +41,13 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
     EditProduct.Presenter presenter;
 
     private TextView textProductName;
-    private TextInputLayout layoutOnlinePrice;
     private PrefixEditText editOnlinePrice;
-    private TextInputLayout layoutOutletPrice;
     private PrefixEditText editOutletPrice;
     private Button buttonCancel;
     private Button buttonSave;
+    private RelativeLayout editProductContainer;
+    private ProgressBar progressBar;
+    private DialogInterface.OnDismissListener onDismissListener;
 
     public static void show(FragmentManager fragmentManager, ProductViewModel productViewModel) {
         Bundle bundle = new Bundle();
@@ -54,6 +57,18 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
         editProductDialogFragment.setArguments(bundle);
 
         editProductDialogFragment.show(fragmentManager, TAG);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        onFragmentAttach(activity);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        onFragmentAttach(context);
     }
 
     @Override
@@ -69,16 +84,47 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
             return new AlertDialog
                     .Builder(getContext())
                     .setView(getDialogView(
-                        (ProductViewModel) getArguments().getParcelable(PRODUCT_VIEW_MODEL)
+                            (ProductViewModel) getArguments().getParcelable(PRODUCT_VIEW_MODEL)
                     ))
                     .create();
         }
 
+
         return super.onCreateDialog(savedInstanceState);
     }
 
+    @Override
+    public void showLoading() {
+        if (progressBar != null) {
+            editProductContainer.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+            this.setCancelable(false);
+        }
+    }
+
+    @Override
+    public void hideLoading() {
+        if (progressBar != null) {
+            editProductContainer.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            this.setCancelable(true);
+        }
+    }
+
+    @Override
+    public void onSuccessSave() {
+        Toast.makeText(getContext(), R.string.editproduct_message_success, Toast.LENGTH_SHORT).show();
+        onDismissListener.onDismiss(this.getDialog());
+        dismiss();
+    }
+
+    @Override
+    public void onErrorSave(String errorMessage) {
+        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+    }
+
     private void initInjector() {
-        EditProductComponent component = DaggerEditProductComponent
+        ProductManagementComponent component = DaggerProductManagementComponent
                 .builder()
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .build();
@@ -90,19 +136,19 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_edit_product, null);
 
+        editProductContainer = view.findViewById(R.id.container_edit_product);
         textProductName = view.findViewById(R.id.text_product_name);
-        layoutOnlinePrice = view.findViewById(R.id.layout_online_price);
         editOnlinePrice = view.findViewById(R.id.edit_online_price);
-        layoutOutletPrice = view.findViewById(R.id.layout_outlet_price);
         editOutletPrice = view.findViewById(R.id.edit_outlet_price);
         buttonCancel = view.findViewById(R.id.button_cancel);
         buttonSave = view.findViewById(R.id.button_save);
+        progressBar = view.findViewById(R.id.progressBar);
+
+        editOutletPrice.addTextChangedListener(new RupiahNumberTextWatcher(editOutletPrice));
 
         textProductName.setText(product.getName());
-        editOnlinePrice.setText(getFormattedCurrency(product.getOnlinePrice()));
-        editOutletPrice.setText(getFormattedCurrency(product.getOutletPrice()));
-//        editOutletPrice.addTextChangedListener(new CurrencyTextWatcher(editOutletPrice, CurrencyEnum.RP));
-//        editOnlinePrice.addTextChangedListener(new CurrencyTextWatcher(editOnlinePrice, CurrencyEnum.RP));
+        editOnlinePrice.setText(product.getOnlinePrice());
+        editOutletPrice.setText(String.valueOf((int) product.getOutletPriceUnformatted()));
 
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,30 +160,18 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.save(product, editOutletPrice.getText().toString());
+                presenter.save(product, editOutletPrice.getTextWithoutPrefix());
             }
         });
 
         return view;
     }
 
-    private double getOutletPrice(String s) {
-        return 0;
-    }
-
-    private String getFormattedCurrency(double price) {
-        return CurrencyFormatUtil.getThousandSeparatorString(
-                price, false, 0
-        ).getFormattedString();
-    }
-
-    @Override
-    public void onSuccessSave() {
-        dismiss();
-    }
-
-    @Override
-    public void onErrorSave(Throwable e) {
-
+    private void onFragmentAttach(Context context) {
+        if (context instanceof DialogInterface.OnDismissListener) {
+            this.onDismissListener = (DialogInterface.OnDismissListener) context;
+        } else {
+            throw new RuntimeException("Activity needs to implement DialogInterface.OnDismissListener");
+        }
     }
 }

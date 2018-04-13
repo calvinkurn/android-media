@@ -10,6 +10,7 @@ import com.tokopedia.posapp.product.management.data.pojo.EditProductRequest;
 import com.tokopedia.posapp.product.management.data.pojo.ProductPriceRequest;
 import com.tokopedia.posapp.product.management.domain.EditProductLocalPriceUseCase;
 import com.tokopedia.posapp.product.management.view.EditProduct;
+import com.tokopedia.posapp.product.management.view.subscriber.EditProductSubscriber;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -53,47 +54,40 @@ public class EditProductPresenter implements EditProduct.Presenter {
     public void save(ProductViewModel productViewModel, String price) {
         double localPrice = getPriceValue(price);
         if(localPrice != 0) {
+            view.showLoading();
             RequestParams requestParams = RequestParams.EMPTY;
             requestParams.putString(ProductConstant.Key.OUTLET_ID, posSessionHandler.getOutletId());
 
-            EditProductRequest editProductRequest = new EditProductRequest();
-            editProductRequest.setOutletId(Long.parseLong(posSessionHandler.getOutletId()));
-            editProductRequest.setShopId(Long.parseLong(userSession.getShopId()));
+            requestParams.putObject(ProductConstant.Key.EDIT_PRODUCT_REQUEST, getRequestModel(productViewModel, localPrice));
 
-            ProductPriceRequest productPriceRequest = new ProductPriceRequest();
-            productPriceRequest.setPrice(localPrice);
-            productPriceRequest.setProductId(Long.parseLong(productViewModel.getId()));
-            productPriceRequest.setStatus(productViewModel.getStatus());
-            List<ProductPriceRequest> priceRequestList = new ArrayList<>();
-            priceRequestList.add(productPriceRequest);
-            editProductRequest.setProductPrice(priceRequestList);
-
-            requestParams.putObject(ProductConstant.Key.EDIT_PRODUCT_REQUEST, editProductRequest);
-
-            editProductLocalPriceUseCase.execute(requestParams, new Subscriber<DataStatus>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    view.onErrorSave(e);
-                }
-
-                @Override
-                public void onNext(DataStatus dataStatus) {
-                    if(dataStatus.isOk()) view.onSuccessSave();
-                    else view.onErrorSave(new RuntimeException(dataStatus.getMessage()));
-                }
-            });
+            editProductLocalPriceUseCase.execute(requestParams, new EditProductSubscriber(view));
         }
+    }
+
+    private EditProductRequest getRequestModel(ProductViewModel productViewModel, double localPrice) {
+        EditProductRequest editProductRequest = new EditProductRequest();
+
+        ProductPriceRequest productPriceRequest = new ProductPriceRequest();
+        productPriceRequest.setPrice((int) localPrice);
+        productPriceRequest.setProductId(Long.parseLong(productViewModel.getId()));
+        productPriceRequest.setStatus(productViewModel.getStatus());
+        productPriceRequest.setStock(1);
+        productPriceRequest.setEtalaseId(productViewModel.getEtalaseId());
+
+        List<ProductPriceRequest> priceRequestList = new ArrayList<>();
+        priceRequestList.add(productPriceRequest);
+
+        editProductRequest.setShopId(Long.parseLong(userSession.getShopId()));
+        editProductRequest.setProductPrice(priceRequestList);
+        editProductRequest.setOutletId(Long.parseLong(posSessionHandler.getOutletId()));
+
+        return editProductRequest;
     }
 
     private double getPriceValue(String price) {
         try {
             if(!TextUtils.isEmpty(price)) {
-                return Double.parseDouble(price);
+                return Double.parseDouble(price.replace(".", ""));
             }
         } catch (Exception e) {
             e.printStackTrace();

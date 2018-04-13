@@ -6,12 +6,13 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.common.PosApiModule;
-import com.tokopedia.posapp.etalase.domain.GetEtalaseCacheUseCase;
-import com.tokopedia.posapp.product.common.di.ProductModule;
 import com.tokopedia.posapp.product.management.data.source.ProductManagementApi;
 import com.tokopedia.posapp.product.management.di.scope.ProductManagementScope;
+import com.tokopedia.posapp.product.management.domain.EditProductLocalPriceUseCase;
 import com.tokopedia.posapp.product.management.domain.GetProductListManagementUseCase;
+import com.tokopedia.posapp.product.management.view.EditProduct;
 import com.tokopedia.posapp.product.management.view.ProductManagement;
+import com.tokopedia.posapp.product.management.view.presenter.EditProductPresenter;
 import com.tokopedia.posapp.product.management.view.presenter.ProductManagementPresenter;
 
 import dagger.Module;
@@ -39,9 +40,17 @@ public class ProductManagementModule {
 
     @Provides
     @ProductManagementScope
-    ProductManagement.Presenter providePresenter(GetProductListManagementUseCase getProductListManagementUseCase,
-                                                 UserSession userSession,
-                                                 PosSessionHandler posSessionHandler) {
+    ProductManagement.Presenter provideProductManagementPresenter(GetProductListManagementUseCase getProductListManagementUseCase,
+                                                                  UserSession userSession,
+                                                                  PosSessionHandler posSessionHandler) {
         return new ProductManagementPresenter(getProductListManagementUseCase, userSession, posSessionHandler);
+    }
+
+    @Provides
+    @ProductManagementScope
+    EditProduct.Presenter providesEditProductPresenter(EditProductLocalPriceUseCase editProductLocalPriceUseCase,
+                                                       PosSessionHandler posSessionHandler,
+                                                       UserSession usersession) {
+        return new EditProductPresenter(editProductLocalPriceUseCase, posSessionHandler, usersession);
     }
 }

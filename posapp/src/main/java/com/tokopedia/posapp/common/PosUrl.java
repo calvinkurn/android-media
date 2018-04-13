@@ -30,4 +30,8 @@ public class PosUrl {
         public static final String GET_PAYMENT_STATUS = "o2o/v1/payment/status";
         public static final String CREATE_ORDER = "o2o/v1/payment_action";
     }
+
+    public class ContentType {
+        public static final String JSON = "Content-Type: application/json";
+    }
 }

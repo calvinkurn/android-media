@@ -14,6 +14,9 @@ public class PosData<T> {
     @SerializedName("data")
     @Expose
     private T data;
+    @SerializedName("message")
+    @Expose
+    private String message;
 
     public String getStatus() {
         return status;
@@ -29,5 +32,13 @@ public class PosData<T> {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

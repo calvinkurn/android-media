@@ -17,6 +17,8 @@ public interface ProductManagement {
         void reload();
 
         void loadMore();
+
+        void editStatus(ProductViewModel productViewModel, boolean status);
     }
 
     interface View extends CustomerView {

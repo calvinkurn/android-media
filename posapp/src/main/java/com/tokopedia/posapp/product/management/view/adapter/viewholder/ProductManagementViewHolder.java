@@ -9,15 +9,10 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.design.text.DecimalInputView;
-import com.tokopedia.design.utils.CurrencyFormatHelper;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.posapp.product.management.view.adapter.ProductManagementTypeFactory;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
-import com.tokopedia.posapp.product.productdetail.view.Product;
-import com.tokopedia.seller.common.widget.PrefixEditText;
 
 public class ProductManagementViewHolder extends AbstractViewHolder<ProductViewModel> {
     @LayoutRes
@@ -46,11 +41,11 @@ public class ProductManagementViewHolder extends AbstractViewHolder<ProductViewM
     public void bind(final ProductViewModel element) {
         textProductName.setText(element.getName());
         ImageHandler.loadImage(itemView.getContext(), imageThumbnail, element.getImageUrl(), com.tokopedia.abstraction.R.drawable.loading_page);
-        editOnlinePrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(element.getOnlinePrice(), true));
-        editOutletPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(element.getOutletPrice(), true));
+        editOnlinePrice.setText(element.getOnlinePrice());
+        editOutletPrice.setText(element.getOutletPrice());
 
         switchStatus.setOnCheckedChangeListener(null);
-        if(element.getStatus() == ProductConstant.Status.LOCAL_PRICE_SHOW
+        if (element.getStatus() == ProductConstant.Status.LOCAL_PRICE_SHOW
                 || element.getStatus() == ProductConstant.Status.ONLINE_PRICE_SHOW) {
             switchStatus.setChecked(true);
         } else {

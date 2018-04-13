@@ -13,13 +13,16 @@ public class ProductPriceRequest {
     private long productId;
     @SerializedName("price")
     @Expose
-    private double price;
+    private int price;
     @SerializedName("stock")
     @Expose
     private int stock;
     @SerializedName("status")
     @Expose
     private int status;
+    @SerializedName("etalase_id")
+    @Expose
+    private long etalaseId;
 
     public long getProductId() {
         return productId;
@@ -29,11 +32,11 @@ public class ProductPriceRequest {
         this.productId = productId;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
@@ -51,5 +54,13 @@ public class ProductPriceRequest {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public long getEtalaseId() {
+        return etalaseId;
+    }
+
+    public void setEtalaseId(long etalaseId) {
+        this.etalaseId = etalaseId;
     }
 }

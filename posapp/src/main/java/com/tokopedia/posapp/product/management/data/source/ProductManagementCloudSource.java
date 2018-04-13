@@ -1,8 +1,10 @@
 package com.tokopedia.posapp.product.management.data.source;
 
+import com.google.gson.JsonParser;
 import com.tokopedia.posapp.base.domain.model.DataStatus;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.management.data.mapper.EditProductMapper;
+import com.tokopedia.posapp.product.management.data.mapper.GetProductManagementMapper;
 import com.tokopedia.posapp.product.productlist.data.mapper.GetProductListMapper;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 import com.tokopedia.usecase.RequestParams;
@@ -22,12 +24,12 @@ import rx.Observable;
 
 public class ProductManagementCloudSource {
     private ProductManagementApi productManagementApi;
-    private GetProductListMapper getProductListManagementMapper;
+    private GetProductManagementMapper getProductListManagementMapper;
     private EditProductMapper editProductMapper;
 
     @Inject
     public ProductManagementCloudSource(ProductManagementApi productManagementApi,
-                                        GetProductListMapper getProductListManagementMapper,
+                                        GetProductManagementMapper getProductListManagementMapper,
                                         EditProductMapper editProductMapper) {
         this.productManagementApi = productManagementApi;
         this.getProductListManagementMapper = getProductListManagementMapper;
@@ -40,8 +42,7 @@ public class ProductManagementCloudSource {
                 .map(getProductListManagementMapper);
     }
 
-    public Observable<DataStatus> editProduct(String outletId, String jsonObject) {
-        return productManagementApi.editProduct(outletId, jsonObject)
-                .map(editProductMapper);
+    public Observable<DataStatus> editProduct(String outletId, String request) {
+        return productManagementApi.editProduct(outletId, new JsonParser().parse(request).getAsJsonObject()).map(editProductMapper);
     }
 }

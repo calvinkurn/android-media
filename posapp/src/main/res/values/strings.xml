@@ -62,4 +62,5 @@
     <string name="edit_product_title">Edit Harga</string>
     <string name="edit_product_cancel">Batal</string>
     <string name="edit_product_save">Simpan</string>
+    <string name="editproduct_message_success">Success edit local price</string>
 </resources>

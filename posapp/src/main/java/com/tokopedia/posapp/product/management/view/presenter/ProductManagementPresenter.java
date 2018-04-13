@@ -7,6 +7,7 @@ import com.tokopedia.posapp.product.management.domain.GetProductListManagementUs
 import com.tokopedia.posapp.product.management.view.ProductManagement;
 import com.tokopedia.posapp.product.management.view.subscriber.GetProductManagementSubscriber;
 import com.tokopedia.posapp.product.management.view.subscriber.LoadMoreProductManagementSubscriber;
+import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -19,6 +20,7 @@ public class ProductManagementPresenter implements ProductManagement.Presenter {
     private static final String DEFAULT_PER_PAGE_COUNT = "20";
     private ProductManagement.View view;
     private GetProductListManagementUseCase getProductListManagementUseCase;
+//    private EditStatusProductUseCase
     private UserSession userSession;
     private PosSessionHandler posSession;
     private int page = 1;
@@ -50,6 +52,11 @@ public class ProductManagementPresenter implements ProductManagement.Presenter {
     @Override
     public void loadMore() {
         getProductListManagementUseCase.execute(getRequestParam(page++), new LoadMoreProductManagementSubscriber(view));
+    }
+
+    @Override
+    public void editStatus(ProductViewModel productViewModel, boolean status) {
+
     }
 
     private RequestParams getRequestParam(int pageNo) {

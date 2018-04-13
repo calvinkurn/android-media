@@ -13,7 +13,7 @@ public class ProductDomain {
     private String image;
     private String image300;
     private String imageFull;
-    private String etalaseId;
+    private long etalaseId;
     private String originalPrice;
     private double originalPriceUnformatted;
     private int status;
@@ -90,11 +90,11 @@ public class ProductDomain {
         this.imageFull = imageFull;
     }
 
-    public String getEtalaseId() {
+    public long getEtalaseId() {
         return etalaseId;
     }
 
-    public void setEtalaseId(String etalaseId) {
+    public void setEtalaseId(long etalaseId) {
         this.etalaseId = etalaseId;
     }
 

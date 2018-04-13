@@ -25,6 +25,13 @@ public class DataStatus {
         return dataStatus;
     }
 
+    public static DataStatus defaultErrorResult(String errorMessage) {
+        DataStatus dataStatus = new DataStatus();
+        dataStatus.setStatus(ERROR);
+        dataStatus.setMessage(errorMessage);
+        return dataStatus;
+    }
+
     public int getStatus() {
         return status;
     }

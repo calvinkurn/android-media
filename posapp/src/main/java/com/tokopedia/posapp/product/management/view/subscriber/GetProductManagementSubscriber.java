@@ -43,8 +43,11 @@ public class GetProductManagementSubscriber extends Subscriber<List<ProductDomai
             productViewModel.setId(Long.toString(productDomain.getId()));
             productViewModel.setName(productDomain.getName());
             productViewModel.setImageUrl(productDomain.getImage300());
-            productViewModel.setOnlinePrice(productDomain.getOriginalPriceUnformatted());
-            productViewModel.setOutletPrice(productDomain.getPriceUnformatted());
+            productViewModel.setOnlinePriceUnformatted(productDomain.getOriginalPriceUnformatted());
+            productViewModel.setOutletPriceUnformatted(productDomain.getPriceUnformatted());
+            productViewModel.setOnlinePrice(productDomain.getOriginalPrice());
+            productViewModel.setOutletPrice(productDomain.getPrice());
+            productViewModel.setEtalaseId(productDomain.getEtalaseId());
             visitables.add(productViewModel);
         }
         return visitables;

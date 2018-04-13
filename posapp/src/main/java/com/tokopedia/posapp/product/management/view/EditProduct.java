@@ -14,8 +14,12 @@ public interface EditProduct {
     }
 
     interface View extends CustomerView {
+        void showLoading();
+
+        void hideLoading();
+
         void onSuccessSave();
 
-        void onErrorSave(Throwable e);
+        void onErrorSave(String errorMessage);
     }
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.base.fragment.PosBaseListFragment;
 import com.tokopedia.posapp.product.management.di.component.DaggerProductManagementComponent;
@@ -19,6 +20,7 @@ import com.tokopedia.posapp.product.management.view.adapter.ProductManagementTyp
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductHeaderViewModel;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,6 +36,9 @@ public class ProductManagementFragment
     public static final String TAG = ProductManagementFragment.class.getSimpleName();
     @Inject
     ProductManagement.Presenter presenter;
+
+    private LoadingModel loadingModel;
+    private ProductHeaderViewModel productHeaderViewModel;
 
     public static Fragment newInstance() {
         return new ProductManagementFragment();
@@ -52,6 +57,12 @@ public class ProductManagementFragment
                 .build();
         component.inject(this);
         presenter.attachView(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        reloadData();
     }
 
     @Override
@@ -81,7 +92,7 @@ public class ProductManagementFragment
 
     @Override
     public void onShowProductCheckedChange(ProductViewModel element, boolean isChecked) {
-
+        presenter.editStatus(element, isChecked);
     }
 
     @Override
@@ -91,7 +102,7 @@ public class ProductManagementFragment
     @Override
     public void onReloadData(List<Visitable> list) {
         isLoadingInitialData = true;
-        list.add(0, new ProductHeaderViewModel());
+        list.add(0, getHeaderModel());
         renderList(list);
     }
 
@@ -116,5 +127,35 @@ public class ProductManagementFragment
     @Override
     protected boolean isLoadMoreEnabledByDefault() {
         return true;
+    }
+
+    @Override
+    protected boolean callInitialLoadAutomatically() {
+        return false;
+    }
+
+    public void reloadData() {
+        setLoading();
+        loadInitialData();
+    }
+
+    private void setLoading() {
+        isLoadingInitialData = true;
+        List<Visitable> list = new ArrayList<>();
+        list.add(getLoadingModel());
+        renderList(list);
+    }
+
+    private Visitable getHeaderModel() {
+        if(productHeaderViewModel == null) productHeaderViewModel = new ProductHeaderViewModel();
+        return productHeaderViewModel;
+    }
+
+    private Visitable getLoadingModel() {
+        if(loadingModel == null) {
+            loadingModel = new LoadingModel();
+            loadingModel.setFullScreen(true);
+        }
+        return loadingModel;
     }
 }

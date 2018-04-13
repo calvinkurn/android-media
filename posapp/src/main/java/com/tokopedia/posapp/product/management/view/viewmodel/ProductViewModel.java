@@ -14,9 +14,12 @@ public class ProductViewModel implements Visitable<ProductManagementAdapterTypeF
     private String id;
     private String imageUrl;
     private String name;
-    private double onlinePrice;
-    private double outletPrice;
+    private double onlinePriceUnformatted;
+    private double outletPriceUnformatted;
+    private String onlinePrice;
+    private String outletPrice;
     private int status;
+    private long etalaseId;
 
     public String getId() {
         return id;
@@ -42,19 +45,35 @@ public class ProductViewModel implements Visitable<ProductManagementAdapterTypeF
         this.name = name;
     }
 
-    public double getOnlinePrice() {
+    public double getOnlinePriceUnformatted() {
+        return onlinePriceUnformatted;
+    }
+
+    public void setOnlinePriceUnformatted(double onlinePriceUnformatted) {
+        this.onlinePriceUnformatted = onlinePriceUnformatted;
+    }
+
+    public double getOutletPriceUnformatted() {
+        return outletPriceUnformatted;
+    }
+
+    public void setOutletPriceUnformatted(double outletPriceUnformatted) {
+        this.outletPriceUnformatted = outletPriceUnformatted;
+    }
+
+    public String getOnlinePrice() {
         return onlinePrice;
     }
 
-    public void setOnlinePrice(double onlinePrice) {
+    public void setOnlinePrice(String onlinePrice) {
         this.onlinePrice = onlinePrice;
     }
 
-    public double getOutletPrice() {
+    public String getOutletPrice() {
         return outletPrice;
     }
 
-    public void setOutletPrice(double outletPrice) {
+    public void setOutletPrice(String outletPrice) {
         this.outletPrice = outletPrice;
     }
 
@@ -66,9 +85,20 @@ public class ProductViewModel implements Visitable<ProductManagementAdapterTypeF
         this.status = status;
     }
 
+    public long getEtalaseId() {
+        return etalaseId;
+    }
+
+    public void setEtalaseId(long etalaseId) {
+        this.etalaseId = etalaseId;
+    }
+
     @Override
     public int type(ProductManagementAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public ProductViewModel() {
     }
 
     @Override
@@ -81,21 +111,24 @@ public class ProductViewModel implements Visitable<ProductManagementAdapterTypeF
         dest.writeString(this.id);
         dest.writeString(this.imageUrl);
         dest.writeString(this.name);
-        dest.writeDouble(this.onlinePrice);
-        dest.writeDouble(this.outletPrice);
+        dest.writeDouble(this.onlinePriceUnformatted);
+        dest.writeDouble(this.outletPriceUnformatted);
+        dest.writeString(this.onlinePrice);
+        dest.writeString(this.outletPrice);
         dest.writeInt(this.status);
-    }
-
-    public ProductViewModel() {
+        dest.writeLong(this.etalaseId);
     }
 
     protected ProductViewModel(Parcel in) {
         this.id = in.readString();
         this.imageUrl = in.readString();
         this.name = in.readString();
-        this.onlinePrice = in.readDouble();
-        this.outletPrice = in.readDouble();
+        this.onlinePriceUnformatted = in.readDouble();
+        this.outletPriceUnformatted = in.readDouble();
+        this.onlinePrice = in.readString();
+        this.outletPrice = in.readString();
         this.status = in.readInt();
+        this.etalaseId = in.readLong();
     }
 
     public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {
