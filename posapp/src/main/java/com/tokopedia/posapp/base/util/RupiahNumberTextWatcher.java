@@ -53,7 +53,6 @@ public class RupiahNumberTextWatcher extends AfterTextWatcher {
                         editText.getText().toString()
                                 .substring(noFirstCharToIgnore)
                                 .replace("Rp", "")
-                                .replace("$", "")
                                 .replace(",00", "")
                                 .replace(",0", "")
                                 .replace(",", "")
