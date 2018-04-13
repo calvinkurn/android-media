@@ -84,7 +84,7 @@ import io.branch.referral.BranchError;
         EventsDeepLinkModule.class,
         LoyaltyAppLinkModule.class,
         ShopAppLinkModule.class,
-        GroupChatApplinkModule.class
+        GroupChatApplinkModule.class,
         GamificationApplinkModule.class,
 })
 
@@ -110,7 +110,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new EventsDeepLinkModuleLoader(),
                 new LoyaltyAppLinkModuleLoader(),
                 new ShopAppLinkModuleLoader(),
-                new GroupChatApplinkModuleLoader()
+                new GroupChatApplinkModuleLoader(),
                 new GamificationApplinkModuleLoader()
         );
     }
