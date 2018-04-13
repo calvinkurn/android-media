@@ -95,6 +95,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     private ShopPagePromoWebView.Listener promoWebViewListener;
     private BottomActionView bottomActionView;
     private SearchInputView searchInputView;
+    private RecyclerView.ItemDecoration itemDecoration;
     private LinearLayout linearHeaderSticky;
     private LabelView etalaseButton;
     private String sortName = Integer.toString(Integer.MIN_VALUE);
@@ -198,6 +199,16 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                 }
             }
         });
+        itemDecoration = new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                int position = parent.getChildAdapterPosition(view);
+                if (position == 0) {
+                    outRect.top = stickyHeight;
+                }
+            }
+        };
     }
 
     public void moveView(final View view, int start, int end) {
@@ -275,7 +286,12 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
 
     public void displayProduct(ShopInfo shopInfo) {
         this.shopInfo = shopInfo;
+        mTotalDyDistance = 0;
         loadInitialData();
+    }
+
+    public void resetRecyclerview() {
+        recyclerView.removeItemDecoration(itemDecoration);
     }
 
     @Override
@@ -371,16 +387,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
             @Override
             public void run() {
                 stickyHeight = linearHeaderSticky.getHeight();
-                recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-                    @Override
-                    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                        super.getItemOffsets(outRect, view, parent, state);
-                        int position = parent.getChildAdapterPosition(view);
-                        if (position == 0) {
-                            outRect.top = stickyHeight;
-                        }
-                    }
-                });
+                recyclerView.addItemDecoration(itemDecoration, 0);
             }
         });
     }
