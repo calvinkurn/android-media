@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -24,7 +25,6 @@ import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
@@ -124,55 +124,81 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void prepareAndExecuteApplinkNotification(Bundle data) {
-        if (!isRefreshCart(data)) {String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-        String category = Uri.parse(applinks).getHost();
-        String customIndex = "";
-        String serverId = "";
-        switch (category) {
-            case  Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
-                customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
-                if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
-                    serverId = Uri.parse(applinks).getLastPathSegment();
-                }
-                saveApplinkPushNotification(
-                        category,
-                        convertBundleToJsonString(data),
-                        customIndex,
-                        serverId,
-                        new SavePushNotificationCallback()
-                );
-                break;
-            case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
-                if (Uri.parse(applinks).getPathSegments().size() == DEFAULT_RIDE_URL_SIZE) {
-                    buildNotifByData(data);
-                } else {
-                    CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
-                    RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
-                    push.processReceivedNotification(data);
-                }
-                break;
 
-            case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+        if (canBroadcastPointReceived(
+                data.getString(Constants.ARG_NOTIFICATION_CODE, "0"))) {
+            broadcastPointReceived(data);
+        }
+
+        if (!isRefreshCart(data)) {
+            String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+            String category = Uri.parse(applinks).getHost();
+            String customIndex = "";
+            String serverId = "";
+            switch (category) {
+                case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
+                    customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
+                    if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
+                        serverId = Uri.parse(applinks).getLastPathSegment();
+                    }
+                    saveApplinkPushNotification(
+                            category,
+                            convertBundleToJsonString(data),
+                            customIndex,
+                            serverId,
+                            new SavePushNotificationCallback()
+                    );
+                    break;
+                case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
+                    if (Uri.parse(applinks).getPathSegments().size() == DEFAULT_RIDE_URL_SIZE) {
+                        buildNotifByData(data);
+                    } else {
+                        CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
+                        RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
+                        push.processReceivedNotification(data);
+                    }
+                    break;
+
+                case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
+                    if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
                             && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
                         ((ChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);
                     } else {
                         String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
                         String fullname = data.getString("full_name");
-                        applink = String.format("%s?fullname=%s", applink, fullname);
+
+                            applink = String.format("%s?fullname=%s", applink, fullname);
+
                         data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
                         buildNotifByData(data);
 
-                }
-                break;
-            case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
-                if (SessionHandler.isUserHasShop(mContext)) {
-                buildNotifByData(data);
-                }break;default:
+                    }
+                    break;
+                case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
+                    if (SessionHandler.isUserHasShop(mContext)) {
+                        buildNotifByData(data);
+                    }
+                    break;
+                default:
                     buildNotifByData(data);
                     break;
             }
         }
+    }
+
+    private boolean canBroadcastPointReceived(String tkpCode) {
+        final String GROUP_CHAT_BROADCAST_TKP_CODE = "140";
+        final String GROUP_CHAT_BROADCAST_TKP_CODE_GENERAL = "1400";
+
+        return tkpCode.startsWith(GROUP_CHAT_BROADCAST_TKP_CODE)
+                && !tkpCode.equals(GROUP_CHAT_BROADCAST_TKP_CODE_GENERAL);
+    }
+
+    private void broadcastPointReceived(Bundle data) {
+        Intent loyaltyGroupChat = new Intent(com.tokopedia.abstraction.constant
+                .TkpdState.LOYALTY_GROUP_CHAT);
+        loyaltyGroupChat.putExtras(data);
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(loyaltyGroupChat);
     }
 
     private void buildNotifByData(Bundle data) {
@@ -196,7 +222,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     private void refreshUI(Bundle data) {
         if (!mActivitiesLifecycleCallbacks.isAppOnBackground()) {
             Activity currentActivity = mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
-            if(currentActivity != null && currentActivity instanceof NotificationReceivedListener) {
+            if (currentActivity != null && currentActivity instanceof NotificationReceivedListener) {
                 NotificationReceivedListener listener = (NotificationReceivedListener) currentActivity;
                 listener.onGetNotif();
                 if (isRefreshCart(data)) {
@@ -238,7 +264,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void prepareAndExecuteDedicatedNotification(Bundle data) {
-        if (!isRefreshCart(data)){
+        if (!isRefreshCart(data)) {
             Map<Integer, Visitable> visitables = getCommonDedicatedNotification();
             visitables.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER, new ReputationSmileyToBuyerNotification(mContext));
             visitables.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER, new ReputationSmileyToBuyerEditNotification(mContext));

@@ -188,4 +188,5 @@ public interface TkpdCoreRouter {
 
     void sendTrackingGroupChatLeftNavigation();
 
+    String getDesktopLinkGroupChat();
 }
