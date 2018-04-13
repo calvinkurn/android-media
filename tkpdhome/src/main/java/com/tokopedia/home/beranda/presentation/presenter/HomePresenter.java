@@ -102,7 +102,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void onResume() {
-        boolean needRefresh = (lastRequestTime + REQUEST_DELAY > System.currentTimeMillis());
+        boolean needRefresh = (lastRequestTime + REQUEST_DELAY < System.currentTimeMillis());
         if (isViewAttached() && !this.fetchFirstData && needRefresh) {
             updateHomeData();
         }

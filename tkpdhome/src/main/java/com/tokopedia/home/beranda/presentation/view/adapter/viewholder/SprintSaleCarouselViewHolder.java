@@ -71,11 +71,13 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     private CountDownView countDownView;
     private HomeCategoryListener listener;
     private DynamicHomeChannel.Channels channels;
+    private CountDownView.CountDownListener countDownListener;
 
-    public SprintSaleCarouselViewHolder(View itemView, HomeCategoryListener listener) {
+    public SprintSaleCarouselViewHolder(View itemView, HomeCategoryListener listener, CountDownView.CountDownListener countDownListener) {
         super(itemView);
         this.context = itemView.getContext();
         this.listener = listener;
+        this.countDownListener = countDownListener;
         itemAdapter = new ItemAdapter();
         countDownView = itemView.findViewById(R.id.count_down);
         container = itemView.findViewById(R.id.container);
@@ -116,7 +118,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             itemAdapter.setList(channels.getGrids());
             itemAdapter.setGridItemClickListener(this);
             Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
-            countDownView.setup(expiredTime, null);
+            countDownView.setup(expiredTime, countDownListener);
             if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channels.getHeader()))) {
                 seeMoreContainer.setVisibility(View.VISIBLE);
             } else {

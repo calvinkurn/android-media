@@ -140,7 +140,7 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         else if (type == TopAdsViewHolder.LAYOUT)
             viewHolder = new TopAdsViewHolder(view);
         else if (type == SprintSaleCarouselViewHolder.LAYOUT)
-            viewHolder = new SprintSaleCarouselViewHolder(view, listener);
+            viewHolder = new SprintSaleCarouselViewHolder(view, listener, countDownListener);
         else if (type == SixGridChannelViewHolder.LAYOUT)
             viewHolder = new SixGridChannelViewHolder(view, listener);
         else if (type == EmptyBlankViewHolder.LAYOUT)
