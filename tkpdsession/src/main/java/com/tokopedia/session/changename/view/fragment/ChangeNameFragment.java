@@ -3,6 +3,7 @@ package com.tokopedia.session.changename.view.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -10,17 +11,18 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.di.DaggerUserComponent;
+import com.tokopedia.di.UserComponent;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changename.di.DaggerChangeNameComponent;
 import com.tokopedia.session.changename.view.listener.ChangeNameListener;
 import com.tokopedia.session.changename.view.presenter.ChangeNamePresenter;
 
@@ -37,8 +39,7 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
 
 
     private EditText etName;
-    private Button btnContinue;
-    private TextView error;
+    private TextView btnContinue;
     private TkpdProgressDialog progressDialog;
 
     @Inject
@@ -55,8 +56,7 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_change_name, container, false);
         etName = (EditText) view.findViewById(R.id.et_name);
-        btnContinue = (Button) view.findViewById(R.id.btn_continue);
-        error = (TextView) view.findViewById(R.id.tv_error);
+        btnContinue = (TextView) view.findViewById(R.id.btn_continue);
         return view;
     }
 
@@ -69,7 +69,8 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
     }
 
     private void setView() {
-        disableButton(btnContinue);
+        disableNextButton();
+        btnContinue.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
     }
 
     private void setViewListener() {
@@ -89,10 +90,8 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (isValidName(charSequence.toString())) {
-                    error.setVisibility(View.GONE);
                     enableNextButton();
                 } else {
-                    error.setVisibility(View.VISIBLE);
                     disableNextButton();
                 }
             }
@@ -106,11 +105,9 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
 
     private boolean isValidName(String name) {
         if (name.length() < COUNT_CHAR_MIN) {
-            error.setText(getResources().getString(R.string.error_name_too_short));
             return false;
         }
         else if (name.length() > COUNT_CHAR_MAX) {
-            error.setText(getResources().getString(R.string.error_name_too_long));
             return false;
         }
         return true;
@@ -119,15 +116,15 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
     private void showConfirmationDialog(final String name) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(String.format(getResources().getString(R.string.name_confirmation), name));
+        builder.setTitle(getResources().getString(R.string.name_confirmation));
         builder.setMessage(getResources().getString(R.string.name_confirmation_content));
-        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getResources().getString(R.string.name_confirmation_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
                 presenter.submitName(name);
             }
         });
-        builder.setNegativeButton(getResources().getString(R.string.phone_number_already_registered_no), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getResources().getString(R.string.name_confirmation_no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
                 dialog.dismiss();
@@ -148,15 +145,12 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
 
     @Override
     protected void initInjector() {
+        UserComponent userComponent = DaggerUserComponent.builder().baseAppComponent(
+                ((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent()).build();
 
-        AppComponent appComponent = getComponent(AppComponent.class);
-
-        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
-                DaggerSessionComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerSessionComponent.inject(this);
+        DaggerChangeNameComponent.builder()
+                .userComponent(userComponent)
+                .build().inject(this);
     }
 
     @Override
@@ -201,14 +195,14 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
         presenter.detachView();
     }
 
-    private void enableButton(Button button) {
+    private void enableButton(TextView button) {
         button.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_enable));
         button.setEnabled(true);
     }
 
-    private void disableButton(Button button) {
-        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
+    private void disableButton(TextView button) {
+        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_12));
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable));
         button.setEnabled(false);
     }

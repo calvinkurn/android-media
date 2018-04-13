@@ -21,7 +21,7 @@ public class BaseKeywordParam {
     @KeywordStatusTypeDef
     public int keywordStatus;
     public int keywordTypeId;
-    public int sortingParam;
+    public String sortingParam;
     public boolean isPositive;
     public long keywordId;
 

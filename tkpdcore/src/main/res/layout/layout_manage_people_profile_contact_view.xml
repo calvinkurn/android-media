@@ -180,7 +180,11 @@
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="@dimen/text_size_xsmall"
                     android:textStyle="normal"
-                    app:drawableLeftCompat="@drawable/ic_check_green_12dp" />
+                    android:fontFamily="sans-serif-medium"
+                    app:drawableLeftCompat="@drawable/ic_check_green_12dp"
+                    />
+
+
 
             </LinearLayout>
 

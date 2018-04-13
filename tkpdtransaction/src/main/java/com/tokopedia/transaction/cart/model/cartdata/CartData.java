@@ -88,6 +88,8 @@ public class CartData implements Parcelable {
     private CartPromo cartPromo;
     @SerializedName("is_coupon_active")
     private int isCouponActive = 0;
+    @SerializedName("autoapply")
+    private AutoApply autoApply;
     @SerializedName("enable_cancel_partial")
     @Expose
     private boolean enableCancelPartial;
@@ -300,6 +302,14 @@ public class CartData implements Parcelable {
         this.isCouponActive = isCouponActive;
     }
 
+    public AutoApply getAutoApply() {
+        return autoApply;
+    }
+
+    public void setAutoApply(AutoApply autoApply) {
+        this.autoApply = autoApply;
+    }
+
     public boolean isEnableCancelPartial() {
         return enableCancelPartial;
     }
@@ -345,6 +355,7 @@ public class CartData implements Parcelable {
         dest.writeParcelable(this.donation, flags);
         dest.writeParcelable(this.cartPromo, flags);
         dest.writeInt(this.isCouponActive);
+        dest.writeParcelable(this.autoApply, flags);
         dest.writeByte((byte) (enableCancelPartial ? 1 : 0));
     }
 
@@ -375,6 +386,7 @@ public class CartData implements Parcelable {
         this.donation = in.readParcelable(CartDonation.class.getClassLoader());
         this.cartPromo = in.readParcelable(CartPromo.class.getClassLoader());
         this.isCouponActive = in.readInt();
+        this.autoApply = in.readParcelable(AutoApply.class.getClassLoader());
         this.enableCancelPartial = in.readByte() != 0;
     }
 
