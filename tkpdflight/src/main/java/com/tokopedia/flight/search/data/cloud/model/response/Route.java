@@ -47,7 +47,7 @@ public class Route implements Parcelable {
     @SerializedName("amenities")
     @Expose
     private List<Amenity> amenities = null;
-    @SerializedName("stops")
+    @SerializedName("stop")
     @Expose
     private int stops;
     @SerializedName("stop_detail")

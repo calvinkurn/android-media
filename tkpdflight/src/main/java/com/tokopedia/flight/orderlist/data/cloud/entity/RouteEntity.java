@@ -2,6 +2,9 @@ package com.tokopedia.flight.orderlist.data.cloud.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.flight.search.data.cloud.model.response.StopDetailEntity;
+
+import java.util.List;
 
 /**
  * @author by alvarisi on 12/6/17.
@@ -53,9 +56,12 @@ public class RouteEntity {
     @SerializedName("pnr")
     @Expose
     private String pnr;
-    @SerializedName("stops")
+    @SerializedName("stop")
     @Expose
     private int stops;
+    @SerializedName("stop_detail")
+    @Expose
+    private List<StopDetailEntity> stopDetailEntities;
 
     public String getDepartureAirportCode() {
         return departureAirportCode;
@@ -119,5 +125,9 @@ public class RouteEntity {
 
     public int getStops() {
         return stops;
+    }
+
+    public List<StopDetailEntity> getStopDetailEntities() {
+        return stopDetailEntities;
     }
 }

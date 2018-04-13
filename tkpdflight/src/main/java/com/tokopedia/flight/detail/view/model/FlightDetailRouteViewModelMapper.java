@@ -105,11 +105,12 @@ public class FlightDetailRouteViewModelMapper {
             flightDetailRouteViewModel.setRefundable(route.isRefundable());
             flightDetailRouteViewModel.setStopOver(route.getStops());
             flightDetailRouteViewModel.setInfos(flightDetailRouteInfoViewModelMapper.transform(route.getFreeAmenities()));
+            flightDetailRouteViewModel.setStopOverDetail(transform(route.getStopDetailEntities()));
         }
         return flightDetailRouteViewModel;
     }
 
-    public List<FlightDetailRouteViewModel> transformList(JourneyEntity journeyEntity, List<RouteEntity> routeEntities) {
+    public List<FlightDetailRouteViewModel> transformList(List<RouteEntity> routeEntities) {
         List<FlightDetailRouteViewModel> flightDetailRouteViewModels = new ArrayList<>();
         FlightDetailRouteViewModel flightDetailRouteViewModel;
         if (routeEntities != null) {
