@@ -488,8 +488,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         Uri uri = Uri.parse(url);
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         if(uri != null) {
-            if (uri.getPathSegments().contains(CONTACT_US_PATH_SEGMENT) &&
-                    uri.getHost().equals(BASE_DOMAIN_SHORTENED)) {
+            if (uri.getPathSegments().contains(CONTACT_US_PATH_SEGMENT)) {
                 Intent intent = ((TkpdInboxRouter) MainApplication
                         .getAppContext())
                         .getContactUsIntent(getContext());
