@@ -57,6 +57,8 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
         super.onCreate(savedInstanceState);
         userId = getArguments().getString(USER_ID, "");
         transactionId = getArguments().getString(TRANSACTION_ID, "");
+        date = generateDate();
+        setTextToEncrypt(userId + date);
     }
 
     public void setListenerRegister(ListenerRegister listenerRegister) {
@@ -65,8 +67,6 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
 
     @Override
     public void startListening() {
-        date = generateDate();
-        setTextToEncrypt(userId + date);
         super.startListening();
     }
 
