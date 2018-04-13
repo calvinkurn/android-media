@@ -1,6 +1,5 @@
 package com.tokopedia.session.login.loginphonenumber.view.presenter;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.login.loginphonenumber.domain.interactor.LoginPhoneNumberUseCase;

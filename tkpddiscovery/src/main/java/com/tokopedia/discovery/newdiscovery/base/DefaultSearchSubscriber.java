@@ -25,9 +25,9 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
 
     private final SearchParameter searchParameter;
 
-    private boolean forceSearch;
-    private D2 discoveryView;
-    private boolean imageSearch;
+    public boolean forceSearch;
+    public D2 discoveryView;
+    public boolean imageSearch;
 
     public DefaultSearchSubscriber(SearchParameter searchParameter, boolean forceSearch, D2 discoveryView, boolean imageSearch) {
         this.searchParameter = searchParameter;
@@ -56,25 +56,41 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     public void onNext(SearchResultModel searchResult) {
         switch (defineResponse(searchResult)) {
             case DISCOVERY_URL_HOTLIST:
-                discoveryView.onHandleResponseHotlist(searchResult.getRedirectUrl(), searchResult.getQuery());
+                onHandleHotlist(searchResult);
                 break;
             case DISCOVERY_URL_CATEGORY:
-                discoveryView.onHandleResponseIntermediary(searchResult.getDepartmentId());
+                onHandleIntermediary(searchResult);
                 break;
             case DISCOVERY_URL_SEARCH:
-                ProductViewModel model = ProductViewModelHelper.convertToProductViewModelFirstPage(searchResult);
-                model.setSearchParameter(searchParameter);
-                model.setForceSearch(forceSearch);
-                model.setImageSearch(imageSearch);
-                discoveryView.onHandleResponseSearch(model);
+                onHandleSearch(searchResult);
                 break;
             case DISCOVERY_URL_CATALOG:
-                discoveryView.onHandleResponseCatalog(searchResult.getRedirectUrl());
+                onHandleCatalog(searchResult);
                 break;
             default:
                 discoveryView.onHandleResponseUnknown();
                 break;
         }
+    }
+
+    protected void onHandleHotlist(SearchResultModel searchResult) {
+        discoveryView.onHandleResponseHotlist(searchResult.getRedirectUrl(), searchResult.getQuery());
+    }
+
+    protected void onHandleIntermediary(SearchResultModel searchResult) {
+        discoveryView.onHandleResponseIntermediary(searchResult.getDepartmentId());
+    }
+
+    protected void onHandleCatalog(SearchResultModel searchResult) {
+        discoveryView.onHandleResponseCatalog(searchResult.getRedirectUrl());
+    }
+
+    protected void onHandleSearch(SearchResultModel searchResult) {
+        ProductViewModel model = ProductViewModelHelper.convertToProductViewModelFirstPage(searchResult);
+        model.setSearchParameter(searchParameter);
+        model.setForceSearch(forceSearch);
+        model.setImageSearch(imageSearch);
+        discoveryView.onHandleResponseSearch(model);
     }
 
     private int defineResponse(SearchResultModel data) {

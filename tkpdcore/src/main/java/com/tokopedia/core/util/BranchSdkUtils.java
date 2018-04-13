@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
-import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
@@ -96,8 +98,15 @@ public class BranchSdkUtils {
             deeplinkPath = getApplinkPath(Constants.Applinks.DISCOVERY_HOTLIST_DETAIL, data.getId());//"hot/" + data.getId();
         } else if (ShareData.CATALOG_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.DISCOVERY_CATALOG, data.getId());
-        }  else if (ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
+        } else if (ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.GROUPCHAT, data.getId());
+            if (activity.getApplication() instanceof TkpdCoreRouter) {
+                desktopUrl = ((TkpdCoreRouter) activity.getApplication())
+                        .getDesktopLinkGroupChat();
+                linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, desktopUrl);
+            }
+        } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
         } else {
             deeplinkPath = getApplinkPath(data.renderShareUri(), "");
         }
@@ -140,9 +149,9 @@ public class BranchSdkUtils {
 
     public static void sendCommerceEvent(Purchase purchase, String productType) {
         try {
-            if ( purchase != null && purchase.getListProduct() != null) {
-                List<BranchUniversalObject> branchUniversalObjects =new ArrayList<>();
-                SessionHandler sessionHandler =new SessionHandler(MainApplication.getAppContext());
+            if (purchase != null && purchase.getListProduct() != null) {
+                List<BranchUniversalObject> branchUniversalObjects = new ArrayList<>();
+                SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
 
                 for (Object objProduct : purchase.getListProduct()) {
                     Map<String, Object> product = (Map<String, Object>) objProduct;
@@ -192,7 +201,7 @@ public class BranchSdkUtils {
 
     public static void sendLoginEvent(Context context) {
 
-        SessionHandler sessionHandler =new SessionHandler(context);
+        SessionHandler sessionHandler = new SessionHandler(context);
         new BranchEvent(AppEventTracking.EventBranch.EVENT_LOGIN)
                 .addCustomDataProperty(AppEventTracking.Branch.EMAIL, sessionHandler.getEmail())
                 .addCustomDataProperty(AppEventTracking.Branch.PHONE, normalizePhoneNumber(sessionHandler.getPhoneNumber()))
@@ -212,7 +221,7 @@ public class BranchSdkUtils {
     private static double convertIDRtoDouble(String value) {
         double result = 0;
         try {
-            result =  CurrencyFormatHelper.convertRupiahToInt(value);
+            result = CurrencyFormatHelper.convertRupiahToInt(value);
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
         }

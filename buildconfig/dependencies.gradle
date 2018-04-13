@@ -242,12 +242,17 @@ ext {
             mitraToppers    : ":features:fintech:mitra_toppers",
             event           : ":tkpdevents",
             home            : ":tkpdhome",
-            content         : ":tkpdcontent"
+            content         : ":tkpdcontent",
+            groupchat       : ":features:user:groupchat"
+
     ]
 
     libraries = [
             design          : ":tkpddesign",
             abstraction     : ":tkpdabstraction",
+            reactNative     : ":libraries:react_native",
+            pushNotif       : ":libraries:push_notification",
+            applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
             reactNative     : ":libraries:react_native",
             useCase         : ":libraries:use_case"

@@ -3,17 +3,9 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginTop="@dimen/dp_15"
+              android:layout_marginBottom="@dimen/new_margin_small"
               android:background="@color/white"
               android:orientation="vertical">
-
-
-    <View
-        android:id="@+id/separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_300"
-        />
 
     <TextView
         android:id="@id/title"
@@ -39,8 +31,10 @@
     <TextView
         android:id="@+id/see_all_text"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/header_official_store_height"
+        android:layout_height="wrap_content"
         android:layout_gravity="end"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
         android:clickable="true"
         android:fontFamily="sans-serif-medium"
@@ -50,10 +44,4 @@
         android:textSize="@dimen/unify_font_normal"
         android:textStyle="normal"/>
 
-    <View
-        android:id="@+id/separator3"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_300"
-        />
 </LinearLayout>
