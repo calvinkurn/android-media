@@ -10,6 +10,8 @@ import com.tokopedia.loyalty.domain.entity.response.ValidateRedeemCouponResponse
 import com.tokopedia.loyalty.domain.entity.response.VoucherResponse;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
+import com.tokopedia.loyalty.view.data.EmptyMessage;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
     @Override
     public List<CouponData> convertCouponListData(CouponListDataResponse couponListDataResponse) {
         List<CouponData> couponDataList = new ArrayList<>();
+        if(couponListDataResponse != null && couponListDataResponse.getCoupons() != null)
         for (Coupon coupon : couponListDataResponse.getCoupons()) {
             couponDataList.add(
                     new CouponData.Builder()
@@ -144,6 +147,24 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
         viewModel.setRawCashback(voucherResponse.getAttributes().getCashbackAmountPlain());
         viewModel.setRawDiscount(voucherResponse.getAttributes().getDiscountAmountPlain());
         return viewModel;
+    }
+
+    @Override
+    public CouponsDataWrapper convertCouponsDataWraper(CouponListDataResponse couponListDataResponse) {
+        CouponsDataWrapper wrapper = new CouponsDataWrapper();
+        wrapper.setCoupons(convertCouponListData(couponListDataResponse));
+        wrapper.setEmptyMessage(convertEmptyMessageData(couponListDataResponse));
+        return wrapper;
+    }
+
+    private EmptyMessage convertEmptyMessageData(CouponListDataResponse couponListDataResponse) {
+        EmptyMessage emptyMessage = null;
+        if (couponListDataResponse != null && couponListDataResponse.getEmptyMessage() != null){
+            emptyMessage = new EmptyMessage();
+            emptyMessage.setTitle(couponListDataResponse.getEmptyMessage().getTitle());
+            emptyMessage.setSubTitle(couponListDataResponse.getEmptyMessage().getSubTitle());
+        }
+        return emptyMessage;
     }
 
     @Override

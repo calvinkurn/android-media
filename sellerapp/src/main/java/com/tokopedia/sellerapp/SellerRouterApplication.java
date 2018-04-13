@@ -361,8 +361,6 @@ public abstract class SellerRouterApplication extends MainApplication
                 );
 
         GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
-                new JobExecutor(),
-                new UIThread(),
                 new ProfileRepositoryImpl(profileSourceFactory)
         );
 
@@ -863,7 +861,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     public void goToAddProduct(Activity activity) {
         if (activity != null) {
-             ProductAddActivity.start(activity);
+            ProductAddActivity.start(activity);
         }
     }
 
@@ -1001,6 +999,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void sendEventTracking(String event, String category, String action, String label) {
         UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
+    }
+
+    @Override
+    public void sendMoEngageOpenShopEventTracking(String screenName) {
+        TrackingUtils.sendMoEngageCreateShopEvent(screenName);
     }
 
     /**
@@ -1145,7 +1148,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToAddProduct(Context context) {
-        if(context != null && context instanceof Activity){
+        if (context != null && context instanceof Activity) {
             ProductAddActivity.start((Activity) context);
         }
     }
@@ -1158,7 +1161,7 @@ public abstract class SellerRouterApplication extends MainApplication
             context.startActivity(intent);
         } else {
             Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
-            ((Activity)context).startActivityForResult(intent, 100);
+            ((Activity) context).startActivityForResult(intent, 100);
         }
     }
 
@@ -1255,6 +1258,10 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void sendTrackingGroupChatLeftNavigation() {
+    }
 
+    @Override
+    public String getDesktopLinkGroupChat() {
+        return "";
     }
 }

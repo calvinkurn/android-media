@@ -28,7 +28,7 @@ public interface DepositFragmentView {
 
     void showErrorMessage(String s);
 
-    void showHoldWarning(String summaryHoldDepositIdr);
+    void showHoldWarning(String warningText);
 
     void removeError();
 

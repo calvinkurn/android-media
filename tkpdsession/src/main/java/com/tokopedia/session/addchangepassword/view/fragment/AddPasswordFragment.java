@@ -1,6 +1,7 @@
 package com.tokopedia.session.addchangepassword.view.fragment;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -8,17 +9,18 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.di.DaggerUserComponent;
+import com.tokopedia.di.UserComponent;
 import com.tokopedia.session.R;
+import com.tokopedia.session.addchangepassword.di.DaggerAddChangePasswordComponent;
 import com.tokopedia.session.addchangepassword.view.listener.AddPasswordListener;
 import com.tokopedia.session.addchangepassword.view.presenter.AddPasswordPresenter;
 
@@ -42,7 +44,7 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
 
     private EditText etPassword;
     private TextView message, error;
-    private Button btnContinue;
+    private TextView btnContinue;
 
     private TkpdProgressDialog progressDialog;
 
@@ -54,15 +56,12 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
+        UserComponent userComponent = DaggerUserComponent.builder().baseAppComponent(
+                ((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent()).build();
 
-        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
-                DaggerSessionComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerSessionComponent.inject(this);
-
+        DaggerAddChangePasswordComponent.builder()
+                .userComponent(userComponent)
+                .build().inject(this);
     }
 
     @Nullable
@@ -70,7 +69,7 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_password, container, false);
         etPassword = (EditText) view.findViewById(R.id.et_password);
-        btnContinue = (Button) view.findViewById(R.id.btn_continue);
+        btnContinue = (TextView) view.findViewById(R.id.btn_continue);
         error = (TextView) view.findViewById(R.id.tv_error);
         message = (TextView) view.findViewById(R.id.tv_message);
         return view;
@@ -86,6 +85,7 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
 
     private void setView() {
         disableButton(btnContinue);
+        btnContinue.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
     }
 
     private void setViewListener() {
@@ -157,14 +157,14 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
         progressDialog.showDialog();
     }
 
-    private void enableButton(Button button) {
+    private void enableButton(TextView button) {
         button.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_enable));
         button.setEnabled(true);
     }
 
-    private void disableButton(Button button) {
-        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
+    private void disableButton(TextView button) {
+        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_12));
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable));
         button.setEnabled(false);
     }

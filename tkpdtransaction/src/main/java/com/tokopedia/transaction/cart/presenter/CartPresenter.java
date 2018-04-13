@@ -26,7 +26,7 @@ import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.addtocart.model.kero.Rates;
+import com.tokopedia.transaction.addtocart.model.kero.Data;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.ICartView;
@@ -651,6 +651,30 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
+    public void cancelPromo() {
+        cartDataInteractor.cancelVoucherCache(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                handleThrowableGeneral(e);
+            }
+
+            @Override
+            public void onNext(Boolean status) {
+                if (status != null && status) {
+                    view.renderCandelPromoSuccess();
+                } else {
+                    view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+        });
+    }
+
+    @Override
     public void clearNotificationCart() {
         LocalCacheHandler cache = view.getLocalCacheHandlerNotificationData();
         cache.putInt(TkpdCache.Key.IS_HAS_CART, 0);
@@ -835,7 +859,7 @@ public class CartPresenter implements ICartPresenter {
     private void processRenderViewCartData(CartData data) {
         view.renderCheckboxDonasi(data.getDonation());
         if (data.getCartItemList().isEmpty()) {
-            view.renderErrorEmptyCart();
+            view.renderErrorEmptyCart(data.getAutoApply());
             return;
         }
         if (data.getCashback() != 0)
@@ -870,11 +894,18 @@ public class CartPresenter implements ICartPresenter {
         view.renderInstantPromo(data.getCartPromo());
         view.renderPromoView(data.getIsCouponActive() == 1);
         view.renderPartialOrder(data.isEnableCancelPartial());
+        if (promoAutoApplied(data)) {
+            view.renderAutoApplyPromoView(data.getAutoApply());
+        }
+    }
+
+    private boolean promoAutoApplied(CartData data) {
+        return data.getAutoApply() != null && data.getAutoApply().isSuccess();
     }
 
     @Override
     public void processCartRates(String token, String ut, final List<CartItem> cartItemList) {
-        cartDataInteractor.calculateKeroRates(token, ut, cartItemList, keroRatesListener());
+        cartDataInteractor.calculateKeroRates(token, ut, cartItemList, keroRatesListener(), view.getActivity());
     }
 
     private ICartDataInteractor.KeroRatesListener keroRatesListener() {
@@ -884,19 +915,19 @@ public class CartPresenter implements ICartPresenter {
                 if (cartRatesData.getRatesResponse() == null) {
                     view.setCartError(cartRatesData.getRatesIndex());
                 } else {
-                    Rates ratesData = new Gson().fromJson(cartRatesData.getRatesResponse(),
-                            Rates.class);
+                    Data ratesData = new Gson().fromJson(cartRatesData.getRatesResponse(),
+                            Data.class);
                     CartCourierPrices cartCourierPrices = new CartCourierPrices();
                     cartCourierPrices.setKey(cartRatesData.getKeroRatesKey());
                     cartCourierPrices.setCartProductPrice(cartRatesData.getCartTotalProductPrice());
                     cartCourierPrices.setCartIndex(cartRatesData.getRatesIndex());
                     cartCourierPrices.setAdditionFee(cartRatesData.getCartAdditionalLogisticFee());
-                    cartCourierPrices.setKeroWeight(String.valueOf(ratesData.getData()
+                    cartCourierPrices.setKeroWeight(String.valueOf(ratesData
                             .getAttributes()
                             .get(0)
                             .getWeight()));
                     List<com.tokopedia.transaction.addtocart.model.kero.Product> shipmentServices =
-                            ratesData.getData().getAttributes().get(0).getProducts();
+                            ratesData.getAttributes().get(0).getProducts();
 
                     setSubTotalPrice(shipmentServices,
                             cartCourierPrices,

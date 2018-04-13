@@ -1,9 +1,6 @@
 package com.tokopedia.session.login.loginemail.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
@@ -11,6 +8,8 @@ import com.tokopedia.session.domain.interactor.GetTokenUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 import com.tokopedia.session.login.loginemail.domain.model.LoginEmailDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -28,12 +27,9 @@ public class LoginEmailUseCase extends UseCase<LoginEmailDomain> {
     private final MakeLoginUseCase makeLoginUseCase;
 
     @Inject
-    public LoginEmailUseCase(ThreadExecutor threadExecutor,
-                             PostExecutionThread postExecutionThread,
-                             GetTokenUseCase getTokenUseCase,
+    public LoginEmailUseCase(GetTokenUseCase getTokenUseCase,
                              GetUserInfoUseCase getUserInfoUseCase,
                              MakeLoginUseCase makeLoginUseCase) {
-        super(threadExecutor, postExecutionThread);
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
