@@ -4,11 +4,10 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.posapp.PosSessionHandler;
-import com.tokopedia.posapp.base.domain.model.DataStatus;
 import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.posapp.product.management.data.pojo.EditProductRequest;
 import com.tokopedia.posapp.product.management.data.pojo.ProductPriceRequest;
-import com.tokopedia.posapp.product.management.domain.EditProductLocalPriceUseCase;
+import com.tokopedia.posapp.product.management.domain.EditProductUseCase;
 import com.tokopedia.posapp.product.management.view.EditProduct;
 import com.tokopedia.posapp.product.management.view.subscriber.EditProductSubscriber;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
@@ -19,23 +18,21 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Subscriber;
-
 /**
  * @author okasurya on 3/14/18.
  */
 
 public class EditProductPresenter implements EditProduct.Presenter {
     private EditProduct.View view;
-    private EditProductLocalPriceUseCase editProductLocalPriceUseCase;
+    private EditProductUseCase editProductUseCase;
     private PosSessionHandler posSessionHandler;
     private UserSession userSession;
 
     @Inject
-    public EditProductPresenter(EditProductLocalPriceUseCase editProductLocalPriceUseCase,
+    public EditProductPresenter(EditProductUseCase editProductUseCase,
                                 PosSessionHandler posSessionHandler,
                                 UserSession userSession) {
-        this.editProductLocalPriceUseCase = editProductLocalPriceUseCase;
+        this.editProductUseCase = editProductUseCase;
         this.posSessionHandler = posSessionHandler;
         this.userSession = userSession;
     }
@@ -60,7 +57,7 @@ public class EditProductPresenter implements EditProduct.Presenter {
 
             requestParams.putObject(ProductConstant.Key.EDIT_PRODUCT_REQUEST, getRequestModel(productViewModel, localPrice));
 
-            editProductLocalPriceUseCase.execute(requestParams, new EditProductSubscriber(view));
+            editProductUseCase.execute(requestParams, new EditProductSubscriber(view));
         }
     }
 

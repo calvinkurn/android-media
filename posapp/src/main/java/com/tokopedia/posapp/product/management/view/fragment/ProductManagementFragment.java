@@ -6,7 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
@@ -39,6 +41,7 @@ public class ProductManagementFragment
 
     private LoadingModel loadingModel;
     private ProductHeaderViewModel productHeaderViewModel;
+    private TkpdProgressDialog progressDialog;
 
     public static Fragment newInstance() {
         return new ProductManagementFragment();
@@ -68,6 +71,7 @@ public class ProductManagementFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        progressDialog = new TkpdProgressDialog(getContext(), TkpdProgressDialog.NORMAL_PROGRESS);
     }
 
     @Override
@@ -100,6 +104,16 @@ public class ProductManagementFragment
     }
 
     @Override
+    public void showLoadingDialog() {
+        if(progressDialog != null) progressDialog.showDialog();
+    }
+
+    @Override
+    public void hideLoadingDialog() {
+        if(progressDialog != null) progressDialog.dismiss();
+    }
+
+    @Override
     public void onReloadData(List<Visitable> list) {
         isLoadingInitialData = true;
         list.add(0, getHeaderModel());
@@ -113,9 +127,19 @@ public class ProductManagementFragment
     }
 
     @Override
-    public void onError(Throwable e) {
+    public void onErrorLoadData(Throwable e) {
         showGetListError(e);
         e.printStackTrace();
+    }
+
+    @Override
+    public void onSuccessEditStatus() {
+        reloadData();
+    }
+
+    @Override
+    public void onErorEditStatus(String errorMessage) {
+        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 
     @Nullable

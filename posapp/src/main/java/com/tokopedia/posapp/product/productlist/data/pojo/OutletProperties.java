@@ -14,7 +14,7 @@ public class OutletProperties {
     @SerializedName("local_price")
     @Expose
     private double localPrice;
-    @SerializedName("local_product_statue")
+    @SerializedName("local_product_status")
     @Expose
     private int localProductStatus;
 

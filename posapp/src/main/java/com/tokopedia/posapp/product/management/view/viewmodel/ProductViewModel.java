@@ -142,4 +142,12 @@ public class ProductViewModel implements Visitable<ProductManagementAdapterTypeF
             return new ProductViewModel[size];
         }
     };
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof ProductViewModel) {
+            return this.id.equals(((ProductViewModel) obj).getId());
+        }
+        return super.equals(obj);
+    }
 }

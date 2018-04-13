@@ -14,11 +14,11 @@ import rx.Observable;
  * @author okasurya on 3/20/18.
  */
 
-public class EditProductLocalPriceUseCase extends UseCase<DataStatus> {
+public class EditProductUseCase extends UseCase<DataStatus> {
     private ProductManagementRepository productManagementRepository;
 
     @Inject
-    EditProductLocalPriceUseCase(ProductManagementCloudRepository productManagementRepository) {
+    EditProductUseCase(ProductManagementCloudRepository productManagementRepository) {
         this.productManagementRepository = productManagementRepository;
     }
 

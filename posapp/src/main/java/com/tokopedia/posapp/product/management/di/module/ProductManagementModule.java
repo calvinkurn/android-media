@@ -8,7 +8,7 @@ import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.common.PosApiModule;
 import com.tokopedia.posapp.product.management.data.source.ProductManagementApi;
 import com.tokopedia.posapp.product.management.di.scope.ProductManagementScope;
-import com.tokopedia.posapp.product.management.domain.EditProductLocalPriceUseCase;
+import com.tokopedia.posapp.product.management.domain.EditProductUseCase;
 import com.tokopedia.posapp.product.management.domain.GetProductListManagementUseCase;
 import com.tokopedia.posapp.product.management.view.EditProduct;
 import com.tokopedia.posapp.product.management.view.ProductManagement;
@@ -41,16 +41,17 @@ public class ProductManagementModule {
     @Provides
     @ProductManagementScope
     ProductManagement.Presenter provideProductManagementPresenter(GetProductListManagementUseCase getProductListManagementUseCase,
+                                                                  EditProductUseCase editProductUseCase,
                                                                   UserSession userSession,
                                                                   PosSessionHandler posSessionHandler) {
-        return new ProductManagementPresenter(getProductListManagementUseCase, userSession, posSessionHandler);
+        return new ProductManagementPresenter(getProductListManagementUseCase, editProductUseCase, userSession, posSessionHandler);
     }
 
     @Provides
     @ProductManagementScope
-    EditProduct.Presenter providesEditProductPresenter(EditProductLocalPriceUseCase editProductLocalPriceUseCase,
+    EditProduct.Presenter providesEditProductPresenter(EditProductUseCase editProductUseCase,
                                                        PosSessionHandler posSessionHandler,
                                                        UserSession usersession) {
-        return new EditProductPresenter(editProductLocalPriceUseCase, posSessionHandler, usersession);
+        return new EditProductPresenter(editProductUseCase, posSessionHandler, usersession);
     }
 }

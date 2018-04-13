@@ -28,7 +28,7 @@ public class GetProductManagementSubscriber extends Subscriber<List<ProductDomai
 
     @Override
     public void onError(Throwable e) {
-        view.onError(e);
+        view.onErrorLoadData(e);
     }
 
     @Override
@@ -48,6 +48,7 @@ public class GetProductManagementSubscriber extends Subscriber<List<ProductDomai
             productViewModel.setOnlinePrice(productDomain.getOriginalPrice());
             productViewModel.setOutletPrice(productDomain.getPrice());
             productViewModel.setEtalaseId(productDomain.getEtalaseId());
+            productViewModel.setStatus(productDomain.getStatus());
             visitables.add(productViewModel);
         }
         return visitables;

@@ -22,10 +22,18 @@ public interface ProductManagement {
     }
 
     interface View extends CustomerView {
+        void showLoadingDialog();
+
+        void hideLoadingDialog();
+
         void onReloadData(List<Visitable> list);
 
         void onLoadMore(List<Visitable> list);
 
-        void onError(Throwable e);
+        void onErrorLoadData(Throwable e);
+
+        void onSuccessEditStatus();
+
+        void onErorEditStatus(String errorMessage);
     }
 }
