@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.posapp.PosSessionHandler;
+import com.tokopedia.posapp.product.management.di.scope.ProductManagementScope;
 
 import java.util.concurrent.TimeUnit;
 
@@ -50,5 +52,10 @@ public class PosApiModule {
                 .baseUrl(PosUrl.POS_DOMAIN)
                 .client(okHttpClient)
                 .build();
+    }
+
+    @Provides
+    PosSessionHandler providePosSessionHandler(@ApplicationContext Context context) {
+        return new PosSessionHandler(context);
     }
 }

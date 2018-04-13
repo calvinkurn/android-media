@@ -40,7 +40,7 @@ public class ProductManagementViewHolder extends AbstractViewHolder<ProductViewM
     @Override
     public void bind(final ProductViewModel element) {
         textProductName.setText(element.getName());
-        ImageHandler.loadImage(itemView.getContext(), imageThumbnail, element.getImageUrl(), com.tokopedia.abstraction.R.drawable.loading_page);
+        ImageHandler.loadImage(itemView.getContext(), imageThumbnail, element.getImageUrl(), com.tokopedia.abstraction.R.drawable.ic_loading_image);
         editOnlinePrice.setText(element.getOnlinePrice());
         editOutletPrice.setText(element.getOutletPrice());
 

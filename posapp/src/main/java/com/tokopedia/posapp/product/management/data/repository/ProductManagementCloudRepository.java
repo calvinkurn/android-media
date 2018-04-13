@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.tokopedia.posapp.base.domain.model.DataStatus;
 import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
-import com.tokopedia.posapp.product.management.data.pojo.EditProductRequest;
+import com.tokopedia.posapp.product.management.data.pojo.request.EditProductRequest;
 import com.tokopedia.posapp.product.management.data.source.ProductManagementCloudSource;
 import com.tokopedia.usecase.RequestParams;
 

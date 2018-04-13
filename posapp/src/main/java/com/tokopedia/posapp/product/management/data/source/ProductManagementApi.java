@@ -5,7 +5,7 @@ import com.tokopedia.posapp.base.data.pojo.PosResponse;
 import com.tokopedia.posapp.base.data.pojo.PosSimpleResponse;
 import com.tokopedia.posapp.common.PosUrl;
 import com.tokopedia.posapp.product.common.ProductConstant;
-import com.tokopedia.posapp.product.productlist.data.pojo.ProductListData;
+import com.tokopedia.posapp.product.management.data.pojo.ProductListData;
 
 import java.util.Map;
 
@@ -23,10 +23,11 @@ import rx.Observable;
  */
 
 public interface ProductManagementApi {
-    @GET(PosUrl.Product.PRODUCT_LIST_V2)
+    @GET(PosUrl.Product.GET_ADMIN_PRODUCT_LIST)
     Observable<Response<PosResponse<ProductListData>>> getProducts(@QueryMap Map<String, String> params);
 
     @POST(PosUrl.Product.EDIT_PRODUCT)
     @Headers({PosUrl.ContentType.JSON})
-    Observable<Response<PosSimpleResponse<String>>> editProduct(@Path(ProductConstant.Key.OUTLET_ID) String outletId, @Body JsonObject requestBody);
+    Observable<Response<PosSimpleResponse<String>>> editProduct(@Path(ProductConstant.Key.OUTLET_ID) String outletId,
+                                                                @Body JsonObject requestBody);
 }

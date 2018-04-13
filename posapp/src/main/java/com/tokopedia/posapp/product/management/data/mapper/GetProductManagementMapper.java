@@ -3,8 +3,8 @@ package com.tokopedia.posapp.product.management.data.mapper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.posapp.base.data.pojo.PosResponse;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
-import com.tokopedia.posapp.product.productlist.data.pojo.ProductItem;
-import com.tokopedia.posapp.product.productlist.data.pojo.ProductListData;
+import com.tokopedia.posapp.product.management.data.pojo.ProductItem;
+import com.tokopedia.posapp.product.management.data.pojo.ProductListData;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -34,12 +34,6 @@ public class ProductManagementModule {
 
     @Provides
     @ProductManagementScope
-    PosSessionHandler providePosSessionHandler(@ApplicationContext Context context) {
-        return new PosSessionHandler(context);
-    }
-
-    @Provides
-    @ProductManagementScope
     ProductManagement.Presenter provideProductManagementPresenter(GetProductListManagementUseCase getProductListManagementUseCase,
                                                                   EditProductUseCase editProductUseCase,
                                                                   UserSession userSession,

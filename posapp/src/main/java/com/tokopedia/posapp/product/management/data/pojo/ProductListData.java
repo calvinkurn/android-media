@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.product.productlist.data.pojo;
+package com.tokopedia.posapp.product.management.data.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * @author okasurya on 4/2/18.
+ * will be renamed as product management
  */
 
 public class ProductListData extends PosData<List<ProductItem>> {

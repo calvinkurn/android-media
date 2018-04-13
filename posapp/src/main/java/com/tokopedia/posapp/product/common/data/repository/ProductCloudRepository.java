@@ -3,6 +3,7 @@ package com.tokopedia.posapp.product.common.data.repository;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.posapp.base.domain.model.DataStatus;
+import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.posapp.product.common.data.source.cloud.ProductCloudSource;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
@@ -37,7 +38,7 @@ public class ProductCloudRepository implements ProductRepository {
 
     @Override
     public Observable<List<ProductDomain>> getProductList(RequestParams requestParams) {
-        return productCloudSource.getProductList(requestParams);
+        return productCloudSource.getProductList(requestParams.getString(ProductConstant.Key.OUTLET_ID, ""), requestParams);
     }
 
     @Override

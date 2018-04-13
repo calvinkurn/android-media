@@ -4,16 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
-import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.base.fragment.PosBaseListFragment;
 import com.tokopedia.posapp.product.management.di.component.DaggerProductManagementComponent;
 import com.tokopedia.posapp.product.management.di.component.ProductManagementComponent;
@@ -107,12 +104,12 @@ public class ProductManagementFragment
 
     @Override
     public void showLoadingDialog() {
-        if(progressDialog != null) progressDialog.showDialog();
+        if (progressDialog != null) progressDialog.showDialog();
     }
 
     @Override
     public void hideLoadingDialog() {
-        if(progressDialog != null) progressDialog.dismiss();
+        if (progressDialog != null) progressDialog.dismiss();
     }
 
     @Override
@@ -168,12 +165,12 @@ public class ProductManagementFragment
     }
 
     private Visitable getHeaderModel() {
-        if(productHeaderViewModel == null) productHeaderViewModel = new ProductHeaderViewModel();
+        if (productHeaderViewModel == null) productHeaderViewModel = new ProductHeaderViewModel();
         return productHeaderViewModel;
     }
 
     private Visitable getLoadingModel() {
-        if(loadingModel == null) {
+        if (loadingModel == null) {
             loadingModel = new LoadingModel();
             loadingModel.setFullScreen(true);
         }

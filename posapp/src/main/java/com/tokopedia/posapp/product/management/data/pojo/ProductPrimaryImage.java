@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.product.productlist.data.pojo;
+package com.tokopedia.posapp.product.management.data.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

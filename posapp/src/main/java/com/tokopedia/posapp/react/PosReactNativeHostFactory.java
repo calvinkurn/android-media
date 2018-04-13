@@ -23,10 +23,11 @@ public class PosReactNativeHostFactory {
 
     protected PosReactNativeHostFactory() {}
 
-    public static PosReactNativeHost init(Application application) {
+    public static PosReactNativeHost init(Application
+                                                  application) {
         if(instance == null) instance = new PosReactNativeHostFactory();
 
-        return instance.createReactNativeHost(application);
+        return instance.createReactNativeHostDev(application);
     }
 
     private PosReactNativeHost createReactNativeHost(final Application application) {

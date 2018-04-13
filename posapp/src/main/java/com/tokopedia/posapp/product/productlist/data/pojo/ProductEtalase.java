@@ -4,16 +4,16 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @author okasurya on 4/2/18.
+ * @author okasurya on 4/13/18.
  */
 
-public class ProductShowcase {
-    @SerializedName("id")
+public class ProductEtalase {
+    @SerializedName("etalase_id")
     @Expose
     private long id;
-    @SerializedName("text")
+    @SerializedName("etalase_name")
     @Expose
-    private String text;
+    private String name;
 
     public long getId() {
         return id;
@@ -23,11 +23,11 @@ public class ProductShowcase {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public String getName() {
+        return name;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setName(String name) {
+        this.name = name;
     }
 }

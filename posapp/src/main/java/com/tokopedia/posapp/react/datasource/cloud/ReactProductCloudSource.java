@@ -14,7 +14,7 @@ import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.react.datasource.ReactDataSource;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 import com.tokopedia.posapp.react.datasource.model.ProductSearchRequest;
-import com.tokopedia.posapp.shop.data.ShopProductResponse;
+import com.tokopedia.posapp.product.common.data.pojo.ShopProductResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,16 +49,18 @@ public class ReactProductCloudSource extends ReactDataSource {
 
     @Override
     public Observable<String> getDataList(int offset, int limit) {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
-        return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
+//        RequestParams requestParams = RequestParams.create();
+//        requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
+//        return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
+        return Observable.error(new RuntimeException("Method not implemented"));
     }
 
     @Override
     public Observable<String> getDataAll() {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
-        return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
+//        RequestParams requestParams = RequestParams.create();
+//        requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
+//        return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
+        return Observable.error(new RuntimeException("Method not implemented"));
     }
 
     @Override
@@ -107,9 +109,8 @@ public class ReactProductCloudSource extends ReactDataSource {
 
         RequestParams requestParams = RequestParams.EMPTY;
         requestParams.putString(ProductConstant.Key.KEYWORD, request.getKeyword());
-        requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
         if (!TextUtils.isEmpty(request.getEtalaseId())) {
-            requestParams.putString(ProductConstant.Key.ETALASE, request.getEtalaseId());
+            requestParams.putString(ProductConstant.Key.ETALASE_ID, request.getEtalaseId());
         }
 
         requestParams.putString(ProductConstant.Key.PAGE, request.getPage().toString());
