@@ -3,7 +3,6 @@ package com.tokopedia.posapp.product.management.view.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +23,7 @@ import com.tokopedia.posapp.base.util.RupiahNumberTextWatcher;
 import com.tokopedia.posapp.product.management.di.component.DaggerProductManagementComponent;
 import com.tokopedia.posapp.product.management.di.component.ProductManagementComponent;
 import com.tokopedia.posapp.product.management.view.EditProduct;
+import com.tokopedia.posapp.product.management.view.listener.EditProductListener;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 
@@ -47,7 +47,7 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
     private Button buttonSave;
     private RelativeLayout editProductContainer;
     private ProgressBar progressBar;
-    private DialogInterface.OnDismissListener onDismissListener;
+    private EditProductListener editProductListener;
 
     public static void show(FragmentManager fragmentManager, ProductViewModel productViewModel) {
         Bundle bundle = new Bundle();
@@ -114,7 +114,7 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
     @Override
     public void onSuccessSave() {
         Toast.makeText(getContext(), R.string.editproduct_message_success, Toast.LENGTH_SHORT).show();
-        onDismissListener.onDismiss(this.getDialog());
+        editProductListener.onDialogDismiss();
         dismiss();
     }
 
@@ -168,10 +168,10 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
     }
 
     private void onFragmentAttach(Context context) {
-        if (context instanceof DialogInterface.OnDismissListener) {
-            this.onDismissListener = (DialogInterface.OnDismissListener) context;
+        if (context instanceof EditProductListener) {
+            this.editProductListener = (EditProductListener) context;
         } else {
-            throw new RuntimeException("Activity needs to implement DialogInterface.OnDismissListener");
+            throw new RuntimeException("Activity needs to implement EditProductListener");
         }
     }
 }
