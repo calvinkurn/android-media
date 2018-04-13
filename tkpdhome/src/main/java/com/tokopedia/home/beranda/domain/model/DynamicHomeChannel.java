@@ -413,7 +413,7 @@ public class DynamicHomeChannel {
         }
 
         public String getHomeAttribution(int position, String creativeName) {
-            return homeAttribution.replace("$1", Integer.toString(position)).replace("$2", (creativeName == null) ? creativeName : "");
+            return homeAttribution.replace("$1", Integer.toString(position)).replace("$2", (creativeName != null) ? creativeName : "");
         }
 
         public void setHomeAttribution(String homeAttribution) {
