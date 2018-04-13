@@ -132,7 +132,8 @@ import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBS
 @RuntimePermissions
 public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
-    private static final String CONTACT_US_URL_SHORTENED_HTTPS = "https://tkp.me/toped-contact-us";
+    private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
+    private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
     private static final String CONTACT_US_URL_BASE_DOMAIN = TkpdBaseURL.BASE_CONTACT_US;
     private static final String ROLE_SHOP = "shop";
     private static final String ENABLE_TOPCHAT = "topchat_template";
@@ -487,8 +488,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         Uri uri = Uri.parse(url);
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         if(uri != null) {
-            if (url.equals(CONTACT_US_URL_BASE_DOMAIN) ||
-                    url.equals(CONTACT_US_URL_SHORTENED_HTTPS)) {
+            if (uri.getPathSegments().contains(CONTACT_US_PATH_SEGMENT) &&
+                    uri.getHost().equals(BASE_DOMAIN_SHORTENED)) {
                 Intent intent = ((TkpdInboxRouter) MainApplication
                         .getAppContext())
                         .getContactUsIntent(getContext());
@@ -1433,8 +1434,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public boolean shouldHandleUrlManually(String url) {
-        String urlManualHandlingList[] = {CONTACT_US_URL_BASE_DOMAIN,
-                CONTACT_US_URL_SHORTENED_HTTPS};
+        String urlManualHandlingList[] = {CONTACT_US_URL_BASE_DOMAIN};
         return (Arrays.asList(urlManualHandlingList).contains(url) || isChatBot);
     }
 }
