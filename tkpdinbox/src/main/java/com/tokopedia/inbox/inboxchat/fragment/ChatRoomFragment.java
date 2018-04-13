@@ -490,8 +490,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         if(uri != null) {
             boolean isTargetDomainTokopedia = uri.getHost().endsWith("tokopedia.com");
-            boolean isTargetTkpMeAndNotRedirect = (uri.getHost().equals(BASE_DOMAIN_SHORTENED) &&
-                    !uri.getEncodedPath().equals("/r"));
+            boolean isTargetTkpMeAndNotRedirect = (TextUtils.equals(uri.getHost(),BASE_DOMAIN_SHORTENED) &&
+                    !TextUtils.equals(uri.getEncodedPath(),"/r"));
             boolean isNeedAuthToken = (isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect);
             
             if(uri.getScheme().equals(APPLINK_SCHEME)){
