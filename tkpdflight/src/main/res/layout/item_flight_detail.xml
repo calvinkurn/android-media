@@ -145,7 +145,7 @@
                         <TextView
                             style="@style/TextView.Micro.BlackDisabled"
                             android:layout_marginTop="@dimen/margin_8"
-                            android:text="Transit : "
+                            android:text="@string/flight_detail_transit_label"
                             tools:text="Transit: 1 kali berhenti"
                             tools:visibility="visible" />
 
