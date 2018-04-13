@@ -38,6 +38,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.gson.GsonBuilder;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
+import com.moengage.inapp.InAppTracker;
 import com.moengage.widgets.NudgeView;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
@@ -686,9 +687,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     public boolean showInAppMessage(InAppMessage inAppMessage) {
         try {
-            InAppMessageModel inAppMessageModel= new GsonBuilder().create().fromJson(inAppMessage.content, InAppMessageModel.class);
+            InAppMessageModel inAppMessageModel = new GsonBuilder().create().fromJson(inAppMessage.content, InAppMessageModel.class);
             InappMessageDialogFragment dialog = InappMessageDialogFragment.newInstance(inAppMessageModel);
             dialog.show(getFragmentManager(), "inpp");
+            InAppTracker.getInstance(this).trackInAppClicked(inAppMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }
