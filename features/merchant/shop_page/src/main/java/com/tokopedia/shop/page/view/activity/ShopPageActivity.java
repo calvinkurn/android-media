@@ -255,6 +255,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     }
 
     public void refreshData(){
+        shopPagePresenter.clearCache();
         if (viewPager.getAdapter() instanceof ShopPagePagerAdapter) {
             ShopPagePagerAdapter adapter = (ShopPagePagerAdapter) viewPager.getAdapter();
             Fragment fragment = (Fragment) adapter.instantiateItem(viewPager, 0);
