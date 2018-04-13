@@ -84,7 +84,6 @@ public class FingerprintInterceptor implements Interceptor {
                     .map(new Func1<String, String>() {
                         @Override
                         public String call(String s) {
-                            CommonUtils.dumper("Fingerprint s -> \""+s+"\"");
                             try {
                                 return Utilities.toBase64(s, Base64.NO_WRAP);
                             } catch (Exception e) {
