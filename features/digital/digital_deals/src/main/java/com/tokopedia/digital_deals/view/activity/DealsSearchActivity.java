@@ -8,13 +8,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
@@ -34,7 +39,7 @@ import javax.inject.Inject;
 
 
 public class DealsSearchActivity extends BaseSimpleActivity implements
-        DealsSearchContract.IDealsSearchView, SearchInputView.Listener {
+        DealsSearchContract.IDealsSearchView, SearchInputView.Listener, View.OnClickListener {
 
     private Context context;
     private DealsComponent dealsComponent;
@@ -42,7 +47,7 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     public DealsSearchPresenter mPresenter;
 
     private FrameLayout mainContent;
-
+    private LinearLayout llTopEvents;
     private View progressBarLayout;
     private ProgressBar progBar;
     private SearchInputView searchInputView;
@@ -50,8 +55,10 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     private RecyclerView rvSearchResults;
     private RecyclerView rvTopDealsSuggestions;
     private TextView tvTopDeals;
-
+    private ImageView back;
     private LinearLayoutManager layoutManager;
+    private DividerItemDecoration mDividerItemDecoration;
+    private LinearLayout noContent;
 
 
     @Override
@@ -62,11 +69,12 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context=this;
+        context = this;
         initInjector();
         executeInjector();
         setUpVariables();
         searchInputView.setListener(this);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         mPresenter.attachView(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mPresenter.initialize();
@@ -75,12 +83,17 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
 
     private void setUpVariables() {
         rvTopDealsSuggestions = findViewById(R.id.rv_top_events_suggestions);
-        rvSearchResults=findViewById(R.id.rv_search_results);
-        searchInputView=findViewById(R.id.search_input_view);
-        progBar=findViewById(R.id.prog_bar);
-        progressBarLayout=findViewById(R.id.progress_bar_layout);
-        mainContent=findViewById(R.id.main_content);
-        tvTopDeals =findViewById(R.id.tv_topevents);
+        rvSearchResults = findViewById(R.id.rv_search_results);
+        searchInputView = findViewById(R.id.search_input_view);
+        progBar = findViewById(R.id.prog_bar);
+        progressBarLayout = findViewById(R.id.progress_bar_layout);
+        mainContent = findViewById(R.id.main_content);
+        tvTopDeals = findViewById(R.id.tv_topevents);
+        llTopEvents = findViewById(R.id.ll_topevents);
+        back=findViewById(R.id.imageViewBack);
+        noContent=findViewById(R.id.no_content);
+        back.setOnClickListener(this);
+        mDividerItemDecoration = new DividerItemDecoration(rvTopDealsSuggestions.getContext());
     }
 
     public static Intent getCallingIntent(Activity activity) {
@@ -119,15 +132,25 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
         if (categoryItemsViewModels != null && categoryItemsViewModels.size() != 0) {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             DealsCategoryAdapter eventCategoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels);
+            rvSearchResults.addOnScrollListener(rvOnScrollListener);
             rvSearchResults.setLayoutManager(linearLayoutManager);
             rvSearchResults.setAdapter(eventCategoryAdapter);
-            tvTopDeals.setVisibility(View.GONE);
-            rvTopDealsSuggestions.setVisibility(View.GONE);
+            rvSearchResults.setVisibility(View.VISIBLE);
+            noContent.setVisibility(View.GONE);
+            llTopEvents.setVisibility(View.GONE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                Log.d("inputMeethod", "notnull");
+                imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
+//                searchInputView.getSearchTextView().setFocusable(false);
+                rvSearchResults.requestFocus();
+            }
+
+
         } else {
             rvSearchResults.setVisibility(View.GONE);
-            rvTopDealsSuggestions.setVisibility(View.GONE);
-            tvTopDeals.setText("No Deals Found");
-            tvTopDeals.setVisibility(View.VISIBLE);
+            llTopEvents.setVisibility(View.GONE);
+            noContent.setVisibility(View.VISIBLE);
         }
     }
 
@@ -157,20 +180,22 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void setTopEvents(List<SearchViewModel> searchViewModels) {
+    public void setTrendingDeals(List<SearchViewModel> searchViewModels) {
         if (searchViewModels != null && !searchViewModels.isEmpty()) {
             TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, mPresenter);
             rvTopDealsSuggestions.setLayoutManager(layoutManager);
             rvTopDealsSuggestions.setAdapter(adapter);
+            rvTopDealsSuggestions.addItemDecoration(mDividerItemDecoration);
             rvTopDealsSuggestions.removeOnScrollListener(rvOnScrollListener);
-            tvTopDeals.setText("TRENDING DEALS");
+            rvSearchResults.removeOnScrollListener(rvOnScrollListener);
             tvTopDeals.setVisibility(View.VISIBLE);
-            rvTopDealsSuggestions.setVisibility(View.VISIBLE);
+            noContent.setVisibility(View.GONE);
+            llTopEvents.setVisibility(View.VISIBLE);
             rvSearchResults.setVisibility(View.GONE);
         } else {
-            tvTopDeals.setVisibility(View.GONE);
-            rvTopDealsSuggestions.setVisibility(View.GONE);
+            llTopEvents.setVisibility(View.GONE);
             rvSearchResults.setVisibility(View.GONE);
+            noContent.setVisibility(View.VISIBLE);
         }
     }
 
@@ -181,31 +206,45 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
             adapter.setHighLightText(highlight);
             rvTopDealsSuggestions.setLayoutManager(layoutManager);
             rvTopDealsSuggestions.setAdapter(adapter);
+            rvTopDealsSuggestions.addItemDecoration(mDividerItemDecoration);
             rvTopDealsSuggestions.addOnScrollListener(rvOnScrollListener);
+            llTopEvents.setVisibility(View.VISIBLE);
             tvTopDeals.setVisibility(View.GONE);
-            rvTopDealsSuggestions.setVisibility(View.VISIBLE);
             rvSearchResults.setVisibility(View.GONE);
+            noContent.setVisibility(View.GONE);
         } else {
             rvSearchResults.setVisibility(View.GONE);
-            rvTopDealsSuggestions.setVisibility(View.GONE);
-            tvTopDeals.setText("No Deals Found");
-            tvTopDeals.setVisibility(View.VISIBLE);
+            llTopEvents.setVisibility(View.GONE);
+            noContent.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
-    public void removeFooter() {
-        ((TopEventsSuggestionsAdapter) rvTopDealsSuggestions.getAdapter()).removeFooter();
+    public void removeFooter(boolean searchSubmitted) {
+        if (searchSubmitted) {
+            ((DealsCategoryAdapter) rvSearchResults.getAdapter()).removeFooter();
+        }
+        else
+            ((TopEventsSuggestionsAdapter) rvTopDealsSuggestions.getAdapter()).removeFooter();
     }
 
     @Override
-    public void addFooter() {
-        ((TopEventsSuggestionsAdapter) rvTopDealsSuggestions.getAdapter()).addFooter();
-
+    public void addFooter(boolean searchSubmitted) {
+        if (searchSubmitted)
+            ((DealsCategoryAdapter) rvSearchResults.getAdapter()).addFooter();
+        else
+            ((TopEventsSuggestionsAdapter) rvTopDealsSuggestions.getAdapter()).addFooter();
     }
 
     @Override
-    public void addEvents(List<SearchViewModel> searchViewModels) {
+    public void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels) {
+        ((DealsCategoryAdapter) rvSearchResults.getAdapter()).addAll(categoryItemsViewModels);
+
+    }
+
+
+    @Override
+    public void addDeals(List<SearchViewModel> searchViewModels) {
         ((TopEventsSuggestionsAdapter) rvTopDealsSuggestions.getAdapter()).addAll(searchViewModels);
 
     }
@@ -246,5 +285,12 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     @Override
     protected Fragment getNewFragment() {
         return null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.imageViewBack){
+            super.onBackPressed();
+        }
     }
 }

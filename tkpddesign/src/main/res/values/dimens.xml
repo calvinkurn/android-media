@@ -46,7 +46,7 @@
     <dimen name="font_loading_width_xxxl">300dp</dimen>
 
     <dimen name="image_width_xxxs">8dp</dimen>
-    <dimen name="image_width_xxs">16dp</dimen>
+        <dimen name="image_width_xxs">16dp</dimen>
     <dimen name="image_width_xs">24dp</dimen>
     <dimen name="image_width_s">32dp</dimen>
     <dimen name="image_width_ms">33dp</dimen>

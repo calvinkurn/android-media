@@ -44,6 +44,7 @@ public class DealsSearchPresenter
     private boolean isLoading;
     private boolean isLastPage;
     private final int PAGE_SIZE = 20;
+    private boolean SEARCH_SUBMITTED = false;
     RequestParams searchNextParams = RequestParams.create();
 
     @Inject
@@ -73,8 +74,12 @@ public class DealsSearchPresenter
 
             @Override
             public void onNext(SearchDomainModel searchDomainModel) {
-                Log.d("MySearchDataaa", " "+ searchDomainModel.toString());
-                getView().setSuggestions(processSearchResponse(searchDomainModel), highlight);
+                Log.d("MySearchDataaa", " " + searchDomainModel.toString()+" "+SEARCH_SUBMITTED);
+                if (SEARCH_SUBMITTED)
+                    getView().renderFromSearchResults(Utils.getSingletonInstance()
+                            .convertIntoCategoryListItemsViewModel(searchDomainModel.getDeals()));
+                else
+                    getView().setSuggestions(processSearchResponse(searchDomainModel), highlight);
                 checkIfToLoad(getView().getLayoutManager());
                 CommonUtils.dumper("enter onNext");
             }
@@ -84,7 +89,7 @@ public class DealsSearchPresenter
     @Override
     public void initialize() {
         mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
-        getView().setTopEvents(mTopDeals);
+        getView().setTrendingDeals(mTopDeals);
     }
 
     @Override
@@ -94,21 +99,25 @@ public class DealsSearchPresenter
 
     @Override
     public void searchTextChanged(String searchText) {
+        SEARCH_SUBMITTED = false;
         if (searchText != null && !searchText.equals("")) {
             if (searchText.length() > 2) {
                 getDealsListBySearch(searchText);
             }
             if (searchText.length() == 0) {
-                getView().setTopEvents(mTopDeals);
+                getView().setTrendingDeals(mTopDeals);
             }
         } else {
-            getView().setTopEvents(mTopDeals);
+            getView().setTrendingDeals(mTopDeals);
         }
     }
 
     @Override
     public void searchSubmitted(String searchText) {
+        SEARCH_SUBMITTED = true;
+        Log.d("InsideSearchSubmitted", " "+SEARCH_SUBMITTED);
         getDealsListBySearch(searchText);
+
     }
 
     @Override
@@ -201,8 +210,12 @@ public class DealsSearchPresenter
             @Override
             public void onNext(SearchDomainModel searchDomainModel) {
                 isLoading = false;
-                getView().removeFooter();
-                getView().addEvents(processSearchResponse(searchDomainModel));
+                getView().removeFooter(SEARCH_SUBMITTED);
+                if (SEARCH_SUBMITTED)
+                    getView().addDealsToCards(Utils.getSingletonInstance()
+                            .convertIntoCategoryListItemsViewModel(searchDomainModel.getDeals()));
+                else
+                    getView().addDeals(processSearchResponse(searchDomainModel));
                 checkIfToLoad(getView().getLayoutManager());
             }
         });
@@ -219,7 +232,7 @@ public class DealsSearchPresenter
                     && totalItemCount >= PAGE_SIZE) {
                 loadMoreItems();
             } else {
-                getView().addFooter();
+                getView().addFooter(SEARCH_SUBMITTED);
             }
         }
     }

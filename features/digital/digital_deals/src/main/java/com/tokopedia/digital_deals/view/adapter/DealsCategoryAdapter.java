@@ -12,20 +12,116 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.SearchViewModel;
 
 import java.util.List;
 
-public class DealsCategoryAdapter extends RecyclerView.Adapter<DealsCategoryAdapter.ViewHolder> {
+public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<CategoryItemsViewModel> categoryItems;
     private Context context;
+    private static final int ITEM = 1;
+    private static final int FOOTER = 2;
+    private boolean isFooterAdded = false;
+
+
 
     public DealsCategoryAdapter(Context context, List<CategoryItemsViewModel> categoryItems) {
         this.context = context;
         this.categoryItems = categoryItems;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    @Override
+    public int getItemCount() {
+        if (categoryItems != null) {
+            return categoryItems.size();
+        }
+        return 0;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+
+        LayoutInflater inflater = LayoutInflater.from(
+                parent.getContext());
+        RecyclerView.ViewHolder holder = null;
+        View v;
+        switch (viewType) {
+            case ITEM:
+                v = inflater.inflate(R.layout.deals_item_card, parent, false);
+                holder = new ItemViewHolder(v);
+                break;
+            case FOOTER:
+                v = inflater.inflate(R.layout.footer_layout, parent, false);
+                holder = new FooterViewHolder(v);
+                break;
+            default:
+                break;
+        }
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+        switch (getItemViewType(position)) {
+            case ITEM:
+                ((ItemViewHolder) holder).bindData(categoryItems.get(position), position);
+                ((ItemViewHolder) holder).setIndex(position);
+                break;
+            case FOOTER:
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (isLastPosition(position) && isFooterAdded) ? FOOTER : ITEM;
+    }
+
+    private boolean isLastPosition(int position) {
+        return (position == categoryItems.size() - 1);
+    }
+
+    public void addFooter() {
+        if (!isFooterAdded) {
+            isFooterAdded = true;
+            add(new CategoryItemsViewModel());
+        }
+    }
+
+    public void add(CategoryItemsViewModel item) {
+        categoryItems.add(item);
+        notifyItemInserted(categoryItems.size() - 1);
+    }
+
+    public void addAll(List<CategoryItemsViewModel> items) {
+        for (CategoryItemsViewModel item : items) {
+            add(item);
+        }
+    }
+
+
+    public void removeFooter() {
+        if (isFooterAdded) {
+            isFooterAdded = false;
+
+            int position = categoryItems.size() - 1;
+            CategoryItemsViewModel item = categoryItems.get(position);
+
+            if (item != null) {
+                categoryItems.remove(position);
+                notifyItemRemoved(position);
+            }
+        }
+    }
+
+
+    public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private View itemView;
         private ImageView dealImage;
         private TextView discount;
@@ -37,8 +133,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<DealsCategoryAdap
         private TextView dealListPrice;
         private TextView dealSellingPrice;
         private int index;
+        private int mPosition;
 
-        public ViewHolder(View itemView) {
+        public ItemViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
             dealImage = itemView.findViewById(R.id.imageView);
@@ -52,8 +149,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<DealsCategoryAdap
             dealSellingPrice = itemView.findViewById(R.id.textView8);
         }
 
-        public void bindData(final CategoryItemsViewModel categoryItemsViewModel) {
+        public void bindData(final CategoryItemsViewModel categoryItemsViewModel, int position) {
 //            discount.setText(categoryItemsViewModel.getd);
+            mPosition=position;
             dealsDetails.setText(categoryItemsViewModel.getDisplayName());
             dealSoldNumberTimes.setText("Terjual " + categoryItemsViewModel.getSoldQuantity() + " kali");
             ImageHandler.loadImageCover2(dealImage, categoryItemsViewModel.getImageWeb());
@@ -82,26 +180,14 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<DealsCategoryAdap
         }
     }
 
-    @Override
-    public int getItemCount() {
-        if (categoryItems != null) {
-            return categoryItems.size();
+    public class FooterViewHolder extends RecyclerView.ViewHolder {
+
+        View loadingLayout;
+
+        private FooterViewHolder(View itemView) {
+            super(itemView);
+            loadingLayout=itemView.findViewById(R.id.loading_fl);
         }
-        return 0;
-    }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.deals_item_card, parent, false);
-
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.bindData(categoryItems.get(position));
-        holder.setIndex(position);
     }
 
 }

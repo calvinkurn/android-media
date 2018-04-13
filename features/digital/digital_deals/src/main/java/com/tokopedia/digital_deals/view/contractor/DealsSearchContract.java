@@ -36,15 +36,17 @@ public class DealsSearchContract {
 
         FragmentManager getFragmentManagerInstance();
 
-        void setTopEvents(List<SearchViewModel> searchViewModels);
+        void setTrendingDeals(List<SearchViewModel> searchViewModels);
 
         void setSuggestions(List<SearchViewModel> suggestions, String highlight);
 
-        void removeFooter();
+        void removeFooter(boolean searchSubmitted);
 
-        void addFooter();
+        void addFooter(boolean searchSubmitted);
 
-        void addEvents(List<SearchViewModel> searchViewModels);
+        void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels);
+
+        void addDeals(List<SearchViewModel> searchViewModels);
 
         LinearLayoutManager getLayoutManager();
     }
