@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizatio
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.groupchat.common.di.scope.GroupChatScope;
 import com.tokopedia.groupchat.common.network.StreamErrorInterceptor;
 import com.tokopedia.groupchat.common.network.StreamErrorResponse;
@@ -54,7 +53,6 @@ public class GroupChatNetModule {
                                             TkpdAuthInterceptor tkpdAuthInterceptor,
                                             AccountsAuthorizationInterceptor accountsAuthorizationInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-
                 .addInterceptor(new ErrorResponseInterceptor(StreamErrorResponse.class))
                 .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(accountsAuthorizationInterceptor);
