@@ -5,19 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailViewListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterPresenter;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
 /**
  * Created by hangnadi on 3/8/17.
@@ -154,6 +152,7 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
 
     @Override
     public void onBackPressed() {
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoClickDetailBack(resolutionID));
         setResult(RESULT_OK);
         finish();
     }

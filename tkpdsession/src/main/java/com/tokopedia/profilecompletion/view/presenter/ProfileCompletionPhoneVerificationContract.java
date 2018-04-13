@@ -2,7 +2,7 @@ package com.tokopedia.profilecompletion.view.presenter;
 
 import android.app.Activity;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
 /**
  * Created by stevenfredian on 7/10/17.
@@ -35,12 +35,10 @@ public interface ProfileCompletionPhoneVerificationContract {
     }
 
     interface Presenter{
-        void verifyPhoneNumber();
+        void verifyPhoneNumber(String otpCode, String phoneNumber);
 
         void requestOtp();
 
         void requestOtpWithCall();
-
-        void onDestroyView();
     }
 }

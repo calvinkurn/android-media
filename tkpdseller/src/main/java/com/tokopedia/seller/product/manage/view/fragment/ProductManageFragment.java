@@ -33,6 +33,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.seller.R;
@@ -65,6 +66,7 @@ import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.constant.StatusProductOption;
 import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
 import com.tokopedia.seller.product.manage.di.ProductManageModule;
+import com.tokopedia.seller.product.manage.view.activity.ProductManageCheckPromoAdsActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageFilterActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageSortActivity;
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageListAdapter;
@@ -264,13 +266,13 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onAddFromGallery() {
         GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
-                false, MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY);
+                false, MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY, true);
     }
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void onAddFromCamera() {
         GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
-                true, MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA);
+                true, MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA, true);
     }
 
     public void importFromInstagram() {
@@ -579,19 +581,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onClickOptionItem(ProductManageViewModel productManageViewModel) {
-        if (productManageViewModel.getProductVariant() == 1) {
-            showDialogVariant();
-        } else {
-            showActionProductDialog(productManageViewModel);
-        }
-    }
-
-    void showDialogVariant() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        alertDialog.setTitle(R.string.product_manage_title_dialog_variant);
-        alertDialog.setMessage(R.string.product_manage_label_dialog_variant);
-        alertDialog.setPositiveButton(R.string.close, null);
-        alertDialog.show();
+        showActionProductDialog(productManageViewModel);
     }
 
     @Override
@@ -659,22 +649,39 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                         }
                     });
                 } else if (itemId == R.id.change_price_product_menu) {
-                    showDialogChangeProductPrice(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencyId());
+                    if (productManageViewModel.isProductVariant()) {
+                        showDialogVariantPriceLocked();
+                    } else {
+                        showDialogChangeProductPrice(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencyId());
+                    }
                 } else if (itemId == R.id.share_product_menu) {
                     goToShareProduct(productManageViewModel);
                 } else if (itemId == R.id.set_cashback_product_menu) {
                     onSetCashbackClicked(productManageViewModel);
-                } else if(itemId == R.id.set_topads_promo){
-                    goToCreatePromoTopads(productManageViewModel.getProductId());
+                } else if (itemId == R.id.set_promo_ads_product_menu) {
+                    onPromoTopAdsClicked(productManageViewModel);
                 }
             }
         };
     }
 
-    private void goToCreatePromoTopads(String productId) {
-        if(getActivity().getApplication() instanceof SellerModuleRouter) {
-            ((SellerModuleRouter) getActivity().getApplication()).goToCreateTopadsPromo(getContext(),productId, ProductManageConstant.SOURCE_CREATE_TOPADS_MANAGE_PRODUCT);
-        }
+    private void showDialogVariantPriceLocked(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
+                .setTitle(getString(R.string.product_price_locked))
+                .setMessage(getString(R.string.product_price_locked_manage_desc))
+                .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // no op, just dismiss
+                    }
+                });
+        AlertDialog dialog = alertDialogBuilder.create();
+        dialog.show();
+    }
+
+    private void onPromoTopAdsClicked(ProductManageViewModel productManageViewModel) {
+        startActivity(ProductManageCheckPromoAdsActivity.createIntent(getActivity(), productManageViewModel.getProductShopId(),
+                productManageViewModel.getItemId()));
     }
 
     private void onSetCashbackClicked(ProductManageViewModel productManageViewModel) {

@@ -80,7 +80,16 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        if (data.getShopInfo().getShopIsOwner() == 1
+        if (data.getInfo().getProductStatus().equals(PRD_STATE_WAREHOUSE)) {
+            tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
+            containerButtonBuy.setBackgroundResource(R.drawable.btn_buy_grey);
+            tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
+            tvBuy.setText(getContext().getString(R.string.title_warehouse));
+            tvBuy.setEnabled(false);
+            containerButtonBuy.setEnabled(false);
+            setVisibility(VISIBLE);
+            containerButtonBuy.setVisibility(VISIBLE);
+        } else if (data.getShopInfo().getShopIsOwner() == 1
                 || (data.getShopInfo().getShopIsAllowManage() == 1 || GlobalConfig.isSellerApp())) {
             tvpPromoHour.setText(getContext().getString(R.string.title_promo_per_hour));
             tvpPromoHour.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_500));
@@ -123,8 +132,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             });
         }
 
-        if ((data.getInfo().getProductStatus().equals(PRD_STATE_WAREHOUSE))
-                || data.getShopInfo().getShopStatus() != 1) {
+        if (data.getShopInfo().getShopStatus() != 1) {
             setVisibility(GONE);
         } else {
             setVisibility(VISIBLE);
@@ -144,9 +152,17 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         containerButtonBuy.setEnabled(true);
     }
 
-    public void updateButtonForVariantProduct(boolean isBuyable, int shopStatus) {
-        if (isBuyable && shopStatus == 1) {
-            tvBuy.setText(getContext().getString(R.string.title_buy));
+    public void updateButtonForVariantProduct(boolean isBuyable, ProductDetailData data) {
+        if (isBuyable && data.getShopInfo().getShopStatus() == 1) {
+            if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
+                    && !data.getPreOrder().getPreorderStatus().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTime().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTimeType().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
+                tvBuy.setText(getContext().getString(R.string.title_pre_order));
+            } else {
+                tvBuy.setText(getContext().getString(R.string.title_buy));
+            }
             tvBuy.setBackgroundResource(R.drawable.btn_buy);
             containerButtonBuy.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.btn_buy));
             tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.href_link_rev));
@@ -176,7 +192,15 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
             containerButtonBuy.setBackgroundResource(R.drawable.btn_buy_grey);
             tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
-            tvBuy.setText(getContext().getString(R.string.title_buy));
+            if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
+                    && !data.getPreOrder().getPreorderStatus().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTime().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTimeType().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
+                tvBuy.setText(getContext().getString(R.string.title_pre_order));
+            } else {
+                tvBuy.setText(getContext().getString(R.string.title_buy));
+            }
             tvBuy.setEnabled(false);
             containerButtonBuy.setEnabled(false);
             setVisibility(VISIBLE);

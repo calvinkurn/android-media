@@ -1,8 +1,9 @@
 package com.tokopedia.session.forgotpassword.fragment;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.Spannable;
@@ -10,18 +11,22 @@ import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.facebook.share.widget.SendButton;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.forgotpassword.interactor.ForgotPasswordRetrofitInteractorImpl;
@@ -36,28 +41,22 @@ import rx.subscriptions.CompositeSubscription;
  * Created by Alifa on 10/17/2016.
  */
 
-public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPasswordFragmentPresenter>
+public class ForgotPasswordFragment extends BaseDaggerFragment
         implements ForgotPasswordFragmentView {
 
     private static final String ARGS_EMAIL = "ARGS_EMAIL";
     private static final String ARGS_AUTO_RESET = "ARGS_AUTO_RESET";
     private static final String ARGS_REMOVE_FOOTER = "ARGS_REMOVE_FOOTER";
-    @BindView(R2.id.front_view)
-    View FrontView;
-    @BindView(R2.id.success_view)
-    View SuccessView;
-    @BindView(R2.id.email_send)
-    TextView EmailSend;
-    @BindView(R2.id.send_button)
-    TextView SendButton;
-    @BindView(R2.id.email)
-    EditText Email;
-    @BindView(R2.id.til_email)
+    View frontView;
+    View successView;
+    TextView emailSend;
+    TextView sendButton;
+    EditText emailEditText;
     TextInputLayout tilEmail;
-    @BindView(R2.id.register_button)
     TextView registerButton;
 
     TkpdProgressDialog progressDialog;
+    ForgotPasswordFragmentPresenter presenter;
 
     public static ForgotPasswordFragment createInstance(String email, boolean isAutoReset, boolean isRemoveFooter) {
         ForgotPasswordFragment fragment = new ForgotPasswordFragment();
@@ -75,12 +74,30 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
+    protected void initInjector() {
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_forgotpassword, container, false);
+        frontView = view.findViewById(R.id.front_view);
+        successView = view.findViewById(R.id.success_view);
+        emailSend = view.findViewById(R.id.email_send);
+        sendButton = view.findViewById(R.id.send_button);
+        emailEditText = view.findViewById(R.id.email);
+        tilEmail = view.findViewById(R.id.til_email);
+        registerButton = view.findViewById(R.id.register_button);
+
+        initialPresenter();
+        initView(view);
+        return view;
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         if (getArguments().getBoolean(ARGS_AUTO_RESET)) {
             onSuccessResetPassword();
         }
@@ -89,23 +106,7 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
         }
     }
 
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
+    private void initialPresenter() {
         Bundle bundle = new Bundle();
         bundle.putBoolean(AccountsService.USING_HMAC, true);
         bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
@@ -115,25 +116,24 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
                 new CompositeSubscription());
     }
 
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_forgotpassword;
-    }
-
-    @Override
     protected void initView(View view) {
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToRegister();
+            }
+        });
+        emailEditText.addTextChangedListener(watcher(tilEmail));
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                KeyboardHandler.DropKeyboard(getActivity(), emailEditText);
+                presenter.resetPassword();
+            }
+        });
+
         if (!getArguments().getString(ARGS_EMAIL, "").equals("")) {
-            Email.setText(getArguments().getString(ARGS_EMAIL));
+            emailEditText.setText(getArguments().getString(ARGS_EMAIL));
         }
 
         if (SessionHandler.isV4Login(getActivity())) {
@@ -200,38 +200,12 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
         }
     }
 
-    @Override
-    protected void setViewListener() {
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToRegister();
-            }
-        });
-        Email.addTextChangedListener(watcher(tilEmail));
-        SendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                KeyboardHandler.DropKeyboard(getActivity(), Email);
-                presenter.resetPassword();
-            }
-        });
-
-    }
-
     private void goToRegister() {
-        ((TkpdCoreRouter) getActivity().getApplication()).goToRegister(context);
+        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getRegisterIntent
+                (getActivity());
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
         getActivity().finish();
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override
@@ -246,13 +220,13 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
 
     @Override
     public void resetError() {
-        Email.setError(null);
+        emailEditText.setError(null);
 
     }
 
     @Override
     public EditText getEmail() {
-        return Email;
+        return emailEditText;
     }
 
     @Override
@@ -284,13 +258,13 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
     @Override
     public void onSuccessResetPassword() {
         finishLoadingProgress();
-        FrontView.setVisibility(View.GONE);
-        SuccessView.setVisibility(View.VISIBLE);
+        frontView.setVisibility(View.GONE);
+        successView.setVisibility(View.VISIBLE);
         String myData = getString(R.string.title_reset_success_hint_1) + "\n"
-                + Email.getText().toString() + ".\n"
+                + emailEditText.getText().toString() + ".\n"
                 + getString(R.string.title_reset_success_hint_2);
 
-        EmailSend.setText(myData);
+        emailSend.setText(myData);
 
     }
 
@@ -303,5 +277,10 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return LoginAnalytics.Screen.FORGOT_PASSWORD;
     }
 }

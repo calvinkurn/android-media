@@ -53,6 +53,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED = "login_required";
 
     String WEB_PLAYSTORE_BUYER_APP_URL = "https://play.google.com/store/apps/details?id=com.tokopedia.tkpd";
+    String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
     /**
      * @deprecated extends {@link com.tokopedia.abstraction.constant.TkpdAppLink} on module instead
@@ -79,11 +80,7 @@ public interface Constants {
         String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
         String PRODUCT_INFO = "tokopedia://product/{product_id}";
         String PRODUCT_ADD = "tokopedia://product/add";
-        String PURCHASE_VERIFICATION = "tokopedia://buyer/payment";
         String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
-        String PURCHASE_ORDER = "tokopedia://buyer/order";
-        String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
-        String PURCHASE_HISTORY = "tokopedia://buyer/history";
         String CART = "tokopedia://cart";
         String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
         String SELLER_SHIPMENT = "tokopedia://seller/shipment";
@@ -128,14 +125,20 @@ public interface Constants {
         String WALLET_ACTIVATION = "tokopedia://wallet/activation";
         String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
         String BROWSER = "tokopedia://browser";
-        String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";
 
+        String EVENTS = "tokopedia://events";
+        String EVENTS_HIBURAN = "tokopedia://hiburan";
+        String EVENTS_DETAILS = "tokopedia://events/{event}";
         String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
         String PROMO_LIST = "tokopedia://promoNative";
+        String EXPLORE = "tokopedia://jump/{section}";
 
         String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
+
+        String GROUPCHAT = "tokopedia://groupchat/{channel_id}";
+
 
         interface SellerApp {
             String PRODUCT_ADD = "sellerapp://product/add";
@@ -158,6 +161,7 @@ public interface Constants {
         String APPLINKS_SELLER = "sellerapp";
     }
 
+    //NOTE: strings must be same with {@link pref_notification.xml}
     interface Settings {
         String NOTIFICATION_RINGTONE = "notifications_new_message_ringtone";
         String NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
@@ -169,7 +173,7 @@ public interface Constants {
         String NOTIFICATION_SALES = "notification_sales";
         String NOTIFICATION_PURCHASE = "notification_purchase";
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
-        String NOTIFICATION_SELLER_INFO = "notification_receive_seller_info";
+        String NOTIFICATION_SELLER_INFO = "notification_seller_info";
     }
 
     interface AppLinkQueryParameter {

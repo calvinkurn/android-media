@@ -9,12 +9,13 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.IFCMInstanceIDService;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment.ContactUsFaqListener;
@@ -32,6 +33,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
     public static final String PARAM_ORDER_ID = "PARAM_ORDER_ID";
     public static final String PARAM_INVOICE_ID = "PARAM_INVOICE_ID";
     public static final String PARAM_TAG = "PARAM_TAG";
+    public static final String PARAM_TOOLBAR_TITLE = "PARAM_TOOLBAR_TITLE";
     private static final String CURRENT_FRAGMENT_BACKSTACK = "CURRENT_FRAGMENT_BACKSTACK";
     private static final String PARAM_BUNDLE = "PARAM_BUNDLE";
     String url;
@@ -113,7 +115,9 @@ public class ContactUsActivity extends BasePresenterActivity implements
     }
 
     private void setTitle() {
-        if (getIntent().getExtras() == null || (
+        if (getIntent().getExtras() != null && getIntent().getStringExtra(PARAM_TOOLBAR_TITLE) != null) {
+            toolbar.setTitle(getIntent().getStringExtra(PARAM_TOOLBAR_TITLE));
+        } else if (getIntent().getExtras() == null || (
                 getIntent().getExtras() != null
                         && getIntent().getExtras()
                         .getString(InboxRouter.PARAM_URL, "").equals(""))) {
@@ -170,13 +174,9 @@ public class ContactUsActivity extends BasePresenterActivity implements
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
-        } else if (GlobalConfig.isSellerApp()) {
-            Intent intent = new Intent(this, WelcomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
         } else {
-            Intent intent = HomeRouter.getHomeActivity(this);
+            Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                    .getHomeIntent(this);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();

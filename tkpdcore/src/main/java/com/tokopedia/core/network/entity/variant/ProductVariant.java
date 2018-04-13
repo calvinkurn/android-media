@@ -125,16 +125,27 @@ public class ProductVariant implements Parcelable {
         }
     };
 
-    public List<Integer> getCombinationFromSelectedVariant(int variantOptionId) {
-        List<Integer> products = new ArrayList<>();
+    public boolean isOptionAvailable(Option option) {
         for (Child child: getChildren()) {
-            if (child.getOptionIds().contains(variantOptionId) && child.isIsBuyable()) {
-                products.addAll(child.getOptionIds());
+            if (child.getOptionIds().contains(option.getId()) && child.isIsBuyable()) {
+                return true;
             }
         }
-        products.removeAll(Collections.singleton(variantOptionId));
-        products.add(variantOptionId);
-        return products;
+        return false;
+    }
+
+    public List<Integer> getCombinationFromSelectedVariant(int variantOptionId) {
+        List<Integer> optionIds = new ArrayList<>();
+        for (Child child: getChildren()) {
+            if (child.getOptionIds().contains(variantOptionId) && child.isIsBuyable()) {
+                optionIds.addAll(child.getOptionIds());
+            }
+        }
+        if (optionIds.size()>0) {
+            optionIds.removeAll(Collections.singleton(variantOptionId));
+            optionIds.add(variantOptionId);
+        }
+        return optionIds;
     }
 
     public int getLevel1Variant() {

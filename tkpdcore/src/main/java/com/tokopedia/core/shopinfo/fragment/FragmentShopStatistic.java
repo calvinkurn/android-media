@@ -2,7 +2,6 @@ package com.tokopedia.core.shopinfo.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,8 +13,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.ShopLocation;
 import com.tokopedia.core.ShopStatisticDetail;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.app.V2BaseFragment;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.shopinfo.activity.ShopFavoritedActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShipmentPackage;
@@ -263,9 +262,11 @@ public class FragmentShopStatistic extends V2BaseFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(
-                        PeopleInfoNoDrawerActivity.createInstance(getActivity(), String.valueOf(model.owner.ownerId))
-                );
+                if (getActivity().getApplicationContext() instanceof TkpdCoreRouter) {
+                    startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                            .getTopProfileIntent(getActivity(), String.valueOf(model.owner
+                                    .ownerId)));
+                }
             }
         };
     }

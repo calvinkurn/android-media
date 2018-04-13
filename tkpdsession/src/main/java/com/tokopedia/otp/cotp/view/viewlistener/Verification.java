@@ -1,7 +1,9 @@
 package com.tokopedia.otp.cotp.view.viewlistener;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import android.content.Context;
+
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 
@@ -17,7 +19,7 @@ public interface Verification {
 
         void onErrorGetOTP(String errorMessage);
 
-        void onErrorVerifyOtp(String errorMessage);
+        void onErrorVerifyOtpCode(String errorMessage);
 
         void showLoadingProgress();
 
@@ -27,9 +29,16 @@ public interface Verification {
 
         void dropKeyboard();
 
+        void onGoToPhoneVerification();
+
+        void onErrorVerifyLogin(String errorMessage);
+
+        void onErrorVerifyOtpCode(int resId);
+
+        Context getContext();
     }
 
-    interface Presenter extends CustomerPresenter<View> {
+    interface Presenter extends CustomerPresenter<Verification.View> {
 
         void requestOTP(VerificationViewModel viewModel, VerificationPassModel passModel);
 

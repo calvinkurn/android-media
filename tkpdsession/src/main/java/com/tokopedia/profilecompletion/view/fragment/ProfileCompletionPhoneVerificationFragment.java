@@ -30,18 +30,19 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.msisdn.IncomingSmsReceiver;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.CustomPhoneNumberUtil;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivity;
 import com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragment;
-import com.tokopedia.profilecompletion.di.DaggerPhoneVerifComponent;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
@@ -49,13 +50,12 @@ import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPhoneVeri
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPhoneVerificationPresenter;
 import com.tokopedia.profilecompletion.view.viewmodel.ProfileCompletionViewModel;
 import com.tokopedia.session.R;
+import com.tokopedia.util.IncomingSmsReceiver;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -94,9 +94,10 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     protected IncomingSmsReceiver smsReceiver;
     protected TkpdProgressDialog progressDialog;
     protected LocalCacheHandler cacheHandler;
+
     @Inject
     ProfileCompletionPhoneVerificationPresenter presenter;
-    private Unbinder unbinder;
+
     private ProfileCompletionViewModel data;
     private ProfileCompletionContract.View parentView;
     private ProfileCompletionContract.Presenter parentPresenter;
@@ -118,23 +119,26 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AppScreen.SCREEN_PHONE_VERIFICATION;
     }
 
     @Override
     protected void initInjector() {
-        DaggerPhoneVerifComponent daggerPhoneVerifComponent
-                = (DaggerPhoneVerifComponent) DaggerPhoneVerifComponent.builder()
-                .appComponent(((MainApplication) getActivity().getApplication()).getAppComponent())
-                .build();
-        daggerPhoneVerifComponent.inject(this);
+        AppComponent appComponent = getComponent(AppComponent.class);
+
+        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
+                DaggerSessionComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
+
+
+        daggerSessionComponent.inject(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_profile_phone_verif_completion, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
         initView(parentView);
         initialVar();
         onFirstTimeLaunched();
@@ -286,7 +290,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.verifyPhoneNumber();
+                presenter.verifyPhoneNumber(getOTPCode(), getPhoneNumber());
             }
         });
         requestOtpButton.setOnClickListener(new View.OnClickListener() {
@@ -369,7 +373,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         finishProgressDialog();
         SnackbarManager.make(getActivity(), status, Snackbar.LENGTH_LONG).show();
         inputOtpView.setVisibility(View.VISIBLE);
-//        changePhoneNumberButton.setVisibility(View.GONE);
+        changePhoneNumberButton.setVisibility(View.GONE);
         setViewEnabled(true);
         startTimer();
     }
@@ -523,7 +527,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
             countDownTimer.cancel();
             countDownTimer = null;
         }
-        presenter.onDestroyView();
+        presenter.detachView();
         cacheHandler = null;
     }
 
@@ -537,7 +541,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     public void processOTPSMS(String otpCode) {
         if (otpEditText != null)
             otpEditText.setText(otpCode);
-        presenter.verifyPhoneNumber();
+        presenter.verifyPhoneNumber(otpCode, getPhoneNumber());
     }
 
     @Override

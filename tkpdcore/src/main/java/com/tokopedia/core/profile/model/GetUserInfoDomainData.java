@@ -1,5 +1,9 @@
 package com.tokopedia.core.profile.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -8,6 +12,7 @@ import java.util.List;
 
 public class GetUserInfoDomainData {
 
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
     private int userId;
     private String fullName;
     private String firstName;
@@ -28,6 +33,7 @@ public class GetUserInfoDomainData {
     private String profilePicture;
     private String clientId;
     private int completion;
+    private List<String> createPasswordList;
 
     public int getUserId() {
         return userId;
@@ -179,5 +185,58 @@ public class GetUserInfoDomainData {
 
     public void setCompletion(int completion) {
         this.completion = completion;
+    }
+
+    public int getBdayYear() {
+        try {
+            Date date = simpleDateFormat.parse(getBday());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            return calendar.get(Calendar.YEAR);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public int getBdayMonth() {
+        try {
+            Date date = simpleDateFormat.parse(getBday());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            return calendar.get(Calendar.MONTH) + 1;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public int getBdayDay() {
+        try {
+            Date date = simpleDateFormat.parse(getBday());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            return calendar.get(Calendar.DAY_OF_MONTH);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public void setCreatePasswordList(List<String> createPasswordList) {
+        this.createPasswordList = createPasswordList;
+    }
+
+    public List<String> getCreatePasswordList() {
+        return createPasswordList;
     }
 }

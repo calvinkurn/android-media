@@ -257,7 +257,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         mainContainer.setVisibility(View.VISIBLE);
     }
 
-
     @Override
     public void showProgressLoading(String title,String message) {
         progressDialogNormal.showDialog(title,message);
@@ -385,6 +384,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             mainContainer.setVisibility(View.VISIBLE);
         }
 
+        presenter.sendAnalyticsATCSuccess(cartDigitalInfoData);
+
         sendGTMAnalytics(
                 cartDigitalInfoData.getAttributes().getCategoryName(),
                 cartDigitalInfoData.getAttributes().getOperatorName()
@@ -392,6 +393,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 cartDigitalInfoData.isInstantCheckout()
         );
 
+        presenter.autoApplyCouponIfAvailable(passData.getCategoryId());
     }
 
     private void sendGTMAnalytics(String ec, String el, boolean analyticsKind) {
@@ -694,9 +696,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void onClickUseVoucher() {
         if(cartDigitalInfoDataState.getAttributes().isEnableVoucher()) {
             Intent intent;
-            if( cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE){
-        intent = LoyaltyActivity.newInstanceCouponActive(context, "digital", passData.getCategoryId());
-        } else {
+            if (cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE) {
+                intent = LoyaltyActivity.newInstanceCouponActive(context, "digital", passData.getCategoryId());
+            } else {
                 intent = LoyaltyActivity.newInstanceCouponNotActive(context, "digital", passData.getCategoryId());
             }
             navigateToActivityRequest(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
@@ -829,6 +831,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
             compositeSubscription.unsubscribe();
+    }
+
+    @Override
+    public Context getContext() {
+        return super.getContext();
     }
 
     public interface ActionListener {

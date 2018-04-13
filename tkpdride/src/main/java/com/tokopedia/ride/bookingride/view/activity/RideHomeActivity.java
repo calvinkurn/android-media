@@ -44,26 +44,29 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.OldSessionRouter;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.RideModuleRouter;
 import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
+import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.view.RideHomeContract;
 import com.tokopedia.ride.bookingride.view.RideHomePresenter;
 import com.tokopedia.ride.bookingride.view.adapter.SeatAdapter;
@@ -641,6 +644,27 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
+    public void renderNearbyCabs(List<ProductEstimate> productEstimates) {
+
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(RideHomeActivity.this);
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_NEARBY_CABS, false)) {
+            RideHomeMapFragment rideHomeMapFragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
+            if (rideHomeMapFragment != null) {
+                rideHomeMapFragment.displayNearByCabs(productEstimates);
+            }
+        }
+
+    }
+
+    @Override
+    public void hideNearbyCabs() {
+        RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        if (fragment != null) {
+            fragment.hideNearbyCabs();
+        }
+    }
+
+    @Override
     public void onProductClicked(ConfirmBookingPassData confirmBookingPassData) {
         onBottomContainerChangeToBookingScreen();
 
@@ -828,6 +852,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             return true;
         } else if (i == R.id.action_add_to_home_screen) {
             RideUtils.addUberShortcutOnLauncher(this, getString(R.string.label_book_uber_shortcut), getString(R.string.label_book_uber_shortcut));
+            RideGATracking.eventUberCreateShortcut(getScreenName());
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -866,9 +891,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public void navigateToLoginPage() {
-        Intent intent = OldSessionRouter.getLoginActivityIntent(this);
-        intent.putExtra(Session.WHICH_FRAGMENT_KEY,
-                TkpdState.DrawerPosition.LOGIN);
+        Intent intent = ((RideModuleRouter) MainApplication.getAppContext()).getLoginIntent(this);
         startActivityForResult(intent, RideHomeActivity.LOGIN_REQUEST_CODE);
     }
 

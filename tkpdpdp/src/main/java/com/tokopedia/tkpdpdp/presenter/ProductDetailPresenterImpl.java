@@ -32,6 +32,7 @@ import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.network.entity.variant.ProductVariantResponse;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.product.facade.NetworkParam;
@@ -51,15 +52,12 @@ import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttribute
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.DeepLinkUtils;
@@ -67,7 +65,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
@@ -82,6 +79,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GOLD_MERCHANT;
@@ -136,17 +134,20 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToShopInfo(@NonNull Context context, @NonNull Bundle bundle) {
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        viewListener.navigateToActivityRequest(intent,
-                ProductDetailFragment.REQUEST_CODE_SHOP_INFO);
+        String etalaseName = bundle.getString("etalase_name");
+        String etalaseId = bundle.getString("etalase_id");
+        Intent intent = null;
+        if(!TextUtils.isEmpty(etalaseId)) {
+            intent = ((PdpRouter) context.getApplicationContext()).getShoProductListIntent(context, bundle.getString("shop_id"), "", etalaseId);
+        }else{
+            intent = ((PdpRouter) context.getApplicationContext()).getShopPageIntent(context, bundle.getString("shop_id"));
+        }
+        viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_SHOP_INFO);
     }
 
     @Override
     public void processToLogin(@NonNull Context context, @NonNull Bundle bundle) {
-        Intent intent = OldSessionRouter.getLoginActivityIntent(context);
-        intent.putExtra(Session.WHICH_FRAGMENT_KEY,
-                TkpdState.DrawerPosition.LOGIN);
+        Intent intent = ((PdpRouter) MainApplication.getAppContext()).getLoginIntent(context);
         viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
     }
 
@@ -173,7 +174,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         UnifyTracking.eventPDPReputation();
         if (context.getApplicationContext() instanceof PdpRouter) {
             Intent intent = ((PdpRouter) context.getApplicationContext())
-                    .getProductReputationIntent(context,productId, productName);
+                    .getProductReputationIntent(context, productId, productName);
             viewListener.navigateToActivity(intent);
         }
     }
@@ -207,9 +208,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             intent = SellerRouter.getActivityShopCreateEdit(context);
             viewListener.navigateToActivity(intent);
         } else {
-            intent = OldSessionRouter.getLoginActivityIntent(context);
-            intent.putExtra(Session.WHICH_FRAGMENT_KEY,
-                    TkpdState.DrawerPosition.LOGIN);
+            intent = ((PdpRouter) MainApplication.getAppContext()).getLoginIntent(context);
             viewListener.navigateToActivityRequest(intent,
                     ProductDetailFragment.REQUEST_CODE_LOGIN);
         }
@@ -222,9 +221,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             viewListener.showReportDialog();
         } else {
             UnifyTracking.eventPDPReportNotLogin();
-            Intent intent = OldSessionRouter.getLoginActivityIntent(context);
-            intent.putExtra(Session.WHICH_FRAGMENT_KEY,
-                    TkpdState.DrawerPosition.LOGIN);
+            Intent intent = ((PdpRouter) MainApplication.getAppContext()).getLoginIntent(context);
             viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
         }
     }
@@ -245,9 +242,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         if (SessionHandler.isV4Login(context)) {
             viewListener.navigateToActivity(sendMessageIntent);
         } else {
-            intent = OldSessionRouter.getLoginActivityIntent(context);
-            intent.putExtra(Session.WHICH_FRAGMENT_KEY,
-                    TkpdState.DrawerPosition.LOGIN);
+            intent = ((PdpRouter) MainApplication.getAppContext()).getLoginIntent(context);
             viewListener.navigateToActivityRequest(intent,
                     ProductDetailFragment.REQUEST_CODE_LOGIN);
         }
@@ -258,8 +253,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToEditProduct(@NonNull Context context, @NonNull Bundle bundle) {
         boolean isEdit = bundle.getBoolean("is_edit");
-        String productId = bundle.getString("product_id");
-        viewListener.moveToEditFragment(isEdit, productId);
+        viewListener.moveToEditFragment(isEdit);
     }
 
     @Override
@@ -310,17 +304,18 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context, productDetailData.getInfo().getProductId
                                     ().toString(), productDetailData.getShopInfo().getShopId());
-                            String shopType = productDetailData.getShopInfo().getShopIsOfficial()== SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
+                            String shopType = productDetailData.getShopInfo().getShopIsOfficial() == SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
                             if (!GlobalConfig.isSellerApp()) {
                                 getPromoWidget(context, generatePromoTargetType(productDetailData, context),
                                         SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType);
                             }
                             if (productDetailData.getInfo().getHasVariant() && useVariant) {
                                 getProductVariant(context
-                                        ,Integer.toString(productDetailData.getInfo().getProductId()));
+                                        , Integer.toString(productDetailData.getInfo().getProductId()));
                             } else {
                                 productDetailData.getInfo().setHasVariant(false);
                             }
+                            validateProductDataWithProductPassAndShowMessage(productDetailData,productPass,context);
                         }
 
                         @Override
@@ -369,9 +364,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         }
                     });
         } else {
-            Intent intent = OldSessionRouter.getLoginActivityIntent(context);
-            intent.putExtra(Session.WHICH_FRAGMENT_KEY,
-                    TkpdState.DrawerPosition.LOGIN);
+            Intent intent = ((PdpRouter) MainApplication.getAppContext()).getLoginIntent(context);
             viewListener.navigateToActivityRequest(intent,
                     ProductDetailFragment.REQUEST_CODE_LOGIN);
         }
@@ -412,7 +405,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         if (success) {
                             viewListener.showToastMessage(context
                                     .getString(R.string.title_sold_out_action));
-                           viewListener.onProductHasEdited();
+                            viewListener.onProductHasEdited();
                         }
                     }
 
@@ -616,9 +609,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             }
         } else {
             cacheInteractor.deleteProductDetail(product.getInfo().getProductId());
-            Intent intent = OldSessionRouter.getLoginActivityIntent(context);
-            intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-            intent.putExtra("product_id", String.valueOf(product.getInfo().getProductId()));
+            Intent intent = ((PdpRouter) MainApplication.getAppContext()).getLoginIntent(context);
             viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
         }
     }
@@ -663,7 +654,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void processStateData(Bundle savedInstanceState) {
+    public void processStateData(Bundle savedInstanceState, Context context) {
         ProductDetailData productData = savedInstanceState
                 .getParcelable(ProductDetailFragment.STATE_DETAIL_PRODUCT);
         List<ProductOther> productOthers = savedInstanceState
@@ -683,9 +674,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
         if (productVariant != null) {
             viewListener.addProductVariant(productVariant);
+        } else if (productData != null && productData.getInfo() != null && productData.getInfo().getHasVariant() && productVariant==null) {
+            getProductVariant(context,Integer.toString(productData.getInfo().getProductId()));
         }
 
-        if (productData.getCampaign() != null) {
+        if (productData != null && productData.getCampaign() != null) {
             viewListener.showProductCampaign();
         }
 
@@ -825,18 +818,19 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         getMostHelpfulReview(context, data.getInfo().getProductId().toString(),
                                 data.getShopInfo().getShopId());
                         getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
-                        String shopType = data.getShopInfo().getShopIsOfficial()==SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
+                        String shopType = data.getShopInfo().getShopIsOfficial() == SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
                         if (!GlobalConfig.isSellerApp()) {
                             getPromoWidget(context, generatePromoTargetType(data, context),
-                                    SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,shopType
-                                    );
+                                    SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType
+                            );
                         }
                         if (data.getInfo().getHasVariant() && useVariant) {
                             getProductVariant(context
-                                    ,Integer.toString(data.getInfo().getProductId()));
+                                    , Integer.toString(data.getInfo().getProductId()));
                         } else {
                             data.getInfo().setHasVariant(false);
                         }
+                        validateProductDataWithProductPassAndShowMessage(data,productPass,context);
                     }
 
                     @Override
@@ -1050,7 +1044,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void updateRecentView(@NonNull Context context, int productId) {
-        retrofitInteractor.updateRecentView(context,Integer.toString(productId));
+        retrofitInteractor.updateRecentView(context, Integer.toString(productId));
     }
 
     private void openPromoteAds(Context context, String url) {
@@ -1077,7 +1071,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 new RetrofitInteractor.ProductVariantListener() {
                     @Override
                     public void onSucccess(final ProductVariant productVariant) {
-                        if (productVariant!=null && productVariant.getVariant()!=null && productVariant.getVariant().size()>0) {
+                        if (productVariant != null && productVariant.getVariant() != null && productVariant.getVariant().size() > 0) {
                             viewListener.addProductVariant(productVariant);
                         }
                         viewListener.updateButtonBuyListener();
@@ -1089,5 +1083,26 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     }
                 }
         );
+    }
+
+    private void validateProductDataWithProductPassAndShowMessage(ProductDetailData data, ProductPass productPass, @NonNull Context context){
+        if(productPass == null)
+            return;
+        if(productPass.getDateTimeInMilis() != 0){
+            try {
+                Date date = new Date(productPass.getDateTimeInMilis());
+                String lastUpdate = data.getInfo().getProductLastUpdate().replace(" WIB","");
+                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy, HH:mm", Locale.ENGLISH);
+                Date lastUpdateDate = df.parse(lastUpdate);
+                if(lastUpdateDate.after(date)){
+                    viewListener.showToastMessage(context.getString(R.string.product_updated_on_message_container, lastUpdate));
+                }
+            }
+            catch (ParseException ex)
+            {
+                ex.printStackTrace();
+                return;
+            }
+        }
     }
 }

@@ -57,6 +57,8 @@ import java.util.List;
 import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
+
 /**
  * @author anggaprasetiyo on 7/3/17.
  */
@@ -88,9 +90,18 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private LinearLayoutManager linearLayoutManager;
     private TokoCashBalanceData tokoCashBalanceData;
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
+    private boolean fromAppShortcut = false;
 
     public static DigitalCategoryListFragment newInstance() {
         return new DigitalCategoryListFragment();
+    }
+
+    public static DigitalCategoryListFragment newInstance(boolean isFromAppShortcut) {
+        Bundle args = new Bundle();
+        args.putBoolean(FROM_APP_SHORTCUTS, isFromAppShortcut);
+        DigitalCategoryListFragment fragment = new DigitalCategoryListFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -122,6 +133,15 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (isFromAppShortcut()) {
+            UnifyTracking.eventBayarLongClick();
+        }
+    }
+
+    @Override
     protected void initialPresenter() {
         MojitoService mojitoService = new MojitoService();
         ICategoryDigitalListDataMapper mapperData = new CategoryDigitalListDataMapper();
@@ -146,7 +166,9 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     protected void setupArguments(Bundle arguments) {
-
+        if (arguments != null) {
+            fromAppShortcut = arguments.getBoolean(FROM_APP_SHORTCUTS);
+        }
     }
 
     @Override
@@ -421,4 +443,9 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                 break;
         }
     }
+
+    public boolean isFromAppShortcut() {
+        return fromAppShortcut;
+    }
+
 }

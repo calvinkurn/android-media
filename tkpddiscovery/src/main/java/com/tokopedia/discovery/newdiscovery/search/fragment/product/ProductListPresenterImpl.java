@@ -7,24 +7,24 @@ import android.util.Log;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
+import com.tokopedia.discovery.newdiscovery.search.fragment.GetQuickFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.AddWishlistActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.RemoveWishlistActionSubscriber;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -36,6 +36,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
+
 
 /**
  * Created by henrypriyono on 10/11/17.
@@ -45,6 +47,8 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Inject
     GetProductUseCase getProductUseCase;
+    @Inject
+    GetSearchGuideUseCase getSearchGuideUseCase;
     @Inject
     AddWishlistActionUseCase addWishlistActionUseCase;
     @Inject
@@ -90,7 +94,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     private void launchLoginActivity(String productId) {
         Bundle extras = new Bundle();
-        extras.putInt(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         extras.putString("product_id", productId);
         getView().launchLoginActivity(extras);
     }
@@ -129,7 +132,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     }
 
     @Override
-    public void loadMoreData(SearchParameter searchParameter, HashMap<String, String> additionalParams) {
+    public void loadMoreData(final SearchParameter searchParameter, HashMap<String, String> additionalParams) {
         RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false);
         enrichWithFilterAndSortParams(requestParams);
         enrichWithAdditionalParams(requestParams, additionalParams);
@@ -155,6 +158,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 List<Visitable> list = new ArrayList<Visitable>();
                                 list.addAll(productViewModel.getProductList());
                                 getView().setProductList(list);
+                                if (getView().isEvenPage()) {
+                                    getView().addGuidedSearch();
+                                }
                                 getView().showBottomBarNavigation(true);
                                 if (getView().getStartFrom() >= searchResultModel.getTotalData()) {
                                     getView().unSetTopAdsEndlessListener();
@@ -175,7 +181,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     public void onError(Throwable e) {
                         if (isViewAttached()) {
                             getView().hideRefreshLayout();
-                            getView().showNetworkError(0);
+                            getView().showNetworkError(searchParameter.getStartRow());
                             getView().showBottomBarNavigation(false);
                         }
                     }
@@ -201,13 +207,14 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     @Override
                     public void onCompleted() {
                         getView().getDynamicFilter();
+                        getView().getQuickFilter();
                         getView().hideRefreshLayout();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         if (isViewAttached()) {
-                            getView().showNetworkError(searchParameter.getStartRow());
+                            getView().showNetworkError(0);
                             getView().hideRefreshLayout();
                             getView().showBottomBarNavigation(false);
                         }
@@ -238,6 +245,51 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 });
     }
 
+    @Override
+    public void loadGuidedSearch(String keyword) {
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putString(GetSearchGuideUseCase.PARAM_QUERY, keyword);
+        getSearchGuideUseCase.execute(requestParams, new Subscriber<GuidedSearchViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                
+            }
+
+            @Override
+            public void onNext(GuidedSearchViewModel guidedSearchViewModel) {
+                getView().onGetGuidedSearchComplete(guidedSearchViewModel);
+            }
+        });
+    }
+
+    @Override
+    public void requestQuickFilter(HashMap<String, String> additionalParams) {
+        RequestParams params = getQuickFilterRequestParams();
+        params = enrichWithFilterAndSortParams(params);
+        params = enrichWithAdditionalParams(params, additionalParams);
+        getDynamicFilterUseCase.execute(params, new GetQuickFilterSubscriber(getView()));
+    }
+
+    private RequestParams getQuickFilterRequestParams() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(AuthUtil.generateParamsNetwork2(context, requestParams.getParameters()));
+        requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_QUICK_FILTER);
+        requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        requestParams.putString(BrowseApi.Q, getView().getQueryKey());
+        if (getView().getSearchParameter().getDepartmentId() != null
+                && !getView().getSearchParameter().getDepartmentId().isEmpty()) {
+            requestParams.putString(BrowseApi.SC, getView().getSearchParameter().getDepartmentId());
+        } else {
+            requestParams.putString(BrowseApi.SC, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SC);
+        }
+        return requestParams;
+    }
+
     private void enrichWithForceSearchParam(RequestParams requestParams, boolean isForceSearch) {
         requestParams.putBoolean(BrowseApi.REFINED, isForceSearch);
     }
@@ -246,6 +298,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     public void detachView() {
         super.detachView();
         getProductUseCase.unsubscribe();
+        getSearchGuideUseCase.unsubscribe();
         addWishlistActionUseCase.unsubscribe();
         removeWishlistActionUseCase.unsubscribe();
         getDynamicFilterUseCase.unsubscribe();

@@ -7,6 +7,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -18,7 +20,7 @@ public class GetUserInfoUseCase extends UseCase<GetUserInfoDomainModel> {
     private final ProfileRepository profileRepository;
 
     public GetUserInfoUseCase(ThreadExecutor threadExecutor,
-                                PostExecutionThread postExecutionThread,
+                              PostExecutionThread postExecutionThread,
                               ProfileRepository profileRepository) {
         super(threadExecutor, postExecutionThread);
         this.profileRepository = profileRepository;

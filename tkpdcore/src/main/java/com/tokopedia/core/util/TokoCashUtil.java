@@ -89,7 +89,7 @@ public class TokoCashUtil {
 
     private static DrawerTokoCashAction convertToActionViewModel(Action action) {
         DrawerTokoCashAction drawerTokoCashAction = new DrawerTokoCashAction();
-        drawerTokoCashAction.setText(action.getText());
+        drawerTokoCashAction.setText(action.getmText());
         drawerTokoCashAction.setRedirectUrl(action.getRedirectUrl());
         return drawerTokoCashAction;
     }

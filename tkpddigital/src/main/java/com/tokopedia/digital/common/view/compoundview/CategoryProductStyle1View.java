@@ -58,7 +58,6 @@ public class CategoryProductStyle1View extends
     ImageView tooltipInstantCheckout;
 
     private DigitalProductChooserView digitalProductChooserView;
-    private NewWidgetProductChooserView widgetProductChooserView;
     private ClientNumberInputView clientNumberInputView;
     private ProductAdditionalInfoView productAdditionalInfoView;
     private ProductPriceInfoView productPriceInfoView;
@@ -82,7 +81,6 @@ public class CategoryProductStyle1View extends
     protected void onCreateView() {
         clientNumberInputView = new ClientNumberInputView(context);
         digitalProductChooserView = new DigitalProductChooserView(context);
-        widgetProductChooserView = new NewWidgetProductChooserView(context);
         productAdditionalInfoView = new ProductAdditionalInfoView(context);
         productPriceInfoView = new ProductPriceInfoView(context);
         productAdditionalInfoView.setActionListener(this);
@@ -108,11 +106,7 @@ public class CategoryProductStyle1View extends
     @Override
     protected void onUpdateSelectedProductData() {
         if (operatorSelected.getRule().getProductViewStyle() != SINGLE_PRODUCT) {
-            if (source == NATIVE) {
-                this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
-            } else {
-                this.widgetProductChooserView.renderUpdateDataSelected(productSelected);
-            }
+            this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
         }
     }
 
@@ -202,10 +196,22 @@ public class CategoryProductStyle1View extends
         holderClientNumber.addView(clientNumberInputView);
 
         String lastClientNumberHistory = "";
-        if (hasLastOrderHistoryData())
+        String lastOperatorHistory = "";
+        if (hasLastOrderHistoryData()) {
             lastClientNumberHistory = historyClientNumber.getLastOrderClientNumber().getClientNumber();
+            lastOperatorHistory = historyClientNumber.getLastOrderClientNumber().getOperatorId();
+        }
         if (!TextUtils.isEmpty(lastClientNumberHistory)) {
             clientNumberInputView.setText(lastClientNumberHistory);
+        } else {
+            if (!TextUtils.isEmpty(lastOperatorHistory)) {
+                for (Operator operator : data.getOperatorList()) {
+                    if (operator.getOperatorId().equals(lastOperatorHistory)) {
+                        setOperator(operator);
+                        break;
+                    }
+                }
+            }
         }
 
         if (source == WIDGET) {
@@ -217,37 +223,23 @@ public class CategoryProductStyle1View extends
         }
     }
 
-    private void showProducts() {
-        if (source == NATIVE) {
-            renderProductChooserOptions();
+    private void setOperator(Operator operator) {
+        operatorSelected = operator;
+        clientNumberInputView.tvErrorClientNumber.setText("");
+        clientNumberInputView.tvErrorClientNumber.setVisibility(GONE);
+        clientNumberInputView.enableImageOperator(operator.getImage());
+        clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
+        if (operator.getRule().getProductViewStyle() == SINGLE_PRODUCT) {
+            renderDefaultProductSelected();
         } else {
-            renderProductChooserOptionsWidget();
+            showProducts();
         }
+        setBtnBuyDigitalText(operator.getRule().getButtonText());
+        actionListener.onOperatorSelected(data.getName(), operator.getName());
     }
 
-    private void renderProductChooserOptionsWidget() {
-        clearHolder(holderChooserProduct);
-        widgetProductChooserView.setActionListener(getActionListenerProductChooser());
-        widgetProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
-        widgetProductChooserView.renderInitDataList(operatorSelected.getProductList(),
-                operatorSelected.getRule().isShowPrice(),
-                String.valueOf(operatorSelected.getDefaultProductId())
-        );
-        holderChooserProduct.addView(widgetProductChooserView);
-
-        if (hasLastOrderHistoryData() && operatorSelected != null
-                && operatorSelected.getOperatorId().equalsIgnoreCase(
-                historyClientNumber.getLastOrderClientNumber().getOperatorId()
-        )) {
-            for (Product product : operatorSelected.getProductList()) {
-                if (product.getProductId().equalsIgnoreCase(
-                        historyClientNumber.getLastOrderClientNumber().getProductId()
-                )) {
-                    widgetProductChooserView.renderUpdateDataSelected(product);
-                    break;
-                }
-            }
-        }
+    private void showProducts() {
+            renderProductChooserOptions();
     }
 
     private void renderProductChooserOptions() {
@@ -386,19 +378,8 @@ public class CategoryProductStyle1View extends
                     for (Operator operator : data.getOperatorList()) {
                         for (String prefix : operator.getPrefixList()) {
                             if (validClientNumber.startsWith(prefix)) {
-                                operatorSelected = operator;
-                                clientNumberInputView.tvErrorClientNumber.setText("");
-                                clientNumberInputView.tvErrorClientNumber.setVisibility(GONE);
-                                clientNumberInputView.enableImageOperator(operator.getImage());
-                                clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
-                                if (operator.getRule().getProductViewStyle() == SINGLE_PRODUCT) {
-                                    renderDefaultProductSelected();
-                                } else {
-                                    showProducts();
-                                }
-                                setBtnBuyDigitalText(operator.getRule().getButtonText());
+                                setOperator(operator);
                                 operatorFound = true;
-                                actionListener.onOperatorSelected(data.getName(), operator.getName());
                                 break outerLoop;
                             }
                         }

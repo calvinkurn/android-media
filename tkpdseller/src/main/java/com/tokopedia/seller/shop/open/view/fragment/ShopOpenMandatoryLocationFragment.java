@@ -22,11 +22,12 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.seller.shop.common.exception.ShopException;
+import com.tokopedia.seller.common.exception.TomeException;
 import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
@@ -156,7 +157,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                 onNextButtonClicked();
             }
         });
-
+      
         ShopOpenStepperModel stepperModel = stepperListener.getStepperModel();
         if (stepperModel != null) {
             ResponseIsReserveDomain responseIsReserveDomain = stepperModel.getResponseIsReserveDomain();
@@ -167,6 +168,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
                 if (shipment != null) {
                     locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
+                  
+                  if(shipment.getPostal() != 0)
                     locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
 
                     GoogleLocationViewModel googleLocationViewModel
@@ -383,10 +386,11 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
-
+		if (!GlobalConfig.DEBUG) {
+        		Crashlytics.logException(t);
+        	}
         String errorMessage;
-        Crashlytics.logException(t);
-        if (t instanceof ShopException) {
+        if (t instanceof TomeException) {
             errorMessage = t.getMessage();
         } else {
             errorMessage = ErrorHandler.getErrorMessage(t, getActivity());

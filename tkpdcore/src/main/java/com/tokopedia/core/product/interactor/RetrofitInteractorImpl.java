@@ -806,7 +806,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
             @Override
             public void onError(Throwable e) {
-
+                listener.onError("");
             }
 
             @Override

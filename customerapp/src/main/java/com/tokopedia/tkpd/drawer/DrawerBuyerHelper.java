@@ -32,27 +32,29 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.home.ParentIndexHome;
 
 import java.util.ArrayList;
 
@@ -337,7 +339,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET)));
 
-        if(SessionHandler.isUserHasShop(context)){
+        if (SessionHandler.isUserHasShop(context)) {
             inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_seller_info),
                     TkpdState.DrawerPosition.SELLER_INFO,
                     drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
@@ -371,7 +373,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private int getTotalResoNotif() {
-        return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_BUYER, 0)  +
+        return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_BUYER, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, 0);
     }
 
@@ -438,10 +440,20 @@ public class DrawerBuyerHelper extends DrawerHelper
         adapter.notifyDataSetChanged();
     }
 
+    private void selectTabHome() {
+        if (context instanceof ParentIndexHome) {
+            ((ParentIndexHome) context).changeTabListener()
+                    .onChangeTab(ParentIndexHome.INIT_STATE_FRAGMENT_HOME);
+        }
+    }
+
     @Override
     public void onItemClicked(DrawerItem item) {
         if (item.getId() == selectedPosition) {
-            closeDrawer();
+                if (item.getId() == TkpdState.DrawerPosition.INDEX_HOME) {
+                    selectTabHome();
+                }
+                closeDrawer();
         } else {
             Intent intent;
             switch (item.getId()) {
@@ -502,12 +514,15 @@ public class DrawerBuyerHelper extends DrawerHelper
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
                     break;
                 case TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST:
-                    intent = SellerRouter.getActivitySellingTransactionOpportunity(context,"");
+                    intent = SellerRouter.getActivitySellingTransactionOpportunity(context, "");
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.ADD_PRODUCT:
-                    intent = new Intent(context, ProductAddActivity.class);
-                    context.startActivity(intent);
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) context.getApplication();
+                        tkpdCoreRouter.goToManageProduct(context);
+                        tkpdCoreRouter.goToAddProduct(context);
+                    }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PRODUCT:
                     if (context.getApplication() instanceof TkpdCoreRouter) {
@@ -606,7 +621,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     @Override
     public void onGoToProfile() {
         context.startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(context, sessionHandler.getLoginID())
+                TopProfileActivity.newInstance(context, sessionHandler.getLoginID())
         );
         sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
 
@@ -669,19 +684,18 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private void onGoToShop() {
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(sessionHandler.getShopID(), ""));
+        Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, sessionHandler.getShopID());
         context.startActivity(intent);
         sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
     }
 
     private void showAppShareButton(ArrayList<DrawerItem> data) {
         if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_APP_SHARE_BUTTON)) {
-            if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)){
+            if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)) {
                 data.add(new DrawerItem(remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_TITLE, context.getString(R.string.drawer_title_referral_appshare)),
                         R.drawable.share_ke_teman, TkpdState.DrawerPosition.APPSHARE,
                         true, true));
-            }else{
+            } else {
                 data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
                         R.drawable.share_ke_teman, TkpdState.DrawerPosition.APPSHARE,
                         true, true));

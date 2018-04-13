@@ -1,0 +1,43 @@
+apply plugin: 'com.android.library'
+apply plugin: 'android-apt'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+
+apt {
+    arguments {
+        targetModuleName 'TkpdHome'
+    }
+}
+
+dependencies {
+
+    compile project(rootProject.ext.features.useCase)
+    compile project(rootProject.ext.libraries.abstraction)
+
+    compile(rootProject.ext.tkpdLibDependencies.expandableOption) {
+        exclude group: "com.android.support"
+    }
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.testDependencies.mockitorCore
+    testCompile 'junit:junit:4.12'
+
+    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    compile rootProject.ext.supportLibDependencies.supportV4
+    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    compile rootProject.ext.dbDependencies.dbFlowCore
+    compile rootProject.ext.dbDependencies.dbFlow
+
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile rootProject.ext.debugToolsDependencies.stetho
+    compile project(':tkpddigital')
+    compile project(':tkpdfeed')
+}

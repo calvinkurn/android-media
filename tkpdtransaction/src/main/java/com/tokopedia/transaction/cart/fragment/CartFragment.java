@@ -60,7 +60,7 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
@@ -238,7 +238,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void initialPresenter() {
-        presenter = new CartPresenter(this);
+        presenter = new CartPresenter(
+                this,
+                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA)
+        );
     }
 
     @Override
@@ -399,6 +402,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderCartListData(String keroToken, String ut, final List<CartItem> cartList) {
+        hasLogisticInsurance = false;
         cartItemAdapter = new CartItemAdapter(this, this);
         totalPaymentLoading.setVisibility(View.VISIBLE);
         cartItemAdapter.fillDataList(keroToken, cartList);
@@ -408,7 +412,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     private void setInsuranceTermsVisibility(CartCourierPrices cartCourierPrices) {
-        if (cartCourierPrices.getCartInsuranceProd() != 0) {
+        if (cartCourierPrices.getUseInsurance() != 0) {
             if (!hasLogisticInsurance &&
                     (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST ||
                             cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL)) {
@@ -519,7 +523,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         ProductItem data = new ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -533,11 +537,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
-        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        getActivity().startActivity(intent);
+    public void onShopItemClicked(int position, Shop shop) {
+        Intent intent = ((TransactionRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
+        startActivity(intent);
     }
 
     @Override
@@ -802,6 +804,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void renderPartialOrder(boolean enableCancelPartial) {
+        cartItemAdapter.setEnableCancelPartial(enableCancelPartial);
+    }
+
+    @Override
     public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
         Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), clazz).putExtras(bundle);
         getActivity().startService(intent);
@@ -863,9 +870,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onShopDetailInfoClicked(CartShop cartShop) {
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(cartShop.getShopId(), ""));
-        navigateToActivity(intent);
+        Intent intent = ((TransactionRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), cartShop.getShopId());
+        startActivity(intent);
     }
 
     @Override
@@ -908,10 +914,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onGetThanksTopPaySuccess(ThanksTopPayData data) {
-        presenter.processCheckoutAnalytics(
-                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA),
-                data.getParameter().getGatewayName()
-        );
         presenter.clearNotificationCart();
         try {
             presenter.processPaymentAnalytics(
@@ -930,10 +932,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onGetThanksTopPayFailed(String message, final String paymentId) {
         hideProgressLoading();
-        presenter.processCheckoutAnalytics(
-                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA),
-                ANALYTICS_GATEWAY_PAYMENT_FAILED
-        );
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -1252,4 +1250,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return kursIndonesia.format(value);
     }
 
+    @Override
+    public void setListnerCancelPromoLayoutOnAutoApplyCode() {
+        cancelPromoLayout.setOnClickListener(onPromoCancelled());
+
+    }
 }

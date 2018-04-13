@@ -8,8 +8,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_30"
         android:text="@string/title_success_activate_account"
         android:textColor="@color/grey_800"
         android:textSize="@dimen/font_medium"
@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/margin_med"
+        android:layout_marginBottom="@dimen/dp_20"
         android:text="@string/welcome_to_tokopedia" />
 
     <TextView
@@ -27,10 +27,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/margin_large"
-        android:layout_marginLeft="@dimen/margin_large"
-        android:layout_marginRight="@dimen/margin_large"
+        android:layout_marginBottom="@dimen/dp_30"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_30"
         android:gravity="center"
-        android:lineSpacingExtra="@dimen/padding_vs"
+        android:lineSpacingExtra="@dimen/dp_5"
         android:text="@string/protect_your_account_with_phone_verification" />
 </LinearLayout>

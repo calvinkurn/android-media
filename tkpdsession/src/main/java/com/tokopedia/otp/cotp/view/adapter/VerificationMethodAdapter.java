@@ -14,6 +14,7 @@ import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 11/30/17.
@@ -30,10 +31,9 @@ public class VerificationMethodAdapter extends RecyclerView.Adapter<Verification
         this.viewListener = viewListener;
     }
 
-    public static VerificationMethodAdapter createInstance(ArrayList<MethodItem> list,
-                                                           SelectVerification.View
+    public static VerificationMethodAdapter createInstance(SelectVerification.View
                                                                    viewListener) {
-        return new VerificationMethodAdapter(list, viewListener);
+        return new VerificationMethodAdapter(new ArrayList<MethodItem>(), viewListener);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -58,13 +58,13 @@ public class VerificationMethodAdapter extends RecyclerView.Adapter<Verification
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        ImageHandler.loadImageWithIdWithoutPlaceholder(holder.icon, list.get(position)
-                .getIconResId());
+        ImageHandler.LoadImage(holder.icon, list.get(position)
+                .getImageUrl());
         holder.methodText.setText(MethodChecker.fromHtml(list.get(position).getMethodText()));
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onMethodSelected(list.get(position).getType());
+                viewListener.onMethodSelected(list.get(position));
             }
         });
     }
@@ -75,5 +75,10 @@ public class VerificationMethodAdapter extends RecyclerView.Adapter<Verification
         return list.size();
     }
 
+    public void setList(List<MethodItem> list) {
+        this.list.clear();
+        this.list.addAll(list);
+        notifyDataSetChanged();
+    }
 
 }

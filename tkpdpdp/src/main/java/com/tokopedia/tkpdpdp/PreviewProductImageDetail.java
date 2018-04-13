@@ -361,7 +361,7 @@ public class PreviewProductImageDetail extends TActivity {
                         .show();
             }
         };
-        ImageHandler.loadImageBitmap2(getApplicationContext(), fileLocations.get(vpImage.getCurrentItem()), targetListener);
+        ImageHandler.loadImageBitmap2(PreviewProductImageDetail.this, fileLocations.get(vpImage.getCurrentItem()), targetListener);
     }
 
     @OnShowRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)

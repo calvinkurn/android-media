@@ -17,10 +17,6 @@ public class CustomerRouter {
         return RouterUtils.getDefaultRouter().getDeepLinkClass();
     }
 
-    public static Intent getTruecallerIntent(Context context) {
-        return RouterUtils.getRouterFromContext(context).getTrueCallerActivityIntent(context);
-    }
-
     public static Intent getSplashScreenIntent(Context context) {
         return RouterUtils.getRouterFromContext(context).getSplashScreenIntent(context);
     }

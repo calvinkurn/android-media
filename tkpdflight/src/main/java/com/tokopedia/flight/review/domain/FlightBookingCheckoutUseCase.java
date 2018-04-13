@@ -29,6 +29,10 @@ public class FlightBookingCheckoutUseCase extends UseCase<FlightCheckoutEntity> 
     public static final String PARAM_FLIGHT_ID = "invoice_id";
     public static final String PARAM_PRICE = "price";
     public static final String PARAM_PROMOCODE = "promocode";
+    private static final int DEFAULT_QUANTITY = 1;
+    private static final int DEFAULT_PRODUCT_ID = 27;
+    private static final int DEFAULT_DEVICE_ID = 5;
+
     private FlightRepository flightRepository;
 
     @Inject
@@ -52,13 +56,13 @@ public class FlightBookingCheckoutUseCase extends UseCase<FlightCheckoutEntity> 
         FlightCheckoutAttributes attributes = new FlightCheckoutAttributes();
         List<FlightCheckoutItem> items = new ArrayList<>();
         FlightCheckoutItem item = new FlightCheckoutItem();
-        item.setQuantity(1);
-        item.setProductId(27);
+        item.setQuantity(DEFAULT_QUANTITY);
+        item.setProductId(DEFAULT_PRODUCT_ID);
         FlightCheckoutConfiguration configuration = new FlightCheckoutConfiguration();
         configuration.setPrice(requestParams.getInt(PARAM_PRICE, 0));
         item.setConfiguration(configuration);
         FlightCheckoutMetaData metaData = new FlightCheckoutMetaData();
-        metaData.setDid(4);
+        metaData.setDid(DEFAULT_DEVICE_ID);
         metaData.setFlightId(requestParams.getString(PARAM_FLIGHT_ID, ""));
         metaData.setIpAddress(FlightRequestUtil.getLocalIpAddress());
         metaData.setUserAgent(FlightRequestUtil.getUserAgentForApiCall());

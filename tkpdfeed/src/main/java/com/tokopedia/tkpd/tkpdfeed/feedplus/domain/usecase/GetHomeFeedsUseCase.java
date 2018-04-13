@@ -5,7 +5,6 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FeedRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.HomeFeedRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 

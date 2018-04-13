@@ -30,6 +30,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
     private int productUsingStock;
     private int productStock;
     private int productVariant;
+    private String productShopId;
 
     @Override
     public int getType() {
@@ -108,8 +109,12 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productStatus = productStatus;
     }
 
-    @Override
     public String getId() {
+        return productId;
+    }
+
+    @Override
+    public String getItemId() {
         return productId;
     }
 
@@ -123,6 +128,14 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
 
     public void setId(String productId) {
         this.productId = productId;
+    }
+
+    public String getProductShopId() {
+        return productShopId;
+    }
+
+    public void setProductShopId(String productShopId) {
+        this.productShopId = productShopId;
     }
 
     public boolean isStockOrImageEmpty(){
@@ -188,6 +201,10 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         return productVariant;
     }
 
+    public boolean isProductVariant(){
+        return productVariant == 1;
+    }
+
     public void setProductVariant(int productVariant) {
         this.productVariant = productVariant;
     }
@@ -216,6 +233,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         dest.writeInt(this.productUsingStock);
         dest.writeInt(this.productStock);
         dest.writeInt(this.productVariant);
+        dest.writeString(this.productShopId);
     }
 
     protected ProductManageViewModel(Parcel in) {
@@ -236,6 +254,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productUsingStock = in.readInt();
         this.productStock = in.readInt();
         this.productVariant = in.readInt();
+        this.productShopId = in.readString();
     }
 
     public static final Creator<ProductManageViewModel> CREATOR = new Creator<ProductManageViewModel>() {

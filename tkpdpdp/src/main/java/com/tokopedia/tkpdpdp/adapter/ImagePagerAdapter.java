@@ -55,14 +55,14 @@ public class ImagePagerAdapter extends PagerAdapter {
                     .dontAnimate()
                     .dontTransform()
                     .fitCenter()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .thumbnail(
                             Glide.with(context.getApplicationContext())
                                     .load(urlTemporary)
                                     .dontAnimate()
                                     .dontTransform()
                                     .fitCenter()
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL))
+                                    .diskCacheStrategy(DiskCacheStrategy.RESULT))
                     .into(imageView);
 
         } else {

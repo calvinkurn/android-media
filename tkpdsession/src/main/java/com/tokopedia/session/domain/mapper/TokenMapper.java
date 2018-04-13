@@ -3,8 +3,8 @@ package com.tokopedia.session.domain.mapper;
 import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorMessageException;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.domain.pojo.token.ErrorModel;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 

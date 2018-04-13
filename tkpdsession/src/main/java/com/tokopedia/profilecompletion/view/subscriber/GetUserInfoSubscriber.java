@@ -1,8 +1,8 @@
 package com.tokopedia.profilecompletion.view.subscriber;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorMessageException;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;

@@ -23,6 +23,8 @@
     <string name="dashboard_your_shop_is_in_moderation">Toko Anda dalam status MODERASI</string>
     <string name="dashboard_reason_x">Alasan : %1$s</string>
 
+    <string name="title_activity_deep_link_topseller">TopSeller</string>
+
     <string name="transaction_success">Transaksi Sukses</string>
     <string name="featured_product_desc_should_gold_merchant">Pilih 5 produk terbaik Anda untuk ditampilkan di halaman toko. Dapatkan akses Produk Unggulan dengan berlangganan Gold Merchant.</string>
 

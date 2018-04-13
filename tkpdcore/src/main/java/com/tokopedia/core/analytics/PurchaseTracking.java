@@ -1,6 +1,7 @@
 package com.tokopedia.core.analytics;
 
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.util.BranchSdkUtils;
 
 /**
  * Created by okasurya on 12/8/17.
@@ -21,12 +22,14 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String USER_ID = "userId";
 
     public static void marketplace(Purchase purchase) {
+        BranchSdkUtils.sendCommerceEvent(purchase, BranchSdkUtils.PRODUCTTYPE_MARKETPLACE);
         getGTMEngine().eventPurchaseMarketplace(purchase);
         getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
         getGTMEngine().clearEnhanceEcommerce();
     }
 
     public static void digital(Purchase purchase) {
+        BranchSdkUtils.sendCommerceEvent(purchase, BranchSdkUtils.PRODUCTTYPE_DIGITAL);
         getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventPurchaseDigital(purchase);
         getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);

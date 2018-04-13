@@ -15,7 +15,7 @@ public class BalanceTokoCash implements Parcelable {
     private String titleText;
     private ActionBalance actionBalance;
     private String balance;
-    private String raw_balance;
+    private long rawBalance;
     private String totalBalance;
     private long rawTotalBalance;
     private String holdBalance;
@@ -34,7 +34,7 @@ public class BalanceTokoCash implements Parcelable {
         titleText = in.readString();
         actionBalance = in.readParcelable(ActionBalance.class.getClassLoader());
         balance = in.readString();
-        raw_balance = in.readString();
+        rawBalance = in.readLong();
         totalBalance = in.readString();
         rawTotalBalance = in.readLong();
         holdBalance = in.readString();
@@ -69,7 +69,7 @@ public class BalanceTokoCash implements Parcelable {
         parcel.writeString(titleText);
         parcel.writeParcelable(actionBalance, i);
         parcel.writeString(balance);
-        parcel.writeString(raw_balance);
+        parcel.writeLong(rawBalance);
         parcel.writeString(totalBalance);
         parcel.writeLong(rawTotalBalance);
         parcel.writeString(holdBalance);
@@ -106,12 +106,12 @@ public class BalanceTokoCash implements Parcelable {
         this.balance = balance;
     }
 
-    public String getRaw_balance() {
-        return raw_balance;
+    public long getRawBalance() {
+        return rawBalance;
     }
 
-    public void setRaw_balance(String raw_balance) {
-        this.raw_balance = raw_balance;
+    public void setRawBalance(long rawBalance) {
+        this.rawBalance = rawBalance;
     }
 
     public String getTotalBalance() {

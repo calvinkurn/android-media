@@ -6,10 +6,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.data.DiskAnalyticsDataStore;
-import com.tokopedia.core.analytics.model.CustomerWrapper;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author by alvarisi on 12/28/16.
@@ -43,17 +39,15 @@ public class UserAuthenticationAnalytics {
         mDiskAnalyticsDataStore.setActiveAuthenticationMedium(medium);
     }
 
-    public static void sendAnalytics(Bundle bundle) {
+    public static void sendAnalytics() {
         checkNotNullAnalyticsData();
         switch (mDiskAnalyticsDataStore.getActiveAuthenticationState()) {
             case AppEventTracking.GTMCacheValue.LOGIN:
                 UnifyTracking.eventLoginSuccess(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
-                CommonUtils.dumper(bundle.toString());
                 CommonUtils.dumper(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
                 break;
             case AppEventTracking.GTMCacheValue.REGISTER:
                 UnifyTracking.eventRegisterSuccess(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
-                CommonUtils.dumper(bundle.toString());
                 CommonUtils.dumper(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
                 break;
         }

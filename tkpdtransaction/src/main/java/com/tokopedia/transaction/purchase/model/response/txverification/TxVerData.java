@@ -54,6 +54,12 @@ public class TxVerData implements Parcelable {
     @SerializedName("payment_amount")
     @Expose
     private String paymentAmount;
+    @SerializedName("howtopay_flag")
+    @Expose
+    private Integer howtopay;
+    @SerializedName("howtopay_url")
+    @Expose
+    private String howtopayUrl;
 
     public String getImgProofUrl() {
         return imgProofUrl;
@@ -165,6 +171,22 @@ public class TxVerData implements Parcelable {
 
     public void setPaymentAmount(String paymentAmount) {
         this.paymentAmount = paymentAmount;
+    }
+
+    public Integer getHowtopay() {
+        return howtopay;
+    }
+
+    public void setHowtopay(Integer howtopay) {
+        this.howtopay = howtopay;
+    }
+
+    public String getHowtopayUrl() {
+        return howtopayUrl;
+    }
+
+    public void setHowtopayUrl(String howtopayUrl) {
+        this.howtopayUrl = howtopayUrl;
     }
 
     public static Creator<TxVerData> getCREATOR() {

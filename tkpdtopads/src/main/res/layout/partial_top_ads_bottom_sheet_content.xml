@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/transparent"
     android:orientation="vertical">
 
@@ -57,10 +58,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/margin_med"
-                android:layout_marginRight="@dimen/margin_med"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_arrow_up" />
+                app:srcCompat="@drawable/ic_arrow_up" />
         </RelativeLayout>
     </LinearLayout>
 

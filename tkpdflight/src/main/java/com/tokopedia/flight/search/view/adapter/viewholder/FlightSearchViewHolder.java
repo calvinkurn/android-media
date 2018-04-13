@@ -3,6 +3,7 @@ package com.tokopedia.flight.search.view.adapter.viewholder;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -27,6 +28,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
     @LayoutRes
     public static int LAYOUT = R.layout.item_flight_search;
 
+    LinearLayout containerLayout;
     TextView tvDeparture;
     TextView tvArrival;
     TextView tvAirline;
@@ -41,6 +43,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
 
     public FlightSearchViewHolder(View itemView, FilterSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener) {
         super(itemView);
+        containerLayout = (LinearLayout) itemView.findViewById(R.id.container_layout);
         tvDeparture = (TextView) itemView.findViewById(R.id.departure_time);
         tvArrival = (TextView) itemView.findViewById(R.id.arrival_time);
         tvAirline = (TextView) itemView.findViewById(R.id.tv_airline);
@@ -64,7 +67,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
         View.OnClickListener detailClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onFlightSearchListener.onDetailClicked(flightSearchViewModel);
+                onFlightSearchListener.onDetailClicked(flightSearchViewModel, getAdapterPosition());
             }
         };
         tvPrice.setOnClickListener(detailClickListener);
@@ -73,6 +76,38 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
         setRefundableInfo(flightSearchViewModel);
         setSavingPrice(flightSearchViewModel);
         setArrivalAddDay(flightSearchViewModel);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onFlightSearchListener.onItemClicked(flightSearchViewModel, getAdapterPosition());
+            }
+        });
+        setMarginOnFirstItem();
+    }
+
+    private void setMarginOnFirstItem() {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        if (getAdapterPosition() == 0) {
+            params.setMargins(
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_8)
+            );
+            containerLayout.setLayoutParams(params);
+        } else {
+            params.setMargins(
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_8),
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_8)
+            );
+            containerLayout.setLayoutParams(params);
+        }
     }
 
     private void setArrivalAddDay(FlightSearchViewModel flightSearchViewModel) {

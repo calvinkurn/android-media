@@ -12,11 +12,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentProductProfile;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
@@ -64,9 +68,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         this.viewListener = viewListener;
     }
 
-    @Override
-    public void bind(final MyChatViewModel element) {
-
+    protected void prerequisiteUISetup(MyChatViewModel element){
         action.setVisibility(View.GONE);
         progressBarSendImage.setVisibility(View.GONE);
 
@@ -156,6 +158,12 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
             label.setVisibility(View.GONE);
             dot.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void bind(final MyChatViewModel element) {
+
+        prerequisiteUISetup(element);
 
         String fullTime;
         try {
@@ -164,9 +172,8 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
             fullTime = "";
         }
 
-        attachmentChatHelper.parse(element, attachment, message, action, element, viewListener
+            attachmentChatHelper.parse(element, attachment, message, action, element, viewListener
                 , element.isDummy(), element.isRetry(), hour, progressBarSendImage, chatStatus, fullTime);
-
     }
 
     private SpannableString highlight(Context context, Spanned span, String keyword) {

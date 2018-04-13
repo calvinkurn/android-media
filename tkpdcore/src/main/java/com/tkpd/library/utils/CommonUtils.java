@@ -350,6 +350,11 @@ public class CommonUtils {
         IntentIntegrator.forSupportFragment(fragment).setCaptureActivity(customClass).initiateScan();
     }
 
+    public static void requestBarcodeScanner(Activity activity, Class customClass) {
+        IntentIntegrator intentIntegrator = new IntentIntegrator(activity);
+        intentIntegrator.setCaptureActivity(customClass).initiateScan();
+    }
+
     public static String getBarcode(int requestCode, int resultCode, Intent data) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (scanResult != null && scanResult.getContents() != null) {

@@ -26,7 +26,7 @@ public class HockeyAppHelper {
     }
 
     public static void checkForUpdate(Activity activity) {
-        if (isAllow()) UpdateManager.register(activity, HOCKEYAPP_KEY);
+        if (isAllow()) UpdateManager.register(activity);
     }
 
     public static void unregisterManager() {

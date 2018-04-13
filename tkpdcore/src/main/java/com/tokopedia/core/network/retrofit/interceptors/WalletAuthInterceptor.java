@@ -44,7 +44,7 @@ public class WalletAuthInterceptor extends TkpdAuthInterceptor {
         final Request finalRequest = newRequest.build();
         Response response = getResponse(chain, finalRequest);
 
-        if (isNeedRelogin(response)) {
+        if (isNeedGcmUpdate(response)) {
             doRelogin();
             response = getResponse(chain, finalRequest);
         }
@@ -55,8 +55,7 @@ public class WalletAuthInterceptor extends TkpdAuthInterceptor {
             Request newRequestWallet = reCreateRequestWithNewAccessToken(chain);
             Response responseNew = chain.proceed(newRequestWallet);
             if (isUnauthorizeWalletToken(newRequestWallet, responseNew)) {
-                ServerErrorHandler.showForceLogoutDialog();
-                ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+                throwChainProcessCauseHttpError(responseNew);
             }
             return responseNew;
         }
@@ -118,7 +117,8 @@ public class WalletAuthInterceptor extends TkpdAuthInterceptor {
     private boolean isUnauthorizeWalletToken(Request request, Response response) {
         try {
             String responseString = response.peekBody(512).string();
-            return response.code() == 401 || responseString.toLowerCase().contains("invalid_request")
+            return (responseString.toLowerCase().contains("invalid token") ||
+                    responseString.toLowerCase().contains("Invalid token"))
                     && request.header(AUTHORIZATION).contains(BEARER);
         } catch (IOException e) {
             e.printStackTrace();

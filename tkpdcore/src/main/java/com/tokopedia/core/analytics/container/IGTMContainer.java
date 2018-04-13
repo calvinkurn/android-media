@@ -97,10 +97,6 @@ public interface IGTMContainer {
 
     void eventTransaction(Purchase purchase);
 
-    GTMContainer eventBannerImpression(Promotion promotion);
-
-    GTMContainer eventBannerClick(Promotion promotion);
-
     void clearTransactionDataLayer(Purchase purchase);
 
     GTMContainer sendEvent(Map<String, Object> events);

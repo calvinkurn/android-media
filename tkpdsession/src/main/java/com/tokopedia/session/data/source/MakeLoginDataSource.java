@@ -1,7 +1,9 @@
 package com.tokopedia.session.data.source;
 
+import android.util.Log;
+
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
@@ -43,7 +45,9 @@ public class MakeLoginDataSource {
                             String.valueOf(makeLoginDomain.getUserId()),
                             makeLoginDomain.getFullName(),
                             String.valueOf(makeLoginDomain.getShopId()),
-                            makeLoginDomain.isMsisdnVerified());
+                            makeLoginDomain.isMsisdnVerified(),
+                            makeLoginDomain.getShopName());
+                    sessionHandler.setEmail(sessionHandler.getTempEmail());
                     sessionHandler.setGoldMerchant(makeLoginDomain.getShopIsGold());
                     sessionHandler.setPhoneNumber(sessionHandler.getTempPhoneNumber
                             (MainApplication.getAppContext()));

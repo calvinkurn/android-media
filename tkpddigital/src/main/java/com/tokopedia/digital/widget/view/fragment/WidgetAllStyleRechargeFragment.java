@@ -18,17 +18,15 @@ import android.widget.Toast;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
@@ -40,6 +38,7 @@ import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.ContactData;
@@ -239,19 +238,32 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     private void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
         this.digitalCheckoutPassDataState = digitalCheckoutPassData;
-        Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
-        intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+        Intent intent = ((IDigitalModuleRouter) MainApplication.getAppContext()).getLoginIntent(getActivity());
         navigateToActivityRequest(intent, IDigitalModuleRouter.REQUEST_CODE_LOGIN);
     }
 
     @Override
     public void onProductChooserClicked(List<Product> productListData, String operatorId, String titleChooser) {
-
+        startActivityForResult(
+                DigitalChooserActivity.newInstanceProductChooser(
+                        getActivity(), categoryId, operatorId, titleChooser
+                ),
+                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
+        );
+        getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
     }
 
     @Override
     public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
-
+        startActivityForResult(
+                DigitalChooserActivity.newInstanceOperatorChooser(
+                        getActivity(), categoryId, titleChooser,
+                        categoryDataState.getOperatorLabel(),
+                        categoryDataState.getName()
+                ),
+                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
+        );
+        getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
     }
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
@@ -259,14 +271,14 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
         if (categoryDataState.isSupportedStyle()) {
             switch (categoryDataState.getOperatorStyle()) {
-                case CategoryData.STYLE_PRODUCT_CATEGORY_1 :
-                case CategoryData.STYLE_PRODUCT_CATEGORY_99 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_1:
+                case CategoryData.STYLE_PRODUCT_CATEGORY_99:
                     handleStyle1(orderClientNumber);
                     break;
-                case CategoryData.STYLE_PRODUCT_CATEGORY_2 :
-                case CategoryData.STYLE_PRODUCT_CATEGORY_3 :
-                case CategoryData.STYLE_PRODUCT_CATEGORY_4 :
-                case CategoryData.STYLE_PRODUCT_CATEGORY_5 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_2:
+                case CategoryData.STYLE_PRODUCT_CATEGORY_3:
+                case CategoryData.STYLE_PRODUCT_CATEGORY_4:
+                case CategoryData.STYLE_PRODUCT_CATEGORY_5:
                     handleStyleOther(orderClientNumber);
                     break;
             }
@@ -375,7 +387,32 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                     }
                 }
                 break;
+            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
+                if (resultCode == Activity.RESULT_OK && data != null)
+                    handleCallBackProductChooser(
+                            (Product) data.getParcelableExtra(
+                                    DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA
+                            )
+                    );
+                break;
+            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    handleCallBackOperatorChooser(
+                            (Operator) data.getParcelableExtra(
+                                    DigitalChooserActivity.EXTRA_CALLBACK_OPERATOR_DATA
+                            )
+                    );
+                }
+                break;
         }
+    }
+
+    private void handleCallBackProductChooser(Product product) {
+        digitalProductView.renderUpdateProductSelected(product);
+    }
+
+    private void handleCallBackOperatorChooser(Operator operator) {
+        digitalProductView.renderUpdateOperatorSelected(operator);
     }
 
     private void renderContactDataToClientNumber(ContactData contactData) {

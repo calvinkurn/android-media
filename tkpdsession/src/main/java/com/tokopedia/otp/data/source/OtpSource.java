@@ -1,6 +1,6 @@
 package com.tokopedia.otp.data.source;
 
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;

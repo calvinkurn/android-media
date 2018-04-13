@@ -2,7 +2,7 @@ package com.tokopedia.session.login.loginphonenumber.view.presenter;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginphonenumber.domain.interactor.CheckMsisdnTokoCashUseCase;
 import com.tokopedia.session.login.loginphonenumber.view.subscriber.CheckMsisdnTokoCashSubscriber;

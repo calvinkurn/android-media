@@ -15,11 +15,16 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by okasurya on 11/29/17.
  */
 
 public class SimpleAppRatingDialog extends AppRatingDialog {
+    private static final String HIDE_SIMPLE_APP_RATING = "HideSimpleAppRating";
+    private static final String DEFAULT_VALUE = "1";
+    private static final long EXPIRED_TIME = TimeUnit.DAYS.toSeconds(7);
 
     public static void show(Activity activity) {
         SimpleAppRatingDialog simpleAppRatingDialog = new SimpleAppRatingDialog(activity);
@@ -57,6 +62,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
                 .setNegativeButton(R.string.app_rating_button_later, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        hideDialog();
                         UnifyTracking.eventCancelAppRating(AppEventTracking.Event.CANCEL_APP_RATING);
                         dialog.dismiss();
                     }
@@ -67,7 +73,8 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
 
     @Override
     protected boolean isDialogNeedToBeShown() {
-        if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_SIMPLE_APP_RATING, false)) {
+        if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_SIMPLE_APP_RATING, false)
+                && globalCacheManager.isExpired(HIDE_SIMPLE_APP_RATING)) {
             Integer appRatingVersion = cacheHandler.getInt(TkpdCache.Key.KEY_APP_RATING_VERSION);
             return appRatingVersion == null || appRatingVersion == -1;
         }
@@ -78,6 +85,13 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
     @Override
     protected void onShowDialog() {
         UnifyTracking.eventAppRatingImpression(this.getClass().getSimpleName());
+    }
+
+    private void hideDialog() {
+        globalCacheManager.setCacheDuration(EXPIRED_TIME);
+        globalCacheManager.setKey(HIDE_SIMPLE_APP_RATING);
+        globalCacheManager.setValue(DEFAULT_VALUE);
+        globalCacheManager.store();
     }
 
     /**

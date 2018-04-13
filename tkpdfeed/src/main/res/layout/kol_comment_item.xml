@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/main_view"
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
         android:orientation="vertical"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/dp_10">
 
         <ImageView
             android:id="@+id/avatar"
@@ -24,16 +25,16 @@
             android:id="@+id/badge"
             android:layout_width="@dimen/badge_size"
             android:layout_height="@dimen/badge_size"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_vvvs"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_2"
             android:layout_toRightOf="@id/avatar"
-            android:src="@drawable/ic_kol_badge"/>
+            app:srcCompat="@drawable/ic_kol_badge"/>
 
         <TextView
             android:id="@+id/comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_10"
             android:textColor="@color/black_54"
             android:textSize="@dimen/text_size_medium"
             android:layout_toEndOf="@id/avatar"
@@ -45,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/comment"
-            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_10"
             android:layout_toEndOf="@id/avatar"
             android:layout_toRightOf="@id/avatar"
             android:fontFamily="sans-serif"

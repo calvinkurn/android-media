@@ -1,14 +1,13 @@
 package com.tokopedia.tokocash.qrpayment.data.repository;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tokocash.qrpayment.data.datasource.QrPaymentDataSourceFactory;
-import com.tokopedia.tokocash.qrpayment.data.mapper.BalanceTokoCashMapper;
 import com.tokopedia.tokocash.qrpayment.data.mapper.InfoQrMapper;
 import com.tokopedia.tokocash.qrpayment.data.mapper.QrPaymentMapper;
 import com.tokopedia.tokocash.qrpayment.domain.IQrPaymentRepository;
-import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
+
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -28,20 +27,14 @@ public class QrPaymentRepository implements IQrPaymentRepository {
     }
 
     @Override
-    public Observable<InfoQrTokoCash> getInfoQrTokoCash(TKPDMapParam<String, Object> mapParams) {
+    public Observable<InfoQrTokoCash> getInfoQrTokoCash(HashMap<String, Object> mapParams) {
         return qrPaymentDataSourceFactory.create().getInfoQrTokoCash(mapParams)
                 .map(new InfoQrMapper());
     }
 
     @Override
-    public Observable<QrPaymentTokoCash> postQrPayment(TKPDMapParam<String, Object> mapParams) {
+    public Observable<QrPaymentTokoCash> postQrPayment(HashMap<String, Object> mapParams) {
         return qrPaymentDataSourceFactory.create().postQrPaymentTokoCash(mapParams)
                 .map(new QrPaymentMapper());
-    }
-
-    @Override
-    public Observable<BalanceTokoCash> getBalanceTokoCash(TKPDMapParam<String, Object> mapParams) {
-        return qrPaymentDataSourceFactory.create().getBalanceTokoCash(mapParams)
-                .map(new BalanceTokoCashMapper());
     }
 }

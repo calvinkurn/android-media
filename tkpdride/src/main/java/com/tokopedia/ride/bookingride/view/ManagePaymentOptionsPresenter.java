@@ -6,7 +6,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListCacheUseCase;
@@ -216,7 +216,7 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
         }
 
 
-        tokoCashUseCase.execute(RequestParams.EMPTY, new Subscriber<TokoCashModel>() {
+        tokoCashUseCase.execute(RequestParams.EMPTY, new Subscriber<TokoCashData>() {
             @Override
             public void onCompleted() {
 
@@ -228,14 +228,12 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
             }
 
             @Override
-            public void onNext(TokoCashModel tokoCashModel) {
-                if (tokoCashModel != null
-                        && tokoCashModel.isSuccess()
-                        && tokoCashModel.getTokoCashData() != null
-                        && tokoCashModel.getTokoCashData().getLink() == 1) {
-                    CommonUtils.dumper("ManagePaymentOptionsPresenter :: tokocash balance == " + tokoCashModel.getTokoCashData().getBalance());
+            public void onNext(TokoCashData tokoCashData) {
+                if (tokoCashData != null
+                        && tokoCashData.getLink() == 1) {
+                    CommonUtils.dumper("ManagePaymentOptionsPresenter :: tokocash balance == " + tokoCashData.getBalance());
 
-                    tokoCashBalance = tokoCashModel.getTokoCashData().getBalance();
+                    tokoCashBalance = tokoCashData.getBalance();
 
                     //show tokocash balance
                     showTokoCashBalance(tokoCashBalance);

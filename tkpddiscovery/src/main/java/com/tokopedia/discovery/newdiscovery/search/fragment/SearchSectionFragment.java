@@ -77,7 +77,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        screenTrack();
         if (getUserVisibleHint()) {
             setupBottomNavigation();
         }
@@ -341,7 +340,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         return flagFilterHelper;
     }
 
-    private void clearDataFilterSort() {
+    protected void clearDataFilterSort() {
         this.filters.clear();
         this.sort.clear();
     }

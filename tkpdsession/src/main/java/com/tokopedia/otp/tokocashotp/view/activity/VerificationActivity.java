@@ -9,12 +9,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.analytics.OTPAnalytics;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.otp.tokocashotp.view.fragment.ChooseVerificationMethodFragment;
-import com.tokopedia.otp.tokocashotp.view.fragment.VerificationFragment;
+import com.tokopedia.otp.tokocashotp.view.fragment.ChooseTokocashVerificationMethodFragment;
+import com.tokopedia.otp.tokocashotp.view.fragment.TokoCashVerificationFragment;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
 
@@ -72,11 +72,11 @@ public class VerificationActivity extends TActivity implements HasComponent {
         switch (type) {
             case TYPE_SMS: {
                 String phoneNumber = bundle.getString(PARAM_PHONE_NUMBER, "");
-                fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber));
+                fragment = TokoCashVerificationFragment.createInstance(createSmsBundle(phoneNumber));
                 break;
             }
             default: {
-                fragment = ChooseVerificationMethodFragment.createInstance(bundle);
+                fragment = ChooseTokocashVerificationMethodFragment.createInstance(bundle);
                 break;
             }
         }
@@ -85,7 +85,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     private String createSmsMessage(String phoneNumber) {
         if (!TextUtils.isEmpty(phoneNumber)) {
-            return getString(R.string.verification_code_sent_to) + " " + getMaskedPhone(phoneNumber);
+            return getString(R.string.verification_code_sms_sent_to) + " " + getMaskedPhone(phoneNumber);
         } else {
             return "";
         }
@@ -109,7 +109,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_LOGIN_PHONE_NUMBER;
+        return OTPAnalytics.Screen.SCREEN_COTP_DEFAULT;
     }
 
     @Override
@@ -122,9 +122,8 @@ public class VerificationActivity extends TActivity implements HasComponent {
         return getApplicationComponent();
     }
 
-
-    public static Intent getSmsVerificationIntent(Context context, String phoneNumber,
-                                                  ArrayList<MethodItem> listAvailableMethod) {
+    public static Intent getLoginTokoCashVerificationIntent(Context context, String phoneNumber,
+                                                            ArrayList<MethodItem> listAvailableMethod) {
         Intent intent = new Intent(context, VerificationActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
@@ -136,10 +135,10 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     public void goToSelectVerificationMethod() {
         if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
-                ChooseVerificationMethodFragment)) {
+                ChooseTokocashVerificationMethodFragment)) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-            Fragment fragment = ChooseVerificationMethodFragment.createInstance(getIntent().getExtras());
+            Fragment fragment = ChooseTokocashVerificationMethodFragment.createInstance(getIntent().getExtras());
             fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0, com
                     .tokopedia.core.R.animator.slide_out_right);
             fragmentTransaction.add(R.id.container, fragment, CHOOSE_FRAGMENT_TAG);
@@ -151,12 +150,12 @@ public class VerificationActivity extends TActivity implements HasComponent {
     public void goToSmsVerification() {
         if (getIntent().getExtras() != null
                 && (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
-                VerificationFragment))) {
+                TokoCashVerificationFragment))) {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             String phoneNumber = getIntent().getExtras().getString(PARAM_PHONE_NUMBER, "");
 
-            Fragment fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber));
+            Fragment fragment = TokoCashVerificationFragment.createInstance(createSmsBundle(phoneNumber));
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0,
                     com.tokopedia.core.R.animator.slide_out_right);
@@ -169,12 +168,12 @@ public class VerificationActivity extends TActivity implements HasComponent {
     public void goToCallVerification() {
         if (getIntent().getExtras() != null
                 && (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
-                VerificationFragment))) {
+                TokoCashVerificationFragment))) {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             String phoneNumber = getIntent().getExtras().getString(PARAM_PHONE_NUMBER, "");
 
-            Fragment fragment = VerificationFragment.createInstance(createCallBundle(phoneNumber));
+            Fragment fragment = TokoCashVerificationFragment.createInstance(createCallBundle(phoneNumber));
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0,
                     com.tokopedia.core.R.animator.slide_out_right);
@@ -190,7 +189,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_sms);
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
         bundle.putString(PARAM_MESSAGE, createSmsMessage(phoneNumber));
-        bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_SMS);
+        bundle.putString(PARAM_APP_SCREEN, OTPAnalytics.Screen.SCREEN_COTP_SMS);
         return bundle;
     }
 
@@ -200,7 +199,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_call);
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
         bundle.putString(PARAM_MESSAGE, createCallMessage(phoneNumber));
-        bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_CALL);
+        bundle.putString(PARAM_APP_SCREEN, OTPAnalytics.Screen.SCREEN_COTP_CALL);
         return bundle;
     }
 

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -13,6 +12,7 @@ import android.view.ViewTreeObserver;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -34,6 +34,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 
 /**
@@ -43,8 +44,8 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEA
 public class SearchActivity extends DiscoveryActivity
         implements SearchContract.View, RedirectionListener {
 
-    public static final int TAB_THIRD_POSITION= 2;
-    public static final int TAB_SECOND_POSITION= 1;
+    public static final int TAB_THIRD_POSITION = 2;
+    public static final int TAB_SECOND_POSITION = 1;
     public static final int TAB_PRODUCT = 0;
 
     private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
@@ -85,6 +86,12 @@ public class SearchActivity extends DiscoveryActivity
         return intent;
     }
 
+    public static Intent newInstance(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, SearchActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     public static void moveTo(AppCompatActivity activity,
                               ProductViewModel productViewModel,
                               boolean forceSwipeToShop) {
@@ -111,7 +118,7 @@ public class SearchActivity extends DiscoveryActivity
         boolean forceSwipeToShop;
         String searchQuery = getIntent().getStringExtra(BrowseProductRouter.EXTRAS_SEARCH_TERM);
 
-        if(savedInstanceState!=null){
+        if (savedInstanceState != null) {
             forceSwipeToShop = isForceSwipeToShop();
         } else {
             forceSwipeToShop = getIntent().getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
@@ -130,6 +137,11 @@ public class SearchActivity extends DiscoveryActivity
                     KeyboardHandler.showSoftKeyboard(SearchActivity.this);
                 }
             }, 200);
+        }
+
+        if (getIntent() != null &&
+                getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
+            UnifyTracking.eventBeliLongClick();
         }
     }
 
@@ -165,13 +177,11 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void setActiveTab(final boolean swipeToShop) {
-        viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
-        {
+        viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void onGlobalLayout()
-            {
+            public void onGlobalLayout() {
                 viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                if(swipeToShop){
+                if (swipeToShop) {
                     viewPager.setCurrentItem(getShopTabPosition());
                 } else {
                     viewPager.setCurrentItem(getActiveTabPosition());
@@ -307,6 +317,7 @@ public class SearchActivity extends DiscoveryActivity
         searchView.showSearch(true, DiscoverySearchView.TAB_DEFAULT_SUGGESTION);
         searchView.setFinishOnClose(false);
     }
+
     @Override
     protected void onDestroy() {
         searchPresenter.detachView();
