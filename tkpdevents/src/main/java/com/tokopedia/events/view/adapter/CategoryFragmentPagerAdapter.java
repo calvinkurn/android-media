@@ -33,17 +33,24 @@ public class CategoryFragmentPagerAdapter extends FragmentStatePagerAdapter {
             }
         }
         fragmentArrayList = new ArrayList<>();
+        Fragment fragment = null;
+        for (int i = 0; i < this.categoryList.size(); i++)
+            fragmentArrayList.add(fragment);
     }
 
     @Override
     public Fragment getItem(int position) {
-        Log.d("FRAGMENTINSTANCE", "getItemCalled");
         Fragment fragment;
         try {
             fragment = fragmentArrayList.get(position);
+            if (fragment == null) {
+                fragment = CategoryFragment.newInstance(categoryList.get(position), position);
+                fragmentArrayList.remove(position);
+                fragmentArrayList.add(position, fragment);
+            }
         } catch (IndexOutOfBoundsException e) {
             CategoryFragment categoryFragment = (CategoryFragment) CategoryFragment.newInstance(categoryList.get(position), position);
-            fragmentArrayList.add(categoryFragment);
+            fragmentArrayList.add(position, categoryFragment);
             fragment = fragmentArrayList.get(position);
         }
         return fragment;

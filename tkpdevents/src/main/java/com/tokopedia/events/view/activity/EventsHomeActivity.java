@@ -57,7 +57,7 @@ import butterknife.Unbinder;
  */
 public class EventsHomeActivity extends TActivity
         implements HasComponent<EventComponent>,
-        EventsContract.View, CategoryFragment.ICategoryFragmentCallbacks {
+        EventsContract.View {
 
     private Unbinder unbinder;
     public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
@@ -272,8 +272,10 @@ public class EventsHomeActivity extends TActivity
         categoryViewPager.setCurrentItem(defaultViewPagerPos);
         categoryViewPager.setSaveFromParentEnabled(false);
         indicatorLayout.setVisibility(View.VISIBLE);
-        IFragmentLifecycleCallback fragmentToShow = (CategoryFragment) categoryTabsPagerAdapter.getItem(defaultViewPagerPos);
-        fragmentToShow.fragmentResume();
+        if (defaultViewPagerPos == 0) {
+            IFragmentLifecycleCallback fragmentToShow = (CategoryFragment) categoryTabsPagerAdapter.getItem(defaultViewPagerPos);
+            fragmentToShow.fragmentResume();
+        }
     }
 
 
@@ -302,7 +304,7 @@ public class EventsHomeActivity extends TActivity
 
     private void setCategoryViewPagerListener() {
         categoryViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            int currentPosition = defaultViewPagerPos;
+            int currentPosition = 0;
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -311,6 +313,7 @@ public class EventsHomeActivity extends TActivity
 
             @Override
             public void onPageSelected(int newPosition) {
+
                 UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_TAB, categoryViewPager.getAdapter().getPageTitle(newPosition) + "-"
                         + String.valueOf(newPosition));
 
@@ -349,10 +352,5 @@ public class EventsHomeActivity extends TActivity
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
-    }
-
-    @Override
-    public int getCurrentPagerPosition() {
-        return categoryViewPager.getCurrentItem();
     }
 }
