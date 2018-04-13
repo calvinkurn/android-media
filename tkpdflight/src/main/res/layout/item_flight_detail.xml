@@ -34,6 +34,8 @@
                 tools:text="19:25" />
 
             <TextView
+                android:layout_marginLeft="@dimen/margin_4"
+                android:layout_marginStart="@dimen/margin_4"
                 android:id="@+id/departure_date"
                 style="@style/TextView.Micro.BlackDisabled"
                 android:layout_alignBottom="@+id/departure_time"
