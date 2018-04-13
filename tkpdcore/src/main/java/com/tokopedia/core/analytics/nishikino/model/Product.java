@@ -53,10 +53,6 @@ public class Product extends BaseGTMModel {
         Product.put(KEY_CAT, category);
     }
 
-    public void setList(Object list) {
-        Product.put(KEY_LIST, list);
-    }
-
     public void setDimension38(Object data) {
         Product.put(KEY_DIMENSION_38, data);
     }

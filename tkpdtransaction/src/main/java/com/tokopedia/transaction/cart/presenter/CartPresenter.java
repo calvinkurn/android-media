@@ -149,6 +149,7 @@ public class CartPresenter implements ICartPresenter {
                 product.setCartId(cartProduct.getProductCartId());
                 product.setCategoryId(cartProduct.getProductCatId());
                 product.setDimension38(cartProduct.getProductTrackerData().getAttribution());
+                product.setDimension40(cartProduct.getProductTrackerData().getListDataName());
                 product.setProductName(MethodChecker.fromHtml(cartProduct.getProductName()).toString());
 
                 com.tokopedia.core.analytics.model.Product locaProduct
