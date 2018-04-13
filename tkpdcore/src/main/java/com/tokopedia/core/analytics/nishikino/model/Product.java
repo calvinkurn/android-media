@@ -55,7 +55,14 @@ public class Product extends BaseGTMModel {
 
     public void setList(Object list) {
         Product.put(KEY_LIST, list);
-        Product.put(KEY_DIMENSION_40, list);
+    }
+
+    public void setDimension38(Object data) {
+        Product.put(KEY_DIMENSION_38, data);
+    }
+
+    public void setDimension40(Object data) {
+        Product.put(KEY_DIMENSION_40, data);
     }
 
     public void setPosition(Object position) {
@@ -68,10 +75,6 @@ public class Product extends BaseGTMModel {
 
     public void setVariant(Object variant) {
         Product.put(KEY_VARIANT, variant);
-    }
-
-    public void setHomeAttribution(Object homeAttribution) {
-        Product.put(KEY_DIMENSION_38, homeAttribution);
     }
 
     public Map<String, Object> getProduct() {
