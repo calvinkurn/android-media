@@ -315,4 +315,7 @@ yang ditemukan</string>
     <string name="title_personal">Personal</string>
     <string name="title_community">Channel</string>
     <string name="chat_title">Chat ( %d )</string>
+
+    <!-- attach invoice -->
+    <string name="total_invoice">Total: </string>
 </resources>
