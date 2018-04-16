@@ -228,8 +228,10 @@ public class EventBookTicketPresenter
         } else {
             selectedViewHolder.toggleMaxTicketWarning(View.VISIBLE, selectedPackageViewModel.getSelectedQuantity());
         }
-        if (selectedCount < selectedPackageViewModel.getMinQty())
+        if (selectedCount < selectedPackageViewModel.getMinQty()) {
             selectedViewHolder.toggleMinTicketWarning(View.VISIBLE, selectedPackageViewModel.getMinQty());
+            getView().hidePayButton();
+        }
         else {
             getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
         }
