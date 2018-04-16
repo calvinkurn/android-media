@@ -267,6 +267,11 @@
             android:theme="@style/DialogTheme"/>
 
         <activity
+            android:name=".campaign.view.activity.ShakeErrorCampaignActivity"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".flight.presentation.FlightPhoneVerificationActivity"
             android:label="@string/flight_title_activity_phone_verification"
             android:screenOrientation="portrait"

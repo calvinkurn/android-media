@@ -1,0 +1,66 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:clipToPadding="false"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/dp_4"
+        android:theme="?toolbarTheme"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/dp_16"
+        android:gravity="top|center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            app:srcCompat="@drawable/ic_network_error"
+            android:layout_marginBottom="@dimen/dp_16" />
+
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_16"
+            android:gravity="center"
+            tools:text="Terjadi Kendala pada Server" />
+
+        <TextView
+            android:id="@+id/text_error_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:textSize="@dimen/sp_12"
+            android:gravity="center"
+            tools:text="Untuk saat ini Tokopedia kepenuhan pengunjung" />
+
+        <Button
+            android:id="@+id/button_return"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"
+            tools:text="Kembali ke Beranda"
+            style="@style/Button.Submit.Green" />
+
+    </LinearLayout>
+
+</LinearLayout>
