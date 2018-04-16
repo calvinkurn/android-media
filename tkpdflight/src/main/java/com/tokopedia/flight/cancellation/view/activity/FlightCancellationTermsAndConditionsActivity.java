@@ -25,4 +25,9 @@ public class FlightCancellationTermsAndConditionsActivity extends BaseSimpleActi
     protected Fragment getNewFragment() {
         return FlightCancellationTermsAndConditionsFragment.createInstance();
     }
+
+    @Override
+    protected boolean isShowCloseButton() {
+        return true;
+    }
 }
