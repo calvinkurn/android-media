@@ -12,24 +12,34 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/card_view"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:cardBackgroundColor="@color/cardview_light_background"
-            app:cardCornerRadius="3dp"
-            app:cardElevation="0dp"
-            app:cardPreventCornerOverlap="false">
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/product_image"
-                android:layout_width="match_parent"
-                android:layout_height="155dp"
-                android:gravity="center"
-                android:scaleType="centerCrop" />
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:cardBackgroundColor="@color/cardview_light_background"
+                app:cardCornerRadius="@dimen/dp_6"
+                app:cardElevation="0dp"
+                app:cardPreventCornerOverlap="false"
+                app:layout_constraintDimensionRatio="2:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
-        </android.support.v7.widget.CardView>
+                <ImageView
+                    android:id="@+id/product_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:scaleType="fitXY"
+                    tools:src="@tools:sample/avatars" />
+
+            </android.support.v7.widget.CardView>
+
+        </android.support.constraint.ConstraintLayout>
 
         <android.support.v4.widget.Space
             android:layout_width="wrap_content"
@@ -112,11 +122,11 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/space_mini"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/black_38"
                 android:textSize="12sp"
                 android:textStyle="normal"
-                android:layout_marginLeft="@dimen/space_mini"
                 tools:text="2.546.000" />
 
         </RelativeLayout>
@@ -125,29 +135,28 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/space_med" />
 
-    </LinearLayout>
-
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:cardBackgroundColor="@color/cardview_light_background"
-        app:cardCornerRadius="@dimen/radius"
-        app:cardPreventCornerOverlap="false"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
-
-        <TextView
-            android:id="@+id/action_button"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/medium_green"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center"
-            android:padding="@dimen/space_med"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_14"
-            android:text="@string/enter_event_group_chat" />
+            android:orientation="vertical"
+            app:cardBackgroundColor="@color/cardview_light_background"
+            app:cardCornerRadius="@dimen/radius"
+            app:cardPreventCornerOverlap="false"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
-    </android.support.v7.widget.CardView>
+            <TextView
+                android:id="@+id/action_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/medium_green"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:padding="@dimen/space_med"
+                android:text="@string/enter_event_group_chat"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14" />
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -19,7 +19,7 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
         <activity
             android:name=".register.view.activity.RegisterEmailActivity"
-            android:label="@string/title_activity_register"
+            android:label="@string/title_activity_register_2"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
@@ -145,12 +145,6 @@
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
-            android:name="com.tokopedia.otp.registerphonenumber.view.activity.VerificationActivity"
-            android:label="@string/title_verify"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-
-        <activity
             android:name=".register.registerphonenumber.view.activity.WelcomePageActivity"
             android:label="@string/title_verify"
             android:screenOrientation="portrait"
@@ -159,16 +153,19 @@
         <activity
             android:name=".addchangeemail.view.activity.AddEmailActivity"
             android:label="@string/title_add_email"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".addchangepassword.view.activity.AddPasswordActivity"
+            android:theme="@style/Theme.White"
             android:label="@string/title_add_password"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name=".changename.view.activity.ChangeNameActivity"
+            android:theme="@style/Theme.White"
             android:label="@string/title_change_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>

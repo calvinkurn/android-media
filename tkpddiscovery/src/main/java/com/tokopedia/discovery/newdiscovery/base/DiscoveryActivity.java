@@ -477,7 +477,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         getPresenter().requestImageSearch(imagePath);
     }
 
-
     @Override
     public void onHandleImageSearchResponseError() {
         if (tkpdProgressDialog != null) {

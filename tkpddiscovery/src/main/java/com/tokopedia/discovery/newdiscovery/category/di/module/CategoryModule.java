@@ -28,7 +28,9 @@ import dagger.Provides;
         AttributeModule.class,
         ImageSearchModule.class,
         CatalogModule.class,
-        CategoryHeaderModule.class})
+        CategoryHeaderModule.class,
+        ImageSearchModule.class
+})
 public class CategoryModule {
 
     @CategoryScope

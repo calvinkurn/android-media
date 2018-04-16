@@ -1,10 +1,6 @@
 package com.tokopedia.session.register.domain.interactor.registerinitial;
 
 import com.facebook.AccessToken;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
@@ -12,6 +8,8 @@ import com.tokopedia.session.domain.interactor.GetTokenUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 import com.tokopedia.session.register.domain.model.LoginSosmedDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -29,12 +27,9 @@ public class LoginWithSosmedUseCase extends UseCase<LoginSosmedDomain> {
     protected final MakeLoginUseCase makeLoginUseCase;
 
     @Inject
-    public LoginWithSosmedUseCase(ThreadExecutor threadExecutor,
-                                  PostExecutionThread postExecutionThread,
-                                  GetTokenUseCase getTokenUseCase,
+    public LoginWithSosmedUseCase(GetTokenUseCase getTokenUseCase,
                                   GetUserInfoUseCase getUserInfoUseCase,
-                                  MakeLoginUseCase makeLoginUseCase) {
-        super(threadExecutor, postExecutionThread);
+                                  MakeLoginUseCase makeLoginUseCase)  {
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;

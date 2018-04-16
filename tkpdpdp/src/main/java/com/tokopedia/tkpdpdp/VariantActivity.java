@@ -66,6 +66,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     private ProductVariant productVariant;
     private ProductDetailData productDetailData;
+    private String mainImage = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -264,6 +265,19 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         Child defaultChild = productVariant.getChildFromProductId(productDetailData.getInfo().getProductId());
         if (productDetailData.getInfo().getProductId()==productVariant.getParentId() || defaultChild==null) {
             defaultChild = productVariant.getChildFromProductId(productVariant.getDefaultChild());
+        }
+
+        if (TextUtils.isEmpty(defaultChild.getPicture().getThumbnail())) {
+            mainImage = new String (productDetailData.getProductImages().get(0).getImageSrc());
+        } else if (productDetailData.getProductImages().size()>1) {
+            mainImage = new String (productDetailData.getProductImages().get(1).getImageSrc());
+        }
+
+        for (Child child: productVariant.getChildren()) {
+            if (TextUtils.isEmpty(child.getPicture().getThumbnail())) {
+                child.getPicture().setThumbnail(mainImage);
+                child.getPicture().setOriginal(mainImage);
+            }
         }
 
         if (defaultChild!=null && defaultChild.getOptionIds() != null && defaultChild.getOptionIds().size()>0) {

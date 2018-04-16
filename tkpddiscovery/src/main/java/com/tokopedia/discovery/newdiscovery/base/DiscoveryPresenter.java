@@ -1,5 +1,9 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
@@ -37,9 +41,9 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         );
     }
 
-
     @Override
     public void requestImageSearch(String imagePath) {
+        super.requestImageSearch(imagePath);
         getImageSearchUseCase.setImagePath(imagePath);
         getImageSearchUseCase.execute(
                 RequestParams.EMPTY,

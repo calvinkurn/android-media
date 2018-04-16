@@ -27,17 +27,10 @@ public class ShopProductFeaturedViewHolder extends ShopProductViewHolder {
     @Override
     public void bind(final ShopProductViewModel shopProductViewModel) {
         super.bind(shopProductViewModel);
-        titleTextView.setOnClickListener(new View.OnClickListener() {
+        itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shopProductFeaturedListener.onProductImageFeaturedClickedTracking(shopProductViewModel, getAdapterPosition());
-            }
-        });
-
-        productImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                shopProductFeaturedListener.onProductTitleFeaturedClickedTracking(shopProductViewModel, getAdapterPosition());
+                shopProductFeaturedListener.onProductFeaturedClickedTracking(shopProductViewModel, getAdapterPosition());
             }
         });
     }
@@ -50,8 +43,6 @@ public class ShopProductFeaturedViewHolder extends ShopProductViewHolder {
 
     public interface ShopProductFeaturedListener {
         void onFeatureWishlistClickedTracking(ShopProductViewModel shopProductViewModel);
-        void onProductImageFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition);
-
-        void onProductTitleFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition);
+        void onProductFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition);
     }
 }

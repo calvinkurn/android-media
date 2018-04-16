@@ -20,6 +20,7 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.discovery.imagesearch.data.repository.ImageSearchRepository;
+import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchItemRequest;
 import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchItemResponse;
 import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
@@ -32,10 +33,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by sachinbansal on 1/10/18.
@@ -136,7 +140,6 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                                     new Func2<List<String>, SearchResultModel, SearchResultModel>() {
                                         @Override
                                         public SearchResultModel call(List<String> strings, SearchResultModel searchResultModel) {
-
                                             HashMap<String, ProductModel> productItemHashMap = new HashMap<>();
                                             for (ProductModel productItem : searchResultModel.getProductList()) {
                                                 productItemHashMap.put(productItem.getProductID(), productItem);
