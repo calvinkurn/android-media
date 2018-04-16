@@ -286,7 +286,6 @@ public class EventBookTicketActivity
         else
             finish();
         UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
-        //UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

@@ -369,7 +369,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     public void onBackPressed() {
         super.onBackPressed();
         UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
-        // UnifyTracking.eventDigitalEventClickBack(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override
