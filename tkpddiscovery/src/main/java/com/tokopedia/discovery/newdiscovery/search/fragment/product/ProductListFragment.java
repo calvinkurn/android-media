@@ -304,28 +304,27 @@ public class ProductListFragment extends SearchSectionFragment
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {
         String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
         List<Object> dataLayerList = new ArrayList<>();
+
         if (productViewModel.isImageSearch()) {
-
-            for (int j = 0; j < list.size(); ) {
-                int count = 0;
-                while (count < MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT && j < list.size()) {
-                    count++;
-                    if (list.get(j) instanceof ProductItem) {
-                        dataLayerList.add(((ProductItem) list.get(j)).getProductAsObjectDataLayer(userId));
+            if (list != null && list.size() > 0) {
+                for (int j = 0; j < list.size(); ) {
+                    int count = 0;
+                    while (count < MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT && j < list.size()) {
+                        count++;
+                        if (list.get(j) instanceof ProductItem) {
+                            dataLayerList.add(((ProductItem) list.get(j)).getProductAsObjectDataLayer(userId));
+                        }
+                        j++;
                     }
-                    j++;
+                    SearchTracking.eventImpressionImageSearchResultProduct(dataLayerList);
                 }
-                SearchTracking.eventImpressionImageSearchResultProduct(dataLayerList);
             }
-
-
         } else {
             for (Visitable object : list) {
                 if (object instanceof ProductItem) {
                     dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
                 }
             }
-
             SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
         }
 
