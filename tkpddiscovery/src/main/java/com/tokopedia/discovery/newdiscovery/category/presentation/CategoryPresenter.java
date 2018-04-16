@@ -149,7 +149,7 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
         @Override
         public void onNext(SearchResultModel searchResultModel) {
             ProductViewModel productViewModel
-                    = CategoryModelHelper.convertToProductViewModel(searchResultModel, categoryHeaderModel);
+                    = CategoryModelHelper.convertToProductViewModel(searchResultModel,categoryHeaderModel);
             getView().prepareFragment(productViewModel);
 
         }
