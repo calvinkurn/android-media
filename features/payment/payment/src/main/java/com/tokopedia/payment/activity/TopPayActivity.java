@@ -86,6 +86,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private View btnBack;
     private View btnClose;
     private TextView tvTitle;
+    private ProgressDialog progressDialog;
 
     public static final int REQUEST_CODE = TopPayActivity.class.hashCode();
     private FingerPrintDialogPayment fingerPrintDialogPayment;
@@ -203,6 +204,8 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         btnClose = findViewById(R.id.btn_close);
         scroogeWebView = (WebView) findViewById(R.id.scrooge_webview);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.title_loading));
     }
 
     private void setupURIPass(Uri data) {
@@ -611,6 +614,11 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     @Override
+    public void hideProgressBarDialog() {
+        progressDialog.dismiss();
+    }
+
+    @Override
     public void onErrorRegisterFingerPrint(Throwable e) {
         fingerPrintDialogRegister.onErrorRegisterFingerPrint();
     }
@@ -618,6 +626,11 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     @Override
     public void showErrorRegisterSnackbar() {
         NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.fingerprint_label_failed_fingerprint));
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog.show();
     }
 
     @Override
