@@ -340,6 +340,6 @@
 
 #image search
 -keep class com.tokopedia.discovery.imagesearch.domain.model.** { *; }
--keep class com.aliyuns.** { *; }
+
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**
