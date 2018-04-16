@@ -213,10 +213,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         }
     }
 
-    private void getDrawerNotification() {
-        drawerDataManager.getNotification();
-    }
-
     private void getTokoPointData() {
         sendBroadcast(new Intent(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP));
     }

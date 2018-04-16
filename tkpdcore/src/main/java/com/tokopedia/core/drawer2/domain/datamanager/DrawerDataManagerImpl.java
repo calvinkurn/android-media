@@ -16,13 +16,10 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.domain.interactor.GetSellerUserAttributesUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.GetUserAttributesUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
-import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
-import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.TokoCashSubscriber;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.TokoCashUtil;
@@ -40,20 +37,17 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     private static final String TAG = DrawerDataManagerImpl.class.getSimpleName();
     private final TokoCashUseCase tokoCashUseCase;
     private final GetUserAttributesUseCase userAttributesUseCase;
-    private final NewNotificationUseCase newNotificationUseCase;
     private final GetSellerUserAttributesUseCase sellerUserAttributesUseCase;
 
     private final DrawerDataListener viewListener;
 
     public DrawerDataManagerImpl(DrawerDataListener viewListener,
-                                 NewNotificationUseCase newNotificationUseCase,
                                  TokoCashUseCase tokoCashUseCase,
                                  GetUserAttributesUseCase uaUseCase,
                                  GetSellerUserAttributesUseCase sellerAttributeUseCase) {
         this.viewListener = viewListener;
         this.tokoCashUseCase = tokoCashUseCase;
         this.userAttributesUseCase = uaUseCase;
-        this.newNotificationUseCase = newNotificationUseCase;
         this.sellerUserAttributesUseCase = sellerAttributeUseCase;
     }
 
@@ -64,17 +58,8 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     }
 
     @Override
-    public void getNotification() {
-        newNotificationUseCase.execute(NotificationUseCase.getRequestParam(
-                GlobalConfig.isSellerApp()),
-                new NotificationSubscriber(viewListener));
-    }
-
-    @Override
     public void unsubscribe() {
-        newNotificationUseCase.unsubscribe();
         tokoCashUseCase.unsubscribe();
-
     }
 
 

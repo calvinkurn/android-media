@@ -10,8 +10,6 @@ public interface DrawerDataManager {
 
     void getTokoCash();
 
-    void getNotification();
-
     void unsubscribe();
 
     void getUserAttributes(SessionHandler sessionHandler);
