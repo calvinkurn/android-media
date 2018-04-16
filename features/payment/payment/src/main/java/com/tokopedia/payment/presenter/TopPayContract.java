@@ -63,11 +63,7 @@ public interface TopPayContract {
 
         void onSuccessRegisterFingerPrint();
 
-        void hideProgressBarDialog();
-
         void onErrorRegisterFingerPrint(Throwable e);
-
-        void showProgressDialog();
 
         void onErrorPaymentFingerPrint(Throwable e);
 
