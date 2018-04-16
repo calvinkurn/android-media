@@ -35,7 +35,7 @@ public class AttachInvoicesRepository {
         int messageId = Integer.parseInt(params.get(AttachInvoicesUseCase.MESSAGE_ID_KEY));
         int userId = Integer.parseInt(params.get(AttachInvoicesUseCase.USER_ID_KEY));
         int page = Integer.parseInt(params.get(AttachInvoicesUseCase.PAGE_KEY));
-        GetInvoicePostRequest body = new GetInvoicePostRequest(messageId, userId, true, page,
+        GetInvoicePostRequest body = new GetInvoicePostRequest(messageId, userId, false, page,
                 AttachInvoicesUseCase.DEFAULT_LIMIT);
         params.remove(AttachInvoicesUseCase.MESSAGE_ID_KEY);
         params.remove(AttachInvoicesUseCase.USER_ID_KEY);
