@@ -476,6 +476,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mViewPager.setAdapter(null);
+        adapter = null;
     }
 
     public static Intent getHomeHotlistIntent(Context context) {

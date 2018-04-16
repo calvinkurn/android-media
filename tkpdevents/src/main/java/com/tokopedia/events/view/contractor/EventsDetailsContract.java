@@ -53,6 +53,8 @@ public class EventsDetailsContract {
 
         void getEventDetails();
 
+        public String getSCREEN_NAME();
+
 
     }
 

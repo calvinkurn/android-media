@@ -135,7 +135,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(refreshData())
                 .onErrorResumeNext(getDataFromNetwork())
-                .subscribe(new HomeDataSubscriber());
+                .subscribe(createHomeDataSubscriber());
         compositeSubscription.add(subscription);
     }
 
@@ -153,9 +153,13 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         return new Action1<List<Visitable>>() {
             @Override
             public void call(List<Visitable> visitables) {
-                compositeSubscription.add(getDataFromNetwork().subscribe(new HomeDataSubscriber()));
+                compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber()));
             }
         };
+    }
+
+    private HomeDataSubscriber createHomeDataSubscriber() {
+        return new HomeDataSubscriber(this);
     }
 
     @Override
@@ -373,48 +377,68 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         return !CURSOR_NO_NEXT_PAGE_FEED.equals(currentCursor);
     }
 
-    private class HomeDataSubscriber extends Subscriber<List<Visitable>> {
+    public HeaderViewModel getHeaderViewModel() {
+        return headerViewModel;
+    }
 
-        public HomeDataSubscriber() {
+    public void setFetchFirstData(boolean fetchFirstData) {
+        this.fetchFirstData = fetchFirstData;
+    }
+
+    public boolean isLogin() {
+        return SessionHandler.isV4Login(context);
+    }
+
+    public void showNetworkError() {
+        getView().showNetworkError(context.getString(R.string.msg_network_error));
+    }
+
+    private static class HomeDataSubscriber extends Subscriber<List<Visitable>> {
+
+        HomePresenter homePresenter;
+
+        public HomeDataSubscriber(HomePresenter homePresenter) {
+            this.homePresenter = homePresenter;
         }
 
         @Override
         public void onStart() {
-            if (isViewAttached()) {
-                getView().showLoading();
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                homePresenter.getView().showLoading();
             }
         }
 
         @Override
         public void onCompleted() {
-            if (isViewAttached()) {
-                getView().hideLoading();
-                fetchFirstData = false;
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                homePresenter.getView().hideLoading();
+                homePresenter.setFetchFirstData(false);
+                homePresenter = null;
             }
         }
 
         @Override
         public void onError(Throwable e) {
-            if (isViewAttached()) {
-                getView().showNetworkError(ErrorHandler.getErrorMessage(e));
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                homePresenter.getView().showNetworkError(ErrorHandler.getErrorMessage(e));
                 onCompleted();
             }
         }
 
         @Override
         public void onNext(List<Visitable> visitables) {
-            if (isViewAttached()) {
-                if (SessionHandler.isV4Login(context) && headerViewModel != null) {
-                    visitables.add(0, headerViewModel);
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                if (homePresenter.isLogin() && homePresenter.getHeaderViewModel() != null) {
+                    visitables.add(0, homePresenter.getHeaderViewModel());
                 }
-                getView().setItems(visitables);
+                homePresenter.getView().setItems(visitables);
                 if (visitables.size() > 0) {
-                    getView().showRecomendationButton();
+                    homePresenter.getView().showRecomendationButton();
                 }
-                if (isDataValid(visitables)) {
-                    getView().removeNetworkError();
+                if (homePresenter.isDataValid(visitables)) {
+                    homePresenter.getView().removeNetworkError();
                 } else {
-                    getView().showNetworkError(context.getString(R.string.msg_network_error));
+                    homePresenter.showNetworkError();
                 }
             }
         }
