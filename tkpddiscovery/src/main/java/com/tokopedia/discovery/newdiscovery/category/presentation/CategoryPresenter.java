@@ -96,7 +96,7 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
-            ((DiscoveryActivity) getView()).onHandleResponseError();
+            ((DiscoveryActivity)getView()).onHandleResponseError();
         }
 
         @Override
