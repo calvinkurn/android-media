@@ -33,10 +33,9 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.fingerprint.util.FingerprintConstant;
-import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent;
 import com.tokopedia.payment.BuildConfig;
 import com.tokopedia.payment.R;
+import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent;
 import com.tokopedia.payment.fingerprint.di.FingerprintModule;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.fingerprint.view.FingerPrintDialogPayment;
@@ -440,10 +439,10 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public WebResourceResponse shouldInterceptRequest(final WebView view, WebResourceRequest request) {
-            if((request.getUrl().toString().contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA) ||
-                    request.getUrl().toString().contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_VERITRANS) ) && isInterceptOtp &&
+            if ((request.getUrl().toString().contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA) ||
+                    request.getUrl().toString().contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_VERITRANS)) && isInterceptOtp &&
                     request.getUrl().getQueryParameter(PaymentFingerprintConstant.ENABLE_FINGERPRINT).equalsIgnoreCase("true") &&
-                    paymentModuleRouter.getEnableFingerprintPayment()){
+                    paymentModuleRouter.getEnableFingerprintPayment()) {
                 fingerPrintDialogPayment = FingerPrintDialogPayment.createInstance(presenter.getUserId(), request.getUrl().toString(),
                         request.getUrl().getQueryParameter(PaymentFingerprintConstant.TRANSACTION_ID));
                 fingerPrintDialogPayment.setListenerPayment(TopPayActivity.this);
@@ -594,7 +593,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         if (fingerPrintDialogPayment != null) {
             fingerPrintDialogPayment.stopListening();
         }
-        if(fingerPrintDialogRegister != null){
+        if (fingerPrintDialogRegister != null) {
             fingerPrintDialogRegister.stopListening();
         }
         super.onPause();
@@ -644,10 +643,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     public void onSuccessPaymentFingerprint(String url, String paramEncode) {
         fingerPrintDialogPayment.stopListening();
         fingerPrintDialogPayment.dismiss();
-        try {
-            scroogeWebView.loadUrl(URLEncoder.encode(String.format("%1$s ? %2$s", url, paramEncode), "utf-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        scroogeWebView.loadUrl(String.format("%1$s?%2$s", url, paramEncode));
     }
 }
