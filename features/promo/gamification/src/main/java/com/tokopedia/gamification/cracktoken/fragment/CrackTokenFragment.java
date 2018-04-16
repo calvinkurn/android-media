@@ -477,7 +477,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }, widgetTokenView.isCrackPercentageFull() ? 1 : 1000);
     }
 
-    private void initCrackTokenSuccessHandler(){
+    private void initCrackTokenSuccessHandler() {
         if (crackTokenSuccessHandler == null) {
             crackTokenSuccessHandler = new Handler();
         } else {
@@ -507,7 +507,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }, 1000);
     }
 
-    private void initCrackTokenErrorHandler(){
+    private void initCrackTokenErrorHandler() {
         if (crackTokenErrorhandler == null) {
             crackTokenErrorhandler = new Handler();
         } else {
@@ -604,13 +604,16 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private void trackingCloseRewardButtonClick(CrackResult crackResult) {
         if (getActivity().getApplication() instanceof AbstractionRouter) {
             String category = "";
-            if (!crackResult.isCrackTokenSuccess()) {
-                if (crackResult.isCrackTokenExpired()) {
-                    category = GamificationEventTracking.Category.EXPIRED_TOKEN;
-                } else {
+            if (crackResult.isCrackTokenSuccess()) {
+                if (crackResult.isTokenUserInvalid()) {
                     category = GamificationEventTracking.Category.ERROR_PAGE;
+                } else if (crackResult.isCrackTokenExpired()) {
+                    category = GamificationEventTracking.Category.EXPIRED_TOKEN;
                 }
+            } else {
+                category = GamificationEventTracking.Category.ERROR_PAGE;
             }
+
             if (!category.equals("")) {
                 abstractionRouter
                         .getAnalyticTracker()
