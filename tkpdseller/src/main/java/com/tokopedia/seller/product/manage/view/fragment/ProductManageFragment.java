@@ -751,6 +751,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private void goToShareProduct(ProductManageViewModel productManageViewModel) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setName(productManageViewModel.getProductName())
+                .setTextContent(productManageViewModel.getProductName())
                 .setDescription(productManageViewModel.getProductName())
                 .setImgUri(productManageViewModel.getImageUrl())
                 .setPrice(productManageViewModel.getProductPrice())

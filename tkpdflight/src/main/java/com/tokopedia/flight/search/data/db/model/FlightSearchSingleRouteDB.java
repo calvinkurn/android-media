@@ -130,7 +130,7 @@ public class FlightSearchSingleRouteDB extends BaseModel {
         this.arrivalTime = attributes.getArrivalTime();
         this.arrivalTimeInt = attributes.getArrivalTimeInt();
 
-        this.totalTransit = attributes.getTotalTransit();
+        this.totalTransit = attributes.getTotalTransit() + attributes.getTotalStop();
         this.addDayArrival = attributes.getAddDayArrival();
         this.duration = attributes.getDuration();
         this.durationMinute = attributes.getDurationMinute();
