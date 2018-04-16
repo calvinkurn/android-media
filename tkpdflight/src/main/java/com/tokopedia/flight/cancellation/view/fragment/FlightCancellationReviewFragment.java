@@ -2,6 +2,7 @@ package com.tokopedia.flight.cancellation.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
@@ -9,15 +10,22 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
+import com.tokopedia.flight.cancellation.view.activity.FlightCancellationTermsAndConditionsActivity;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachmentAdapter;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachmentTypeFactory;
@@ -75,10 +83,8 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         txtTotalRefund = view.findViewById(R.id.txt_total_refund);
         btnSubmit = view.findViewById(R.id.button_submit);
 
-        int color = getContext().getResources().getColor(R.color.green_500);
-        txtDescription.setText(Html.fromHtml(
-                getContext().getString(R.string.flight_cancellation_review_description, color)
-        ));
+        txtDescription.setText(setDescriptionText());
+        txtDescription.setMovementMethod(LinkMovementMethod.getInstance());
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,5 +193,33 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     private void closeReviewCancellationPage() {
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
+    }
+
+    private SpannableString setDescriptionText() {
+        final int color = getContext().getResources().getColor(R.color.green_500);
+        int startIndex = getContext().getString(R.string.flight_cancellation_review_description).indexOf("Syarat");
+        int stopIndex = startIndex + 39;
+        SpannableString description = new SpannableString(getContext().getString(
+                R.string.flight_cancellation_review_description));
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                navigateToTermsAndConditionsPage();
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(color);
+                ds.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            }
+        };
+        description.setSpan(clickableSpan, startIndex, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return description;
+    }
+
+    private void navigateToTermsAndConditionsPage() {
+        startActivity(FlightCancellationTermsAndConditionsActivity.createIntent(getContext()));
     }
 }
