@@ -194,7 +194,7 @@ public class ProductFragment extends SearchSectionFragment
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState!=null) {
-            switchLayoutType(false);
+            switchLayoutType();
         }
     }
 
@@ -429,7 +429,7 @@ public class ProductFragment extends SearchSectionFragment
                         openFilterActivity();
                         return true;
                     case 2:
-                        switchLayoutType(false);
+                        switchLayoutType();
                         return true;
                     case 3:
                         String currentCategoryId = productViewModel.getCategoryHeaderModel().getDepartementId();

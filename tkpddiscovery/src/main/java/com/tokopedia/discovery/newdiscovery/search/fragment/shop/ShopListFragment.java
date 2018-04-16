@@ -301,7 +301,7 @@ public class ShopListFragment extends SearchSectionFragment
                         openFilterActivity();
                         return true;
                     case 1:
-                        switchLayoutType(false);
+                        switchLayoutType();
                         return true;
                     default:
                         return false;
