@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -52,8 +53,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
     private TextView homeChannelTitle;
     private TextView seeAllButton;
-    private static Context context;
-    private static HomeCategoryListener listener;
+    private HomeCategoryListener listener;
     private static CountDownView countDownView;
     private String sprintSaleExpiredText;
     private CountDownView.CountDownListener countDownListener;
@@ -63,12 +63,11 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
     public DynamicChannelSprintViewHolder(View itemView, HomeCategoryListener listener, CountDownView.CountDownListener countDownListener) {
         super(itemView);
-        context = itemView.getContext();
-        this.listener = listener;
         this.countDownListener = countDownListener;
+        this.listener = listener;
         initResources(itemView.getContext());
         findViews(itemView);
-        itemAdapter = new ItemAdapter();
+        itemAdapter = new ItemAdapter(itemView.getContext(), listener);
         recyclerView.setAdapter(itemAdapter);
     }
 
@@ -81,10 +80,10 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         seeAllButton = (TextView) itemView.findViewById(R.id.see_all_button);
         countDownView = itemView.findViewById(R.id.count_down);
         recyclerView = itemView.findViewById(R.id.recycleList);
-        recyclerView.setLayoutManager(new GridLayoutManager(context, spanCount,
+        recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount,
-                context.getResources().getDimensionPixelSize(R.dimen.page_margin), true));
+                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.page_margin), true));
     }
 
     @Override
@@ -133,10 +132,13 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
     private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
+        private final HomeCategoryListener listener;
+        private DynamicHomeChannel.Channels channel;
         private DynamicHomeChannel.Grid[] list;
-        DynamicHomeChannel.Channels channel;
 
-        public ItemAdapter() {
+
+        public ItemAdapter(Context context, HomeCategoryListener listener) {
+            this.listener = listener;
             this.list = new DynamicHomeChannel.Grid[0];
         }
 
@@ -157,7 +159,8 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             try {
                 final DynamicHomeChannel.Grid grid = list[position];
                 if (grid != null) {
-                    ImageHandler.loadImageThumbs(context, holder.channelImage1, grid.getImageUrl());
+                    ImageHandler.loadImageThumbs(holder.getContext(),
+                            holder.channelImage1, grid.getImageUrl());
                     holder.channelPrice1.setText(grid.getPrice());
                     TextViewHelper.displayText(holder.channelDiscount1, grid.getDiscount());
                     holder.channelBeforeDiscPrice1.setText(grid.getSlashedPrice());
@@ -193,16 +196,22 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         private TextView channelPrice1;
         private TextView channelDiscount1;
         private TextView channelBeforeDiscPrice1;
-        private View itemContainer1;
+        private RelativeLayout itemContainer1;
+        private View view;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
+            this.view = itemView;
             channelImage1 = (ImageView) itemView.findViewById(R.id.channel_image_1);
             channelPrice1 = (TextView) itemView.findViewById(R.id.channel_price_1);
             channelDiscount1 = (TextView) itemView.findViewById(R.id.channel_discount_1);
             channelBeforeDiscPrice1 = (TextView) itemView.findViewById(R.id.channel_before_disc_price_1);
             itemContainer1 = itemView.findViewById(R.id.channel_item_container_1);
             channelBeforeDiscPrice1.setPaintFlags(channelBeforeDiscPrice1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+
+        public Context getContext() {
+            return view.getContext();
         }
     }
 

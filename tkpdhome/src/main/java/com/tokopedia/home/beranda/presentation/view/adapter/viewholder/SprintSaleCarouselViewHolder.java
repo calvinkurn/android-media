@@ -63,7 +63,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     private RelativeLayout container;
     private RecyclerView recyclerView;
     private ItemAdapter itemAdapter;
-    private static Context context;
+    private Context context;
     private TextView title;
     private TextView seeMore;
     private CardView seeMoreContainer;
@@ -172,7 +172,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         public void onBindViewHolder(ItemViewHolder holder, final int position) {
             try {
                 final DynamicHomeChannel.Grid grid = list[position];
-                ImageHandler.loadImageThumbs(context, holder.imageView, grid.getImageUrl());
+                ImageHandler.loadImageThumbs(holder.getContext(), holder.imageView, grid.getImageUrl());
                 holder.price1.setText(grid.getSlashedPrice());
                 holder.price1.setPaintFlags(holder.price1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 holder.price2.setText(grid.getPrice());
@@ -183,7 +183,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
                     holder.channelDiscount.setVisibility(View.VISIBLE);
                     holder.channelDiscount.setText(grid.getDiscount());
                 }
-                if (grid.getLabel().equalsIgnoreCase(context.getString(R.string.hampir_habis))) {
+                if (grid.getLabel().equalsIgnoreCase(holder.getContext().getString(R.string.hampir_habis))) {
                     holder.stockStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_flame, 0, 0, 0);
                 } else {
                     holder.stockStatus.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -226,9 +226,11 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         public TextView price2;
         public TextViewCompat stockStatus;
         public ProgressBar stockProgress;
+        public View view;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
+            this.view = itemView;
             countainer = itemView.findViewById(R.id.container);
             imageView = itemView.findViewById(R.id.image);
             channelDiscount = itemView.findViewById(R.id.channel_discount);
@@ -238,10 +240,17 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             stockProgress = itemView.findViewById(R.id.stock_progress);
 
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
-                ViewCompat.setBackgroundTintList(stockProgress, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.grey_hint_full)));
+                ViewCompat.setBackgroundTintList(stockProgress,
+                        ColorStateList.valueOf(ContextCompat.getColor(itemView.getContext(),
+                                R.color.grey_hint_full)));
             } else {
-                stockProgress.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.grey_hint_full)));
+                stockProgress.setBackgroundTintList(ColorStateList.valueOf(ContextCompat
+                        .getColor(itemView.getContext(), R.color.grey_hint_full)));
             }
+        }
+
+        public Context getContext() {
+            return view.getContext();
         }
     }
 

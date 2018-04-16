@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,8 +33,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     private TextView channelTitle;
     private ImageView channelHeroImage;
     private TextView seeAllButton;
-    private static Context context;
-    private static HomeCategoryListener listener;
+    private HomeCategoryListener listener;
     private View channelTitleContainer;
     private ItemAdapter itemAdapter;
     private RecyclerView recyclerView;
@@ -43,10 +41,9 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
 
     public DynamicChannelHeroViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
-        context = itemView.getContext();
         this.listener = listener;
         findViews(itemView);
-        itemAdapter = new ItemAdapter();
+        itemAdapter = new ItemAdapter(listener);
         recyclerView.setAdapter(itemAdapter);
     }
 
@@ -56,10 +53,10 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         channelHeroImage = (ImageView) itemView.findViewById(R.id.channel_hero_image);
         seeAllButton = (TextView) itemView.findViewById(R.id.see_all_button);
         recyclerView = itemView.findViewById(R.id.recycleList);
-        recyclerView.setLayoutManager(new GridLayoutManager(context, spanCount,
+        recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount,
-                context.getResources().getDimensionPixelSize(R.dimen.dp_5), true));
+                itemView.getResources().getDimensionPixelSize(R.dimen.dp_5), true));
     }
 
     @Override
@@ -81,7 +78,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
             }
             itemAdapter.setChannel(channel);
             if (channel.getHero() != null) {
-                ImageHandler.loadImageThumbs(context, channelHeroImage, channel.getHero()[0].getImageUrl());
+                ImageHandler.loadImageThumbs(channelHeroImage.getContext(), channelHeroImage, channel.getHero()[0].getImageUrl());
                 channelHeroImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -106,10 +103,12 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
 
     private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
+        private final HomeCategoryListener listener;
         private DynamicHomeChannel.Grid[] list;
         DynamicHomeChannel.Channels channel;
 
-        public ItemAdapter() {
+        public ItemAdapter(HomeCategoryListener listener) {
+            this.listener = listener;
             this.list = new DynamicHomeChannel.Grid[0];
         }
 
@@ -131,7 +130,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 final DynamicHomeChannel.Grid grid = list[position];
                 if (grid != null) {
                     holder.channelCaption1.setText(grid.getName());
-                    ImageHandler.loadImageThumbs(context, holder.channelImage1, grid.getImageUrl());
+                    ImageHandler.loadImageThumbs(holder.getContext(), holder.channelImage1, grid.getImageUrl());
                     TextViewHelper.displayText(holder.channelBadge1, grid.getLabel());
                     holder.channelImage1.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -160,12 +159,18 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         private TextView channelCaption1;
         private ImageView channelImage1;
         private TextView channelBadge1;
+        private View view;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
+            this.view = itemView;
             channelImage1 = (ImageView) itemView.findViewById(R.id.channel_image_1);
             channelCaption1 = (TextView) itemView.findViewById(R.id.channel_caption_1);
             channelBadge1 = (TextView) itemView.findViewById(R.id.channel_badge_1);
+        }
+
+        public Context getContext() {
+            return view.getContext();
         }
     }
 }
