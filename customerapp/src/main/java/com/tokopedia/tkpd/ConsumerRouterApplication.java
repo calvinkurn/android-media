@@ -1768,6 +1768,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ShareData shareData = ShareData.Builder.aShareData()
                 .setId(channelId)
                 .setName(title)
+                .setTextContent(title)
                 .setDescription(contentMessage)
                 .setImgUri(imgUrl)
                 .setUri(shareUrl)
