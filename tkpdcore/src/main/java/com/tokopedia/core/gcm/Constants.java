@@ -126,6 +126,8 @@ public interface Constants {
         String BRAND_LIST = "tokopedia://official-store/brand";
         String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
         String PROMO_SALE_TERMS = "tokopedia://promo-sale/promo-terms";
+        String SUB_PROMO = "tokopedia://sale/{slug}/{category_slug}";
+        String SUB_PROMO_WITH_SLASH = "tokopedia://sale/{slug}/{category_slug}/";
         String WALLET_HOME = "tokopedia://wallet";
         String WALLET_ACTIVATION = "tokopedia://wallet/activation";
         String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
