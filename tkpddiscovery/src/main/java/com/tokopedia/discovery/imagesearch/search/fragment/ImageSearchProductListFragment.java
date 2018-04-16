@@ -58,6 +58,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.core.home.helper.ProductFeedHelper.calcColumnSize;
+
 /**
  * Created by sachinbansal on 4/12/18.
  */
@@ -71,6 +73,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private static final String EXTRA_PRODUCT_LIST = "EXTRA_PRODUCT_LIST";
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
+    private static final String EXTRA_SPAN_COUNT = "EXTRA_SPAN_COUNT";
 
     protected RecyclerView recyclerView;
     @Inject
@@ -84,7 +87,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private ProductViewModel productViewModel;
     private ProductListTypeFactory imageProductListTypeFactory;
     private SearchParameter searchParameter;
-    private boolean forceSearch;
     private GridLayoutManager gridLayoutManager;
 
     private RedirectionListener redirectionListener;
@@ -169,7 +171,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setSpanCount(2);
+        initSpan();
         bindView(view);
         initTopAdsConfig();
         initTopAdsParams();
@@ -183,6 +185,14 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                 .setUserId(SessionHandler.getLoginID(getActivity()))
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(EXTRA_PRODUCT_LIST, productViewModel);
+        outState.putParcelable(EXTRA_SEARCH_PARAMETER, getSearchParameter());
+        outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
     }
 
     private void setupAdapter() {
@@ -212,7 +222,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
             setProductList(initMappingProduct());
             setHeaderTopAds(true);
         }
-
+        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         adapter.setTotalData(productViewModel.getTotalData());
     }
 
@@ -281,6 +291,10 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         if (adapter != null && adapter.isProductItem(position)) {
             adapter.updateWishlistStatus(position, isWishlist);
         }
+    }
+
+    private void initSpan() {
+        setSpanCount(calcColumnSize(getResources().getConfiguration().orientation));
     }
 
     private void setSpanCount(int spanCount) {

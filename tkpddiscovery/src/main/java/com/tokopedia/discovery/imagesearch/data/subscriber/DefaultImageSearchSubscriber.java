@@ -52,6 +52,6 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         model.setForceSearch(forceSearch);
         model.setImageSearch(imageSearch);
         discoveryView.onHandleImageSearchResponseSuccess();
-        discoveryView.onHandleResponseSearch(model);
+        discoveryView.onHandleImageResponseSearch(model);
     }
 }

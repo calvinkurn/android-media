@@ -141,7 +141,7 @@ public class ImageProductListAdapter extends SearchSectionGeneralAdapter {
 
     @Override
     public List<Visitable> getItemList() {
-        return null;
+        return list;
     }
 
     @Override
