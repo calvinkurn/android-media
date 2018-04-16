@@ -35,6 +35,7 @@ import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.channel.view.ProgressBarWithTimer;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
+import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.presenter.ChannelVotePresenter;
@@ -387,9 +388,9 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_LOGIN
-                && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_LOGIN) {
             userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+            ((GroupChatActivity)getActivity()).onSuccessLogin();
         }
     }
 
