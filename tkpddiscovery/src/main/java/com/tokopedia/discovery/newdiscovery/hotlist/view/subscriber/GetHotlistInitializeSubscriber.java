@@ -155,7 +155,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             model.setWishlist(domain.isWishlisted());
             model.setWishlistButtonEnabled(true);
             model.setFeatured(domain.isFeatured());
-            model.setTrackerName(String.format(Locale.getDefault(), "/hot/%s - product %d", view.getHotlistAlias(), page));
+            model.setTrackerName(String.format(Locale.getDefault(), "/hot/%s - product %d", view.getHotlistAlias().toLowerCase(), page));
             model.setTrackerPosition(String.valueOf(lastPositionProduct));
             model.setHomeAttribution(view.getHomeAttribution());
             list.add(model);
