@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -35,6 +36,7 @@ import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -273,6 +275,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         }
 
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION, data.getTitle());
     }
 
     @Override
@@ -310,10 +313,13 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         if (tvExpandableDescription.isExpanded()) {
             seemorebutton.setText(R.string.expand);
             ivArrowSeating.animate().rotation(0f);
-
+            UnifyTracking.eventDigitalEventTracking("deskripsi - " + getString(R.string.collapse),
+                    textViewTitle.getText().toString());
         } else {
             seemorebutton.setText(R.string.collapse);
             ivArrowSeating.animate().rotation(180f);
+            UnifyTracking.eventDigitalEventTracking("deskripsi - " + getString(R.string.expand),
+                    textViewTitle.getText().toString());
         }
         tvExpandableDescription.toggle();
     }
@@ -323,10 +329,14 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         if (tvExpandableTermsNCondition.isExpanded()) {
             seemorebuttonTnC.setText(R.string.expand);
             ivArrowSeatingTnC.animate().rotation(0f);
+            UnifyTracking.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.collapse),
+                    textViewTitle.getText().toString());
 
         } else {
             seemorebuttonTnC.setText(R.string.collapse);
             ivArrowSeatingTnC.animate().rotation(180f);
+            UnifyTracking.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.expand),
+                    textViewTitle.getText().toString());
         }
         tvExpandableTermsNCondition.toggle();
     }
@@ -356,7 +366,18 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+    }
+
+    @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public String getScreenName() {
+        return mPresenter.getSCREEN_NAME();
     }
 }

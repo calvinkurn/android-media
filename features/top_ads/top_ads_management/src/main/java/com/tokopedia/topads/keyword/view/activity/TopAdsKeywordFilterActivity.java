@@ -47,7 +47,7 @@ public class TopAdsKeywordFilterActivity extends BaseFilterActivity
         List<Fragment> filterContentFragmentList = new ArrayList<>();
         if (showStatus) {
             TopAdsFilterStatusFragment topAdsFilterStatusFragment = TopAdsKeywordFilterStatusFragment.createInstance(selectedFilterStatus);
-            topAdsFilterStatusFragment.setActive(true);
+            topAdsFilterStatusFragment.setActive(selectedFilterStatus > 0);
             filterContentFragmentList.add(topAdsFilterStatusFragment);
         }
         TopAdsKeywordGroupsFragment topAdsFilterGroupNameFragment = TopAdsKeywordGroupsFragment.createInstance(currentGroupAd, showStatus ? 1 : 0);

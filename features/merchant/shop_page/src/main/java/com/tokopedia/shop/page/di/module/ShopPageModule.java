@@ -18,9 +18,14 @@ import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCa
 import com.tokopedia.reputation.common.domain.repository.ReputationCommonRepository;
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.shop.etalase.domain.interactor.DeleteShopEtalaseUseCase;
+import com.tokopedia.shop.note.domain.interactor.DeleteShopNoteUseCase;
 import com.tokopedia.shop.page.di.ShopInfoReputationSpeedQualifier;
 import com.tokopedia.shop.page.di.scope.ShopPageScope;
 import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase;
+import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
+import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
+import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -95,6 +100,36 @@ public class ShopPageModule {
     @Provides
     public DeleteShopInfoUseCase provideDeleteShopInfoUseCase() {
         return new DeleteShopInfoUseCase();
+    }
+
+    @ShopPageScope
+    @Provides
+    public DeleteShopProductAceUseCase provideDeleteShopProductAceUseCase() {
+        return new DeleteShopProductAceUseCase();
+    }
+
+    @ShopPageScope
+    @Provides
+    public DeleteShopProductTomeUseCase provideDeleteShopProductTomeUseCase() {
+        return new DeleteShopProductTomeUseCase();
+    }
+
+    @ShopPageScope
+    @Provides
+    public DeleteShopProductUseCase provideDeleteShopProductUseCase() {
+        return new DeleteShopProductUseCase(provideDeleteShopProductAceUseCase(), provideDeleteShopProductTomeUseCase());
+    }
+
+    @ShopPageScope
+    @Provides
+    public DeleteShopEtalaseUseCase provideDeleteShopEtalaseUseCase() {
+        return new DeleteShopEtalaseUseCase();
+    }
+
+    @ShopPageScope
+    @Provides
+    public DeleteShopNoteUseCase provideDeleteShopNoteUseCase() {
+        return new DeleteShopNoteUseCase();
     }
 
     @ShopPageScope

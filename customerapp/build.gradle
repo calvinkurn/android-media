@@ -235,6 +235,10 @@ android {
     }
 
     productFlavors {
+        staging {
+
+        }
+
         live {
 
         }
@@ -264,10 +268,10 @@ dependencies {
     compile project(rootProject.ext.features.groupchat)
     compile project(rootProject.ext.features.shopPage)
     compile project(rootProject.ext.libraries.reactNative)
-    compile project(rootProject.ext.features.content)
+    compile project(rootProject.ext.features.kol)
     compile project(rootProject.ext.libraries.pushNotif)
     compile project(rootProject.ext.libraries.applink)
-
+    compile project(rootProject.ext.features.gamification)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.Whitelist;
 import com.tokopedia.tkpd.deeplink.WhitelistItem;
@@ -55,7 +55,7 @@ public class DeeplinkRepositoryImpl implements DeeplinkRepository {
                     public List<WhitelistItem> call(GlobalCacheManager globalCacheManager) {
                         if (!TextUtils.isEmpty(globalCacheManager.getValueString(KEY_VERSION))) {
                             if (Integer.valueOf(globalCacheManager.getValueString(KEY_VERSION)) <=
-                                    BuildConfig.VERSION_CODE) {
+                                    GlobalConfig.VERSION_CODE) {
                                 return new ArrayList<>();
                             } else {
                                 String cache = globalCacheManager.getValueString(KEY_MAPPING);
@@ -106,7 +106,7 @@ public class DeeplinkRepositoryImpl implements DeeplinkRepository {
     private void saveVersionToCache() {
         globalCacheManager.setKey(KEY_VERSION);
         Gson gson = new Gson();
-        globalCacheManager.setValue(gson.toJson(BuildConfig.VERSION_CODE));
+        globalCacheManager.setValue(gson.toJson(GlobalConfig.VERSION_CODE));
     }
 
     private List<WhitelistItem> readWhitelistFromFile() {

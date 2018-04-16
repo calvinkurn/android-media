@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.base.view.fragment.BaseFilterContentFragment;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsBasicRadioButtonAdapter;
 import com.tokopedia.topads.dashboard.view.model.RadioButtonItem;
@@ -70,8 +69,8 @@ public abstract class TopAdsFilterRadioButtonFragment<P> extends
     @Override
     public void onItemSelected(RadioButtonItem radioButtonItem, int position) {
         selectedAdapterPosition = position;
-        if (callback != null) {
-            callback.onStatusChanged(true);
+        if (callback != null ) {
+            callback.onStatusChanged(selectedAdapterPosition > 0);
         }
     }
 

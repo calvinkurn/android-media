@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <LinearLayout style="@style/LabelLayout.BorderBottom"
+    <LinearLayout style="@style/LabelLayout"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -56,10 +56,10 @@
             android:layout_height="match_parent" />
     </LinearLayout>
 
-    <LinearLayout style="@style/LabelLayout.BorderTop"
+    <LinearLayout style="@style/LabelLayout"
         android:orientation="vertical"
         android:clickable="false"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_16"
         android:padding="0dp">
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_keyword_current_and_max"

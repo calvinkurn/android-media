@@ -12,6 +12,7 @@ import android.util.Log;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.analytics.OTPAnalytics;
+import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -189,7 +190,11 @@ public class VerificationActivity extends TActivity implements HasComponent {
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_sms);
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
         bundle.putString(PARAM_MESSAGE, createSmsMessage(phoneNumber, otpType));
-        bundle.putString(PARAM_APP_SCREEN, OTPAnalytics.Screen.SCREEN_COTP_SMS);
+        if (otpType == RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER) {
+            bundle.putString(PARAM_APP_SCREEN, RegisterAnalytics.Screen.SCREEN_PHONE_NUMBER_VERIFICATION);
+        } else {
+            bundle.putString(PARAM_APP_SCREEN, OTPAnalytics.Screen.SCREEN_COTP_SMS);
+        }
         return bundle;
     }
 

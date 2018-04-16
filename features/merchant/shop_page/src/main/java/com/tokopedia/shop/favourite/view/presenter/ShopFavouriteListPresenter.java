@@ -2,6 +2,7 @@ package com.tokopedia.shop.favourite.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.favourite.data.source.cloud.model.ShopFavouritePagingList;
@@ -40,6 +41,8 @@ public class ShopFavouriteListPresenter extends BaseDaggerPresenter<ShopFavourit
     public void getshopFavouriteList(String shopId, int page) {
         ShopFavouriteRequestModel shopFavouriteRequestModel = new ShopFavouriteRequestModel();
         shopFavouriteRequestModel.setShopId(shopId);
+        shopFavouriteRequestModel.setUserId(userSession.getUserId());
+        shopFavouriteRequestModel.setDeviceId(userSession.getDeviceId());
         shopFavouriteRequestModel.setPage(page);
         shopFavouriteRequestModel.setPerPage(SHOP_FAVOURITE_PER_PAGE);
         getShopFavouriteUserUseCase.execute(GetShopFavouriteUserUseCase.createRequestParam(shopFavouriteRequestModel), new Subscriber<ShopFavouritePagingList<ShopFavouriteUser>>() {
@@ -65,6 +68,10 @@ public class ShopFavouriteListPresenter extends BaseDaggerPresenter<ShopFavourit
 
     public boolean isMyShop(String shopId) {
         return userSession.getShopId().equals(shopId);
+    }
+
+    public boolean isLoggedIn() {
+        return userSession.isLoggedIn();
     }
 
     public void getShopInfo(String shopId) {

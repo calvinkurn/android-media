@@ -26,14 +26,15 @@ public class AddPasswordMapper implements Func1<Response<TkpdResponse>, AddPassw
     @Override
     public AddPasswordViewModel call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if (response.body().getErrorMessages() != null && !response.body().getErrorMessages().isEmpty()) {
-                AddPasswordResponse pojo = response.body().convertDataObj(AddPasswordResponse
-                        .class);
-                return mappingToViewModel(pojo);
-            } else if (response.body().isNullData()) {
-                throw new ErrorMessageException(response.body().getErrorMessageJoined());
-            } else {
+            if (response.body().isNullData()) {
                 throw new ErrorMessageException("");
+            }
+            else if (TextUtils.isEmpty(response.body().getErrorMessageJoined())) {
+                AddPasswordResponse pojo = response.body().convertDataObj(AddPasswordResponse
+                    .class);
+                return mappingToViewModel(pojo);
+            } else {
+                throw new ErrorMessageException(response.body().getErrorMessageJoined());
             }
         } else {
             String messageError = ErrorHandler.getErrorMessage(response);
