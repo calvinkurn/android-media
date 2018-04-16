@@ -121,6 +121,7 @@ public interface Constants {
         String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
         String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
         String PROMO_SALE = "tokopedia://sale/{slug}/";
+        String PROMO_SALE_NO_SLASH = "tokopedia://sale/{slug}";
         String PROMO_DETAIL = "tokopedia://promo/{slug}";
         String BRAND_LIST = "tokopedia://official-store/brand";
         String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
