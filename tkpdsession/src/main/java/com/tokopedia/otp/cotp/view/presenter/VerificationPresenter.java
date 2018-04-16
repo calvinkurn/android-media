@@ -2,10 +2,9 @@ package com.tokopedia.otp.cotp.view.presenter;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.subscriber.RequestOtpSubscriber;
 import com.tokopedia.otp.cotp.view.subscriber.ValidateOtpLoginSubscriber;
 import com.tokopedia.otp.cotp.view.subscriber.VerifyOtpSubscriber;
@@ -134,6 +133,13 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                         otpCode,
                         sessionHandler.getTempLoginSession(MainApplication.getAppContext())
                 ), new ValidateOtpLoginSubscriber(getView()));
+                break;
+            case RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER:
+                validateOtpUseCase.execute(ValidateOtpUseCase.getRegisterPhoneNumberParam(
+                        passModel.getPhoneNumber(),
+                        passModel.getOtpType(),
+                        otpCode
+                ), new VerifyOtpSubscriber(getView()));
                 break;
             default:
                 validateOtpUseCase.execute(ValidateOtpUseCase.getParam(

@@ -1,11 +1,9 @@
 package com.tokopedia.session.changename.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.session.changename.data.source.ChangeNameSource;
 import com.tokopedia.session.changename.view.viewmodel.ChangeNameViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -19,10 +17,7 @@ public class ChangeNameUseCase extends UseCase<ChangeNameViewModel> {
 
     private final ChangeNameSource changeNameSource;
 
-    public ChangeNameUseCase(ThreadExecutor threadExecutor,
-                             PostExecutionThread postExecutionThread,
-                             ChangeNameSource changeNameSource) {
-        super(threadExecutor, postExecutionThread);
+    public ChangeNameUseCase(ChangeNameSource changeNameSource) {
         this.changeNameSource = changeNameSource;
     }
 

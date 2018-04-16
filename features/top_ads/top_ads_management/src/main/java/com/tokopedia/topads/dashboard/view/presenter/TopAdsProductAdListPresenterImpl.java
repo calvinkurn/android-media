@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.presenter;
 import android.content.Context;
 
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractor;
@@ -12,6 +13,7 @@ import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
+import com.tokopedia.topads.dashboard.view.model.TopAdsSortByModel;
 
 import java.util.Date;
 import java.util.List;
@@ -29,7 +31,7 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
     }
 
     @Override
-    public void searchAd(Date startDate, Date endDate, String keyword, int status, long groupId, int page) {
+    public void searchAd(Date startDate, Date endDate, String keyword, int status, long groupId, int page, @SortTopAdsOption String sortId) {
         SearchAdRequest searchAdRequest = new SearchAdRequest();
         searchAdRequest.setShopId(getShopId());
         searchAdRequest.setStartDate(startDate);
@@ -38,6 +40,7 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
         searchAdRequest.setStatus(status);
         searchAdRequest.setGroup(groupId);
         searchAdRequest.setPage(page);
+        searchAdRequest.setSort(sortId);
         productAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<ProductAd>>>() {
             @Override
             public void onSuccess(PageDataResponse<List<ProductAd>> pageDataResponse) {

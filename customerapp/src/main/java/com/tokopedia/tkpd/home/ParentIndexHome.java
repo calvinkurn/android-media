@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -34,6 +35,11 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.gson.GsonBuilder;
+import com.moengage.inapp.InAppManager;
+import com.moengage.inapp.InAppMessage;
+import com.moengage.inapp.InAppTracker;
+import com.moengage.widgets.NudgeView;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -86,6 +92,8 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
+import com.tokopedia.tkpd.home.fragment.InappMessageDialogFragment;
+import com.tokopedia.tkpd.home.model.InAppMessageModel;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
@@ -103,7 +111,7 @@ import rx.subscriptions.CompositeSubscription;
  * modified by meta on 24/01/2018, implement bottom navigation menu
  */
 public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener,
-        GetUserInfoListener, HasComponent {
+        GetUserInfoListener, HasComponent,InAppManager.InAppMessageListener {
 
     public static final int INIT_STATE_FRAGMENT_HOME = 0;
     public static final int INIT_STATE_FRAGMENT_FEED = 1;
@@ -138,6 +146,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private boolean exit = false;
 
     private BroadcastReceiver hockeyBroadcastReceiver;
+    private NudgeView nudgeView ;
 
     @DeepLink(Constants.Applinks.HOME)
     public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
@@ -226,6 +235,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     (getIntent().getIntExtra("fragment", initStateFragment)));
             initStateFragment = viewPagerIndex;
         }
+
+        InAppManager.getInstance().setInAppListener(this);
+
+
         setView();
 
         if (isFirstTime()) {
@@ -448,6 +461,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         inflateView(R.layout.activity_index_home_4);
         mViewPager = findViewById(R.id.index_page);
         tabs = findViewById(R.id.tab);
+        nudgeView = (NudgeView)findViewById(R.id.nudge);
     }
 
     public ChangeTabListener changeTabListener() {
@@ -614,6 +628,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         NotificationModHandler.showDialogNotificationIfNotShowing(this);
 
         registerBroadcastHockeyApp();
+        nudgeView.initialiseNudgeView(this);
     }
 
     @Override
@@ -662,6 +677,34 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Cache.applyEditor();
         invalidateOptionsMenu();
         MainApplication.resetCartStatus(false);
+    }
+
+    @Override
+    public boolean showInAppMessage(InAppMessage inAppMessage) {
+        try {
+            InAppMessageModel inAppMessageModel = new GsonBuilder().create().fromJson(inAppMessage.content, InAppMessageModel.class);
+            InappMessageDialogFragment dialog = InappMessageDialogFragment.newInstance(inAppMessageModel);
+            dialog.show(getFragmentManager(), "inpp");
+            InAppTracker.getInstance(this).trackInAppClicked(inAppMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public void onInAppClosed(InAppMessage inAppMessage) {
+
+    }
+
+    @Override
+    public void onInAppShown(InAppMessage inAppMessage) {
+
+    }
+
+    @Override
+    public boolean onInAppClick(@Nullable String s, @Nullable Bundle bundle, @Nullable Uri uri) {
+        return false;
     }
 
     private Boolean isFirstTime() {
