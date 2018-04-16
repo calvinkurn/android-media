@@ -8,21 +8,11 @@ import java.util.List;
  * Created by zulfikarrahman on 1/16/18.
  */
 
-public class ShopProductLimitedFeaturedViewModel implements ShopProductBaseViewModel {
-    private List<ShopProductViewModel> shopProductViewModelList;
-
-    public List<ShopProductViewModel> getShopProductViewModelList() {
-        return shopProductViewModelList;
-    }
-
-    public void setShopProductViewModelList(List<ShopProductViewModel> shopProductViewModelList) {
-        this.shopProductViewModelList = shopProductViewModelList;
-    }
+public class ShopProductLimitedFeaturedViewModel extends ShopProductViewModel<ShopProductLimitedAdapterTypeFactory> implements ShopProductBaseViewModel{
 
     @Override
     public int type(ShopProductLimitedAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
-
 
 }

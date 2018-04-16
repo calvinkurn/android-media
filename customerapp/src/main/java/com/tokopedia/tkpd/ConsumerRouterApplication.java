@@ -113,6 +113,7 @@ import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.home.IHomeRouter;
+import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
@@ -866,7 +867,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getDefaultContactUsIntent(Activity activity) {
         Intent intent = new Intent(activity, ContactUsActivity.class);
-        intent.putExtra(InboxRouter.PARAM_URL,
+        intent.putExtra(ContactUsConstant.PARAM_URL,
                 URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, activity));
         return intent;
     }
@@ -874,7 +875,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle) {
         Intent intent = new Intent(activity, ContactUsActivity.class);
-        intent.putExtra(InboxRouter.PARAM_URL,
+        intent.putExtra(ContactUsConstant.PARAM_URL,
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
         intent.putExtra(ContactUsActivity.PARAM_TOOLBAR_TITLE, toolbarTitle);
         return intent;
@@ -883,7 +884,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url) {
         Intent intent = new Intent(activity, ContactUsActivity.class);
-        intent.putExtra(InboxRouter.PARAM_URL,
+        intent.putExtra(ContactUsConstant.PARAM_URL,
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
         return intent;
     }
