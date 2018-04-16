@@ -4,14 +4,17 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.google.gson.reflect.TypeToken;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.Notifications;
 import com.tokopedia.core.drawer2.data.pojo.UserData;
 import com.tokopedia.core.drawer2.data.pojo.Wallet;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.domain.interactor.GetUserAttributesUseCase;
 import com.tokopedia.core.network.apiservices.drawer.DrawerService;
 
@@ -34,13 +37,15 @@ public class CloudAttrDataSource {
 
     private Context context;
     private DrawerService drawerService;
+    private LocalCacheHandler drawerCache;
 
     private AnalyticsCacheHandler analyticsCacheHandler;
     private long DURATION_SAVE_TO_CACHE = 60;
 
-    public CloudAttrDataSource(Context context, DrawerService drawerService) {
+    public CloudAttrDataSource(Context context, DrawerService drawerService, LocalCacheHandler drawerCache) {
         this.context = context;
         this.drawerService = drawerService;
+        this.drawerCache = drawerCache;
         analyticsCacheHandler = new AnalyticsCacheHandler();
     }
 
@@ -97,6 +102,44 @@ public class CloudAttrDataSource {
                             CacheUtil.convertModelToString(data.getWallet(),
                                     new TypeToken<Wallet>() {
                                     }.getType()), DURATION_SAVE_TO_CACHE);
+                }
+
+
+                //add notifcation data in cache
+                if (data.getNotifications() != null) {
+                    Notifications notificationData = data.getNotifications();
+                    if (notificationData.getInbox() != null) {
+                        drawerCache.putInt(DrawerNotification.CACHE_INBOX_TALK, notificationData.getInbox().getInboxTalk());
+                        drawerCache.putInt(DrawerNotification.CACHE_INBOX_REVIEW, notificationData.getInbox().getInboxReputation());
+                        drawerCache.putInt(DrawerNotification.CACHE_INBOX_TICKET, notificationData.getInbox().getInboxTicket());
+                    }
+
+                    if (notificationData.getPurchase() != null) {
+                        drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_DELIVERY_CONFIRM, notificationData.getPurchase().getPurchaseDeliveryConfirm());
+                        drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_ORDER_STATUS, notificationData.getPurchase().getPurchaseOrderStatus());
+                        drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONFIRM, notificationData.getPurchase().getPurchasePaymentConfirm());
+                        drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_REORDER, notificationData.getPurchase().getPurchaseReorder());
+                        drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONF, notificationData.getPurchase().getPurchaseDeliveryConfirm());
+                    }
+
+                    if (notificationData.getSales() != null) {
+                        drawerCache.putInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, notificationData.getSales().getSalesNewOrder());
+                        drawerCache.putInt(DrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION, notificationData.getSales().getSalesShippingConfirm());
+                        drawerCache.putInt(DrawerNotification.CACHE_SELLING_SHIPPING_STATUS, notificationData.getSales().getSalesShippingStatus());
+                    }
+
+                    drawerCache.putInt(DrawerNotification.CACHE_TOTAL_CART, notificationData.getTotalCart());
+                    drawerCache.putInt(DrawerNotification.IS_HAS_CART, notificationData.getTotalCart() > 0 ? 1 : 0);
+                    drawerCache.putInt(DrawerNotification.CACHE_TOTAL_NOTIF, notificationData
+                            .getTotalNotif() - (notificationData.getInbox() == null ? 0 : notificationData.getInbox().getInboxMessage()));
+                    drawerCache.putInt(DrawerNotification.CACHE_INCR_NOTIF, notificationData.getIncrNotif());
+
+                    if (notificationData.getResolutionAs() != null) {
+                        drawerCache.putInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_BUYER, notificationData.getResolutionAs().getResolutionAsBuyer());
+                        drawerCache.putInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, notificationData.getResolutionAs().getResolutionAsSeller());
+                    }
+
+                    drawerCache.applyEditor();
                 }
             }
         };

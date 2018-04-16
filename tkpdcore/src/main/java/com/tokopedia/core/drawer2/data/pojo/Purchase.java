@@ -6,16 +6,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class Purchase {
 
-    @SerializedName("purchase_reorder")
+    @SerializedName("reorder")
     @Expose
     private int purchaseReorder;
-    @SerializedName("purchase_payment_confirm")
+    @SerializedName("paymentConfirm")
     @Expose
     private int purchasePaymentConfirm;
-    @SerializedName("purchase_order_status")
+    @SerializedName("orderStatus")
     @Expose
     private int purchaseOrderStatus;
-    @SerializedName("purchase_delivery_confirm")
+    @SerializedName("deliveryConfirm")
     @Expose
     private int purchaseDeliveryConfirm;
 

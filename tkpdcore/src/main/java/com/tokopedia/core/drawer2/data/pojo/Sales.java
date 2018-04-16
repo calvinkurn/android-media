@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class Sales {
 
-    @SerializedName("sales_new_order")
+    @SerializedName("newOrder")
     @Expose
     private int salesNewOrder;
-    @SerializedName("sales_shipping_status")
+    @SerializedName("shippingStatus")
     @Expose
     private int salesShippingStatus;
-    @SerializedName("sales_shipping_confirm")
+    @SerializedName("shippingConfirm")
     @Expose
     private int salesShippingConfirm;
 

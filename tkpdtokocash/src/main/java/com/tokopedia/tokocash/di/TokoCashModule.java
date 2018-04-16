@@ -215,4 +215,10 @@ public class TokoCashModule {
 
         return retrofit.create(WalletBalanceApi.class);
     }
+
+    @Provides
+    Context provideContext(@ApplicationContext Context context) {
+        return context;
+    }
+
 }

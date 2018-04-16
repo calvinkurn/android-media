@@ -6,25 +6,25 @@ import com.google.gson.annotations.SerializedName;
 
 public class Inbox {
 
-    @SerializedName("inbox_talk")
+    @SerializedName("talk")
     @Expose
     private int inboxTalk;
-    @SerializedName("inbox_ticket")
+    @SerializedName("ticket")
     @Expose
     private int inboxTicket;
-    @SerializedName("inbox_review")
+    @SerializedName("review")
     @Expose
     private int inboxReview;
-    @SerializedName("inbox_friend")
+    @SerializedName("friend")
     @Expose
     private int inboxFriend;
-    @SerializedName("inbox_wishlist")
+    @SerializedName("wishlist")
     @Expose
     private int inboxWishlist;
-    @SerializedName("inbox_message")
+    @SerializedName("message")
     @Expose
     private int inboxMessage;
-    @SerializedName("inbox_reputation")
+    @SerializedName("reputation")
     @Expose
     private int inboxReputation;
 
