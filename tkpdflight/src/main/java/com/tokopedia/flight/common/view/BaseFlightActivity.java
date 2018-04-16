@@ -69,9 +69,9 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
         if (item.getItemId() == R.id.menu_promo) {
             if (getApplication() instanceof FlightModuleRouter
                     && ((FlightModuleRouter) getApplication())
-                    .getBannerWebViewIntent(this, FlightUrl.ALL_PROMO_LINK) != null) {
+                    .getPromoListIntent(this) != null) {
                 startActivity(((FlightModuleRouter) getApplication())
-                        .getBannerWebViewIntent(this, FlightUrl.ALL_PROMO_LINK));
+                        .getPromoListIntent(this));
             }
             return true;
         } else if (item.getItemId() == R.id.menu_transaction_list) {

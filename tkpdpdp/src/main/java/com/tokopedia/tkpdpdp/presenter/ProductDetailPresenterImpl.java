@@ -8,10 +8,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -30,8 +30,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.network.entity.variant.Campaign;
+import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
-import com.tokopedia.core.network.entity.variant.ProductVariantResponse;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -300,7 +300,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.refreshMenu();
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
-                            setGoldMerchantFeatures(context, productDetailData);
+                            setVideoProduct(context, productDetailData);
                             getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context, productDetailData.getInfo().getProductId
                                     ().toString(), productDetailData.getShopInfo().getShopId());
@@ -314,6 +314,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                         , Integer.toString(productDetailData.getInfo().getProductId()));
                             } else {
                                 productDetailData.getInfo().setHasVariant(false);
+                                viewListener.trackingEnhanceProductDetail();
+                                getProductStock(context
+                                        ,Integer.toString(productDetailData.getInfo().getProductId()));
                             }
                             validateProductDataWithProductPassAndShowMessage(productDetailData,productPass,context);
                         }
@@ -629,6 +632,13 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void saveStateProductStockNonVariant(Bundle outState, String key, Child value) {
+        if (value != null) {
+            outState.putParcelable(key, value);
+        }
+    }
+
+    @Override
     public void saveStateProductOthers(Bundle outState, String key, List<ProductOther> values) {
         if (values != null) outState.putParcelableArrayList(key, new ArrayList<Parcelable>(values));
     }
@@ -662,6 +672,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         VideoData videoData = savedInstanceState.getParcelable(ProductDetailFragment.STATE_VIDEO);
         PromoAttributes promoAttributes = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PROMO_WIDGET);
         ProductVariant productVariant = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PRODUCT_VARIANT);
+        Child productStockNonVariant = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PRODUCT_STOCK_NON_VARIANT);
         boolean isAppBarCollapsed = savedInstanceState.getBoolean(ProductDetailFragment.STATE_APP_BAR_COLLAPSED);
 
         if (productData != null & productOthers != null) {
@@ -676,6 +687,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             viewListener.addProductVariant(productVariant);
         } else if (productData != null && productData.getInfo() != null && productData.getInfo().getHasVariant() && productVariant==null) {
             getProductVariant(context,Integer.toString(productData.getInfo().getProductId()));
+        } else if (productStockNonVariant != null ){
+            viewListener.addProductStock(productStockNonVariant);
+        } else {
+            getProductStock(context,Integer.toString(productData.getInfo().getProductId()));
         }
 
         if (productData != null && productData.getCampaign() != null) {
@@ -814,7 +829,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.hideProgressLoading();
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
-                        setGoldMerchantFeatures(context, data);
+                        setVideoProduct(context, data);
                         getMostHelpfulReview(context, data.getInfo().getProductId().toString(),
                                 data.getShopInfo().getShopId());
                         getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
@@ -829,6 +844,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                     , Integer.toString(data.getInfo().getProductId()));
                         } else {
                             data.getInfo().setHasVariant(false);
+                            viewListener.trackingEnhanceProductDetail();
+                            getProductStock(context
+                                    ,Integer.toString(data.getInfo().getProductId()));
                         }
                         validateProductDataWithProductPassAndShowMessage(data,productPass,context);
                     }
@@ -917,10 +935,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 });
     }
 
-    private void setGoldMerchantFeatures(Context context, ProductDetailData productDetailData) {
-        if (productDetailData.getShopInfo().getShopIsGold() == 1) {
-            requestVideo(context, productDetailData.getInfo().getProductId().toString());
-        }
+    private void setVideoProduct(Context context, ProductDetailData productDetailData) {
+        requestVideo(context, productDetailData.getInfo().getProductId().toString());
     }
 
     public void getPromoWidget(final @NonNull Context context, @NonNull final String targetType, @NonNull final String userId, @NonNull final String shopType) {
@@ -1071,8 +1087,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 new RetrofitInteractor.ProductVariantListener() {
                     @Override
                     public void onSucccess(final ProductVariant productVariant) {
-                        if (productVariant != null && productVariant.getVariant() != null && productVariant.getVariant().size() > 0) {
+                        if (productVariant!=null && productVariant.getVariant()!=null && productVariant.getVariant().size()>0
+                                && productVariant.getChildren() != null && productVariant.getChildren().size()>0  ) {
                             viewListener.addProductVariant(productVariant);
+                        } else {
+                            viewListener.setVariantFalse();
                         }
                         viewListener.updateButtonBuyListener();
                     }
@@ -1080,6 +1099,23 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     @Override
                     public void onError(String error) {
                         viewListener.showErrorVariant();
+                    }
+                }
+        );
+    }
+
+    public void getProductStock(@NonNull Context context, @NonNull String id) {
+        retrofitInteractor.getProductStock(context, id,
+                new RetrofitInteractor.ProductStockListener() {
+                    @Override
+                    public void onSucccess(final Child productStock) {
+                        if (productStock!=null) {
+                            viewListener.addProductStock(productStock);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
                     }
                 }
         );

@@ -89,6 +89,8 @@ public class GetOpenShopLocationPassUseCase extends UseCase<LocationPass> {
             LocationPass locationPass = new LocationPass();
             locationPass.setLatitude(model.getShopShipping().getShopLatitude());
             locationPass.setLongitude(model.getShopShipping().getShopLongitude());
+            locationPass.setCityName(model.getShopShipping().getCityName());
+            locationPass.setDistrictName(model.getShopShipping().getDistrictName());
             locationPass.setGeneratedAddress(generatedAddress);
 
             return locationPass;

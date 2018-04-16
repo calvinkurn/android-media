@@ -71,6 +71,7 @@ import permissions.dispatcher.RuntimePermissions;
 public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements ShopOpenInfoView {
 
     public static final int REQUEST_CODE_IMAGE_PICKER = 532;
+    private static final String INFO_TOKO = "Info Toko";
 
     @Inject
     public ShopOpenInfoPresenter presenter;
@@ -132,7 +133,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
                 }
             }
         }
-
+        trackingOpenShop.eventMoEngageOpenShop(INFO_TOKO);
     }
 
     private void updateView(UserData userData) {

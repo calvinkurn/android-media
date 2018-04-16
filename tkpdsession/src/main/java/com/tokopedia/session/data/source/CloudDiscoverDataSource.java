@@ -30,7 +30,7 @@ public class CloudDiscoverDataSource {
         this.discoverMapper = discoverMapper;
     }
 
-    public Observable<DiscoverViewModel> getDiscover(RequestParams params) {
+    public Observable<DiscoverViewModel> getDiscover(com.tokopedia.usecase.RequestParams params) {
         return accountsService.getApi()
                 .discoverLogin(params.getParameters())
                 .map(discoverMapper)

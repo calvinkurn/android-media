@@ -442,8 +442,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
             }
         }
-        if (returnTrip.getRouteList().size() > 1) {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size() - 1, getString(R.string.flight_booking_transit_trip_card));
+        if (returnTrip.getTotalTransit() > 1) {
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getTotalTransit(), getString(R.string.flight_booking_transit_trip_card));
         } else {
             tripInfo += String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card));
         }
@@ -466,8 +466,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
             }
         }
-        if (departureTrip.getRouteList().size() > 1) {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), departureTrip.getRouteList().size() - 1, getString(R.string.flight_booking_transit_trip_card));
+        if (departureTrip.getTotalTransit() > 1) {
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), departureTrip.getTotalTransit(), getString(R.string.flight_booking_transit_trip_card));
         } else {
             tripInfo += String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card));
         }
@@ -569,9 +569,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void showExpireTransactionDialog() {
+    public void showExpireTransactionDialog(String message) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setMessage(R.string.flight_booking_expired_booking_label);
+        dialog.setMessage(message);
         dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -748,10 +748,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void closePage() {
         getActivity().finish();
-    }
-
-    public void onBackPressed() {
-        presenter.deleteAllPassengerList();
     }
 
     @Override

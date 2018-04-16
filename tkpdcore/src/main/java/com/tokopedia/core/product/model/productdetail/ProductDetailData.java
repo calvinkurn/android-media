@@ -1,7 +1,9 @@
 package com.tokopedia.core.product.model.productdetail;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -276,4 +278,27 @@ public class ProductDetailData implements Parcelable{
             return new ProductDetailData[size];
         }
     };
+
+    public String getEnhanceCategoryFormatted() {
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < getBreadcrumb().size(); i++) {
+            list.add(getBreadcrumb().get(i).getDepartmentName());
+        }
+        return TextUtils.join("/", list);
+    }
+
+    public String getEnhanceUrl(String url) {
+        Uri uri = Uri.parse(url);
+        return uri.getLastPathSegment();
+    }
+
+    public String getEnhanceShopType() {
+        if (getShopInfo().getShopIsOfficial() == 1) {
+            return "official_store";
+        } else if (getShopInfo().getShopIsGold() == 1) {
+            return "gold_merchant";
+        } else {
+            return "regular";
+        }
+    }
 }

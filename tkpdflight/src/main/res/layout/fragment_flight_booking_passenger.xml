@@ -75,6 +75,17 @@
                     android:textColor="@color/font_black_primary_70" />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.Micro.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16"
+                android:layout_marginTop="@dimen/dp_5"
+                android:text="@string/flight_passenger_data_diri_label" />
 
             <com.tokopedia.design.text.SpinnerTextView
                 android:id="@+id/sp_title"
@@ -115,6 +126,9 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/flight_booking_passenger_firstname_secondary_hint"
                         android:singleLine="true"
+                        android:imeOptions="actionNext"
+                        android:imeActionLabel="@string/label_next"
+                        android:nextFocusForward="@+id/et_last_name"
                         android:textColor="@color/font_black_primary_70" />
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -134,6 +148,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/flight_booking_passenger_last_name_secondary_hint"
                         android:singleLine="true"
+                        android:imeOptions="actionDone"
                         android:textColor="@color/font_black_primary_70" />
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 

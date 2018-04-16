@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,8 +35,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -51,6 +54,7 @@ import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
+import com.tokopedia.core.product.model.productdetail.ProductShopInfo;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
@@ -71,11 +75,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseContentPosition;
-import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.tkpdpdp.CourierActivity;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.DinkFailedActivity;
@@ -112,6 +111,7 @@ import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import permissions.dispatcher.NeedsPermission;
@@ -142,8 +142,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private static final int FROM_COLLAPSED = 0;
     private static final int FROM_EXPANDED = 1;
     private static final int SCROLL_ELEVATION = 324;
-    private static final int SHOWCASE_MARGIN = 10;
-    private static final int SHOWCASE_HEIGHT = 100;
 
     public static final int REQUEST_CODE_SHOP_INFO = 998;
     public static final int REQUEST_CODE_TALK_PRODUCT = 1;
@@ -163,11 +161,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_PRODUCT_VARIANT = "STATE_PRODUCT_VARIANT";
+    public static final String STATE_PRODUCT_STOCK_NON_VARIANT = "STATE_PRODUCT_STOCK_NON_VARIANT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
     public static final String STATE_PROMO_WIDGET = "STATE_PROMO_WIDGET";
     public static final String STATE_APP_BAR_COLLAPSED = "STATE_APP_BAR_COLLAPSED";
-    public static final String TAG_SHOWCASE_VARIANT = "-SHOWCASE_VARIANT";
+    private static final String STATIC_VALUE_ENHANCE_NONE_OTHER = "none / other";
 
     private CoordinatorLayout coordinatorLayout;
     private HeaderInfoView headerInfoView;
@@ -208,6 +207,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ProductDetailData productData;
     private boolean useVariant = true;
     private ProductVariant productVariant;
+    private Child productStockNonVariant;
     private List<ProductOther> productOthers;
     private VideoData videoData;
     private PromoAttributes promoAttributes;
@@ -216,7 +216,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private boolean onClickBuyWhileRequestingVariant = false;
 
     private RemoteConfig remoteConfig;
-    private ShowCaseDialog showCaseDialog;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -237,7 +236,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     public ProductDetailFragment() {
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        if (remoteConfig.getBoolean(ENABLE_VARIANT) == false) {
+        if (remoteConfig.getBoolean(ENABLE_VARIANT)==false) {
             useVariant = false;
         }
     }
@@ -302,6 +301,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        float heightScreen = getResources().getDisplayMetrics().widthPixels;
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
+        layoutParams.height = (int)heightScreen;
+        appBarLayout.setVisibility(View.VISIBLE);
+
         appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
             @Override
             public void onStateChanged(AppBarLayout appBarLayout, State state) {
@@ -449,11 +454,22 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         .setProductName(productData.getInfo().getProductName())
                         .setWeight(weightProduct)
                         .setShopId(productData.getShopInfo().getShopId())
-                        .setPrice(productData.getInfo().getProductPrice())
+                        .setPrice(String.valueOf(productData.getInfo().getProductPriceUnformatted()))
+                        .setShopType(generateShopType(productData.getShopInfo()))
+                        .setListName(productPass.getTrackerListName())
+                        .setHomeAttribution(productPass.getTrackerAttribution())
                         .build();
                 pass.setNotes(generateVariantString());
-                if (!productData.getBreadcrumb().isEmpty())
+                if (!productData.getBreadcrumb().isEmpty()) {
                     pass.setProductCategory(productData.getBreadcrumb().get(0).getDepartmentName());
+                    pass.setCategoryId(productData.getBreadcrumb().get(0).getDepartmentId());
+                    pass.setCategoryLevelName(
+                            productData.getBreadcrumb()
+                                    .get(0)
+                                    .getDepartmentIdentifier()
+                                    .replace("_", "/")
+                    );
+                }
                 onProductBuySessionLogin(pass);
             } else {
                 Bundle bundle = new Bundle();
@@ -476,6 +492,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             bundle.putBoolean("login", true);
             onProductBuySessionNotLogin(bundle);
         }
+    }
+
+    private String generateShopType(ProductShopInfo productShopInfo) {
+        if (productShopInfo.getShopIsOfficial() == 1)
+            return "official_store";
+        else if(productShopInfo.getShopIsGold() == 1)
+            return "gold_merchant";
+        else return "reguler";
     }
 
     @Override
@@ -973,9 +997,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onSaveState(Bundle outState) {
-        Log.d(TAG, "onSaveState");
         presenter.saveStateProductDetail(outState, STATE_DETAIL_PRODUCT, productData);
         presenter.saveStateProductVariant(outState, STATE_PRODUCT_VARIANT, productVariant);
+        presenter.saveStateProductStockNonVariant(outState, STATE_PRODUCT_STOCK_NON_VARIANT, productStockNonVariant);
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
         presenter.saveStatePromoWidget(outState, STATE_PROMO_WIDGET, promoAttributes);
@@ -1074,6 +1098,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                     if (productVariant != null) {
                         pictureView.renderData(productData);
                         headerInfoView.renderData(productData);
+                        headerInfoView.renderStockAvailability(productData.getInfo());
                         shopInfoView.renderData(productData);
                         presenter.updateRecentView(context, productData.getInfo().getProductId());
                         ratingTalkCourierView.renderData(productData);
@@ -1200,6 +1225,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 .setAction(context.getString(R.string.go_to_wishlist), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if (!isAdded() || context == null) {
+                            return;
+                        }
                         Intent intent = new Intent(context, SimpleHomeRouter.getSimpleHomeActivityClass());
                         intent.putExtra(
                                 SimpleHomeRouter.FRAGMENT_TYPE,
@@ -1270,13 +1298,33 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         if (variantLevel1 != null && variantLevel1 instanceof Option) {
             priceSimulationView.updateVariant(generateVariantString());
         }
-        int defaultChild = productVariant.getParentId() == productData.getInfo().getProductId()
-                ? productVariant.getDefaultChild() : productData.getInfo().getProductId();
+        int defaultChild =  productVariant.getParentId() == productData.getInfo().getProductId()
+                ?  productVariant.getDefaultChild() : productData.getInfo().getProductId();
+        if(productVariant.getChildFromProductId(defaultChild).isEnabled()){
+            productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
+            productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
+            headerInfoView.renderStockAvailability(productData.getInfo());
+        }
+
         buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
                 defaultChild).isIsBuyable(), productData);
 
-        startShowCase();
+    }
 
+    @Override
+    public void setVariantFalse() {
+        useVariant = false;
+        productData.getInfo().setHasVariant(false);
+    }
+
+    @Override
+    public void addProductStock(Child productStock) {
+        productStockNonVariant = productStock;
+        if(productStock.isEnabled()){
+            productData.getInfo().setProductStockWording(productStockNonVariant.getStockWording());
+            productData.getInfo().setLimitedStock(productStockNonVariant.isLimitedStock());
+            headerInfoView.renderStockAvailability(productData.getInfo());
+        }
     }
 
     @Override
@@ -1447,46 +1495,55 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         return GlobalConfig.isSellerApp();
     }
 
-    private void startShowCase() {
-        final String showCaseTag = ProductInfoActivity.class.getName() + TAG_SHOWCASE_VARIANT;
-        if (ShowCasePreference.hasShown(getActivity(), showCaseTag) || showCaseDialog != null) {
-            return;
-        }
-        showCaseDialog = createShowCase();
-        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
-            @Override
-            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
-                return false;
-            }
-        });
-
-        Rect rectToShowCase = new Rect();
-        priceSimulationView.getGlobalVisibleRect(rectToShowCase);
-
-        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
-        showCaseObjectList.add(new ShowCaseObject(
-                priceSimulationView,
-                getResources().getString(R.string.product_variant),
-                getResources().getString(R.string.product_variant_onboarding),
-                ShowCaseContentPosition.TOP).withCustomTarget(new int[]{rectToShowCase.left + SHOWCASE_MARGIN,
-                rectToShowCase.top - 50, rectToShowCase.right - SHOWCASE_MARGIN, rectToShowCase.top + SHOWCASE_HEIGHT}));
-        showCaseDialog.show(getActivity(), showCaseTag, showCaseObjectList);
+    @Override
+    public void trackingEnhanceProductDetail() {
+        ProductPageTracking.eventEnhanceProductDetail(
+                DataLayer.mapOf(
+                        "event", "viewProduct",
+                        "eventCategory", "product page",
+                        "eventAction", "view product page",
+                        "eventLabel", String.format(
+                                Locale.getDefault(),
+                                "%s - %s - %s",
+                                productData.getEnhanceShopType(), productData.getShopInfo().getShopName(), productData.getInfo().getProductName()
+                        ),
+                        "ecommerce", DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "detail", DataLayer.mapOf(
+                                        "actionField", DataLayer.mapOf("list", productPass.getTrackerListName()),
+                                        "products", DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        "name", productData.getInfo().getProductName(),
+                                                        "id", productData.getInfo().getProductId(),
+                                                        "price", productData.getInfo().getProductPriceUnformatted(),
+                                                        "brand", "none / other",
+                                                        "category", productData.getEnhanceCategoryFormatted(),
+                                                        "variant", getEnhanceVariant(),
+                                                        "dimension38", productPass.getTrackerAttribution()
+                                                )
+                                        )
+                                )
+                        ),
+                        "key", productData.getEnhanceUrl(productData.getInfo().getProductUrl()),
+                        "shop_name", productData.getShopInfo().getShopName(),
+                        "shop_id", productData.getShopInfo().getShopId(),
+                        "shop_domain", productData.getShopInfo().getShopDomain(),
+                        "shop_location", productData.getShopInfo().getShopLocation(),
+                        "shop_is_gold", String.valueOf(productData.getShopInfo().shopIsGoldBadge() ? 1 : 0),
+                        "category_id", productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1).getDepartmentId(),
+                        "url", productData.getInfo().getProductUrl(),
+                        "shop_type", productData.getEnhanceShopType()
+                )
+        );
     }
 
-    private ShowCaseDialog createShowCase() {
-        return new ShowCaseBuilder()
-                .customView(R.layout.view_onboarding_variant)
-                .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.spacing_show_case)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
-                .textSizeRes(R.dimen.fontvs)
-                .finishStringRes(R.string.title_understand)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .build();
+    private String getEnhanceVariant() {
+        if (productVariant != null) {
+            String variantValue = productVariant.generateVariantValue(productData.getInfo().getProductId());
+            return variantValue.isEmpty() ? STATIC_VALUE_ENHANCE_NONE_OTHER : variantValue;
+        } else {
+            return STATIC_VALUE_ENHANCE_NONE_OTHER;
+        }
     }
 
 }
