@@ -38,14 +38,17 @@
 
         <ImageView
             android:id="@+id/channel_hero_image"
-            android:layout_width="@dimen/home_channel_hero_width"
-            android:layout_height="@dimen/home_channel_hero_height"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:layout_weight="2"
             tools:src="@color/green_80" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycleList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 

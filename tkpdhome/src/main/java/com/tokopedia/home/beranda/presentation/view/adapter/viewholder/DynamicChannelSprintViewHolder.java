@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -50,7 +51,7 @@ import java.util.Date;
 public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicChannelViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.home_channel_3_image;
-
+    private static final String TAG = DynamicChannelSprintViewHolder.class.getSimpleName();
     private TextView homeChannelTitle;
     private TextView seeAllButton;
     private HomeCategoryListener listener;
@@ -108,7 +109,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 countDownView.setVisibility(View.GONE);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Crashlytics.log(0, TAG, e.getLocalizedMessage());
         }
     }
 
@@ -180,7 +181,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                     });
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Crashlytics.log(0, TAG, e.getLocalizedMessage());
             }
         }
 

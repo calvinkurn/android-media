@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -30,7 +31,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicCha
 public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.home_six_grid_channel;
-
+    private static final String TAG = SixGridChannelViewHolder.class.getSimpleName();
     private View channelTitleContainer;
     private TextView channelTitle;
     private TextView seeAllButton;
@@ -87,7 +88,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
 
             itemAdapter.setChannel(channel);
         }catch (Exception e){
-            e.printStackTrace();
+            Crashlytics.log(0, TAG, e.getLocalizedMessage());
         }
     }
 

@@ -31,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -135,7 +136,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
                 container.setBackgroundColor(Color.parseColor(color));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Crashlytics.log(0, TAG, e.getLocalizedMessage());
         }
     }
 
@@ -207,7 +208,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
                     holder.countainer.setOnClickListener(null);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Crashlytics.log(0, TAG, e.getLocalizedMessage());
             }
         }
 

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -29,7 +30,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicCha
 public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChannelViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.home_channel_hero_4_image;
-
+    private static final String TAG = DynamicChannelHeroViewHolder.class.getSimpleName();
     private TextView channelTitle;
     private ImageView channelHeroImage;
     private TextView seeAllButton;
@@ -97,7 +98,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 }
             });
         }catch (Exception e){
-            e.printStackTrace();
+            Crashlytics.log(0, TAG, e.getLocalizedMessage());
         }
     }
 
@@ -144,7 +145,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                     });
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Crashlytics.log(0, TAG, e.getLocalizedMessage());
             }
         }
 

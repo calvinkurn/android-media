@@ -92,6 +92,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private Observable<List<Visitable>> getDataFromNetwork() {
         return getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -112,6 +113,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void updateHomeData() {
         subscription = getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Visitable>>() {
                     @Override
@@ -140,6 +142,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         initHeaderViewModelData();
         subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(refreshData())
                 .onErrorResumeNext(getDataFromNetwork())
