@@ -35,6 +35,7 @@ dependencies {
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
+    compile project(rootProject.ext.libraries.reactNative)
 
     compile rootProject.ext.miscDependencies.lottie
 
