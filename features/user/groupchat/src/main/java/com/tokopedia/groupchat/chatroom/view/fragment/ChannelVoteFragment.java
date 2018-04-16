@@ -1,6 +1,5 @@
 package com.tokopedia.groupchat.chatroom.view.fragment;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -31,8 +30,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
+import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.view.ProgressBarWithTimer;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
@@ -44,7 +43,6 @@ import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
-import com.tokopedia.groupchat.common.util.TextFormatter;
 import com.tokopedia.groupchat.vote.view.adapter.VoteAdapter;
 import com.tokopedia.groupchat.vote.view.adapter.typefactory.VoteTypeFactory;
 import com.tokopedia.groupchat.vote.view.adapter.typefactory.VoteTypeFactoryImpl;
@@ -389,8 +387,12 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LOGIN) {
-            userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
-            ((GroupChatActivity)getActivity()).onSuccessLogin();
+            if (getActivity().getApplication() instanceof AbstractionRouter) {
+                userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+            }
+            if (getActivity() instanceof GroupChatActivity) {
+                ((GroupChatActivity) getActivity()).onSuccessLogin();
+            }
         }
     }
 
