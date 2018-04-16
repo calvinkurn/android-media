@@ -37,7 +37,7 @@
                     android:hint="@string/title_email"
                     style="@style/HintTextInputLayout"
                     android:inputType="textCapWords"
-                    android:layout_marginBottom="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_32"
                     >
 
                     <AutoCompleteTextView
@@ -94,7 +94,7 @@
                     android:layout_height="wrap_content"
                     style="@style/HintTextInputLayout"
                     android:hint="@string/title_phone_number"
-                    android:layout_marginBottom="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_32"
                     >
 
                     <EditText

@@ -76,5 +76,7 @@ public class EventReviewTicketsContractor {
         void clickMoreinfoIcon();
 
         void clickDismissTooltip();
+
+        public String getSCREEN_NAME();
     }
 }
