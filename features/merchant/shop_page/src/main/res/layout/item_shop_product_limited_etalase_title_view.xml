@@ -8,8 +8,14 @@
     android:divider="@drawable/bg_line_separator"
     android:orientation="vertical"
     android:showDividers="beginning|middle|end">
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+
+    <com.tokopedia.design.label.LabelView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/label_view_etalase"
+        style="@style/LabelLayout"
+        android:layout_marginTop="@dimen/dp_8"
+        app:lv_title="@string/shop_info_default_produk_title"
+        app:lv_title_text_style="bold" />
+
 </LinearLayout>
