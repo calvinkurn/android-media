@@ -1,11 +1,9 @@
 package com.tokopedia.session.addchangepassword.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.session.addchangepassword.data.source.AddPasswordSource;
 import com.tokopedia.session.addchangepassword.view.viewmodel.AddPasswordViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -19,10 +17,7 @@ public class AddPasswordUseCase extends UseCase<AddPasswordViewModel> {
 
     private final AddPasswordSource addPasswordSource;
 
-    public AddPasswordUseCase(ThreadExecutor threadExecutor,
-                              PostExecutionThread postExecutionThread,
-                              AddPasswordSource addPasswordSource) {
-        super(threadExecutor, postExecutionThread);
+    public AddPasswordUseCase(AddPasswordSource addPasswordSource) {
         this.addPasswordSource = addPasswordSource;
     }
 
@@ -30,6 +25,7 @@ public class AddPasswordUseCase extends UseCase<AddPasswordViewModel> {
     public Observable<AddPasswordViewModel> createObservable(RequestParams requestParams) {
         return addPasswordSource.addPassword(requestParams);
     }
+
 
     public static RequestParams getParams(String userId, String password) {
         RequestParams params = RequestParams.create();

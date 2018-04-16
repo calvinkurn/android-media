@@ -10,6 +10,6 @@ import java.util.Date;
 
 public interface TopAdsGroupAdListPresenter extends TopAdsAdListPresenter<GroupAd> {
 
-    void searchAd(Date startDate, Date endDate, String keyword, int status, int page);
+    void searchAd(Date startDate, Date endDate, String keyword, int status, int page, String sortId);
 
 }

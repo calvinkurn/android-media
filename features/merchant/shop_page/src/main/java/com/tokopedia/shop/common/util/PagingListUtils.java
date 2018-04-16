@@ -15,7 +15,7 @@ public class PagingListUtils {
                 !shopProductList.getPaging().getUriNext().equals("0")) {
             return true;
         } else {
-            return true;
+            return false;
         }
     }
 }

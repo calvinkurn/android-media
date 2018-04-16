@@ -4,7 +4,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_product_list"
+    android:background="@color/white"
     android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
@@ -17,18 +17,27 @@
         android:layout_marginStart="@dimen/dp_15"
         android:layout_marginTop="@dimen/dp_8">
 
-        <com.tokopedia.shop.product.view.widget.SquareImageView
-            android:id="@+id/product_image"
-            android:layout_width="@dimen/image_width_product_list"
-            android:layout_height="@dimen/image_width_product_list"
-            android:layout_marginEnd="@dimen/dp_15"
-            android:layout_marginRight="@dimen/dp_15"
-            android:adjustViewBounds="true"
-            android:gravity="center"
-            android:scaleType="centerCrop"
-            tools:src="@drawable/ic_kupon"
-            tools:visibility="visible" />
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
+            <com.tokopedia.shop.product.view.widget.SquareImageView
+                android:id="@+id/product_image"
+                android:layout_width="@dimen/image_width_product_list"
+                android:layout_height="@dimen/image_width_product_list"
+                android:layout_marginEnd="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_15"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/ic_kupon"
+                tools:visibility="visible" />
+
+            <include layout="@layout/partial_shop_product_item_sold_out"
+                android:layout_width="@dimen/image_width_product_list"
+                android:layout_height="@dimen/image_width_product_list"/>
+
+        </FrameLayout>
         <include
             layout="@layout/partial_shop_product_item_detail"
             android:layout_width="match_parent"

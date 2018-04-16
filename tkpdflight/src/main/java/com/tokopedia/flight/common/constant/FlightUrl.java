@@ -27,6 +27,7 @@ public class FlightUrl {
     public static final String PROMO_PATH =  "promo/";
     public static final String CONTACT_US_PATH = "contact-us";
     public static final String CONTACT_US_FLIGHT_PREFIX = "?pid=46&ivtype=4";
+    public static final String CATEGORY_ID = "27";
     public static String BASE_URL = "https://api-staging.tokopedia.com";
     public static String WEB_DOMAIN = "https://staging.tokopedia.com/";
     public static String ALL_PROMO_LINK = WEB_DOMAIN + "promo/";

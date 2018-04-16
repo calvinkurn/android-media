@@ -118,8 +118,7 @@
                     android:id="@+id/login_buttons_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/padding_activity" />
+                    android:orientation="vertical"/>
             </LinearLayout>
         </ScrollView>
 
