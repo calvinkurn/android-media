@@ -14,7 +14,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductV
 public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopProductViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ads_banner_shop;
+    public static final int LAYOUT = R.layout.layout_ads_banner_shop_product;
     private static final String TAG = BannerShopProductViewHolder.class.getSimpleName();
 
 
