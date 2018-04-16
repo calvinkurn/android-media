@@ -39,12 +39,10 @@ public class ShopFavouriteListPresenter extends BaseDaggerPresenter<ShopFavourit
     }
 
     public void getshopFavouriteList(String shopId, int page) {
-        if (!isLoggedIn() && isViewAttached()) {
-            getView().showGetListError(new UserNotLoginException());
-            return;
-        }
         ShopFavouriteRequestModel shopFavouriteRequestModel = new ShopFavouriteRequestModel();
         shopFavouriteRequestModel.setShopId(shopId);
+        shopFavouriteRequestModel.setUserId(userSession.getUserId());
+        shopFavouriteRequestModel.setDeviceId(userSession.getDeviceId());
         shopFavouriteRequestModel.setPage(page);
         shopFavouriteRequestModel.setPerPage(SHOP_FAVOURITE_PER_PAGE);
         getShopFavouriteUserUseCase.execute(GetShopFavouriteUserUseCase.createRequestParam(shopFavouriteRequestModel), new Subscriber<ShopFavouritePagingList<ShopFavouriteUser>>() {
