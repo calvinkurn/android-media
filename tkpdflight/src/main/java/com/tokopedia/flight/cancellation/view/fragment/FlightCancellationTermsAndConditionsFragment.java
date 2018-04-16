@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 
 /**
@@ -16,6 +17,8 @@ import com.tokopedia.flight.R;
  */
 
 public class FlightCancellationTermsAndConditionsFragment extends BaseDaggerFragment {
+
+    private static final String TNC_LINK = "https://www.tokopedia.com/bantuan/pengembalian-dana-dan-penggantian-jadwal";
 
     AppCompatButton btnSelengkapnya;
 
@@ -32,6 +35,12 @@ public class FlightCancellationTermsAndConditionsFragment extends BaseDaggerFrag
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_cancellation_terms_and_conditions, container, false);
         btnSelengkapnya = view.findViewById(R.id.btn_next);
+        btnSelengkapnya.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToWebview();
+            }
+        });
 
         return view;
     }
@@ -44,5 +53,12 @@ public class FlightCancellationTermsAndConditionsFragment extends BaseDaggerFrag
     @Override
     protected void initInjector() {
 
+    }
+
+    private void navigateToWebview() {
+        if (getActivity().getApplication() instanceof FlightModuleRouter) {
+            startActivity(((FlightModuleRouter) getActivity().getApplication())
+                    .getWebviewActivity(getActivity(), TNC_LINK));
+        }
     }
 }
