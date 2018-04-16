@@ -53,7 +53,7 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
-import com.tokopedia.tkpdcontent.common.network.KolUrl;
+import com.tokopedia.kol.common.network.KolUrl;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
 
