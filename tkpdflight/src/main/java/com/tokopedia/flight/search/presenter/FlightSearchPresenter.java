@@ -184,7 +184,11 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                                 getView().setUIMarkFilter();
                                 getView().setNeedRefreshFromCache(false);
                             }
-                            getView().actionFetchFlightSearchData();
+                            if (getView().isNeedRefreshAirline()) {
+                                initialize();
+                            } else {
+                                getView().actionFetchFlightSearchData();
+                            }
                         }
                     }
                 });
@@ -310,7 +314,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                getView().hideSortRouteLoading();
                 getView().showGetListError(e);
             }
 
@@ -318,7 +321,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
             public void onNext(List<FlightSearchViewModel> flightSearchViewModels) {
                 if (flightSearchViewModels.size() > 0) {
                     getView().showFilterAndSortView();
-                    getView().hideSortRouteLoading();
                     getView().clearAdapterData();
                     getView().renderFlightSearchFromCache(flightSearchViewModels);
                     getView().addBottomPaddingForSortAndFilterActionButton();
@@ -329,7 +331,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                         getView().clearAdapterData();
                         getView().showEmptyFlightStateView();
                     } else {
-                        getView().showSortRouteLoading();
                         getView().hideFilterAndSortView();
                     }
                 }
@@ -352,7 +353,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     }
 
     public void initialize() {
-        getView().showSortRouteLoading();
         if (!getView().isReturning()) {
             flightAirlineHardRefreshUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
                 @Override
@@ -370,6 +370,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
                 @Override
                 public void onNext(Boolean aBoolean) {
+                    getView().setNeedRefreshAirline(false);
                     getView().actionFetchFlightSearchData();
                 }
             });

@@ -11,7 +11,7 @@
         android:id="@+id/title_promo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/height_button_voucher"
+        android:minHeight="@dimen/dp_44"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/font_black_secondary_54"
@@ -29,8 +29,8 @@
         android:textColor="@color/font_black_secondary_54"
         android:textSize="@dimen/text_size_s_medium"
         app:drawableLeftCompat="@drawable/ic_promo_voucher"
-        android:drawablePadding="@dimen/padding_vs"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:drawablePadding="@dimen/dp_5"
+        android:layout_marginBottom="@dimen/dp_5"
         android:text="@string/title_promo_code"
         />
 
@@ -38,7 +38,7 @@
         android:id="@+id/widget_copy_promo_voucher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/dp_10"
         />
 
     <RelativeLayout
@@ -52,7 +52,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:textColor="@color/medium_green"
@@ -69,8 +69,8 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@id/button_term_and_condition"
             android:layout_toStartOf="@id/button_term_and_condition"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:textSize="@dimen/font_small"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:textSize="@dimen/sp_14"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:textColor="@color/font_black_disabled_38"
@@ -87,7 +87,7 @@
             android:layout_toLeftOf="@id/button_term_and_condition"
             android:layout_toStartOf="@id/button_term_and_condition"
             android:layout_below="@id/text_min_transaction"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:textColor="@color/font_black_disabled_38"

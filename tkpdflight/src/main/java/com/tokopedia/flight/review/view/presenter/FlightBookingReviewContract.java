@@ -19,10 +19,10 @@ import java.util.List;
 public interface FlightBookingReviewContract {
 
     interface View extends FlightBaseBookingContact.View{
-
-        void onErrorCheckVoucherCode(Throwable t);
-
-        void onSuccessCheckVoucherCode(AttributesVoucher attributesVoucher);
+//
+//        void onErrorCheckVoucherCode(Throwable t);
+//
+//        void onSuccessCheckVoucherCode(AttributesVoucher attributesVoucher);
 
         void onErrorSubmitData(Throwable e);
 
@@ -69,8 +69,6 @@ public interface FlightBookingReviewContract {
         void setNeedToRefreshOnPassengerInfo();
 
         void updateFinalTotal(AttributesVoucher attributesVoucher, FlightBookingReviewModel currentBookingReviewModel);
-
-        String getVoucherCode();
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View>{
@@ -78,10 +76,6 @@ public interface FlightBookingReviewContract {
         void verifyBooking(String promoCode, int price, int adult, String cartId,
                            List<FlightBookingPassengerViewModel> flightPassengerViewModels,
                            String contactName, String country, String email, String phone);
-
-        void checkVoucherCode(String cartId, String voucherCode);
-
-        void submitData();
 
         void onPaymentSuccess();
 

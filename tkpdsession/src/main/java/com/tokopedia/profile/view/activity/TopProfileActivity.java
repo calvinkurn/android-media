@@ -30,7 +30,7 @@ import com.tokopedia.core.ManagePeople;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.design.tab.Tabs;
+import com.tokopedia.design.component.Tabs;
 import com.tokopedia.profile.ProfileComponentInstance;
 import com.tokopedia.profile.di.DaggerTopProfileComponent;
 import com.tokopedia.profile.di.TopProfileModule;
@@ -355,6 +355,7 @@ public class TopProfileActivity extends BaseSimpleActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        presenter.getTopProfileData(userId);
         switch (requestCode) {
             case MANAGE_PEOPLE_CODE:
                 if (resultCode == Activity.RESULT_OK) {
@@ -583,4 +584,5 @@ public class TopProfileActivity extends BaseSimpleActivity
         if (topProfileViewModel.isFollowed()) presenter.unfollowKol(userId);
         else presenter.followKol(userId);
     }
+
 }

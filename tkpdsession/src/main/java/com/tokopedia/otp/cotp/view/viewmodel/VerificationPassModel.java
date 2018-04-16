@@ -1,7 +1,5 @@
 package com.tokopedia.otp.cotp.view.viewmodel;
 
-import java.util.ArrayList;
-
 /**
  * @author by nisie on 12/28/17.
  */
@@ -21,6 +19,14 @@ public class VerificationPassModel {
         this.email = email;
         this.otpType = otpType;
         this.interruptModel = interruptModel;
+        this.canUseOtherMethod = canUseOtherMethod;
+    }
+
+    public VerificationPassModel(String phoneNumber, int otpType, boolean canUseOtherMethod) {
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.otpType = otpType;
+        this.interruptModel = null;
         this.canUseOtherMethod = canUseOtherMethod;
     }
 

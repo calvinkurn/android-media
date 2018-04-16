@@ -132,11 +132,15 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         wholesaleTextView.setVisibility(productManageViewModel.getProductWholesale() == ProductManageWholesaleDef.WHOLESALE ? View.VISIBLE : View.GONE);
         if (!statusStockEmpty && productManageViewModel.getProductUsingStock() == ProductManageStockDef.USING_STOCK) {
             stockTextView.setVisibility(View.VISIBLE);
-            stockTextView.setText(itemView.getContext().getString(R.string.product_manage_label_stock_counter, productManageViewModel.getProductStock()));
+            if (productManageViewModel.isProductVariant()) {
+                stockTextView.setText(itemView.getContext().getString(R.string.product_variant_stock_limited));
+            } else {
+                stockTextView.setText(itemView.getContext().getString(R.string.product_manage_label_stock_counter, productManageViewModel.getProductStock()));
+            }
         } else {
             stockTextView.setVisibility(View.GONE);
         }
-        boolean isProductVariant = productManageViewModel.getProductVariant() == 1;
+        boolean isProductVariant = productManageViewModel.isProductVariant();
         if (isProductVariant) {
             textViewVariant.setVisibility(View.VISIBLE);
         } else {

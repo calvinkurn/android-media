@@ -2,24 +2,25 @@ package com.tokopedia.home.beranda.presentation.presenter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
@@ -66,8 +67,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private String currentCursor = "";
     private PagingHandler pagingHandler;
     private HomeFeedListener feedListener;
-
     private HeaderViewModel headerViewModel;
+    private boolean fetchFirstData;
 
     public HomePresenter(Context context) {
         this.context = context;
@@ -94,6 +95,39 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     @Override
+    public void onFirstLaunch() {
+        this.fetchFirstData = true;
+    }
+
+    @Override
+    public void onResume() {
+        if (isViewAttached() && !this.fetchFirstData) {
+            subscription = getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<List<Visitable>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<Visitable> visitables) {
+                            if (isViewAttached() && isDataValid(visitables)) {
+                                getView().updateListOnResume(visitables);
+                            }
+                        }
+                    });
+            compositeSubscription.add(subscription);
+        }
+    }
+
+    @Override
     public void getHomeData() {
         initHeaderViewModelData();
         subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
@@ -101,7 +135,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(refreshData())
                 .onErrorResumeNext(getDataFromNetwork())
-                .subscribe(new HomeDataSubscriber());
+                .subscribe(createHomeDataSubscriber());
         compositeSubscription.add(subscription);
     }
 
@@ -119,9 +153,13 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         return new Action1<List<Visitable>>() {
             @Override
             public void call(List<Visitable> visitables) {
-                compositeSubscription.add(getDataFromNetwork().subscribe(new HomeDataSubscriber()));
+                compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber()));
             }
         };
+    }
+
+    private HomeDataSubscriber createHomeDataSubscriber() {
+        return new HomeDataSubscriber(this);
     }
 
     @Override
@@ -214,10 +252,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     try {
                         ShopModel shopModel = new Gson().fromJson(result, ShopModel.class);
                         if (shopModel.info != null) {
-                            Bundle bundle = ShopInfoActivity.createBundle(
-                                    shopModel.getInfo().getShopId(), shopModel.getInfo().getShopDomain());
-                            Intent intent = new Intent(context, ShopInfoActivity.class);
-                            intent.putExtras(bundle);
+                            Intent intent = ((IHomeRouter) MainApplication.getAppContext()).getShopPageIntent(MainApplication.getAppContext(), shopModel.getInfo().getShopId());
                             context.startActivity(intent);
                         } else {
                             getView().openWebViewURL(url, context);
@@ -342,61 +377,84 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         return !CURSOR_NO_NEXT_PAGE_FEED.equals(currentCursor);
     }
 
-    private class HomeDataSubscriber extends Subscriber<List<Visitable>> {
+    public HeaderViewModel getHeaderViewModel() {
+        return headerViewModel;
+    }
 
-        public HomeDataSubscriber() {
+    public void setFetchFirstData(boolean fetchFirstData) {
+        this.fetchFirstData = fetchFirstData;
+    }
+
+    public boolean isLogin() {
+        return SessionHandler.isV4Login(context);
+    }
+
+    public void showNetworkError() {
+        getView().showNetworkError(context.getString(R.string.msg_network_error));
+    }
+
+    private static class HomeDataSubscriber extends Subscriber<List<Visitable>> {
+
+        HomePresenter homePresenter;
+
+        public HomeDataSubscriber(HomePresenter homePresenter) {
+            this.homePresenter = homePresenter;
         }
 
         @Override
         public void onStart() {
-            if (isViewAttached()) {
-                getView().showLoading();
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                homePresenter.getView().showLoading();
             }
         }
 
         @Override
         public void onCompleted() {
-            if (isViewAttached()) {
-                getView().hideLoading();
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                homePresenter.getView().hideLoading();
+                homePresenter.setFetchFirstData(false);
+                homePresenter = null;
             }
         }
 
         @Override
         public void onError(Throwable e) {
-            if (isViewAttached()) {
-                getView().showNetworkError(ErrorHandler.getErrorMessage(e));
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                homePresenter.getView().showNetworkError(ErrorHandler.getErrorMessage(e));
                 onCompleted();
             }
         }
 
         @Override
         public void onNext(List<Visitable> visitables) {
-            if (isViewAttached()) {
-                if (SessionHandler.isV4Login(context) && headerViewModel != null) {
-                    visitables.add(0, headerViewModel);
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                if (homePresenter.isLogin() && homePresenter.getHeaderViewModel() != null) {
+                    visitables.add(0, homePresenter.getHeaderViewModel());
                 }
-                getView().setItems(visitables);
-                if (isDataValid(visitables)) {
-                    getView().removeNetworkError();
+                homePresenter.getView().setItems(visitables);
+                if (visitables.size() > 0) {
+                    homePresenter.getView().showRecomendationButton();
+                }
+                if (homePresenter.isDataValid(visitables)) {
+                    homePresenter.getView().removeNetworkError();
                 } else {
-                    getView().showNetworkError(context.getString(R.string.msg_network_error));
+                    homePresenter.showNetworkError();
                 }
             }
-        }
-
-        private boolean isDataValid(List<Visitable> visitables) {
-            return containsInstance(visitables, BannerViewModel.class);
-        }
-
-        public <E> boolean containsInstance(List<E> list, Class<? extends E> clazz) {
-            for (E e : list) {
-                if (clazz.isInstance(e)) {
-                    return true;
-                }
-            }
-            return false;
         }
 
     }
 
+    private boolean isDataValid(List<Visitable> visitables) {
+        return containsInstance(visitables, BannerViewModel.class);
+    }
+
+    public <E> boolean containsInstance(List<E> list, Class<? extends E> clazz) {
+        for (E e : list) {
+            if (clazz.isInstance(e)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

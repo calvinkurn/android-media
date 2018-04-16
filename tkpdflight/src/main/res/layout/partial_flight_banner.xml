@@ -4,10 +4,10 @@
     android:id="@+id/banner_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_med"
+    android:layout_marginTop="@dimen/dp_20"
     android:background="@color/background_apps"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/padding_med"
+    android:paddingBottom="@dimen/dp_20"
     android:visibility="gone"
     tools:visibility="visible">
 
@@ -15,8 +15,8 @@
         android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_med"
-        android:paddingTop="@dimen/padding_med"
+        android:paddingBottom="@dimen/dp_20"
+        android:paddingTop="@dimen/dp_20"
         android:visibility="gone" />
 
 </LinearLayout>

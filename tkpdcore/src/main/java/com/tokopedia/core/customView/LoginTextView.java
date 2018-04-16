@@ -145,7 +145,7 @@ public class LoginTextView extends LinearLayout {
     public void setTextRegister(String name) {
         TextView textView = (TextView) findViewById(R.id.provider_name);
         textView.setTextColor(getInverseColor(getBackgroundColor()));
-        textView.setText(String.format("Daftar Dengan %s", name));
+        textView.setText(name);
     }
 
     public void setText(String name) {

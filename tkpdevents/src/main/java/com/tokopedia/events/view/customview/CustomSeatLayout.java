@@ -38,6 +38,7 @@ public class CustomSeatLayout extends LinearLayout {
     int rowId;
     public static List<String> selectedSeatList = new ArrayList<>();
     public static List<String> rowids = new ArrayList<>();
+    public static List<String> actualSeatNos = new ArrayList<>();
 
     public CustomSeatLayout(Context context) {
         super(context);
@@ -66,7 +67,7 @@ public class CustomSeatLayout extends LinearLayout {
     private void initView() {
         inflate(getContext(), R.layout.individual_seat, this);
         ButterKnife.bind(this);
-        mPresenter.setSelectedSeatText(selectedSeatList, rowids);
+        mPresenter.setSelectedSeatText(selectedSeatList, rowids, actualSeatNos);
     }
 
     public void setText(String text, int status) {
@@ -81,7 +82,8 @@ public class CustomSeatLayout extends LinearLayout {
             individualSeat.setText(text);
             individualSeat.setClickable(false);
             individualSeat.setBackgroundResource(R.drawable.booked_seat_bg);
-        } else if (status == 0 || text.length() == 0) {
+        } else if (text.equalsIgnoreCase("-") || status == 0) {
+            individualSeat.setText(text);
             individualSeat.setBackground(null);
             individualSeat.setClickable(false);
         }
@@ -99,6 +101,7 @@ public class CustomSeatLayout extends LinearLayout {
             } else {
                 selectedSeatList.add(columnName);
             }
+            actualSeatNos.add(columnName);
             rowids.add(Integer.toString(rowId));
         } else if (individualSeat.isSelected()) {
             individualSeat.setSelected(false);
@@ -110,6 +113,7 @@ public class CustomSeatLayout extends LinearLayout {
             } else {
                 selectedSeatList.remove(columnName);
             }
+            actualSeatNos.remove(columnName);
             rowids.remove(Integer.toString(rowId));
         } else {
             Toast.makeText(getContext(),
@@ -124,5 +128,6 @@ public class CustomSeatLayout extends LinearLayout {
         numoFSeats = 0;
         CustomSeatLayout.selectedSeatList.clear();
         CustomSeatLayout.rowids.clear();
+        CustomSeatLayout.actualSeatNos.clear();
     }
 }

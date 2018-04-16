@@ -60,15 +60,14 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     @Override
-    public void notifyReceiverBackgroundMessage(Bundle bundle) {
-        if (isSupportedApplinkNotification(bundle)) {
-            handleApplinkNotification(bundle);
-        } else if (isDedicatedNotification(bundle)) {
-            handleDedicatedNotification(bundle);
+    public void notifyReceiverBackgroundMessage(Bundle data) {
+        if (isSupportedApplinkNotification(data)) {
+            handleApplinkNotification(data);
+        } else if (isDedicatedNotification(data)) {
+            handleDedicatedNotification(data);
         } else {
-            handlePromotionNotification(bundle);
+            handlePromotionNotification(data);
         }
-
     }
 
     private void handleApplinkNotification(Bundle data) {

@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
-import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
 import java.util.List;
 

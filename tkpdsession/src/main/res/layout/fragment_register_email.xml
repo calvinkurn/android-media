@@ -24,8 +24,10 @@
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_med"
+                android:padding="@dimen/dp_20"
                 android:visibility="visible">
 
                 <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -34,7 +36,8 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/title_email"
                     style="@style/HintTextInputLayout"
-                    android:layout_marginBottom="@dimen/margin_med"
+                    android:inputType="textCapWords"
+                    android:layout_marginBottom="@dimen/dp_32"
                     >
 
                     <AutoCompleteTextView
@@ -49,13 +52,29 @@
                         android:textColor="@color/black_70"/>
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/email_helper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_med"
+                    android:layout_marginLeft="@dimen/margin_vvs"
+                    android:fontFamily="sans-serif"
+                    android:lineSpacingExtra="4sp"
+                    android:text="@string/send_verif_to_email"
+                    android:textColor="@color/black_38"
+                    android:textSize="@dimen/text_size_12"
+                    android:textStyle="normal"
+                    />
+
                 <com.tokopedia.design.text.TkpdHintTextInputLayout
                     android:id="@+id/wrapper_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/HintTextInputLayout"
                     android:hint="@string/title_full_name"
-                    android:layout_marginBottom="@dimen/margin_med">
+                    style="@style/HintTextInputLayout"
+                    android:inputType="textCapWords"
+                    android:layout_marginBottom="@dimen/dp_20">
 
                     <EditText
                         android:id="@+id/name"
@@ -73,9 +92,9 @@
                     android:id="@+id/wrapper_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/title_phone_number"
                     style="@style/HintTextInputLayout"
-
+                    android:hint="@string/title_phone_number"
+                    android:layout_marginBottom="@dimen/dp_32"
                     >
 
                     <EditText
@@ -91,15 +110,17 @@
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                 <TextView
+                    android:visibility="gone"
+                    android:id="@+id/phone_helper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_med"
-                    android:layout_marginLeft="@dimen/margin_vvs"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:layout_marginLeft="@dimen/dp_3"
                     android:fontFamily="sans-serif"
                     android:lineSpacingExtra="4sp"
-                    android:text="@string/make_sure_phone_is_active"
+                    android:text="@string/phone_example"
                     android:textColor="@color/black_38"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/text_size_12"
                     android:textStyle="normal"
                     />
 
@@ -107,9 +128,10 @@
                     android:id="@+id/wrapper_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/HintTextInputLayout"
                     android:hint="@string/prompt_password"
+                    style="@style/HintTextInputLayout"
                     app:passwordToggleDrawable="@drawable/asl_password_visibility"
+                    android:layout_marginBottom="@dimen/dp_20"
                     app:passwordToggleEnabled="true">
 
                     <android.support.design.widget.TextInputEditText
@@ -127,21 +149,23 @@
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                 <TextView
+                    android:visibility="gone"
+                    android:id="@+id/password_helper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_med"
-                    android:layout_marginLeft="@dimen/margin_vvs"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:layout_marginLeft="@dimen/dp_3"
                     android:lineSpacingExtra="6sp"
                     android:text="@string/minimal_6_character"
                     android:textColor="@color/black_38"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/text_size_12"
                     />
 
                 <TextView
                     android:id="@+id/register_button"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/btn_height"
-                    android:layout_marginTop="@dimen/margin_med"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:background="@drawable/grey_button_rounded"
                     android:enabled="false"
                     android:fontFamily="sans-serif-medium"
@@ -154,13 +178,13 @@
                     android:id="@+id/register_next_detail_t_and_p"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:layout_marginTop="@dimen/margin_med"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:fontFamily="sans-serif"
                     android:gravity="center"
                     android:lineSpacingExtra="6sp"
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
+                    android:paddingLeft="@dimen/dp_10"
+                    android:paddingRight="@dimen/dp_10"
                     android:textColor="@color/black_38"
                     android:textSize="@dimen/fontvs"
                     android:textStyle="normal"
