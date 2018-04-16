@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.app.GeneralReactNativeFragment;
@@ -16,8 +17,8 @@ import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 
 public class ReactNativeBrandListOsActivity extends ReactFragmentActivity<GeneralReactNativeFragment> {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
-
-    @DeepLink({Constants.Applinks.BRAND_LIST, Constants.Applinks.BRAND_LIST_WITH_SLASH})
+    
+    @DeepLink({ApplinkConst.BRAND_LIST, ApplinkConst.BRAND_LIST_WITH_SLASH})
     public static Intent getBrandlistApplinkCallingIntent(Context context, Bundle bundle){
         return ReactNativeBrandListOsActivity.createApplinkCallingIntent(context, ReactConst.Screen.BRANDLIST_PAGE, "All Brands", bundle);
     }
