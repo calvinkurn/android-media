@@ -203,16 +203,20 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     public void onResume() {
         super.onResume();
         // restart the timer (only if the timer was paused in onPaused)
-        if (tokenData != null && prevTimeStamp > 0) {
-            long currentTimeStamp = System.currentTimeMillis();
-            int diffSeconds = (int) ((currentTimeStamp - prevTimeStamp) / 1000L);
-            TokenUser tokenUser = tokenData.getHome().getTokensUser();
-            int prevTimeRemainingSecond = tokenUser.getTimeRemainingSeconds();
-            tokenUser.setTimeRemainingSeconds(prevTimeRemainingSecond - diffSeconds);
+        if (tokenData != null ) {
+            if (prevTimeStamp > 0) {
+                long currentTimeStamp = System.currentTimeMillis();
+                int diffSeconds = (int) ((currentTimeStamp - prevTimeStamp) / 1000L);
+                TokenUser tokenUser = tokenData.getHome().getTokensUser();
+                int prevTimeRemainingSecond = tokenUser.getTimeRemainingSeconds();
+                tokenUser.setTimeRemainingSeconds(prevTimeRemainingSecond - diffSeconds);
 
-            showTimer(tokenData);
+                showTimer(tokenData);
 
-            prevTimeStamp = 0;
+                prevTimeStamp = 0;
+            }
+
+            widgetTokenOnBoarding.showHandOnboarding();
         }
     }
 
