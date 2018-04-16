@@ -381,5 +381,8 @@
     <string name="flight_cancellation_review_dialog_refundable_success_description">Pembatalan pesanan Anda akan segera diproses. Mohon tunggu konfirmasi dari pihak maskapai terkait untuk proses pengembalian dana pemesanan tiket pesawat Anda.</string>
     <string name="flight_label_additional_data">Data Penunjang</string>
     <string name="flight_cancellation_review_total_refund_label">Total Refund</string>
+    <string name="flight_cancellation_terms_and_condition_button_text">Selengkapnya</string>
+    <string name="flight_cancellation_terms_and_condition_title">Syarat dan Ketentuan</string>
+    <string name="flight_cancellation_terms_and_cancellation_text">Refund, pembatalan, penggantian jadwal, ketentuan boarding, bagasi yang diperbolehkan, pengembalian dana serta hal-hal lain yang berhubungan dengan penggunaan layanan transportasi pesawat merupakan kebijakan dan tanggung jawab dari maskapai dengan merujuk kepada Syarat dan Ketentuan yang ditetapkan oleh maskapai.</string>
 
 </resources>
