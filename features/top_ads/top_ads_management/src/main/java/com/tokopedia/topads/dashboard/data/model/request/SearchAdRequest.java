@@ -25,6 +25,7 @@ public class SearchAdRequest {
     private int page;
     private String adId;
     private String groupId;
+    private String sort;
 
     public String getShopId() {
         return shopId;
@@ -90,6 +91,14 @@ public class SearchAdRequest {
         this.groupId = groupId;
     }
 
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
+
     public HashMap<String, String> getParams() {
         HashMap<String, String> params = new HashMap<>();
         params.put(TopAdsNetworkConstant.PARAM_SHOP_ID, shopId);
@@ -116,6 +125,9 @@ public class SearchAdRequest {
         params.put(TopAdsNetworkConstant.PARAM_GROUP, String.valueOf(group));
         if (page >= 0) {
             params.put(TopAdsNetworkConstant.PARAM_PAGE, String.valueOf(page));
+        }
+        if (!TextUtils.isEmpty(sort)){
+            params.put(TopAdsNetworkConstant.PARAM_SORT, sort);
         }
         return params;
     }

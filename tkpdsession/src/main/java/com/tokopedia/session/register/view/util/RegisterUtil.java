@@ -18,6 +18,9 @@ public class RegisterUtil {
     public static boolean isExceedMaxCharacter(String text) {
         return text.length()>35;
     }
+    public static boolean isBelowMinChar(String text) {
+        return text.length()<3;
+    }
 
     public static String formatDateText(int mDateDay, int mDateMonth, int mDateYear) {
         return String.format("%d / %d / %d", mDateDay, mDateMonth, mDateYear);
