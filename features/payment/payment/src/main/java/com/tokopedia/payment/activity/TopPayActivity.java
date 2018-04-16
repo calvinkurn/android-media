@@ -338,8 +338,8 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     @Override
-    public void onPaymentFingerPrint(String transactionId, String partner, String publicKey, String date, String signature, String userId) {
-        presenter.paymentFingerPrint(transactionId, partner, publicKey, date, signature, userId);
+    public void onPaymentFingerPrint(String transactionId, String publicKey, String date, String signature, String userId) {
+        presenter.paymentFingerPrint(transactionId, publicKey, date, signature, userId);
     }
 
     @Override
@@ -443,7 +443,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                     request.getUrl().toString().contains(FingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_VERITRANS) ) && isInterceptOtp &&
                     request.getUrl().getQueryParameter(FingerprintConstant.ENABLE_FINGERPRINT).equalsIgnoreCase("true")){
                 fingerPrintDialogPayment = FingerPrintDialogPayment.createInstance(presenter.getUserId(), request.getUrl().toString(),
-                        request.getUrl().getQueryParameter(FingerprintConstant.TRANSACTION_ID), request.getUrl().getQueryParameter(FingerprintConstant.PARTNER));
+                        request.getUrl().getQueryParameter(FingerprintConstant.TRANSACTION_ID));
                 fingerPrintDialogPayment.setListenerPayment(TopPayActivity.this);
                 fingerPrintDialogPayment.setContext(TopPayActivity.this);
                 fingerPrintDialogPayment.show(getSupportFragmentManager(), "fingerprintPayment");

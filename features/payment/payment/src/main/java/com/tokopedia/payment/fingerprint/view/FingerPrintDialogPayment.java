@@ -12,6 +12,7 @@ import com.tokopedia.payment.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -32,19 +33,18 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     private Button buttonUseOtp;
 
     private String userId;
+    private String date;
     private String urlOtp;
     private String transactionId;
-    private String partner;
     private int counterError = 0;
     private boolean isAttached;
 
-    public static FingerPrintDialogPayment createInstance(String userId, String urlOtp, String transactionId, String partner){
+    public static FingerPrintDialogPayment createInstance(String userId, String urlOtp, String transactionId){
         FingerPrintDialogPayment fingerPrintDialogPayment = new FingerPrintDialogPayment();
         Bundle bundle = new Bundle();
         bundle.putString(USER_ID, userId);
         bundle.putString(URL_OTP, urlOtp);
         bundle.putString(TRANSACTION_ID, transactionId);
-        bundle.putString(PARTNER, partner);
         fingerPrintDialogPayment.setArguments(bundle);
         return fingerPrintDialogPayment;
     }
@@ -52,7 +52,8 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     @Override
     public void startListening() {
         super.startListening();
-        setTextToEncrypt( userId + generateDate());
+        date = generateDate();
+        setTextToEncrypt( userId + date);
     }
 
     public void setListenerPayment(ListenerPayment listenerPayment) {
@@ -70,7 +71,6 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
         urlOtp = getArguments().getString(URL_OTP, "");
         userId = getArguments().getString(USER_ID, "");
         transactionId = getArguments().getString(TRANSACTION_ID, "");
-        partner = getArguments().getString(PARTNER, "");
     }
 
     @Override
@@ -147,7 +147,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
 
     @Override
     public void onAuthenticationSucceeded(String publicKey, String signature) {
-        listenerPayment.onPaymentFingerPrint(transactionId, partner, publicKey, generateDate(), signature, userId);
+        listenerPayment.onPaymentFingerPrint(transactionId, publicKey, date, signature, userId);
     }
 
     @Override
@@ -165,6 +165,6 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
 
         void onGoToOtpPage(String transactionId, String urlOtp);
 
-        void onPaymentFingerPrint(String transactionId, String partner, String publicKey, String date, String signature, String userId);
+        void onPaymentFingerPrint(String transactionId, String publicKey, String date, String signature, String userId);
     }
 }

@@ -56,9 +56,9 @@ public class TopPayPresenter extends BaseDaggerPresenter<TopPayContract.View> im
                 getSubscriberRegisterFingerPrint());
     }
 
-    public void paymentFingerPrint(String transactionId, String partner, String publicKey, String date, String accountSignature, String userId) {
+    public void paymentFingerPrint(String transactionId, String publicKey, String date, String accountSignature, String userId) {
         getView().showProgressDialog();
-        paymentFingerprintUseCase.execute(paymentFingerprintUseCase.createRequestParams(transactionId, partner, publicKey, date, accountSignature, userId),
+        paymentFingerprintUseCase.execute(paymentFingerprintUseCase.createRequestParams(transactionId, publicKey, date, accountSignature, userId),
                 getSubscriberPaymentFingerPrint());
     }
 

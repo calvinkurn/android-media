@@ -134,7 +134,7 @@ public class FingerPrintDialog extends BottomSheets {
 
             @Override
             public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
-                getCallback().onAuthenticationSucceeded(getPublicKey(), getSignature());
+                getCallback().onAuthenticationSucceeded(getPublicKey(generatePublicKey(context)), getSignature());
             }
 
             @Override
@@ -145,8 +145,8 @@ public class FingerPrintDialog extends BottomSheets {
         };
     }
 
-    private String getPublicKey() {
-        String encoded = Base64.encodeToString(generatePublicKey(context).getEncoded(), Base64.NO_WRAP);
+    public static String getPublicKey(PublicKey publicKey) {
+        String encoded = Base64.encodeToString(publicKey.getEncoded(), Base64.NO_WRAP);
         String publicKeyString = "-----BEGIN PUBLIC KEY-----\n" + encoded + "\n-----END PUBLIC KEY-----";
         return Base64.encodeToString(publicKeyString.getBytes(), Base64.NO_WRAP);
     }
