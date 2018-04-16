@@ -6,6 +6,10 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PagerSnapHelper;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.style.ForegroundColorSpan;
@@ -21,6 +25,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
@@ -29,8 +34,14 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.view.adapter.BannerAdsAdapter;
+import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsAdapterTypeFactory;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel;
 
 import org.apache.commons.text.StringEscapeUtils;
+
+import java.util.ArrayList;
 
 /**
  * Created by errysuprayogi on 12/28/17.
@@ -43,6 +54,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     private TopAdsListener adsListener;
     private TopAdsBannerClickListener topAdsBannerClickListener;
     private ImageLoader imageLoader;
+    private BannerAdsAdapter bannerAdsAdapter;
 
     public TopAdsBannerView(Context context) {
         super(context);
@@ -74,38 +86,50 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     private void createViewCpmShop(Context context, final CpmData.Cpm cpm) {
         if (activityIsFinishing(context))
             return;
-        inflate(getContext(), R.layout.layout_ads_banner_shop, this);
-        final ImageView iconImg = (ImageView) findViewById(R.id.icon);
-        TextView promotedTxt = (TextView) findViewById(R.id.title_promote);
-        TextView nameTxt = (TextView) findViewById(R.id.shop_name);
-        TextView descriptionTxt = (TextView) findViewById(R.id.description);
-        LinearLayout badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
-        Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                iconImg.setImageBitmap(resource);
-                new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
-            }
-        });
-        promotedTxt.setText(cpm.getPromotedText());
-        nameTxt.setText(escapeHTML(cpm.getName()));
-
-        String desc = String.format("%s %s", escapeHTML(cpm.getDecription()), cpm.getCta());
-        setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
-
-        if (cpm.getBadges().size() > 0) {
-            badgeContainer.removeAllViews();
-            badgeContainer.setVisibility(VISIBLE);
-            for (Badge badge : cpm.getBadges()) {
-                ImageView badgeImg = new ImageView(context);
-                badgeImg.setLayoutParams(new LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size),
-                        context.getResources().getDimensionPixelSize(R.dimen.badge_size)));
-                Glide.with(context).load(badge.getImageUrl()).into(badgeImg);
-                badgeContainer.addView(badgeImg);
-            }
-        } else {
-            badgeContainer.setVisibility(GONE);
+        inflate(getContext(), R.layout.layout_ads_banner_shop_pager, this);
+        RecyclerView recyclerView = findViewById(R.id.list);
+        bannerAdsAdapter = new BannerAdsAdapter(new BannerAdsAdapterTypeFactory());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setAdapter(bannerAdsAdapter);
+        SnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(recyclerView);
+        if(cpm!=null){
+            ArrayList<Item> items = new ArrayList<>();
+            items.add(new BannerShopViewModel(cpm));
+            items.add(new BannerShopProductViewModel(cpm));
+            bannerAdsAdapter.setList(items);
         }
+//        final ImageView iconImg = (ImageView) findViewById(R.id.icon);
+//        TextView promotedTxt = (TextView) findViewById(R.id.title_promote);
+//        TextView nameTxt = (TextView) findViewById(R.id.shop_name);
+//        TextView descriptionTxt = (TextView) findViewById(R.id.description);
+//        LinearLayout badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
+//        Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
+//            @Override
+//            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                iconImg.setImageBitmap(resource);
+//                new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
+//            }
+//        });
+//        promotedTxt.setText(cpm.getPromotedText());
+//        nameTxt.setText(escapeHTML(cpm.getName()));
+//
+//        String desc = String.format("%s %s", escapeHTML(cpm.getDecription()), cpm.getCta());
+//        setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
+//
+//        if (cpm.getBadges().size() > 0) {
+//            badgeContainer.removeAllViews();
+//            badgeContainer.setVisibility(VISIBLE);
+//            for (Badge badge : cpm.getBadges()) {
+//                ImageView badgeImg = new ImageView(context);
+//                badgeImg.setLayoutParams(new LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size),
+//                        context.getResources().getDimensionPixelSize(R.dimen.badge_size)));
+//                Glide.with(context).load(badge.getImageUrl()).into(badgeImg);
+//                badgeContainer.addView(badgeImg);
+//            }
+//        } else {
+//            badgeContainer.setVisibility(GONE);
+//        }
     }
 
     private boolean activityIsFinishing(Context context) {
@@ -116,7 +140,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         return false;
     }
 
-    private void setTextColor(TextView view, String fulltext, String subtext, int color) {
+    public static void setTextColor(TextView view, String fulltext, String subtext, int color) {
         view.setText(fulltext, TextView.BufferType.SPANNABLE);
         Spannable str = (Spannable) view.getText();
         int i = fulltext.indexOf(subtext);
