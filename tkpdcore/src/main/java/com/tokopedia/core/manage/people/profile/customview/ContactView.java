@@ -79,7 +79,7 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
     public void renderData(@NonNull Profile profile) {
         DataUser dataUser = profile.getDataUser();
         renderEmailView(dataUser.getUserEmail());
-        renderPhoneView(dataUser.getUserPhone());
+        renderPhoneView(dataUser.getUserPhone(), dataUser.getUserEmail());
     }
 
     private void renderEmailView(String userEmail) {
@@ -113,7 +113,7 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
         changeEmailBtn.setOnClickListener(new ChangeEmailButtonClick(userEmail));
     }
 
-    private void renderPhoneView(String userPhone) {
+    private void renderPhoneView(String userPhone, String email) {
         tvPhone.setText(userPhone);
         if (SessionHandler.isMsisdnVerified()) {
             changeHpBtn.setVisibility(VISIBLE);
@@ -128,7 +128,7 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
             tvPhone.setVisibility(VISIBLE);
             phone.setVisibility(GONE);
         }
-        changeHpBtn.setOnClickListener(new ChangePhoneButtonClick(userPhone));
+        changeHpBtn.setOnClickListener(new ChangePhoneButtonClick(userPhone, email));
         verificationBtn.setOnClickListener(new VerificationButtonClick(userPhone));
     }
 
@@ -154,14 +154,20 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
     private class ChangePhoneButtonClick implements OnClickListener {
 
         private final String userPhone;
+        private final String userEmail;
 
-        public ChangePhoneButtonClick(String userPhone) {
+        public ChangePhoneButtonClick(String userPhone, String userEmail) {
             this.userPhone = userPhone;
+            this.userEmail = userEmail;
         }
 
         @Override
         public void onClick(View view) {
-            presenter.setOnChangePhoneButtonClick(getContext(), userPhone);
+            if (TextUtils.isEmpty(userEmail)) {
+                presenter.setOnChangePhoneNumberEmptyEmailClick(getContext());
+            } else {
+                presenter.setOnChangePhoneButtonClick(getContext(), userPhone);
+            }
         }
     }
 

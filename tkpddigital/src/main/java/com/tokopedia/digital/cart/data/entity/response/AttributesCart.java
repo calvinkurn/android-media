@@ -59,9 +59,15 @@ public class AttributesCart {
     @SerializedName("additional_info")
     @Expose
     private List<AdditionalInfo> additionalInfo = null;
+    @SerializedName("autoapply")
+    @Expose
+    private AutoApplyVoucher autoApply;
     @SerializedName("voucher_autocode")
     @Expose
     private String voucherAutoCode;
+    @SerializedName("default_promo_dialog_tab")
+    @Expose
+    private String defaultPromoTab;
 
     public String getClientNumber() {
         return clientNumber;
@@ -129,5 +135,13 @@ public class AttributesCart {
 
     public String getVoucherAutoCode() {
         return voucherAutoCode;
+    }
+
+    public AutoApplyVoucher getAutoApply() {
+        return autoApply;
+    }
+
+    public String getDefaultPromoTab() {
+        return defaultPromoTab;
     }
 }

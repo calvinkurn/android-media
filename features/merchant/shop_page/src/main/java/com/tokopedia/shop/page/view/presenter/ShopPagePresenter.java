@@ -6,11 +6,15 @@ import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
+import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.shop.etalase.domain.interactor.DeleteShopEtalaseUseCase;
+import com.tokopedia.shop.note.domain.interactor.DeleteShopNoteUseCase;
 import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase;
 import com.tokopedia.shop.page.view.listener.ShopPageView;
+import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
 
 import javax.inject.Inject;
 
@@ -26,6 +30,10 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
     private final GetShopInfoByDomainUseCase getShopInfoByDomainUseCase;
     private final GetReputationSpeedUseCase getReputationSpeedUseCase;
     private final ToggleFavouriteShopAndDeleteCacheUseCase toggleFavouriteShopAndDeleteCacheUseCase;
+    private final DeleteShopInfoUseCase deleteShopInfoUseCase;
+    private final DeleteShopProductUseCase deleteShopProductUseCase;
+    private final DeleteShopEtalaseUseCase deleteShopEtalaseUseCase;
+    private final DeleteShopNoteUseCase deleteShopNoteUseCase;
     private final UserSession userSession;
 
     @Inject
@@ -33,11 +41,19 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
                              GetShopInfoByDomainUseCase getShopInfoByDomainUseCase,
                              GetReputationSpeedUseCase getReputationSpeedUseCase,
                              ToggleFavouriteShopAndDeleteCacheUseCase toggleFavouriteShopAndDeleteCacheUseCase,
+                             DeleteShopProductUseCase deleteShopProductUseCase,
+                             DeleteShopInfoUseCase deleteShopInfoUseCase,
+                             DeleteShopEtalaseUseCase deleteShopEtalaseUseCase,
+                             DeleteShopNoteUseCase deleteShopNoteUseCase,
                              UserSession userSession) {
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.getShopInfoByDomainUseCase = getShopInfoByDomainUseCase;
         this.getReputationSpeedUseCase = getReputationSpeedUseCase;
         this.toggleFavouriteShopAndDeleteCacheUseCase = toggleFavouriteShopAndDeleteCacheUseCase;
+        this.deleteShopInfoUseCase = deleteShopInfoUseCase;
+        this.deleteShopProductUseCase = deleteShopProductUseCase;
+        this.deleteShopEtalaseUseCase = deleteShopEtalaseUseCase;
+        this.deleteShopNoteUseCase = deleteShopNoteUseCase;
         this.userSession = userSession;
     }
 
@@ -138,20 +154,23 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
         });
     }
 
+    public void clearCache() {
+        deleteShopInfoUseCase.executeSync();
+        deleteShopProductUseCase.executeSync();
+        deleteShopEtalaseUseCase.executeSync();
+        deleteShopNoteUseCase.executeSync();
+    }
+
     @Override
     public void detachView() {
         super.detachView();
-        if (getShopInfoUseCase != null) {
-            getShopInfoUseCase.unsubscribe();
-        }
-        if (getShopInfoByDomainUseCase != null) {
-            getShopInfoByDomainUseCase.unsubscribe();
-        }
-        if (getReputationSpeedUseCase != null) {
-            getReputationSpeedUseCase.unsubscribe();
-        }
-        if (toggleFavouriteShopAndDeleteCacheUseCase != null) {
-            toggleFavouriteShopAndDeleteCacheUseCase.unsubscribe();
-        }
+        getShopInfoUseCase.unsubscribe();
+        getShopInfoByDomainUseCase.unsubscribe();
+        getReputationSpeedUseCase.unsubscribe();
+        toggleFavouriteShopAndDeleteCacheUseCase.unsubscribe();
+        deleteShopInfoUseCase.unsubscribe();
+        deleteShopProductUseCase.unsubscribe();
+        deleteShopEtalaseUseCase.unsubscribe();
+        deleteShopNoteUseCase.unsubscribe();
     }
 }

@@ -589,6 +589,32 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     }
 
     @Override
+    public void showDialogChangePhoneNumberEmptyEmail() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
+        builder.setTitle(getResources().getString(R.string.error_change_number_no_email_title));
+        builder.setMessage(getResources().getString(R.string.error_change_number_no_email_content));
+        builder.setPositiveButton(getResources().getString(R.string.error_change_number_no_email_yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startAddEmailActivity();
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.error_change_number_no_email_no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        android.app.AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
+        dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
+        dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+        dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+    }
+
+    @Override
     public void startAddEmailActivity() {
         startActivityForResult(
                 ((TkpdCoreRouter)getActivity().getApplicationContext())

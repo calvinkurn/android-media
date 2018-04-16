@@ -24,6 +24,9 @@ public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPh
     private static final int STATUS_PENDING = -1;
     private static final int STATUS_INACTIVE = 0;
 
+    public static final int COUNT_MIN = 8;
+    public static final int COUNT_MAX = 15;
+
     private final CheckMsisdnPhoneNumberUseCase checkMsisdnPhoneNumberUseCase;
     private final LoginRegisterPhoneNumberUseCase loginRegisterPhoneNumberUseCase;
 
@@ -63,11 +66,20 @@ public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPh
 
     }
     private boolean isValid(String phoneNumber) {
-        boolean isValid = true;
         if (TextUtils.isEmpty(phoneNumber)) {
-            getView().showErrorPhoneNumber(R.string.error_field_required);
-            isValid = false;
+            getView().showErrorPhoneNumber(R.string.error_field_required_phone);
+            return false;
         }
-        return isValid;
+        if (phoneNumber.length() < COUNT_MIN) {
+            getView().showErrorPhoneNumber(getView().getContext().getString(R.string.error_char_count_under));
+            return false;
+        }
+
+        if (phoneNumber.length() > COUNT_MAX) {
+            getView().showErrorPhoneNumber(getView().getContext().getString(R.string.error_char_count_over));
+            return false;
+        }
+
+        return true;
     }
 }

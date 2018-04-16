@@ -1,8 +1,12 @@
 package com.tokopedia.shop.favourite.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
@@ -14,6 +18,7 @@ import com.tokopedia.shop.favourite.view.adapter.ShopFavouriteAdapterTypeFactory
 import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView;
 import com.tokopedia.shop.favourite.view.model.ShopFavouriteViewModel;
 import com.tokopedia.shop.favourite.view.presenter.ShopFavouriteListPresenter;
+import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 
 import javax.inject.Inject;
 
@@ -22,6 +27,8 @@ import javax.inject.Inject;
  */
 
 public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteViewModel, ShopFavouriteAdapterTypeFactory> implements ShopFavouriteListView {
+
+    private static final int REQUEST_CODE_USER_LOGIN = 100;
 
     public static ShopFavouriteListFragment createInstance(String shopId) {
         ShopFavouriteListFragment shopFavouriteListFragment = new ShopFavouriteListFragment();
@@ -77,6 +84,34 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     public void onSuccessGetShopInfo(ShopInfo shopInfo) {
         this.shopInfo = shopInfo;
         shopFavouriteListPresenter.getshopFavouriteList(shopId, getCurrentPage());
+    }
+
+    @Override
+    public void showGetListError(Throwable throwable) {
+        if (throwable instanceof UserNotLoginException) {
+            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
+            return;
+        }
+        super.showGetListError(throwable);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_USER_LOGIN:
+                if (isAdded() && shopFavouriteListPresenter != null) {
+                    if (shopFavouriteListPresenter.isLoggedIn()) {
+                        loadInitialData();
+                    } else {
+                        getActivity().finish();
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

@@ -20,6 +20,7 @@ public interface AppEventTracking {
     String EVENT_ACTION = "eventAction";
     String EVENT_LABEL = "eventLabel";
     String ECOMMERCE = "ecommerce";
+    String PAYMENT_ID = "payment_id";
 
     interface GTMKey {
         String ACCOUNTS_TYPE = "ACCOUNTS_TYPE";
@@ -617,6 +618,7 @@ public interface AppEventTracking {
         String RECEIVE_CONFIRMATION = "Receive Confirmation";
         String CANCELLED_ORDER = "Cancelled Order";
         String PURCHASE_LIST = "Purchase List";
+        String FLIGHT_TRANSACTION_LIST = "Flight Transaction List";
         String SALES = "Sales";
         String NEW_ORDER = "New Order";
         String DELIVERY_CONFIRMATION = "Delivery Confirmation";
@@ -997,7 +999,8 @@ public interface AppEventTracking {
         String QUALITY_SCORE = "quality_score";
         String SCREEN_NAME = "screen_name";
         String CHANNEL = "channel";
-
+        String APP_VERSION = "app version";
+        String PLATFORM = "platform";
     }
 
     interface EventMoEngage {
@@ -1033,6 +1036,7 @@ public interface AppEventTracking {
         String SHIPPING_CONFIRMED = "Shipping_Received_Confirmation";
         String REFERRAL_SCREEN_LAUNCHED = "Referral_Screen_Launched";
         String REFERRAL_SHARE_EVENT = "Share_Event";
+        String OPEN_SHOP_SCREEN = "Open_Shop_Screen_Launched";
     }
 
 

@@ -93,7 +93,7 @@ public class VerificationMethodMapper implements Func1<Response<String>, ListVer
                     modePojo.getModeText(),
                     modePojo.getOtpListImgUrl(),
                     modePojo.getOtpListText(),
-                    modePojo.getAfterOtpListText()
+                    modePojo.getNewAfterOtpListText()
             ));
         }
         return new ListVerificationMethod(list);

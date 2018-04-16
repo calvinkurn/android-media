@@ -8,6 +8,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
@@ -37,8 +38,8 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
     SessionHandler sessionHandler;
     GCMHandler gcmHandler;
 
-    public CategoryPresenter(Context context, GetProductUseCase getProductUseCase) {
-        super(getProductUseCase);
+    public CategoryPresenter(Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
+        super(getProductUseCase, getImageSearchUseCase);
         this.getProductUseCase = getProductUseCase;
         this.sessionHandler = new SessionHandler(context);
         this.gcmHandler = new GCMHandler(context);

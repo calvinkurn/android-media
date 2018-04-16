@@ -121,6 +121,8 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
         }
         ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel();
         shopEtalaseRequestModel.setShopId(shopProductRequestModel.getShopId());
+        shopEtalaseRequestModel.setUserId(userSession.getUserId());
+        shopEtalaseRequestModel.setDeviceId(userSession.getDeviceId());
         getShopEtalaseUseCase.execute(GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel), new Subscriber<PagingListOther<EtalaseModel>>() {
             @Override
             public void onCompleted() {

@@ -4,6 +4,7 @@ import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -39,6 +40,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private ImageView freeReturnImageView;
     private AppCompatRatingBar qualityRatingBar;
     private TextView totalReview;
+    private View soldOutView;
 
     public ShopProductViewHolder(View itemView, ShopProductClickedListener shopProductClickedListener) {
         super(itemView);
@@ -60,6 +62,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         productImageView = view.findViewById(R.id.product_image);
         wishlistImageView = view.findViewById(R.id.image_view_wishlist);
         wishlistContainer = view.findViewById(R.id.wishlist_button_container);
+        soldOutView = view.findViewById(R.id.sold_out_view);
 
         qualityRatingBar = view.findViewById(R.id.ratingBar);
         totalReview = view.findViewById(R.id.total_review);
@@ -84,6 +87,14 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
         titleTextView.setText(shopProductViewModel.getName());
         ImageHandler.LoadImage(productImageView, getImageUrl(shopProductViewModel));
+
+        if (soldOutView == null) return;
+
+        if (shopProductViewModel.isSoldOut()) {
+            soldOutView.setVisibility(View.VISIBLE);
+        } else {
+            soldOutView.setVisibility(View.GONE);
+        }
     }
 
     protected void onProductClicked(ShopProductViewModel shopProductViewModel) {

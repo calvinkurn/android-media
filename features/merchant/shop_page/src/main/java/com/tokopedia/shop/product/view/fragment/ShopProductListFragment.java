@@ -286,8 +286,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         if (shopInfo != null) {
             shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
                     list, attribution, false, shopProductListPresenter.isMyShop(shopId),
-                    ShopPageTracking.getShopType(shopInfo.getInfo()),
-                    (currentLayoutType.second == LAYOUT_GRID_TYPE));
+                    ShopPageTracking.getShopType(shopInfo.getInfo()), (currentLayoutType.second == LAYOUT_GRID_TYPE),
+                    getCurrentPage());
         }
     }
 
