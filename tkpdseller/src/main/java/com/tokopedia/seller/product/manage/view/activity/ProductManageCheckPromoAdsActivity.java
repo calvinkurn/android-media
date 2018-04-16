@@ -10,6 +10,7 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.manage.view.fragment.ProductManageCheckPromoAdsFragment;
+import com.tokopedia.topads.common.constant.TopAdsConstant;
 
 /**
  * Created by hadi.putra on 12/04/18.
@@ -17,25 +18,20 @@ import com.tokopedia.seller.product.manage.view.fragment.ProductManageCheckPromo
 
 public class ProductManageCheckPromoAdsActivity extends BaseSimpleActivity implements HasComponent<ProductComponent> {
 
-    public static final String EXTRA_PARAM_SHOP_ID = "shop_id";
-    public static final String EXTRA_PARAM_ITEM_ID = "item_id";
-
     private String shopId;
     private String itemId;
 
     public static Intent createIntent(Context context, String shopId, String itemId){
         Intent intent = new Intent(context, ProductManageCheckPromoAdsActivity.class);
-        intent.putExtra(EXTRA_PARAM_SHOP_ID, shopId);
-        intent.putExtra(EXTRA_PARAM_ITEM_ID, itemId);
+        intent.putExtra(TopAdsConstant.PARAM_EXTRA_SHOP_ID, shopId);
+        intent.putExtra(TopAdsConstant.PARAM_EXTRA_ITEM_ID, itemId);
         return intent;
     }
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        shopId = getIntent().getStringExtra(EXTRA_PARAM_SHOP_ID);
-        itemId = getIntent().getStringExtra(EXTRA_PARAM_ITEM_ID);
+        shopId = getIntent().getStringExtra(TopAdsConstant.PARAM_EXTRA_SHOP_ID);
+        itemId = getIntent().getStringExtra(TopAdsConstant.PARAM_EXTRA_ITEM_ID);
         super.onCreate(savedInstanceState);
     }
 

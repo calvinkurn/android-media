@@ -17,6 +17,8 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.constant.TopAdsConstant;
+import com.tokopedia.topads.common.data.TopAdsSourceTracking;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
 
@@ -30,6 +32,7 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
 
     public static final String PARAM_ITEM_ID = "item_id";
     public static final String PARAM_USER_ID = "user_id";
+    private TopAdsSourceTracking topAdsSourceTracking;
 
     @DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
@@ -78,6 +81,7 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
     String source;
 
     private void initFromIntent() {
+        topAdsSourceTracking = new TopAdsSourceTracking(getApplicationContext(), TopAdsConstant.KEY_SOURCE_PREFERENCE);
         Intent intent = getIntent();
         if (intent != null) {
             itemId = intent.getStringExtra(TopAdsExtraConstant.EXTRA_ITEM_ID);
@@ -138,5 +142,11 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
     @Override
     protected boolean isToolbarWhite() {
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        topAdsSourceTracking.deleteSource();
+        super.onDestroy();
     }
 }

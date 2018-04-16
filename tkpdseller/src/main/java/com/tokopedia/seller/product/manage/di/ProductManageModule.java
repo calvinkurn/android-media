@@ -29,6 +29,8 @@ import com.tokopedia.seller.product.picker.domain.GetProductSellingPromoTopAdsRe
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.topads.common.constant.TopAdsConstant;
+import com.tokopedia.topads.common.data.TopAdsSourceTracking;
 
 import dagger.Module;
 import dagger.Provides;
@@ -115,5 +117,11 @@ public class ProductManageModule {
         }else{
             return null;
         }
+    }
+
+    @Provides
+    @ProductManageScope
+    public TopAdsSourceTracking provideTopAdsSourceTracking(@ApplicationContext Context context){
+        return new TopAdsSourceTracking(context, TopAdsConstant.KEY_SOURCE_PREFERENCE);
     }
 }

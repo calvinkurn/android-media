@@ -1,11 +1,16 @@
 package com.tokopedia.topads.keyword.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
+import com.tokopedia.topads.common.constant.TopAdsConstant;
+import com.tokopedia.topads.common.data.TopAdsSourceTracking;
 import com.tokopedia.topads.keyword.data.repository.TopAdsKeywordRepositoryImpl;
 import com.tokopedia.topads.keyword.data.source.KeywordDashboardDataSouce;
 import com.tokopedia.topads.keyword.data.source.cloud.api.KeywordApi;
@@ -49,6 +54,12 @@ public class TopAdsKeywordModule {
     @Provides
     SimpleDataResponseMapper<ShopModel> provideShopModelMapper() {
         return new SimpleDataResponseMapper<>();
+    }
+
+    @TopAdsKeywordScope
+    @Provides
+    TopAdsSourceTracking provideTopAdsSourceTracking(@ApplicationContext Context context){
+        return new TopAdsSourceTracking(context, TopAdsConstant.KEY_SOURCE_PREFERENCE);
     }
 
 }
