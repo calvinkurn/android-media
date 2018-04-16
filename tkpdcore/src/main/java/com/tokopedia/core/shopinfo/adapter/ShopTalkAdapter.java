@@ -155,7 +155,7 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
             holder.totalComment.setText(list.get(position).getTalkTotalComment());
             if (list.get(position).getTalkUserReputation().getNoReputation() == 0) {
                 holder.reputationRating.setText(list.get(position).getTalkUserReputation().getPositivePercentage() + "%");
-                holder.reputationRating.setVisibility(View.VISIBLE);
+                holder.reputationRating.setVisibility(View.INVISIBLE);
                 holder.reputationIcon.setImageResource(R.drawable.ic_icon_repsis_smile_active);
             } else {
                 holder.reputationRating.setVisibility(View.INVISIBLE);

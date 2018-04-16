@@ -292,7 +292,37 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                                 flightBookingCartData.setDepartureTrip(flightDetailViewModel);
                                 return flightBookingCartData;
                             }
+                        }).onBackpressureDrop()
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<FlightBookingCartData>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                if (isViewAttached()) {
+                                    getView().hideFullPageLoading();
+                                    getView().showGetCartDataErrorStateLayout(e);
+                                }
+                            }
+
+                            @Override
+                            public void onNext(FlightBookingCartData flightBookingCartData) {
+                                actionGetReturnTripDataAndGetCart(flightBookingCartData);
+                            }
                         })
+
+        );
+    }
+
+    private void actionGetReturnTripDataAndGetCart(FlightBookingCartData flightBookingCartData) {
+        compositeSubscription.add(
+                Observable.just(flightBookingCartData)
                         .flatMap(getFlightRoundTripDataObservable())
                         .flatMap(new Func1<FlightBookingCartData, Observable<FlightBookingCartData>>() {
                             @Override
@@ -348,9 +378,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                                 e.printStackTrace();
                                 if (isViewAttached()) {
                                     getView().hideFullPageLoading();
-                                    if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.ADD_TO_CART))){
-                                getView().showExpireTransactionDialog(e.getMessage());
-                            }else if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.FLIGHT_SOLD_OUT))) {
+                                    if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.ADD_TO_CART))) {
+                                        getView().showExpireTransactionDialog(e.getMessage());
+                                    } else if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.FLIGHT_SOLD_OUT))) {
                                         getView().showSoldOutDialog();
                                     } else {
                                         getView().showGetCartDataErrorStateLayout(e);

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -27,6 +28,7 @@ import com.tokopedia.events.domain.model.request.cart.TaxPerQuantityItem;
 import com.tokopedia.events.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 
@@ -96,6 +98,7 @@ public class EventReviewTicketPresenter
         else if (code.length() > 3) {
             getView().hideSuccessMessage();
             isPromoCodeCase = true;
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHECK_PROMO, code);
             verifyCart();
         } else {
             getView().hideSuccessMessage();
@@ -169,6 +172,11 @@ public class EventReviewTicketPresenter
     @Override
     public void clickDismissTooltip() {
         getView().hideTooltip();
+    }
+
+    @Override
+    public String getSCREEN_NAME() {
+        return EventsGAConst.EVENTS_CHECKOUT_PAGE;
     }
 
     private CartItems convertPackageToCartItem(PackageViewModel packageViewModel) {
@@ -336,6 +344,7 @@ public class EventReviewTicketPresenter
                         getView().hideSuccessMessage();
                         getView().showPromoSuccessMessage(errorMsg,
                                 getView().getActivity().getResources().getColor(R.color.red_a700));
+                        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_FAILURE + promocode, errorMsg);
                         promocode = "";
                     } else {
                         String successMsg = verifyCartResponse.getCart().getPromocodeSuccessMessage();
@@ -344,6 +353,7 @@ public class EventReviewTicketPresenter
                             getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),
                                     getView().getActivity().getResources().getColor(R.color.black_54));
                             getView().showCashbackMessage(successMsg);
+                            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_SUCCESS  + promocode, successMsg);
                         }
                     }
                 }
@@ -384,6 +394,8 @@ public class EventReviewTicketPresenter
                 paymentPassData.setCallbackSuccessUrl(checkoutResponse.getCallbackUrlSuccess());
                 paymentPassData.setCallbackFailedUrl(checkoutResponse.getCallbackUrlFailed());
                 paymentPassData.setTransactionId(checkoutResponse.getParameter().getTransactionId());
+                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PAYMENT, checkoutData.getTitle() + " - "
+                        + checkoutData.getDisplayName() + " - " + checkoutData.getSalesPrice() + " - " + promocode);
                 getView().navigateToActivityRequest(com.tokopedia.payment.activity.TopPayActivity.
                                 createInstance(getView().getActivity().getApplicationContext(), paymentPassData),
                         PAYMENT_REQUEST_CODE);

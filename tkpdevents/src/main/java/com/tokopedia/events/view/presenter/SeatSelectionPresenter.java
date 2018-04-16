@@ -10,7 +10,6 @@ import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
@@ -25,6 +24,7 @@ import com.tokopedia.events.domain.model.request.cart.TaxPerQuantityItem;
 import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
@@ -141,6 +141,11 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         }
     }
 
+    @Override
+    public String getSCREEN_NAME() {
+        return EventsGAConst.EVENTS_SEAT_SELECTIONPAGE;
+    }
+
     public void setTicketPrice(int numOfTickets) {
         quantity = numOfTickets;
         getView().setTicketPrice(numOfTickets);
@@ -148,7 +153,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     }
 
     public void setSelectedSeatText(List<String> selectedSeatList, List<String> rowIds, List<String> actualSeatNo) {
-        getView().initializeSeatLayoutModel(selectedSeatList, rowIds,actualSeatNo);
+        getView().initializeSeatLayoutModel(selectedSeatList, rowIds, actualSeatNo);
     }
 
     public void setSeatData() {

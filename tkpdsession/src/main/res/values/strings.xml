@@ -63,7 +63,7 @@
     <string name="default_relogin">Autentikasi gagal. Mohon coba kembali.</string>
     <string name="tokocash">TokoCash</string>
     <string name="tokocash_phone_verification">Dengan memverifikasi nomor ponsel, TokoCash akan diaktifkan</string>
-    <string name="register_now">Daftar Sekarang dengan:</string>
+    <string name="register_now">Daftar sekarang dengan:</string>
     <string name="profile_completion_title">Data Diri</string>
     <string name="continue_form">Lanjut</string>
     <string name="skip_form">Lewati</string>
@@ -178,7 +178,7 @@
     <string name="error_minimal_name">Minimum 3 karakter</string>
     <string name="error_minimal_phone">Nomor ponsel terlalu pendek, minimum 8 angka</string>
     <string name="error_minimal_password">Kata sandi terlalu pendek, minimum 6 karakter</string>
-    <string name="minimal_6_character">Minimal 6 karakter</string>
+    <string name="minimal_6_character">Minimum 6 karakter</string>
     <string name="please_click_this_button_to_continue">Silahkan klik tombol ini untuk melanjutkan</string>
     <string name="to_verify_sms">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui SMS ke</string>
     <string name="send_sms_verification">Kirim SMS Verifikasi</string>

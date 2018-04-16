@@ -254,6 +254,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                showNameHint();
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
                 } else if (s.length() < 3) {
@@ -263,7 +264,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                 } else if (RegisterUtil.isExceedMaxCharacter(name.getText().toString())) {
                     setWrapperError(wrapper, getString(R.string.error_max_35_character));
                 }
-                showNameHint();
 
                 checkIsValidForm();
             }
