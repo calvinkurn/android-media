@@ -489,7 +489,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             sendGalleryImageSearchResultGTM(FAILURE);
         }
 
-        Toast.makeText(this, "No Results Found", Toast.LENGTH_SHORT).show();
+        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.no_result_found));
     }
 
     @Override
@@ -504,7 +504,16 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             sendGalleryImageSearchResultGTM(NO_RESPONSE);
         }
 
-        Toast.makeText(this, "No Results Found", Toast.LENGTH_SHORT).show();
+        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.no_result_found));
+    }
+
+    @Override
+    public void onHandleImageSearchResponseSuccess() {
+        if (fromCamera) {
+            sendCameraImageSearchResultGTM(SUCCESS);
+        } else {
+            sendGalleryImageSearchResultGTM(SUCCESS);
+        }
     }
 
     public void showSnackBarView(String message) {

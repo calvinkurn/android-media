@@ -34,7 +34,7 @@
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="4sp"
             android:textColor="@color/black_38"
-            android:textSize="12sp"
+            android:textSize="@dimen/sp_12"
             android:textStyle="italic"
             tools:text="Pesan ini dikirim menggunakan Chat versi lama, dengan subjek: Wolverine Cap Toe Boot Warna Red Tua Ukurannya 42" />
     </LinearLayout>
@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/old_message_container"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/dp_16"
         android:textAllCaps="true"
         android:textColor="@color/grey_500"
         android:textSize="@dimen/fontvs"
@@ -62,7 +62,7 @@
         android:fontFamily="sans-serif-medium"
         android:lineSpacingExtra="3sp"
         android:textColor="@color/black_54"
-        android:textSize="11sp"
+        android:textSize="@dimen/sp_11"
         android:textStyle="normal"
         tools:text="AHAJA" />
 
@@ -121,7 +121,7 @@
         android:layout_marginEnd="@dimen/margin_small"
         android:layout_marginRight="@dimen/margin_small"
         app:cardBackgroundColor="@color/cardview_light_background"
-        app:cardCornerRadius="3dp"
+        app:cardCornerRadius="@dimen/dp_3"
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true">
@@ -131,8 +131,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:maxHeight="270dp"
-            android:maxWidth="270dp"
+            android:maxHeight="@dimen/max_width_chat_bubble"
+            android:maxWidth="@dimen/max_height_chat_bubble"
             android:scaleType="fitCenter"
             android:visibility="gone"
             tools:visibility="visible" />
@@ -147,39 +147,67 @@
         android:layout_toEndOf="@id/user_ava"
         android:layout_toRightOf="@id/user_ava">
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/message_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_marginTop="@dimen/margin_vs"
-            android:layout_toLeftOf="@+id/rating_selected"
-            android:orientation="vertical">
+            app:layout_constraintLeft_toLeftOf="@id/view_user_box">
 
-            <TextView
-                android:id="@+id/message"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/message_content_holder"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="23dp"
-                android:layout_marginRight="23dp"
-                android:background="@drawable/left_bubble"
-                android:linksClickable="true"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="18dp"
-                android:textColor="@color/black_70"
-                android:textColorLink="@color/black_70"
-                android:textIsSelectable="true"
-                android:textSize="@dimen/fonts"
-                android:visibility="visible"
-                tools:text="jfhalksjhdfkajhsdkjfalkfh" />
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/message_text_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_selected_rating"
+                        android:layout_marginRight="@dimen/margin_selected_rating"
+                        android:background="@drawable/left_bubble"
+                        android:linksClickable="true"
+                        android:maxWidth="@dimen/max_width_chat_bubble"
+                        android:paddingBottom="@dimen/dp_8"
+                        android:paddingEnd="@dimen/dp_18"
+                        android:paddingLeft="@dimen/dp_16"
+                        android:paddingRight="@dimen/dp_18"
+                        android:paddingStart="@dimen/dp_16"
+                        android:paddingTop="@dimen/dp_8"
+                        android:textColor="@color/black_70"
+                        android:textColorLink="@color/black_70"
+                        android:textIsSelectable="true"
+                        android:textSize="@dimen/fonts"
+                        android:visibility="visible"
+                        tools:text="opesjkajd aasdfkalskdjfla;ksdfajsdlfkjalsdjflaksjdfl;aks;dlfalskdfj;alksdflaksdjfsdfkj" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/rating_selected"
+                    android:layout_width="@dimen/rating_icon_size"
+                    android:layout_height="@dimen/rating_icon_size"
+                    android:layout_marginTop="@dimen/dp_4"
+                    android:background="@drawable/circle_grey_border"
+                    android:padding="@dimen/dp_8"
+                    android:scaleType="fitCenter"
+                    android:visibility="gone"
+                    app:layout_constraintRight_toRightOf="@+id/message_text_holder"
+                    app:layout_constraintTop_toTopOf="@id/message_text_holder"
+                    app:srcCompat="@drawable/selector_chat_rating" />
+
+            </android.support.constraint.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/bottom_message_holder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/message_content_holder">
 
                 <TextView
                     android:id="@+id/hour"
@@ -194,9 +222,9 @@
                     android:id="@+id/rating_option_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="25dp"
-                    android:layout_marginRight="25dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="@dimen/margin_selected_rating"
+                    android:layout_marginRight="@dimen/margin_selected_rating"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:foregroundGravity="right"
                     android:gravity="end"
                     android:orientation="horizontal"
@@ -204,41 +232,29 @@
 
                     <ImageView
                         android:id="@+id/rating_option_yes"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
+                        android:layout_width="@dimen/rating_icon_size"
+                        android:layout_height="@dimen/rating_icon_size"
+                        android:layout_marginEnd="@dimen/dp_4"
+                        android:layout_marginRight="@dimen/dp_4"
                         android:background="@drawable/circle_green_border"
-                        android:padding="8dp"
-                        android:scaleType="center"
+                        android:padding="@dimen/dp_8"
+                        android:scaleType="fitCenter"
                         app:srcCompat="@drawable/ic_chat_rating_yes" />
 
                     <ImageView
                         android:id="@+id/rating_option_no"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
+                        android:layout_width="@dimen/rating_icon_size"
+                        android:layout_height="@dimen/rating_icon_size"
                         android:background="@drawable/circle_green_border"
-                        android:padding="8dp"
-                        android:scaleType="center"
+                        android:padding="@dimen/dp_8"
+                        android:scaleType="fitCenter"
                         app:srcCompat="@drawable/ic_chat_rating_no" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/rating_selected"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/circle_grey_border"
-            android:padding="8dp"
-            android:scaleType="center"
-            android:visibility="gone"
-            app:layout_constraintRight_toRightOf="@+id/message_holder"
-            app:srcCompat="@drawable/selector_chat_rating" />
+        </android.support.constraint.ConstraintLayout>
 
     </android.support.constraint.ConstraintLayout>
 

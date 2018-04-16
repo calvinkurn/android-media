@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,6 +84,7 @@ public class ProductListFragment extends SearchSectionFragment
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
     private static final String EXTRA_FORCE_SEARCH = "EXTRA_FORCE_SEARCH";
     private static final String EXTRA_QUICK_FILTER_LIST = "EXTRA_QUICK_FILTER_LIST";
+    private static final int MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT = 12;
 
     protected RecyclerView recyclerView;
     @Inject
@@ -297,40 +297,43 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setProductList(List<Visitable> list) {
-        sendProductImpressionTrackingEvent(list);
+        if (productViewModel.isImageSearch()) {
+            sendImageTrackingDataInChunks(list);
+        } else {
+            sendProductImpressionTrackingEvent(list);
+        }
+
         adapter.appendItems(list);
     }
 
-    private void sendProductImpressionTrackingEvent(List<Visitable> list) {
-        String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
-        List<Object> dataLayerList = new ArrayList<>();
-        if (productViewModel.isImageSearch()) {
-
+    private void sendImageTrackingDataInChunks(List<Visitable> list) {
+        if (list != null && list.size() > 0) {
+            String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
+            List<Object> dataLayerList = new ArrayList<>();
             for (int j = 0; j < list.size(); ) {
                 int count = 0;
-                while (count < 12 && j < list.size()) {
+                dataLayerList.clear();
+                while (count < MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT && j < list.size()) {
                     count++;
                     if (list.get(j) instanceof ProductItem) {
                         dataLayerList.add(((ProductItem) list.get(j)).getProductAsObjectDataLayer(userId));
                     }
                     j++;
                 }
-                SearchTracking.eventImpressionSearchResultProduct(dataLayerList, "imageSearch");
-                Log.e("ImgSrch Impression:", String.valueOf(count));
+                SearchTracking.eventImpressionImageSearchResultProduct(dataLayerList);
             }
-
-
-        } else {
-            for (Visitable object : list) {
-                if (object instanceof ProductItem) {
-                    dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
-                }
-            }
-
-            SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
         }
+    }
 
-
+    private void sendProductImpressionTrackingEvent(List<Visitable> list) {
+        String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
+        List<Object> dataLayerList = new ArrayList<>();
+        for (Visitable object : list) {
+            if (object instanceof ProductItem) {
+                dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
+            }
+        }
+        SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
     }
 
     @Override
@@ -433,7 +436,7 @@ public class ProductListFragment extends SearchSectionFragment
                             openFilterActivity();
                         return true;
                     case 2:
-                        switchLayoutType(productViewModel.isImageSearch());
+                        switchLayoutType();
                         return true;
                     case 3:
                         startShareActivity(productViewModel.getShareUrl());

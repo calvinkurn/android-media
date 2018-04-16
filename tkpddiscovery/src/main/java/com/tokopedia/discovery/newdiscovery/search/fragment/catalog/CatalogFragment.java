@@ -460,7 +460,7 @@ public class CatalogFragment extends SearchSectionFragment implements
                         openFilterActivity();
                         return true;
                     case 2:
-                        switchLayoutType(false);
+                        switchLayoutType();
                         return true;
                     case 3:
                         startShareActivity(getShareUrl());

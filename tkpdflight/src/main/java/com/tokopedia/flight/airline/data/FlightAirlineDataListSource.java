@@ -117,7 +117,9 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
     }
 
     public Observable<FlightAirlineDB> getCacheAirline(final String airlineId) {
-        return flightAirlineDataListDBSource.getAirline(airlineId).map(new Func1<FlightAirlineDB, FlightAirlineDB>() {
+        return flightAirlineDataListDBSource
+                .getAirline(airlineId)
+                .map(new Func1<FlightAirlineDB, FlightAirlineDB>() {
             @Override
             public FlightAirlineDB call(FlightAirlineDB flightAirlineDB) {
                 if (flightAirlineDB == null){

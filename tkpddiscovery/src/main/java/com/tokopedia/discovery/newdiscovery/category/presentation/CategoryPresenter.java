@@ -37,15 +37,12 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
     GetProductUseCase getProductUseCase;
     SessionHandler sessionHandler;
     GCMHandler gcmHandler;
-    GetImageSearchUseCase getImageSearchUseCase;
 
-    public CategoryPresenter(Context context, GetProductUseCase getProductUseCase,
-                             GetImageSearchUseCase getImageSearchUseCase) {
+    public CategoryPresenter(Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
         super(getProductUseCase, getImageSearchUseCase);
         this.getProductUseCase = getProductUseCase;
         this.sessionHandler = new SessionHandler(context);
         this.gcmHandler = new GCMHandler(context);
-        this.getImageSearchUseCase = getImageSearchUseCase;
         CategoryComponent categoryComponent = DaggerCategoryComponent.builder()
                 .appComponent(getComponent(context))
                 .build();
@@ -99,7 +96,7 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
-            ((DiscoveryActivity) getView()).onHandleResponseError();
+            ((DiscoveryActivity)getView()).onHandleResponseError();
         }
 
         @Override
@@ -146,13 +143,13 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
-            ((DiscoveryActivity) getView()).onHandleResponseError();
+            ((DiscoveryActivity)getView()).onHandleResponseError();
         }
 
         @Override
         public void onNext(SearchResultModel searchResultModel) {
             ProductViewModel productViewModel
-                    = CategoryModelHelper.convertToProductViewModel(searchResultModel, categoryHeaderModel);
+                    = CategoryModelHelper.convertToProductViewModel(searchResultModel,categoryHeaderModel);
             getView().prepareFragment(productViewModel);
 
         }

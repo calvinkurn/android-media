@@ -58,6 +58,9 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     private static final String EXTRA_IS_GETTING_DYNNAMIC_FILTER = "EXTRA_IS_GETTING_DYNNAMIC_FILTER";
     private static final String EXTRA_FLAG_FILTER_HELPER = "EXTRA_FLAG_FILTER_HELPER";
+    private static final String DEFAULT_GRID = "default";
+    private static final String INSTAGRAM_GRID = "instagram grid";
+    private static final String LIST_GRID = "list";
 
     private BottomNavigationListener bottomNavigationListener;
     private RedirectionListener redirectionListener;
@@ -209,7 +212,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
                 if (isImageSearch) {
-                    SearchTracking.eventImageSearchResultChangeGrid("default");
+                    SearchTracking.eventImageSearchResultChangeGrid(DEFAULT_GRID);
                 } else {
                     SearchTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
                 }
@@ -219,7 +222,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
                 if (isImageSearch) {
-                    SearchTracking.eventImageSearchResultChangeGrid("instagram grid");
+                    SearchTracking.eventImageSearchResultChangeGrid(INSTAGRAM_GRID);
                 } else {
                     SearchTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
                 }
@@ -228,13 +231,17 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSpanCount(1);
                 getAdapter().changeListView();
                 if (isImageSearch) {
-                    SearchTracking.eventImageSearchResultChangeGrid("list");
+                    SearchTracking.eventImageSearchResultChangeGrid(LIST_GRID);
                 } else {
                     SearchTracking.eventSearchResultChangeGrid("list", getScreenName());
                 }
                 break;
         }
         refreshBottomBarGridIcon();
+    }
+
+    protected void switchLayoutType() {
+        switchLayoutType(false);
     }
 
     private void refreshBottomBarGridIcon() {

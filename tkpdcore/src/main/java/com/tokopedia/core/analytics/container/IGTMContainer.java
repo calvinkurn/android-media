@@ -151,4 +151,5 @@ public interface IGTMContainer {
 
     void enhanceImpressionSearchResultProduct(List<Object> objects, String keyword);
 
+    void enhanceImpressionImageSearchResultProduct(List<Object> objects);
 }

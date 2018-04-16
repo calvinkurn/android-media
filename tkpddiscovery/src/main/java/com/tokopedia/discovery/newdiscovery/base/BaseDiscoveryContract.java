@@ -38,6 +38,8 @@ public interface BaseDiscoveryContract {
         void onHandleResponseError();
 
         void onHandleInvalidImageSearchResponse();
+
+        void onHandleImageSearchResponseSuccess();
     }
 
     interface Presenter<D extends View> {

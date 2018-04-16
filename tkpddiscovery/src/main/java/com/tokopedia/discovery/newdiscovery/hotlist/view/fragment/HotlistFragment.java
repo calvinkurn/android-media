@@ -286,7 +286,7 @@ public class HotlistFragment extends SearchSectionFragment
         setHotlistAlias(savedInstanceState.getString(EXTRA_ALIAS));
         setQueryModel((HotlistQueryModel) savedInstanceState.getParcelable(EXTRA_QUERY_HOTLIST));
         setDisableTopads(savedInstanceState.getBoolean(EXTRA_DISABLE_TOPADS));
-        switchLayoutType(false);
+        switchLayoutType();
         initTopAdsParams();
         hotlistAdapter.onRestoreInstanceState(savedInstanceState);
     }
@@ -367,7 +367,7 @@ public class HotlistFragment extends SearchSectionFragment
                         return true;
                     case 2:
                         if (!refreshHandler.isRefreshing() && !topAdsRecyclerAdapter.isLoading()) {
-                            switchLayoutType(false);
+                            switchLayoutType();
                         }
                         return true;
                     case 3:
