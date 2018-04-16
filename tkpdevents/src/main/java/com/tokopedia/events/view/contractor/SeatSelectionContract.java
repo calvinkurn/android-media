@@ -60,5 +60,6 @@ public class SeatSelectionContract {
 
         void onActivityResult(int requestCode);
 
+        public String getSCREEN_NAME();
     }
 }
