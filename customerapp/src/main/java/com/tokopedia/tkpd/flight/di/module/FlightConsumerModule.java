@@ -76,10 +76,8 @@ public class FlightConsumerModule {
 
 
     @Provides
-    GetUserInfoUseCase provideGetUserInfoUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutionThread,
-                                                 ProfileRepository profileRepository) {
-        return new GetUserInfoUseCase(threadExecutor, postExecutionThread, profileRepository);
+    GetUserInfoUseCase provideGetUserInfoUseCase(ProfileRepository profileRepository) {
+        return new GetUserInfoUseCase(profileRepository);
     }
 
     @Provides

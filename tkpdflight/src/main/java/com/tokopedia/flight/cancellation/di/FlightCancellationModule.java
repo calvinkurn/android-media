@@ -27,12 +27,4 @@ public class FlightCancellationModule {
     FlightCancellationEstimateRefundUseCase provideFlightCancellationEstimateRefundUseCase(FlightRepository flightRepository){
         return new FlightCancellationEstimateRefundUseCase(flightRepository);
     }
-
-    @Provides
-    FlightModuleRouter provideFlightModuleRouter(@ApplicationContext Context context) {
-        if (context instanceof FlightModuleRouter) {
-            return (FlightModuleRouter) context;
-        }
-        throw new RuntimeException("Application must implement FlightModuleRouter");
-    }
 }
