@@ -26,6 +26,7 @@ import dagger.Provides;
         ApiModule.class,
         BannerModule.class,
         AttributeModule.class,
+        ImageSearchModule.class,
         CatalogModule.class,
         CategoryHeaderModule.class,
         ImageSearchModule.class

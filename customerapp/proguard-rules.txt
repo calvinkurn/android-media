@@ -338,6 +338,8 @@
 -keep class com.tokopedia.core.network.exception.model.** { *; }
 -keep class com.tokopedia.events.data.entity.response.** { *; }
 
+#image search
+-keep class com.tokopedia.discovery.imagesearch.domain.model.** { *; }
 
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**
