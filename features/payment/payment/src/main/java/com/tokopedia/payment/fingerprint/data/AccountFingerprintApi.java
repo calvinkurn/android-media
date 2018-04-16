@@ -2,7 +2,7 @@ package com.tokopedia.payment.fingerprint.data;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.payment.fingerprint.data.model.DataResponseSavePublicKey;
-import com.tokopedia.payment.fingerprint.util.FingerprintConstant;
+import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 
 import java.util.HashMap;
 
@@ -19,6 +19,6 @@ import rx.Observable;
 public interface AccountFingerprintApi {
 
     @FormUrlEncoded
-    @POST(FingerprintConstant.OTP_FINGERPRINT_ADD)
+    @POST(PaymentFingerprintConstant.OTP_FINGERPRINT_ADD)
     Observable<Response<DataResponse<DataResponseSavePublicKey>>> savePublicKey(@FieldMap HashMap<String, String> params);
 }

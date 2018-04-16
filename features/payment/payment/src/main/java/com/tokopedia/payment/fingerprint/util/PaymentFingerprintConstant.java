@@ -4,7 +4,7 @@ package com.tokopedia.payment.fingerprint.util;
  * Created by zulfikarrahman on 3/27/18.
  */
 
-public class FingerprintConstant {
+public class PaymentFingerprintConstant {
     public static final String PARTNER = "partner";
     public static final String ENABLE_FINGERPRINT = "enable_fingerprint";
     public static final String TRANSACTION_ID = "transaction_id";

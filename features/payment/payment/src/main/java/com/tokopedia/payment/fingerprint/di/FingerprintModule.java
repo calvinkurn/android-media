@@ -12,7 +12,7 @@ import com.tokopedia.payment.fingerprint.domain.GetPostDataOtpUseCase;
 import com.tokopedia.payment.fingerprint.domain.PaymentFingerprintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SaveFingerPrintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SavePublicKeyUseCase;
-import com.tokopedia.payment.fingerprint.util.FingerprintConstant;
+import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.presenter.TopPayPresenter;
 
 import java.util.concurrent.TimeUnit;
@@ -68,7 +68,7 @@ public class FingerprintModule {
     @Provides
     public Retrofit provideAccountRetrofit(OkHttpClient okHttpClient,
                                           Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(FingerprintConstant.ACCOUNTS_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(PaymentFingerprintConstant.ACCOUNTS_DOMAIN).client(okHttpClient).build();
     }
 
     @FingerprintQualifier
@@ -76,7 +76,7 @@ public class FingerprintModule {
     @Provides
     public Retrofit provideFingerprintRetrofit(OkHttpClient okHttpClient,
                                           Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(FingerprintConstant.TOP_PAY_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(PaymentFingerprintConstant.TOP_PAY_DOMAIN).client(okHttpClient).build();
     }
 
     @FingerprintScope
