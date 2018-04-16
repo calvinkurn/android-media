@@ -29,12 +29,13 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListAdapter;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListFragmentView;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenter;
-import com.tokopedia.discovery.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactory;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
+import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
@@ -50,7 +51,6 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
-import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,7 +82,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private ImageProductListAdapter adapter;
     protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private ProductViewModel productViewModel;
-    private ImageProductListTypeFactory imageProductListTypeFactory;
+    private ProductListTypeFactory imageProductListTypeFactory;
     private SearchParameter searchParameter;
     private boolean forceSearch;
     private GridLayoutManager gridLayoutManager;
@@ -168,12 +168,12 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setSpanCount(2);
         bindView(view);
         initTopAdsConfig();
         initTopAdsParams();
         setupAdapter();
         setupListener();
-        setSpanCount(2);
     }
 
     private void initTopAdsConfig() {
@@ -239,16 +239,24 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
     }
 
-    protected SearchSectionGeneralAdapter getAdapter() {
-        return adapter;
-    }
-
     protected ImageProductListPresenter getPresenter() {
         return presenter;
     }
 
     protected GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
-        return null;
+        return new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (adapter.isEmptyItem(position) ||
+                        adapter.isHeaderBanner(position) ||
+                        topAdsRecyclerAdapter.isLoading(position) ||
+                        topAdsRecyclerAdapter.isTopAdsViewHolder(position)) {
+                    return spanCount;
+                } else {
+                    return 1;
+                }
+            }
+        };
     }
 
     @Override

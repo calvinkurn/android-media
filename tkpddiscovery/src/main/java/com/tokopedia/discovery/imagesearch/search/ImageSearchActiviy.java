@@ -14,11 +14,10 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.search.fragment.ImageSearchProductListFragment;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
+import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
-import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
-import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 
 import javax.inject.Inject;
 
@@ -47,7 +46,7 @@ public class ImageSearchActiviy extends DiscoveryActivity
     public static void moveTo(AppCompatActivity activity,
                               ProductViewModel productViewModel) {
         if (activity != null) {
-            Intent intent = new Intent(activity, SearchActivity.class);
+            Intent intent = new Intent(activity, ImageSearchActiviy.class);
             intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
             activity.startActivity(intent);
         }
@@ -83,6 +82,7 @@ public class ImageSearchActiviy extends DiscoveryActivity
             }, 200);
         }
 
+        super.initView();
     }
 
     private void initInjector() {
@@ -108,7 +108,7 @@ public class ImageSearchActiviy extends DiscoveryActivity
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_image_search;
+        return super.getLayoutRes();
     }
 
     @Override

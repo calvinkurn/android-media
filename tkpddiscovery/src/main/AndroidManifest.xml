@@ -82,6 +82,10 @@
             android:name=".newdiscovery.search.SearchActivity"
             android:label=""
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".imagesearch.search.ImageSearchActiviy"
+            android:label=""
+            android:screenOrientation="portrait" />
         <activity android:name=".newdiscovery.category.presentation.CategoryActivity"></activity>
     </application>
 

@@ -110,6 +110,7 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleImageResponseSearch(ProductViewModel productViewModel) {
+
         TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
         ImageSearchActiviy.moveTo(this, productViewModel);
         finish();

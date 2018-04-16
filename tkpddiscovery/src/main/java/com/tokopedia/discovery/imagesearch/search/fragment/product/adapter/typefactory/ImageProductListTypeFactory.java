@@ -21,5 +21,7 @@ public interface ImageProductListTypeFactory extends SearchSectionTypeFactory {
 
     int type(HeaderViewModel headerViewModel);
 
+    int type(GuidedSearchViewModel guidedSearchViewModel);
+
     AbstractViewHolder createViewHolder(View view, int type);
 }
