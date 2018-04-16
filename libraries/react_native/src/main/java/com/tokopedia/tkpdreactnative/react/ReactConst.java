@@ -25,7 +25,7 @@ public interface ReactConst {
         String THANK_YOU_PAGE = "thankyou-page";
         String DISCOVERY_PAGE = "discovery-page";
         String EXPLORE_PAGE = "explore-page";
-        String CONTENT_DETAIL = "content_detail";
+        String CONTENT_DETAIL = "content-detail";
     }
 
     interface EventEmitter{

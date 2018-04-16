@@ -7,39 +7,28 @@ import android.os.Bundle;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.ReactNativeExploreContentFragment;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 
 public class ReactNativeExplorePageActivity extends ReactFragmentActivity<ReactNativeExploreContentFragment> {
 
-    public static final String EXPLORE_PAGE = "Explore Page";
+    public static final String EXPLORE_PAGE = "Explore-Page";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
-    public static final String EXTRA_URL = "EXTRA_URL";
-    public static final String KEY_CONTENT = "content";
-    public static final String CONTENT_TITLE = "Explore Content";
-    public static final String KEY_CAT_ID = "cat_id";
-    public static final String KEY_TAB_ID = "tab";
+    public static final String KEY_CAT = "category_id";
+    public static final String KEY_TAB = "tab_name";
 
 
-    @DeepLink({Constants.Applinks.CONTENT_EXPLORE_CAT})
-    public static Intent getContentExplorePageApplinkCatCallingIntent(Context context, Bundle bundle) {
+    @DeepLink({Constants.Applinks.CONTENT_EXPLORE})
+    public static Intent getContentExplorePageApplinkCallingIntent(Context context, Bundle bundle) {
         ScreenTracking.screen(EXPLORE_PAGE);
+        bundle.getString(KEY_CAT);
+        bundle.getString(KEY_TAB);
         return ReactNativeExplorePageActivity.createApplinkCallingIntent(
                 context,
                 ReactConst.Screen.EXPLORE_PAGE,
-                bundle.getString(KEY_CAT_ID),
-                bundle
-        );
-    }
-
-    @DeepLink({Constants.Applinks.CONTENT_EXPLORE_TAB})
-    public static Intent getContentExplorePageApplinkTabCallingIntent(Context context, Bundle bundle) {
-        ScreenTracking.screen(EXPLORE_PAGE);
-        return ReactNativeExplorePageActivity.createApplinkCallingIntent(
-                context,
-                ReactConst.Screen.EXPLORE_PAGE,
-                bundle.getString(KEY_TAB_ID),
+                context.getString(R.string.react_native_explore_page_title),
                 bundle
         );
     }
@@ -50,7 +39,7 @@ public class ReactNativeExplorePageActivity extends ReactFragmentActivity<ReactN
                                                     Bundle extras) {
         Intent intent = new Intent(context, ReactNativeExplorePageActivity.class);
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
-        extras.putString(EXTRA_TITLE, pageTitle);
+        extras.putString(EXTRA_TITLE, "Explore");
         intent.putExtras(extras);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;

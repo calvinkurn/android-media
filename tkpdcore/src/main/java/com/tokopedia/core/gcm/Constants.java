@@ -139,8 +139,7 @@ public interface Constants {
         String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
         String GROUPCHAT = "tokopedia://groupchat/{channel_id}";
-        String CONTENT_EXPLORE_CAT = "tokopedia://content/explore/{cat_id}";
-        String CONTENT_EXPLORE_TAB = "tokopedia://content/explore/{tab}";
+        String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
         String CONTENT_DETAIL ="tokopedia://content/{post_id}";
 
 
