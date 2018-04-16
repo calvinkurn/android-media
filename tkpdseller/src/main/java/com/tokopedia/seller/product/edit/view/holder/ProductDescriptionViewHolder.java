@@ -13,7 +13,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
@@ -70,12 +69,8 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
             @Override
             public void onClick(View v) {
                 if (ProductDescriptionViewHolder.this.listener != null) {
-                    if (GlobalConfig.isSellerApp()) {
-                        ProductDescriptionViewHolder.this.listener.startYoutubeVideoActivity(
-                                convertToListString(ProductDescriptionViewHolder.this.listener.getVideoIdList()));
-                    } else {
-                        ProductDescriptionViewHolder.this.listener.showInstallSellerApp();
-                    }
+                    ProductDescriptionViewHolder.this.listener.startYoutubeVideoActivity(
+                            convertToListString(ProductDescriptionViewHolder.this.listener.getVideoIdList()));
                 }
             }
         });

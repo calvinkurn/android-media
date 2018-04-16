@@ -95,6 +95,8 @@ public class ShopPageTrackingConstant {
     public static final String CLICK = "click";
     public static final String ACTION_FIELD = "actionField";
     public static final String SHOPPAGE_PRODUCT = "/shoppage - product ";
+    public static final String PRODUCT_FEATURED = " - Produk Unggulan";
+    public static final String PRODUCT_ETALASE = " - Etalase ";
     public static final String PRODUCTS = "products";
     public static final String NAME = "name";
     public static final String ID = "id";
@@ -126,4 +128,5 @@ public class ShopPageTrackingConstant {
     public static final String TOP_CONTENT_IMPRESSION = " - top content - impression";
     public static final String PRODUCT_CLICK = "productClick";
     public static final String PRODUCT_VIEW = "productView";
+    public static final int DEFAULT_PER_PAGE = 10;
 }
