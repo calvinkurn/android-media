@@ -11,11 +11,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.campaign.Constants;
 import com.tokopedia.tkpd.campaign.view.model.TCLandingModel;
 
 /**
@@ -29,7 +29,7 @@ public class ShakeErrorCampaignActivity extends BaseSimpleActivity {
     private static final String DEFAULT_APPLINK = "tokopedia://home";
     private static final String DEFAULT_BUTTON = "Kembali ke Beranda";
 
-    @DeepLink(Constants.Applinks.TC_LANDING)
+    @DeepLink(ApplinkConst.TC_LANDING)
     public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
         String title = extras.getString(TCLandingModel.TITLE);
         String errorMessage = extras.getString(TCLandingModel.ERROR_MESSAGE);
@@ -94,8 +94,7 @@ public class ShakeErrorCampaignActivity extends BaseSimpleActivity {
             @Override
             public void onClick(View v) {
                 if (((TkpdCoreRouter) getApplication()).isSupportedDelegateDeepLink(finalApplink)) {
-                    ((ApplinkRouter) getApplication()).goToApplinkActivity(ShakeErrorCampaignActivity.this,
-                            finalApplink);
+                    RouteManager.route(ShakeErrorCampaignActivity.this, finalApplink);
                 }
             }
         });
