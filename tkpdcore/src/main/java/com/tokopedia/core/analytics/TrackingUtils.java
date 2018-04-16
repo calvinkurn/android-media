@@ -2,7 +2,6 @@ package com.tokopedia.core.analytics;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -10,12 +9,10 @@ import android.text.TextUtils;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.google.firebase.perf.metrics.Trace;
-import com.google.gson.Gson;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
@@ -23,7 +20,6 @@ import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.model.HotListModel;
@@ -33,6 +29,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;
@@ -233,6 +230,18 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.LOGIN);
     }
 
+    public static void sendMoEngageCreateShopEvent(String screenName){
+        PayloadBuilder builder = new PayloadBuilder();
+        SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
+        builder.putAttrString(AppEventTracking.MOENGAGE.SCREEN_NAME, screenName);
+        builder.putAttrString(AppEventTracking.MOENGAGE.USER_ID, sessionHandler.getLoginID() );
+        builder.putAttrString(AppEventTracking.MOENGAGE.EMAIL, sessionHandler.getEmail());
+        builder.putAttrString(AppEventTracking.MOENGAGE.MOBILE_NUM, SessionHandler.getPhoneNumber());
+        builder.putAttrString(AppEventTracking.MOENGAGE.APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        builder.putAttrString(AppEventTracking.MOENGAGE.PLATFORM, "android");
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_SHOP_SCREEN);
+    }
+
     public static void sendMoEngageOpenHomeEvent() {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
@@ -260,12 +269,12 @@ public class TrackingUtils extends TrackingConfig {
             builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
             builder.putAttrString(
                     AppEventTracking.MOENGAGE.CATEGORY,
-                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1)
                             .getDepartmentName()
             );
             builder.putAttrString(
                     AppEventTracking.MOENGAGE.CATEGORY_ID,
-                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1)
                             .getDepartmentId()
             );
         } else if (productData.getBreadcrumb().size() == 1) {
@@ -324,12 +333,12 @@ public class TrackingUtils extends TrackingConfig {
             builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
             builder.putAttrString(
                     AppEventTracking.MOENGAGE.CATEGORY,
-                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1)
                             .getDepartmentName()
             );
             builder.putAttrString(
                     AppEventTracking.MOENGAGE.CATEGORY_ID,
-                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1)
                             .getDepartmentId()
             );
         }
@@ -720,6 +729,10 @@ public class TrackingUtils extends TrackingConfig {
         getGTMEngine().clickTncButtonHotlistPromo(hotlistName, promoName, promoCode);
     }
 
+    public static void eventClearEnhanceEcommerce() {
+        getGTMEngine().clearEnhanceEcommerce();
+    }
+
     public static void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
         getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
@@ -735,7 +748,6 @@ public class TrackingUtils extends TrackingConfig {
         getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventClickPromoListItem(list, promoName);
     }
-
 
 
     public static void eventCategoryLifestyleImpression(List<Object> list) {
