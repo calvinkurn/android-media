@@ -53,8 +53,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(IS_AUDIO, "false");
-        if(ShakeDetectManager.sTopActivity !=null) {
-            requestParams.putString(SCREEN_NAME, ShakeDetectManager.sTopActivity.trim().replaceAll(" ","_"));
+        if (ShakeDetectManager.sTopActivity != null) {
+            requestParams.putString(SCREEN_NAME, ShakeDetectManager.sTopActivity.trim().replaceAll(" ", "_"));
         }
         shakeUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
@@ -64,13 +64,22 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
             @Override
             public void onError(Throwable e) {
+                Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
+
+                intent.putExtra("isSuccess", false);
+
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
                 } else if (e instanceof SocketTimeoutException) {
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else if (e instanceof CampaignException) {
-                    getView().showErrorGetInfo(e.getMessage());
-                    return;
+                    if (((CampaignException) e).isMissingAuthorizationCredentials()) {
+                        intent.putExtra("needLogin",true);
+                    } else {
+                        getView().showErrorGetInfo(e.getMessage());
+                        return;
+                    }
+
                 } else if (e instanceof ResponseDataNullException) {
                     getView().showErrorNetwork(e.getMessage());
                 } else if (e instanceof HttpErrorException) {
@@ -80,11 +89,9 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 } else {
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
-                   Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
 
-                intent.putExtra("isSuccess",false);
 
-                CampaignTracking.eventShakeShake("fail",ShakeDetectManager.sTopActivity,"","");
+                CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
                 getView().sendBroadcast(intent);
                 getView().finish();
             }
@@ -97,15 +104,15 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     return;
                 }
                 Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
-                intent.putExtra("isSuccess",true);
-                intent.putExtra("data",s.getUrl());
+                intent.putExtra("isSuccess", true);
+                intent.putExtra("data", s.getUrl());
                 Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 500 milliseconds
-                if(s.getVibrate() == 1)
+                if (s.getVibrate() == 1)
                     v.vibrate(500);
                 getView().sendBroadcast(intent);
                 getView().showMessage(context.getString(R.string.shake_shake_success));
-                CampaignTracking.eventShakeShake("success",ShakeDetectManager.sTopActivity,"",s.getUrl());
+                CampaignTracking.eventShakeShake("success", ShakeDetectManager.sTopActivity, "", s.getUrl());
 
                 //Open next activity based upon the result from server
             }

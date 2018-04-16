@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
@@ -153,6 +154,16 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                         }
                     }, 500);
                 }
+            }else if(intent.getBooleanExtra("needLogin",false)) {
+                final Intent intent1 = ((TkpdCoreRouter) MainApplication.getAppContext())
+                        .getLoginIntent(context);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent1);
+                    }
+                },500);
             }
             deinit();
         }
