@@ -13,6 +13,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -24,11 +25,15 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.contactus.ContactUsConstant;
+import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
@@ -119,7 +124,14 @@ public class ChatRoomActivity extends BasePresenterActivity
 
         extras.putBoolean(PARAM_WEBSOCKET, true);
         detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
-        parentIntent = new Intent(context, InboxChatActivity.class);
+        if(TextUtils.equals(extras.getString(TkpdInboxRouter.IS_CHAT_BOT),"true")) {
+            parentIntent = new Intent(context, ContactUsActivity.class);
+            parentIntent.putExtra(ContactUsConstant.PARAM_URL, URLGenerator.generateURLContactUs
+                    (TkpdBaseURL.BASE_CONTACT_US,context));
+        }
+        else {
+            parentIntent = new Intent(context, InboxChatActivity.class);
+        }
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
