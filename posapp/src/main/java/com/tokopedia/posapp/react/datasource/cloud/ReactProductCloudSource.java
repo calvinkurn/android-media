@@ -105,7 +105,7 @@ public class ReactProductCloudSource extends ReactDataSource {
 
     public Observable<String> search(final ProductSearchRequest request) {
         if (request.getPage() == null) request.setPage(1);
-        if (request.getLimit() == null) request.setLimit(20);
+        if (request.getLimit() == null) request.setLimit(10);
 
         RequestParams requestParams = RequestParams.EMPTY;
         requestParams.putString(ProductConstant.Key.KEYWORD, request.getKeyword());
