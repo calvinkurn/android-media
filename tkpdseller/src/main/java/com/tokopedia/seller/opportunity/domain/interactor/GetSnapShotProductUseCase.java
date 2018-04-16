@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.opportunity.data.mapper.OpportunityProductMapper;
 import com.tokopedia.seller.opportunity.domain.entity.OpportunityDetail;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -43,18 +44,7 @@ public class GetSnapShotProductUseCase extends UseCase<ProductDetailData> {
     public Observable<ProductDetailData> createObservable(RequestParams requestParams) {
         return Observable.zip(productRepository.getProduct(getProductParams(requestParams)),
                 replacementRepository.getOpportunityDetail(getOpportunityParams(requestParams)),
-                new Func2<ProductDetailData, OpportunityDetail, ProductDetailData>() {
-                    @Override
-                    public ProductDetailData call(ProductDetailData productDetailData, OpportunityDetail opportunityDetail) {
-                        String productPrice = opportunityDetail.getDetail().getProductPrice();
-                        if (productPrice != null && !productPrice.isEmpty()) {
-                            productPrice = CurrencyFormatHelper
-                                    .ConvertToRupiah(productPrice).replaceAll(",",".");
-                            productDetailData.getInfo().setProductPrice(productPrice);
-                        }
-                        return productDetailData;
-                    }
-                });
+                new OpportunityProductMapper());
     }
 
     public static RequestParams getRequestParams(ProductPass productPass, String opportunityId){

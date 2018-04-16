@@ -1,7 +1,6 @@
 package com.tokopedia.session.addchangeemail.data.source;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
@@ -14,6 +13,7 @@ import com.tokopedia.session.addchangeemail.domain.usecase.AddEmailUseCase;
 import com.tokopedia.session.addchangeemail.view.viewmodel.AddEmailViewModel;
 import com.tokopedia.session.addchangeemail.view.viewmodel.CheckEmailViewModel;
 import com.tokopedia.session.addchangeemail.view.viewmodel.RequestVerificationViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 import rx.functions.Action1;

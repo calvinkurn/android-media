@@ -1,4 +1,4 @@
-package com.tokopedia.core;
+package com.tokopedia.tkpd;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

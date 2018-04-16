@@ -157,6 +157,11 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
     }
 
     @Override
+    public void setOnChangePhoneNumberEmptyEmailClick(Context context) {
+        view.showDialogChangePhoneNumberEmptyEmail();
+    }
+
+    @Override
     public void setOnVerificationButtonClick(Context context, String userPhone) {
         if (!TextUtils.isEmpty(userPhone)) {
             view.showPhoneVerificationDialog(userPhone);

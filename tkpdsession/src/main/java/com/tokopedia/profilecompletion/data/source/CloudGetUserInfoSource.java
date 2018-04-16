@@ -2,11 +2,13 @@ package com.tokopedia.profilecompletion.data.source;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
+import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
+
+import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -31,7 +33,7 @@ public class CloudGetUserInfoSource {
         this.sessionHandler = sessionHandler;
     }
 
-    public Observable<GetUserInfoDomainModel> getUserInfo(TKPDMapParam<String, Object> parameters) {
+    public Observable<GetUserInfoDomainModel> getUserInfo(Map<String, Object> parameters) {
         return accountsService.getApi()
                 .getUserInfo(parameters)
                 .map(getUserInfoMapper)

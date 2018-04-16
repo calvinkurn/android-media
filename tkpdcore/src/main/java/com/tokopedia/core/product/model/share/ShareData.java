@@ -20,6 +20,8 @@ public class ShareData implements Parcelable {
     public static final String DISCOVERY_TYPE = "Discovery";
     public static final String HOTLIST_TYPE = "Hotlist";
     public static final String RIDE_TYPE = "Ride";
+    public static final String PROMO_TYPE = "Promo";
+
     private static final String ARG_UTM_MEDIUM = "Share";
     private static final String DEFAULT_EMPTY_FIELD = "";
     public static final String APP_SHARE_TYPE = "App";

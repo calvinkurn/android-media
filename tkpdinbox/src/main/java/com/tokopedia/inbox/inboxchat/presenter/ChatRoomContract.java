@@ -140,6 +140,8 @@ public class ChatRoomContract {
         void onErrorSetRating();
 
         void showSearchInvoiceScreen();
+
+        boolean shouldHandleUrlManually(String url);
     }
 
     interface Presenter extends CustomerPresenter<View>{
