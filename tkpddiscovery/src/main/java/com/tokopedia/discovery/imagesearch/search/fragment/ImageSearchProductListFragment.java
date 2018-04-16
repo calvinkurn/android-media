@@ -88,6 +88,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private GridLayoutManager gridLayoutManager;
 
     private RedirectionListener redirectionListener;
+    private static final int MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT = 12;
 
     public int spanCount;
 
@@ -358,26 +359,27 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void setProductList(List<Visitable> list) {
-        sendProductImpressionTrackingEvent(list);
+        sendImageTrackingDataInChunks(list);
         adapter.appendItems(list);
     }
 
-    private void sendProductImpressionTrackingEvent(List<Visitable> list) {
-        String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
-        List<Object> dataLayerList = new ArrayList<>();
-
-        for (int j = 0; j < list.size(); ) {
-            int count = 0;
-            while (count < 12 && j < list.size()) {
-                count++;
-                if (list.get(j) instanceof ProductItem) {
-                    dataLayerList.add(((ProductItem) list.get(j)).getProductAsObjectDataLayer(userId));
+    private void sendImageTrackingDataInChunks(List<Visitable> list) {
+        if (list != null && list.size() > 0) {
+            String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
+            List<Object> dataLayerList = new ArrayList<>();
+            for (int j = 0; j < list.size(); ) {
+                int count = 0;
+                dataLayerList.clear();
+                while (count < MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT && j < list.size()) {
+                    count++;
+                    if (list.get(j) instanceof ProductItem) {
+                        dataLayerList.add(((ProductItem) list.get(j)).getProductAsObjectDataLayer(userId));
+                    }
+                    j++;
                 }
-                j++;
+                SearchTracking.eventImpressionImageSearchResultProduct(dataLayerList);
             }
-            SearchTracking.eventImpressionSearchResultProduct(dataLayerList, "imageSearch");
         }
-
     }
 
     @Override
