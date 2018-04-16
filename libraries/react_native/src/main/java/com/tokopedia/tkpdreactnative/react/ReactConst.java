@@ -22,10 +22,12 @@ public interface ReactConst {
         String OFFICIAL_STORE = "official-store";
         String PROMO = "promo-page";
         String PROMO_TERMS = "promo-terms";
+        String SUB_PROMO = "sub-promo";
         String THANK_YOU_PAGE = "thankyou-page";
         String DISCOVERY_PAGE = "discovery-page";
         String EXPLORE_PAGE = "explore-page";
         String CONTENT_DETAIL = "content-detail";
+        String BRANDLIST_PAGE = "brandlist-page";
     }
 
     interface EventEmitter{

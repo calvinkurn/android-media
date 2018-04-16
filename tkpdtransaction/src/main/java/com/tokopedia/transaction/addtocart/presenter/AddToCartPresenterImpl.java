@@ -41,7 +41,6 @@ import com.tokopedia.transaction.addtocart.model.OrderData;
 import com.tokopedia.transaction.addtocart.model.kero.Attribute;
 import com.tokopedia.transaction.addtocart.model.kero.Data;
 import com.tokopedia.transaction.addtocart.model.kero.Product;
-import com.tokopedia.transaction.addtocart.model.kero.Rates;
 import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
@@ -442,12 +441,12 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         product.setShopType(productCartPass.getShopType());
         product.setShopName(productCartPass.getShopName());
         product.setCategoryId(productCartPass.getCategoryId());
-        product.setHomeAttribution(
+        product.setDimension38(
                 TextUtils.isEmpty(productCartPass.getTrackerAttribution())
                         ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
                         : productCartPass.getTrackerAttribution()
         );
-        product.setList(
+        product.setDimension40(
                 TextUtils.isEmpty(productCartPass.getListName())
                         ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
                         : productCartPass.getListName()

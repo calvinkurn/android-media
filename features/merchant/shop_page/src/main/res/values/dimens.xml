@@ -19,4 +19,5 @@
     <dimen name="shop_page_sub_info_detail_height">24dp</dimen>
 
     <dimen name="shop_product_item_badge_deprecated_font">9sp</dimen>
+    <dimen name="size_labelview">56sp</dimen>
 </resources>
