@@ -25,6 +25,8 @@ public interface ReactConst {
         String SUB_PROMO = "sub-promo";
         String THANK_YOU_PAGE = "thankyou-page";
         String DISCOVERY_PAGE = "discovery-page";
+        String EXPLORE_PAGE = "explore-page";
+        String CONTENT_DETAIL = "content-detail";
         String BRANDLIST_PAGE = "brandlist-page";
     }
 
