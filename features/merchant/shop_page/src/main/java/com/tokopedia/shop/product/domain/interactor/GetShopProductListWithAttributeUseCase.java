@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
+import com.tokopedia.shop.product.view.model.ShopProductListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;

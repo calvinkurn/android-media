@@ -14,11 +14,11 @@ import android.widget.TextView;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.viewholder.movement.ChatLinkHandlerMovementMethod;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 
 import java.util.Date;
@@ -92,8 +92,7 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
             }
         }
 
-        message.setMovementMethod(new SelectableSpannedMovementMethod());
-
+        message.setMovementMethod(new ChatLinkHandlerMovementMethod(viewListener));
         date.setVisibility(View.VISIBLE);
         String time;
 

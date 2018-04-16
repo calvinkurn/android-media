@@ -24,7 +24,8 @@ public class Product extends BaseGTMModel {
     public static final String KEY_CART_ID = "cart_id";
     public static final String KEY_POS = "position";
     public static final String KEY_LIST = "list";
-    public static final String KEY_HOME_ATTRIBUTION = "dimension38";
+    public static final String KEY_DIMENSION_38 = "dimension38";
+    public static final String KEY_DIMENSION_40 = "dimension40";
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none/other";
 
@@ -52,8 +53,12 @@ public class Product extends BaseGTMModel {
         Product.put(KEY_CAT, category);
     }
 
-    public void setList(Object list) {
-        Product.put(KEY_LIST, list);
+    public void setDimension38(Object data) {
+        Product.put(KEY_DIMENSION_38, data);
+    }
+
+    public void setDimension40(Object data) {
+        Product.put(KEY_DIMENSION_40, data);
     }
 
     public void setPosition(Object position) {
@@ -66,10 +71,6 @@ public class Product extends BaseGTMModel {
 
     public void setVariant(Object variant) {
         Product.put(KEY_VARIANT, variant);
-    }
-
-    public void setHomeAttribution(Object homeAttribution) {
-        Product.put(KEY_HOME_ATTRIBUTION, homeAttribution);
     }
 
     public Map<String, Object> getProduct() {

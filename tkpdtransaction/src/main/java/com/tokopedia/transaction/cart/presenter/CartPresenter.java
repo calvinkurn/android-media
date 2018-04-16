@@ -148,8 +148,8 @@ public class CartPresenter implements ICartPresenter {
                 product.setShopName(cartItem.getCartShop().getShopName());
                 product.setCartId(cartProduct.getProductCartId());
                 product.setCategoryId(cartProduct.getProductCatId());
-                product.setHomeAttribution(cartProduct.getProductTrackerData().getAttribution());
-                product.setList(cartProduct.getProductTrackerData().getListDataName());
+                product.setDimension38(cartProduct.getProductTrackerData().getAttribution());
+                product.setDimension40(cartProduct.getProductTrackerData().getListDataName());
                 product.setProductName(MethodChecker.fromHtml(cartProduct.getProductName()).toString());
 
                 com.tokopedia.core.analytics.model.Product locaProduct
@@ -439,8 +439,8 @@ public class CartPresenter implements ICartPresenter {
         analysisProduct.setProductID(cartProduct.getProductId());
         analysisProduct.setPrice(cartProduct.getProductPrice());
         analysisProduct.setQty(quantity);
-        analysisProduct.setHomeAttribution(cartProduct.getProductTrackerData().getAttribution());
-        analysisProduct.setList(cartProduct.getProductTrackerData().getListDataName());
+        analysisProduct.setDimension38(cartProduct.getProductTrackerData().getAttribution());
+        analysisProduct.setDimension40(cartProduct.getProductTrackerData().getListDataName());
         return analysisProduct;
     }
 
@@ -651,6 +651,30 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
+    public void cancelPromo() {
+        cartDataInteractor.cancelVoucherCache(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                handleThrowableGeneral(e);
+            }
+
+            @Override
+            public void onNext(Boolean status) {
+                if (status != null && status) {
+                    view.renderCandelPromoSuccess();
+                } else {
+                    view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+        });
+    }
+
+    @Override
     public void clearNotificationCart() {
         LocalCacheHandler cache = view.getLocalCacheHandlerNotificationData();
         cache.putInt(TkpdCache.Key.IS_HAS_CART, 0);
@@ -835,7 +859,7 @@ public class CartPresenter implements ICartPresenter {
     private void processRenderViewCartData(CartData data) {
         view.renderCheckboxDonasi(data.getDonation());
         if (data.getCartItemList().isEmpty()) {
-            view.renderErrorEmptyCart();
+            view.renderErrorEmptyCart(data.getAutoApply());
             return;
         }
         if (data.getCashback() != 0)
@@ -870,6 +894,13 @@ public class CartPresenter implements ICartPresenter {
         view.renderInstantPromo(data.getCartPromo());
         view.renderPromoView(data.getIsCouponActive() == 1);
         view.renderPartialOrder(data.isEnableCancelPartial());
+        if (promoAutoApplied(data)) {
+            view.renderAutoApplyPromoView(data.getAutoApply());
+        }
+    }
+
+    private boolean promoAutoApplied(CartData data) {
+        return data.getAutoApply() != null && data.getAutoApply().isSuccess();
     }
 
     @Override

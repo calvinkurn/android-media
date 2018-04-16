@@ -4,33 +4,38 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/margin_sm"
+    android:paddingTop="@dimen/dp_24"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
     android:background="@color/white">
 
     <include
+        android:id="@+id/head"
         layout="@layout/layout_email_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <android.support.design.widget.TextInputLayout
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
         android:id="@+id/wrapper_email"
         android:layout_width="match_parent"
+        android:hint="@string/title_email"
+        style="@style/HintTextInputLayout"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_sm">
+        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginBottom="@dimen/dp_3"
+        android:layout_marginLeft="-3dp">
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/et_email"
-            android:hint="@string/title_email"
             android:textColorHint="@color/black_54"
             android:textColor="@color/black_70"
             android:inputType="textEmailAddress"
             android:textSize="@dimen/font_medium"
-            android:layout_marginTop="@dimen/margin_sm"
             />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <TextView
         android:id="@+id/tv_message"
@@ -38,31 +43,26 @@
         android:layout_height="wrap_content"
         android:text="@string/we_will_send_email_verification_code"
         android:textSize="@dimen/text_size_12"
-        android:textColor="@color/black_38"
-        android:layout_marginTop="@dimen/margin_ms"/>
-    
+        android:textColor="@color/black_38"/>
+
     <TextView
         android:id="@+id/tv_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_small"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:textColor="@color/red_500"
-        android:lineSpacingExtra="4sp"
+        tools:text="@string/we_will_send_email_verification_code"
+        android:textSize="@dimen/text_size_12"
         android:visibility="gone"
-        tools:visibility="visible"
-        tools:text="Nomor ponsel belum terdaftar"
-        />
-    
-    <Button
+        android:textColor="@color/red_error"/>
+
+    <TextView
         android:id="@+id/btn_continue"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="@string/button_continue"
         android:textColor="@color/white"
         android:textAllCaps="false"
+        android:gravity="center"
         android:background="@drawable/bg_button_enable"
-        android:layout_marginTop="@dimen/margin_sm"/>
+        android:layout_marginTop="@dimen/dp_24"/>
 
 </LinearLayout>

@@ -57,6 +57,7 @@ import com.tokopedia.session.register.view.adapter.AutoCompleteTextAdapter;
 import com.tokopedia.session.register.view.di.RegisterEmailDependencyInjector;
 import com.tokopedia.session.register.view.presenter.RegisterEmailPresenter;
 import com.tokopedia.session.register.view.util.RegisterUtil;
+import com.tokopedia.session.register.view.util.ViewUtil;
 import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
 import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
 import com.tokopedia.util.CustomPhoneNumberUtil;
@@ -180,6 +181,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
         registerNextTAndC.setText(MethodChecker.fromHtml(joinString));
         registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
+        ViewUtil.stripUnderlines(registerNextTAndC);
+
+        showPasswordHint();
+        showEmailHint();
+        showNameHint();
+        showPhoneHint();
     }
 
     private Spannable getSpannable(String sourceString, String hyperlinkString) {
@@ -213,7 +220,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             email.setText(savedInstanceState.getString(EMAIL, ""));
             registerPassword.setText(savedInstanceState.getString(PASSWORD, ""));
         }
-
     }
 
     @Override
@@ -248,6 +254,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                showNameHint();
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
                 } else if (s.length() < 3) {
@@ -256,7 +263,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                     setWrapperError(wrapper, getString(R.string.error_illegal_character));
                 } else if (RegisterUtil.isExceedMaxCharacter(name.getText().toString())) {
                     setWrapperError(wrapper, getString(R.string.error_max_35_character));
-
                 }
 
                 checkIsValidForm();
@@ -280,6 +286,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                showPasswordHint();
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
                 } else if (registerPassword.getText().toString().length() < PASSWORD_MINIMUM_LENGTH) {
@@ -307,6 +314,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                showEmailHint();
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
                 } else if (!CommonUtils.EmailValidation(email.getText().toString())) {
@@ -395,6 +403,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                showPhoneHint();
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
                 } else if (s.length() < 3) {
@@ -402,7 +411,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                 } else if (!RegisterUtil.isValidPhoneNumber(
                         phone.getText().toString().replace("-", ""))) {
                     setWrapperError(wrapper, getString(R.string.error_invalid_phone_number));
-
                 }
 
                 checkIsValidForm();
@@ -506,6 +514,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
+        wrapper.setHelperEnabled(false);
+        wrapper.setHelper(null);
         if (s == null) {
             wrapper.setError(s);
             wrapper.setErrorEnabled(false);
@@ -513,6 +523,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             wrapper.setErrorEnabled(true);
             wrapper.setError(s);
         }
+    }
+
+    private void setWrapperHint(TkpdHintTextInputLayout wrapper, String s) {
+        wrapper.setErrorEnabled(false);
+        wrapper.setHelperEnabled(true);
+        wrapper.setHelper(s);
     }
 
     @Override
@@ -540,7 +556,28 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         setWrapperError(wrapperName, null);
         setWrapperError(wrapperEmail, null);
         setWrapperError(wrapperPassword, null);
+        showPasswordHint();
+        showEmailHint();
+        showNameHint();
+        showPhoneHint();
     }
+
+    public void showPasswordHint() {
+        setWrapperHint(wrapperPassword, getResources().getString(R.string.minimal_6_character));
+    }
+
+    public void showNameHint() {
+        setWrapperHint(wrapperName, "  ");
+    }
+
+    public void showEmailHint() {
+        setWrapperHint(wrapperEmail, getResources().getString(R.string.send_verif_to_email));
+    }
+
+    public void showPhoneHint() {
+        setWrapperHint(wrapperPhone, getResources().getString(R.string.phone_example));
+    }
+
 
     @Override
     public void setActionsEnabled(boolean isEnabled) {
@@ -615,8 +652,17 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     public void onSuccessRegister(RegisterEmailViewModel registerResult) {
         dismissLoadingProgress();
         setActionsEnabled(true);
+        lostViewFocus();
         presenter.startAction(registerResult);
 
+    }
+
+    public void lostViewFocus() {
+        email.clearFocus();
+        phone.clearFocus();
+        name.clearFocus();
+        registerPassword.clearFocus();
+        registerButton.clearFocus();
     }
 
     @Override
@@ -652,7 +698,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         builder.setPositiveButton(getResources().getString(R.string.phone_number_already_registered_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-                //go to login
+                goToLoginEmail();
             }
         });
         builder.setNegativeButton(getResources().getString(R.string.phone_number_already_registered_no), new DialogInterface.OnClickListener() {
@@ -667,6 +713,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+    }
+
+    @Override
+    public void goToLoginEmail() {
+        startActivity(LoginActivity.getIntentLoginFromRegister(getActivity(), email.getText().toString()));
+        getActivity().finish();
     }
 
     @Override
