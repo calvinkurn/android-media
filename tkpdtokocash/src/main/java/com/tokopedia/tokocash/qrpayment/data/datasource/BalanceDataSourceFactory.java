@@ -1,7 +1,6 @@
 package com.tokopedia.tokocash.qrpayment.data.datasource;
 
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.tokocash.network.api.WalletApi;
 import com.tokopedia.tokocash.network.api.WalletBalanceApi;
 
 import javax.inject.Inject;

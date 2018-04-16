@@ -8,35 +8,35 @@ public class Sales {
 
     @SerializedName("sales_new_order")
     @Expose
-    private Integer salesNewOrder;
+    private int salesNewOrder;
     @SerializedName("sales_shipping_status")
     @Expose
-    private Integer salesShippingStatus;
+    private int salesShippingStatus;
     @SerializedName("sales_shipping_confirm")
     @Expose
-    private Integer salesShippingConfirm;
+    private int salesShippingConfirm;
 
-    public Integer getSalesNewOrder() {
+    public int getSalesNewOrder() {
         return salesNewOrder;
     }
 
-    public void setSalesNewOrder(Integer salesNewOrder) {
+    public void setSalesNewOrder(int salesNewOrder) {
         this.salesNewOrder = salesNewOrder;
     }
 
-    public Integer getSalesShippingStatus() {
+    public int getSalesShippingStatus() {
         return salesShippingStatus;
     }
 
-    public void setSalesShippingStatus(Integer salesShippingStatus) {
+    public void setSalesShippingStatus(int salesShippingStatus) {
         this.salesShippingStatus = salesShippingStatus;
     }
 
-    public Integer getSalesShippingConfirm() {
+    public int getSalesShippingConfirm() {
         return salesShippingConfirm;
     }
 
-    public void setSalesShippingConfirm(Integer salesShippingConfirm) {
+    public void setSalesShippingConfirm(int salesShippingConfirm) {
         this.salesShippingConfirm = salesShippingConfirm;
     }
 

@@ -8,24 +8,24 @@ public class ResolutionAs {
 
     @SerializedName("resolution_as_buyer")
     @Expose
-    private Integer resolutionAsBuyer;
+    private int resolutionAsBuyer;
     @SerializedName("resolution_as_seller")
     @Expose
-    private Integer resolutionAsSeller;
+    private int resolutionAsSeller;
 
-    public Integer getResolutionAsBuyer() {
+    public int getResolutionAsBuyer() {
         return resolutionAsBuyer;
     }
 
-    public void setResolutionAsBuyer(Integer resolutionAsBuyer) {
+    public void setResolutionAsBuyer(int resolutionAsBuyer) {
         this.resolutionAsBuyer = resolutionAsBuyer;
     }
 
-    public Integer getResolutionAsSeller() {
+    public int getResolutionAsSeller() {
         return resolutionAsSeller;
     }
 
-    public void setResolutionAsSeller(Integer resolutionAsSeller) {
+    public void setResolutionAsSeller(int resolutionAsSeller) {
         this.resolutionAsSeller = resolutionAsSeller;
     }
 

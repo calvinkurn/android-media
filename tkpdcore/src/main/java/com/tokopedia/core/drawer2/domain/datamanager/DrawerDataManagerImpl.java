@@ -244,8 +244,13 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
 
     private void renderNotification(Notifications notificationData) {
         if (notificationData != null) {
-            viewListener.onGetNotificationDrawer(
-                    convertToViewModel(notificationData));
+            try {
+                viewListener.onGetNotificationDrawer(
+                        convertToViewModel(notificationData));
+            } catch (Exception ex) {
+                viewListener.onErrorGetNotificationDrawer(
+                        viewListener.getString(R.string.default_request_error_unknown));
+            }
         } else {
             viewListener.onErrorGetNotificationDrawer(
                     viewListener.getString(R.string.default_request_error_unknown));
@@ -268,9 +273,11 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
         drawerNotification.setSellingNewOrder(notificationData.getSales().getSalesNewOrder());
         drawerNotification.setSellingShippingConfirmation(notificationData.getSales().getSalesShippingConfirm());
         drawerNotification.setSellingShippingStatus(notificationData.getSales().getSalesShippingStatus());
-        drawerNotification.setTotalNotif(notificationData.getTotalNotif());
-        //drawerNotification.setIncrNotif(notificationData.getIncrNotif());
+        drawerNotification.setIncrNotif(notificationData.getIncrNotif());
         drawerNotification.setTotalCart(notificationData.getTotalCart());
+
+        int unreads = notificationData.getChat() != null ? notificationData.getChat().getUnreads() : 0;
+        drawerNotification.setTotalNotif(notificationData.getTotalNotif() - unreads);
         return drawerNotification;
     }
 }

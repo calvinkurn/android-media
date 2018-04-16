@@ -3,11 +3,15 @@ package com.tokopedia.core.drawer2.data.source;
 import android.content.Context;
 import android.content.res.Resources;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.UserData;
+import com.tokopedia.core.drawer2.data.pojo.Wallet;
 import com.tokopedia.core.drawer2.domain.interactor.GetUserAttributesUseCase;
 import com.tokopedia.core.network.apiservices.drawer.DrawerService;
 
@@ -26,11 +30,13 @@ import rx.functions.Func1;
  */
 
 public class CloudAttrDataSource {
+    public static final String KEY_TOKOCASH_BALANCE_CACHE = "TOKOCASH_BALANCE_CACHE";
 
     private Context context;
     private DrawerService drawerService;
 
     private AnalyticsCacheHandler analyticsCacheHandler;
+    private long DURATION_SAVE_TO_CACHE = 60;
 
     public CloudAttrDataSource(Context context, DrawerService drawerService) {
         this.context = context;
@@ -39,8 +45,9 @@ public class CloudAttrDataSource {
     }
 
     public Observable<UserData> getConsumerUserAttributes(RequestParams requestParams) {
+        int userId = requestParams.getInt(GetUserAttributesUseCase.PARAM_USER_ID, 0);
         return drawerService.getApi()
-                .getConsumerDrawerData(String.format(getRequestPayload(), requestParams.getInt(GetUserAttributesUseCase.PARAM_USER_ID, 0)))
+                .getConsumerDrawerData(String.format(getRequestPayload(), userId))
                 .map(new Func1<Response<GraphqlResponse<UserData>>, UserData>() {
                     @Override
                     public UserData call(Response<GraphqlResponse<UserData>> graphqlResponseResponse) {
@@ -81,6 +88,15 @@ public class CloudAttrDataSource {
             public void call(UserData data) {
                 if (data != null) {
                     analyticsCacheHandler.setUserDataGraphQLCache(data);
+                }
+
+                //add wallet data in cache
+                if (data != null && data.getWallet() != null && data.getWallet().getLinked()) {
+                    GlobalCacheManager cacheHandler = new GlobalCacheManager();
+                    cacheHandler.save(KEY_TOKOCASH_BALANCE_CACHE,
+                            CacheUtil.convertModelToString(data.getWallet(),
+                                    new TypeToken<Wallet>() {
+                                    }.getType()), DURATION_SAVE_TO_CACHE);
                 }
             }
         };

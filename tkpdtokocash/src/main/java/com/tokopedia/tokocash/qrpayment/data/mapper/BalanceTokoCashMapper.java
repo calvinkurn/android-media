@@ -1,8 +1,11 @@
 package com.tokopedia.tokocash.qrpayment.data.mapper;
 
+import com.tokopedia.core.drawer2.data.pojo.AbTag;
 import com.tokopedia.core.drawer2.data.pojo.Wallet;
 import com.tokopedia.tokocash.qrpayment.presentation.model.ActionBalance;
 import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -43,7 +46,6 @@ public class BalanceTokoCashMapper implements Func1<Wallet, BalanceTokoCash> {
                 balanceTokoCash.setActionBalance(actionBalance);
             }
 
-            balanceTokoCash.setAbTags(wallet.getAbTags());
             balanceTokoCash.setApplinks(wallet.getApplinks());
             balanceTokoCash.setBalance(wallet.getBalance());
             balanceTokoCash.setHoldBalance(wallet.getHoldBalance());
@@ -54,6 +56,17 @@ public class BalanceTokoCashMapper implements Func1<Wallet, BalanceTokoCash> {
             balanceTokoCash.setRedirectUrl(wallet.getRedirectUrl());
             balanceTokoCash.setTitleText(wallet.getText());
             balanceTokoCash.setTotalBalance(wallet.getTotalBalance());
+
+            //set ab tags
+            ArrayList<String> abTags = new ArrayList<>();
+            if (wallet.getAbTags() != null) {
+                int index = 0;
+                for (AbTag abtag : wallet.getAbTags()) {
+                    abTags.add(abtag.getTag());
+                    index++;
+                }
+            }
+            balanceTokoCash.setAbTags(abTags);
 
 
             return balanceTokoCash;

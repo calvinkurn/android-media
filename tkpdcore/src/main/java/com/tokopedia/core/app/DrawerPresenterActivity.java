@@ -204,8 +204,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         if (sessionHandler.isV4Login()) {
             setDataDrawer();
 
-            getDrawerNotification();
-
             if (!GlobalConfig.isSellerApp()) {
                 getTokoPointData();
                 getDrawerUserAttrUseCase(sessionHandler);

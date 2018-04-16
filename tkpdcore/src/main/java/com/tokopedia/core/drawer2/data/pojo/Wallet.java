@@ -46,7 +46,7 @@ public class Wallet {
     private String applinks;
     @SerializedName("ab_tags")
     @Expose
-    private List<String> abTags = null;
+    private List<AbTag> abTags = null;
     @SerializedName("action")
     @Expose
     private Action action;
@@ -147,11 +147,11 @@ public class Wallet {
         this.applinks = applinks;
     }
 
-    public List<String> getAbTags() {
+    public List<AbTag> getAbTags() {
         return abTags;
     }
 
-    public void setAbTags(List<String> abTags) {
+    public void setAbTags(List<AbTag> abTags) {
         this.abTags = abTags;
     }
 

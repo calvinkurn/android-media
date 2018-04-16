@@ -3,6 +3,7 @@ package com.tokopedia.core.util;
 import android.content.Context;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.drawer2.data.pojo.AbTag;
 import com.tokopedia.core.drawer2.data.pojo.Wallet;
 import com.tokopedia.core.drawer2.data.pojo.topcash.Action;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
@@ -148,8 +149,8 @@ public class TokoCashUtil {
         ArrayList<String> abTags = new ArrayList<>();
         if (tokoCashData.getAbTags() != null) {
             int index = 0;
-            for (Object abtag : tokoCashData.getAbTags()) {
-                abTags.add(abtag.toString());
+            for (AbTag abtag : tokoCashData.getAbTags()) {
+                abTags.add(abtag.getTag());
                 index++;
             }
         }

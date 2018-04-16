@@ -8,46 +8,46 @@ public class Purchase {
 
     @SerializedName("purchase_reorder")
     @Expose
-    private Integer purchaseReorder;
+    private int purchaseReorder;
     @SerializedName("purchase_payment_confirm")
     @Expose
-    private Integer purchasePaymentConfirm;
+    private int purchasePaymentConfirm;
     @SerializedName("purchase_order_status")
     @Expose
-    private Integer purchaseOrderStatus;
+    private int purchaseOrderStatus;
     @SerializedName("purchase_delivery_confirm")
     @Expose
-    private Integer purchaseDeliveryConfirm;
+    private int purchaseDeliveryConfirm;
 
-    public Integer getPurchaseReorder() {
+    public int getPurchaseReorder() {
         return purchaseReorder;
     }
 
-    public void setPurchaseReorder(Integer purchaseReorder) {
+    public void setPurchaseReorder(int purchaseReorder) {
         this.purchaseReorder = purchaseReorder;
     }
 
-    public Integer getPurchasePaymentConfirm() {
+    public int getPurchasePaymentConfirm() {
         return purchasePaymentConfirm;
     }
 
-    public void setPurchasePaymentConfirm(Integer purchasePaymentConfirm) {
+    public void setPurchasePaymentConfirm(int purchasePaymentConfirm) {
         this.purchasePaymentConfirm = purchasePaymentConfirm;
     }
 
-    public Integer getPurchaseOrderStatus() {
+    public int getPurchaseOrderStatus() {
         return purchaseOrderStatus;
     }
 
-    public void setPurchaseOrderStatus(Integer purchaseOrderStatus) {
+    public void setPurchaseOrderStatus(int purchaseOrderStatus) {
         this.purchaseOrderStatus = purchaseOrderStatus;
     }
 
-    public Integer getPurchaseDeliveryConfirm() {
+    public int getPurchaseDeliveryConfirm() {
         return purchaseDeliveryConfirm;
     }
 
-    public void setPurchaseDeliveryConfirm(Integer purchaseDeliveryConfirm) {
+    public void setPurchaseDeliveryConfirm(int purchaseDeliveryConfirm) {
         this.purchaseDeliveryConfirm = purchaseDeliveryConfirm;
     }
 

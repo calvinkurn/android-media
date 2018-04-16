@@ -43,7 +43,7 @@ public class CloudBalanceDataSource implements BalanceDataSource {
                 .doOnNext(new Action1<Response<GraphqlResponse<UserData>>>() {
                     @Override
                     public void call(Response<GraphqlResponse<UserData>> dataResponseResponse) {
-                        if (dataResponseResponse.body().getData() != null) {
+                        if (dataResponseResponse.body().getData() != null && dataResponseResponse.body().getData().getWallet() != null && dataResponseResponse.body().getData().getWallet().getLinked()) {
                             cacheManager.save(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE,
                                     CacheUtil.convertModelToString(dataResponseResponse.body().getData().getWallet(),
                                             new TypeToken<Wallet>() {

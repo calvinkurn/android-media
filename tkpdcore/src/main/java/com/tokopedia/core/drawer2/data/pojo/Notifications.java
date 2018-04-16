@@ -20,22 +20,25 @@ public class Notifications {
     private ResolutionAs resolutionAs;
     @SerializedName("total_notif")
     @Expose
-    private Integer totalNotif;
+    private int totalNotif;
     @SerializedName("total_cart")
     @Expose
-    private Integer totalCart;
+    private int totalCart;
     @SerializedName("resolution")
     @Expose
-    private Integer resolution;
+    private int resolution;
     @SerializedName("user_satisfaction_survey")
     @Expose
-    private Integer userSatisfactionSurvey;
+    private int userSatisfactionSurvey;
     @SerializedName("shop_id")
     @Expose
-    private Integer shopId;
+    private int shopId;
     @SerializedName("chat")
     @Expose
     private Chat chat;
+    @SerializedName("incr_notif")
+    @Expose
+    private int incrNotif;
 
     public Sales getSales() {
         return sales;
@@ -69,43 +72,43 @@ public class Notifications {
         this.resolutionAs = resolutionAs;
     }
 
-    public Integer getTotalNotif() {
+    public int getTotalNotif() {
         return totalNotif;
     }
 
-    public void setTotalNotif(Integer totalNotif) {
+    public void setTotalNotif(int totalNotif) {
         this.totalNotif = totalNotif;
     }
 
-    public Integer getTotalCart() {
+    public int getTotalCart() {
         return totalCart;
     }
 
-    public void setTotalCart(Integer totalCart) {
+    public void setTotalCart(int totalCart) {
         this.totalCart = totalCart;
     }
 
-    public Integer getResolution() {
+    public int getResolution() {
         return resolution;
     }
 
-    public void setResolution(Integer resolution) {
+    public void setResolution(int resolution) {
         this.resolution = resolution;
     }
 
-    public Integer getUserSatisfactionSurvey() {
+    public int getUserSatisfactionSurvey() {
         return userSatisfactionSurvey;
     }
 
-    public void setUserSatisfactionSurvey(Integer userSatisfactionSurvey) {
+    public void setUserSatisfactionSurvey(int userSatisfactionSurvey) {
         this.userSatisfactionSurvey = userSatisfactionSurvey;
     }
 
-    public Integer getShopId() {
+    public int getShopId() {
         return shopId;
     }
 
-    public void setShopId(Integer shopId) {
+    public void setShopId(int shopId) {
         this.shopId = shopId;
     }
 
@@ -117,4 +120,11 @@ public class Notifications {
         this.chat = chat;
     }
 
+    public int getIncrNotif() {
+        return incrNotif;
+    }
+
+    public void setIncrNotif(int incrNotif) {
+        this.incrNotif = incrNotif;
+    }
 }
