@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.app.GeneralReactNativeFragment;
@@ -18,8 +19,8 @@ public class ReactNativeSubPromoPageActivity extends ReactFragmentActivity<Gener
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String KEY_SLUG = "slug";
     public static final String CATEGORY_SLUG = "category_slug";
-
-    @DeepLink({Constants.Applinks.SUB_PROMO, Constants.Applinks.SUB_PROMO_WITH_SLASH})
+    
+    @DeepLink({ApplinkConst.SUB_PROMO, ApplinkConst.SUB_PROMO_WITH_SLASH})
     public static Intent getSubPromoApplinkCallingIntent(Context context, Bundle bundle){
         return ReactNativeSubPromoPageActivity.createApplinkCallingIntent(
                 context,

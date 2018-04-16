@@ -73,6 +73,8 @@ public interface ApplinkConst {
     String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
     String BROWSER = "tokopedia://browser";
     String FAVORITE = "tokopedia://home/favorite";
+    String SUB_PROMO = "tokopedia://sale/{slug}/{category_slug}";
+    String SUB_PROMO_WITH_SLASH = "tokopedia://sale/{slug}/{category_slug}/";
 
     String EVENTS = "tokopedia://events";
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";
