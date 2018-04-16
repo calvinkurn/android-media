@@ -32,9 +32,9 @@ public class TopAdsDetailNewProductPresenterImpl extends TopAdsDetailEditProduct
     }
 
     @Override
-    public void saveAd(TopAdsDetailProductViewModel detailAd, ArrayList<TopAdsProductViewModel> topAdsProductList) {
+    public void saveAd(TopAdsDetailProductViewModel detailAd, ArrayList<TopAdsProductViewModel> topAdsProductList, String source) {
         topAdsSaveDetailProductListUseCase.execute(TopAdsCreateDetailProductListUseCase.createRequestParams(
-                TopAdDetailProductMapper.convertViewToDomainList(detailAd, topAdsProductList)), getSubscriberSaveListAd());
+                TopAdDetailProductMapper.convertViewToDomainList(detailAd, topAdsProductList), source), getSubscriberSaveListAd());
     }
 
     private Subscriber<TopAdsDetailProductDomainModel> getSubscriberSaveListAd() {
