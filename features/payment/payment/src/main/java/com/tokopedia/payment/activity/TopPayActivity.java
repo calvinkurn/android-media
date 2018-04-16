@@ -644,6 +644,10 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     public void onSuccessPaymentFingerprint(String url, String paramEncode) {
         fingerPrintDialogPayment.stopListening();
         fingerPrintDialogPayment.dismiss();
-        scroogeWebView.loadUrl(String.format("%1$s ? %2$s", url, paramEncode));
+        try {
+            scroogeWebView.loadUrl(URLEncoder.encode(String.format("%1$s ? %2$s", url, paramEncode), "utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 }

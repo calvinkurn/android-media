@@ -597,7 +597,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean getEnableFingerprintPayment() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_MAINAPP);
+        return true;
+//        return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_MAINAPP);
     }
 
     @Override
