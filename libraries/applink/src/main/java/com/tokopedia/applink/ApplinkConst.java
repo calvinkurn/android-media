@@ -84,6 +84,9 @@ public interface ApplinkConst {
 
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
+    String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
+    String CONTENT_DETAIL ="tokopedia://content/{post_id}";
+
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
         String SALES = "sellerapp://sales";

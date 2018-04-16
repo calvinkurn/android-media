@@ -39,7 +39,7 @@ public class ReactNativeExplorePageActivity extends ReactFragmentActivity<ReactN
                                                     Bundle extras) {
         Intent intent = new Intent(context, ReactNativeExplorePageActivity.class);
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
-        extras.putString(EXTRA_TITLE, "Explore");
+        extras.putString(EXTRA_TITLE, pageTitle);
         intent.putExtras(extras);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
