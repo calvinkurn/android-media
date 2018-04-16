@@ -1022,6 +1022,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             if (productData != null) {
                 ShareData shareData = ShareData.Builder.aShareData()
                         .setName(productData.getInfo().getProductName())
+                        .setTextContent(productData.getInfo().getProductName())
                         .setDescription(productData.getInfo().getProductDescription())
                         .setImgUri(productData.getProductImages().get(0).getImageSrc())
                         .setPrice(productData.getInfo().getProductPrice())
