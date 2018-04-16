@@ -255,7 +255,7 @@ public class ProductFragment extends SearchSectionFragment
             item.setTrackerName(String.format(
                     Locale.getDefault(),
                     "/category/%s - product %d",
-                    productViewModel.getCategoryHeaderModel().getHeaderModel().getCategoryName(),
+                    productViewModel.getCategoryHeaderModel().getHeaderModel().getCategoryName().toLowerCase(),
                     page)
             );
             item.setTrackerPosition(String.valueOf(lastPositionProduct));
