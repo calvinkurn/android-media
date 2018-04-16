@@ -82,6 +82,16 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
             itemAdapter.setChannel(channel);
             if (channel.getHero() != null) {
                 ImageHandler.loadImageThumbs(context, channelHeroImage, channel.getHero()[0].getImageUrl());
+                channelHeroImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                                element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getHero()[0], 1)
+                        );
+                        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]),
+                                element.getChannel().getHomeAttribution(1, element.getChannel().getHero()[0].getAttribution()));
+                    }
+                });
             }
             seeAllButton.setOnClickListener(new View.OnClickListener() {
                 @Override
