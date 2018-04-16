@@ -69,7 +69,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private HeaderViewModel headerViewModel;
     private boolean fetchFirstData;
     private long REQUEST_DELAY = 180000;// 3 minutes
-    private long lastRequestTime;
+    private static long lastRequestTime;
 
     public HomePresenter(Context context) {
         this.context = context;
