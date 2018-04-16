@@ -9,6 +9,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.gamification.cracktoken.IntegerVersionSignature;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.cracktoken.model.CrackResultStatus;
@@ -141,31 +142,40 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
     public void downloadAllAsset(Context context, TokenData tokenData) {
         getView().showLoading();
 
-        final List<String> assetUrls = new ArrayList<>();
-
         TokenUser tokenUser = tokenData.getHome().getTokensUser();
         TokenAsset tokenAsset = tokenUser.getTokenAsset();
 
-        List<String> imageUrls = tokenAsset.getImageUrls();
-        String full = imageUrls.get(0);
-        String cracked = imageUrls.get(4);
-        String imageRightUrl = imageUrls.get(6);
-        String imageLeftUrl = imageUrls.get(5);
+        RequestListener<String, GlideDrawable> backgroundImgRequestListener = new ImageRequestListener(1);
+        Glide.with(context)
+                .load(tokenUser.getBackgroundAsset().getBackgroundImgUrl())
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .dontAnimate()
+                .signature(new IntegerVersionSignature(Integer.valueOf(tokenUser.getBackgroundAsset().getVersion())))
+                .listener(backgroundImgRequestListener)
+                .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
 
-        assetUrls.add(tokenUser.getBackgroundAsset().getBackgroundImgUrl());
+        List<String> tokenAssetImageUrls = tokenAsset.getImageUrls();
+        String full = tokenAssetImageUrls.get(0);
+        String cracked = tokenAssetImageUrls.get(4);
+        String imageRightUrl = tokenAssetImageUrls.get(6);
+        String imageLeftUrl = tokenAssetImageUrls.get(5);
+
+        final List<String> assetUrls = new ArrayList<>();
+
         assetUrls.add(full);
         assetUrls.add(cracked);
         assetUrls.add(imageLeftUrl);
         assetUrls.add(imageRightUrl);
         assetUrls.add(tokenUser.getTokenAsset().getSmallImgUrl());
 
-        RequestListener<String, GlideDrawable> requestListener = new ImageRequestListener(assetUrls.size());
+        RequestListener<String, GlideDrawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
         for (String assetUrl : assetUrls) {
             Glide.with(context)
                     .load(assetUrl)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .dontAnimate()
-                    .listener(requestListener)
+                    .signature(new IntegerVersionSignature(tokenUser.getTokenAsset().getVersion()))
+                    .listener(tokenAssetRequestListener)
                     .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
         }
     }

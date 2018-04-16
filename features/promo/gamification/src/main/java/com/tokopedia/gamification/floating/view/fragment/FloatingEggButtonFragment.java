@@ -37,6 +37,7 @@ import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
+import com.tokopedia.gamification.cracktoken.IntegerVersionSignature;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
@@ -394,31 +395,32 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         if (!TextUtils.isEmpty(imageUrl)) {
             Glide.with(getContext())
-                .load(imageUrl)
-                .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        ivFloatingEgg.setImageBitmap(resource);
+                    .load(imageUrl)
+                    .asBitmap()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .signature(new IntegerVersionSignature(tokenFloating.getTokenAsset().getVersion()))
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            ivFloatingEgg.setImageBitmap(resource);
 
-                        if (TextUtils.isEmpty(sumTokenString)) {
-                            tvFloatingCounter.setVisibility(View.GONE);
-                        } else {
-                            tvFloatingCounter.setText(sumTokenString);
-                            tvFloatingCounter.setVisibility(View.VISIBLE);
-                        }
+                            if (TextUtils.isEmpty(sumTokenString)) {
+                                tvFloatingCounter.setVisibility(View.GONE);
+                            } else {
+                                tvFloatingCounter.setText(sumTokenString);
+                                tvFloatingCounter.setVisibility(View.VISIBLE);
+                            }
 
-                        if (isShowTime && timeRemainingSeconds > 0) {
-                            setUIFloatingTimer(timeRemainingSeconds);
-                            startCountdownTimer(timeRemainingSeconds);
-                            tvFloatingTimer.setVisibility(View.VISIBLE);
-                        } else {
-                            stopCountdownTimer();
-                            tvFloatingTimer.setVisibility(View.GONE);
+                            if (isShowTime && timeRemainingSeconds > 0) {
+                                setUIFloatingTimer(timeRemainingSeconds);
+                                startCountdownTimer(timeRemainingSeconds);
+                                tvFloatingTimer.setVisibility(View.VISIBLE);
+                            } else {
+                                stopCountdownTimer();
+                                tvFloatingTimer.setVisibility(View.GONE);
+                            }
                         }
-                    }
-                });
+                    });
         }
     }
 
