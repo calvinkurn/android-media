@@ -20,7 +20,7 @@ public interface TopPayContract {
 
         void registerFingerPrint(String transactionId, String publicKey, String date, String accountSignature, String userId);
 
-        void paymentFingerPrint(String transactionId, String partner, String publicKey, String date, String accountSignature, String userId);
+        void paymentFingerPrint(String transactionId, String publicKey, String date, String accountSignature, String userId);
 
         void getPostDataOtp(String transactionId, String urlOtp);
 
