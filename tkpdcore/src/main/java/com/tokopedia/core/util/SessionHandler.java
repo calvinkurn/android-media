@@ -142,6 +142,7 @@ public class SessionHandler {
         editor.putString(TOKEN_TYPE, null);
         editor.putString(ACCESS_TOKEN, null);
         editor.putBoolean(HAS_PASSWORD, true);
+        editor.putString(PROFILE_PICTURE, null);
 
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
