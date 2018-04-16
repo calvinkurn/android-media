@@ -99,37 +99,6 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             items.add(new BannerShopProductViewModel(cpm));
             bannerAdsAdapter.setList(items);
         }
-//        final ImageView iconImg = (ImageView) findViewById(R.id.icon);
-//        TextView promotedTxt = (TextView) findViewById(R.id.title_promote);
-//        TextView nameTxt = (TextView) findViewById(R.id.shop_name);
-//        TextView descriptionTxt = (TextView) findViewById(R.id.description);
-//        LinearLayout badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
-//        Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
-//            @Override
-//            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                iconImg.setImageBitmap(resource);
-//                new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
-//            }
-//        });
-//        promotedTxt.setText(cpm.getPromotedText());
-//        nameTxt.setText(escapeHTML(cpm.getName()));
-//
-//        String desc = String.format("%s %s", escapeHTML(cpm.getDecription()), cpm.getCta());
-//        setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
-//
-//        if (cpm.getBadges().size() > 0) {
-//            badgeContainer.removeAllViews();
-//            badgeContainer.setVisibility(VISIBLE);
-//            for (Badge badge : cpm.getBadges()) {
-//                ImageView badgeImg = new ImageView(context);
-//                badgeImg.setLayoutParams(new LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size),
-//                        context.getResources().getDimensionPixelSize(R.dimen.badge_size)));
-//                Glide.with(context).load(badge.getImageUrl()).into(badgeImg);
-//                badgeContainer.addView(badgeImg);
-//            }
-//        } else {
-//            badgeContainer.setVisibility(GONE);
-//        }
     }
 
     private boolean activityIsFinishing(Context context) {
