@@ -90,6 +90,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initCacheApi();
         initSendbird();
         createCustomSoundNotificationChannel();
+        Hansel.init(this);
     }
 
     private void createCustomSoundNotificationChannel() {
