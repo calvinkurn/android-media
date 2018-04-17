@@ -35,6 +35,13 @@ import rx.Subscriber;
 public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.View>
         implements CrackTokenContract.Presenter {
 
+    private final int NUMBER_OF_BACKGROUND_IMAGE = 1;
+
+    private final int INDEX_TOKEN_FULL = 0;
+    private final int INDEX_TOKEN_CRACKED = 4;
+    private final int INDEX_TOKEN_RIGHT = 6;
+    private final int INDEX_TOKEN_LEFT = 5;
+
     private GetTokenTokopointsUseCase getTokenTokopointsUseCase;
     private GetCrackResultEggUseCase getCrackResultEggUseCase;
     private UserSession userSession;
@@ -145,7 +152,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         TokenUser tokenUser = tokenData.getHome().getTokensUser();
         TokenBackgroundAsset tokenBackgroundAsset = tokenUser.getBackgroundAsset();
 
-        RequestListener<String, GlideDrawable> backgroundImgRequestListener = new ImageRequestListener(1);
+        RequestListener<String, GlideDrawable> backgroundImgRequestListener = new ImageRequestListener(NUMBER_OF_BACKGROUND_IMAGE);
         ImageHandler.downloadOriginalSizeImageWithSignature(
                 context,
                 tokenBackgroundAsset.getBackgroundImgUrl(),
@@ -155,10 +162,10 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         TokenAsset tokenAsset = tokenUser.getTokenAsset();
 
         List<String> tokenAssetImageUrls = tokenAsset.getImageUrls();
-        String full = tokenAssetImageUrls.get(0);
-        String cracked = tokenAssetImageUrls.get(4);
-        String imageRightUrl = tokenAssetImageUrls.get(6);
-        String imageLeftUrl = tokenAssetImageUrls.get(5);
+        String full = tokenAssetImageUrls.get(INDEX_TOKEN_FULL);
+        String cracked = tokenAssetImageUrls.get(INDEX_TOKEN_CRACKED);
+        String imageRightUrl = tokenAssetImageUrls.get(INDEX_TOKEN_RIGHT);
+        String imageLeftUrl = tokenAssetImageUrls.get(INDEX_TOKEN_LEFT);
 
         final List<String> assetUrls = new ArrayList<>();
 
