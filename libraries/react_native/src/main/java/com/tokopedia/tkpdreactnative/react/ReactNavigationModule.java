@@ -1,8 +1,6 @@
 package com.tokopedia.tkpdreactnative.react;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -22,7 +20,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 
 import org.json.JSONObject;
@@ -39,7 +36,6 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule{
     private static final int LOGIN_REQUEST_CODE = 1005;
 
     private Context context;
-    private ProgressDialog progressDialog;
 
     public ReactNavigationModule(ReactApplicationContext reactContext) {
         super(reactContext);

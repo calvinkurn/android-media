@@ -243,8 +243,9 @@ ext {
             event           : ":tkpdevents",
             home            : ":tkpdhome",
             content         : ":tkpdcontent",
+            groupchat       : ":features:user:groupchat",
+            kol             : ":features:content:kol",
             groupchat       : ":features:user:groupchat"
-
     ]
 
     libraries = [

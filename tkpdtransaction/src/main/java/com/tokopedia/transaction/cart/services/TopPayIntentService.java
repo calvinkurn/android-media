@@ -13,6 +13,10 @@ import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
@@ -265,7 +269,11 @@ public class TopPayIntentService extends IntentService {
     }
 
     private TKPDMapParam<String, Object> createParamFingerprint(TKPDMapParam<String, Object> params) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        TransactionRouter transactionRouter = null;
+        if(getApplication() instanceof TransactionRouter){
+            transactionRouter = (TransactionRouter) getApplication();
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && transactionRouter!= null && transactionRouter.getEnableFingerprintPayment()) {
             PublicKey publicKey = FingerPrintDialog.generatePublicKey(this);
             if(publicKey != null){
                 params.put(FINGERPRINT_PUBLICKEY, FingerPrintDialog.getPublicKey(publicKey));

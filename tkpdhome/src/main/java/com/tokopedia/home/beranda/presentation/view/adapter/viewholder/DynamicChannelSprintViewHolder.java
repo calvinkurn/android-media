@@ -13,6 +13,7 @@ import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
+import com.tokopedia.home.beranda.helper.DateHelper;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -90,22 +91,22 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     @Override
     public void bind(final DynamicChannelViewModel element) {
         final DynamicHomeChannel.Channels channel = element.getChannel();
-//        homeChannelTitle.setText(channel.getHeader().getName());
-//        ImageHandler.loadImageThumbs(context, channelImage1, channel.getGrids()[0].getImageUrl());
-//        ImageHandler.loadImageThumbs(context, channelImage2, channel.getGrids()[1].getImageUrl());
-////        ImageHandler.loadImageThumbs(context, channelImage3, channel.getGrids()[2].getImageUrl());
-//        channelPrice1.setText(channel.getGrids()[0].getPrice());
-//        channelPrice2.setText(channel.getGrids()[1].getPrice());
-//        channelPrice3.setText(channel.getGrids()[2].getPrice());
-//        TextViewHelper.displayText(channelDiscount1, channel.getGrids()[0].getDiscount());
-//        TextViewHelper.displayText(channelDiscount2, channel.getGrids()[1].getDiscount());
-//        TextViewHelper.displayText(channelDiscount3, channel.getGrids()[2].getDiscount());
-//        channelBeforeDiscPrice1.setText(channel.getGrids()[0].getSlashedPrice());
-//        channelBeforeDiscPrice2.setText(channel.getGrids()[1].getSlashedPrice());
-////        channelBeforeDiscPrice3.setText(channel.getGrids()[2].getSlashedPrice());
-//        channelBeforeDiscPrice1.setPaintFlags(channelBeforeDiscPrice1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-//        channelBeforeDiscPrice2.setPaintFlags(channelBeforeDiscPrice2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-//        channelBeforeDiscPrice3.setPaintFlags(channelBeforeDiscPrice3.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        homeChannelTitle.setText(channel.getHeader().getName());
+        ImageHandler.loadImageThumbs(context, channelImage1, channel.getGrids()[0].getImageUrl());
+        ImageHandler.loadImageThumbs(context, channelImage2, channel.getGrids()[1].getImageUrl());
+        ImageHandler.loadImageThumbs(context, channelImage3, channel.getGrids()[2].getImageUrl());
+        channelPrice1.setText(channel.getGrids()[0].getPrice());
+        channelPrice2.setText(channel.getGrids()[1].getPrice());
+        channelPrice3.setText(channel.getGrids()[2].getPrice());
+        TextViewHelper.displayText(channelDiscount1, channel.getGrids()[0].getDiscount());
+        TextViewHelper.displayText(channelDiscount2, channel.getGrids()[1].getDiscount());
+        TextViewHelper.displayText(channelDiscount3, channel.getGrids()[2].getDiscount());
+        channelBeforeDiscPrice1.setText(channel.getGrids()[0].getSlashedPrice());
+        channelBeforeDiscPrice2.setText(channel.getGrids()[1].getSlashedPrice());
+        channelBeforeDiscPrice3.setText(channel.getGrids()[2].getSlashedPrice());
+        channelBeforeDiscPrice1.setPaintFlags(channelBeforeDiscPrice1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        channelBeforeDiscPrice2.setPaintFlags(channelBeforeDiscPrice2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        channelBeforeDiscPrice3.setPaintFlags(channelBeforeDiscPrice3.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
         if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.getHeader()))) {
             seeAllButton.setVisibility(View.VISIBLE);
@@ -116,28 +117,11 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         setupClickListeners(channel);
 
         if (isSprintSale(channel)) {
-            Date expiredTime = getExpiredTime(element);
-            countDownView.setup(expiredTime, new CountDownView.CountDownListener() {
-                @Override
-                public void onCountDownFinished() {
-                    removeOnClickListeners();
-                }
-            });
+            Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
+            countDownView.setup(expiredTime, null);
             countDownView.setVisibility(View.VISIBLE);
         } else {
             countDownView.setVisibility(View.GONE);
-        }
-    }
-
-    private void removeOnClickListeners() {
-        if (itemContainer1 != null) {
-            itemContainer1.setOnClickListener(null);
-        }
-        if (itemContainer2 != null) {
-            itemContainer2.setOnClickListener(null);
-        }
-        if (itemContainer3 != null) {
-            itemContainer3.setOnClickListener(null);
         }
     }
 
@@ -150,7 +134,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventClickSeeAllDynamicChannel(DynamicLinkHelper.getActionLink(channel.getHeader()));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), "");
             }
         });
         itemContainer1.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +145,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[0], 1));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[0]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[0]),
+                        channel.getHomeAttribution(1, channel.getGrids()[0].getAttribution())
+                );
             }
         });
         itemContainer2.setOnClickListener(new View.OnClickListener() {
@@ -172,7 +158,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[1], 2));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[1]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[1]),
+                        channel.getHomeAttribution(2, channel.getGrids()[1].getAttribution())
+                );
             }
         });
         itemContainer3.setOnClickListener(new View.OnClickListener() {
@@ -183,23 +171,14 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[2], 3));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[2]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[2]),
+                        channel.getHomeAttribution(3, channel.getGrids()[2].getAttribution())
+                );
             }
         });
     }
 
     private boolean isSprintSale(DynamicHomeChannel.Channels channel) {
         return DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout());
-    }
-
-    private Date getExpiredTime(DynamicChannelViewModel model) {
-        String expiredTimeString = model.getChannel().getHeader().getExpiredTime();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZZZZ");
-        try {
-            return format.parse(expiredTimeString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return new Date();
-        }
     }
 }

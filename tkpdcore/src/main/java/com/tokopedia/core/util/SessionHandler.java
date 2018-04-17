@@ -14,6 +14,7 @@ import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -25,7 +26,6 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.manager.ProductDetailCacheManager;
 import com.tokopedia.core.database.manager.ProductOtherCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.message.interactor.CacheInteractorImpl;
 import com.tokopedia.core.prototype.InboxCache;
 import com.tokopedia.core.prototype.ManageProductCache;
@@ -79,6 +79,7 @@ public class SessionHandler {
     private static final String TEMP_EMAIL = "TEMP_EMAIL";
     private static final String EMAIL = "EMAIL";
     private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
+    private static final String HAS_PASSWORD = "HAS_PASSWORD";
 
     private Context context;
     private String email;
@@ -140,6 +141,8 @@ public class SessionHandler {
         editor.putString(ACCESS_TOKEN_TOKOCASH, null);
         editor.putString(TOKEN_TYPE, null);
         editor.putString(ACCESS_TOKEN, null);
+        editor.putBoolean(HAS_PASSWORD, true);
+
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
@@ -155,7 +158,11 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         LocalCacheHandler.clearCache(context, TOKOCASH_SESSION);
         logoutInstagram(context);
-        MethodChecker.removeAllCookies(context);
+        try {
+            MethodChecker.removeAllCookies(context);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
 
 
@@ -550,7 +557,7 @@ public class SessionHandler {
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.apply();
         TrackingUtils.eventPushUserID();
-        if(!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
+        if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
 
         BranchSdkUtils.sendIdentityEvent(u_id);
 
@@ -717,5 +724,16 @@ public class SessionHandler {
 
     public interface onLogoutListener {
         void onLogout(Boolean success);
+    }
+
+    public void setHasPassword(boolean hasPassword) {
+        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
+        cache.putBoolean(HAS_PASSWORD, hasPassword);
+        cache.applyEditor();
+    }
+
+    public boolean isHasPassword() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(HAS_PASSWORD, true);
     }
 }

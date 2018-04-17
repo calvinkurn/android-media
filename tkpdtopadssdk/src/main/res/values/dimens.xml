@@ -19,6 +19,7 @@
     <dimen name="font_large">18sp</dimen>
     <dimen name="font_normal">14sp</dimen>
     <dimen name="font_small">12sp</dimen>
+    <dimen name="font_very_small">10sp</dimen>
     <dimen name="abc_text_size_small_material">14sp</dimen>
     <dimen name="product_grid_padding">10dp</dimen>
     <dimen name="product_title_min_height">38dp</dimen>
@@ -35,5 +36,11 @@
     <dimen name="topads_rating_height">12dp</dimen>
     <dimen name="review_count_margin_left">4dp</dimen>
     <dimen name="line_spacing_normal">4sp</dimen>
+
+    <dimen name="feed_shop_image">32dp</dimen>
+    <dimen name="feed_badge_size">12dp</dimen>
+    <dimen name="feed_fav_icon">10dp</dimen>
+    <dimen name="feed_fav_padding">7dp</dimen>
+    <dimen name="feed_image_padding">0.5dp</dimen>
 
 </resources>

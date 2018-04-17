@@ -355,6 +355,7 @@ public class TopProfileActivity extends BaseSimpleActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        presenter.getTopProfileData(userId);
         switch (requestCode) {
             case MANAGE_PEOPLE_CODE:
                 if (resultCode == Activity.RESULT_OK) {
@@ -583,4 +584,5 @@ public class TopProfileActivity extends BaseSimpleActivity
         if (topProfileViewModel.isFollowed()) presenter.unfollowKol(userId);
         else presenter.followKol(userId);
     }
+
 }

@@ -3,27 +3,15 @@ package com.tokopedia.payment.fingerprint.view;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.security.keystore.KeyProperties;
 import android.support.annotation.Nullable;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.payment.R;
 
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * Created by zulfikarrahman on 4/5/18.
@@ -34,6 +22,7 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     private static final int MAX_ERROR = 3;
     public static final String USER_ID = "USER_ID";
     public static final String TRANSACTION_ID = "TRANSACTION_ID";
+    public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
 
     private String userId;
     private String transactionId;
@@ -64,10 +53,9 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     }
 
     @Override
-    public void startListening() {
-        super.startListening();
+    public String getTextToEncrypt() {
         date = generateDate();
-        setTextToEncrypt(userId + date);
+        return userId + date;
     }
 
     @Override
@@ -78,7 +66,7 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     private String generateDate() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "EEE, dd MMM yyyy HH:mm:ss ZZZ", Locale.ENGLISH);
+                DATE_FORMAT, Locale.ENGLISH);
         return dateFormat.format(calendar.getTime());
     }
 

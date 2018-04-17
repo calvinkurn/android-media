@@ -31,7 +31,7 @@ def getAPKArchiveFolder(variant) {
 }
 
 def allowSplit() {
-    return gradle.startParameter.taskNames.contains("assembleRelease") &&
+    return gradle.startParameter.taskNames.contains("Release") &&
             (project.hasProperty('tkpdBuildType') && tkpdBuildType == "production");
 }
 
@@ -91,8 +91,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 218001101;
-        defaultVersionName = "2.20";
+        defaultVersionCode = 221001101;
+        defaultVersionName = "2.21";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -114,7 +114,13 @@ android {
             assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
         }
 
-        instrumentTest.setRoot('tests')
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
@@ -135,6 +141,7 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
+            testCoverageEnabled true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles  'proguard-rules.txt'
         }
@@ -200,6 +207,7 @@ android {
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -210,7 +218,7 @@ android {
 
 
     dexOptions {
-        javaMaxHeapSize "8g"
+        javaMaxHeapSize "4g"
         keepRuntimeAnnotatedClasses false
     }
 
@@ -220,6 +228,7 @@ android {
     }
 
     configurations.all {
+        resolutionStrategy.force 'com.android.support:multidex:1.0.3'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
@@ -231,13 +240,6 @@ android {
 
         live {
 
-        }
-    }
-
-    variantFilter { variant ->
-
-        if(variant.buildType.name.equals('release') && variant.getFlavors().get(0).name.equals('staging')) {
-            variant.setIgnore(true);
         }
     }
 }
@@ -261,10 +263,12 @@ dependencies {
     compile project(rootProject.ext.features.tokoCash)
     compile project(rootProject.ext.features.flight)
     compile project(rootProject.ext.features.home)
-    compile project(':tkpdstream')
-    compile project(':tkpdshop')
+    compile project(rootProject.ext.features.groupchat)
+    compile project(rootProject.ext.features.shopPage)
     compile project(rootProject.ext.libraries.reactNative)
-    compile project(rootProject.ext.features.content)
+    compile project(rootProject.ext.features.kol)
+    compile project(rootProject.ext.libraries.pushNotif)
+    compile project(rootProject.ext.libraries.applink)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -287,4 +291,39 @@ dependencies {
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
     }
+
+    //[START] test and androidTest dependencies
+    testCompile rootProject.ext.testDependencies.junit
+    testCompile rootProject.ext.testDependencies.mockitorCore
+    testCompile rootProject.ext.miscDependencies.rxJava
+    androidTestCompile rootProject.ext.miscDependencies.rxJava
+    androidTestCompile rootProject.ext.testDependencies.uiautomator
+    androidTestCompile rootProject.ext.testDependencies.spoon
+    androidTestCompile rootProject.ext.testDependencies.androidAnnotation
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestCompile(rootProject.ext.testDependencies.androidTestRunner) {
+        exclude module: 'support-annotations'
+    }
+    androidTestCompile(rootProject.ext.testDependencies.androidRulesVersion) {
+        exclude module: 'support-annotations'
+    }
+    androidTestCompile(rootProject.ext.testDependencies.espressoIntents) {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    androidTestCompile rootProject.ext.testDependencies.retrofitMock
+    androidTestCompile rootProject.ext.testDependencies.retrofitMockWebser
+    androidTestApt rootProject.ext.miscDependencies.daggerCompiler
+    androidTestCompile rootProject.ext.miscDependencies.dagger
+    androidTestCompile rootProject.ext.miscDependencies.gson
+    androidTestCompile rootProject.ext.miscDependencies.parcelerApi
+    androidTestApt rootProject.ext.miscDependencies.parceler
+    androidTestCompile rootProject.ext.testDependencies.dexMaker
+    androidTestCompile(rootProject.ext.testDependencies.dexMakerMockito) {
+        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+    }
+    // Cloud testing
+    androidTestCompile (name:'cloudtestingscreenshotter_lib', ext:'aar')
+    //[END] test and androidTest dependencies
 }

@@ -70,6 +70,10 @@ public class FingerPrintDialog extends BottomSheets {
         this.textToEncrypt = textToEncrypt;
     }
 
+    public String getTextToEncrypt() {
+        return textToEncrypt;
+    }
+
     public void setCallback(Callback callback) {
         this.callback = callback;
     }
@@ -158,7 +162,7 @@ public class FingerPrintDialog extends BottomSheets {
             PrivateKey privateKey = (PrivateKey) keyStore.getKey(FingerprintConstant.FINGERPRINT, null);
             Signature signature = Signature.getInstance(FingerprintConstant.SHA_1_WITH_RSA);
             signature.initSign(privateKey);
-            signature.update(textToEncrypt.getBytes());
+            signature.update(getTextToEncrypt().getBytes());
             signText = Base64.encodeToString(signature.sign(),
                     Base64.NO_WRAP);
         } catch (SignatureException e) {
@@ -240,8 +244,8 @@ public class FingerPrintDialog extends BottomSheets {
 
     @RequiresApi(Build.VERSION_CODES.M)
     public static PublicKey generatePublicKey(Context context) {
-        FingerprintManagerCompat fingerprintManagerCompat = FingerprintManagerCompat.from(context);
-        if (fingerprintManagerCompat.isHardwareDetected() && fingerprintManagerCompat.hasEnrolledFingerprints()) {
+        FingerprintManager fingerprintManager = context.getSystemService(FingerprintManager.class);
+        if (fingerprintManager.isHardwareDetected() && fingerprintManager.hasEnrolledFingerprints()) {
             PublicKey publicKey = null;
             try {
                 KeyStore keyStore = KeyStore.getInstance(FingerprintConstant.ANDROID_KEY_STORE);
@@ -284,6 +288,17 @@ public class FingerPrintDialog extends BottomSheets {
         }
     }
 
+    @Override
+    public void onPause() {
+        stopListening();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        startListening();
+        super.onResume();
+    }
 
     public interface Callback {
         void onAuthenticationError(int errMsgId, CharSequence errString);

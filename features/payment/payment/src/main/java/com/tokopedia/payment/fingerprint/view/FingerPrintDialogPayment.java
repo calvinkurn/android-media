@@ -27,6 +27,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     public static final String URL_OTP = "URL_OTP";
     public static final String TRANSACTION_ID = "TRANSACTION_ID";
     public static final String PARTNER = "PARTNER";
+    public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
 
     private ListenerPayment listenerPayment;
     private View containerOtp;
@@ -50,10 +51,9 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     }
 
     @Override
-    public void startListening() {
-        super.startListening();
+    public String getTextToEncrypt() {
         date = generateDate();
-        setTextToEncrypt( userId + date);
+        return userId + date;
     }
 
     public void setListenerPayment(ListenerPayment listenerPayment) {
@@ -81,7 +81,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     private String generateDate() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "EEE, dd MMM yyyy HH:mm:ss ZZZ", Locale.ENGLISH);
+                DATE_FORMAT, Locale.ENGLISH);
         return dateFormat.format(calendar.getTime());
     }
 
