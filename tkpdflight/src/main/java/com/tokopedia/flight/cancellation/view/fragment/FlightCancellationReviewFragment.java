@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -55,6 +56,8 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     private AppCompatTextView txtTotalRefund;
     private RecyclerView rvAttachments;
     private FlightCancellationAttachmentAdapter attachmentAdapter;
+    private NestedScrollView reviewContainer;
+    private LinearLayout loadingContainer;
 
     @Inject
     FlightCancellationReviewPresenter presenter;
@@ -76,6 +79,8 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_cancellation_review, container, false);
+        reviewContainer = view.findViewById(R.id.sv_review_container);
+        loadingContainer = view.findViewById(R.id.full_page_loading);
         rvAttachments = view.findViewById(R.id.rv_attachments);
         containerAdditionalData = view.findViewById(R.id.container_additional_data);
         txtReason = view.findViewById(R.id.txt_cancellation_reason);
@@ -154,6 +159,18 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
             }
         });
         dialog.show();
+    }
+
+    @Override
+    public void showLoading() {
+        reviewContainer.setVisibility(View.GONE);
+        loadingContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        reviewContainer.setVisibility(View.VISIBLE);
+        loadingContainer.setVisibility(View.GONE);
     }
 
     @Override

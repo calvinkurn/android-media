@@ -14,6 +14,10 @@ public interface FlightCancellationReviewContract {
 
         void showSuccessDialog(@StringRes int resId);
 
+        void showLoading();
+
+        void hideLoading();
+
         String getInvoiceId();
 
         FlightCancellationWrapperViewModel getCancellationWrapperViewModel();

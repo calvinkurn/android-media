@@ -32,6 +32,7 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
     @SuppressWarnings("ConstantConditions")
     @Override
     public void requestCancellation() {
+        getView().showLoading();
         FlightCancellationWrapperViewModel viewModel = getView().getCancellationWrapperViewModel();
 
         String reason = (viewModel.getCancellationReasonAndAttachment() != null) ?
@@ -59,10 +60,12 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
                     @Override
                     public void onError(Throwable throwable) {
                         throwable.printStackTrace();
+                        getView().hideLoading();
                     }
 
                     @Override
                     public void onNext(CancellationRequestEntity cancellationRequestEntity) {
+                        getView().hideLoading();
                         if (isRefundable()) {
                             getView().showSuccessDialog(R.string.flight_cancellation_review_dialog_refundable_success_description);
                         } else {
