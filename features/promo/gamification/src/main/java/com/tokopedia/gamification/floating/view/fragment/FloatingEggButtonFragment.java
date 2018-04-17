@@ -435,6 +435,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             @Override
             public void onTick(long millisUntilFinished) {
                 long ms = millisUntilFinished / 1000L;
+                ms--;
                 if (ms <= 0) {
                     vgFloatingEgg.setVisibility(View.GONE);
                     loadEggData();

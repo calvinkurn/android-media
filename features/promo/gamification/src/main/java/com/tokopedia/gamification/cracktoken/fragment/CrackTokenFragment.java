@@ -361,10 +361,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private void onTick(long millisUntilFinished) {
         int timeRemainingSeconds = (int) (millisUntilFinished / COUNTDOWN_INTERVAL_SECOND);
+        timeRemainingSeconds--;
         tokenData.getHome().getTokensUser().setTimeRemainingSeconds(timeRemainingSeconds);
         if (timeRemainingSeconds <= 0) {
             stopTimer();
             widgetTokenView.hide();
+            widgetTokenOnBoarding.hideHandOnBoarding(false);
             crackTokenPresenter.getGetTokenTokopoints();
         } else {
             setUIFloatingTimer(timeRemainingSeconds);
