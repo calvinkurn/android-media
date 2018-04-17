@@ -284,6 +284,17 @@ public class FingerPrintDialog extends BottomSheets {
         }
     }
 
+    @Override
+    public void onPause() {
+        stopListening();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        startListening();
+        super.onResume();
+    }
 
     public interface Callback {
         void onAuthenticationError(int errMsgId, CharSequence errString);
