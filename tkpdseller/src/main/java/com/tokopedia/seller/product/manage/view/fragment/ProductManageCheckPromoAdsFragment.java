@@ -6,8 +6,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -23,9 +21,10 @@ import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
 import com.tokopedia.seller.product.manage.di.ProductManageModule;
-import com.tokopedia.seller.product.manage.view.activity.ProductManageCheckPromoAdsActivity;
 import com.tokopedia.seller.product.manage.view.listener.ProductManageCheckPromoAdsView;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManageCheckPromoAdsPresenter;
+import com.tokopedia.topads.common.constant.TopAdsConstant;
+import com.tokopedia.topads.common.data.TopAdsSourceTracking;
 
 import java.util.List;
 
@@ -39,6 +38,8 @@ public class ProductManageCheckPromoAdsFragment extends BasePresenterFragment<Pr
         implements ProductManageCheckPromoAdsView {
 
     @Inject ProductManageCheckPromoAdsPresenter presenter;
+    @Inject
+    TopAdsSourceTracking topAdsSourceTracking;
     String shopId;
     private String itemId;
 
@@ -48,8 +49,8 @@ public class ProductManageCheckPromoAdsFragment extends BasePresenterFragment<Pr
         ProductManageCheckPromoAdsFragment fragment = new ProductManageCheckPromoAdsFragment();
         Bundle bundle = new Bundle();
 
-        bundle.putString(ProductManageCheckPromoAdsActivity.EXTRA_PARAM_SHOP_ID, shopId);
-        bundle.putString(ProductManageCheckPromoAdsActivity.EXTRA_PARAM_ITEM_ID, itemId);
+        bundle.putString(TopAdsConstant.PARAM_EXTRA_SHOP_ID, shopId);
+        bundle.putString(TopAdsConstant.PARAM_EXTRA_ITEM_ID, itemId);
 
         fragment.setArguments(bundle);
         return fragment;
@@ -74,8 +75,8 @@ public class ProductManageCheckPromoAdsFragment extends BasePresenterFragment<Pr
     @Override
     protected void initView(View view) {
         super.initView(view);
-        shopId = getArguments().getString(ProductManageCheckPromoAdsActivity.EXTRA_PARAM_SHOP_ID, "");
-        itemId = getArguments().getString(ProductManageCheckPromoAdsActivity.EXTRA_PARAM_ITEM_ID, "");
+        shopId = getArguments().getString(TopAdsConstant.PARAM_EXTRA_SHOP_ID, "");
+        itemId = getArguments().getString(TopAdsConstant.PARAM_EXTRA_ITEM_ID, "");
         reloadData();
     }
 
@@ -120,6 +121,7 @@ public class ProductManageCheckPromoAdsFragment extends BasePresenterFragment<Pr
     @Override
     public void onDestroy() {
         super.onDestroy();
+        topAdsSourceTracking.deleteSource();
         presenter.detachView();
     }
 
@@ -130,13 +132,16 @@ public class ProductManageCheckPromoAdsFragment extends BasePresenterFragment<Pr
 
     @Override
     public void moveToCreateAds() {
-        openPromoteAds(getActivity(), String.format("%s?user_id=%s&item_id=%s", Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE,
+        openPromoteAds(getActivity(), String.format("%s?user_id=%s&item_id=%s",
+                Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE,
                 SessionHandler.getLoginID(getActivity()), itemId));
     }
 
     @Override
     public void moveToAdsDetail(String adsId) {
-        openPromoteAds(getActivity(), String.format("%s/%s?user_id=%s", Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
+        topAdsSourceTracking.deleteSource();
+        openPromoteAds(getActivity(), String.format("%s/%s?user_id=%s",
+                Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
                 adsId, SessionHandler.getLoginID(getActivity())));
     }
 

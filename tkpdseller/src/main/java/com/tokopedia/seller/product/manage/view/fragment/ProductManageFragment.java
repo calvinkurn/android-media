@@ -75,6 +75,8 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
+import com.tokopedia.topads.common.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.data.TopAdsSourceTracking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +104,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private ProgressDialog progressDialog;
     private CoordinatorLayout coordinatorLayout;
 
+    @Inject
+    TopAdsSourceTracking topAdsSourceTracking;
     private boolean hasNextPage;
     private boolean filtered;
     @SortProductOption
@@ -680,6 +684,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void onPromoTopAdsClicked(ProductManageViewModel productManageViewModel) {
+        if (GlobalConfig.isSellerApp()){
+            topAdsSourceTracking.savingSource(TopAdsSourceOption.SA_MANAGE_SHOP);
+        } else {
+            topAdsSourceTracking.savingSource(TopAdsSourceOption.MA_MANAGE_SHOP);
+        }
         startActivity(ProductManageCheckPromoAdsActivity.createIntent(getActivity(), productManageViewModel.getProductShopId(),
                 productManageViewModel.getItemId()));
     }

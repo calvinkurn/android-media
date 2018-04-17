@@ -22,8 +22,7 @@ dependencies {
     compile project(rootProject.ext.features.core)
     compile project(rootProject.ext.libraries.design)
     compile project(rootProject.ext.features.payment)
-
-    compile project(':tkpdreputation-common')
+    compile project(rootProject.ext.features.topAdsCommon)
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

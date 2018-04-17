@@ -71,6 +71,9 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.topads.common.constant.TopAdsConstant;
+import com.tokopedia.topads.common.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.data.TopAdsSourceTracking;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -111,6 +114,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private ProductDetailView viewListener;
     private RetrofitInteractor retrofitInteractor;
     private CacheInteractor cacheInteractor;
+    private TopAdsSourceTracking topAdsSourceTracking;
     private int counter = 0;
     LocalCacheHandler cacheHandler;
     DateFormat df;
@@ -1025,10 +1029,18 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void onPromoAdsClicked(final Context context, String shopId, final int itemId, final String userId) {
+        if (topAdsSourceTracking == null){
+            topAdsSourceTracking = new TopAdsSourceTracking(context, TopAdsConstant.KEY_SOURCE_PREFERENCE);
+        }
         retrofitInteractor.checkPromoAds(shopId, itemId, userId, new RetrofitInteractor.CheckPromoAdsListener() {
             @Override
             public void onSuccess(String adsId) {
                 if (adsId.equals(IS_UNPROMOTED_PRODUCT)) {
+                    if (GlobalConfig.isSellerApp()){
+                        topAdsSourceTracking.savingSource(TopAdsSourceOption.SA_PDP);
+                    } else {
+                        topAdsSourceTracking.savingSource(TopAdsSourceOption.MA_PDP);
+                    }
                     openPromoteAds(context, String.format("%s?user_id=%s&item_id=%s", Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE, userId, itemId));
                 } else {
                     openPromoteAds(context, String.format("%s/%s?user_id=%s", Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS, adsId, userId));
