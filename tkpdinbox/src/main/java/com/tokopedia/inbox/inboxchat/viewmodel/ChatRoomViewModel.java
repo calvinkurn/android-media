@@ -20,6 +20,7 @@ public class ChatRoomViewModel {
     List<Visitable> chatList;
     boolean hasNext;
     private boolean hasTimeMachine;
+    private int shopId;
 
     public String getNameHeader() {
         return nameHeader;
@@ -91,5 +92,13 @@ public class ChatRoomViewModel {
 
     public void setHasTimeMachine(boolean hasTimeMachine) {
         this.hasTimeMachine = hasTimeMachine;
+    }
+
+    public int getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(int shopId) {
+        this.shopId = shopId;
     }
 }

@@ -16,6 +16,7 @@ public class CrackResult {
     public static final String STATUS_CODE_SERVER_ERROR = "500";
     public static final String STATUS_CODE_TOKEN_HAS_BEEN_CRACKED = "42501";
     private static final String STATUS_CODE_SUCCESS = "200";
+    private static final String STATUS_CODE_TOKEN_USER_INVALID = "42502";
     private static final String STATUS_CODE_TOKEN_EXPIRED = "42503";
     private static final String STATUS_CODE_CAMPAIGN_EXPIRED = "42504";
 
@@ -103,6 +104,10 @@ public class CrackResult {
 
     public boolean isTokenHasBeenCracked() {
         return resultStatus.getCode().equals(STATUS_CODE_TOKEN_HAS_BEEN_CRACKED);
+    }
+
+    public boolean isTokenUserInvalid() {
+        return resultStatus.getCode().equals(STATUS_CODE_TOKEN_USER_INVALID);
     }
 
     public boolean isTryAgainBtn() {

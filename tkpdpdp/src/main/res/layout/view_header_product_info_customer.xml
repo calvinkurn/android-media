@@ -155,7 +155,7 @@
             android:id="@+id/iv_stock_available"
             android:layout_width="@dimen/icon_stock_width"
             android:layout_height="@dimen/icon_stock_height"
-            android:background="@drawable/ic_available_stock" />
+            app:srcCompat="@drawable/ic_available_stock"/>
 
         <TextView
             android:id="@+id/text_stock_available"

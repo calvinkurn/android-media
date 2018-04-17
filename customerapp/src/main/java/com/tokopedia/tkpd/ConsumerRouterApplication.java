@@ -1684,7 +1684,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         if (isSupportedDelegateDeepLink(url)) {
             actionApplinkFromActivity(activity, url);
         } else {
-            actionOpenGeneralWebView(activity, url);
+            activity.startActivity(getWebviewActivity(activity, url));
         }
     }
 
@@ -1768,6 +1768,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ShareData shareData = ShareData.Builder.aShareData()
                 .setId(channelId)
                 .setName(title)
+                .setTextContent(title)
                 .setDescription(contentMessage)
                 .setImgUri(imgUrl)
                 .setUri(shareUrl)
