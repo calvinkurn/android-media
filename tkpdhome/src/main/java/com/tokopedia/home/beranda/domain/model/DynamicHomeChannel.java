@@ -419,6 +419,10 @@ public class DynamicHomeChannel {
         public void setHomeAttribution(String homeAttribution) {
             this.homeAttribution = homeAttribution;
         }
+
+        public String getHomeAttribution() {
+            return homeAttribution;
+        }
     }
 
     public class Hero {

@@ -122,7 +122,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventClickSeeAllDynamicChannel(DynamicLinkHelper.getActionLink(channel.getHeader()));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), "");
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
             }
         });
     }
