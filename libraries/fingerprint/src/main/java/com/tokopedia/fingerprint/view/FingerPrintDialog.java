@@ -240,8 +240,8 @@ public class FingerPrintDialog extends BottomSheets {
 
     @RequiresApi(Build.VERSION_CODES.M)
     public static PublicKey generatePublicKey(Context context) {
-        FingerprintManagerCompat fingerprintManagerCompat = FingerprintManagerCompat.from(context);
-        if (fingerprintManagerCompat.isHardwareDetected() && fingerprintManagerCompat.hasEnrolledFingerprints()) {
+        FingerprintManager fingerprintManager = context.getSystemService(FingerprintManager.class);
+        if (fingerprintManager.isHardwareDetected() && fingerprintManager.hasEnrolledFingerprints()) {
             PublicKey publicKey = null;
             try {
                 KeyStore keyStore = KeyStore.getInstance(FingerprintConstant.ANDROID_KEY_STORE);
