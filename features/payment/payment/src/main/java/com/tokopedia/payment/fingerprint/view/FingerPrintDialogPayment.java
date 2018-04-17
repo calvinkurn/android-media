@@ -51,10 +51,9 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     }
 
     @Override
-    public void startListening() {
-        super.startListening();
+    public String getTextToEncrypt() {
         date = generateDate();
-        setTextToEncrypt( userId + date);
+        return userId + date;
     }
 
     public void setListenerPayment(ListenerPayment listenerPayment) {

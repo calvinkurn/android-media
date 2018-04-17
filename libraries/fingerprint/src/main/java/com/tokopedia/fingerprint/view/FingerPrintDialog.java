@@ -70,6 +70,10 @@ public class FingerPrintDialog extends BottomSheets {
         this.textToEncrypt = textToEncrypt;
     }
 
+    public String getTextToEncrypt() {
+        return textToEncrypt;
+    }
+
     public void setCallback(Callback callback) {
         this.callback = callback;
     }
@@ -158,7 +162,7 @@ public class FingerPrintDialog extends BottomSheets {
             PrivateKey privateKey = (PrivateKey) keyStore.getKey(FingerprintConstant.FINGERPRINT, null);
             Signature signature = Signature.getInstance(FingerprintConstant.SHA_1_WITH_RSA);
             signature.initSign(privateKey);
-            signature.update(textToEncrypt.getBytes());
+            signature.update(getTextToEncrypt().getBytes());
             signText = Base64.encodeToString(signature.sign(),
                     Base64.NO_WRAP);
         } catch (SignatureException e) {

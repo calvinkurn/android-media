@@ -53,10 +53,9 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     }
 
     @Override
-    public void startListening() {
-        super.startListening();
+    public String getTextToEncrypt() {
         date = generateDate();
-        setTextToEncrypt(userId + date);
+        return userId + date;
     }
 
     @Override

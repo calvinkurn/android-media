@@ -362,7 +362,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 fingerPrintDialogRegister.setListenerRegister(TopPayActivity.this);
                 fingerPrintDialogRegister.setContext(TopPayActivity.this);
                 fingerPrintDialogRegister.show(getSupportFragmentManager(), "fingerprintRegister");
-                fingerPrintDialogRegister.startListening();
                 return true;
             }
 
@@ -448,7 +447,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 fingerPrintDialogPayment.setListenerPayment(TopPayActivity.this);
                 fingerPrintDialogPayment.setContext(TopPayActivity.this);
                 fingerPrintDialogPayment.show(getSupportFragmentManager(), "fingerprintPayment");
-                fingerPrintDialogPayment.startListening();
                 view.post(new Runnable() {
                     @Override
                     public void run() {
