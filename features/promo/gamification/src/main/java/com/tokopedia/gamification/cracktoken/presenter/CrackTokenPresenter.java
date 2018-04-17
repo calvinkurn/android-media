@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.cracktoken.presenter;
 
 import android.content.Context;
+import android.util.Pair;
 
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
@@ -35,12 +36,10 @@ import rx.Subscriber;
 public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.View>
         implements CrackTokenContract.Presenter {
 
-    private final int NUMBER_OF_BACKGROUND_IMAGE = 1;
-
-    private final int INDEX_TOKEN_FULL = 0;
-    private final int INDEX_TOKEN_CRACKED = 4;
-    private final int INDEX_TOKEN_RIGHT = 6;
-    private final int INDEX_TOKEN_LEFT = 5;
+    private static final int INDEX_TOKEN_FULL = 0;
+    private static final int INDEX_TOKEN_CRACKED = 4;
+    private static final int INDEX_TOKEN_RIGHT = 6;
+    private static final int INDEX_TOKEN_LEFT = 5;
 
     private GetTokenTokopointsUseCase getTokenTokopointsUseCase;
     private GetCrackResultEggUseCase getCrackResultEggUseCase;
@@ -152,13 +151,6 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         TokenUser tokenUser = tokenData.getHome().getTokensUser();
         TokenBackgroundAsset tokenBackgroundAsset = tokenUser.getBackgroundAsset();
 
-        RequestListener<String, GlideDrawable> backgroundImgRequestListener = new ImageRequestListener(NUMBER_OF_BACKGROUND_IMAGE);
-        ImageHandler.downloadOriginalSizeImageWithSignature(
-                context,
-                tokenBackgroundAsset.getBackgroundImgUrl(),
-                new StringSignature(tokenBackgroundAsset.getVersion()),
-                backgroundImgRequestListener);
-
         TokenAsset tokenAsset = tokenUser.getTokenAsset();
 
         List<String> tokenAssetImageUrls = tokenAsset.getImageUrls();
@@ -167,18 +159,21 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         String imageRightUrl = tokenAssetImageUrls.get(INDEX_TOKEN_RIGHT);
         String imageLeftUrl = tokenAssetImageUrls.get(INDEX_TOKEN_LEFT);
 
-        final List<String> assetUrls = new ArrayList<>();
+        final List<Pair<String, String>> assetUrls = new ArrayList<>();
 
-        assetUrls.add(full);
-        assetUrls.add(cracked);
-        assetUrls.add(imageLeftUrl);
-        assetUrls.add(imageRightUrl);
-        assetUrls.add(tokenAsset.getSmallImgUrl());
+        assetUrls.add(new Pair<>(tokenBackgroundAsset.getBackgroundImgUrl(), tokenBackgroundAsset.getVersion()));
+
+        String tokenAssetVersion = String.valueOf(tokenAsset.getVersion());
+        assetUrls.add(new Pair<>(full, tokenAssetVersion));
+        assetUrls.add(new Pair<>(cracked, tokenAssetVersion));
+        assetUrls.add(new Pair<>(imageLeftUrl, tokenAssetVersion));
+        assetUrls.add(new Pair<>(imageRightUrl, tokenAssetVersion));
+        assetUrls.add(new Pair<>(tokenAsset.getSmallImgUrl(), tokenAssetVersion));
 
         RequestListener<String, GlideDrawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
-        for (String assetUrl : assetUrls) {
+        for (Pair<String, String> assetUrlPair : assetUrls) {
             ImageHandler.downloadOriginalSizeImageWithSignature(
-                    context, assetUrl, new StringSignature(String.valueOf(tokenAsset.getVersion())),
+                    context, assetUrlPair.first, new StringSignature(assetUrlPair.second),
                     tokenAssetRequestListener);
         }
     }
