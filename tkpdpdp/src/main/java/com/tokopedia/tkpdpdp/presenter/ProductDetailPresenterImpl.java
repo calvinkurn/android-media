@@ -276,7 +276,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         TrackingUtils.sendMoEngageOpenProductEvent(successResult);
 
         if (successResult.getShopInfo().getShopIsOfficial() == 1) {
-            ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), AppScreen.SCREEN_OFFICIAL_STORE);
+            ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "official_store");
+        } else if (successResult.getShopInfo().getShopIsGold() == 1) {
+            ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "gold_merchant");
+        } else {
+            ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "reguler");
         }
 
     }
