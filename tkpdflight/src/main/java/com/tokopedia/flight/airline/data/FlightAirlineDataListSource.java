@@ -110,8 +110,8 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
                                 DEFAULT_EMPTY_VALUE,
                                 DEFAULT_EMPTY_VALUE,
                                 DEFAULT_EMPTY_VALUE,
-                                0
-                        );
+                                0,
+                                1);
                     }
                 });
     }
@@ -126,8 +126,8 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
                             DEFAULT_EMPTY_VALUE,
                             DEFAULT_EMPTY_VALUE,
                             DEFAULT_EMPTY_VALUE,
-                            0
-                    );
+                            0,
+                            1);
                 }
                 return flightAirlineDB;
             }
