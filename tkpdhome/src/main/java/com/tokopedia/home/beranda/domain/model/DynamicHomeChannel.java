@@ -32,6 +32,7 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_SPRINT = "sprint_3_image";
         public static final String LAYOUT_6_IMAGE = "6_image";
         public static final String LAYOUT_SPRINT_CAROUSEL = "sprint_carousel";
+        public static final String LAYOUT_DIGITAL_WIDGET = "digital_widget";
 
         @Expose
         @SerializedName("id")
