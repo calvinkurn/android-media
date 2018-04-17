@@ -326,6 +326,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         ShareData shareData = ShareData.Builder.aShareData()
                 .setName(title)
+                .setTextContent(title)
                 .setDescription(contentMessage)
                 .setImgUri(imgUrl)
                 .setUri(shareUrl)
