@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.design.bottomsheet;
+package com.tokopedia.bottomsheetbuilder;
 
 import android.content.Context;
 import android.os.Build;
@@ -28,9 +28,9 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
-import com.tokopedia.design.R;
-import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
-import com.tokopedia.design.bottomsheet.util.BottomSheetBuilderUtils;
+import com.tokopedia.bottomsheetbuilder.R;
+import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.tokopedia.bottomsheetbuilder.util.BottomSheetBuilderUtils;
 
 public class BottomSheetMenuDialog extends BottomSheetDialog implements BottomSheetItemClickListener {
 
@@ -132,7 +132,7 @@ public class BottomSheetMenuDialog extends BottomSheetDialog implements BottomSh
                 CoordinatorLayout.LayoutParams layoutParams
                         = (CoordinatorLayout.LayoutParams) sheet.getLayoutParams();
                 layoutParams.width = getContext().getResources()
-                        .getDimensionPixelSize(R.dimen.dp_500);
+                        .getDimensionPixelSize(R.dimen.bottomsheet_width);
                 sheet.setLayoutParams(layoutParams);
             }
 

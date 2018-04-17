@@ -1,4 +1,4 @@
-package com.tokopedia.design.bottomsheet.custom;
+package com.tokopedia.bottomsheetbuilder.custom;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -10,8 +10,8 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
-import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
-import com.tokopedia.design.bottomsheet.adapter.BottomSheetAdapterBuilder;
+import com.tokopedia.bottomsheetbuilder.BottomSheetBuilder;
+import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetAdapterBuilder;
 
 /**
  * Created by normansyahputa on 7/17/17.

@@ -37,7 +37,7 @@ public class CheckedBottomSheetItemAdapter extends BottomSheetItemAdapter {
         if (mMode == BottomSheetBuilder.MODE_LIST) {
             if (viewType == TYPE_CHECKED_ITEM) {
                 return new CheckedItemViewHolder(LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_checked_bottomsheetbuilder_list_adapter, parent, false));
+                        .inflate(R.layout.bottomsheetbuilder_checked_list_adapter, parent, false));
             }
         }
 

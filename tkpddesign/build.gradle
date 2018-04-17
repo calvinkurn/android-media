@@ -3,8 +3,6 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
 
-    compile project(rootProject.ext.libraries.bottomSheetBuilder)
-
     compile rootProject.ext.supportLibDependencies.design
     compile rootProject.ext.supportLibDependencies.cardViewV7
     compile rootProject.ext.supportLibDependencies.constraintLayout

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.design.bottomsheet;
+package com.tokopedia.bottomsheetbuilder;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -42,9 +42,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.tokopedia.design.R;
-import com.tokopedia.design.bottomsheet.adapter.BottomSheetAdapterBuilder;
-import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
+import com.tokopedia.bottomsheetbuilder.R;
+import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetAdapterBuilder;
+import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 
 
 public class BottomSheetBuilder {
@@ -257,7 +257,7 @@ public class BottomSheetBuilder {
                 mIconTintColor, itemLayoutRes, mItemClickListener);
 
         ViewCompat.setElevation(sheet, mContext.getResources()
-                .getDimensionPixelSize(R.dimen.dp_16));
+                .getDimensionPixelSize(R.dimen.bottomsheet_elevation));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             sheet.findViewById(R.id.fakeShadow).setVisibility(View.GONE);
@@ -272,7 +272,7 @@ public class BottomSheetBuilder {
 
         if (mContext.getResources().getBoolean(R.bool.tablet_landscape)) {
             layoutParams.width = mContext.getResources()
-                    .getDimensionPixelSize(R.dimen.dp_500);
+                    .getDimensionPixelSize(R.dimen.bottomsheet_width);
         }
 
         mCoordinatorLayout.addView(sheet, layoutParams);
@@ -316,7 +316,7 @@ public class BottomSheetBuilder {
         if (mContext.getResources().getBoolean(R.bool.tablet_landscape)) {
             FrameLayout.LayoutParams layoutParams
                     = new FrameLayout.LayoutParams(mContext.getResources()
-                    .getDimensionPixelSize(R.dimen.dp_500),
+                    .getDimensionPixelSize(R.dimen.bottomsheet_width),
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             dialog.setContentView(sheet, layoutParams);
         } else {

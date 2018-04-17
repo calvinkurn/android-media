@@ -1,13 +1,13 @@
-package com.tokopedia.design.bottomsheet.custom;
+package com.tokopedia.bottomsheetbuilder.custom;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.SparseBooleanArray;
 import android.view.MenuItem;
 
-import com.tokopedia.design.bottomsheet.adapter.BottomSheetAdapterBuilder;
-import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
-import com.tokopedia.design.bottomsheet.adapter.BottomSheetMenuItem;
+import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetAdapterBuilder;
+import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetMenuItem;
 
 /**
  * @author normansyahputa on 7/17/17.

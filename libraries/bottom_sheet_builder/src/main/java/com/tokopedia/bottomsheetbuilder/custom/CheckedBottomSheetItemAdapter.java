@@ -1,15 +1,15 @@
-package com.tokopedia.design.bottomsheet.custom;
+package com.tokopedia.bottomsheetbuilder.custom;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tokopedia.design.R;
-import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
-import com.tokopedia.design.bottomsheet.adapter.BottomSheetItem;
-import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemAdapter;
-import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
+import com.tokopedia.bottomsheetbuilder.R;
+import com.tokopedia.bottomsheetbuilder.BottomSheetBuilder;
+import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetItem;
+import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetItemAdapter;
+import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class CheckedBottomSheetItemAdapter extends BottomSheetItemAdapter {
         if (mMode == BottomSheetBuilder.MODE_LIST) {
             if (viewType == TYPE_CHECKED_ITEM) {
                 return new CheckedItemViewHolder(LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_checked_bottomsheetbuilder_list_adapter, parent, false));
+                        .inflate(R.layout.bottomsheetbuilder_checked_list_adapter, parent, false));
             }
         }
 

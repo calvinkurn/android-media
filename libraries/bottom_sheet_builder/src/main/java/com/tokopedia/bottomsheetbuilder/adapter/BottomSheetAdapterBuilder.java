@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.design.bottomsheet.adapter;
+package com.tokopedia.bottomsheetbuilder.adapter;
 
 
 import android.annotation.SuppressLint;
@@ -32,8 +32,8 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.design.R;
-import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
+import com.tokopedia.bottomsheetbuilder.R;
+import com.tokopedia.bottomsheetbuilder.BottomSheetBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,14 +135,14 @@ public class BottomSheetAdapterBuilder {
             recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
             recyclerView.setAdapter(adapter);
         } else {
-            final int columns = mContext.getResources().getInteger(R.integer.int_3);
+            final int columns = mContext.getResources().getInteger(R.integer.bottomsheet_grid_columns);
             GridLayoutManager layoutManager = new GridLayoutManager(mContext, columns);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.post(new Runnable() {
                 @Override
                 public void run() {
                     float margin = mContext.getResources()
-                            .getDimensionPixelSize(R.dimen.dp_24);
+                            .getDimensionPixelSize(R.dimen.bottomsheet_grid_horizontal_margin);
                     adapter.setItemWidth((int) ((recyclerView.getWidth() - 2 * margin) / columns));
                     recyclerView.setAdapter(adapter);
                 }

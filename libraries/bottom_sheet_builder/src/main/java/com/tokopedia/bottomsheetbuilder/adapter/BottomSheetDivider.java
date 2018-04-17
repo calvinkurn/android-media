@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.design.bottomsheet.adapter;
+package com.tokopedia.bottomsheetbuilder.adapter;
 
 
 import android.support.annotation.DrawableRes;
