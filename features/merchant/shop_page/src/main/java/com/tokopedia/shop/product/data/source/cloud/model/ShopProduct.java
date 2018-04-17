@@ -65,6 +65,9 @@ public class ShopProduct {
     @SerializedName("product_name")
     @Expose
     private String productName;
+    @SerializedName("sold_out_status")
+    @Expose
+    private boolean soldOutStatus;
 
     public long getShopLucky() {
         return shopLucky;
@@ -218,4 +221,11 @@ public class ShopProduct {
         this.productName = productName;
     }
 
+    public boolean isSoldOutStatus() {
+        return soldOutStatus;
+    }
+
+    public void setSoldOutStatus(boolean soldOutStatus) {
+        this.soldOutStatus = soldOutStatus;
+    }
 }

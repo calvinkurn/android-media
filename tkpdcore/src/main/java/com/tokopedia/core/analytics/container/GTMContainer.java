@@ -786,7 +786,7 @@ public class GTMContainer implements IGTMContainer {
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf("event", "productView",
-                        "eventCategory", "search result",
+                        "eventCategory", AppEventTracking.Category.IMAGE_SEARCH_RESULT,
                         "eventAction", "impression - product",
                         "eventLabel", "",
                         "ecommerce", DataLayer.mapOf(

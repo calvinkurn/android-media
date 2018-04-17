@@ -127,6 +127,8 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
             isValid = false;
         } else if (RegisterUtil.checkRegexNameLocal(name)) {
             isValid = false;
+        } else if (RegisterUtil.isBelowMinChar(name)) {
+            isValid = false;
         } else if (RegisterUtil.isExceedMaxCharacter(name)) {
             isValid = false;
         }

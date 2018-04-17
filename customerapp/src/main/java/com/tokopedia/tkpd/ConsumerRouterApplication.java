@@ -111,7 +111,9 @@ import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
+import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.home.IHomeRouter;
+import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
@@ -220,9 +222,9 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActi
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.TokoCashPendingCashbackMapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
-import com.tokopedia.tkpdcontent.KolRouter;
-import com.tokopedia.tkpdcontent.feature.profile.view.fragment.KolPostFragment;
-import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.LikeKolPostSubscriber;
+import com.tokopedia.kol.KolRouter;
+import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
+import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
@@ -271,7 +273,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TokoCashRouter, IWalletRouter, LoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
-        DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter {
+        DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter,
+        GamificationRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -864,7 +867,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getDefaultContactUsIntent(Activity activity) {
         Intent intent = new Intent(activity, ContactUsActivity.class);
-        intent.putExtra(InboxRouter.PARAM_URL,
+        intent.putExtra(ContactUsConstant.PARAM_URL,
                 URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, activity));
         return intent;
     }
@@ -872,7 +875,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle) {
         Intent intent = new Intent(activity, ContactUsActivity.class);
-        intent.putExtra(InboxRouter.PARAM_URL,
+        intent.putExtra(ContactUsConstant.PARAM_URL,
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
         intent.putExtra(ContactUsActivity.PARAM_TOOLBAR_TITLE, toolbarTitle);
         return intent;
@@ -881,7 +884,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url) {
         Intent intent = new Intent(activity, ContactUsActivity.class);
-        intent.putExtra(InboxRouter.PARAM_URL,
+        intent.putExtra(ContactUsConstant.PARAM_URL,
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
         return intent;
     }
@@ -1681,7 +1684,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         if (isSupportedDelegateDeepLink(url)) {
             actionApplinkFromActivity(activity, url);
         } else {
-            actionOpenGeneralWebView(activity, url);
+            activity.startActivity(getWebviewActivity(activity, url));
         }
     }
 
@@ -1765,6 +1768,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ShareData shareData = ShareData.Builder.aShareData()
                 .setId(channelId)
                 .setName(title)
+                .setTextContent(title)
                 .setDescription(contentMessage)
                 .setImgUri(imgUrl)
                 .setUri(shareUrl)
