@@ -27,7 +27,7 @@ public class PosReactNativeHostFactory {
                                                   application) {
         if(instance == null) instance = new PosReactNativeHostFactory();
 
-        return instance.createReactNativeHostDev(application);
+        return instance.createReactNativeHost(application);
     }
 
     private PosReactNativeHost createReactNativeHost(final Application application) {

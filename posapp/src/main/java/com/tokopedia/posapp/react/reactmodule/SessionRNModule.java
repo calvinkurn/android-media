@@ -44,12 +44,12 @@ public class SessionRNModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getAddrId(Promise promise) {
+    public void getOutletId(Promise promise) {
         promise.resolve(PosSessionHandler.getOutletId(context));
     }
 
     @ReactMethod
-    public void getAddressName(Promise promise) {
+    public void getOutletName(Promise promise) {
         promise.resolve(PosSessionHandler.getOutletName(context));
     }
 
