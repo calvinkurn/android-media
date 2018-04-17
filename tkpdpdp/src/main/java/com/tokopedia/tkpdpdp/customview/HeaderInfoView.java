@@ -166,11 +166,11 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         if(!TextUtils.isEmpty(data.getProductStockWording())) {
             linearStockAvailable.setVisibility(VISIBLE);
             if (data.getLimitedStock()) {
-                ivStockAvailable.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_available_stock_red));
-                textStockAvailable.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_dark_red));
+                ivStockAvailable.setImageResource(R.drawable.ic_limited_stock);
+                textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.tkpd_dark_red));
             } else {
-                ivStockAvailable.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_available_stock));
-                textStockAvailable.setTextColor(ContextCompat.getColor(getContext(), R.color.black_70));
+                ivStockAvailable.setImageResource(R.drawable.ic_available_stock);
+                textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.black_70));
             }
             textStockAvailable.setText(data.getProductStockWording());
         }
