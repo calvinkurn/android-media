@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -315,6 +314,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                         , Integer.toString(productDetailData.getInfo().getProductId()));
                             } else {
                                 productDetailData.getInfo().setHasVariant(false);
+                                viewListener.trackingEnhanceProductDetail();
                                 getProductStock(context
                                         ,Integer.toString(productDetailData.getInfo().getProductId()));
                             }
@@ -844,6 +844,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                     , Integer.toString(data.getInfo().getProductId()));
                         } else {
                             data.getInfo().setHasVariant(false);
+                            viewListener.trackingEnhanceProductDetail();
                             getProductStock(context
                                     ,Integer.toString(data.getInfo().getProductId()));
                         }
@@ -1086,8 +1087,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 new RetrofitInteractor.ProductVariantListener() {
                     @Override
                     public void onSucccess(final ProductVariant productVariant) {
-                        if (productVariant != null && productVariant.getVariant() != null && productVariant.getVariant().size() > 0) {
+                        if (productVariant!=null && productVariant.getVariant()!=null && productVariant.getVariant().size()>0
+                                && productVariant.getChildren() != null && productVariant.getChildren().size()>0  ) {
                             viewListener.addProductVariant(productVariant);
+                        } else {
+                            viewListener.setVariantFalse();
                         }
                         viewListener.updateButtonBuyListener();
                     }

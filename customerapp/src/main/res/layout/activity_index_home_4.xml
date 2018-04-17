@@ -54,5 +54,10 @@
         </LinearLayout>
 
     </RelativeLayout>
-
+    <com.moengage.widgets.NudgeView
+        android:id="@+id/nudge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+    </com.moengage.widgets.NudgeView>
 </RelativeLayout>

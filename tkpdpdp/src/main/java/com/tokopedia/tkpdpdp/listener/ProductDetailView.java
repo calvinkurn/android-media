@@ -295,6 +295,8 @@ public interface ProductDetailView extends ViewListener {
 
     void addProductVariant(ProductVariant productVariant);
 
+    void setVariantFalse();
+
     void addProductStock(Child productStock);
 
     void actionSuccessAddToWishlist(Integer productId);
@@ -314,4 +316,6 @@ public interface ProductDetailView extends ViewListener {
     boolean isSellerApp();
 
     void updateButtonBuyListener();
+
+    void trackingEnhanceProductDetail();
 }

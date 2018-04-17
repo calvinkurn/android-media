@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.contactus.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.util.TkpdWebViewClient;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity.BackButtonListener;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
+import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 
 import butterknife.BindView;
 
@@ -212,11 +215,9 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                     return true;
                 } else if (url.toString().contains(CHATBOT_SCHEME)
                         && getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(TkpdInboxRouter.IS_CHAT_BOT, true);
-
-                    ((TkpdInboxRouter) getActivity().getApplicationContext())
-                            .actionNavigateByApplinksUrl(getActivity(), url.toString(), bundle);
+                    String messageId = url.getLastPathSegment();
+                    Intent chatBotIntent = ChatRoomActivity.getChatBotIntent(context,messageId);
+                    startActivity(chatBotIntent);
                     return true;
                 } else if (url.toString().contains(APPLINK_SCHEME)
                         && getActivity().getApplicationContext() instanceof TkpdInboxRouter) {

@@ -84,6 +84,9 @@ public class PromoResponse {
     @SerializedName("cta_text")
     @Expose
     private String ctaText;
+    @SerializedName("promo_codes")
+    @Expose
+    private List<PromoCode> promoCodes;
     @SerializedName("acf")
     @Expose
     private Acf acf;
@@ -186,5 +189,13 @@ public class PromoResponse {
 
     public Acf getAcf() {
         return acf;
+    }
+
+    public List<PromoCode> getPromoCodes() {
+        return promoCodes;
+    }
+
+    public void setPromoCodes(List<PromoCode> promoCodes) {
+        this.promoCodes = promoCodes;
     }
 }
