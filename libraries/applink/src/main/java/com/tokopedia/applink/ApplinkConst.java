@@ -74,6 +74,8 @@ public interface ApplinkConst {
     String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
     String BROWSER = "tokopedia://browser";
     String FAVORITE = "tokopedia://home/favorite";
+    String SUB_PROMO = "tokopedia://sale/{slug}/{category_slug}";
+    String SUB_PROMO_WITH_SLASH = "tokopedia://sale/{slug}/{category_slug}/";
     String BRAND_LIST = "tokopedia://official-store/brand";
     String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
 
@@ -86,6 +88,9 @@ public interface ApplinkConst {
     String EXPLORE = "tokopedia://jump/{section}";
 
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
+
+    String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
+    String CONTENT_DETAIL ="tokopedia://content/{post_id}";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
