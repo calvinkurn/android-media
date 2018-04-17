@@ -31,13 +31,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
-import com.tokopedia.gamification.cracktoken.IntegerVersionSignature;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
@@ -398,7 +398,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                     .load(imageUrl)
                     .asBitmap()
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .signature(new IntegerVersionSignature(tokenFloating.getTokenAsset().getVersion()))
+                    .signature(new StringSignature(String.valueOf(tokenFloating.getTokenAsset().getVersion())))
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {

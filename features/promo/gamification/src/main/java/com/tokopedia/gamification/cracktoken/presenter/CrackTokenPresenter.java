@@ -2,14 +2,13 @@ package com.tokopedia.gamification.cracktoken.presenter;
 
 import android.content.Context;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.gamification.cracktoken.IntegerVersionSignature;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.cracktoken.model.CrackResultStatus;
@@ -18,6 +17,7 @@ import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackResult;
 import com.tokopedia.gamification.domain.GetCrackResultEggUseCase;
 import com.tokopedia.gamification.domain.GetTokenTokopointsUseCase;
 import com.tokopedia.gamification.floating.view.model.TokenAsset;
+import com.tokopedia.gamification.floating.view.model.TokenBackgroundAsset;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenUser;
 
@@ -41,8 +41,8 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
     @Inject
     public CrackTokenPresenter(GetTokenTokopointsUseCase getTokenTokopointsUseCase,
-            GetCrackResultEggUseCase getCrackResultEggUseCase,
-            UserSession userSession) {
+                               GetCrackResultEggUseCase getCrackResultEggUseCase,
+                               UserSession userSession) {
         this.getTokenTokopointsUseCase = getTokenTokopointsUseCase;
         this.getCrackResultEggUseCase = getCrackResultEggUseCase;
         this.userSession = userSession;
@@ -143,16 +143,16 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         getView().showLoading();
 
         TokenUser tokenUser = tokenData.getHome().getTokensUser();
-        TokenAsset tokenAsset = tokenUser.getTokenAsset();
+        TokenBackgroundAsset tokenBackgroundAsset = tokenUser.getBackgroundAsset();
 
         RequestListener<String, GlideDrawable> backgroundImgRequestListener = new ImageRequestListener(1);
-        Glide.with(context)
-                .load(tokenUser.getBackgroundAsset().getBackgroundImgUrl())
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .dontAnimate()
-                .signature(new IntegerVersionSignature(Integer.valueOf(tokenUser.getBackgroundAsset().getVersion())))
-                .listener(backgroundImgRequestListener)
-                .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
+        ImageHandler.downloadOriginalSizeImageWithSignature(
+                context,
+                tokenBackgroundAsset.getBackgroundImgUrl(),
+                new StringSignature(tokenBackgroundAsset.getVersion()),
+                backgroundImgRequestListener);
+
+        TokenAsset tokenAsset = tokenUser.getTokenAsset();
 
         List<String> tokenAssetImageUrls = tokenAsset.getImageUrls();
         String full = tokenAssetImageUrls.get(0);
@@ -166,17 +166,13 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         assetUrls.add(cracked);
         assetUrls.add(imageLeftUrl);
         assetUrls.add(imageRightUrl);
-        assetUrls.add(tokenUser.getTokenAsset().getSmallImgUrl());
+        assetUrls.add(tokenAsset.getSmallImgUrl());
 
         RequestListener<String, GlideDrawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
         for (String assetUrl : assetUrls) {
-            Glide.with(context)
-                    .load(assetUrl)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .dontAnimate()
-                    .signature(new IntegerVersionSignature(tokenUser.getTokenAsset().getVersion()))
-                    .listener(tokenAssetRequestListener)
-                    .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
+            ImageHandler.downloadOriginalSizeImageWithSignature(
+                    context, assetUrl, new StringSignature(String.valueOf(tokenAsset.getVersion())),
+                    tokenAssetRequestListener);
         }
     }
 
