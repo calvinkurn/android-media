@@ -50,16 +50,18 @@
             android:gravity="center"
             tools:text="Untuk saat ini Tokopedia kepenuhan pengunjung" />
 
-        <Button
+        <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/button_return"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingEnd="@dimen/dp_16"
+            android:paddingStart="16dp"
+            android:paddingLeft="16dp"
+            android:paddingEnd="16dp"
+            android:paddingRight="16dp"
             tools:text="Kembali ke Beranda"
-            style="@style/Button.Submit.Green" />
+            app:buttonCompatSize="medium"
+            app:buttonCompatType="primary"
+            android:textAllCaps="false" />
 
     </LinearLayout>
 
