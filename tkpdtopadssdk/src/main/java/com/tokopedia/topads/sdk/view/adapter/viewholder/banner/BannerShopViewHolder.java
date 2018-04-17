@@ -16,9 +16,12 @@ import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel;
+
+import java.util.List;
 
 /**
  * Created by errysuprayogi on 4/16/18.
@@ -35,6 +38,8 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     private TextView nameTxt;
     private TextView descriptionTxt;
     private LinearLayout badgeContainer;
+    private ImageView image1, image2;
+    private LinearLayout productContainer;
 
     public BannerShopViewHolder(View itemView) {
         super(itemView);
@@ -44,6 +49,9 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
         nameTxt = (TextView) itemView.findViewById(R.id.shop_name);
         descriptionTxt = (TextView) itemView.findViewById(R.id.description);
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
+        image1 = itemView.findViewById(R.id.image1);
+        image2 = itemView.findViewById(R.id.image2);
+        productContainer = itemView.findViewById(R.id.product_image_container);
     }
 
     @Override
@@ -75,6 +83,18 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                 }
             } else {
                 badgeContainer.setVisibility(View.GONE);
+            }
+            if(cpm.getCpmShop() !=null && cpm.getCpmShop().getProducts().size() > 0){
+                List<Product> productList = cpm.getCpmShop().getProducts();
+                if(productList.get(0) != null) {
+                    Glide.with(context).load(productList.get(0).getImageProduct().getImageUrl()).into(image1);
+                }
+                if(productList.get(1) != null){
+                    image2.setVisibility(View.VISIBLE);
+                    Glide.with(context).load(productList.get(1).getImageProduct().getImageUrl()).into(image2);
+                }
+            } else {
+                productContainer.setVisibility(View.GONE);
             }
         }
     }

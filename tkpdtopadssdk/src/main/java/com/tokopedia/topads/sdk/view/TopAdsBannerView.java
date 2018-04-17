@@ -93,10 +93,12 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         recyclerView.setAdapter(bannerAdsAdapter);
         SnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
-        if(cpm!=null){
+        if (cpm != null && cpm.getCpmShop() != null) {
             ArrayList<Item> items = new ArrayList<>();
             items.add(new BannerShopViewModel(cpm));
-            items.add(new BannerShopProductViewModel(cpm));
+            if (cpm.getCpmShop().getProducts().size() > 1) {
+                items.add(new BannerShopProductViewModel(cpm));
+            }
             bannerAdsAdapter.setList(items);
         }
     }
@@ -121,7 +123,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         if (activityIsFinishing(context))
             return;
         inflate(getContext(), R.layout.layout_ads_banner_digital, this);
-        final ImageView iconImg = (ImageView) findViewById(R.id.icon);
+        final ImageView iconImg = (ImageView) findViewById(R.id.image);
         TextView nameTxt = (TextView) findViewById(R.id.name);
         TextView descriptionTxt = (TextView) findViewById(R.id.description);
         Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
@@ -132,7 +134,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             }
         });
         nameTxt.setText(escapeHTML(cpm.getName()));
-        String desc = String.format("%s %s", escapeHTML(cpm.getDecription()), cpm.getCta());
+        String desc = String.format("%s\n%s", escapeHTML(cpm.getDecription()), cpm.getCta());
         setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
     }
 
@@ -178,8 +180,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
     private boolean isResponseValid(CpmData data) {
         return !data.getCpm().getCta().isEmpty()
-                && !data.getCpm().getPromotedText().isEmpty()
-                && data.getCpm().getBadges().size() > 0;
+                && !data.getCpm().getPromotedText().isEmpty();
     }
 
     @Override

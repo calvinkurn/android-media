@@ -221,13 +221,12 @@ public class ProductListFragment extends SearchSectionFragment
             }
         });
 
+        setHeaderTopAds(true);
         if (productViewModel.getProductList().isEmpty()) {
             setEmptyProduct();
-            setHeaderTopAds(false);
             showBottomBarNavigation(false);
         } else {
             setProductList(initMappingProduct());
-            setHeaderTopAds(true);
             showBottomBarNavigation(true);
         }
 
