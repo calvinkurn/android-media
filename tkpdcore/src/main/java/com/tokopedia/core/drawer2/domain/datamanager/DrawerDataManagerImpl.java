@@ -242,12 +242,18 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     }
 
     private DrawerNotification convertToViewModel(Notifications notificationData) {
+        int unreads = notificationData.getChat() != null ? notificationData.getChat().getUnreads() : 0;
+        int inboxMessage = notificationData.getInbox() != null ? 0 : notificationData.getInbox().getInboxMessage();
+
         DrawerNotification drawerNotification = new DrawerNotification();
-        drawerNotification.setInboxMessage(notificationData.getInbox().getInboxMessage());
+        drawerNotification.setInboxMessage(unreads);
         drawerNotification.setInboxResCenter(notificationData.getResolution());
-        drawerNotification.setInboxReview(notificationData.getInbox().getInboxReputation());
-        drawerNotification.setInboxTalk(notificationData.getInbox().getInboxTalk());
-        drawerNotification.setInboxTicket(notificationData.getInbox().getInboxTicket());
+
+        if(notificationData.getInbox() != null) {
+            drawerNotification.setInboxReview(notificationData.getInbox().getInboxReputation());
+            drawerNotification.setInboxTalk(notificationData.getInbox().getInboxTalk());
+            drawerNotification.setInboxTicket(notificationData.getInbox().getInboxTicket());
+        }
 
         drawerNotification.setPurchaseDeliveryConfirm(notificationData.getPurchase().getPurchaseDeliveryConfirm());
         drawerNotification.setPurchaseOrderStatus(notificationData.getPurchase().getPurchaseOrderStatus());
@@ -260,8 +266,6 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
         drawerNotification.setIncrNotif(notificationData.getIncrNotif());
         drawerNotification.setTotalCart(notificationData.getTotalCart());
 
-        int unreads = notificationData.getChat() != null ? notificationData.getChat().getUnreads() : 0;
-        int inboxMessage = notificationData.getInbox() != null ? 0 : notificationData.getInbox().getInboxMessage();
         drawerNotification.setTotalNotif(notificationData.getTotalNotif() - inboxMessage + unreads);
         return drawerNotification;
     }

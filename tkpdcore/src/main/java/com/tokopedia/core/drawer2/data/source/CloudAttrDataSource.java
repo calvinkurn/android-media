@@ -108,11 +108,14 @@ public class CloudAttrDataSource {
                 //add notifcation data in cache
                 if (data.getNotifications() != null) {
                     Notifications notificationData = data.getNotifications();
+                    int chatUnreads = notificationData.getChat() == null ? 0 : notificationData.getChat().getUnreads();
                     if (notificationData.getInbox() != null) {
                         drawerCache.putInt(DrawerNotification.CACHE_INBOX_TALK, notificationData.getInbox().getInboxTalk());
                         drawerCache.putInt(DrawerNotification.CACHE_INBOX_REVIEW, notificationData.getInbox().getInboxReputation());
                         drawerCache.putInt(DrawerNotification.CACHE_INBOX_TICKET, notificationData.getInbox().getInboxTicket());
                     }
+
+                    drawerCache.putInt(DrawerNotification.CACHE_INBOX_MESSAGE, chatUnreads);
 
                     if (notificationData.getPurchase() != null) {
                         drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_DELIVERY_CONFIRM, notificationData.getPurchase().getPurchaseDeliveryConfirm());
@@ -131,7 +134,8 @@ public class CloudAttrDataSource {
                     drawerCache.putInt(DrawerNotification.CACHE_TOTAL_CART, notificationData.getTotalCart());
                     drawerCache.putInt(DrawerNotification.IS_HAS_CART, notificationData.getTotalCart() > 0 ? 1 : 0);
                     drawerCache.putInt(DrawerNotification.CACHE_TOTAL_NOTIF, notificationData
-                            .getTotalNotif() - (notificationData.getInbox() == null ? 0 : notificationData.getInbox().getInboxMessage()));
+                            .getTotalNotif() - (notificationData.getInbox() == null ? 0 : notificationData.getInbox().getInboxMessage())
+                            + chatUnreads);
                     drawerCache.putInt(DrawerNotification.CACHE_INCR_NOTIF, notificationData.getIncrNotif());
 
                     if (notificationData.getResolutionAs() != null) {
