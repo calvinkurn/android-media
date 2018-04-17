@@ -15,7 +15,6 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.domain.interactor.GetSellerUserAttributesUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.GetUserAttributesUseCase;
-import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.subscriber.TokoCashSubscriber;
@@ -262,7 +261,8 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
         drawerNotification.setTotalCart(notificationData.getTotalCart());
 
         int unreads = notificationData.getChat() != null ? notificationData.getChat().getUnreads() : 0;
-        drawerNotification.setTotalNotif(notificationData.getTotalNotif() - unreads);
+        int inboxMessage = notificationData.getInbox() != null ? 0 : notificationData.getInbox().getInboxMessage();
+        drawerNotification.setTotalNotif(notificationData.getTotalNotif() - inboxMessage + unreads);
         return drawerNotification;
     }
 }
