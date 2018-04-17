@@ -183,7 +183,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         registerPhoneNumberButton.setVisibility(View.GONE);
 
         registerButton.setColor(Color.WHITE);
-        registerButton.setBorderColor(Color.BLACK);
         registerButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
         registerButton.setRoundCorner(10);
         registerButton.setImageResource(R.drawable.ic_email_register);
@@ -345,7 +344,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             if (!item.getId().equals(PHONE_NUMBER)) {
                 LoginTextView loginTextView = new LoginTextView(getActivity()
                         , MethodChecker.getColor(getActivity(), R.color.white));
-                loginTextView.setTextRegister(item.getName());
+                loginTextView.setText(item.getName());
                 loginTextView.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
                 loginTextView.setImage(item.getImage());
                 loginTextView.setRoundCorner(10);

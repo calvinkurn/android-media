@@ -14,6 +14,7 @@
     <dimen name="space_very_large">43dp</dimen>
     <dimen name="image_size">90dp</dimen>
     <dimen name="layout_250">250dp</dimen>
+    <dimen name="layout_50">50dp</dimen>
 
     <dimen name="padding_textview_prof_comp">2dp</dimen>
     <dimen name="dp_5mall_prof_comp">6dp</dimen>
