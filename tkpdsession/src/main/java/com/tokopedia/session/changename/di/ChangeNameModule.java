@@ -5,6 +5,7 @@ import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.session.changename.data.mapper.ChangeNameMapper;
 import com.tokopedia.session.changename.data.source.ChangeNameSource;
 import com.tokopedia.session.changename.domain.usecase.ChangeNameUseCase;
+import com.tokopedia.session.register.registerphonenumber.domain.usecase.LoginRegisterPhoneNumberUseCase;
 
 import javax.inject.Named;
 

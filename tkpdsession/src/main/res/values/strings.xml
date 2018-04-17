@@ -248,6 +248,7 @@
     <string name="phone_number_not_registered_no">Ubah</string>
     <string name="phone_number_not_registered_yes">Ya, Lanjut</string>
     <string name="activation_title">Masukkan Kode Aktivasi</string>
+    <string name="title_add_name">Masukkan \nNama Lengkap Anda</string>
 
     <!--ADD CHANGE EMAIL-->
     <string name="title_add_email">Tambah Email</string>
