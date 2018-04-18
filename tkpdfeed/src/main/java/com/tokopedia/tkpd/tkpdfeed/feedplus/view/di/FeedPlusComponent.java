@@ -5,7 +5,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusDetailFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolCommentFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolFollowingListFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.RecentViewFragment;
 
@@ -24,8 +23,6 @@ public interface FeedPlusComponent {
     void inject(FeedPlusDetailFragment feedPlusDetailFragment);
 
     void inject(RecentViewFragment recentViewFragment);
-
-    void inject(KolCommentFragment kolCommentFragment);
 
     void inject(KolFollowingListFragment kolFollowingListFragment);
 

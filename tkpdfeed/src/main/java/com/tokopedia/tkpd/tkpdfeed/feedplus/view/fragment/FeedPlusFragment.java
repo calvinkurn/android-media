@@ -55,7 +55,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedModuleRouter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolCommentActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.RecentViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.TransparentVideoActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedPlusAdapter;
@@ -70,8 +69,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
@@ -698,10 +695,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     showSnackbar(data.getStringExtra("message"));
                 break;
             case OPEN_KOL_COMMENT:
-                if (resultCode == Activity.RESULT_OK)
-                    onSuccessAddDeleteKolComment(data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
-                            data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0));
-                break;
+                // TODO milhamj
+//                if (resultCode == Activity.RESULT_OK)
+//                    onSuccessAddDeleteKolComment(data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
+//                            data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0));
+//                break;
             default:
                 break;
         }
@@ -962,14 +960,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToKolComment(int page, int rowNumber, KolViewModel model) {
-        startActivityForResult(KolCommentActivity.getCallingIntent(getActivity(),
-                new KolCommentHeaderViewModel(model.getAvatar(), model.getName(), model.getReview
-                        (), model.getTime(), String.valueOf(model.getUserId())),
-                new KolCommentProductViewModel(model.getKolImage(), model.getContentName(),
-                        model.getProductPrice(), model.isWishlisted()),
-                model.getId(),
-                rowNumber
-        ), OPEN_KOL_COMMENT);
+        //TODO milhamj
+//        startActivityForResult(KolCommentActivity.getCallingIntent(getActivity(),
+//                new KolCommentHeaderViewModel(model.getAvatar(), model.getName(), model.getReview
+//                        (), model.getTime(), String.valueOf(model.getUserId())),
+//                new KolCommentProductViewModel(model.getKolImage(), model.getContentName(),
+//                        model.getProductPrice(), model.isWishlisted()),
+//                model.getId(),
+//                rowNumber
+//        ), OPEN_KOL_COMMENT);
     }
 
     @Override
