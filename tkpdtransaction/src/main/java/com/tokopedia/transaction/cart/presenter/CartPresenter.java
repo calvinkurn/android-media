@@ -652,7 +652,7 @@ public class CartPresenter implements ICartPresenter {
 
     @Override
     public void cancelPromo() {
-        cartDataInteractor.cancelVoucherCache(new Subscriber<Boolean>() {
+        cartDataInteractor.cancelVoucherCache(view.getActivity(), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 

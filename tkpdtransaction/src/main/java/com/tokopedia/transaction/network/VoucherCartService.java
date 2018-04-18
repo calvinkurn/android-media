@@ -4,6 +4,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.TkpdOkHttpBuilder;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointAuthInterceptor;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointRetrofitFactory;
@@ -36,6 +37,7 @@ public class VoucherCartService extends AuthService<VoucherCartApi> {
                 .getClientBuilder();
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder);
         tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor());
+        tkpdOkHttpBuilder.addInterceptor(new TkpdAuthInterceptor());
         tkpdOkHttpBuilder.setOkHttpRetryPolicy(getOkHttpRetryPolicy());
         tkpdOkHttpBuilder.addDebugInterceptor();
         OkHttpClient okHttpClient = tkpdOkHttpBuilder.build();
@@ -47,7 +49,7 @@ public class VoucherCartService extends AuthService<VoucherCartApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TransactionUrl.CART_PROMO;
+        return TransactionUrl.BASE_URL + TransactionUrl.CART_PROMO;
     }
 
     @Override

@@ -61,7 +61,7 @@ public interface ICartDataInteractor {
     void checkVoucherCode(TKPDMapParam<String, String> stringStringTKPDMapParam,
                           Subscriber<ResponseTransform<VoucherData>> subscriber);
 
-    void cancelVoucherCache(Subscriber<Boolean> subscriber);
+    void cancelVoucherCache(Context context, Subscriber<Boolean> subscriber);
 
     void unSubscribeObservable();
 
