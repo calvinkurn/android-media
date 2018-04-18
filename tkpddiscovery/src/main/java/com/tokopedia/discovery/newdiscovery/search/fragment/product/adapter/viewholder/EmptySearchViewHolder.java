@@ -28,6 +28,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 import com.tokopedia.topads.sdk.view.TopAdsView;
@@ -48,11 +49,10 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private Button emptyButtonItemButton;
     private final ItemClickListener clickListener;
     private TopAdsBannerView topAdsBannerView;
-
     @LayoutRes
     public static final int LAYOUT = R.layout.list_empty_search_product;
 
-    public EmptySearchViewHolder(View view, final ItemClickListener clickListener, Config topAdsConfig) {
+    public EmptySearchViewHolder(View view, ItemClickListener clickListener, Config topAdsConfig) {
         super(view);
         noResultImage = (ImageView) view.findViewById(R.id.no_result_image);
         emptyTitleTextView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
@@ -65,19 +65,35 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
 
         params = topAdsConfig.getTopAdsParams();
         params.getParam().put(TopAdsParams.KEY_SEARCH_NF, "1");
+    }
 
-        Config config = new Config.Builder()
+    private void loadProductAds() {
+        Config productAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(context))
                 .withMerlinCategory()
                 .topAdsParams(params)
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
-        topAdsView.setConfig(config);
+        topAdsView.setConfig(productAdsConfig);
         topAdsView.setDisplayMode(DisplayMode.FEED);
         topAdsView.setMaxItems(MAX_TOPADS);
         topAdsView.setAdsItemClickListener(this);
+        topAdsView.setAdsListener(new TopAdsListener() {
+            @Override
+            public void onTopAdsLoaded() {
+                loadBannerAds();
+            }
 
+            @Override
+            public void onTopAdsFailToLoad(int errorCode, String message) {
+                loadBannerAds();
+            }
+        });
+        topAdsView.loadTopAds();
+    }
+
+    private void loadBannerAds() {
         Config bannerAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(context))
@@ -146,6 +162,6 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
             });
             emptyButtonItemButton.setVisibility(View.VISIBLE);
         }
-        topAdsView.loadTopAds();
+        loadProductAds();
     }
 }
