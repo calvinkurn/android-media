@@ -90,7 +90,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     private boolean isFirstTime;
     private ImageUploadHandlerChat imageUploadHandler;
     private String cameraFileLoc;
-
+    private int shopIdFromAPI = 0;
     final static String USER = "Pengguna";
     final static String ADMIN = "Administrator";
     final static String OFFICIAL = "Official";
@@ -173,6 +173,10 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     public void createWebSocket() {
         Request request = new Request.Builder().url(magicString)
                 .header("Origin", TkpdBaseURL.WEB_DOMAIN)
+                .header("Accounts-Authorization",
+                        sessionHandler.getTokenType(getView().getContext())
+                                + " " +
+                                sessionHandler.getAuthAccessToken())
                 .build();
         ws = client.newWebSocket(request, listener);
         attempt++;
@@ -486,6 +490,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     public void setResult(ChatRoomViewModel replyData) {
+        shopIdFromAPI = replyData.getShopId();
         getView().setCanLoadMore(false);
         getView().setHeaderModel(replyData.getNameHeader(), replyData.getImageHeader());
         getView().setHeader();
@@ -676,11 +681,17 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         if (senderRole.equals(ROLE_SHOP) && !TextUtils.isEmpty(shopId)) {
             id = String.valueOf(shopId);
             shopNameLocal = shopName;
-        } else if (!TextUtils.isEmpty(sessionHandler.getShopID())
+        }
+        else if(TextUtils.isEmpty(shopId) && this.shopIdFromAPI != 0){
+            id = String.valueOf(this.shopIdFromAPI);
+            shopNameLocal = shopName;
+        }
+        else if (!TextUtils.isEmpty(sessionHandler.getShopID())
                 && !sessionHandler.getShopID().equals("0")) {
             id = sessionHandler.getShopID();
             shopNameLocal = sessionHandler.getShopName();
         }
+
         getView().startAttachProductActivity(id, shopNameLocal, senderRole.equals(ROLE_SHOP));
     }
 

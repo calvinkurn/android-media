@@ -1,10 +1,10 @@
 package com.tokopedia.session.addchangepassword.data.source;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.session.addchangepassword.data.mapper.AddPasswordMapper;
 import com.tokopedia.session.addchangepassword.view.viewmodel.AddPasswordViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 import rx.functions.Action1;

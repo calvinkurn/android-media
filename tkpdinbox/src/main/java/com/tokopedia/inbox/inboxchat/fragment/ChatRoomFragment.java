@@ -41,7 +41,9 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
@@ -60,6 +62,7 @@ import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.inbox.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.inbox.attachproduct.view.activity.AttachProductActivity;
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
+import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
@@ -101,6 +104,7 @@ import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -127,6 +131,10 @@ import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBS
 @RuntimePermissions
 public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
+    private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
+    private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
+    private static final String APPLINK_SCHEME = "tokopedia";
+    private static final String CONTACT_US_URL_BASE_DOMAIN = TkpdBaseURL.BASE_CONTACT_US;
     private static final String ROLE_SHOP = "shop";
     private static final String ENABLE_TOPCHAT = "topchat_template";
     public static final String TAG = "ChatRoomFragment";
@@ -477,8 +485,34 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 TopChatAnalytics.Name.INBOX_CHAT,
                 id
         );
+
+        Uri uri = Uri.parse(url);
         KeyboardHandler.DropKeyboard(getActivity(), getView());
-        startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
+        if(uri != null) {
+            boolean isTargetDomainTokopedia = uri.getHost().endsWith("tokopedia.com");
+            boolean isTargetTkpMeAndNotRedirect = (TextUtils.equals(uri.getHost(),BASE_DOMAIN_SHORTENED) &&
+                    !TextUtils.equals(uri.getEncodedPath(),"/r"));
+            boolean isNeedAuthToken = (isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect);
+            
+            if(uri.getScheme().equals(APPLINK_SCHEME)){
+                ((TkpdInboxRouter) getActivity().getApplicationContext())
+                        .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+            }
+            else if (uri.getPathSegments().contains(CONTACT_US_PATH_SEGMENT)) {
+                Intent intent = ((TkpdInboxRouter) MainApplication
+                        .getAppContext())
+                        .getContactUsIntent(getContext());
+                intent.putExtra(ContactUsConstant.PARAM_URL,
+                        URLGenerator.generateURLContactUs(url, getContext()));
+                startActivity(intent);
+            } else if(isChatBot && isNeedAuthToken) {
+                startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),
+                        URLGenerator.generateURLSessionLoginV4(url,getContext())));
+            }
+            else {
+                startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),url));
+            }
+        }
     }
 
     @Override
@@ -1409,5 +1443,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
         Intent intent = AttachInvoiceActivity.createInstance(getActivity(), userId
                 , Integer.parseInt(msgId));
         startActivityForResult(intent, AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE);
+    }
+
+    @Override
+    public boolean shouldHandleUrlManually(String url) {
+        String urlManualHandlingList[] = {CONTACT_US_URL_BASE_DOMAIN};
+        return (Arrays.asList(urlManualHandlingList).contains(url) || isChatBot);
     }
 }

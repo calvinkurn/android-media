@@ -95,7 +95,7 @@ public class PreviewProductImageDetail extends TActivity {
 
         if (extras != null) {
             fileLocations = extras.getStringArrayList(FILELOC);
-            position = 0;
+            position = extras.getInt(IMG_POSITION,0);
         } else {
             fileLocations = new ArrayList<>();
         }

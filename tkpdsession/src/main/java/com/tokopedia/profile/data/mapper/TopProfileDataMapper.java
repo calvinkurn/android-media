@@ -35,23 +35,22 @@ public class TopProfileDataMapper
         ProfileGraphql profileGraphql = getDataOrError(graphqlResponse);
         TopProfileViewModel model = new TopProfileViewModel();
 
-        setUserData(model, profileGraphql.getProfileData().getData(), profileGraphql.getProfileInfo());
+        setOwnNameandAvatar(model, profileGraphql.getProfileData().getData(), profileGraphql.getProfileInfo());
+        setUserData(model, profileGraphql.getProfileData().getData());
         setUserInfo(model, profileGraphql.getProfileInfo());
         setReputation(model, profileGraphql.getProfileReputation());
         setShopInfo(model, profileGraphql.getProfileShopInfo().getData());
         return model;
     }
 
-    private void setUserData(TopProfileViewModel model, ProfileData.Data data, ProfileInfo info) {
+    private void setUserData(TopProfileViewModel model, ProfileData.Data data) {
         model.setUserId(data.getId());
-        model.setName(info.getFullName());
         model.setTitle(data.getInfo());
         model.setBiodata(data.getBio() != null ? data.getBio().replace("\n", "") : "");
         model.setFollowing(data.getFollowingFmt());
         model.setFollowers(data.getFollowersFmt());
         model.setFollowed(data.isFollowed());
         model.setFavoritedShop(data.getFavoriteFmt());
-        model.setUserPhoto(data.getPhoto());
         model.setKol(data.isIskol());
         model.setIsUser(data.isMe());
     }
@@ -88,6 +87,20 @@ public class TopProfileDataMapper
         model.setShopLastOnline(data.getLastOnline());
         model.setShopAppLink(data.getApplink());
         model.setFavorite(data.getIsFavorite());
+    }
+
+    private void setOwnNameandAvatar(TopProfileViewModel model, ProfileData.Data data, ProfileInfo info){
+        int userIdData = data.getId();
+        int userIdInfo = (TextUtils.isEmpty(info.getUserId()) ?
+                0 : Integer.valueOf(info.getUserId()));
+
+        if (userIdData == userIdInfo){
+            model.setName(info.getFullName());
+            model.setUserPhoto(info.getProfilePicture());
+        } else {
+            model.setName(data.getName());
+            model.setUserPhoto(data.getPhoto());
+        }
     }
 
     private ProfileGraphql getDataOrError(Response<GraphqlResponse<ProfileGraphql>>

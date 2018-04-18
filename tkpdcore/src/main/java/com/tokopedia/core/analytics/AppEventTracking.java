@@ -20,6 +20,7 @@ public interface AppEventTracking {
     String EVENT_ACTION = "eventAction";
     String EVENT_LABEL = "eventLabel";
     String ECOMMERCE = "ecommerce";
+    String PAYMENT_ID = "payment_id";
 
     interface GTMKey {
         String ACCOUNTS_TYPE = "ACCOUNTS_TYPE";
@@ -176,6 +177,9 @@ public interface AppEventTracking {
         String ADD_TO_CART_PDP = "addToCart";
         String EVENT_CHECKOUT = "checkout";
         String CLICK_APP_SHARE_WHEN_REFERRAL_OFF = "clickAppShare";
+
+        String EVENT_DIGITAL_EVENT = "digitalGeneralEvent";
+        String PRODUCT_CLICK = "productClick";
     }
 
     interface Category {
@@ -195,6 +199,7 @@ public interface AppEventTracking {
         String SEARCH = "Search";
         String IMAGE_SEARCH = "image search";
         String SEARCH_RESULT = "Search Result";
+        String IMAGE_SEARCH_RESULT = "image search result";
         String SORT = "Sort";
         String FILTER = "Filter";
         String WISHLIST = "Wishlist";
@@ -302,6 +307,9 @@ public interface AppEventTracking {
         String HOME_BOTTOM_NAV = "bottom nav";
         String ECOMMERCE = "Ecommerce";
         String APPSHARE = "App share";
+
+        String DIGITAL_EVENT = "digital-event";
+
         String SEARCH_SHARE = "search share";
         String GRID_MENU = "grid menu";
         String SEARCH_TAB = "search tab";
@@ -511,6 +519,7 @@ public interface AppEventTracking {
         String FAVORITE_SHOP_CLICK = "click - favoritkan";
         String CLICK_CATALOG = "click - catalog";
         String CLICK_TAB = "click - tab";
+        String CLICK_PRODUCT = "click-product";
     }
 
     interface ImageEditor {
@@ -998,7 +1007,8 @@ public interface AppEventTracking {
         String QUALITY_SCORE = "quality_score";
         String SCREEN_NAME = "screen_name";
         String CHANNEL = "channel";
-
+        String APP_VERSION = "app version";
+        String PLATFORM = "platform";
     }
 
     interface EventMoEngage {
@@ -1034,6 +1044,7 @@ public interface AppEventTracking {
         String SHIPPING_CONFIRMED = "Shipping_Received_Confirmation";
         String REFERRAL_SCREEN_LAUNCHED = "Referral_Screen_Launched";
         String REFERRAL_SHARE_EVENT = "Share_Event";
+        String OPEN_SHOP_SCREEN = "Open_Shop_Screen_Launched";
     }
 
 

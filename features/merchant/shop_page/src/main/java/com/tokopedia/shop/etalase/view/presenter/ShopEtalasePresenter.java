@@ -1,6 +1,7 @@
 package com.tokopedia.shop.etalase.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
 import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
 import com.tokopedia.shop.etalase.domain.interactor.GetShopEtalaseUseCase;
@@ -23,15 +24,19 @@ import rx.Subscriber;
 public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
 
     private final GetShopEtalaseUseCase getShopEtalaseUseCase;
+    private final UserSession userSession;
 
     @Inject
-    public ShopEtalasePresenter(GetShopEtalaseUseCase getShopEtalaseUseCase) {
+    public ShopEtalasePresenter(GetShopEtalaseUseCase getShopEtalaseUseCase, UserSession userSession) {
         this.getShopEtalaseUseCase = getShopEtalaseUseCase;
+        this.userSession = userSession;
     }
 
     public void getShopEtalase(String shopId) {
         ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel();
         shopEtalaseRequestModel.setShopId(shopId);
+        shopEtalaseRequestModel.setUserId(userSession.getUserId());
+        shopEtalaseRequestModel.setDeviceId(userSession.getDeviceId());
         RequestParams params = GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel);
         getShopEtalaseUseCase.execute(params, new Subscriber<PagingListOther<EtalaseModel>>() {
             @Override
