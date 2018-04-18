@@ -40,6 +40,8 @@ public class PushNotification {
                 notifyTalk(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else if (notificationId == Constant.NotificationId.CHAT) {
                 notifyChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            } else if(notificationId == Constant.NotificationId.GROUPCHAT) {
+                notifyGroupChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else {
                 notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             }
@@ -81,6 +83,16 @@ public class PushNotification {
         if (notifSummary != null) {
             notificationManagerCompat.notify(notificationType, notifSummary);
         }
+
+    }
+
+    private static void notifyGroupChat(Context context, ApplinkNotificationModel applinkNotificationModel,
+                                   int notificationType, NotificationManagerCompat notificationManagerCompat) {
+
+        Notification notifChat = new GeneralNotificationFactory(context)
+                .createNotification(applinkNotificationModel, notificationType, notificationType);
+
+        notificationManagerCompat.notify(notificationType, notifChat);
 
     }
 

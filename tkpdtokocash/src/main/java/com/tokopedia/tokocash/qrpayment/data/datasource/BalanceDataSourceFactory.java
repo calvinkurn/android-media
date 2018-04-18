@@ -1,7 +1,10 @@
 package com.tokopedia.tokocash.qrpayment.data.datasource;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.tokocash.network.api.WalletApi;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.tokocash.network.api.WalletBalanceApi;
 
 import javax.inject.Inject;
 
@@ -11,17 +14,19 @@ import javax.inject.Inject;
 
 public class BalanceDataSourceFactory {
 
-    private WalletApi walletApi;
+    private WalletBalanceApi walletApi;
     private CacheManager cacheManager;
+    private Context context;
 
     @Inject
-    public BalanceDataSourceFactory(WalletApi walletApi, CacheManager cacheManager) {
+    public BalanceDataSourceFactory(WalletBalanceApi walletApi, CacheManager cacheManager, Context context) {
         this.walletApi = walletApi;
         this.cacheManager = cacheManager;
+        this.context = context;
     }
 
     public BalanceDataSource createBalanceTokoCashDataSource() {
-        return new CloudBalanceDataSource(walletApi, cacheManager);
+        return new CloudBalanceDataSource(walletApi, cacheManager, context);
     }
 
     public BalanceDataSource createLocalBalanceTokoCashDataSource() {

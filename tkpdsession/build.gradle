@@ -2,14 +2,20 @@ apply plugin: 'com.android.library'
 apply plugin: 'android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'io.hansel.preprocessor.module'
 
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'io.hansel.preprocessor:preprocessor:6.0.1'
     }
 }
 
