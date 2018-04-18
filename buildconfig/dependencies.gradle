@@ -256,7 +256,8 @@ ext {
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
             reactNative     : ":libraries:react_native",
-            useCase         : ":libraries:use_case"
+            useCase         : ":libraries:use_case",
+            williamchart    : ":libraries:williamchart"
     ]
 
 }
