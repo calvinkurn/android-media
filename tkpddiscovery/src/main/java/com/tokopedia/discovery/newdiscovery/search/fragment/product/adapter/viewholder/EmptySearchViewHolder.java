@@ -40,7 +40,6 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
 
     private final int MAX_TOPADS = 4;
     private TopAdsView topAdsView;
-    private Config config;
     private TopAdsParams params = new TopAdsParams();
     private Context context;
     private ImageView noResultImage;
@@ -63,23 +62,30 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         context = itemView.getContext();
         topAdsView = (TopAdsView) itemView.findViewById(R.id.topads);
         topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.banner_ads);
-        config = new Config.Builder()
+
+        params = topAdsConfig.getTopAdsParams();
+        params.getParam().put(TopAdsParams.KEY_SEARCH_NF, "1");
+
+        Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(context))
                 .withMerlinCategory()
+                .topAdsParams(params)
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
-        params.getParam().put(TopAdsParams.KEY_QUERY, topAdsConfig.getTopAdsParams()
-                .getParam().get(TopAdsParams.KEY_QUERY));
-        params.getParam().put(TopAdsParams.KEY_SRC, topAdsConfig.getTopAdsParams()
-                .getParam().get(TopAdsParams.KEY_SRC));
-        params.getParam().put(TopAdsParams.KEY_SEARCH_NF, "1");
-        config.setTopAdsParams(params);
         topAdsView.setConfig(config);
         topAdsView.setDisplayMode(DisplayMode.FEED);
         topAdsView.setMaxItems(MAX_TOPADS);
         topAdsView.setAdsItemClickListener(this);
-        topAdsBannerView.setConfig(config);
+
+        Config bannerAdsConfig = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(context))
+                .withMerlinCategory()
+                .topAdsParams(params)
+                .setEndpoint(Endpoint.CPM)
+                .build();
+        topAdsBannerView.setConfig(bannerAdsConfig);
         topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
             public void onBannerAdsClicked(String appLink) {

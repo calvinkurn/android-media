@@ -15,13 +15,25 @@ import java.util.List;
 public class BannerShopProductViewModel implements Item<BannerAdsTypeFactory> {
 
     private List<Product> productList;
+    private final String appLink;
+    private final String adsClickUrl;
 
-    public BannerShopProductViewModel(CpmData.Cpm cpm) {
+    public BannerShopProductViewModel(CpmData.Cpm cpm, String appLink, String adsClickUrl) {
         if (cpm != null && cpm.getCpmShop() != null) {
             productList = cpm.getCpmShop().getProducts();
         } else {
             productList = new ArrayList<>();
         }
+        this.appLink = appLink;
+        this.adsClickUrl = adsClickUrl;
+    }
+
+    public String getAppLink() {
+        return appLink;
+    }
+
+    public String getAdsClickUrl() {
+        return adsClickUrl;
     }
 
     public List<Product> getProductList() {

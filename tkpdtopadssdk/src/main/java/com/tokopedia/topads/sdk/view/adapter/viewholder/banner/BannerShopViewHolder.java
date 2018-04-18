@@ -43,7 +43,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     private LinearLayout productContainer;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
 
-    public BannerShopViewHolder(View itemView,TopAdsBannerClickListener topAdsBannerClickListener) {
+    public BannerShopViewHolder(View itemView, final TopAdsBannerClickListener topAdsBannerClickListener) {
         super(itemView);
         this.topAdsBannerClickListener = topAdsBannerClickListener;
         context = itemView.getContext();
@@ -58,7 +58,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     }
 
     @Override
-    public void bind(BannerShopViewModel element) {
+    public void bind(final BannerShopViewModel element) {
         final CpmData.Cpm cpm = element.getCpm();
         if(cpm!=null) {
             Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
@@ -89,6 +89,15 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
             }
             if(cpm.getCpmShop() !=null && cpm.getCpmShop().getProducts().size() > 0){
                 final List<Product> productList = cpm.getCpmShop().getProducts();
+                descriptionTxt.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(topAdsBannerClickListener!=null) {
+                            topAdsBannerClickListener.onBannerAdsClicked(element.getAppLink());
+                            new ImpresionTask().execute(element.getAdsClickUrl());
+                        }
+                    }
+                });
                 if(productList.get(0) != null) {
                     final Product product = productList.get(0);
                     Glide.with(context).load(product.getImageProduct().getImageUrl()).into(image1);

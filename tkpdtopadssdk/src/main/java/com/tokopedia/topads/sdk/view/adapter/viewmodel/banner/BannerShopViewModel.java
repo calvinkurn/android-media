@@ -11,13 +11,25 @@ import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsTypeFactory;
 public class BannerShopViewModel implements Item<BannerAdsTypeFactory> {
 
     private final CpmData.Cpm cpm;
+    private final String appLink;
+    private final String adsClickUrl;
 
-    public BannerShopViewModel(CpmData.Cpm cpm) {
+    public BannerShopViewModel(CpmData.Cpm cpm, String appLink, String adsClickUrl) {
         this.cpm = cpm;
+        this.appLink = appLink;
+        this.adsClickUrl = adsClickUrl;
     }
 
     public CpmData.Cpm getCpm() {
         return cpm;
+    }
+
+    public String getAppLink() {
+        return appLink;
+    }
+
+    public String getAdsClickUrl() {
+        return adsClickUrl;
     }
 
     @Override

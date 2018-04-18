@@ -24,6 +24,7 @@ import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     private static final String TAG = BannerShopProductViewHolder.class.getSimpleName();
     private RecyclerView recyclerView;
     private ItemAdapter itemAdapter;
+    public TextView visitShop;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
 
 
@@ -47,14 +49,24 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         super(itemView);
         this.topAdsBannerClickListener = topAdsBannerClickListener;
         recyclerView = itemView.findViewById(R.id.list);
+        visitShop = itemView.findViewById(R.id.visit_btn);
         itemAdapter = new ItemAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(itemAdapter);
     }
 
     @Override
-    public void bind(BannerShopProductViewModel element) {
+    public void bind(final BannerShopProductViewModel element) {
         itemAdapter.setProductList(element.getProductList());
+        visitShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(topAdsBannerClickListener!=null) {
+                    topAdsBannerClickListener.onBannerAdsClicked(element.getAppLink());
+                    new ImpresionTask().execute(element.getAdsClickUrl());
+                }
+            }
+        });
     }
 
     private class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
@@ -84,6 +96,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
                     }
                 }
             });
+
         }
 
         @Override
@@ -94,14 +107,12 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
 
     private class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView visitShop;
         public ImageView imageView;
         private View view;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             view = itemView;
-            visitShop = itemView.findViewById(R.id.visit_btn);
             imageView = itemView.findViewById(R.id.image);
         }
 

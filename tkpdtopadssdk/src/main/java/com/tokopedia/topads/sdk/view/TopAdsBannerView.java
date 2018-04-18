@@ -83,7 +83,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         }
     }
 
-    private void createViewCpmShop(Context context, final CpmData.Cpm cpm) {
+    private void createViewCpmShop(Context context, final CpmData.Cpm cpm, String appLink, String adsClickUrl) {
         if (activityIsFinishing(context))
             return;
         inflate(getContext(), R.layout.layout_ads_banner_shop_pager, this);
@@ -95,7 +95,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         snapHelper.attachToRecyclerView(recyclerView);
         if (cpm != null && cpm.getCpmShop() != null) {
             ArrayList<Item> items = new ArrayList<>();
-            items.add(new BannerShopViewModel(cpm));
+            items.add(new BannerShopViewModel(cpm, appLink, adsClickUrl));
             if (cpm.getCpmShop().getProducts().size() > 1) {
                 items.add(new BannerShopProductViewModel(cpm));
             }
@@ -161,7 +161,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             final CpmData data = cpmModel.getData().get(0);
             if (data != null && data.getCpm() != null) {
                 if (data.getCpm().getCpmShop() != null && isResponseValid(data)) {
-                    createViewCpmShop(getContext(), data.getCpm());
+                    createViewCpmShop(getContext(), data.getCpm(), data.getApplinks(), data.getAdClickUrl());
                 } else if (data.getCpm().getTemplateId() == 4) {
                     createViewCpmDigital(getContext(), data.getCpm());
                 }
