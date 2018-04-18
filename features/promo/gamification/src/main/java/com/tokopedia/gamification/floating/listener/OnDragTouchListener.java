@@ -166,6 +166,7 @@ public class OnDragTouchListener implements View.OnTouchListener {
                     if (mOnDragActionListener != null) {
                         mOnDragActionListener.onDragStart(mView);
                     }
+                    mView.getParent().requestDisallowInterceptTouchEvent(true);
                     return true;
             }
         }
@@ -176,6 +177,7 @@ public class OnDragTouchListener implements View.OnTouchListener {
         if (mOnDragActionListener != null) {
             mOnDragActionListener.onDragEnd(mView);
         }
+        mView.getParent().requestDisallowInterceptTouchEvent(false);
 
         hasMoved = false;
         dX = 0;

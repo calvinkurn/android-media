@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.gamification.GamificationComponentInstance;
@@ -394,31 +395,32 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         if (!TextUtils.isEmpty(imageUrl)) {
             Glide.with(getContext())
-                .load(imageUrl)
-                .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        ivFloatingEgg.setImageBitmap(resource);
+                    .load(imageUrl)
+                    .asBitmap()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .signature(new StringSignature(String.valueOf(tokenFloating.getTokenAsset().getVersion())))
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            ivFloatingEgg.setImageBitmap(resource);
 
-                        if (TextUtils.isEmpty(sumTokenString)) {
-                            tvFloatingCounter.setVisibility(View.GONE);
-                        } else {
-                            tvFloatingCounter.setText(sumTokenString);
-                            tvFloatingCounter.setVisibility(View.VISIBLE);
-                        }
+                            if (TextUtils.isEmpty(sumTokenString)) {
+                                tvFloatingCounter.setVisibility(View.GONE);
+                            } else {
+                                tvFloatingCounter.setText(sumTokenString);
+                                tvFloatingCounter.setVisibility(View.VISIBLE);
+                            }
 
-                        if (isShowTime && timeRemainingSeconds > 0) {
-                            setUIFloatingTimer(timeRemainingSeconds);
-                            startCountdownTimer(timeRemainingSeconds);
-                            tvFloatingTimer.setVisibility(View.VISIBLE);
-                        } else {
-                            stopCountdownTimer();
-                            tvFloatingTimer.setVisibility(View.GONE);
+                            if (isShowTime && timeRemainingSeconds > 0) {
+                                setUIFloatingTimer(timeRemainingSeconds);
+                                startCountdownTimer(timeRemainingSeconds);
+                                tvFloatingTimer.setVisibility(View.VISIBLE);
+                            } else {
+                                stopCountdownTimer();
+                                tvFloatingTimer.setVisibility(View.GONE);
+                            }
                         }
-                    }
-                });
+                    });
         }
     }
 
@@ -435,6 +437,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             @Override
             public void onTick(long millisUntilFinished) {
                 long ms = millisUntilFinished / 1000L;
+                ms--;
                 if (ms <= 0) {
                     vgFloatingEgg.setVisibility(View.GONE);
                     loadEggData();
