@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@android:color/background_light"
-    android:padding="@dimen/padding_medium_prof_comp">
+    android:paddingLeft="@dimen/posapp_padding_xl"
+    android:paddingRight="@dimen/posapp_padding_xl"
+    android:paddingTop="@dimen/posapp_padding_m">
 
     <TextView
         android:id="@id/tv_name"
@@ -17,7 +19,7 @@
         tools:text="Product Name"
         android:textColor="#b3000000"
         android:textAllCaps="true"
-        android:textSize="@dimen/text_size_large"
+        android:textSize="@dimen/text_size_xxlarge"
         tools:ignore="HardcodedText" />
 
     <TextView
@@ -25,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/warm_grey"
-        android:textSize="@dimen/text_size_xxlarge"
+        android:textSize="@dimen/text_size_large"
         tools:text="Rp 0,00,-"
         android:visibility="gone"/>
 
@@ -38,7 +40,7 @@
             android:layout_height="wrap_content"
             tools:text="Rp 0,00,-"
             android:textColor="@color/price_pdp"
-            android:textSize="@dimen/font_large"
+            android:textSize="@dimen/text_size_xxlarge"
             android:layout_centerVertical="true"/>
         <TextView
             android:id="@+id/text_discount"

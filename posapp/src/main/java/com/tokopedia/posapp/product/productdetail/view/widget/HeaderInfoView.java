@@ -108,8 +108,9 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     }
 
     public void renderProductCampaign(Campaign data) {
-        if(data != null && data.getOriginalPriceFmt() != null) {
-            textOriginalPrice.setText(data.getOriginalPriceFmt());
+//        if(data != null && data.getOriginalPriceFmt() != null) {
+//            textOriginalPrice.setText(data.getOriginalPriceFmt());
+        textOriginalPrice.setText("20000");
             textOriginalPrice.setPaintFlags(
                     textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
@@ -123,7 +124,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             textOriginalPrice.setVisibility(VISIBLE);
 
             showCountdownTimer(data);
-        }
+//        }
     }
 
     private void showCountdownTimer(final Campaign data) {
