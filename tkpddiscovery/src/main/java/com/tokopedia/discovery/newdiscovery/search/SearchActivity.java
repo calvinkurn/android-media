@@ -171,7 +171,8 @@ public class SearchActivity extends DiscoveryActivity
 
     private void loadSection(ProductViewModel productViewModel, boolean forceSwipeToShop) {
 
-        List<SearchSectionItem> searchSectionItemList = new ArrayList<>();
+        List<SearchSectionItem> searchSectionItemList = null;
+        productViewModel = null;
 
         if (productViewModel.isHasCatalog()) {
             populateThreeTabItem(searchSectionItemList, productViewModel);
