@@ -38,7 +38,6 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     private String urlOtp;
     private String transactionId;
     private int counterError = 0;
-    private boolean isAttached;
 
     public static FingerPrintDialogPayment createInstance(String userId, String urlOtp, String transactionId){
         FingerPrintDialogPayment fingerPrintDialogPayment = new FingerPrintDialogPayment();
@@ -107,7 +106,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     }
 
     private boolean updateCounterError() {
-        if(isAttached) {
+        if(isResumed()) {
             counterError++;
             updateTitle(getString(R.string.fingerprint_label_failed_scan));
             setVisibilityContainer(true);
@@ -121,18 +120,6 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
         }else{
             return true;
         }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        isAttached = true;
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        isAttached = false;
-        super.onDismiss(dialog);
     }
 
     @Override

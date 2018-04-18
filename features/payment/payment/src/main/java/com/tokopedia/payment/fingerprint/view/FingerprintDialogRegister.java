@@ -29,7 +29,6 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     private int counterError = 0;
 
     private ListenerRegister listenerRegister;
-    private boolean isAttached;
     private String date;
 
     public static FingerprintDialogRegister createInstance(String userId, String transactionId) {
@@ -77,7 +76,7 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     }
 
     private boolean updateCounterError() {
-        if (isAttached) {
+        if (isResumed()) {
             counterError++;
             updateDesc(getString(R.string.fingerprint_label_desc_default));
             updateTitle(getString(R.string.fingerprint_label_try_again));
@@ -92,18 +91,6 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
         } else {
             return true;
         }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        isAttached = true;
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        isAttached = false;
-        super.onDismiss(dialog);
     }
 
     @Override

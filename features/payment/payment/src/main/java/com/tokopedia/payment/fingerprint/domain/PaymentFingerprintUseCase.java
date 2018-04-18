@@ -39,6 +39,7 @@ public class PaymentFingerprintUseCase extends UseCase<ResponsePaymentFingerprin
                     @Override
                     public Observable<ResponsePaymentFingerprint> call(HashMap<String, String> stringStringHashMap) {
                         HashMap<String, Object> params = requestParams.getParameters();
+                        params.remove(TRANSACTION_ID);
                         params.putAll(stringStringHashMap);
                         return fingerprintRepository.paymentWithFingerPrint(params);
                     }
