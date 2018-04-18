@@ -758,6 +758,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public void onSprintSaleComponentClicked(SprintSaleAnnouncementViewModel sprintSaleAnnouncementViewModel) {
         if (TextUtils.isEmpty(sprintSaleAnnouncementViewModel.getRedirectUrl())) {
             sprintSaleAnnouncementViewModel.setRedirectUrl(GroupChatUrl.DEFAULT_SPRINT_SALE_APPLINK);
+            return;
         }
 
         ArrayList<EEPromotion> list = new ArrayList<>();
