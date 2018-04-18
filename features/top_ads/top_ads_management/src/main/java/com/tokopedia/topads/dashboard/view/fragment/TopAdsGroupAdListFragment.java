@@ -8,10 +8,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.common.constant.TopAdsConstant;
-import com.tokopedia.topads.common.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.data.TopAdsSourceTaggingModel;
-import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingLocal;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
@@ -32,8 +28,6 @@ import java.util.Date;
 
 public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupAdListPresenter, Ad> implements TopAdsEmptyAdDataBinder.Callback {
 
-    private TopAdsSourceTaggingLocal topAdsSourceTaggingLocal;
-
     public static Fragment createInstance() {
         TopAdsGroupAdListFragment fragment = new TopAdsGroupAdListFragment();
         return fragment;
@@ -44,7 +38,6 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsGroupAdListPresenterImpl(getActivity(), this);
-        topAdsSourceTaggingLocal = new TopAdsSourceTaggingLocal(getActivity(), TopAdsConstant.KEY_SOURCE_PREFERENCE);
     }
 
     @Override
@@ -94,7 +87,6 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     @Override
     public void onCreateAd() {
         UnifyTracking.eventTopAdsProductNewPromoGroup();
-        topAdsSourceTaggingLocal.savingSource(new TopAdsSourceTaggingModel(TopAdsSourceOption.SA_MANAGE_GROUP, new Date()));
         Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
         startActivityForResult(intent, REQUEST_CODE_AD_ADD);
     }

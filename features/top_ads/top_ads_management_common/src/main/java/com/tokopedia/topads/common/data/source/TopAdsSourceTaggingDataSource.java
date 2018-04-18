@@ -22,32 +22,16 @@ public class TopAdsSourceTaggingDataSource {
     public Observable<Void> save(final RequestParams requestParams){
         final TopAdsSourceTaggingModel data =
                 new TopAdsSourceTaggingModel(requestParams.getString(TopAdsConstant.PARAM_KEY_SOURCE, null),
-                        requestParams.getString(TopAdsConstant.PARAM_KEY_TIMESTAMP, null));
-        return Observable.fromCallable(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                return topAdsSourceTaggingLocal
-                        .savingSource(data);
-            }
-        });
+                        requestParams.getLong(TopAdsConstant.PARAM_KEY_TIMESTAMP, 0));
 
+        return topAdsSourceTaggingLocal.savingSource(data);
     }
 
     public Observable<Void> remove(){
-        return Observable.fromCallable(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                return topAdsSourceTaggingLocal.deleteSource();
-            }
-        });
+        return topAdsSourceTaggingLocal.deleteSource();
     }
 
     public Observable<String> getSource(){
-        return Observable.fromCallable(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                return topAdsSourceTaggingLocal.getSource();
-            }
-        });
+        return topAdsSourceTaggingLocal.getSource();
     }
 }

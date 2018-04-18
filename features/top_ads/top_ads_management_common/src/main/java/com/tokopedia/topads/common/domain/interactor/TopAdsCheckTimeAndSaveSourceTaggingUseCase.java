@@ -11,26 +11,26 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * Created by nakama on 17/04/18.
+ * Created by hadi.putra on 17/04/18.
  */
 
-public class TopAdsCheckAndSaveSourceTaggingUseCase extends UseCase<Void> {
+public class TopAdsCheckTimeAndSaveSourceTaggingUseCase extends UseCase<Void> {
     private TopAdsSourceTaggingRepository topAdsSourceTaggingRepository;
 
     @Inject
-    public TopAdsCheckAndSaveSourceTaggingUseCase(TopAdsSourceTaggingRepository topAdsSourceTaggingRepository) {
+    public TopAdsCheckTimeAndSaveSourceTaggingUseCase(TopAdsSourceTaggingRepository topAdsSourceTaggingRepository) {
         this.topAdsSourceTaggingRepository = topAdsSourceTaggingRepository;
     }
 
     @Override
     public Observable<Void> createObservable(RequestParams requestParams) {
-        return topAdsSourceTaggingRepository.checkAndSaveSource(requestParams);
+        return topAdsSourceTaggingRepository.checkTimeAndSaveSource(requestParams);
     }
 
-    public static RequestParams createRequestParams(@TopAdsSourceOption String source, String timestamp){
+    public static RequestParams createRequestParams(@TopAdsSourceOption String source, long timestamp){
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(TopAdsConstant.PARAM_KEY_SOURCE, source);
-        requestParams.putString(TopAdsConstant.PARAM_KEY_TIMESTAMP, timestamp);
+        requestParams.putLong(TopAdsConstant.PARAM_KEY_TIMESTAMP, timestamp);
 
         return requestParams;
     }

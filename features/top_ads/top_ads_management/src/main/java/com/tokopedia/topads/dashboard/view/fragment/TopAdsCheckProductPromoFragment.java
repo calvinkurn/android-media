@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
@@ -113,8 +114,9 @@ public class TopAdsCheckProductPromoFragment extends BasePresenterFragment<TopAd
     }
 
     @Override
-    public void renderErrorView(String message) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), message, null);
+    public void renderErrorView(Throwable throwable) {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(),
+                ErrorHandler.getErrorMessage(getActivity(), throwable), null);
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.view.listener;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
 /**
- * Created by nakama on 17/04/18.
+ * Created by hadi.putra on 17/04/18.
  */
 
 public interface TopAdsCheckProductPromoView extends CustomerView {
@@ -15,7 +15,7 @@ public interface TopAdsCheckProductPromoView extends CustomerView {
 
     void finishLoadingProgress();
 
-    void renderErrorView(String message);
+    void renderErrorView(Throwable throwable);
 
     void renderRetryRefresh();
 }

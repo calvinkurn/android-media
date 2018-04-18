@@ -3,8 +3,6 @@ package com.tokopedia.topads.common.data;
 import com.tokopedia.topads.common.constant.TopAdsConstant;
 import com.tokopedia.topads.common.constant.TopAdsSourceOption;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -13,21 +11,11 @@ import java.util.Date;
 
 public class TopAdsSourceTaggingModel {
     private @TopAdsSourceOption String source;
-    private Date timestamp;
-    private DateFormat dateFormat = DateFormat.getDateTimeInstance();
+    private long timestamp;
 
-    public TopAdsSourceTaggingModel(String source, Date timestamp) {
+    public TopAdsSourceTaggingModel(String source, long timestamp) {
         this.source = source;
         this.timestamp = timestamp;
-    }
-
-    public TopAdsSourceTaggingModel(String source, String timestamp) {
-        this.source = source;
-        try {
-            this.timestamp = dateFormat.parse(timestamp);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
     }
 
     public TopAdsSourceTaggingModel(String formatedSource) {
@@ -39,8 +27,8 @@ public class TopAdsSourceTaggingModel {
         String[] tmp = formatedSource.split(TopAdsConstant.SEPARATOR);
         source = tmp[0];
         try {
-            timestamp = dateFormat.parse(tmp[1]);
-        } catch (ParseException e) {
+            timestamp = Long.parseLong(tmp[1]);
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
 
@@ -54,16 +42,16 @@ public class TopAdsSourceTaggingModel {
         this.source = source;
     }
 
-    public Date getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
     @Override
     public String toString() {
-        return source+ TopAdsConstant.SEPARATOR+dateFormat.format(timestamp);
+        return source+ TopAdsConstant.SEPARATOR+timestamp;
     }
 }

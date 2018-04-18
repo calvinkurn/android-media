@@ -518,6 +518,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void onDestroyView(@NonNull Context context) {
         retrofitInteractor.unSubscribeObservable();
+        if (topAdsAddSourceTaggingUseCase != null){
+            topAdsAddSourceTaggingUseCase.unsubscribe();
+        }
         cacheHandler = null;
         df = null;
     }
@@ -1042,11 +1045,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             @Override
             public void onSuccess(String adsId) {
                 if (adsId.equals(IS_UNPROMOTED_PRODUCT)) {
-                    /*if (GlobalConfig.isSellerApp()){
-                        topAdsSourceTaggingLocal.savingSource(TopAdsSourceOption.SA_PDP);
-                    } else {
-                        topAdsSourceTaggingLocal.savingSource(TopAdsSourceOption.MA_PDP);
-                    }*/
                     openPromoteAds(context, String.format("%s?user_id=%s&item_id=%s", Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE, userId, itemId));
                 } else {
                     openPromoteAds(context, String.format("%s/%s?user_id=%s", Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS, adsId, userId));
@@ -1096,7 +1094,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void saveSource(String source){
         topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source,
-                DateFormat.getDateTimeInstance().format(new Date())), new Subscriber<Void>() {
+                new Date().getTime()), new Subscriber<Void>() {
             @Override
             public void onCompleted() {
 

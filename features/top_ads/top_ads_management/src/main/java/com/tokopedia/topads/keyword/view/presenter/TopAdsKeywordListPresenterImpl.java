@@ -20,7 +20,6 @@ import com.tokopedia.topads.keyword.view.model.KeywordNegativeParam;
 import com.tokopedia.topads.keyword.view.model.KeywordPositiveParam;
 import com.tokopedia.topads.keyword.view.model.NegativeKeywordAd;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +50,7 @@ public class TopAdsKeywordListPresenterImpl extends
 
     public void saveSourceTagging(@TopAdsSourceOption String source){
         topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase
-                .createRequestParams(source, DateFormat.getDateTimeInstance().format(new Date())), new Subscriber<Void>() {
+                .createRequestParams(source, new Date().getTime()), new Subscriber<Void>() {
             @Override
             public void onCompleted() {
 

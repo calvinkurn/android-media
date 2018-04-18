@@ -9,9 +9,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.common.constant.TopAdsConstant;
-import com.tokopedia.topads.common.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingLocal;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
@@ -32,7 +29,6 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
 
     private long groupId;
     private GroupAd groupAd;
-    private TopAdsSourceTaggingLocal topAdsSourceTaggingLocal;
 
     public static Fragment createInstance(GroupAd groupAd) {
         TopAdsProductAdListFragment fragment = new TopAdsProductAdListFragment();
@@ -55,8 +51,6 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsProductAdListPresenterImpl(getActivity(), this);
-        topAdsSourceTaggingLocal = new TopAdsSourceTaggingLocal(getActivity().getApplicationContext(),
-                TopAdsConstant.KEY_SOURCE_PREFERENCE);
     }
 
     @Override

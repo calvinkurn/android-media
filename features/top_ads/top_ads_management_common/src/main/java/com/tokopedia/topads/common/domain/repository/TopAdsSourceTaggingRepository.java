@@ -16,5 +16,5 @@ public interface TopAdsSourceTaggingRepository {
 
     Observable<Void> deleteSource();
 
-    Observable<Void> checkAndSaveSource(RequestParams requestParams);
+    Observable<Void> checkTimeAndSaveSource(RequestParams requestParams);
 }

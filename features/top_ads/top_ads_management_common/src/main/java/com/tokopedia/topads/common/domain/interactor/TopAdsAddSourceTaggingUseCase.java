@@ -27,10 +27,10 @@ public class TopAdsAddSourceTaggingUseCase extends UseCase<Void>{
         return topAdsSourceTaggingRepository.saveSource(requestParams);
     }
 
-    public static RequestParams createRequestParams(@TopAdsSourceOption String source, String timestamp){
+    public static RequestParams createRequestParams(@TopAdsSourceOption String source, long timestamp){
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(TopAdsConstant.PARAM_KEY_SOURCE, source);
-        requestParams.putString(TopAdsConstant.PARAM_KEY_TIMESTAMP, timestamp);
+        requestParams.putLong(TopAdsConstant.PARAM_KEY_TIMESTAMP, timestamp);
 
         return requestParams;
     }

@@ -148,7 +148,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     public void saveSourceTagging(boolean isSellerApp) {
         String source = isSellerApp ? TopAdsSourceOption.SA_MANAGE_SHOP : TopAdsSourceOption.MA_MANAGE_SHOP;
         topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source,
-                DateFormat.getDateTimeInstance().format(new Date())),
+                new Date().getTime()),
                 new Subscriber<Void>() {
             @Override
             public void onCompleted() {
@@ -268,5 +268,6 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         editPriceProductUseCase.unsubscribe();
         deleteProductUseCase.unsubscribe();
         multipleDeleteProductUseCase.unsubscribe();
+        topAdsAddSourceTaggingUseCase.unsubscribe();
     }
 }

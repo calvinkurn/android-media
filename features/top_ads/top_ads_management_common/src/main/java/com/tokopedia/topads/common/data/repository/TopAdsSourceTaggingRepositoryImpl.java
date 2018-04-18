@@ -11,7 +11,6 @@ import com.tokopedia.usecase.RequestParams;
 import java.util.Date;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -49,14 +48,14 @@ public class TopAdsSourceTaggingRepositoryImpl implements TopAdsSourceTaggingRep
     }
 
     @Override
-    public Observable<Void> checkAndSaveSource(final RequestParams requestParams){
+    public Observable<Void> checkTimeAndSaveSource(final RequestParams requestParams){
         return getSource().switchMap(new Func1<TopAdsSourceTaggingModel, Observable<? extends Void>>() {
             @Override
             public Observable<? extends Void> call(TopAdsSourceTaggingModel topAdsSourceTaggingModel) {
                 if (topAdsSourceTaggingModel == null)
                     return saveSource(requestParams);
 
-                long diff = (new Date().getTime() - topAdsSourceTaggingModel.getTimestamp().getTime())/ TopAdsTimeConstant.MILISECOND;
+                long diff = (new Date().getTime() - topAdsSourceTaggingModel.getTimestamp());
                 if (diff > TopAdsTimeConstant.EXPIRING_TIME_IN_SECOND)
                     return saveSource(requestParams);
 
