@@ -1,10 +1,10 @@
 package com.tokopedia.checkout.view.view.cartlist;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,14 +14,14 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.R2;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CheckedCartItemData;
 import com.tokopedia.checkout.view.adapter.CartRemoveProductAdapter;
+import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartRemoveProductComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartRemoveProductComponent;
 import com.tokopedia.checkout.view.di.module.CartRemoveProductModule;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +37,7 @@ import butterknife.OnClick;
 /**
  * @author Aghny A. Putra on 05/02/18
  */
-public class CartRemoveProductFragment extends BasePresenterFragment
+public class CartRemoveProductFragment extends BaseCheckoutFragment
         implements IRemoveProductListView<List<CartItemData>>,
         CartRemoveProductAdapter.CartRemoveProductActionListener {
 
@@ -106,10 +106,6 @@ public class CartRemoveProductFragment extends BasePresenterFragment
         return false;
     }
 
-    @Override
-    protected void initialPresenter() {
-
-    }
 
     @Override
     protected void initialListener(Activity activity) {

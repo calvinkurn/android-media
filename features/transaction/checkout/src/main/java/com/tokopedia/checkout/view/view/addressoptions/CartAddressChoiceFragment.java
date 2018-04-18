@@ -20,15 +20,15 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.R2;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.manage.people.address.ManageAddressConstant;
-import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.adapter.ShipmentAddressListAdapter;
+import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartAddressChoiceComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartAddressChoiceComponent;
 import com.tokopedia.checkout.view.di.module.CartAddressChoiceModule;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 
 import java.util.List;
 
@@ -44,10 +44,10 @@ import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceA
 
 /**
  * @author Irfan Khoirul on 05/02/18
- *         Aghny A. Putra on 27/02/18
+ * Aghny A. Putra on 27/02/18
  */
 
-public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddressChoicePresenter>
+public class CartAddressChoiceFragment extends BaseCheckoutFragment
         implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener {
 
     @BindView(R2.id.tv_choose_other_address)
@@ -84,12 +84,6 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
                 .cartAddressChoiceModule(new CartAddressChoiceModule(this))
                 .build();
         component.inject(this);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -132,12 +126,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @Override
     protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-
+        return true;
     }
 
     @Override

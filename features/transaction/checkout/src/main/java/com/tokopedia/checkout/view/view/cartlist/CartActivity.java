@@ -1,12 +1,12 @@
 package com.tokopedia.checkout.view.view.cartlist;
 
-import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
+import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 
 import java.util.List;
 
@@ -14,11 +14,16 @@ import java.util.List;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartActivity extends BasePresenterActivity implements CartFragment.ActionListener {
+public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void initInjector() {
+
     }
 
     @Override
@@ -32,14 +37,14 @@ public class CartActivity extends BasePresenterActivity implements CartFragment.
     }
 
     @Override
-    protected void initialPresenter() {
+    protected void initView() {
 
     }
 
     @Override
     public void setTitle(CharSequence title) {
         super.setTitle(title);
-        setupToolbar();
+        updateTitle(title.toString());
     }
 
     @Override
@@ -48,21 +53,6 @@ public class CartActivity extends BasePresenterActivity implements CartFragment.
             getFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
-        }
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_cart_tx_module;
-    }
-
-    @Override
-    protected void initView() {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !(fragment instanceof CartFragment)) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container, CartFragment.newInstance())
-                    .commit();
         }
     }
 
@@ -82,18 +72,18 @@ public class CartActivity extends BasePresenterActivity implements CartFragment.
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
     public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof CartRemoveProductFragment)) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container, CartRemoveProductFragment.newInstance(cartItemData))
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.parent_view, CartRemoveProductFragment.newInstance(cartItemData))
                     .addToBackStack(null)
                     .commit();
         }
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return CartFragment.newInstance();
     }
 }

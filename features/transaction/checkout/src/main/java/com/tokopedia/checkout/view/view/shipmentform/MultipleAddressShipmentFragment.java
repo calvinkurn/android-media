@@ -35,6 +35,7 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.view.adapter.MultipleAddressShipmentAdapter;
+import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.DaggerMultipleAddressShipmentComponent;
 import com.tokopedia.checkout.view.di.component.MultipleAddressShipmentComponent;
 import com.tokopedia.checkout.view.di.module.MultipleAddressShipmentModule;
@@ -42,7 +43,6 @@ import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
@@ -63,7 +63,7 @@ import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTE
  * Created by kris on 1/23/18. Tokopedia
  */
 
-public class MultipleAddressShipmentFragment extends BasePresenterFragment implements
+public class MultipleAddressShipmentFragment extends BaseCheckoutFragment implements
         IMultipleAddressShipmentView, MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener {
     public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
@@ -129,11 +129,6 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     }
 
     @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
     protected void initialListener(Activity activity) {
 
     }
@@ -152,7 +147,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
 
     @Override
     protected void initView(View view) {
-        progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         totalPayment = view.findViewById(R.id.total_payment_text_view);
         promoMessage = view.findViewById(R.id.tv_promo_message);
         totalPaymentLayout = view.findViewById(R.id.total_payment_layout);

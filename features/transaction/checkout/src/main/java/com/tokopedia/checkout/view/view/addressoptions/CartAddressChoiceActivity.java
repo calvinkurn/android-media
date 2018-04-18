@@ -1,25 +1,25 @@
 package com.tokopedia.checkout.view.view.addressoptions;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
+import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE;
 
 /**
  * @author Irfan Khoirul on 05/02/18
- *         Aghny A. Putra on 07/02/18
+ * Aghny A. Putra on 07/02/18
  */
 
-public class CartAddressChoiceActivity extends BasePresenterActivity
+public class CartAddressChoiceActivity extends BaseCheckoutActivity
         implements ICartAddressChoiceActivityListener {
 
     public static final int REQUEST_CODE = 981;
@@ -46,6 +46,11 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
     }
 
     @Override
+    protected void initInjector() {
+
+    }
+
+    @Override
     protected void setupURIPass(Uri data) {
 
     }
@@ -56,40 +61,14 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
     }
 
     @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
     public void setTitle(CharSequence title) {
         super.setTitle(title);
-        setupToolbar();
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
+        updateTitle(title.toString());
     }
 
     @Override
     protected void initView() {
         switch (typeRequest) {
-            case TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST:
-                Fragment fragment = CartAddressChoiceFragment.newInstance();
-                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                getFragmentManager().beginTransaction()
-                        .add(R.id.container, fragment, fragment.getClass().getSimpleName())
-                        .commit();
-                break;
-
-            case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
-                fragment = ShipmentAddressListFragment.newInstance();
-                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                getFragmentManager().beginTransaction()
-                        .add(R.id.container, fragment, fragment.getClass().getSimpleName())
-                        .commit();
-                break;
-
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
                 startActivityForResult(AddAddressActivity.createInstance(this),
                         REQUEST_CODE_PARAM_CREATE);
@@ -115,11 +94,6 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_PARAM_CREATE) {
@@ -138,9 +112,9 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
                 Fragment fragment = CartAddressChoiceFragment.newInstance();
                 fragment.setArguments(bundle);
 
-                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                getFragmentManager().beginTransaction()
-                        .add(R.id.container, fragment, fragment.getClass().getSimpleName())
+                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                         .commit();
                 break;
 
@@ -161,4 +135,14 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
         finish();
     }
 
+    @Override
+    protected android.support.v4.app.Fragment getNewFragment() {
+        switch (typeRequest) {
+            default:
+                return CartAddressChoiceFragment.newInstance();
+            case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
+                return ShipmentAddressListFragment.newInstance();
+
+        }
+    }
 }

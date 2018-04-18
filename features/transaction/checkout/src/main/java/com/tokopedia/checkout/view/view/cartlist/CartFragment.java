@@ -2,12 +2,12 @@ package com.tokopedia.checkout.view.view.cartlist;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentTransaction;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,7 +24,25 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.R2;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.checkout.view.adapter.CartListAdapter;
+import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
+import com.tokopedia.checkout.view.di.component.CartListComponent;
+import com.tokopedia.checkout.view.di.component.DaggerCartListComponent;
+import com.tokopedia.checkout.view.di.module.CartListModule;
+import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
+import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
+import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
+import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
+import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -45,25 +63,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsView;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.common.router.ICartCheckoutModuleRouter;
-import com.tokopedia.checkout.view.adapter.CartListAdapter;
-import com.tokopedia.checkout.view.di.component.CartListComponent;
-import com.tokopedia.checkout.view.di.component.DaggerCartListComponent;
-import com.tokopedia.checkout.view.di.module.CartListModule;
-import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
-import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
-import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
-import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
-import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
-import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartFragment extends BasePresenterFragment implements CartListAdapter.ActionListener,
+public class CartFragment extends BaseCheckoutFragment implements CartListAdapter.ActionListener,
         ICartListView, TopAdsItemClickListener, RefreshHandler.OnRefreshHandlerListener {
 
     @BindView(R2.id.rv_cart)
@@ -117,7 +117,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
         try {
             mDataPasserListener = (ActionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() +
+            throw new ClassCastException(getActivity().toString() +
                     " must implement OnPassingCartDataListener");
         }
     }
@@ -177,11 +177,6 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
     protected void initialListener(Activity activity) {
 
     }
@@ -198,7 +193,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     protected void initView(View view) {
-        progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         refreshHandler = new RefreshHandler(getActivity(), view, this);
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         cartRecyclerView.setAdapter(cartListAdapter);
@@ -614,7 +609,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
         try {
             rootview.findViewById(com.tokopedia.core.R.id.main_retry).setVisibility(View.VISIBLE);
         } catch (NullPointerException e) {
-            View emptyState = LayoutInflater.from(context).
+            View emptyState = LayoutInflater.from(getActivity()).
                     inflate(R.layout.layout_empty_shopping_cart_new, (ViewGroup) rootview);
             TextView shop = emptyState.findViewById(R.id.btn_shopping_now);
             shop.setOnClickListener(new View.OnClickListener() {
@@ -867,7 +862,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     private void onResultFromRequestCodeAddressChoiceActivity(int resultCode) {
         if (resultCode == CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS) {
-             dPresenter.processToShipmentForm();
+            dPresenter.processToShipmentForm();
         }
     }
 

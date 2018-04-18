@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.view.shipmentform;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.IntentService;
 import android.content.Context;
@@ -14,7 +13,15 @@ import android.support.annotation.Nullable;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
+import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
+import com.tokopedia.checkout.view.di.component.CartShipmentComponent;
+import com.tokopedia.checkout.view.di.component.DaggerCartShipmentComponent;
+import com.tokopedia.checkout.view.di.module.CartShipmentModule;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -22,15 +29,6 @@ import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartS
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
-import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
-import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.checkout.view.di.component.CartShipmentComponent;
-import com.tokopedia.checkout.view.di.component.DaggerCartShipmentComponent;
-import com.tokopedia.checkout.view.di.module.CartShipmentModule;
-import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFragment;
 
 import javax.inject.Inject;
 
@@ -41,7 +39,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 25/01/18.
  */
 
-public class CartShipmentActivity extends BasePresenterActivity implements ICartShipmentActivity {
+public class CartShipmentActivity extends BaseCheckoutActivity implements ICartShipmentActivity {
     public static final int REQUEST_CODE = 983;
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 1;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2;
@@ -107,7 +105,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     }
 
 
-    private void initInjector() {
+    protected void initInjector() {
         CartShipmentComponent component = DaggerCartShipmentComponent.builder()
                 .cartShipmentModule(new CartShipmentModule(this))
                 .build();
@@ -115,39 +113,29 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     }
 
     @Override
-    protected void initialPresenter() {
-        initInjector();
-    }
-
-    @Override
     public void setTitle(CharSequence title) {
         super.setTitle(title);
-        setupToolbar();
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_shipment_cart_tx_module;
+        updateTitle(title.toString());
     }
 
     @Override
     protected void initView() {
         progressDialogNormal = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !((fragment instanceof MultipleAddressFragment)
-                || (fragment instanceof SingleAddressShipmentFragment))) {
-            if (typeAddressShipment == TYPE_ADDRESS_SHIPMENT_SINGLE) {
-                getFragmentManager().beginTransaction().replace(R.id.container,
-                        SingleAddressShipmentFragment.newInstance(
-                                cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
-                        )).commit();
-            } else {
-                getFragmentManager().beginTransaction().replace(R.id.container,
-                        MultipleAddressShipmentFragment.newInstance(
-                                cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
-                        )).commit();
-            }
-        }
+//        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
+//        if (fragment == null || !((fragment instanceof MultipleAddressFragment)
+//                || (fragment instanceof SingleAddressShipmentFragment))) {
+//            if (typeAddressShipment == TYPE_ADDRESS_SHIPMENT_SINGLE) {
+//                getFragmentManager().beginTransaction().replace(R.id.parent_view,
+//                        SingleAddressShipmentFragment.newInstance(
+//                                cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
+//                        )).commit();
+//            } else {
+//                getFragmentManager().beginTransaction().replace(R.id.parent_view,
+//                        MultipleAddressShipmentFragment.newInstance(
+//                                cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
+//                        )).commit();
+//            }
+//        }
     }
 
     @Override
@@ -163,11 +151,6 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     @Override
     protected void setActionVar() {
 
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
     }
 
     @Override
@@ -251,10 +234,10 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
                     @Override
                     public void onResetCartShipmentForm() {
-                        if (getFragmentManager().findFragmentById(R.id.container)
+                        if (getSupportFragmentManager().findFragmentById(R.id.parent_view)
                                 instanceof SingleAddressShipmentFragment)
                             setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
-                        else if (getFragmentManager().findFragmentById(R.id.container)
+                        else if (getSupportFragmentManager().findFragmentById(R.id.parent_view)
                                 instanceof MultipleAddressShipmentFragment)
                             setResult(RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT);
                         finish();
@@ -365,6 +348,20 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
                     cartShipmentPresenter.processVerifyPayment(checkoutData.getTransactionId());
                     break;
             }
+        }
+    }
+
+    @Override
+    protected android.support.v4.app.Fragment getNewFragment() {
+        if (typeAddressShipment == TYPE_ADDRESS_SHIPMENT_SINGLE) {
+            return
+                    SingleAddressShipmentFragment.newInstance(
+                            cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData);
+        } else {
+            return
+                    MultipleAddressShipmentFragment.newInstance(
+                            cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
+                    );
         }
     }
 }

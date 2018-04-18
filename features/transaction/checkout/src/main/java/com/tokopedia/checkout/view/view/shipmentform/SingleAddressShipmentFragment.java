@@ -44,6 +44,7 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.mapper.CartShipmentAddressFormDataConverter;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter;
+import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.DaggerSingleAddressShipmentComponent;
 import com.tokopedia.checkout.view.di.component.SingleAddressShipmentComponent;
 import com.tokopedia.checkout.view.di.module.SingleAddressShipmentModule;
@@ -74,7 +75,7 @@ import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTE
  * @author Aghny A. Putra on 24/1/18
  */
 
-public class SingleAddressShipmentFragment extends BasePresenterFragment
+public class SingleAddressShipmentFragment extends BaseCheckoutFragment
         implements ICartSingleAddressView, SingleAddressShipmentAdapter.ActionListener {
 
     private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
@@ -163,11 +164,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
 
     @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
     protected void initialListener(Activity activity) {
         cartShipmentActivityListener = (ICartShipmentActivity) activity;
     }
@@ -191,7 +187,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     protected void initView(View view) {
-        progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         mRvCartOrderDetails = view.findViewById(R.id.rv_cart_order_details);
         mTvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
         mLlTotalPaymentLayout = view.findViewById(R.id.ll_total_payment_layout);

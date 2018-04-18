@@ -21,10 +21,10 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.adapter.ShipmentAddressListAdapter;
+import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.component.ShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.design.text.SearchInputView;
@@ -39,7 +39,7 @@ import javax.inject.Inject;
  * @author Aghny A. Putra on 25/01/18
  */
 
-public class ShipmentAddressListFragment extends BasePresenterFragment implements
+public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         ISearchAddressListView<List<RecipientAddressModel>>,
         SearchInputView.Listener,
         SearchInputView.ResetListener,
@@ -123,14 +123,6 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
     @Override
     protected boolean getOptionsMenuEnable() {
         return false;
-    }
-
-    /**
-     * instantiate presenter disini. sesuai dengan Type param di class
-     */
-    @Override
-    protected void initialPresenter() {
-
     }
 
     /**
