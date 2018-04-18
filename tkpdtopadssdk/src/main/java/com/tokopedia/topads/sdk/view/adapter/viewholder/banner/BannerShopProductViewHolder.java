@@ -60,7 +60,6 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
 
         public void setProductList(List<Product> productList) {
             this.productList = productList;
-            this.productList.remove(0); //remove index 0 because already show on first page
             notifyDataSetChanged();
         }
 
