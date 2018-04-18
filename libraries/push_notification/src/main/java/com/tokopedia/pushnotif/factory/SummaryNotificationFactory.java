@@ -2,6 +2,7 @@ package com.tokopedia.pushnotif.factory;
 
 import android.app.Notification;
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.tokopedia.applink.ApplinkConst;
@@ -45,8 +46,10 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         builder.setContentText(summaryNotificationModel.getHistoryString().get(0));
         builder.setLargeIcon(getBitmapLargeIcon());
         builder.setStyle(inboxStyle);
-        builder.setGroupSummary(true);
-        builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            builder.setGroupSummary(true);
+            builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
+        }
         builder.setContentIntent(createPendingIntent(getGenericApplinks(notificationType), notificationType, notificationId));
         builder.setDeleteIntent(createDismissPendingIntent(notificationType));
 
