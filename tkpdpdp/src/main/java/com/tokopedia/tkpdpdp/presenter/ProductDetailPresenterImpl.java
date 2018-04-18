@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -31,7 +30,6 @@ import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
-import com.tokopedia.core.network.entity.variant.ProductVariantResponse;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -73,7 +71,11 @@ import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.topads.common.constant.TopAdsConstant;
 import com.tokopedia.topads.common.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.data.TopAdsSourceTracking;
+import com.tokopedia.topads.common.data.repository.TopAdsSourceTaggingRepositoryImpl;
+import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingDataSource;
+import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingLocal;
+import com.tokopedia.topads.common.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.common.domain.repository.TopAdsSourceTaggingRepository;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -84,6 +86,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import rx.Subscriber;
 
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GOLD_MERCHANT;
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GUEST;
@@ -114,10 +118,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private ProductDetailView viewListener;
     private RetrofitInteractor retrofitInteractor;
     private CacheInteractor cacheInteractor;
-    private TopAdsSourceTracking topAdsSourceTracking;
+    private TopAdsSourceTaggingLocal topAdsSourceTaggingLocal;
     private int counter = 0;
     LocalCacheHandler cacheHandler;
     DateFormat df;
+
+    private TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
     public ProductDetailPresenterImpl(ProductDetailView viewListener) {
         this.viewListener = viewListener;
@@ -512,6 +518,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void onDestroyView(@NonNull Context context) {
         retrofitInteractor.unSubscribeObservable();
+        if (topAdsAddSourceTaggingUseCase != null){
+            topAdsAddSourceTaggingUseCase.unsubscribe();
+        }
         cacheHandler = null;
         df = null;
     }
@@ -1029,18 +1038,13 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void onPromoAdsClicked(final Context context, String shopId, final int itemId, final String userId) {
-        if (topAdsSourceTracking == null){
-            topAdsSourceTracking = new TopAdsSourceTracking(context, TopAdsConstant.KEY_SOURCE_PREFERENCE);
+        if (topAdsSourceTaggingLocal == null){
+            topAdsSourceTaggingLocal = new TopAdsSourceTaggingLocal(context, TopAdsConstant.KEY_SOURCE_PREFERENCE);
         }
         retrofitInteractor.checkPromoAds(shopId, itemId, userId, new RetrofitInteractor.CheckPromoAdsListener() {
             @Override
             public void onSuccess(String adsId) {
                 if (adsId.equals(IS_UNPROMOTED_PRODUCT)) {
-                    if (GlobalConfig.isSellerApp()){
-                        topAdsSourceTracking.savingSource(TopAdsSourceOption.SA_PDP);
-                    } else {
-                        topAdsSourceTracking.savingSource(TopAdsSourceOption.MA_PDP);
-                    }
                     openPromoteAds(context, String.format("%s?user_id=%s&item_id=%s", Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE, userId, itemId));
                 } else {
                     openPromoteAds(context, String.format("%s/%s?user_id=%s", Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS, adsId, userId));
@@ -1059,7 +1063,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         retrofitInteractor.updateRecentView(context, Integer.toString(productId));
     }
 
-    private void openPromoteAds(Context context, String url) {
+    @Override
+    public void openPromoteAds(Context context, String url) {
         Intent topadsIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
         if (topadsIntent != null) {
@@ -1076,6 +1081,35 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             ((TkpdCoreRouter) context.getApplicationContext()).goToCreateMerchantRedirect(context);
             UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
         }
+    }
+
+    @Override
+    public void initTopAdsSourceTaggingUseCase(Context context) {
+        TopAdsSourceTaggingLocal topAdsSourceTaggingLocal = new TopAdsSourceTaggingLocal(context, TopAdsConstant.KEY_SOURCE_PREFERENCE);
+        TopAdsSourceTaggingDataSource topAdsSourceTaggingDataSource = new TopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal);
+        TopAdsSourceTaggingRepository topAdsSourceTaggingRepository = new TopAdsSourceTaggingRepositoryImpl(topAdsSourceTaggingDataSource);
+        topAdsAddSourceTaggingUseCase = new TopAdsAddSourceTaggingUseCase(topAdsSourceTaggingRepository);
+    }
+
+    @Override
+    public void saveSource(String source){
+        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source,
+                new Date().getTime()), new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+
+            }
+        });
     }
 
     public void getProductVariant(@NonNull Context context, @NonNull String id) {

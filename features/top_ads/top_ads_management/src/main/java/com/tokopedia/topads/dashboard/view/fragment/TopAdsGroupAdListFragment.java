@@ -8,9 +8,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.common.constant.TopAdsConstant;
-import com.tokopedia.topads.common.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.data.TopAdsSourceTracking;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
@@ -23,13 +20,13 @@ import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupAdListPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupAdListPresenterImpl;
 
+import java.util.Date;
+
 /**
  * Created by zulfikarrahman on 12/22/16.
  */
 
 public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupAdListPresenter, Ad> implements TopAdsEmptyAdDataBinder.Callback {
-
-    private TopAdsSourceTracking topAdsSourceTracking;
 
     public static Fragment createInstance() {
         TopAdsGroupAdListFragment fragment = new TopAdsGroupAdListFragment();
@@ -41,7 +38,6 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsGroupAdListPresenterImpl(getActivity(), this);
-        topAdsSourceTracking = new TopAdsSourceTracking(getActivity(), TopAdsConstant.KEY_SOURCE_PREFERENCE);
     }
 
     @Override
@@ -91,7 +87,6 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     @Override
     public void onCreateAd() {
         UnifyTracking.eventTopAdsProductNewPromoGroup();
-        topAdsSourceTracking.savingSource(TopAdsSourceOption.SA_MANAGE_GROUP);
         Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
         startActivityForResult(intent, REQUEST_CODE_AD_ADD);
     }

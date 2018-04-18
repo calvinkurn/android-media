@@ -9,16 +9,11 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
-import com.tokopedia.core.network.entity.topads.TopAds;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.topads.R;
-import com.tokopedia.topads.common.constant.TopAdsConstant;
-import com.tokopedia.topads.common.data.TopAdsSourceTracking;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
 
@@ -32,9 +27,8 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
 
     public static final String PARAM_ITEM_ID = "item_id";
     public static final String PARAM_USER_ID = "user_id";
-    private TopAdsSourceTracking topAdsSourceTracking;
 
-    @DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)
+    //@DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
             String userId = extras.getString(PARAM_USER_ID, "");
@@ -81,7 +75,6 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
     String source;
 
     private void initFromIntent() {
-        topAdsSourceTracking = new TopAdsSourceTracking(getApplicationContext(), TopAdsConstant.KEY_SOURCE_PREFERENCE);
         Intent intent = getIntent();
         if (intent != null) {
             itemId = intent.getStringExtra(TopAdsExtraConstant.EXTRA_ITEM_ID);
@@ -144,9 +137,4 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
         return true;
     }
 
-    @Override
-    protected void onDestroy() {
-        topAdsSourceTracking.deleteSource();
-        super.onDestroy();
-    }
 }

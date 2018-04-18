@@ -1,10 +1,7 @@
-package com.tokopedia.seller.product.picker.data.source;
-
-import android.support.annotation.NonNull;
+package com.tokopedia.topads.dashboard.data.source.cloud;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.product.apis.PromoTopAdsApi;
-import com.tokopedia.core.product.facade.NetworkParam;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,13 +14,13 @@ import rx.functions.Func1;
  * Created by hadi-putra on 11/04/18.
  */
 
-public class GetProductSellingPromoTopAdsDataSourceCloud {
+public class TopAdsCheckProductPromoDataSourceCloud {
     private static final String PARAM_ADS_TYPE = "type";
     private static final String PARAM_DEVICE_ID = "device";
 
     private final PromoTopAdsApi promoTopAdsApi;
 
-    public GetProductSellingPromoTopAdsDataSourceCloud(PromoTopAdsApi promoTopAdsApi) {
+    public TopAdsCheckProductPromoDataSourceCloud(PromoTopAdsApi promoTopAdsApi) {
         this.promoTopAdsApi = promoTopAdsApi;
     }
 

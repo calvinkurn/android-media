@@ -3,9 +3,7 @@ package com.tokopedia.seller.product.manage.di;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.apiservices.product.apis.PromoTopAdsApi;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.manage.data.repository.ActionProductManageRepositoryImpl;
@@ -20,17 +18,17 @@ import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenterImpl;
 import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
 import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
-import com.tokopedia.seller.product.picker.data.repository.GetProductSellingPromoTopAdsRepositoryImpl;
 import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
-import com.tokopedia.seller.product.picker.data.source.GetProductSellingPromoTopAdsDataSource;
-import com.tokopedia.seller.product.picker.data.source.GetProductSellingPromoTopAdsDataSourceCloud;
 import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
-import com.tokopedia.seller.product.picker.domain.GetProductSellingPromoTopAdsRepository;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.topads.common.constant.TopAdsConstant;
-import com.tokopedia.topads.common.data.TopAdsSourceTracking;
+import com.tokopedia.topads.common.data.repository.TopAdsSourceTaggingRepositoryImpl;
+import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingDataSource;
+import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingLocal;
+import com.tokopedia.topads.common.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.common.domain.repository.TopAdsSourceTaggingRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -51,8 +49,11 @@ public class ProductManageModule {
                                                                 DeleteProductUseCase deleteProductUseCase,
                                                                 GetProductListManageMapperView getProductListManageMapperView,
                                                                 SellerModuleRouter sellerModuleRouter,
-                                                                MultipleDeleteProductUseCase multipleDeleteProductUseCase){
-        return new ProductManagePresenterImpl(getShopInfoUseCase, getProductListSellingUseCase, editPriceProductUseCase, deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter, multipleDeleteProductUseCase);
+                                                                MultipleDeleteProductUseCase multipleDeleteProductUseCase,
+                                                                TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase){
+        return new ProductManagePresenterImpl(getShopInfoUseCase, getProductListSellingUseCase, editPriceProductUseCase,
+                deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter, multipleDeleteProductUseCase,
+                topAdsAddSourceTaggingUseCase);
     }
 
     @Provides
@@ -63,38 +64,15 @@ public class ProductManageModule {
 
     @Provides
     @ProductManageScope
-    public GetProductSellingPromoTopAdsRepository provideGetProductSellingPromoTopAdsRepository(GetProductSellingPromoTopAdsDataSource dataSource){
-        return new GetProductSellingPromoTopAdsRepositoryImpl(dataSource);
-    }
-
-    @Provides
-    @ProductManageScope
     public GetProductListSellerApi provideGetProductListSellerApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(GetProductListSellerApi.class);
     }
 
-    @Provides
-    @ProductManageScope
-    public GetProductSellingPromoTopAdsDataSource provideGetProductSellingPromoTopAdsDataSource(GetProductSellingPromoTopAdsDataSourceCloud dataSourceCloud){
-        return new GetProductSellingPromoTopAdsDataSource(dataSourceCloud);
-    }
-
-    @Provides
-    @ProductManageScope
-    public GetProductSellingPromoTopAdsDataSourceCloud provideGetProductSellingPromoTopAdsDataSourceCloud(PromoTopAdsApi promoTopAdsApi){
-        return new GetProductSellingPromoTopAdsDataSourceCloud(promoTopAdsApi);
-    }
 
     @Provides
     @ProductManageScope
     public ActionProductManageRepository provideActionManageProductRepository(ActionProductManageDataSource actionProductManageDataSource){
         return new ActionProductManageRepositoryImpl(actionProductManageDataSource);
-    }
-
-    @Provides
-    @ProductManageScope
-    public PromoTopAdsApi providePromoTopAdsApi(@TopAdsQualifier Retrofit retrofit){
-        return retrofit.create(PromoTopAdsApi.class);
     }
 
     @Provides
@@ -121,7 +99,21 @@ public class ProductManageModule {
 
     @Provides
     @ProductManageScope
-    public TopAdsSourceTracking provideTopAdsSourceTracking(@ApplicationContext Context context){
-        return new TopAdsSourceTracking(context, TopAdsConstant.KEY_SOURCE_PREFERENCE);
+    public TopAdsSourceTaggingLocal provideTopAdsSourceTracking(@ApplicationContext Context context){
+        return new TopAdsSourceTaggingLocal(context, TopAdsConstant.KEY_SOURCE_PREFERENCE);
     }
+
+    @Provides
+    @ProductManageScope
+    public TopAdsSourceTaggingDataSource provideTopAdsSourceTaggingDataSource(TopAdsSourceTaggingLocal topAdsSourceTaggingLocal){
+        return new TopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal);
+    }
+
+    @Provides
+    @ProductManageScope
+    public TopAdsSourceTaggingRepository provideTopAdsSourceTaggingRepository(TopAdsSourceTaggingDataSource dataSource){
+        return new TopAdsSourceTaggingRepositoryImpl(dataSource);
+    }
+
+
 }
