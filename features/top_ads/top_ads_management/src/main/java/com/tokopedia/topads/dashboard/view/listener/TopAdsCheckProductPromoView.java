@@ -16,6 +16,4 @@ public interface TopAdsCheckProductPromoView extends CustomerView {
     void finishLoadingProgress();
 
     void renderErrorView(Throwable throwable);
-
-    void renderRetryRefresh();
 }

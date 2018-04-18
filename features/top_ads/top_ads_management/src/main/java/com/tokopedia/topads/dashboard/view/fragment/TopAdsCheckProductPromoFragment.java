@@ -2,12 +2,10 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.topads.R;
@@ -33,7 +31,9 @@ public class TopAdsCheckProductPromoFragment extends BasePresenterFragment<TopAd
     private String itemId;
     String source;
 
-    TkpdProgressDialog progressDialog;
+    private TextView tvMessageRetry;
+    private View loadingLayout;
+    private View errorLayout;
 
     public static TopAdsCheckProductPromoFragment createInstance(String shopId, String itemId){
         TopAdsCheckProductPromoFragment fragment = new TopAdsCheckProductPromoFragment();
@@ -80,6 +80,21 @@ public class TopAdsCheckProductPromoFragment extends BasePresenterFragment<TopAd
     }
 
     @Override
+    protected void initView(View view) {
+        super.initView(view);
+        loadingLayout = view.findViewById(R.id.layout_loading);
+        errorLayout = view.findViewById(R.id.layout_error);
+        tvMessageRetry = view.findViewById(R.id.message_retry);
+        View retryButton = view.findViewById(R.id.button_retry);
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reloadData();
+            }
+        });
+    }
+
+    @Override
     protected void initialVar() {
         super.initialVar();
         shopId = getArguments().getString(TopAdsConstant.PARAM_EXTRA_SHOP_ID, "");
@@ -100,36 +115,22 @@ public class TopAdsCheckProductPromoFragment extends BasePresenterFragment<TopAd
 
     @Override
     public void showLoadingProgress() {
-        if (progressDialog == null && getActivity() != null)
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-
-        if (progressDialog != null && getActivity() != null)
-            progressDialog.showDialog();
+        loadingLayout.setVisibility(View.VISIBLE);
+        errorLayout.setVisibility(View.GONE);
     }
 
     @Override
     public void finishLoadingProgress() {
-        if (progressDialog != null)
-            progressDialog.dismiss();
+        loadingLayout.setVisibility(View.GONE);
+        errorLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void renderErrorView(Throwable throwable) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(),
-                ErrorHandler.getErrorMessage(getActivity(), throwable), null);
-    }
-
-    @Override
-    public void renderRetryRefresh() {
-        NetworkErrorHelper.showEmptyState(
-                getActivity(),
-                getView(),
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        reloadData();
-                    }
-                });
+        String errorMessage = ErrorHandler.getErrorMessage(getActivity(), throwable);
+        if (!TextUtils.isEmpty(errorMessage)) {
+            tvMessageRetry.setText(errorMessage);
+        }
     }
 
     private void reloadData() {
@@ -145,7 +146,7 @@ public class TopAdsCheckProductPromoFragment extends BasePresenterFragment<TopAd
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_base_list;
+        return R.layout.fragment_top_ads_check_product_promo;
     }
 
     @Override

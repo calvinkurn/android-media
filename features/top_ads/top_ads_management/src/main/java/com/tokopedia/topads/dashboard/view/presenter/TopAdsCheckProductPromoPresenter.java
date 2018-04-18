@@ -87,19 +87,14 @@ public class TopAdsCheckProductPromoPresenter extends BaseDaggerPresenter<TopAds
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    if (e instanceof IOException) {
-                        getView().renderRetryRefresh();
-                    } else {
-                        getView().renderErrorView(e);
-                    }
                     getView().finishLoadingProgress();
+                    getView().renderErrorView(e);
                 }
             }
 
             @Override
             public void onNext(String s) {
                 if (isViewAttached()) {
-                    getView().finishLoadingProgress();
                     if (s.equalsIgnoreCase(IS_UNPROMOTED_PRODUCT)) {
                         getView().moveToCreateAds();
                     } else {
