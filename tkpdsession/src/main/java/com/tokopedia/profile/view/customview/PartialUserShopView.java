@@ -258,7 +258,7 @@ public class PartialUserShopView extends BaseCustomView {
             if (getContext().getApplicationContext() instanceof SessionRouter) {
                 getContext().startActivity(
                         ((SessionRouter) getContext().getApplicationContext())
-                                .getTopProfileIntent(getContext(),
+                                .getShopPageIntent(getContext(),
                                         String.valueOf(data.getShopId())));
             }
         }
