@@ -816,6 +816,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void sendScreenName(String screenName) {
+        ScreenTracking.screen(screenName);
+    }
+
+    @Override
     public Intent getRegisterIntent(Context context) {
         Intent intent = RegisterInitialActivity.getCallingIntent(context);
         return intent;
