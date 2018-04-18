@@ -31,8 +31,8 @@ import retrofit2.Retrofit;
 @Module
 public class FingerprintModule {
 
-    public static final int READ_TIMEOUT = 45;
-    public static final int WRITE_TIMEOUT = 45;
+    public static final int READ_TIMEOUT = 60;
+    public static final int WRITE_TIMEOUT = 60;
 
     @FingerprintScope
     @Provides
