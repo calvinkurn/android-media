@@ -4,6 +4,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.base.adapter.exception.TypeNotSupportedException;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductGridViewHolder;
@@ -17,7 +18,10 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMode
 
 public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
 
-    public BannerAdsAdapterTypeFactory() {
+    private final TopAdsBannerClickListener topAdsBannerClickListener;
+
+    public BannerAdsAdapterTypeFactory(TopAdsBannerClickListener topAdsBannerClickListener) {
+        this.topAdsBannerClickListener = topAdsBannerClickListener;
     }
 
     @Override
@@ -34,9 +38,9 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
     public AbstractViewHolder createViewHolder(ViewGroup view, int viewType) {
         AbstractViewHolder holder;
         if (viewType == BannerShopViewHolder.LAYOUT) {
-            holder = new BannerShopViewHolder(view);
+            holder = new BannerShopViewHolder(view, topAdsBannerClickListener);
         } else if (viewType == BannerShopProductViewHolder.LAYOUT) {
-            holder = new BannerShopProductViewHolder(view);
+            holder = new BannerShopProductViewHolder(view, topAdsBannerClickListener);
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }

@@ -23,6 +23,7 @@ import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel;
 
 import java.util.ArrayList;
@@ -39,10 +40,12 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     private static final String TAG = BannerShopProductViewHolder.class.getSimpleName();
     private RecyclerView recyclerView;
     private ItemAdapter itemAdapter;
+    private final TopAdsBannerClickListener topAdsBannerClickListener;
 
 
-    public BannerShopProductViewHolder(View itemView) {
+    public BannerShopProductViewHolder(View itemView, TopAdsBannerClickListener topAdsBannerClickListener) {
         super(itemView);
+        this.topAdsBannerClickListener = topAdsBannerClickListener;
         recyclerView = itemView.findViewById(R.id.list);
         itemAdapter = new ItemAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -71,8 +74,16 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
 
         @Override
         public void onBindViewHolder(ItemViewHolder holder, final int position) {
-            Product product = productList.get(position);
+            final Product product = productList.get(position);
             Glide.with(holder.getContext()).load(product.getImageProduct().getImageUrl()).into(holder.imageView);
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (topAdsBannerClickListener != null) {
+                        topAdsBannerClickListener.onBannerAdsClicked(product.getApplinks());
+                    }
+                }
+            });
         }
 
         @Override

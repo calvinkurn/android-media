@@ -17,6 +17,7 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel;
@@ -40,9 +41,11 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     private LinearLayout badgeContainer;
     private ImageView image1, image2;
     private LinearLayout productContainer;
+    private final TopAdsBannerClickListener topAdsBannerClickListener;
 
-    public BannerShopViewHolder(View itemView) {
+    public BannerShopViewHolder(View itemView,TopAdsBannerClickListener topAdsBannerClickListener) {
         super(itemView);
+        this.topAdsBannerClickListener = topAdsBannerClickListener;
         context = itemView.getContext();
         iconImg = (ImageView) itemView.findViewById(R.id.icon);
         promotedTxt = (TextView) itemView.findViewById(R.id.title_promote);
@@ -85,13 +88,31 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                 badgeContainer.setVisibility(View.GONE);
             }
             if(cpm.getCpmShop() !=null && cpm.getCpmShop().getProducts().size() > 0){
-                List<Product> productList = cpm.getCpmShop().getProducts();
+                final List<Product> productList = cpm.getCpmShop().getProducts();
                 if(productList.get(0) != null) {
-                    Glide.with(context).load(productList.get(0).getImageProduct().getImageUrl()).into(image1);
+                    final Product product = productList.get(0);
+                    Glide.with(context).load(product.getImageProduct().getImageUrl()).into(image1);
+                    image1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if(topAdsBannerClickListener!=null) {
+                                topAdsBannerClickListener.onBannerAdsClicked(product.getApplinks());
+                            }
+                        }
+                    });
                 }
                 if(productList.get(1) != null){
+                    final Product product = productList.get(1);
                     image2.setVisibility(View.VISIBLE);
                     Glide.with(context).load(productList.get(1).getImageProduct().getImageUrl()).into(image2);
+                    image2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if(topAdsBannerClickListener!=null) {
+                                topAdsBannerClickListener.onBannerAdsClicked(product.getApplinks());
+                            }
+                        }
+                    });
                 }
             } else {
                 productContainer.setVisibility(View.GONE);
