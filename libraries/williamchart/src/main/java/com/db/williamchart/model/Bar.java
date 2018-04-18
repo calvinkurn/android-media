@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.model;
+package com.db.williamchart.model;
 
 import android.support.annotation.NonNull;
 
 
 /**
- * Data model that represents a bar in {@link com.tokopedia.seller.common.williamchart.view.BaseBarChartView}
+ * Data model that represents a bar in {@link com.db.williamchart.view.BaseBarChartView}
  */
 public class Bar extends ChartEntry {
 

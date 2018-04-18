@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.model;
+package com.db.williamchart.model;
 
 import android.support.annotation.FloatRange;
 
@@ -24,7 +24,7 @@ import java.util.Collections;
 
 /**
  * Data model containing {@link ChartEntry} elements to be used by {@link
- * com.tokopedia.seller.common.williamchart.view.ChartView}.
+ * com.db.williamchart.view.ChartView}.
  */
 public abstract class ChartSet {
 

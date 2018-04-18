@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.animation;
+package com.db.williamchart.animation;
 
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.support.annotation.FloatRange;
 
-import com.tokopedia.seller.common.williamchart.animation.easing.BaseEasingMethod;
-import com.tokopedia.seller.common.williamchart.animation.easing.QuintEase;
-import com.tokopedia.seller.common.williamchart.model.ChartSet;
-import com.tokopedia.seller.common.williamchart.view.ChartView;
+import com.db.williamchart.animation.easing.BaseEasingMethod;
+import com.db.williamchart.animation.easing.QuintEase;
+import com.db.williamchart.model.ChartSet;
+import com.db.williamchart.view.ChartView;
 
 import java.util.ArrayList;
 

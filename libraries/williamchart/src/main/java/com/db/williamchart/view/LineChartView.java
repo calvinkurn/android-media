@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.view;
+package com.db.williamchart.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -32,12 +32,12 @@ import android.support.annotation.FloatRange;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.williamchart.Tools;
-import com.tokopedia.seller.common.williamchart.model.ChartEntry;
-import com.tokopedia.seller.common.williamchart.model.ChartSet;
-import com.tokopedia.seller.common.williamchart.model.LineSet;
-import com.tokopedia.seller.common.williamchart.model.Point;
+import com.db.williamchart.R;
+import com.db.williamchart.Tools;
+import com.db.williamchart.model.ChartEntry;
+import com.db.williamchart.model.ChartSet;
+import com.db.williamchart.model.LineSet;
+import com.db.williamchart.model.Point;
 
 import java.util.ArrayList;
 

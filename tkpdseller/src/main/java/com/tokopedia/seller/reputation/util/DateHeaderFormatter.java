@@ -1,6 +1,6 @@
 package com.tokopedia.seller.reputation.util;
 
-import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
+import com.db.williamchart.util.GoldMerchantDateUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

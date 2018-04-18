@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.renderer;
+package com.db.williamchart.renderer;
 
 import android.graphics.Canvas;
 import android.graphics.Paint.Align;

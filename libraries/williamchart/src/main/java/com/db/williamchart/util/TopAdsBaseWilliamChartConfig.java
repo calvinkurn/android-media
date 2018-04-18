@@ -1,7 +1,7 @@
-package com.tokopedia.seller.common.williamchart.util;
+package com.db.williamchart.util;
 
-import com.tokopedia.seller.common.williamchart.Tools;
-import com.tokopedia.seller.common.williamchart.config.GrossGraphChartConfig;
+import com.db.williamchart.Tools;
+import com.db.williamchart.config.GrossGraphChartConfig;
 
 /**
  * Created by normansyahputa on 7/7/17.

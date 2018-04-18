@@ -1,8 +1,8 @@
-package com.tokopedia.seller.common.williamchart.config;
+package com.db.williamchart.config;
 
 import android.graphics.Color;
 
-import com.tokopedia.seller.common.williamchart.util.DataSetConfiguration;
+import com.db.williamchart.util.DataSetConfiguration;
 
 /**
  * Created by normansyahputa on 7/7/17.

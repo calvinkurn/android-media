@@ -15,7 +15,7 @@
  */
 
 
-package com.tokopedia.seller.common.williamchart.model;
+package com.db.williamchart.model;
 
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -24,12 +24,12 @@ import android.support.annotation.FloatRange;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.seller.common.williamchart.Tools;
+import com.db.williamchart.Tools;
 
 
 /**
  * Data model containing a set of {@link Point} to be used by {@link
- * com.tokopedia.seller.common.williamchart.view.LineChartView}.
+ * com.db.williamchart.view.LineChartView}.
  */
 public class LineSet extends ChartSet {
 

@@ -1,16 +1,16 @@
-package com.tokopedia.seller.common.williamchart.config;
+package com.db.williamchart.config;
 
 import android.graphics.Color;
 
-import com.tokopedia.seller.common.williamchart.Tools;
-import com.tokopedia.seller.common.williamchart.renderer.AxisRenderer;
-import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
-import com.tokopedia.seller.common.williamchart.util.AnimationGraphConfiguration;
-import com.tokopedia.seller.common.williamchart.util.TopAdsYAxisRenderer;
-import com.tokopedia.seller.common.williamchart.view.ChartView;
-import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartConfig;
+import com.db.williamchart.Tools;
+import com.db.williamchart.renderer.AxisRenderer;
+import com.db.williamchart.renderer.StringFormatRenderer;
+import com.db.williamchart.util.AnimationGraphConfiguration;
+import com.db.williamchart.util.TopAdsYAxisRenderer;
+import com.db.williamchart.view.ChartView;
+import com.db.williamchart.base.BaseWilliamChartConfig;
 
-import static com.tokopedia.seller.common.williamchart.util.TopAdsBaseWilliamChartConfig.WIDTH_TIP;
+import static com.db.williamchart.util.TopAdsBaseWilliamChartConfig.WIDTH_TIP;
 
 /**
  * Created by normansyahputa on 7/7/17.

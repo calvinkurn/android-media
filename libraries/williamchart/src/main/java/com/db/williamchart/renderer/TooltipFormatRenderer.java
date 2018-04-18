@@ -1,8 +1,8 @@
-package com.tokopedia.seller.common.williamchart.renderer;
+package com.db.williamchart.renderer;
 
 import android.widget.TextView;
 
-import com.tokopedia.seller.common.williamchart.model.TooltipModel;
+import com.db.williamchart.model.TooltipModel;
 
 import java.util.List;
 

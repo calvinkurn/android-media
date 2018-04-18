@@ -1,4 +1,4 @@
-package com.tokopedia.seller.common.williamchart.renderer;
+package com.db.williamchart.renderer;
 
 /**
  * Created by sebastianuskh on 12/20/16.

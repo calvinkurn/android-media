@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.animation.style;
+package com.db.williamchart.animation.style;
 
-import com.tokopedia.seller.common.williamchart.model.ChartSet;
-import com.tokopedia.seller.common.williamchart.view.ChartView;
+import com.db.williamchart.model.ChartSet;
+import com.db.williamchart.view.ChartView;
 
 
 public abstract class BaseStyleAnimation {

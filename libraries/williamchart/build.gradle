@@ -3,6 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
     compile rootProject.ext.testDependencies.androidAnnotation
+    compile rootProject.ext.supportLibDependencies.supportV4
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

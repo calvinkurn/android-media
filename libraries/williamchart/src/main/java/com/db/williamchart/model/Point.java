@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.model;
+package com.db.williamchart.model;
 
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.seller.common.williamchart.Tools;
+import com.db.williamchart.Tools;
 
 
 /**
- * Data model that represents a point in {@link com.tokopedia.seller.common.williamchart.view.LineChartView}
+ * Data model that represents a point in {@link com.db.williamchart.view.LineChartView}
  */
 public class Point extends ChartEntry {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.listener;
+package com.db.williamchart.listener;
 
 import android.view.View;
 

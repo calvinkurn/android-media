@@ -1,13 +1,13 @@
-package com.tokopedia.seller.common.williamchart.util;
+package com.db.williamchart.util;
 
 import android.app.Activity;
 import android.util.DisplayMetrics;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.util.Pair;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartModel;
-import com.tokopedia.seller.common.williamchart.view.LineChartView;
+import com.db.williamchart.R;
+import com.db.williamchart.base.BaseWilliamChartModel;
+import com.db.williamchart.view.LineChartView;
 
 import java.util.ArrayList;
 import java.util.List;

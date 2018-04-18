@@ -1,4 +1,4 @@
-package com.tokopedia.seller.common.williamchart.tooltip;
+package com.db.williamchart.tooltip;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -12,7 +12,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.seller.R;
+import com.db.williamchart.R;
 
 /**
  * Created by zulfikarrahman on 5/18/17.

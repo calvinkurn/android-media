@@ -1,4 +1,4 @@
-package com.tokopedia.seller.common.williamchart.tooltip;
+package com.db.williamchart.tooltip;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.seller.common.williamchart.model.TooltipModel;
-import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
+import com.db.williamchart.model.TooltipModel;
+import com.db.williamchart.renderer.StringFormatRenderer;
 
 
 /**

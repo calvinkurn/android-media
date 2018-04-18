@@ -1,8 +1,8 @@
-package com.tokopedia.seller.common.williamchart.util;
+package com.db.williamchart.util;
 
-import com.tokopedia.seller.common.williamchart.renderer.AxisRenderer;
-import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
-import com.tokopedia.seller.common.williamchart.view.ChartView;
+import com.db.williamchart.renderer.AxisRenderer;
+import com.db.williamchart.renderer.StringFormatRenderer;
+import com.db.williamchart.view.ChartView;
 
 /**
  * Created by normansyahputa on 7/7/17.

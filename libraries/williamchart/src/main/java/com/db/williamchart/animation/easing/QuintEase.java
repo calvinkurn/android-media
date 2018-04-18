@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.animation.easing;
+package com.db.williamchart.animation.easing;
 
 public class QuintEase extends BaseEasingMethod {
 

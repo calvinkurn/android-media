@@ -1,9 +1,9 @@
-package com.tokopedia.seller.common.williamchart.util;
+package com.db.williamchart.util;
 
 /**
  * Created by normansyahputa on 7/7/17.
  * <p>
- * This class represent {@link com.tokopedia.seller.common.williamchart.model.ChartSet} configuration
+ * This class represent {@link com.db.williamchart.model.ChartSet} configuration
  */
 public interface DataSetConfiguration {
     int lineColor();

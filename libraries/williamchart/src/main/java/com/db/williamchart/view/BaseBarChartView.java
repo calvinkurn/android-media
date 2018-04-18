@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.view;
+package com.db.williamchart.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -25,8 +25,8 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.FloatRange;
 import android.util.AttributeSet;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.williamchart.model.ChartSet;
+import com.db.williamchart.R;
+import com.db.williamchart.model.ChartSet;
 
 import java.util.ArrayList;
 
@@ -168,7 +168,7 @@ public abstract class BaseBarChartView extends ChartView {
 	/**
 	 * Define the space to use between bars.
 	 *
-	 * @param spacing Spacing between {@link com.tokopedia.seller.common.williamchart.model.Bar}
+	 * @param spacing Spacing between {@link com.db.williamchart.model.Bar}
 	 */
 	public void setBarSpacing(float spacing) {
 
@@ -179,7 +179,7 @@ public abstract class BaseBarChartView extends ChartView {
 	/**
 	 * When multiset, it defines the space to use set.
 	 *
-	 * @param spacing Spacing between {@link com.tokopedia.seller.common.williamchart.model.BarSet}
+	 * @param spacing Spacing between {@link com.db.williamchart.model.BarSet}
 	 */
 	public void setSetSpacing(float spacing) {
 
@@ -204,7 +204,7 @@ public abstract class BaseBarChartView extends ChartView {
 	/**
 	 * Round corners of bars.
 	 *
-	 * @param radius Radius applied to the corners of {@link com.tokopedia.seller.common.williamchart.model.Bar}
+	 * @param radius Radius applied to the corners of {@link com.db.williamchart.model.Bar}
 	 */
 	public void setRoundCorners(@FloatRange(from = 0.f) float radius) {
 

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.view;
+package com.db.williamchart.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.tokopedia.seller.common.williamchart.model.Bar;
-import com.tokopedia.seller.common.williamchart.model.BarSet;
-import com.tokopedia.seller.common.williamchart.model.ChartSet;
+import com.db.williamchart.model.Bar;
+import com.db.williamchart.model.BarSet;
+import com.db.williamchart.model.ChartSet;
 
 import java.util.ArrayList;
 

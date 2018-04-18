@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.model;
+package com.db.williamchart.model;
 
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 
 
 /**
- * Data model containing a set of {@link Bar} to be used by {@link com.tokopedia.seller.common.williamchart.view.BaseBarChartView}.
+ * Data model containing a set of {@link Bar} to be used by {@link com.db.williamchart.view.BaseBarChartView}.
  */
 public class BarSet extends ChartSet {
 

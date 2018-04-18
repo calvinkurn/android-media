@@ -1,8 +1,8 @@
-package com.tokopedia.seller.common.williamchart.util;
+package com.db.williamchart.util;
 
 
-import com.tokopedia.seller.common.utils.KMNumbers;
-import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
+import com.db.williamchart.common.utils.KMNumbers;
+import com.db.williamchart.renderer.StringFormatRenderer;
 
 /**
  * Created by zulfikarrahman on 5/24/17.

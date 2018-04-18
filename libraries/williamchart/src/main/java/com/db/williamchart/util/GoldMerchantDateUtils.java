@@ -1,9 +1,4 @@
-package com.tokopedia.seller.common.williamchart.util;
-
-import android.util.Log;
-
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.seller.R;
+package com.db.williamchart.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

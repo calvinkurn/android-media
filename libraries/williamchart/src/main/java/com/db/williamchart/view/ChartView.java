@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.view;
+package com.db.williamchart.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -37,18 +37,18 @@ import android.view.View;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.RelativeLayout;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.williamchart.animation.Animation;
-import com.tokopedia.seller.common.williamchart.animation.style.BaseStyleAnimation;
-import com.tokopedia.seller.common.williamchart.listener.OnEntryClickListener;
-import com.tokopedia.seller.common.williamchart.model.ChartEntry;
-import com.tokopedia.seller.common.williamchart.model.ChartSet;
-import com.tokopedia.seller.common.williamchart.model.TooltipModel;
-import com.tokopedia.seller.common.williamchart.renderer.AxisRenderer;
-import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
-import com.tokopedia.seller.common.williamchart.renderer.XRenderer;
-import com.tokopedia.seller.common.williamchart.renderer.YRenderer;
-import com.tokopedia.seller.common.williamchart.tooltip.Tooltip;
+import com.db.williamchart.R;
+import com.db.williamchart.animation.Animation;
+import com.db.williamchart.animation.style.BaseStyleAnimation;
+import com.db.williamchart.listener.OnEntryClickListener;
+import com.db.williamchart.model.ChartEntry;
+import com.db.williamchart.model.ChartSet;
+import com.db.williamchart.model.TooltipModel;
+import com.db.williamchart.renderer.AxisRenderer;
+import com.db.williamchart.renderer.StringFormatRenderer;
+import com.db.williamchart.renderer.XRenderer;
+import com.db.williamchart.renderer.YRenderer;
+import com.db.williamchart.tooltip.Tooltip;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

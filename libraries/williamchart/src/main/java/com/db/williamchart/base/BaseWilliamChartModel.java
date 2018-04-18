@@ -1,4 +1,4 @@
-package com.tokopedia.seller.common.williamchart.base;
+package com.db.williamchart.base;
 
 import java.util.Arrays;
 

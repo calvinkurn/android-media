@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.model;
+package com.db.williamchart.model;
 
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
 
 
 /**
- * Generic Data model of a {@link com.tokopedia.seller.common.williamchart.view.ChartView} entry
+ * Generic Data model of a {@link com.db.williamchart.view.ChartView} entry
  */
 public abstract class ChartEntry implements Comparable<ChartEntry> {
 

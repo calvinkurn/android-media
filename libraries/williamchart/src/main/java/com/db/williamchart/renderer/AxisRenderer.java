@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.renderer;
+package com.db.williamchart.renderer;
 
 import android.graphics.Canvas;
 
-import com.tokopedia.seller.common.williamchart.Tools;
-import com.tokopedia.seller.common.williamchart.model.ChartEntry;
-import com.tokopedia.seller.common.williamchart.model.ChartSet;
-import com.tokopedia.seller.common.williamchart.view.ChartView.Style;
+import com.db.williamchart.Tools;
+import com.db.williamchart.model.ChartEntry;
+import com.db.williamchart.model.ChartSet;
+import com.db.williamchart.view.ChartView.Style;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

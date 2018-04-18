@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart;
+package com.db.williamchart;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -28,20 +28,20 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.utils.KMNumbers;
-import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartConfig;
-import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartModel;
-import com.tokopedia.seller.common.williamchart.config.GrossGraphChartConfig;
-import com.tokopedia.seller.common.williamchart.config.GrossGraphDataSetConfig;
-import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
-import com.tokopedia.seller.common.williamchart.renderer.XRenderer;
-import com.tokopedia.seller.common.williamchart.tooltip.Tooltip;
-import com.tokopedia.seller.common.williamchart.util.DataSetConfiguration;
-import com.tokopedia.seller.common.williamchart.util.DefaultTooltipConfiguration;
-import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
-import com.tokopedia.seller.common.williamchart.util.TooltipConfiguration;
-import com.tokopedia.seller.common.williamchart.view.LineChartView;
+import com.db.williamchart.R;
+import com.db.williamchart.base.BaseWilliamChartConfig;
+import com.db.williamchart.base.BaseWilliamChartModel;
+import com.db.williamchart.config.GrossGraphChartConfig;
+import com.db.williamchart.config.GrossGraphDataSetConfig;
+import com.db.williamchart.renderer.StringFormatRenderer;
+import com.db.williamchart.renderer.XRenderer;
+import com.db.williamchart.tooltip.Tooltip;
+import com.db.williamchart.util.DataSetConfiguration;
+import com.db.williamchart.util.DefaultTooltipConfiguration;
+import com.db.williamchart.util.GMStatisticUtil;
+import com.db.williamchart.util.KMNumbers;
+import com.db.williamchart.util.TooltipConfiguration;
+import com.db.williamchart.view.LineChartView;
 
 import java.util.List;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.tooltip;
+package com.db.williamchart.tooltip;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -28,11 +28,11 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.seller.common.williamchart.listener.OnTooltipEventListener;
-import com.tokopedia.seller.common.williamchart.listener.TooltipSearchForTextViewListener;
-import com.tokopedia.seller.common.williamchart.model.TooltipModel;
-import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
-import com.tokopedia.seller.common.williamchart.renderer.TooltipFormatRenderer;
+import com.db.williamchart.listener.OnTooltipEventListener;
+import com.db.williamchart.listener.TooltipSearchForTextViewListener;
+import com.db.williamchart.model.TooltipModel;
+import com.db.williamchart.renderer.StringFormatRenderer;
+import com.db.williamchart.renderer.TooltipFormatRenderer;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -175,7 +175,7 @@ public class Tooltip extends RelativeLayout {
      * tooltip in order to set its layout parameters.
      *
      * @param rect  {@link Rect} covering the are of the
-     *              clicked {@link com.tokopedia.seller.common.williamchart.model.ChartEntry}.
+     *              clicked {@link com.db.williamchart.model.ChartEntry}.
      * @param value Value of the entry.
      */
     public void prepare(Rect rect, TooltipModel value) {
@@ -226,12 +226,12 @@ public class Tooltip extends RelativeLayout {
 
     /**
      * Corrects the position of a tooltip and forces it to
-     * be within {@link com.tokopedia.seller.common.williamchart.view.ChartView}.
+     * be within {@link com.db.williamchart.view.ChartView}.
      *
-     * @param left   left coordinate of {@link com.tokopedia.seller.common.williamchart.view.ChartView}
-     * @param top    top coordinate of {@link com.tokopedia.seller.common.williamchart.view.ChartView}
-     * @param right  right coordinate of {@link com.tokopedia.seller.common.williamchart.view.ChartView}
-     * @param bottom bottom coordinate of {@link com.tokopedia.seller.common.williamchart.view.ChartView}
+     * @param left   left coordinate of {@link com.db.williamchart.view.ChartView}
+     * @param top    top coordinate of {@link com.db.williamchart.view.ChartView}
+     * @param right  right coordinate of {@link com.db.williamchart.view.ChartView}
+     * @param bottom bottom coordinate of {@link com.db.williamchart.view.ChartView}
      */
     public void correctPosition(int left, int top, int right, int bottom) {
 

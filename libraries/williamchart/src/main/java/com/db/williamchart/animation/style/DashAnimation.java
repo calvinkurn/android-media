@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.animation.style;
+package com.db.williamchart.animation.style;
 
-import com.tokopedia.seller.common.williamchart.model.ChartSet;
-import com.tokopedia.seller.common.williamchart.model.LineSet;
+import com.db.williamchart.model.ChartSet;
+import com.db.williamchart.model.LineSet;
 
 
 public class DashAnimation extends BaseStyleAnimation {

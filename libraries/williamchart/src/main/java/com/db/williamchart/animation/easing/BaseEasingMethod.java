@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.seller.common.williamchart.animation.easing;
+package com.db.williamchart.animation.easing;
 
 /**
  * Interface that gives the abstract methods to any possible
@@ -40,7 +40,7 @@ public abstract class BaseEasingMethod {
 
 	/**
 	 * Method that gives the next interpolated value to be processed by
-	 * the {@link com.tokopedia.seller.common.williamchart.animation.Animation} object.
+	 * the {@link com.db.williamchart.animation.Animation} object.
 	 *
 	 * @param time - time normalized between 0 and 1
 	 *
