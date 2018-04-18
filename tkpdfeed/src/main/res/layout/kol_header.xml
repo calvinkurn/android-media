@@ -60,16 +60,17 @@
 
     <RelativeLayout
         android:id="@+id/follow_button"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_72"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginRight="@dimen/margin_sm"
         android:layout_marginEnd="@dimen/margin_sm"
         android:background="@drawable/bg_button_green"
-        android:paddingTop="@dimen/dp_4"
-        android:paddingBottom="@dimen/dp_4"
-        android:paddingLeft="@dimen/dp_20"
-        android:paddingRight="@dimen/dp_20"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:paddingTop="@dimen/dp_6"
+        android:paddingBottom="@dimen/dp_6"
         android:gravity="center">
 
         <TextView
@@ -81,7 +82,8 @@
             android:lineSpacingExtra="6sp"
             android:text="@string/action_follow_english"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_12"
-            android:textStyle="normal"/>
+            android:textSize="@dimen/sp_10"
+            android:textStyle="normal"
+            tools:text="Following"/>
     </RelativeLayout>
 </LinearLayout>

@@ -12,7 +12,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.di.CampaignComponent;
 import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
@@ -27,12 +26,11 @@ import javax.inject.Inject;
 
 public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements ShakeDetectContract.View,HasComponent<CampaignComponent> {
 
-
     private TkpdProgressDialog progressDialog;
     protected CampaignComponent campaignComponent;
+
     @Inject
     ShakeDetectPresenter presenter;
-
 
     @Override
     protected Fragment getNewFragment() {
@@ -56,16 +54,13 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         presenter.onShakeDetect();
     }
 
-
     @Override
     public void setContentView(int layoutResID) {
     }
 
     public static Intent getShakeDetectCampaignActivity(Context context) {
-        Intent i = new Intent(context, ShakeDetectCampaignActivity.class);
-        return i;
+        return new Intent(context, ShakeDetectCampaignActivity.class);
     }
-
 
     @Override
     public CampaignComponent getComponent() {
@@ -106,7 +101,6 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     public void hideProgressDialog() {
         if (progressDialog != null)
             progressDialog.dismiss();
-
     }
 
     @Override
@@ -134,4 +128,5 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         super.onActivityResult(requestCode, resultCode, data);
         presenter.onActivityResult(requestCode,resultCode,data);
     }
+
 }

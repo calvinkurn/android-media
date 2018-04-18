@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -246,7 +247,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         infoTitlePage.setText(tokenData.getHome().getTokensUser().getTitle());
 
-        ImageHandler.loadImageAndCache(ivContainer, tokenUser.getBackgroundAsset().getBackgroundImgUrl());
+        ImageHandler.loadImageWithSignature(ivContainer, tokenUser.getBackgroundAsset().getBackgroundImgUrl(),
+                new StringSignature(tokenUser.getBackgroundAsset().getVersion()));
 
         widgetTokenView.setToken(tokenUser.getTokenAsset());
         widgetTokenView.setListener(new WidgetTokenView.WidgetTokenListener() {
@@ -360,11 +362,16 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void onTick(long millisUntilFinished) {
+        if (!isAdded()) {
+            return;
+        }
         int timeRemainingSeconds = (int) (millisUntilFinished / COUNTDOWN_INTERVAL_SECOND);
+        timeRemainingSeconds--;
         tokenData.getHome().getTokensUser().setTimeRemainingSeconds(timeRemainingSeconds);
         if (timeRemainingSeconds <= 0) {
             stopTimer();
             widgetTokenView.hide();
+            widgetTokenOnBoarding.hideHandOnBoarding(false);
             crackTokenPresenter.getGetTokenTokopoints();
         } else {
             setUIFloatingTimer(timeRemainingSeconds);

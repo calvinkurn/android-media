@@ -73,4 +73,10 @@ public class FlightPassengerInfoValidator {
     private boolean isSingleWord(String passengerLastName) {
         return passengerLastName != null && passengerLastName.split(" ").length == 1;
     }
+
+    public boolean validateDateNotLessThan(Date indicator, String selectedDate) {
+        Date inputDate = FlightDateUtil.removeTime(FlightDateUtil.stringToDate(
+                FlightDateUtil.DEFAULT_VIEW_FORMAT, selectedDate));
+        return inputDate.before(indicator);
+    }
 }

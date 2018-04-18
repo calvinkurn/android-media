@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
+apply plugin: 'io.hansel.preprocessor'
 
 
 def getDpiId(String density) {
@@ -79,9 +80,11 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
         mavenCentral()
         jcenter()
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'io.hansel.preprocessor:preprocessor:6.0.1'
     }
 }
 
@@ -145,6 +148,7 @@ android {
             testCoverageEnabled true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles  'proguard-rules.txt'
+            testCoverageEnabled = true
         }
         release {
             signingConfig signingConfigs.debug
