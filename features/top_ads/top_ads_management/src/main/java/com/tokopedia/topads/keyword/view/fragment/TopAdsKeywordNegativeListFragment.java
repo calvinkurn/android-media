@@ -59,7 +59,7 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
     @Override
     public void onCreateAd() {
         UnifyTracking.eventTopAdsProductNewPromoKeywordNegatif();
-        topAdsSourceTracking.savingSource(TopAdsSourceOption.SA_MANAGE_KEYWORD_NEGATIVE);
+        topAdsKeywordListPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_NEGATIVE);
         TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_ADD, isPositive());
     }
 

@@ -10,7 +10,10 @@ import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.topads.common.constant.TopAdsConstant;
-import com.tokopedia.topads.common.data.TopAdsSourceTracking;
+import com.tokopedia.topads.common.data.repository.TopAdsSourceTaggingRepositoryImpl;
+import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingDataSource;
+import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingLocal;
+import com.tokopedia.topads.common.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.topads.keyword.data.repository.TopAdsKeywordRepositoryImpl;
 import com.tokopedia.topads.keyword.data.source.KeywordDashboardDataSouce;
 import com.tokopedia.topads.keyword.data.source.cloud.api.KeywordApi;
@@ -58,8 +61,20 @@ public class TopAdsKeywordModule {
 
     @TopAdsKeywordScope
     @Provides
-    TopAdsSourceTracking provideTopAdsSourceTracking(@ApplicationContext Context context){
-        return new TopAdsSourceTracking(context, TopAdsConstant.KEY_SOURCE_PREFERENCE);
+    TopAdsSourceTaggingLocal provideTopAdsSourceTracking(@ApplicationContext Context context){
+        return new TopAdsSourceTaggingLocal(context, TopAdsConstant.KEY_SOURCE_PREFERENCE);
+    }
+
+    @TopAdsKeywordScope
+    @Provides
+    public TopAdsSourceTaggingDataSource provideTopAdsSourceTaggingDataSource(TopAdsSourceTaggingLocal topAdsSourceTaggingLocal){
+        return new TopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal);
+    }
+
+    @TopAdsKeywordScope
+    @Provides
+    public TopAdsSourceTaggingRepository provideTopAdsSourceTaggingRepository(TopAdsSourceTaggingDataSource dataSource){
+        return new TopAdsSourceTaggingRepositoryImpl(dataSource);
     }
 
 }

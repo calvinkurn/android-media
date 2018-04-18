@@ -85,9 +85,6 @@ public interface ProductComponent {
     @WsV4QualifierWithErrorHander
     Retrofit baseDomainWithErrorHandlerRetrofit();
 
-    @TopAdsQualifier
-    Retrofit baseDomainTopAdsRetrofit();
-
     ThreadExecutor threadExecutor();
 
     PostExecutionThread postExecutionThread();

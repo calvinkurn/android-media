@@ -1,12 +1,12 @@
-package com.tokopedia.seller.product.manage.view.listener;
+package com.tokopedia.topads.dashboard.view.listener;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
 /**
- * Created by hadi.putra on 12/04/18.
+ * Created by nakama on 17/04/18.
  */
 
-public interface ProductManageCheckPromoAdsView extends CustomerView {
+public interface TopAdsCheckProductPromoView extends CustomerView {
     void moveToCreateAds();
 
     void moveToAdsDetail(String adsId);

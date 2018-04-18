@@ -42,6 +42,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.Option;
@@ -108,6 +109,7 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
+import com.tokopedia.topads.common.constant.TopAdsSourceOption;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -250,6 +252,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     protected void initialPresenter() {
         this.presenter = new ProductDetailPresenterImpl(this);
+        this.presenter.initTopAdsSourceTaggingUseCase(getActivity().getApplicationContext());
     }
 
     @Override
@@ -1232,8 +1235,15 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onPromoAdsClicked() {
-        presenter.onPromoAdsClicked(getActivity(), productData.getShopInfo().getShopId(),
-                productData.getInfo().getProductId(), SessionHandler.getLoginID(getActivity()));
+        String applink = String.format("%s?user_id=%s&item_id=%s&&shop_id=%s",
+                Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE, SessionHandler.getLoginID(getActivity()),
+                productData.getInfo().getProductId(), productData.getShopInfo().getShopId());
+        if (GlobalConfig.isSellerApp()){
+            presenter.saveSource(TopAdsSourceOption.SA_PDP);
+        } else {
+            applink += String.format("&source=%s", TopAdsSourceOption.MA_PDP);
+        }
+        presenter.openPromoteAds(getActivity(), applink);
     }
 
     @Override

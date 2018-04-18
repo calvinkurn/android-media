@@ -15,8 +15,6 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.common.constant.TopAdsConstant;
-import com.tokopedia.topads.common.data.TopAdsSourceTracking;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAddFragment;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNewChooseGroupFragment;
@@ -37,14 +35,7 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity
     public static final String TAG = TopAdsKeywordNewChooseGroupActivity.class.getSimpleName();
     private static final String EXTRA_IS_POSITIVE = "is_pos";
     private static final String EXTRA_CHOOSEN_GROUP = "EXTRA_CHOOSEN_GROUP";
-    private TopAdsSourceTracking topAdsSourceTracking;
     List<Fragment> fragmentList;
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        topAdsSourceTracking = new TopAdsSourceTracking(getApplicationContext(), TopAdsConstant.KEY_SOURCE_PREFERENCE);
-    }
 
     public static void start(Activity activity, int requestCode,
                              boolean isPositive) {
@@ -164,11 +155,5 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
         setResult(Activity.RESULT_OK, intent);
         finish();
-    }
-
-    @Override
-    protected void onDestroy() {
-        topAdsSourceTracking.deleteSource();
-        super.onDestroy();
     }
 }
