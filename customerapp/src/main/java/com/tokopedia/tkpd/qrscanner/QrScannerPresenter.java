@@ -31,6 +31,7 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static com.tokopedia.core.network.retrofit.utils.AuthUtil.KEY.KEY_BRANCHIO;
 import static com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase.CAMPAIGN_ID;
 
 
@@ -92,7 +93,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         getView().showProgressDialog();
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("url", qrCode);
-        requestParams.putString("branch_key","key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr");
+        requestParams.putString("branch_key",KEY_BRANCHIO);
         branchIODeeplinkUseCase.execute(requestParams, new Subscriber<BranchIOAndroidDeepLink>() {
             @Override
             public void onCompleted() {
