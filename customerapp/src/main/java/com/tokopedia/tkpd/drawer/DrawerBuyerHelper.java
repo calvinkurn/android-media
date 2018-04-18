@@ -387,7 +387,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private boolean hasShop(DrawerProfile drawerProfile) {
-        return !drawerProfile.getShopName().equals("");
+        return !drawerProfile.getShopName().equals("") && !drawerProfile.getShopName().equals("0");
     }
 
     @Override
