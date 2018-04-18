@@ -85,6 +85,7 @@ public class KolCommentActivity extends TActivity implements HasComponent {
         KolCommentProductViewModel kolCommentProductViewModel = new KolCommentProductViewModel();
         Bundle args = new Bundle();
         args.putBoolean(ARGS_FROM_APPLINK, true);
+        args.putInt(ARGS_ID, Integer.valueOf(bundle.getString(ARGS_KOL_ID)));
 
         String dataExtras = bundle.getString("extra");
         try {
