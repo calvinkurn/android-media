@@ -72,8 +72,8 @@ public class PushNotification {
 
         int notificationId = ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks());
 
-        Notification notifChat = new ChatNotificationFactory(context)
-                .createNotification(applinkNotificationModel, notificationType, notificationId);
+        Notification notifChat = new GeneralNotificationFactory(context)
+                .createNotification(applinkNotificationModel, notificationType, notificationType);
 
         Notification notifSummary = new SummaryNotificationFactory(context)
                 .createNotification(applinkNotificationModel, notificationType, notificationType);
