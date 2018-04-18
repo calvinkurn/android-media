@@ -52,6 +52,8 @@ public interface HomeContract {
     interface Presenter extends CustomerPresenter<View> {
         void getHomeData();
 
+        void updateHomeData();
+
         void getHeaderData(boolean initialStart);
 
         void updateHeaderTokoCashData(HomeHeaderWalletAction homeHeaderWalletActionData);

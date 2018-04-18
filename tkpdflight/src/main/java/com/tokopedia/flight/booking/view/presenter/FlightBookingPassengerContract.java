@@ -110,6 +110,8 @@ public interface FlightBookingPassengerContract {
         void showPassengerLastNameShouldSameWithFirstNameError(int resId);
 
         String getString(int resId);
+
+        void showPassengerChildBirthdateShouldLessThanEqual12Years(int resId);
     }
 
     interface Presenter extends CustomerPresenter<View> {

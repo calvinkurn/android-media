@@ -83,6 +83,8 @@ public class ApplinkNotificationHelper {
             return Constant.NotificationId.TALK;
         } else if (appLink.contains("message")) {
             return Constant.NotificationId.GENERAL;
+        } else if (appLink.contains("groupchat")) {
+            return Constant.NotificationId.GROUPCHAT;
         } else if (appLink.contains("chat")) {
             return Constant.NotificationId.CHAT;
         } else if (appLink.contains("buyer")) {
