@@ -18,7 +18,7 @@
             android:id="@+id/gm_stat_tooltip_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@android:color/white"
             tools:text="3"/>
 
     </RelativeLayout>

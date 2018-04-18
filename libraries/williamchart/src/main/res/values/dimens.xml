@@ -29,4 +29,12 @@
     <dimen name="set_spacing">3dp</dimen>
     <dimen name="corner_radius">0dp</dimen>
 
+    <dimen name="gm_tooltip_width">65dp</dimen>
+    <dimen name="gm_tooltip_height">25dp</dimen>
+    <dimen name="gm_tooltip_text_min_width">35dp</dimen>
+    <dimen name="gm_tooltip_text_compare_margin">6dp</dimen>
+    <dimen name="gm_tooltip_text_bottom">5dp</dimen>
+    <dimen name="gm_linechart_default_width">360dp</dimen>
+    <dimen name="gm_linechart_more_width">680dp</dimen>
+
 </resources>

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.util.DisplayMetrics;
 import android.widget.LinearLayout;
 
-import com.tokopedia.core.util.Pair;
 import com.db.williamchart.R;
 import com.db.williamchart.base.BaseWilliamChartModel;
 import com.db.williamchart.view.LineChartView;

@@ -33,5 +33,10 @@
         <attr name="chart_cornerRadius" format="dimension" />
         <attr name="chart_barBackgroundColor" format="reference|color" />
     </declare-styleable>
+
+    <!-- william chart tooltip -->
+    <declare-styleable name="TooltipPointerAttrs">
+        <attr name="tooltip_pointer_color" format="reference|color" />
+    </declare-styleable>
 </resources>
 

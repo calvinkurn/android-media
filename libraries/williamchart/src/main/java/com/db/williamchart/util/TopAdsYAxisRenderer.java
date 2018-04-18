@@ -1,7 +1,5 @@
 package com.db.williamchart.util;
 
-
-import com.db.williamchart.common.utils.KMNumbers;
 import com.db.williamchart.renderer.StringFormatRenderer;
 
 /**
