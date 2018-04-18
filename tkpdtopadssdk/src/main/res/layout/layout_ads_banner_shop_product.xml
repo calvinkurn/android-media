@@ -29,6 +29,8 @@
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/dp_10"
             android:paddingLeft="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_5"
             android:layout_margin="5dp"
             android:background="@drawable/bg_outline_grey"
             android:textSize="12sp"
