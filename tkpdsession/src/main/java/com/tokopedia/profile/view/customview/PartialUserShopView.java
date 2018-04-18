@@ -1,7 +1,6 @@
 package com.tokopedia.profile.view.customview;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -30,9 +29,9 @@ import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.profile.view.listener.TopProfileActivityListener;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
-import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 
 import static com.tokopedia.analytics.TopProfileAnalytics.Action.CLICK_ON_FAVORITE;
 import static com.tokopedia.analytics.TopProfileAnalytics.Action.CLICK_ON_UNFAVORITE;
@@ -60,6 +59,7 @@ public class PartialUserShopView extends BaseCustomView {
     private Drawable drawableAddLow;
     private Drawable drawableAddHigh;
 
+    private TopProfileActivityListener.View listener;
 
     private boolean isShopFavorite = false;
 
@@ -203,6 +203,10 @@ public class PartialUserShopView extends BaseCustomView {
         }
     }
 
+    public void setPartialShopListener(TopProfileActivityListener.View listener){
+        this.listener = listener;
+    }
+
     private class ClickFavouriteShop implements OnClickListener {
 
         private final TopProfileViewModel data;
@@ -248,8 +252,7 @@ public class PartialUserShopView extends BaseCustomView {
                             }
                         });
             } else {
-                Intent intent = LoginActivity.getCallingIntent(getContext());
-                getContext().startActivity(intent);
+                listener.onGoToLoginPage();
             }
         }
     }
