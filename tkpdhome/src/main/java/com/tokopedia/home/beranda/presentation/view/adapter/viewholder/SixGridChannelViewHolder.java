@@ -40,15 +40,13 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
     private static final int spanCount = 3;
 
 
-    private static Context context;
-    private static HomeCategoryListener listener;
+    private HomeCategoryListener listener;
 
     public SixGridChannelViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
-        context = itemView.getContext();
         this.listener = listener;
         findViews(itemView);
-        itemAdapter = new ItemAdapter();
+        itemAdapter = new ItemAdapter(listener);
         recyclerView.setAdapter(itemAdapter);
     }
 
@@ -58,7 +56,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
         channelTitleContainer = itemView.findViewById(R.id.channel_title_container);
         seeAllButton = (TextView)itemView.findViewById(R.id.see_all_button);
         recyclerView = itemView.findViewById(R.id.recycleList);
-        recyclerView.setLayoutManager(new GridLayoutManager(context, spanCount,
+        recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, 0, true));
     }
@@ -104,8 +102,10 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
 
         private DynamicHomeChannel.Grid[] list;
         DynamicHomeChannel.Channels channel;
+        private final HomeCategoryListener listener;
 
-        public ItemAdapter() {
+        public ItemAdapter(HomeCategoryListener listener) {
+            this.listener = listener;
             this.list = new DynamicHomeChannel.Grid[0];
         }
 
@@ -126,7 +126,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
             try {
                 final DynamicHomeChannel.Grid grid = list[position];
                 if (grid != null) {
-                    ImageHandler.loadImageFitCenter(context, holder.imageView, grid.getImageUrl());
+                    ImageHandler.loadImageFitCenter(holder.getContext(), holder.imageView, grid.getImageUrl());
                     holder.imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -152,10 +152,16 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
     private static class ItemViewHolder extends RecyclerView.ViewHolder {
 
         private SquareImageView imageView;
+        private View view;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
+            this.view = itemView;
             imageView = itemView.findViewById(R.id.image);
+        }
+
+        public Context getContext() {
+            return itemView.getContext();
         }
     }
 }
