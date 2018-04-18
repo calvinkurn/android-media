@@ -148,6 +148,7 @@ android {
             testCoverageEnabled true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles  'proguard-rules.txt'
+            testCoverageEnabled = true
         }
         release {
             signingConfig signingConfigs.debug
