@@ -145,6 +145,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
                 for (EtalaseModel etalaseModel : etalaseModelListTemp) {
                     if (shopProductRequestModel.getEtalaseId().equalsIgnoreCase(etalaseModel.getEtalaseId())) {
                         etalaseName = etalaseModel.getEtalaseName();
+                        shopProductRequestModel.setUseAce((etalaseModel.getUseAce() == 1));
                     }
                 }
                 // If etalase Id not found, then reset etalaseId
