@@ -19,4 +19,9 @@ public interface KolApi {
     @Headers({"Content-Type: application/json"})
     Observable<Response<GraphqlResponse<GetUserKolPostResponse>>>
     getProfileKolData(@Body GraphqlRequest requestBody);
+
+    @POST("./")
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<GraphqlResponse<GetUserKolPostResponse>>>
+    getKolComment(@Body GraphqlRequest requestBody);
 }

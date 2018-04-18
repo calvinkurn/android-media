@@ -28,7 +28,7 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".feedplus.view.activity.KolCommentActivity"
+            android:name="com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity"
             android:label="@string/title_comment_kol"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>

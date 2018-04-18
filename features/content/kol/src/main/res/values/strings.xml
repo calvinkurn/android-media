@@ -11,4 +11,13 @@
     <string name="post_time_hours_ago">\u0020jam yang lalu</string>
     <string name="post_time_hour">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at">Kemarin pukul\u0020</string>
+
+    <!--Kol Comment-->
+    <string name="prompt_delete_comment_kol">Apakah anda ingin menghapus komen ini?</string>
+    <string name="success_delete_kol_comment">Sukses menghapus komentar</string>
+    <string name="see_more_comments">Lihat Comments Sebelumnya</string>
+    <string name="write_comment">Tulis komentar…</string>
+
+    <string name="kol_title_delete">Hapus</string>
+    <string name="kol_title_cancel">Batal</string>
 </resources>

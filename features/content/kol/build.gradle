@@ -5,6 +5,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 dependencies {
     compile project(rootProject.ext.libraries.useCase)
     compile project(rootProject.ext.libraries.abstraction)
+    compile project(rootProject.ext.libraries.applink)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -23,6 +24,8 @@ dependencies {
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
+
+
 
     compile rootProject.ext.debugToolsDependencies.stetho
 
