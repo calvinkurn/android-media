@@ -34,7 +34,7 @@ public class SearchDataInteractor {
     }
 
     public Observable<List<SearchData>> getSearchData(TKPDMapParam<String, String> params){
-        return universeService.getApi().getUniverseSearch(params)
+        return universeService.getApi().getUniverseSearchV5(params)
                 .doOnNext(saveToCache())
                 .map(new SearchMapper(context, gson));
     }

@@ -19,6 +19,9 @@ public interface UniverseApi {
     @GET(TkpdBaseURL.Ace.PATH_UNIVERSE_SEARCH)
     Observable<Response<String>> getUniverseSearch(@QueryMap Map<String, String> params);
 
+    @GET(TkpdBaseURL.Ace.PATH_UNIVERSE_SEARCH_V5)
+    Observable<Response<String>> getUniverseSearchV5(@QueryMap Map<String, String> params);
+
     @DELETE(TkpdBaseURL.Ace.PATH_DELETE_SEARCH)
     Observable<Response<Void>> deleteRecentSearch(@QueryMap Map<String, String> params);
 }
