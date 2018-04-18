@@ -1,6 +1,7 @@
 package com.tokopedia.profile.view.customview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -27,9 +28,11 @@ import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 
 import static com.tokopedia.analytics.TopProfileAnalytics.Action.CLICK_ON_FAVORITE;
 import static com.tokopedia.analytics.TopProfileAnalytics.Action.CLICK_ON_UNFAVORITE;
@@ -210,38 +213,44 @@ public class PartialUserShopView extends BaseCustomView {
 
         @Override
         public void onClick(View v) {
-            new RetrofitInteractorImpl().favoriteShop(
-                    getContext(),
-                    NetworkParam.paramFaveShop(String.valueOf(data.getShopId())),
-                    new RetrofitInteractor.FaveListener() {
-                        @Override
-                        public void onSuccess(boolean status) {
-                            if (getContext().getApplicationContext() instanceof AbstractionRouter) {
-                                if (!isShopFavorite) {
-                                    ((AbstractionRouter) getContext().getApplicationContext())
-                                            .getAnalyticTracker()
-                                            .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
-                                                    TOP_PROFILE,
-                                                    CLICK_ON_FAVORITE,
-                                                    "");
-                                } else {
-                                    ((AbstractionRouter) getContext().getApplicationContext())
-                                            .getAnalyticTracker()
-                                            .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
-                                                    TOP_PROFILE,
-                                                    CLICK_ON_UNFAVORITE,
-                                                    "");
+            if (SessionHandler.isV4Login(getContext())) {
+                new RetrofitInteractorImpl().favoriteShop(
+                        getContext(),
+                        NetworkParam.paramFaveShop(String.valueOf(data.getShopId())),
+                        new RetrofitInteractor.FaveListener() {
+                            @Override
+                            public void onSuccess(boolean status) {
+                                if (getContext().getApplicationContext() instanceof
+                                        AbstractionRouter) {
+                                    if (!isShopFavorite) {
+                                        ((AbstractionRouter) getContext().getApplicationContext())
+                                                .getAnalyticTracker()
+                                                .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                                        TOP_PROFILE,
+                                                        CLICK_ON_FAVORITE,
+                                                        "");
+                                    } else {
+                                        ((AbstractionRouter) getContext().getApplicationContext())
+                                                .getAnalyticTracker()
+                                                .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                                        TOP_PROFILE,
+                                                        CLICK_ON_UNFAVORITE,
+                                                        "");
+                                    }
+
+                                    reverseFavorite();
                                 }
-
-                                reverseFavorite();
                             }
-                        }
 
-                        @Override
-                        public void onError(String error) {
+                            @Override
+                            public void onError(String error) {
 
-                        }
-                    });
+                            }
+                        });
+            } else {
+                Intent intent = LoginActivity.getCallingIntent(getContext());
+                getContext().startActivity(intent);
+            }
         }
     }
 
