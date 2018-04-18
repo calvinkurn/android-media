@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -25,8 +26,10 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 
 /**
@@ -45,11 +48,12 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private TextView emptyContentTextView;
     private Button emptyButtonItemButton;
     private final ItemClickListener clickListener;
+    private TopAdsBannerView topAdsBannerView;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.list_empty_search_product;
 
-    public EmptySearchViewHolder(View view, ItemClickListener clickListener, Config topAdsConfig) {
+    public EmptySearchViewHolder(View view, final ItemClickListener clickListener, Config topAdsConfig) {
         super(view);
         noResultImage = (ImageView) view.findViewById(R.id.no_result_image);
         emptyTitleTextView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
@@ -58,6 +62,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         this.clickListener = clickListener;
         context = itemView.getContext();
         topAdsView = (TopAdsView) itemView.findViewById(R.id.topads);
+        topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.banner_ads);
         config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(context))
@@ -74,6 +79,14 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         topAdsView.setDisplayMode(DisplayMode.FEED);
         topAdsView.setMaxItems(MAX_TOPADS);
         topAdsView.setAdsItemClickListener(this);
+        topAdsBannerView.setConfig(config);
+        topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(String appLink) {
+                clickListener.onBannerAdsClicked(appLink);
+            }
+        });
+        topAdsBannerView.loadTopAds();
     }
 
     @Override
