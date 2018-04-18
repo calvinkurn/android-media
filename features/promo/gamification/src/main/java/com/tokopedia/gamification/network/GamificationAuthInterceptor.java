@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 
 import java.util.Map;
 
@@ -36,6 +37,12 @@ public class GamificationAuthInterceptor extends TkpdAuthInterceptor {
         if (!TextUtils.isEmpty(accessToken)) {
             headerMap.put(HEADER_ACCOUNTS_AUTHORIZATION, BEARER_SPACE + accessToken);
         }
+
+        if (userSession.isLoggedIn()) {
+            headerMap.put(AuthUtil.HEADER_TKPD_USER_ID, userSession.getUserId());
+            headerMap.put(AuthUtil.HEADER_X_TKPD_USER_ID, userSession.getUserId());
+        }
+        
         return headerMap;
     }
 }
