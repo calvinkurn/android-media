@@ -176,6 +176,9 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
                 });
             }
         }
+        if (adsListener != null) {
+            adsListener.onTopAdsLoaded();
+        }
     }
 
     private boolean isResponseValid(CpmData data) {

@@ -79,17 +79,6 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         topAdsView.setDisplayMode(DisplayMode.FEED);
         topAdsView.setMaxItems(MAX_TOPADS);
         topAdsView.setAdsItemClickListener(this);
-        topAdsView.setAdsListener(new TopAdsListener() {
-            @Override
-            public void onTopAdsLoaded() {
-                loadBannerAds();
-            }
-
-            @Override
-            public void onTopAdsFailToLoad(int errorCode, String message) {
-                loadBannerAds();
-            }
-        });
         topAdsView.loadTopAds();
     }
 
@@ -106,6 +95,17 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
             @Override
             public void onBannerAdsClicked(String appLink) {
                 clickListener.onBannerAdsClicked(appLink);
+            }
+        });
+        topAdsBannerView.setAdsListener(new TopAdsListener() {
+            @Override
+            public void onTopAdsLoaded() {
+                loadProductAds();
+            }
+
+            @Override
+            public void onTopAdsFailToLoad(int errorCode, String message) {
+                loadProductAds();
             }
         });
         topAdsBannerView.loadTopAds();
@@ -162,6 +162,6 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
             });
             emptyButtonItemButton.setVisibility(View.VISIBLE);
         }
-        loadProductAds();
+        loadBannerAds();
     }
 }
