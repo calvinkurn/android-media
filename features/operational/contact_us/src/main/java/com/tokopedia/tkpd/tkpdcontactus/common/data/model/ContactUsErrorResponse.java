@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdcontactus.home.data.model;
+package com.tokopedia.tkpd.tkpdcontactus.common.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

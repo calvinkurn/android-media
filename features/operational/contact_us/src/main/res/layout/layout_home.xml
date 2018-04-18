@@ -26,12 +26,10 @@
             app:layout_constraintTop_toBottomOf="@+id/artikel_populer">
 
             <include
-                android:id="@+id/order_list"
                 layout="@layout/layout_order_list"
                 android:visibility="gone" />
 
             <include
-                android:id="@+id/no_orders"
                 layout="@layout/layout_no_orders"
                 android:visibility="visible" />
 

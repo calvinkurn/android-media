@@ -3,7 +3,8 @@ package com.tokopedia.tkpd.tkpdcontactus.home.view.fragment;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +15,25 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.ContactUsArticleResponse;
 import com.tokopedia.tkpd.tkpdcontactus.home.di.ContactUsComponent;
 import com.tokopedia.tkpd.tkpdcontactus.home.di.DaggerContactUsComponent;
+import com.tokopedia.tkpd.tkpdcontactus.home.view.BuyerPurchaseListActivity;
+import com.tokopedia.tkpd.tkpdcontactus.home.view.ContactUsWebViewActivity;
+import com.tokopedia.tkpd.tkpdcontactus.home.view.adapter.CardPagerAdapter;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.customview.ArticleTextView;
+import com.tokopedia.tkpd.tkpdcontactus.common.customview.ShadowTransformer;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.presenter.ContactUsHomePresenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 public class ContactUsHomeFragment extends BaseDaggerFragment implements ContactUsHomeContract.View, HasComponent<ContactUsComponent> {
@@ -33,6 +42,13 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     ContactUsHomePresenter presenter;
     @BindView(R2.id.linearlayout_popular_article)
     LinearLayout linearlayoutPopularArticle;
+    @BindView(R2.id.order_list)
+    CardView orderList;
+    @BindView(R2.id.no_orders)
+    CardView noOrders;
+    @BindView(R2.id.order_list_viewpager)
+    ViewPager orderListViewpager;
+    CardPagerAdapter cardAdapter;
 
     private ContactUsComponent campaignComponent;
 
@@ -53,6 +69,10 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
         presenter.attachView(this);
         initInjector();
         ButterKnife.bind(this, view);
+        cardAdapter = new CardPagerAdapter();
+        ShadowTransformer shadowTransformer = new ShadowTransformer(orderListViewpager,cardAdapter);
+        orderListViewpager.setPageTransformer(false,shadowTransformer);
+        orderListViewpager.setOffscreenPageLimit(3);
         return view;
     }
 
@@ -77,6 +97,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     @Override
     public void addPopularArticle(ContactUsArticleResponse articleResponse) {
         ArticleTextView textView = new ArticleTextView(getContext());
+        textView.setContactUsArticle(articleResponse);
         linearlayoutPopularArticle.addView(textView);
         addPopularArticleDivider();
     }
@@ -85,12 +106,37 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     public void addPopularArticleDivider() {
         View divider = new View(getContext());
         Resources resources = getActivity().getResources();
-        divider.setBackgroundColor(resources.getColor(R.color.green_300));
-        ViewGroup.LayoutParams layoutParams = divider.getLayoutParams();
-        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        layoutParams.height = (int) resources.getDimension(R.dimen.divider_height_thin);
-        linearlayoutPopularArticle.addView(divider,layoutParams);
+        divider.setBackgroundColor(resources.getColor(R.color.grey_200));
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) resources.getDimension(R.dimen.divider_height_thin));
+        linearlayoutPopularArticle.addView(divider, layoutParams);
+    }
+
+    @Override
+    public void setEmptyPurchaseListVisible() {
+        noOrders.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setEmptyPurchaseListHide() {
+        noOrders.setVisibility(View.GONE);
     }
 
 
+    @Override
+    public void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists) {
+        orderList.setVisibility(View.VISIBLE);
+        cardAdapter.addData(buyerPurchaseLists);
+        orderListViewpager.setAdapter(cardAdapter);
+    }
+
+
+    @OnClick(R2.id.btn_view_more)
+    public void onViewClicked() {
+        startActivity(ContactUsWebViewActivity.getInstance(getContext(), "www.tokopedia.com/bantuan"));
+    }
+
+    @OnClick(R2.id.view_full_purchaselist)
+    public void onViewFullClicked() {
+        startActivity(BuyerPurchaseListActivity.getInstance(getContext()));
+    }
 }

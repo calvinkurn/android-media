@@ -10,6 +10,8 @@ import rx.Observable;
  * Created by sandeepgoyal on 03/04/18.
  */
 
-public interface IContactUsDataRepository {
+public interface IContactUsDataRepository extends IPurchaseListRepository{
      Observable<List<ContactUsArticleResponse>> getPopularArticle();
+
+
 }

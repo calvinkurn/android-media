@@ -24,6 +24,7 @@ dependencies {
 
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    compile 'com.android.support:support-v4:26.0.2'
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     compile rootProject.ext.miscDependencies.dagger

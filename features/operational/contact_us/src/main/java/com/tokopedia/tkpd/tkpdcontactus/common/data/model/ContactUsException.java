@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdcontactus.home.data.model;
+package com.tokopedia.tkpd.tkpdcontactus.common.data.model;
 
 import java.io.IOException;
 

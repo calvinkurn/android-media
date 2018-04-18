@@ -222,7 +222,7 @@ public class AuthUtil {
     }
 
     public static Map<String, String> generateBothAuthHeadersAccount(String path, String strParam, String method,
-                                                                     String contentType, String authKey, String dateFormat) {
+                                                                      String contentType, String authKey, String dateFormat) {
 
         String date = generateDate(dateFormat);
         String contentMD5 = generateContentMd5(strParam);

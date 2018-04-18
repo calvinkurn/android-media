@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdcontactus.home.di.scope;
+package com.tokopedia.tkpd.tkpdcontactus.common.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

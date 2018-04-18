@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.tkpdcontactus.home.source.api;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.tkpd.tkpdcontactus.common.api.ContactUsURL;
+import com.tokopedia.tkpd.tkpdcontactus.home.data.BuyerPurchaseData;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.ContactUsArticleResponse;
 
 import java.util.List;
@@ -17,5 +19,8 @@ public interface ContactUsAPI {
 
     @GET(ContactUsURL.POPULAR_ARTICLE)
     Observable<Response<List<ContactUsArticleResponse>>> getPopularArticle();
+
+    @GET(ContactUsURL.BUYER_LIST)
+    Observable<Response<DataResponse<BuyerPurchaseData>>> getBuyerPurchaseList();
 
 }
