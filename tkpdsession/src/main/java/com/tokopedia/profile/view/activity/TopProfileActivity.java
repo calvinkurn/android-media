@@ -357,7 +357,9 @@ public class TopProfileActivity extends BaseSimpleActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        presenter.getTopProfileData(userId);
+        if (requestCode == MANAGE_PEOPLE_CODE || requestCode == LOGIN_REQUEST_CODE) {
+            presenter.getTopProfileData(userId);
+        }
     }
 
     @Override
