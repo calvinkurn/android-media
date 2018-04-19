@@ -8,12 +8,14 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsFilterGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsSortByActivity;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyGroupAdDataBinder;
 import com.tokopedia.topads.dashboard.view.model.Ad;
@@ -42,7 +44,8 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
 
     @Override
     protected void searchForPage(int page) {
-        presenter.searchAd(startDate, endDate, keyword, status, getCurrentPage());
+        presenter.searchAd(startDate, endDate, keyword, status, getCurrentPage(),
+                selectedSort != null ? selectedSort.getId() : SortTopAdsOption.LATEST);
     }
 
     @Override
@@ -97,6 +100,9 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
+            resetPageAndSearch();
+        } else if (requestCode == REQUEST_CODE_AD_SORT_BY && intent != null) {
+            selectedSort = intent.getParcelableExtra(TopAdsSortByActivity.EXTRA_SORT_SELECTED);
             resetPageAndSearch();
         }
     }

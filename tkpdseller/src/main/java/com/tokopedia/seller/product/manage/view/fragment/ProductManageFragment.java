@@ -471,20 +471,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onItemChecked(ProductManageViewModel productManageViewModel, boolean checked) {
-        if (checked && productManageViewModel.getProductVariant() == 1) {
-            NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.product_manage_label_snackbar_variant));
-            ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), false);
-            adapter.notifyDataSetChanged();
+        if (actionMode != null) {
+            int totalChecked = ((ProductManageListAdapter) adapter).getTotalChecked();
+            actionMode.setTitle(String.valueOf(totalChecked));
+            MenuItem deleteMenuItem = actionMode.getMenu().findItem(R.id.delete_product_menu);
+            deleteMenuItem.setVisible(totalChecked > 0);
         } else {
-            if (actionMode != null) {
-                int totalChecked = ((ProductManageListAdapter) adapter).getTotalChecked();
-                actionMode.setTitle(String.valueOf(totalChecked));
-                MenuItem deleteMenuItem = actionMode.getMenu().findItem(R.id.delete_product_menu);
-                deleteMenuItem.setVisible(totalChecked > 0);
-            } else {
-                ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), checked);
-                adapter.notifyDataSetChanged();
-            }
+            ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), checked);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -792,6 +786,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private void goToShareProduct(ProductManageViewModel productManageViewModel) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setName(productManageViewModel.getProductName())
+                .setTextContent(productManageViewModel.getProductName())
                 .setDescription(productManageViewModel.getProductName())
                 .setImgUri(productManageViewModel.getImageUrl())
                 .setPrice(productManageViewModel.getProductPrice())

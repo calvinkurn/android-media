@@ -21,6 +21,9 @@ import java.util.List;
 public interface HomeContract {
 
     interface View extends CustomerView {
+
+        boolean isLoading();
+
         void showLoading();
 
         void hideLoading();
@@ -41,10 +44,15 @@ public interface HomeContract {
 
         Activity getActivity();
 
+        void updateListOnResume(List<Visitable> visitables);
+
+        void showRecomendationButton();
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void getHomeData();
+
+        void updateHomeData();
 
         void getHeaderData(boolean initialStart);
 
@@ -65,5 +73,9 @@ public interface HomeContract {
         void onRefreshTokoPoint();
 
         void onRefreshTokoCash();
+
+        void onResume();
+
+        void onFirstLaunch();
     }
 }

@@ -46,6 +46,8 @@ public interface SellerModuleRouter {
 
     void sendEventTracking(String event, String category, String action, String label);
 
+    void sendMoEngageOpenShopEventTracking(String screenName);
+
     Intent getLoginIntent(Context context);
 
     Intent getPhoneVerificationActivityIntent(Context context);

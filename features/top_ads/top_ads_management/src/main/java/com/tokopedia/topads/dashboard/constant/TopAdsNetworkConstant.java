@@ -40,6 +40,7 @@ public class TopAdsNetworkConstant {
     public static final String PARAM_KEYWORD = "keyword";
     public static final String PARAM_ETALASE = "etalase";
     public static final String PARAM_SORT_BY = "sort_by";
+    public static final String PARAM_SORT = "sort";
     public static final String PARAM_START = "start";
     public static final String PARAM_ROWS = "rows";
     public static final String PARAM_STATUS = "status";

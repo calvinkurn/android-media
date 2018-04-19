@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.categorynav.view;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,14 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.discovery.dynamicfilter.adapter.MultiLevelExpIndListAdapter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.di.CategoryNavigationInjector;
 import com.tokopedia.discovery.categorynav.domain.model.Category;
 import com.tokopedia.discovery.categorynav.domain.model.CategoryNavDomainModel;
-import com.tokopedia.discovery.categorynav.domain.model.ChildCategory;
 import com.tokopedia.discovery.categorynav.view.adapter.CategoryChildAdapter;
 import com.tokopedia.discovery.categorynav.view.adapter.CategoryParentAdapter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
@@ -30,7 +28,7 @@ import java.util.List;
  */
 
 public class CategoryNavigationFragment extends BaseDaggerFragment implements CategoryNavigationContract.View,
-        CategoryParentAdapter.OnItemClickListener, CategoryChildAdapter.OnItemClickListener{
+        CategoryParentAdapter.OnItemClickListener, CategoryChildAdapter.OnItemClickListener {
 
     public static final String TAG = "CATEGORY_NAVIGATION_FRAGMENT";
     private static final int DEFAULT_OFFSET = 170;
@@ -96,14 +94,14 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     @Override
     public void showLoading() {
-        if (isAdded() && ((CategoryNavigationActivity) getActivity()).getProgressBar() !=null) {
+        if (isAdded() && ((CategoryNavigationActivity) getActivity()).getProgressBar() != null) {
             ((CategoryNavigationActivity) getActivity()).getProgressBar().setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void hideLoading() {
-        if (isAdded() && ((CategoryNavigationActivity) getActivity()).getProgressBar() !=null) {
+        if (isAdded() && ((CategoryNavigationActivity) getActivity()).getProgressBar() != null) {
             ((CategoryNavigationActivity) getActivity()).getProgressBar().setVisibility(View.GONE);
         }
     }
@@ -115,11 +113,11 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     @Override
     public void renderRootCategory(CategoryNavDomainModel domainModel) {
-        if (domainModel.getCategories()!=null && domainModel.getCategories().size()>0) {
+        if (domainModel.getCategories() != null && domainModel.getCategories().size() > 0) {
             categoryNavDomainModel = domainModel;
             Category rootCategory = new Category();
-            for (Category category: categoryNavDomainModel.getCategories()) {
-                if (category.getChildren()!=null && category.getChildren().size()>0) {
+            for (Category category : categoryNavDomainModel.getCategories()) {
+                if (category.getChildren() != null && category.getChildren().size() > 0) {
                     rootCategoryId = category.getId();
                     rootCategory = category;
                     break;
@@ -129,7 +127,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
                 rootCategoryId = categoryNavDomainModel.getCategories().get(0).getId();
                 rootCategory = categoryNavDomainModel.getCategories().get(0);
             }
-            categoryParentAdapter = new CategoryParentAdapter(this,rootCategoryId);
+            categoryParentAdapter = new CategoryParentAdapter(this, rootCategoryId);
             linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             categoryRootRecyclerView.setLayoutManager(linearLayoutManager);
             categoryRootRecyclerView.setAdapter(categoryParentAdapter);
@@ -139,14 +137,15 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
             LinearLayoutManager linearLayoutManagerChild = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             categoryChildRecyclerView.setLayoutManager(linearLayoutManagerChild);
             categoryChildRecyclerView.setAdapter(categoryChildAdapter);
-            if (rootCategory!=null && rootCategory.getChildren().size()>0) {
+            if (rootCategory != null && rootCategory.getChildren().size() > 0) {
                 categoryChildAdapter.clear();
                 categoryChildAdapter.addAll(rootCategory.getChildren());
                 categoryParentAdapter.notifyDataSetChanged();
-                if (!rootCategoryId.equals(categoryId)) categoryChildAdapter.toggleSelectedChildbyId(categoryId);
+                if (!rootCategoryId.equals(categoryId))
+                    categoryChildAdapter.toggleSelectedChildbyId(categoryId);
                 linearLayoutManager.scrollToPositionWithOffset(categoryParentAdapter.getPositionById(rootCategoryId), DEFAULT_OFFSET);
             } else {
-                presenter.getChildren(2,rootCategory.getId());
+                presenter.getChildren(2, rootCategory.getId());
             }
         } else {
             showErrorEmptyState();
@@ -158,7 +157,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
     public void renderCategoryLevel2(String parentCategoryId, List<Category> children) {
         Category parentCategory = categoryNavDomainModel.getCategoryIndexById(parentCategoryId);
 
-        parentCategory.addChildren(children,2);
+        parentCategory.addChildren(children, 2);
         categoryChildAdapter.clear();
         categoryChildAdapter.addAll(parentCategory.getChildren());
         categoryParentAdapter.notifyDataSetChanged();
@@ -166,11 +165,11 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     @Override
     public void renderCategoryLevel3(String categoryId, List<Category> children) {
-        for (Category category: categoryNavDomainModel.getCategories()) {
+        for (Category category : categoryNavDomainModel.getCategories()) {
             if (category.getId().equals(rootCategoryId)) {
-                for (Category categoryLevel2: (List<Category>) category.getChildren()) {
+                for (Category categoryLevel2 : (List<Category>) category.getChildren()) {
                     if (categoryLevel2.getId().equals(categoryId)) {
-                        categoryLevel2.addChildren(children,3);
+                        categoryLevel2.addChildren(children, 3);
                         categoryChildAdapter.clear();
                         categoryChildAdapter.addAll(category.getChildren());
                         categoryChildAdapter.toggleSelectedChildbyId(categoryLevel2.getId());
@@ -184,12 +183,12 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
     }
 
     private void showErrorEmptyState() {
-        NetworkErrorHelper.showEmptyState(getActivity(),  ((CategoryNavigationActivity) getActivity())
+        NetworkErrorHelper.showEmptyState(getActivity(), ((CategoryNavigationActivity) getActivity())
                         .getFrameLayout(),
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.getRootCategory(!TextUtils.isEmpty(rootCategoryId)?rootCategoryId:"0");
+                        presenter.getRootCategory(!TextUtils.isEmpty(rootCategoryId) ? rootCategoryId : "0");
                     }
                 });
     }
@@ -197,16 +196,17 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     @Override
     public void onItemClicked(com.tokopedia.discovery.categorynav.domain.model.Category parent, int position) {
+        TrackingUtils.sendMoEngageClickMainCategoryIcon(parent.getName());
         rootCategoryId = parent.getId();
         categoryParentAdapter.setActiveId(parent.getId());
-        for (Category category: categoryNavDomainModel.getCategories()) {
+        for (Category category : categoryNavDomainModel.getCategories()) {
             if (category.getId() == rootCategoryId) {
-                if (category.getChildren()!=null && category.getChildren().size()>0) {
+                if (category.getChildren() != null && category.getChildren().size() > 0) {
                     categoryChildAdapter.clear();
                     categoryChildAdapter.addAll(category.getChildren());
                     categoryParentAdapter.notifyDataSetChanged();
                 } else {
-                    presenter.getChildren(2,rootCategoryId);
+                    presenter.getChildren(2, rootCategoryId);
                 }
                 break;
             }
@@ -216,10 +216,10 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
     @Override
     public void onChildClicked(Category category) {
         if (category.getHasChild()) {
-            if (category.getChildren()!=null && category.getChildren().size()>0) {
-               renderCategoryLevel3(category.getId(),(List<Category>)category.getChildren());
+            if (category.getChildren() != null && category.getChildren().size() > 0) {
+                renderCategoryLevel3(category.getId(), (List<Category>) category.getChildren());
             } else {
-                presenter.getChildren(3,category.getId());
+                presenter.getChildren(3, category.getId());
             }
         } else {
             IntermediaryActivity.moveTo(

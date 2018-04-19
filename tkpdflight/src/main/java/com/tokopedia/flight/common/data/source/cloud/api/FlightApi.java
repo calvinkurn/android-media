@@ -7,13 +7,14 @@ import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
-import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
-import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
+import com.tokopedia.flight.passenger.data.cloud.entity.PassengerListEntity;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
@@ -32,6 +33,7 @@ import retrofit2.http.GET;
 import retrofit2.http.HTTP;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -91,10 +93,15 @@ public interface FlightApi {
     Observable<Response<SendEmailEntity>> sendEmail(@QueryMap Map<String, Object> param);
 
     @GET(FlightUrl.FLIGHT_PASSENGER_SAVED)
-    Observable<Response<FlightDataResponse<List<SavedPassengerEntity>>>> getSavedPassengerData();
+    Observable<Response<FlightDataResponse<List<PassengerListEntity>>>> getSavedPassengerData();
 
     @Headers({"Content-Type: application/json"})
     @HTTP(method = "DELETE", path = FlightUrl.FLIGHT_PASSENGER_SAVED, hasBody = true)
     Observable<Response<Object>> deleteSavedPassengerData(@Body DataRequest<DeletePassengerRequest> request,
                                                           @Header("Idempotency-Key") String idemPotencyKeyHeader);
+
+    @Headers({"Content-Type: application/json"})
+    @PATCH(FlightUrl.FLIGHT_PASSENGER_SAVED)
+    Observable<Response<FlightDataResponse<PassengerListEntity>>> updatePassengerListData(@Body DataRequest<UpdatePassengerRequest> request,
+                                                                                          @Header("Idempotency-Key") String idemPotencyKeyHeader);
 }

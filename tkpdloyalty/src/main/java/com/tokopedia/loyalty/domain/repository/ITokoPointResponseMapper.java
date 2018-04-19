@@ -9,6 +9,7 @@ import com.tokopedia.loyalty.domain.entity.response.ValidateRedeemCouponResponse
 import com.tokopedia.loyalty.domain.entity.response.VoucherResponse;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
 import java.util.List;
@@ -39,4 +40,6 @@ public interface ITokoPointResponseMapper {
     CouponViewModel digitalCouponViewModel(DigitalVoucherData voucherResponse,
                                            String voucherCode,
                                            String couponTitle);
+
+    CouponsDataWrapper convertCouponsDataWraper(CouponListDataResponse couponListDataResponse);
 }

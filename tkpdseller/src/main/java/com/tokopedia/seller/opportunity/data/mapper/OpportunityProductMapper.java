@@ -13,7 +13,7 @@ import java.util.List;
 import rx.functions.Func2;
 
 /**
- * Created by nakama on 10/04/18.
+ * Created by hadi-putra on 10/04/18.
  */
 
 public class OpportunityProductMapper implements Func2<ProductDetailData, OpportunityDetail, ProductDetailData> {
@@ -30,15 +30,16 @@ public class OpportunityProductMapper implements Func2<ProductDetailData, Opport
                 .ConvertToRupiah(opportunityProduct.getProductPrice()).replaceAll(",","."));
 
         productDetailData.setInfo(productDetailInfo);
+        if (opportunityProduct.getProductPictures() != null) {
+            List<ProductImage> images = new ArrayList<>();
+            for(String imageUrl : opportunityProduct.getProductPictures()){
+                ProductImage image = new ProductImage();
+                image.setImageSrc(imageUrl);
+                images.add(image);
+            }
 
-        List<ProductImage> images = new ArrayList<>();
-        for(String imageUrl : opportunityProduct.getProductPictures()){
-            ProductImage image = new ProductImage();
-            image.setImageSrc(imageUrl);
-            images.add(image);
+            productDetailData.setProductImages(images);
         }
-
-        productDetailData.setProductImages(images);
 
         return productDetailData;
     }

@@ -45,6 +45,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
     private final GetShopInfoUseCase getShopInfoUseCase;
     private final GetShopEtalaseUseCase getShopEtalaseUseCase;
     private final UserSession userSession;
+    private final static int USE_ACE = 1;
 
     @Inject
     public ShopProductListPresenter(GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase,
@@ -121,6 +122,8 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
         }
         ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel();
         shopEtalaseRequestModel.setShopId(shopProductRequestModel.getShopId());
+        shopEtalaseRequestModel.setUserId(userSession.getUserId());
+        shopEtalaseRequestModel.setDeviceId(userSession.getDeviceId());
         getShopEtalaseUseCase.execute(GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel), new Subscriber<PagingListOther<EtalaseModel>>() {
             @Override
             public void onCompleted() {
@@ -143,6 +146,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
                 for (EtalaseModel etalaseModel : etalaseModelListTemp) {
                     if (shopProductRequestModel.getEtalaseId().equalsIgnoreCase(etalaseModel.getEtalaseId())) {
                         etalaseName = etalaseModel.getEtalaseName();
+                        shopProductRequestModel.setUseAce((etalaseModel.getUseAce() == USE_ACE));
                     }
                 }
                 // If etalase Id not found, then reset etalaseId

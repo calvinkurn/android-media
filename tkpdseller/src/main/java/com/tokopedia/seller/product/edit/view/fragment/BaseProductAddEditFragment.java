@@ -515,6 +515,9 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
+                        if (!isAdded() || getActivity() == null) {
+                            return;
+                        }
                         View view = getActivity().getCurrentFocus();
                         if (view != null) {
                             CommonUtils.hideSoftKeyboard(view);

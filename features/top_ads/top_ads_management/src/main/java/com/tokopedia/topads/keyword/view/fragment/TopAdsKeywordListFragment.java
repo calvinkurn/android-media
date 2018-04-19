@@ -19,6 +19,7 @@ import com.tokopedia.topads.common.constant.TopAdsSourceOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsSortByActivity;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyKeywordAdDataBinder;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
@@ -47,6 +48,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     protected int filterStatus;
     protected GroupAd groupAd;
     protected int selectedPosition;
+
     @Inject
     TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
 
@@ -110,6 +112,9 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         if (groupAd != null) {
             baseKeywordParam.groupId = Integer.parseInt(groupAd.getId());
         }
+        if (selectedSort != null) {
+            baseKeywordParam.sortingParam = selectedSort.getId();
+        }
         baseKeywordParam.keywordStatus = filterStatus;
         searchData(baseKeywordParam);
     }
@@ -137,6 +142,11 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
             filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
             selectedPosition = intent.getIntExtra(TopAdsFilterListFragment.EXTRA_ITEM_SELECTED_POSITION, 0);
             resetPageAndSearch();
+        } else if (requestCode == REQUEST_CODE_AD_SORT_BY && intent != null){
+            if (resultCode == Activity.RESULT_OK){
+                selectedSort = intent.getParcelableExtra(TopAdsSortByActivity.EXTRA_SORT_SELECTED);
+                resetPageAndSearch();
+            }
         }
 
         if (requestCode == TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS) {

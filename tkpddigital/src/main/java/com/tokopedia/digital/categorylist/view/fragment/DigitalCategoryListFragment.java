@@ -405,7 +405,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
                     bundle.putBoolean(Constants.EXTRA_APPLINK_FROM_INTERNAL, true);
-                    ((IDigitalModuleRouter) getActivity().getApplication()).actionNavigateByApplinksUrl(getActivity(), itemData.getAppLinks(), bundle);
+                    ((IDigitalModuleRouter) getActivity().getApplication())
+                            .actionNavigateByApplinksUrl(getActivity(), itemData.getAppLinks(), bundle);
                 } else {
                     String redirectValueUrl = itemData.getRedirectValue();
                     if (redirectValueUrl != null && redirectValueUrl.length() > 0) {
