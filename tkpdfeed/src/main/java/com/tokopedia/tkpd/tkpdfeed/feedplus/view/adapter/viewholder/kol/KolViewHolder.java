@@ -94,14 +94,18 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             topSeparator.setVisibility(View.GONE);
         } else if (element.isFollowed() && element.isTemporarilyFollowed()) {
             followButton.setVisibility(View.VISIBLE);
+            followButton.setBackground(MethodChecker.getDrawable(followButton.getContext(),
+                    R.drawable.bg_button_white_border));
             followText.setText(R.string.following);
             followText.setTextColor(MethodChecker.getColor(followText.getContext(),
                     R.color.black_54));
             topSeparator.setVisibility(View.VISIBLE);
         } else {
             followButton.setVisibility(View.VISIBLE);
+            followButton.setBackground(MethodChecker.getDrawable(followButton.getContext(),
+                    R.drawable.bg_button_green));
             followText.setTextColor(MethodChecker.getColor(followText.getContext(),
-                    R.color.green_500));
+                    R.color.white));
             followText.setText(R.string.action_follow_english);
             topSeparator.setVisibility(View.VISIBLE);
         }
