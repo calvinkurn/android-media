@@ -276,6 +276,14 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 iconVote.setImageResource(R.drawable.ic_timer_inactive);
             }
             voteAdapter.updateStatistic();
+            if (voteInfoViewModel != null) {
+                voteInfoViewModel.setStatusId(VoteInfoViewModel.STATUS_FINISH);
+
+                if (getActivity() instanceof GroupChatContract.View) {
+                    ((GroupChatContract.View) getActivity()).updateVoteViewModel(
+                            voteInfoViewModel, "");
+                }
+            }
         }
     }
 
