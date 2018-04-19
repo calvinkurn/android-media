@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,12 +22,9 @@ import java.util.List;
 public class ShipmentAddressListAdapter
         extends RecyclerView.Adapter<ShipmentAddressListAdapter.RecipientAddressViewHolder> {
 
-    private static final String TAG = ShipmentAddressListAdapter.class.getSimpleName();
-
     private static final int PRIME_ADDRESS = 2;
 
     private List<RecipientAddressModel> mAddressModelList;
-    private Context mContext;
     private ActionListener mActionListener;
 
     public ShipmentAddressListAdapter(ActionListener actionListener) {
@@ -42,8 +38,7 @@ public class ShipmentAddressListAdapter
 
     @Override
     public RecipientAddressViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        mContext = parent.getContext();
-        View view = LayoutInflater.from(mContext)
+        View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_recipient_address_rb_selectable, parent, false);
         return new RecipientAddressViewHolder(view);
     }

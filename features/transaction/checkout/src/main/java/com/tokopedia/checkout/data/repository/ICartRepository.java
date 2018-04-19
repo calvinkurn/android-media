@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.data.repository;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.checkout.data.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.checkout.data.entity.response.checkout.CheckoutDataResponse;
@@ -14,6 +13,8 @@ import com.tokopedia.checkout.data.entity.response.shippingaddress.ShippingAddre
 import com.tokopedia.checkout.data.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.checkout.data.entity.response.updatecart.UpdateCartDataResponse;
 
+import java.util.Map;
+
 import rx.Observable;
 
 /**
@@ -22,27 +23,27 @@ import rx.Observable;
 
 public interface ICartRepository {
 
-    Observable<CartDataListResponse> getCartList(TKPDMapParam<String, String> param);
+    Observable<CartDataListResponse> getCartList(Map<String, String> param);
 
-    Observable<DeleteCartDataResponse> deleteCartData(TKPDMapParam<String, String> param);
+    Observable<DeleteCartDataResponse> deleteCartData(Map<String, String> param);
 
-    Observable<AddToCartDataResponse> addToCartData(TKPDMapParam<String, String> param);
+    Observable<AddToCartDataResponse> addToCartData(Map<String, String> param);
 
-    Observable<UpdateCartDataResponse> updateCartData(TKPDMapParam<String, String> param);
+    Observable<UpdateCartDataResponse> updateCartData(Map<String, String> param);
 
-    Observable<ShippingAddressDataResponse> shippingAddress(TKPDMapParam<String, String> param);
+    Observable<ShippingAddressDataResponse> shippingAddress(Map<String, String> param);
 
-    Observable<ShipmentAddressFormDataResponse> getShipmentAddressForm(TKPDMapParam<String, String> param);
+    Observable<ShipmentAddressFormDataResponse> getShipmentAddressForm(Map<String, String> param);
 
-    Observable<ResetCartDataResponse> resetCart(TKPDMapParam<String, String> param);
+    Observable<ResetCartDataResponse> resetCart(Map<String, String> param);
 
-    Observable<CheckoutDataResponse> checkout(TKPDMapParam<String, String> param);
+    Observable<CheckoutDataResponse> checkout(Map<String, String> param);
 
-    Observable<CheckPromoCodeCartListDataResponse> checkPromoCodeCartList(TKPDMapParam<String, String> param);
+    Observable<CheckPromoCodeCartListDataResponse> checkPromoCodeCartList(Map<String, String> param);
 
-    Observable<CheckPromoCodeFinalDataResponse> checkPromoCodeCartShipment(TKPDMapParam<String, String> param);
+    Observable<CheckPromoCodeFinalDataResponse> checkPromoCodeCartShipment(Map<String, String> param);
 
-    Observable<CouponDataResponse> getCouponList(TKPDMapParam<String, String> param);
+    Observable<CouponDataResponse> getCouponList(Map<String, String> param);
 
     Observable<NotifCounterCartDataResponse> getNotificationCounter();
 

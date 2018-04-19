@@ -18,8 +18,6 @@ import java.util.List;
 
 public class InnerProductListAdapter extends RecyclerView.Adapter<CartItemViewHolder> {
 
-    private static final String TAG = InnerProductListAdapter.class.getSimpleName();
-
     private List<CartItemModel> mCartItemList;
 
     public InnerProductListAdapter(List<CartItemModel> cartItemList) {

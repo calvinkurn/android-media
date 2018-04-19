@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,19 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.Data;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.checkout.data.entity.request.DataCheckoutRequest;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.mapper.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.view.shipmentform.SingleAddressShipmentFragment;
@@ -29,6 +24,12 @@ import com.tokopedia.checkout.view.viewholder.CartSellerItemViewHolder;
 import com.tokopedia.checkout.view.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.checkout.view.viewholder.RecipientAddressViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentCostViewHolder;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.Data;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 import java.util.ArrayList;
@@ -193,12 +194,6 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         this.shipmentCost = shipmentCost;
         shipmentDataList.add(shipmentCost);
         notifyDataSetChanged();
-        checkDataForCheckout();
-    }
-
-    public void removeData(int position) {
-        shipmentDataList.remove(position);
-        notifyItemRemoved(position);
         checkDataForCheckout();
     }
 
@@ -401,6 +396,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         }
     }
 
+    @SuppressLint("PrivateResource")
     private ShowCaseDialog createShowCaseDialog() {
         return new ShowCaseBuilder()
                 .customView(R.layout.show_case_checkout)
@@ -439,7 +435,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             this.promoRequestData = promoRequestData;
         }
 
-        public List<DataCheckoutRequest> getCheckoutRequestData() {
+        List<DataCheckoutRequest> getCheckoutRequestData() {
             return checkoutRequestData;
         }
 

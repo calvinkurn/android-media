@@ -1,7 +1,8 @@
 package com.tokopedia.checkout.data.repository;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;
+
+import java.util.Map;
 
 import rx.Observable;
 
@@ -11,5 +12,5 @@ import rx.Observable;
 
 public interface ITopPayRepository {
 
-    Observable<ThanksTopPayData> getThanksTopPay(TKPDMapParam<String, String> param);
+    Observable<ThanksTopPayData> getThanksTopPay(Map<String, String> param);
 }

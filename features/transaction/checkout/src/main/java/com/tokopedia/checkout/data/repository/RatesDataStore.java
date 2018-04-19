@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.entity.response.rates.RatesResponse;
 import com.tokopedia.checkout.data.service.RatesService;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import retrofit2.Response;
@@ -23,7 +25,7 @@ public class RatesDataStore {
         this.service = service;
     }
 
-    public Observable<RatesResponse> getRates(TKPDMapParam<String, String> params) {
+    public Observable<RatesResponse> getRates(Map<String, String> params) {
         return service.getApi().calculateShippingRate(params)
                 .map(new Func1<Response<String>, RatesResponse>() {
                     @Override

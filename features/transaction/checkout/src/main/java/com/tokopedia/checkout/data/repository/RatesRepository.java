@@ -5,6 +5,8 @@ import com.tokopedia.checkout.data.entity.response.rates.RatesResponse;
 import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -25,7 +27,7 @@ public class RatesRepository {
     }
 
     public Observable<ShipmentDetailData> getRates(final ShipmentDetailData shipmentDetailData,
-                                                   TKPDMapParam<String, String> parameters) {
+                                                   Map<String, String> parameters) {
         return dataStore.getRates(parameters).map(new Func1<RatesResponse, ShipmentDetailData>() {
             @Override
             public ShipmentDetailData call(RatesResponse ratesResponse) {

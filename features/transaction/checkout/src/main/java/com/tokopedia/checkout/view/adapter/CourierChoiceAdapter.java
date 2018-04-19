@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.R2;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import java.util.List;
 
@@ -68,8 +68,10 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
             holder.tvDeliverySchedule.setVisibility(View.GONE);
         }
 
-        if(!TextUtils.isEmpty(courierItemData.getEstimatedTimeDelivery())){
-            holder.tvDeliveryTimeRange.setText(courierItemData.getEstimatedTimeDelivery() + "*");
+        if (!TextUtils.isEmpty(courierItemData.getEstimatedTimeDelivery())) {
+            holder.tvDeliveryTimeRange.setText(
+                    String.format("%s*", courierItemData.getEstimatedTimeDelivery())
+            );
             holder.tvDeliveryTimeRange.setVisibility(View.VISIBLE);
         } else {
             holder.tvDeliveryTimeRange.setVisibility(View.GONE);
