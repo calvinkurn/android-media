@@ -2,7 +2,7 @@ package com.tokopedia.transaction.purchase.listener;
 
 import android.content.Intent;
 
-import com.tokopedia.transaction.common.base.IBaseView;
+import com.tokopedia.transaction.base.IBaseView;
 
 /**
  * @author Angga.Prasetiyo on 28/04/2016.

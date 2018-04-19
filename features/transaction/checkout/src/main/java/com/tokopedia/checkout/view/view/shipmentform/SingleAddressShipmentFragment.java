@@ -43,6 +43,7 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.mapper.CartShipmentAddressFormDataConverter;
+import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.DaggerSingleAddressShipmentComponent;
@@ -53,14 +54,12 @@ import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.Data;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
-import com.tokopedia.transaction.common.router.ICartCheckoutModuleRouter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -69,7 +68,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_POSITION;
 import static com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_DATA_STORE;
+import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_DATA_STORE;
 
 /**
  * @author Aghny A. Putra on 24/1/18

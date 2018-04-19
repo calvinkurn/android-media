@@ -45,11 +45,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_CART_ITEM;
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_DATA_POSITION;
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_DATA_STORE;
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_DISTRICT_NAME;
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_REQ_PARAMS;
+import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_CART_ITEM;
+import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_DATA_POSITION;
+import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_DATA_STORE;
+import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_DISTRICT_NAME;
+import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_REQ_PARAMS;
 
 public class PickupPointActivity extends BaseActivity
         implements PickupPointContract.View, PickupPointAdapter.Listener {

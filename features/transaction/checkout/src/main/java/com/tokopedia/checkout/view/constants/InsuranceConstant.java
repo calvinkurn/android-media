@@ -4,26 +4,19 @@ package com.tokopedia.checkout.view.constants;
  * Created by Irfan Khoirul on 30/01/18.
  */
 
-public interface InsuranceConstant {
+public final class InsuranceConstant {
 
-    interface InsuranceType {
-        int NO = 1;
+    public static final int INSURANCE_TYPE_NO = 1;
+    public static final int INSURANCE_TYPE_OPTIONAL = 2;
+    public static final int INSURANCE_TYPE_MUST = 3;
 
-        int OPTIONAL = 2;
+    public static final int INSURANCE_USED_TYPE_LOGISTIC_INSURANCE = 1;
+    public static final int INSURANCE_USED_TYPE_TOKOPEDIA_INSURANCE = 2;
 
-        int MUST = 3;
-    }
+    public static final int INSURANCE_USED_DEFAULT_NO = 1;
+    public static final int INSURANCE_USED_DEFAULT_YES = 2;
 
-    interface InsuranceUsedType {
-        int LOGISTIC_INSURANCE = 1;
-
-        int TOKOPEDIA_INSURANCE = 2;
-    }
-
-    interface InsuranceUsedDefault {
-        int NO = 1;
-
-        int YES = 2;
+    private InsuranceConstant() {
     }
 
 }

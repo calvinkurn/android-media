@@ -37,7 +37,7 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
 import com.tokopedia.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
-import com.tokopedia.transaction.common.router.ICartCheckoutModuleRouter;
+import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.checkout.view.view.cartlist.CartActivity;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -300,7 +300,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
         DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter, ITkpdLoyaltyModuleRouter,
-        ICartCheckoutModuleRouter, GamificationRouter {
+        ICartCheckoutModuleRouter, com.tokopedia.transaction.router.ICartCheckoutModuleRouter, GamificationRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;

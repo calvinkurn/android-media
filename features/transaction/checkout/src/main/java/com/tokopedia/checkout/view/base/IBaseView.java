@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.common.base;
+package com.tokopedia.checkout.view.base;
 
 import android.app.Dialog;
 import android.app.IntentService;

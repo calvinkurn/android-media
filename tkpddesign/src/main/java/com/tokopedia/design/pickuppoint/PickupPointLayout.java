@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.common.view.customview;
+package com.tokopedia.design.pickuppoint;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -10,8 +10,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.transaction.common.R;
-import com.tokopedia.transaction.common.data.pickuppoint.Store;
+import com.tokopedia.design.R;
 
 /**
  * Created by Irfan Khoirul on 03/01/18.
@@ -19,15 +18,14 @@ import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 public class PickupPointLayout extends LinearLayout {
 
-    TextView tvSendToPickUpBooth;
-    TextView tvPickUpBoothName;
-    ImageButton btnCancelPickUp;
-    TextView tvPickUpBoothAddress;
-    TextView tvEditPickUpBooth;
-    LinearLayout llContent;
+    private TextView tvSendToPickUpBooth;
+    private TextView tvPickUpBoothName;
+    private ImageButton btnCancelPickUp;
+    private TextView tvPickUpBoothAddress;
+    private TextView tvEditPickUpBooth;
+    private LinearLayout llContent;
 
     private ViewListener listener;
-    private Store store;
 
     public PickupPointLayout(Context context) {
         super(context);
@@ -59,8 +57,8 @@ public class PickupPointLayout extends LinearLayout {
         btnCancelPickUp.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener != null && store != null) {
-                    listener.onClearPickupPoint(store);
+                if (listener != null) {
+                    listener.onClearPickupPoint();
                 }
             }
         });
@@ -68,8 +66,8 @@ public class PickupPointLayout extends LinearLayout {
         tvEditPickUpBooth.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener != null && store != null) {
-                    listener.onEditPickupPoint(store);
+                if (listener != null) {
+                    listener.onEditPickupPoint();
                 }
             }
         });
@@ -102,10 +100,9 @@ public class PickupPointLayout extends LinearLayout {
         this.listener = listener;
     }
 
-    public void setData(Context context, Store store) {
-        this.store = store;
-        tvPickUpBoothName.setText(store.getStoreName());
-        tvPickUpBoothAddress.setText(store.getAddress());
+    public void setData(Context context, String storeName, String storeAddress) {
+        tvPickUpBoothName.setText(storeName);
+        tvPickUpBoothAddress.setText(storeAddress);
         disableChooserButton(context);
         tvSendToPickUpBooth.setOnClickListener(null);
         llContent.setVisibility(VISIBLE);
@@ -113,24 +110,15 @@ public class PickupPointLayout extends LinearLayout {
 
     public void unSetData(Context context) {
         enableChooserButton(context);
-        store = null;
-        tvSendToPickUpBooth.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onChoosePickupPoint();
-                }
-            }
-        });
         llContent.setVisibility(GONE);
     }
 
     public interface ViewListener {
         void onChoosePickupPoint();
 
-        void onClearPickupPoint(Store oldStore);
+        void onClearPickupPoint();
 
-        void onEditPickupPoint(Store oldStore);
+        void onEditPickupPoint();
     }
 
 }

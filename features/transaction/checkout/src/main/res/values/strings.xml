@@ -91,5 +91,10 @@
     <string name="label_hint_cart_item_dropshipper_phone">No. Telp pengirim</string>
     <string name="label_delivery_price">Ongkos Kirim</string>
     <string name="label_additional_cost">Biaya Tambahan</string>
+    <string name="label_dialog_title_cancel_pickup">Batalkan Pengiriman ke Gerai Pengambilan</string>
+    <string name="label_dialog_message_cancel_pickup_booth">Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan</string>
+    <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
+    <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
+    <string name="message_payment_succeded_transaction_module">Pembayaran berhasil</string>
 
 </resources>

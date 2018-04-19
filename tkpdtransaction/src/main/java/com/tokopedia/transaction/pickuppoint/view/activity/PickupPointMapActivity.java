@@ -25,8 +25,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_DATA_STORE;
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_DISTRICT_NAME;
+import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_DATA_STORE;
+import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_DISTRICT_NAME;
 
 public class PickupPointMapActivity extends BasePresenterActivity implements OnMapReadyCallback {
 

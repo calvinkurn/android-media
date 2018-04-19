@@ -11,18 +11,13 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
+import com.tokopedia.transaction.common.constant.PickupPointParamConstant;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
-
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.Params.DEFAULT_PAGE;
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.Params.PARAM_DISTRICT_ID;
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.Params.PARAM_PAGE;
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.Params.PARAM_TOKEN;
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.Params.PARAM_UT;
 
 /**
  * @author Aghny A. Putra on 26/01/18
@@ -136,11 +131,11 @@ public class SingleAddressShipmentPresenter implements ISingleAddressShipmentPre
     @Override
     public HashMap<String, String> generatePickupPointParams(RecipientAddressModel addressAdapterData) {
         HashMap<String, String> params = new HashMap<>();
-        params.put(PARAM_DISTRICT_ID,
+        params.put(PickupPointParamConstant.PARAM_DISTRICT_ID,
                 String.valueOf(addressAdapterData.getDestinationDistrictId()));
-        params.put(PARAM_PAGE, DEFAULT_PAGE);
-        params.put(PARAM_TOKEN, addressAdapterData.getTokenPickup() != null ? addressAdapterData.getTokenPickup() : "");
-        params.put(PARAM_UT, addressAdapterData.getUnixTime());
+        params.put(PickupPointParamConstant.PARAM_PAGE, PickupPointParamConstant.DEFAULT_PAGE);
+        params.put(PickupPointParamConstant.PARAM_TOKEN, addressAdapterData.getTokenPickup() != null ? addressAdapterData.getTokenPickup() : "");
+        params.put(PickupPointParamConstant.PARAM_UT, addressAdapterData.getUnixTime());
 
         return params;
     }

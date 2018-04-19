@@ -46,6 +46,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.R2;
+import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
@@ -58,7 +59,6 @@ import com.tokopedia.checkout.view.adapter.CourierChoiceAdapter;
 import com.tokopedia.checkout.view.constants.InsuranceConstant;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentDetailComponent;
 import com.tokopedia.checkout.view.di.component.ShipmentDetailComponent;
-import com.tokopedia.transaction.common.router.ICartCheckoutModuleRouter;
 
 import javax.inject.Inject;
 
@@ -682,12 +682,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         } else {
             imgBtInsuranceInfo.setVisibility(View.VISIBLE);
         }
-        if (courierItemData.getInsuranceType() == InsuranceConstant.InsuranceType.NO) {
+        if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_NO) {
             tvSpecialInsuranceCondition.setText(R.string.label_insurance_not_available);
             switchInsurance.setVisibility(View.GONE);
             switchInsurance.setChecked(false);
             tvSpecialInsuranceCondition.setVisibility(View.VISIBLE);
-        } else if (courierItemData.getInsuranceType() == InsuranceConstant.InsuranceType.MUST) {
+        } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_MUST) {
             tvSpecialInsuranceCondition.setText(R.string.label_must_insurance);
             switchInsurance.setVisibility(View.GONE);
             switchInsurance.setChecked(true);
@@ -695,14 +695,14 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         } else {
             tvSpecialInsuranceCondition.setVisibility(View.GONE);
             switchInsurance.setVisibility(View.VISIBLE);
-            if (courierItemData.getInsuranceUsedDefault() == InsuranceConstant.InsuranceUsedDefault.YES) {
+            if (courierItemData.getInsuranceUsedDefault() == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
                 switchInsurance.setChecked(true);
             }
         }
     }
 
     private void renderInsuranceTncView(CourierItemData courierItemData) {
-        if (courierItemData.getInsuranceUsedType() == InsuranceConstant.InsuranceUsedType.TOKOPEDIA_INSURANCE) {
+        if (courierItemData.getInsuranceUsedType() == InsuranceConstant.INSURANCE_USED_TYPE_TOKOPEDIA_INSURANCE) {
             formatInsuranceTncView();
             tvInsuranceTerms.setVisibility(View.VISIBLE);
         } else {
@@ -822,9 +822,9 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             if (checked) {
                 llInsuranceFee.setVisibility(View.VISIBLE);
                 if (presenter.getSelectedCourier().getInsuranceType() ==
-                        InsuranceConstant.InsuranceType.MUST ||
+                        InsuranceConstant.INSURANCE_TYPE_MUST ||
                         presenter.getSelectedCourier().getInsuranceType() ==
-                                InsuranceConstant.InsuranceType.OPTIONAL) {
+                                InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
                     renderInsuranceTncView(presenter.getSelectedCourier());
                     if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
                         tvInsurancePrice.setText(

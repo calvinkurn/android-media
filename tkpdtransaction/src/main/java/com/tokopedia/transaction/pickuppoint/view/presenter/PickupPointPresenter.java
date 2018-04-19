@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.common.constant.PickupPointParamConstant;
 import com.tokopedia.transaction.common.data.pickuppoint.PickupPointResponse;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
@@ -22,8 +23,6 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.Params.PARAM_QUERY;
 
 /**
  * Created by Irfan Khoirul on 22/12/17.
@@ -122,7 +121,7 @@ public class PickupPointPresenter extends BaseDaggerPresenter<PickupPointContrac
     private RequestParams getParams(HashMap<String, String> params) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(params);
-        requestParams.putString(PARAM_QUERY, "");
+        requestParams.putString(PickupPointParamConstant.PARAM_QUERY, "");
 
         return requestParams;
     }
