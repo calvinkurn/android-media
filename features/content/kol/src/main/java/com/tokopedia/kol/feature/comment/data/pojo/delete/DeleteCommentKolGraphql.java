@@ -1,4 +1,4 @@
-package com.tokopedia.kol.feature.comment.data.pojo.deleteKol;
+package com.tokopedia.kol.feature.comment.data.pojo.delete;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

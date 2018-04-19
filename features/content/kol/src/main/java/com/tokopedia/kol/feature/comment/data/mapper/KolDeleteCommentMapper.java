@@ -4,8 +4,8 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.kol.common.network.GraphqlErrorException;
-import com.tokopedia.kol.feature.comment.data.pojo.deleteKol.DeleteCommentKolData;
-import com.tokopedia.kol.feature.comment.data.pojo.deleteKol.DeleteCommentKolGraphql;
+import com.tokopedia.kol.feature.comment.data.pojo.delete.DeleteCommentKolData;
+import com.tokopedia.kol.feature.comment.data.pojo.delete.DeleteCommentKolGraphql;
 
 import javax.inject.Inject;
 
