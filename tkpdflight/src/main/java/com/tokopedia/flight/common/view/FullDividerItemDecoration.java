@@ -12,7 +12,7 @@ public class FullDividerItemDecoration extends RecyclerView.ItemDecoration {
     private Drawable mDivider;
 
     public FullDividerItemDecoration(Context context) {
-        this(context, context.getResources().getDrawable(R.drawable.bg_flight_full_item_item_decoration));
+        this(context, context.getResources().getDrawable(R.drawable.bg_line_separator));
     }
 
     public FullDividerItemDecoration(Context context, Drawable drawable) {
