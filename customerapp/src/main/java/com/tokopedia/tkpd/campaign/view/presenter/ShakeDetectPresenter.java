@@ -103,6 +103,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
                     return;
                 }
+
                 Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
                 intent.putExtra("isSuccess", true);
                 intent.putExtra("data", s.getUrl());
