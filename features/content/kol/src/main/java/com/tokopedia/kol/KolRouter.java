@@ -1,8 +1,6 @@
 package com.tokopedia.kol;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
 
@@ -13,8 +11,6 @@ import okhttp3.Interceptor;
  */
 
 public interface KolRouter {
-    Intent getKolCommentActivity(Context context, int postId, int rowNumber);
-
     String getKolCommentArgsPosition();
 
     String getKolCommentArgsTotalComment();

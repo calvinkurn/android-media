@@ -2,7 +2,7 @@ package com.tokopedia.kol.common.data.source.api;
 
 import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.kol.feature.comment.data.pojo.GetKolCommentData;
+import com.tokopedia.kol.feature.comment.data.pojo.get.GetKolCommentData;
 import com.tokopedia.kol.feature.comment.data.pojo.deleteKol.DeleteCommentKolGraphql;
 import com.tokopedia.kol.feature.post.data.pojo.GetUserKolPostResponse;
 

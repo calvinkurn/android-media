@@ -1577,8 +1577,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getKolCommentActivity(Context context, int postId, int rowNumber) {
-        return KolCommentActivity.getCallingIntent(context, postId, rowNumber
-        );
+        return KolCommentActivity.getCallingIntent(context, postId, rowNumber);
     }
 
     @Override

@@ -960,15 +960,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToKolComment(int page, int rowNumber, KolViewModel model) {
-        //TODO milhamj
-//        startActivityForResult(KolCommentActivity.getCallingIntent(getActivity(),
-//                new KolCommentHeaderViewModel(model.getAvatar(), model.getName(), model.getReview
-//                        (), model.getTime(), String.valueOf(model.getUserId())),
-//                new KolCommentProductViewModel(model.getKolImage(), model.getContentName(),
-//                        model.getProductPrice(), model.isWishlisted()),
-//                model.getId(),
-//                rowNumber
-//        ), OPEN_KOL_COMMENT);
+        if (getActivity().getApplication() instanceof FeedModuleRouter) {
+            FeedModuleRouter router = ((FeedModuleRouter) getActivity().getApplication());
+            Intent intent = router.getKolCommentActivity(getContext(), model.getId(), rowNumber);
+            startActivityForResult(intent, OPEN_KOL_COMMENT);
+        }
     }
 
     @Override

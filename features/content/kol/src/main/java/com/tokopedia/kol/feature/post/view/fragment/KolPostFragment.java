@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.adapter.KolPostAdapter;
@@ -228,7 +229,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
     @Override
     public void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel) {
-        Intent intent = kolRouter.getKolCommentActivity(
+        Intent intent = KolCommentActivity.getCallingIntent(
                 getContext(), kolPostViewModel.getId(), rowNumber
         );
         startActivityForResult(intent, KOL_COMMENT_CODE);
