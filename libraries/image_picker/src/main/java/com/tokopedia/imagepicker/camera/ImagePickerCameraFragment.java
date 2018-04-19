@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.gallery.ImagePickerGalleryFragment;
 
 /**
  * Created by hendry on 19/04/18.

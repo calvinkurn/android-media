@@ -8,6 +8,9 @@ import android.support.v4.util.SparseArrayCompat;
 import android.view.ViewGroup;
 
 import com.tokopedia.imagepicker.ImagePickerBuilder;
+import com.tokopedia.imagepicker.camera.ImagePickerCameraFragment;
+import com.tokopedia.imagepicker.gallery.ImagePickerGalleryFragment;
+import com.tokopedia.imagepicker.instagram.ImagePickerInstagramFragment;
 
 /**
  * Created by hendry on 19/04/18.
@@ -29,11 +32,11 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (tabTypeDef[position]) {
             case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY:
-                return new Fragment();
+                return ImagePickerGalleryFragment.newInstance();
             case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA:
-                return new Fragment();
+                return ImagePickerCameraFragment.newInstance();
             case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM:
-                return new Fragment();
+                return ImagePickerInstagramFragment.newInstance();
             default:
                 return new Fragment();
         }

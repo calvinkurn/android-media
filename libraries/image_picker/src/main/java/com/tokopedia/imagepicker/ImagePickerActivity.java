@@ -2,17 +2,14 @@ package com.tokopedia.imagepicker;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.PersistableBundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-
-import static com.tokopedia.imagepicker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA;
-import static com.tokopedia.imagepicker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY;
-import static com.tokopedia.imagepicker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
+import com.tokopedia.imagepicker.adapter.ImagePickerViewPagerAdapter;
+import com.tokopedia.imagepicker.adapter.TabLayoutImagePickerAdapter;
 
 public class ImagePickerActivity extends BaseSimpleActivity {
 
@@ -21,10 +18,10 @@ public class ImagePickerActivity extends BaseSimpleActivity {
     public static final String SAVED_SELECTED_TAB = "saved_sel_tab";
 
     private TabLayout tabLayout;
-    private ViewPager viewPager;
     private ImagePickerBuilder imagePickerBuilder;
 
     private int selectedTab = 0;
+    private ViewPager viewPager;
 
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
@@ -43,38 +40,43 @@ public class ImagePickerActivity extends BaseSimpleActivity {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            savedInstanceState.getInt(SAVED_SELECTED_TAB, 0);
+            selectedTab = savedInstanceState.getInt(SAVED_SELECTED_TAB, 0);
         }
 
-        initViewPager();
-        initTabLayout();
+        setupViewPager();
+        setupTabLayout();
     }
 
-    private void initViewPager() {
+    private void setupViewPager() {
         viewPager = findViewById(R.id.view_pager);
-
+        ImagePickerViewPagerAdapter imagePickerViewPagerAdapter = new ImagePickerViewPagerAdapter(getSupportFragmentManager(),
+                imagePickerBuilder.getTabTypeDef());
+        viewPager.setAdapter(imagePickerViewPagerAdapter);
     }
 
-    private void initTabLayout() {
+    private void setupTabLayout() {
         tabLayout = findViewById(R.id.tab_layout);
-        if (tabLayout.getTabCount() > 0) {
-            return;
-        }
-        int[] tabTypeDef = imagePickerBuilder.getTabTypeDef();
-        for (int tabTypeDefItem : tabTypeDef) {
-            TabLayout.Tab tab = tabLayout.newTab();
-            switch (tabTypeDefItem) {
-                case TYPE_GALLERY:
-                    tabLayout.addTab(tab.setIcon(R.drawable.a).setText(getString(R.string.gallery)));
-                    break;
-                case TYPE_CAMERA:
-                    tabLayout.addTab(tab.setIcon(R.drawable.a).setText(getString(R.string.camera)));
-                    break;
-                case TYPE_INSTAGRAM:
-                    tabLayout.addTab(tab.setIcon(R.drawable.a).setText(getString(R.string.instagram)));
-                    break;
+        final TabLayoutImagePickerAdapter tabLayoutImagePickerAdapter =
+                new TabLayoutImagePickerAdapter( tabLayout, this, imagePickerBuilder.getTabTypeDef());
+        tabLayoutImagePickerAdapter.notifyDataSetChanged();
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                tabLayoutImagePickerAdapter.selectTab(tab);
+                viewPager.setCurrentItem(tab.getPosition());
             }
-        }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                tabLayoutImagePickerAdapter.unselectTab(tab);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        tabLayoutImagePickerAdapter.selectTab(tabLayout.getTabAt(selectedTab));
     }
 
     @Override
