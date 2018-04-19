@@ -25,23 +25,16 @@ import rx.Observable;
 
 public class KolCommentSource {
     private final Context context;
+    private final KolApi kolApi;
 
     @Inject
     public KolCommentSource(@ApplicationContext Context context,
                             KolApi kolApi) {
         this.context = context;
+        this.kolApi = kolApi;
     }
 
     public Observable<KolComments> getComments(RequestParams requestParams) {
-//        ApolloWatcher<GetKolComments.Data> apolloWatcher = apolloClient.newCall(
-//                GetKolComments.builder()
-//                        .idPost(requestParams.getInt(GetKolCommentsUseCase.PARAM_ID, 0))
-//                        .cursor(requestParams.getString(GetKolCommentsUseCase.PARAM_CURSOR, ""))
-//                        .limit(requestParams.getInt(GetKolCommentsUseCase.PARAM_LIMIT,
-//                                GetKolCommentsUseCase.DEFAULT_LIMIT))
-//                        .build()).watcher();
-//
-//        return RxApollo.from(apolloWatcher).map(kolCommentMapper);
         return null;
     }
 
