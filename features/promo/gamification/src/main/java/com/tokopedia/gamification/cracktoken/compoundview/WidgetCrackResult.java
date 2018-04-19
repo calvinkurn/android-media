@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.gamification.HexValidator;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
@@ -187,7 +188,11 @@ public class WidgetCrackResult extends RelativeLayout {
             TextView textView = new TextView(getContext());
             textView.setGravity(Gravity.CENTER);
             textView.setText(rewardText.getText());
-            textView.setTextColor(Color.parseColor(rewardText.getColor()));
+            if (HexValidator.validate(rewardText.getColor())) {
+                textView.setTextColor(Color.parseColor(rewardText.getColor()));
+            } else {
+                textView.setTextColor(getContext().getResources().getColor(R.color.default_text_reward_color));
+            }
             int dimenTextSize = convertSize(rewardText.getSize());
             float textSizeInPx = getContext().getResources().getDimension(dimenTextSize);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx);
