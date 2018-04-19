@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.network.api;
 
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.transaction.network.TransactionUrl;
 
 import java.util.Map;
@@ -19,7 +20,7 @@ public interface VoucherCartApi {
 
     @FormUrlEncoded
     @POST(TransactionUrl.PATH_CLEAR_PROMO)
-    Observable<String> checkVoucherCode(@Header("X-Device") String os,
+    Observable<String> checkVoucherCode(@Header(AuthUtil.HEADER_DEVICE) String os,
                                         @FieldMap Map<String, String> params);
 
 }

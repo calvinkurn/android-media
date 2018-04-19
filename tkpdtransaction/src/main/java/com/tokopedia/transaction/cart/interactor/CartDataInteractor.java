@@ -296,7 +296,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     @Override
     public void cancelVoucherCache(Context context, Subscriber<Boolean> subscriber) {
         compositeSubscription.add(voucherCartService.getApi()
-                .checkVoucherCode("android",
+                .checkVoucherCode(AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE,
                         AuthUtil.generateParamsNetwork(context, new TKPDMapParam<String, String>()))
                 .map(new Func1<String, Boolean>() {
                     @Override
