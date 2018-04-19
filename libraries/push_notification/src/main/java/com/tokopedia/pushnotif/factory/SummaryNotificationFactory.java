@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
 import com.tokopedia.pushnotif.SummaryNotification;
@@ -17,6 +18,8 @@ import com.tokopedia.pushnotif.model.SummaryNotificationModel;
  */
 
 public class SummaryNotificationFactory extends BaseNotificationFactory {
+
+    private SummaryNotificationModel summaryNotificationModel;
 
 
     public SummaryNotificationFactory(Context context) {
@@ -33,9 +36,7 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         HistoryNotification.storeNotification(applinkNotificationModel.getFullName(),
                 applinkNotificationModel.getSummary(), notificationType);
 
-        SummaryNotificationModel summaryNotificationModel = SummaryNotification.generateSummaryNotificationModel(context, notificationType);
-
-        if (summaryNotificationModel.getHistoryString().size() == 1) return null;
+        summaryNotificationModel = SummaryNotification.generateSummaryNotificationModel(context, notificationType);
 
         for (String s : summaryNotificationModel.getHistoryString()) {
             inboxStyle.addLine(s);
@@ -46,7 +47,7 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         builder.setContentText(summaryNotificationModel.getHistoryString().get(0));
         builder.setLargeIcon(getBitmapLargeIcon());
         builder.setStyle(inboxStyle);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+        if (ApplinkNotificationHelper.allowGroup()) {
             builder.setGroupSummary(true);
             builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
         }
@@ -75,5 +76,9 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         } else {
             return "Tokopedia - Chat";
         }
+    }
+
+    public int getTotalSummary() {
+        return summaryNotificationModel.getTotalHistory();
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
+import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 
@@ -25,7 +26,7 @@ public class TalkNotificationFactory extends BaseNotificationFactory {
         builder.setContentText(applinkNotificationModel.getFullName()+" : "+applinkNotificationModel.getSummary());
         builder.setSmallIcon(getDrawableIcon());
         builder.setLargeIcon(getBitmap(applinkNotificationModel.getThumbnail()));
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
+        if (ApplinkNotificationHelper.allowGroup()) builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
         builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), Constant.NotificationId.GENERAL, notificationId));
 
         if (isAllowBell()) {
