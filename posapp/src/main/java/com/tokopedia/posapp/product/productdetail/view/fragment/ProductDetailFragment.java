@@ -37,13 +37,13 @@ import com.tokopedia.posapp.cart.view.activity.LocalCartActivity;
 import com.tokopedia.posapp.payment.process.ReactInstallmentActivity;
 import com.tokopedia.posapp.cart.view.presenter.AddToCartPresenter;
 import com.tokopedia.posapp.product.productdetail.view.presenter.ProductPresenter;
+import com.tokopedia.posapp.product.productdetail.view.widget.DescriptionView;
 import com.tokopedia.posapp.product.productdetail.view.widget.HeaderInfoView;
 import com.tokopedia.posapp.product.productdetail.view.widget.InstallmentSimulationView;
 import com.tokopedia.posapp.base.fragment.PosAlertDialog;
+import com.tokopedia.posapp.product.productdetail.view.widget.PictureView;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
-import com.tokopedia.tkpdpdp.customview.PictureView;
-import com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     private PictureView pictureView;
     private HeaderInfoView headerInfoView;
     private InstallmentSimulationView priceSimulationView;
-    private VideoDescriptionLayout videoDescriptionLayout;
+    private DescriptionView descriptionView;
     private Button buttonBuy;
     private Button buttonAddToCart;
 
@@ -143,7 +143,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         pictureView.renderData(data);
         headerInfoView.renderData(data);
         priceSimulationView.renderData(data);
-        videoDescriptionLayout.renderData(data);
+        descriptionView.renderData(data);
     }
 
     @Override
@@ -583,7 +583,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         pictureView = view.findViewById(R.id.view_picture);
         headerInfoView = view.findViewById(R.id.view_header);
         priceSimulationView = view.findViewById(R.id.view_price_simulation);
-        videoDescriptionLayout = view.findViewById(R.id.video_layout);
+        descriptionView = view.findViewById(R.id.view_description);
         buttonBuy = view.findViewById(R.id.button_buy);
         buttonAddToCart = view.findViewById(R.id.button_add_to_cart);
     }
@@ -592,7 +592,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         pictureView.setListener(this);
         headerInfoView.setListener(this);
         priceSimulationView.setListener(this);
-        videoDescriptionLayout.setListener(this);
+        descriptionView.setListener(this);
         buttonAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
