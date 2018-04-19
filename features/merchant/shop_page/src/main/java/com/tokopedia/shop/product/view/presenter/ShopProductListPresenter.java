@@ -141,7 +141,9 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
             public void onNext(PagingListOther<EtalaseModel> etalaseModelList) {
                 List<EtalaseModel> etalaseModelListTemp = new ArrayList<>();
                 etalaseModelListTemp.addAll(etalaseModelList.getListOther());
-                etalaseModelListTemp.addAll(etalaseModelList.getList());
+                if(etalaseModelList.getList()!=null){
+                    etalaseModelListTemp.addAll(etalaseModelList.getList());
+                }
                 String etalaseName = "";
                 for (EtalaseModel etalaseModel : etalaseModelListTemp) {
                     if (shopProductRequestModel.getEtalaseId().equalsIgnoreCase(etalaseModel.getEtalaseId())) {
