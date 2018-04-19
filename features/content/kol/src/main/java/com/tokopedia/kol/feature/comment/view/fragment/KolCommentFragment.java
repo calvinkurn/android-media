@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolTracking;
 import com.tokopedia.kol.feature.comment.di.DaggerKolCommentComponent;
@@ -49,17 +50,19 @@ import javax.inject.Inject;
 public class KolCommentFragment extends BaseDaggerFragment implements KolComment.View {
 
     public static final String ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT";
-    RecyclerView listComment;
-    KolCommentAdapter adapter;
-    //TODO milhamj change this progress dialog into another loading
-    ProgressDialog progressDialog;
 
+    RecyclerView listComment;
     EditText kolComment;
     ImageView sendButton;
     TextView productName;
     TextView productPrice;
     ImageView productAvatar;
     ImageView wishlist;
+
+    KolCommentAdapter adapter;
+    //TODO milhamj change this progress dialog into another loading
+    ProgressDialog progressDialog;
+    KolRouter kolRouter;
 
     boolean isFromApplink;
     KolCommentHeaderViewModel header;
@@ -142,6 +145,13 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (getActivity().getApplicationContext() instanceof KolRouter) {
+            kolRouter = (KolRouter) getActivity().getApplicationContext();
+        } else {
+            throw new IllegalStateException("Application must be an instance of KolRouter!");
+        }
+
         presenter.getCommentFirstTime(getArguments().getInt(KolCommentActivity.ARGS_ID));
     }
 
@@ -166,8 +176,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
     @Override
     public void onGoToProfile(String url) {
-        //TODO milhamj open profile with url?
-//        startActivity(KolProfileWebViewActivity.getCallingIntent(getActivity(), url));
+        kolRouter.openRedirectUrl(getActivity(), url);
     }
 
     @Override

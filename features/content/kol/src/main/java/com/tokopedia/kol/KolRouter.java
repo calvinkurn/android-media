@@ -21,5 +21,7 @@ public interface KolRouter {
 
     void actionApplinkFromActivity(Activity activity, String linkUrl);
 
+    void openRedirectUrl(Activity activity, String url);
+
     Interceptor getChuckInterceptor();
 }
