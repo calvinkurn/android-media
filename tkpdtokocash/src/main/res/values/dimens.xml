@@ -33,5 +33,5 @@
     <dimen name="mf_padding_xxlarge">48dp</dimen>
 
     <dimen name="size_progress_bar">24dp</dimen>
-    <dimen name="height_submit_button">52</dimen>
+    <dimen name="height_submit_button">52dp</dimen>
 </resources>

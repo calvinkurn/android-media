@@ -98,7 +98,7 @@
     <string name="help_general_tokocash">Bantuan TokoCash</string>
 
 
-    <!-- Auto Sweep Strings -->
+    <!-- Auto Sweep Strings (MF=Mutual Fund)-->
     <string name="mf_title_mutual_fund_not_listed">Anda Belum Terdaftar di Reksa Dana</string>
     <string name="mf_title_autosweep_help">Autosweep ke Reksa Dana</string>
     <string name="mf_titile_mf_account_in_process">Aplikasi Reksa Dana Anda Dalam Proses</string>
