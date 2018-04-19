@@ -725,13 +725,20 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             Intent intent;
             if (cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE) {
                 if (cartDigitalInfoDataState.getAttributes().getDefaultPromoTab() != null &&
-                        cartDigitalInfoDataState.getAttributes().getDefaultPromoTab().equalsIgnoreCase(LoyaltyActivity.COUPON_STATE)) {
-                    intent = LoyaltyActivity.newInstanceCouponActiveAndSelected(context, LoyaltyActivity.DIGITAL_STRING, passData.getCategoryId());
+                        cartDigitalInfoDataState.getAttributes().getDefaultPromoTab().equalsIgnoreCase(
+                                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_STATE)) {
+                    intent = LoyaltyActivity.newInstanceCouponActiveAndSelected(
+                            context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
+                    );
                 } else {
-                    intent = LoyaltyActivity.newInstanceCouponActive(context, LoyaltyActivity.DIGITAL_STRING, passData.getCategoryId());
+                    intent = LoyaltyActivity.newInstanceCouponActive(
+                            context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
+                    );
                 }
             } else {
-                intent = LoyaltyActivity.newInstanceCouponNotActive(context, LoyaltyActivity.DIGITAL_STRING, passData.getCategoryId());
+                intent = LoyaltyActivity.newInstanceCouponNotActive(
+                        context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
+                );
             }
             navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         } else {
@@ -740,7 +747,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public void disableVoucherDisount() {
+    public void disableVoucherDiscount() {
         presenter.onClearVoucher();
         this.voucherDigitalState = null;
         checkoutHolderView.disableVoucherDiscount();

@@ -93,11 +93,11 @@ import com.tokopedia.transaction.cart.model.cartdata.CartPromo;
 import com.tokopedia.transaction.cart.model.cartdata.CartShop;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
-import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
+import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.common.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
@@ -711,7 +711,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderCandelPromoSuccess(){
+    public void renderCandelPromoSuccess() {
         promoResultLayout.setVisibility(View.GONE);
         promoCodeLayout.setVisibility(View.VISIBLE);
     }
@@ -1114,29 +1114,42 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         } else if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
             if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
-                setVoucherResultLayout(
-                        bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, ""),
-                        bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_AMOUNT, ""),
-                        bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "")
-                );
+                if (bundle != null)
+                    setVoucherResultLayout(
+                            bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, ""),
+                            bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_AMOUNT, ""),
+                            bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "")
+                    );
                 cancelPromoLayout.setOnClickListener(onPromoCancelled());
             } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
-                promoResultLayout.setVisibility(View.VISIBLE);
-                labelPromoType.setText(getString(R.string.title_coupon_code) + " : ");
-                promoVoucherCode.setText(bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, ""));
-                voucherDescription.setText(bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, ""));
-
-                //TODO check state
-                voucherCode = bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE);
-                instantPromoPlaceHolder.setVisibility(View.GONE);
-                promoCodeLayout.setVisibility(View.GONE);
-                cancelPromoLayout.setOnClickListener(onPromoCancelled());
+                if (bundle != null)
+                    setCouponResultLayout(
+                            bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, ""),
+                            bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, ""),
+                            bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, "")
+                    );
             }
         } else if (requestCode == REQUEST_CHOOSE_PICKUP_POINT && resultCode == Activity.RESULT_OK) {
             CartItem cartItem = data.getParcelableExtra(INTENT_CART_ITEM);
             presenter.processUpdatePickupPoint(cartItem.getCartString(), "", "");
         }
+    }
+
+
+    private void setCouponResultLayout(String couponCode,
+                                       String couponTitle,
+                                       String description) {
+        promoResultLayout.setVisibility(View.VISIBLE);
+        labelPromoType.setText(getString(R.string.title_coupon_code) + " : ");
+        promoVoucherCode.setText(couponTitle);
+        voucherDescription.setText(description);
+
+        //TODO check state
+        this.voucherCode = couponCode;
+        instantPromoPlaceHolder.setVisibility(View.GONE);
+        promoCodeLayout.setVisibility(View.GONE);
+        cancelPromoLayout.setOnClickListener(onPromoCancelled());
     }
 
     private void setVoucherResultLayout(String voucherCode,

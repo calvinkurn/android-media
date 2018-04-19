@@ -243,7 +243,7 @@ ext {
             event           : ":tkpdevents",
             home            : ":tkpdhome",
             content         : ":tkpdcontent",
-            checkout        : ":features:transaction:checkout"
+            checkout        : ":features:transaction:checkout",
             kol             : ":features:content:kol",
             groupchat       : ":features:user:groupchat",
             gamification    : ":features:promo:gamification"

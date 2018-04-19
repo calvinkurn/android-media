@@ -299,8 +299,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TokoCashRouter, IWalletRouter, LoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
-        DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter,ITkpdLoyaltyModuleRouter, ICartCheckoutModuleRouter
-        GamificationRouter, StreamModuleRouter {
+        DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter, ITkpdLoyaltyModuleRouter,
+        ICartCheckoutModuleRouter, GamificationRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;

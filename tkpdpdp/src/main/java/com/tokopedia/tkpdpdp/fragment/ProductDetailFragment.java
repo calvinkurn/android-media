@@ -150,6 +150,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private static final int FROM_COLLAPSED = 0;
     private static final int FROM_EXPANDED = 1;
     private static final int SCROLL_ELEVATION = 324;
+    private static final int SHOWCASE_MARGIN = 10;
+    private static final int SHOWCASE_HEIGHT = 100;
 
     public static final int REQUEST_CODE_SHOP_INFO = 998;
     public static final int REQUEST_CODE_TALK_PRODUCT = 1;
@@ -174,6 +176,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_VIDEO = "STATE_VIDEO";
     public static final String STATE_PROMO_WIDGET = "STATE_PROMO_WIDGET";
     public static final String STATE_APP_BAR_COLLAPSED = "STATE_APP_BAR_COLLAPSED";
+    public static final String TAG_SHOWCASE_VARIANT = "-SHOWCASE_VARIANT";
     private static final String STATIC_VALUE_ENHANCE_NONE_OTHER = "none / other";
 
     private CoordinatorLayout coordinatorLayout;
@@ -224,6 +227,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private boolean onClickBuyWhileRequestingVariant = false;
 
     private RemoteConfig remoteConfig;
+    private ShowCaseDialog showCaseDialog;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();

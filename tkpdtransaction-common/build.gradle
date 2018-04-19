@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 def getTkpdAbstraction() {
     return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction')
@@ -36,8 +37,8 @@ dependencies {
     compile project(rootProject.ext.libraries.design)
     compile project(rootProject.ext.features.topAdsSdk)
     compile project(rootProject.ext.features.payment)
-    compile getTkpdUseCase()
-    compile getTkpdAbstraction()
+    compile project(rootProject.ext.libraries.useCase)
+    compile project(rootProject.ext.libraries.abstraction)
 
     testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.1', {

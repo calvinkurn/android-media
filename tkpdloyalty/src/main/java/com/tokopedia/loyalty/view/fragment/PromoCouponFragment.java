@@ -34,9 +34,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
-import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CART_ID;
-import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.FLIGHT_STRING;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID;
 
 /**
  * @author anggaprasetiyo on 29/11/17.
@@ -372,9 +370,11 @@ public class PromoCouponFragment extends BasePresenterFragment
         if (getArguments().getString(PLATFORM_KEY).equals(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING)) {
             dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY));
-        }  else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(FLIGHT_STRING)){
-            dPresenter.submitFlightVoucher(data, getArguments().getString(EXTRA_CART_ID));
-        }else {
+        } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
+            dPresenter.submitFlightVoucher(data, getArguments().getString(
+                    EXTRA_CART_ID));
+        } else {
             dPresenter.submitVoucher(data);
         }
     }

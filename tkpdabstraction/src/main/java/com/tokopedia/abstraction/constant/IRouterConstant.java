@@ -7,7 +7,7 @@ package com.tokopedia.abstraction.constant;
 public interface IRouterConstant {
 
     interface LoyaltyModule {
-        int LOYALTY_ACTIVITY_REQUEST_CODE = LoyaltyModule.class.hashCode();
+        int LOYALTY_ACTIVITY_REQUEST_CODE = 12345;
 
         interface ExtraLoyaltyActivity {
             String EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE";
@@ -32,6 +32,16 @@ public interface IRouterConstant {
             String VOUCHER_DISCOUNT_AMOUNT = "VOUCHER_DISCOUNT_AMOUNT";
             String COUPON_DISCOUNT_AMOUNT = "COUPON_DISCOUNT_AMOUNT";
             String COUPON_CASHBACK_AMOUNT = "COUPON_CASHBACK_AMOUNT";
+
+
+            String EXTRA_SELECTED_TAB = "EXTRA_SELECTED_TAB";
+            String EXTRA_CART_ID = "EXTRA_CART_ID";
+            String FLIGHT_STRING = "flight";
+            String COUPON_STATE = "coupon";
+            int VOUCHER_TAB = 0;
+            int COUPON_TAB = 1;
+
+
         }
 
         interface ResultLoyaltyActivity {
