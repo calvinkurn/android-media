@@ -115,7 +115,7 @@
     <string name="mf_label_back">Kembali</string>
     <string name="mf_label_list_mutual_fund">Daftar Reksa Dana</string>
     <string name="mf_label_autosweep_to_mutual_fund">Autosweep ke Reksadana</string>
-    <string name="mf_label_new">BARU</string>
+    <string name="mf_label_new">baru</string>
     <string name="mf_text_tab_use">Penggunaan</string>
     <string name="mf_text_tab_refund">Kebijakan Pengembalian</string>
     <string name="mf_action_limit_tokocash">Simpan Limit TokoCash</string>
@@ -123,6 +123,7 @@
     <string name="mf_action_enable_autosweep">Aktifkan Autosweep</string>
     <string name="mf_action_learn">Pelajari</string>
     <string name="mf_action_goto_dashboard">Ke Dashboard Reksadana</string>
+    <string name="mf_action_retry">Mencoba kembali</string>
     <string name="mf_error_min_auto_sweep_limit">Limit minimum</string>
 
 </resources>

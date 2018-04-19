@@ -25,8 +25,9 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.core.home.SimpleWebViewActivity;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -310,7 +311,19 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
 
     @Override
     public void onErrorAutoSweepStatus(@NonNull String error) {
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), error);
+        mSwitchAutoSweep.setChecked(true);
+        SnackbarRetry snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                mPresenter.updateAutoSweepStatus(false, 0);
+            }
+        });
+        snackbarRetry.showRetrySnackbar();
+    }
+
+    @Override
+    public void retry() {
+        mPresenter.getAutoSweepDetail();
     }
 
     @Override
@@ -343,6 +356,8 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
             }
         } else if (source.getId() == R.id.text_limit_tokocash_value) {
             navigateToLimitPage();
+        } else if (source.getId() == R.id.button_retry) {
+            retry();
         }
     }
 
@@ -367,6 +382,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
         mBtnNegative.setOnClickListener(this);
         mTextWaningTitle.setOnClickListener(this);
         mTextLimitTokocashValue.setOnClickListener(this);
+        getView().findViewById(R.id.button_retry).setOnClickListener(this);
 
         mSwitchAutoSweep.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

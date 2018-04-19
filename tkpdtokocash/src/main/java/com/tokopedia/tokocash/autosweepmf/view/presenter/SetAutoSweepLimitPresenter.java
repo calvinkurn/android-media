@@ -62,7 +62,7 @@ public class SetAutoSweepLimitPresenter extends BaseDaggerPresenter<SetAutoSweep
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().showLoading();
+                        getView().hideLoading();
                         getView().onErrorAccountStatus(ErrorHandler.getErrorMessage(getView()
                                 .getActivityContext(), e));
                     }

@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.autosweepmf.view.contract.SetAutoSweepLimitContract;
@@ -108,23 +109,25 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements Set
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
         } else {
             //TODO @lavekush ask error message from Hameer
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(), "Error", new NetworkErrorHelper.RetryClickedListener() {
+            SnackbarRetry snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), "Error", new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
                     mPresenter.postAutoSweepLimit(true, Integer.parseInt(mEditAmount.getText().toString()));
                 }
             });
+            snackbarRetry.showRetrySnackbar();
         }
     }
 
     @Override
     public void onErrorAccountStatus(String error) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, new NetworkErrorHelper.RetryClickedListener() {
+        SnackbarRetry snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 mPresenter.postAutoSweepLimit(true, Integer.parseInt(mEditAmount.getText().toString()));
             }
         });
+        snackbarRetry.showRetrySnackbar();
     }
 
     @Override

@@ -20,13 +20,41 @@
 
         <include layout="@layout/fragment_content_home_autosweepmf" />
 
-        <TextView
-            android:id="@+id/text_error"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/mf_margin_large"
-            android:textColor="@color/text_error" />
+            android:padding="@dimen/mf_padding_medium">
 
+            <TextView
+                android:id="@+id/text_error_title_mutual_fund"
+                style="@style/HeaderText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mf_label_autosweep_to_mutual_fund"
+                android:textSize="@dimen/mf_text_size_medium" />
+
+            <TextView
+                android:id="@+id/text_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/mf_margin_large"
+                android:layout_marginTop="@dimen/mf_padding_medium"
+                android:textColor="@color/text_error"
+                app:layout_constraintTop_toBottomOf="@+id/text_error_title_mutual_fund" />
+
+            <Button
+                android:id="@+id/button_retry"
+                style="@style/HeaderText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:text="@string/mf_action_retry"
+                android:textAllCaps="false"
+                android:textColor="@color/tkpd_main_green"
+                android:textSize="@dimen/mf_text_size_small"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_error" />
+        </android.support.constraint.ConstraintLayout>
     </ViewFlipper>
 
 </android.support.v7.widget.CardView>

@@ -48,6 +48,8 @@ public interface AutoSweepHomeContract {
         void onSuccessAutoSweepStatus(AutoSweepLimit data);
 
         void onErrorAutoSweepStatus(String error);
+
+        void retry();
     }
 
     interface Presenter extends CustomerPresenter<View> {
