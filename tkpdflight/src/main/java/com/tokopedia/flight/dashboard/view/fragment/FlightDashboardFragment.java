@@ -3,6 +3,7 @@ package com.tokopedia.flight.dashboard.view.fragment;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -55,10 +56,11 @@ import javax.inject.Inject;
 
 /**
  * @author by nathan on 10/19/17.
- *         modified by al
+ * modified by al
  */
 
 public class FlightDashboardFragment extends BaseDaggerFragment implements FlightDashboardContract.View {
+    private static final String PROMO_PATH = "promo";
 
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
     public static final String EXTRA_CLASS = "EXTRA_CLASS";
@@ -589,13 +591,29 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     private void bannerClickAction(int position) {
-        if (getBannerData(position) != null) {
-            if (getActivity().getApplication() instanceof FlightModuleRouter
-                    && ((FlightModuleRouter) getActivity().getApplication())
-                    .getBannerWebViewIntent(getActivity(), getBannerData(position).getAttributes().getImgUrl()) != null) {
-                presenter.onBannerItemClick(position, getBannerData(position));
-                startActivity(((FlightModuleRouter) getActivity().getApplication())
-                        .getBannerWebViewIntent(getActivity(), getBannerData(position).getAttributes().getImgUrl()));
+        if (getBannerData(position) != null && getBannerData(position).getAttributes() != null) {
+            String url = getBannerData(position).getAttributes().getImgUrl();
+            Uri uri = Uri.parse(url);
+            if (uri != null
+                    && uri.getPathSegments() != null
+                    && uri.getPathSegments().size() == 2
+                    && uri.getPathSegments().get(0).equalsIgnoreCase(PROMO_PATH)) {
+                String slug = uri.getPathSegments().get(1);
+                if (getActivity().getApplication() instanceof FlightModuleRouter
+                        && ((FlightModuleRouter) getActivity().getApplication())
+                        .getPromoDetailIntent(getActivity(), slug) != null) {
+                    presenter.onBannerItemClick(position, getBannerData(position));
+                    startActivity(((FlightModuleRouter) getActivity().getApplication())
+                            .getPromoDetailIntent(getActivity(), slug));
+                }
+            } else {
+                if (getActivity().getApplication() instanceof FlightModuleRouter
+                        && ((FlightModuleRouter) getActivity().getApplication())
+                        .getBannerWebViewIntent(getActivity(), url) != null) {
+                    presenter.onBannerItemClick(position, getBannerData(position));
+                    startActivity(((FlightModuleRouter) getActivity().getApplication())
+                            .getBannerWebViewIntent(getActivity(), url));
+                }
             }
         }
     }

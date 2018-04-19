@@ -53,4 +53,6 @@ public interface FlightModuleRouter {
     FlightVoucherCodeWrapper getFlightVoucherCodeWrapper();
 
     Intent getPromoListIntent(Activity activity);
+
+    Intent getPromoDetailIntent(Context context, String slug);
 }
