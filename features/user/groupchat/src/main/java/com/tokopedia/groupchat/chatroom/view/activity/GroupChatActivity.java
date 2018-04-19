@@ -978,6 +978,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else if (currentFragmentIsInfo()) {
             populateChannelInfoFragment();
         }
+        setGreenIndicator(channelInfoViewModel.getVoteInfoViewModel());
     }
 
     private void refreshTab() {

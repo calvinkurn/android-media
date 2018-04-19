@@ -14,6 +14,6 @@ import rx.Observable;
 
 public interface CampaignDataRepository {
     Observable<CampaignResponseEntity> getCompaignData(HashMap<String, Object> params);
-    Observable<CampaignResponseEntity> getCampaignFromShake(HashMap<String, RequestBody> params);
+    Observable<CampaignResponseEntity> getCampaignFromShake(HashMap<String, Object> params);
     Observable<CampaignResponseEntity> getCampaignFromShakeAudio(HashMap<String, RequestBody> params, MultipartBody.Part audioFile);
 }

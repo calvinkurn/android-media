@@ -56,12 +56,14 @@ public class PushNotification {
         Notification notifTalk = new TalkNotificationFactory(context)
                     .createNotification(applinkNotificationModel, notificationType, notificationId);
 
-        Notification notifSummary = new SummaryNotificationFactory(context)
+        SummaryNotificationFactory summaryNotificationFactory =  new SummaryNotificationFactory(context);
+        Notification notifSummary = summaryNotificationFactory
                 .createNotification(applinkNotificationModel, notificationType, notificationType);
 
-        notificationManagerCompat.notify(notificationId, notifTalk);
+        if (ApplinkNotificationHelper.allowGroup()) notificationManagerCompat.notify(notificationId, notifTalk);
 
-        if (notifSummary != null) {
+        if ((ApplinkNotificationHelper.allowGroup() && summaryNotificationFactory.getTotalSummary() > 1)
+                || (!ApplinkNotificationHelper.allowGroup() && summaryNotificationFactory.getTotalSummary() >= 1)) {
             notificationManagerCompat.notify(notificationType, notifSummary);
         }
 
@@ -72,15 +74,17 @@ public class PushNotification {
 
         int notificationId = ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks());
 
-        Notification notifChat = new GeneralNotificationFactory(context)
+        Notification notifChat = new ChatNotificationFactory(context)
+                .createNotification(applinkNotificationModel, notificationType, notificationId);
+
+        SummaryNotificationFactory summaryNotificationFactory =  new SummaryNotificationFactory(context);
+        Notification notifSummary = summaryNotificationFactory
                 .createNotification(applinkNotificationModel, notificationType, notificationType);
 
-        Notification notifSummary = new SummaryNotificationFactory(context)
-                .createNotification(applinkNotificationModel, notificationType, notificationType);
+        if (ApplinkNotificationHelper.allowGroup()) notificationManagerCompat.notify(notificationId, notifChat);
 
-        notificationManagerCompat.notify(notificationId, notifChat);
-
-        if (notifSummary != null) {
+        if ((ApplinkNotificationHelper.allowGroup() && summaryNotificationFactory.getTotalSummary() > 1)
+                || (!ApplinkNotificationHelper.allowGroup() && summaryNotificationFactory.getTotalSummary() >= 1)) {
             notificationManagerCompat.notify(notificationType, notifSummary);
         }
 
