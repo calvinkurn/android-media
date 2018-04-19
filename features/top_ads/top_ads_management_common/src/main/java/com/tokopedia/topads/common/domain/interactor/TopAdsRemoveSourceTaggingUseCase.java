@@ -4,6 +4,8 @@ import com.tokopedia.topads.common.domain.repository.TopAdsSourceTaggingReposito
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -14,6 +16,7 @@ public class TopAdsRemoveSourceTaggingUseCase extends UseCase<Void> {
 
     private TopAdsSourceTaggingRepository topAdsSourceTaggingRepository;
 
+    @Inject
     public TopAdsRemoveSourceTaggingUseCase(TopAdsSourceTaggingRepository topAdsSourceTaggingRepository) {
         this.topAdsSourceTaggingRepository = topAdsSourceTaggingRepository;
     }

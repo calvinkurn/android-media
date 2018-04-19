@@ -110,6 +110,7 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
 import com.tokopedia.topads.common.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.util.TopAdsAppLinkUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -963,12 +964,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected void onFirstTimeLaunched() {
-        Log.d(TAG, "onFirstTimeLaunched");
         if (productData != null) {
             onProductDetailLoaded(productData);
-            Log.d(TAG, "productData != null");
         } else {
-            Log.d(TAG, "productData == null");
             presenter.processDataPass(productPass);
             presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
         }
@@ -1235,15 +1233,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onPromoAdsClicked() {
-        String applink = String.format("%s?user_id=%s&item_id=%s&&shop_id=%s",
-                Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE, SessionHandler.getLoginID(getActivity()),
-                productData.getInfo().getProductId(), productData.getShopInfo().getShopId());
-        if (GlobalConfig.isSellerApp()){
-            presenter.saveSource(TopAdsSourceOption.SA_PDP);
-        } else {
-            applink += String.format("&source=%s", TopAdsSourceOption.MA_PDP);
-        }
-        presenter.openPromoteAds(getActivity(), applink);
+        presenter.openPromoteAds(getActivity(),
+                TopAdsAppLinkUtil.createAppLink(SessionHandler.getLoginID(getActivity()),
+                        String.valueOf(productData.getInfo().getProductId()), productData.getShopInfo().getShopId(),
+                        GlobalConfig.isSellerApp() ? TopAdsSourceOption.SA_PDP : TopAdsSourceOption.MA_PDP));
     }
 
     @Override

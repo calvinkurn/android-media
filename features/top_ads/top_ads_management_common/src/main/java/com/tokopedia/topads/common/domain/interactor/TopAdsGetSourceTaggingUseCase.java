@@ -5,16 +5,19 @@ import com.tokopedia.topads.common.domain.repository.TopAdsSourceTaggingReposito
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
- * Created by nakama on 17/04/18.
+ * Created by hadi.putra on 17/04/18.
  */
 
 public class TopAdsGetSourceTaggingUseCase extends UseCase<TopAdsSourceTaggingModel> {
 
     private TopAdsSourceTaggingRepository topAdsSourceTaggingRepository;
 
+    @Inject
     public TopAdsGetSourceTaggingUseCase(TopAdsSourceTaggingRepository topAdsSourceTaggingRepository) {
         this.topAdsSourceTaggingRepository = topAdsSourceTaggingRepository;
     }

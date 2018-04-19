@@ -1,5 +1,6 @@
 package com.tokopedia.topads.keyword.di.module;
 
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetSourceTaggingUseCase;
 import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;
 import com.tokopedia.topads.keyword.domain.interactor.KeywordAddUseCase;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordAddPresenter;
@@ -19,8 +20,8 @@ public class TopAdsKeywordAddModule extends TopAdsKeywordModule {
     @TopAdsKeywordScope
     @Provides
     TopAdsKeywordAddPresenter provideTopAdsKeywordAddPresenter(
-            KeywordAddUseCase keywordAddUseCase) {
-        return new TopAdsKeywordAddPresenterImpl(keywordAddUseCase);
+            KeywordAddUseCase keywordAddUseCase, TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
+        return new TopAdsKeywordAddPresenterImpl(keywordAddUseCase, topAdsGetSourceTaggingUseCase);
     }
 
 }

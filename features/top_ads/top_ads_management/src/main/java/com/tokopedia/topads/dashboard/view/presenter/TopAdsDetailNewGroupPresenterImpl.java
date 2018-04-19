@@ -1,5 +1,7 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import com.tokopedia.topads.common.data.TopAdsSourceTaggingModel;
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCreateDetailProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCreateNewGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
@@ -13,6 +15,7 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailNewGroupView;
 import com.tokopedia.topads.dashboard.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -27,16 +30,19 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
 
     private TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase;
     private TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase;
+    private TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase;
 
     public TopAdsDetailNewGroupPresenterImpl(TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase,
                                              TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
                                              TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
                                              TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                              TopAdsProductListUseCase topAdsProductListUseCase,
-                                             TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase) {
+                                             TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
+                                             TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
         super(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase);
         this.topAdsCreateNewGroupUseCase = topAdsCreateNewGroupUseCase;
         this.topAdsCreateDetailProductListUseCase = topAdsCreateDetailProductListUseCase;
+        this.topAdsGetSourceTaggingUseCase = topAdsGetSourceTaggingUseCase;
     }
 
     @Override
@@ -53,16 +59,31 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
             }
 
             @Override
-            public void onNext(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel) {
+            public void onNext(final TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel) {
                 // get the latest domain from API, then pass it to re-save it
-                topAdsCreateDetailProductListUseCase.execute(
-                        TopAdsCreateDetailProductListUseCase.createRequestParams(
-                                topAdsDetailGroupDomainModel,
-                                topAdsProductViewModelList,
-                                source
-                        ),
-                        getSaveProductSubscriber()
-                );
+                topAdsGetSourceTaggingUseCase.execute(RequestParams.EMPTY, new Subscriber<TopAdsSourceTaggingModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(TopAdsSourceTaggingModel topAdsSourceTaggingModel) {
+                        topAdsCreateDetailProductListUseCase.execute(
+                                TopAdsCreateDetailProductListUseCase.createRequestParams(
+                                        topAdsDetailGroupDomainModel,
+                                        topAdsProductViewModelList,
+                                        topAdsSourceTaggingModel.getSource()
+                                ),
+                                getSaveProductSubscriber()
+                        );
+                    }
+                });
             }
         });
     }
@@ -90,28 +111,46 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
 
 
     @Override
-    public void saveAdNew(String groupName,
-                          TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
-                          List<TopAdsProductViewModel> topAdsProductViewModelList, String source) {
-        topAdsCreateNewGroupUseCase.execute(
-                TopAdsCreateNewGroupUseCase.createRequestParams(groupName, topAdsDetailProductViewModel, topAdsProductViewModelList, source),
-                new Subscriber<TopAdsDetailGroupViewModel>() {
-                    @Override
-                    public void onCompleted() {
+    public void saveAdNew(final String groupName,
+                          final TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
+                          final List<TopAdsProductViewModel> topAdsProductViewModelList, final String source) {
 
-                    }
+        topAdsGetSourceTaggingUseCase.execute(RequestParams.EMPTY, new Subscriber<TopAdsSourceTaggingModel>() {
+            @Override
+            public void onCompleted() {
 
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().onSaveAdError(ViewUtils.getErrorMessage(e));
-                    }
+            }
 
-                    @Override
-                    public void onNext(TopAdsDetailGroupViewModel topAdsDetailGroupViewModel) {
-                        getView().onSaveAdSuccess(topAdsDetailGroupViewModel);
-                        getView().goToGroupDetail(String.valueOf(topAdsDetailGroupViewModel.getGroupId()));
-                    }
-                });
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(TopAdsSourceTaggingModel topAdsSourceTaggingModel) {
+                topAdsCreateNewGroupUseCase.execute(
+                        TopAdsCreateNewGroupUseCase.createRequestParams(groupName,
+                                topAdsDetailProductViewModel, topAdsProductViewModelList,
+                                topAdsSourceTaggingModel.getSource()),
+                        new Subscriber<TopAdsDetailGroupViewModel>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                getView().onSaveAdError(ViewUtils.getErrorMessage(e));
+                            }
+
+                            @Override
+                            public void onNext(TopAdsDetailGroupViewModel topAdsDetailGroupViewModel) {
+                                getView().onSaveAdSuccess(topAdsDetailGroupViewModel);
+                                getView().goToGroupDetail(String.valueOf(topAdsDetailGroupViewModel.getGroupId()));
+                            }
+                        });
+            }
+        });
     }
 
     @Override
@@ -119,6 +158,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
         super.detachView();
         topAdsCreateNewGroupUseCase.unsubscribe();
         topAdsCreateDetailProductListUseCase.unsubscribe();
+        topAdsGetSourceTaggingUseCase.unsubscribe();
     }
 
 }

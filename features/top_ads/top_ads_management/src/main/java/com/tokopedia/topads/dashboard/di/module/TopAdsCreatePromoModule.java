@@ -10,6 +10,7 @@ import com.tokopedia.topads.common.constant.TopAdsConstant;
 import com.tokopedia.topads.common.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingLocal;
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetSourceTaggingUseCase;
 import com.tokopedia.topads.common.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsProductAdFactory;
@@ -74,9 +75,11 @@ public class TopAdsCreatePromoModule {
                                                            TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
                                                            TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                                            TopAdsProductListUseCase topAdsProductListUseCase,
-                                                           TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase) {
+                                                           TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
+                                                           TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
         return new TopAdsDetailNewGroupPresenterImpl(topAdsCreateNewGroupUseCase, topAdsGetDetailGroupUseCase,
-                topAdsSaveDetailGroupUseCase, topAdsCreateDetailProductListUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase);
+                topAdsSaveDetailGroupUseCase, topAdsCreateDetailProductListUseCase, topAdsProductListUseCase,
+                topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope
@@ -91,9 +94,11 @@ public class TopAdsCreatePromoModule {
                                                                         TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
                                                                         TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                                                         TopAdsProductListUseCase topAdsProductListUseCase,
-                                                                        TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase) {
-        return new TopAdsDetailNewProductPresenterImpl(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase, topAdsCreateDetailProductListUseCase,
-                topAdsProductListUseCase, topAdsGetSuggestionUseCase);
+                                                                        TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
+                                                                        TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
+        return new TopAdsDetailNewProductPresenterImpl(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase,
+                topAdsCreateDetailProductListUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase,
+                topAdsGetSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope

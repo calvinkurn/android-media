@@ -80,6 +80,7 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
 import com.tokopedia.topads.common.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.util.TopAdsAppLinkUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -685,16 +686,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void onPromoTopAdsClicked(ProductManageViewModel productManageViewModel) {
-        String applink = String.format("%s?user_id=%s&item_id=%s&shop_id=%s",
-                Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE,
-                SessionHandler.getLoginID(getActivity()), productManageViewModel.getItemId(), productManageViewModel.getProductShopId());
-        if (GlobalConfig.isSellerApp()){
-            productManagePresenter.saveSourceTagging(GlobalConfig.isSellerApp());
-        } else {
-            applink += String.format("&source=%s", TopAdsSourceOption.MA_MANAGE_SHOP);
-        }
-
-        openPromoteAds(getActivity(), applink);
+        openPromoteAds(getActivity(),
+                TopAdsAppLinkUtil.createAppLink(SessionHandler.getLoginID(getActivity()), productManageViewModel.getItemId(),
+                        productManageViewModel.getProductShopId(),
+                        GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_MANAGE_SHOP : TopAdsSourceOption.MA_MANAGE_SHOP));
     }
 
     private void openPromoteAds(Context context, String url) {
