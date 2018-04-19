@@ -23,6 +23,7 @@ dependencies {
     compile project(rootProject.ext.libraries.design)
     compile project(rootProject.ext.features.payment)
     compile project(rootProject.ext.features.topAdsCommon)
+    compile project(rootProject.ext.libraries.williamchart)
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
