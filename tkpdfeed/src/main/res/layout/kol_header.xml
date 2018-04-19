@@ -8,12 +8,12 @@
 
     <ImageView
         android:id="@+id/avatar"
-        android:layout_width="@dimen/avatar_size"
-        android:layout_height="@dimen/avatar_size"
-        android:layout_marginBottom="@dimen/margin_sm"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_width="@dimen/avatar_size_small"
+        android:layout_height="@dimen/avatar_size_small"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@drawable/feed_container_circle_corners_border"
         tools:src="@drawable/ic_check_green_24dp"/>
 
@@ -25,10 +25,10 @@
 
         <ImageView
             android:id="@+id/kol_badge"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:layout_marginRight="@dimen/margin_vs"
-            android:layout_marginTop="@dimen/margin_vvvs"
+            android:layout_width="@dimen/feed_badge_size"
+            android:layout_height="@dimen/feed_badge_size"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_2"
             app:srcCompat="@drawable/ic_kol_badge"/>
 
         <TextView
@@ -39,7 +39,7 @@
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="6sp"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/text_size_medium"
+            android:textSize="@dimen/sp_12"
             android:textStyle="normal"
             tools:text="Young Lex"
             />
@@ -52,7 +52,7 @@
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
             android:textColor="@color/black_38"
-            android:textSize="@dimen/text_size_xsmall"
+            android:textSize="@dimen/text_size_xxsmall"
             android:textStyle="normal"
             tools:text="Artist"
             />
@@ -60,34 +60,30 @@
 
     <RelativeLayout
         android:id="@+id/follow_button"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_72"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginRight="@dimen/margin_sm"
+        android:layout_marginEnd="@dimen/margin_sm"
+        android:background="@drawable/bg_button_green"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:paddingTop="@dimen/dp_6"
+        android:paddingBottom="@dimen/dp_6"
         android:gravity="center">
-
-        <ImageView
-            android:id="@+id/follow_icon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_centerVertical="true"
-            android:padding="@dimen/padding_vs"
-            android:layout_marginRight="@dimen/margin_vs"
-            app:srcCompat="@drawable/ic_plus_green"
-            />
 
         <TextView
             android:id="@+id/follow_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_sm"
-            android:layout_toEndOf="@id/follow_icon"
-            android:layout_toRightOf="@id/follow_icon"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="6sp"
             android:text="@string/action_follow_english"
-            android:textColor="@color/green_500"
-            android:textSize="@dimen/text_size_l_medium"
-            android:textStyle="normal"/>
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_10"
+            android:textStyle="normal"
+            tools:text="Following"/>
     </RelativeLayout>
 </LinearLayout>

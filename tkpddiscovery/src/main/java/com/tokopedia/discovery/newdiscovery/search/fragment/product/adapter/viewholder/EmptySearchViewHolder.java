@@ -6,10 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.MainApplication;
@@ -79,7 +77,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         ProductItem data = new com.tokopedia.core.var.ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -93,7 +91,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
+    public void onShopItemClicked(int position, Shop shop) {
         //Not implemented just leave empty
     }
 

@@ -13,6 +13,7 @@ import java.util.Locale;
  * @author sebastianuskh on 4/11/17.
  */
 
+@Deprecated
 public class AddProductValidationInputServiceModel extends AddProductPictureInputServiceModel {
     public static final String PRODUCT_CATALOG_ID = "product_catalog_id";
     public static final String PRODUCT_CONDITION = "product_condition";

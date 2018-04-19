@@ -147,6 +147,10 @@
         <value>3</value>
     </entry>
     <entry>
+        <key>flight_airline</key>
+        <value>1</value>
+    </entry>
+    <entry>
         <key>notification_logger</key>
         <value>false</value>
     </entry>
@@ -175,6 +179,14 @@
     </entry>
     <entry>
         <key>mainapp_native_promo_list</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_flight_transaction_menu</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>mainapp_show_recomendation_button</key>
         <value>true</value>
     </entry>
 </defaultsMap>
