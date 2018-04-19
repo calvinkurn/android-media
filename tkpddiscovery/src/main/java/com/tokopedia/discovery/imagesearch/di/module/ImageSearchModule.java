@@ -2,14 +2,11 @@ package com.tokopedia.discovery.imagesearch.di.module;
 
 import android.content.Context;
 
-import com.apollographql.apollo.ApolloClient;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
 import com.tokopedia.discovery.imagesearch.data.repository.ImageSearchRepository;
 import com.tokopedia.discovery.imagesearch.data.repository.ImageSearchRepositoryImpl;
@@ -19,7 +16,6 @@ import com.tokopedia.discovery.newdiscovery.data.mapper.ProductMapper;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.OkHttpClient;
 
 /**
  * Created by sachinbansal on 1/10/18.

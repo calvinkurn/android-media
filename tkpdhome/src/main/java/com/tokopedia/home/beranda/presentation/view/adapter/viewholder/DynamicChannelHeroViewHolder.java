@@ -94,7 +94,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
             seeAllButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), "");
+                    listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
                 }
             });
         }catch (Exception e){

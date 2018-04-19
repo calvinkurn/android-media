@@ -35,7 +35,7 @@ public interface TokoCashHistoryContract {
         RequestParams getHistoryTokoCashParam(boolean isWaitingTransaction, int page);
     }
 
-    interface Presenter extends CustomerPresenter<View>{
+    interface Presenter extends CustomerPresenter<View> {
 
         void getWaitingTransaction();
 
