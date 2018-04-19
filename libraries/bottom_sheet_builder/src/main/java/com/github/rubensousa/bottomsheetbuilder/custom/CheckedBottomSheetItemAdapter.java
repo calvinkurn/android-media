@@ -1,4 +1,4 @@
-package com.tokopedia.bottomsheetbuilder.custom;
+package com.github.rubensousa.bottomsheetbuilder.custom;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,10 +6,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tokopedia.bottomsheetbuilder.R;
-import com.tokopedia.bottomsheetbuilder.BottomSheetBuilder;
-import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetItem;
-import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetItemAdapter;
-import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItem;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemAdapter;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 
 import java.util.List;
 

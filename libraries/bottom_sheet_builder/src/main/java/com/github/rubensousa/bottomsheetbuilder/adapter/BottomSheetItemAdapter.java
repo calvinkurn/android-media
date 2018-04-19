@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.bottomsheetbuilder.adapter;
+package com.github.rubensousa.bottomsheetbuilder.adapter;
 
 import android.os.Build;
 import android.support.annotation.LayoutRes;
@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.bottomsheetbuilder.R;
-import com.tokopedia.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 
 import java.util.List;
 

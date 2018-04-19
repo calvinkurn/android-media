@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.bottomsheetbuilder;
+package com.github.rubensousa.bottomsheetbuilder;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -43,8 +43,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.tokopedia.bottomsheetbuilder.R;
-import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetAdapterBuilder;
-import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetAdapterBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 
 
 public class BottomSheetBuilder {

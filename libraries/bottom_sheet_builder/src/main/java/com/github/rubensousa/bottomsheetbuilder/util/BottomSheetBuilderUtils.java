@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.bottomsheetbuilder.util;
+package com.github.rubensousa.bottomsheetbuilder.util;
 
 import android.os.Bundle;
 import android.os.Handler;

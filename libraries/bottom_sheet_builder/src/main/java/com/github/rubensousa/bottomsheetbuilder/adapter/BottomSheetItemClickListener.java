@@ -14,29 +14,11 @@
  * limitations under the License.
  */
 
-package com.tokopedia.bottomsheetbuilder.adapter;
+package com.github.rubensousa.bottomsheetbuilder.adapter;
 
-import android.support.annotation.ColorInt;
 
-class BottomSheetHeader implements BottomSheetItem {
+import android.view.MenuItem;
 
-    private String mTitle;
-
-    @ColorInt
-    private int mTextColor;
-
-    public BottomSheetHeader(String title, @ColorInt int color) {
-        mTitle = title;
-        mTextColor = color;
-    }
-
-    @ColorInt
-    public int getTextColor() {
-        return mTextColor;
-    }
-
-    @Override
-    public String getTitle() {
-        return mTitle;
-    }
+public interface BottomSheetItemClickListener {
+    void onBottomSheetItemClick(MenuItem item);
 }

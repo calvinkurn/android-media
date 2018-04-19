@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.bottomsheetbuilder;
+package com.github.rubensousa.bottomsheetbuilder;
 
 import android.content.Context;
 import android.os.Build;
@@ -29,8 +29,8 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import com.tokopedia.bottomsheetbuilder.R;
-import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
-import com.tokopedia.bottomsheetbuilder.util.BottomSheetBuilderUtils;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.github.rubensousa.bottomsheetbuilder.util.BottomSheetBuilderUtils;
 
 public class BottomSheetMenuDialog extends BottomSheetDialog implements BottomSheetItemClickListener {
 

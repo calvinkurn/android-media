@@ -1,10 +1,10 @@
-package com.tokopedia.bottomsheetbuilder.custom;
+package com.github.rubensousa.bottomsheetbuilder.custom;
 
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.view.MenuItem;
 
-import com.tokopedia.bottomsheetbuilder.adapter.BottomSheetMenuItem;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetMenuItem;
 
 /**
  * @author normansyahputa on 7/17/17.
