@@ -5,7 +5,9 @@ import android.content.res.Resources;
 
 import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.data.source.api.KolApi;
+import com.tokopedia.kol.feature.comment.data.mapper.KolCommentMapper;
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
 import com.tokopedia.usecase.RequestParams;
@@ -26,16 +28,20 @@ import rx.Observable;
 public class KolCommentSource {
     private final Context context;
     private final KolApi kolApi;
+    private final KolCommentMapper kolCommentMapper;
 
     @Inject
     public KolCommentSource(@ApplicationContext Context context,
-                            KolApi kolApi) {
+                            KolApi kolApi,
+                            KolCommentMapper kolCommentMapper) {
         this.context = context;
         this.kolApi = kolApi;
+        this.kolCommentMapper = kolCommentMapper;
     }
 
     public Observable<KolComments> getComments(RequestParams requestParams) {
-        return null;
+        return kolApi.getKolComment(getRequestPayload(requestParams, R.raw.query_get_kol_comment))
+                .map(kolCommentMapper);
     }
 
     public Observable<SendKolCommentDomain> sendComment(RequestParams requestParams) {
@@ -58,20 +64,11 @@ public class KolCommentSource {
         return null;
     }
 
-    private GraphqlRequest getRequestPayload(RequestParams requestParams) {
-//        HashMap<String, Object> variables = new HashMap<>();
-//        variables.put(PARAM_ID, requestParams.getInt(GetKolCommentsUseCase.PARAM_ID,
-//                0));
-//        variables.put(PARAM_CURSOR, requestParams.getString(GetKolCommentsUseCase.PARAM_CURSOR,
-//                ""));
-//        variables.put(PARAM_LIMIT, requestParams.getInt(GetKolCommentsUseCase.PARAM_LIMIT,
-//                GetKolCommentsUseCase.DEFAULT_LIMIT));
-
-        return null;
-//        return new GraphqlRequest(
-//                loadRawString(context.getResources(), R.raw.query_get_user_kol_post),
-//                variables
-//        );
+    private GraphqlRequest getRequestPayload(RequestParams requestParams, int rawResourceId) {
+        return new GraphqlRequest(
+                loadRawString(context.getResources(), rawResourceId),
+                requestParams.getParameters()
+        );
     }
 
     private String loadRawString(Resources resources, int resId) {

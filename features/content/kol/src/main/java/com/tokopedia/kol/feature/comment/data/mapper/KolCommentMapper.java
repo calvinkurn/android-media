@@ -1,11 +1,29 @@
 package com.tokopedia.kol.feature.comment.data.mapper;
 
+import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.kol.feature.comment.data.pojo.GetKolCommentData;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
+
+import javax.inject.Inject;
+
+import retrofit2.Response;
+import rx.functions.Func1;
+
 /**
  * @author by nisie on 11/2/17.
  */
 
-public class KolCommentMapper {
+public class KolCommentMapper
+        implements Func1<Response<GraphqlResponse<GetKolCommentData>>, KolComments> {
 
+    @Inject
+    KolCommentMapper() {
+    }
+
+    @Override
+    public KolComments call(Response<GraphqlResponse<GetKolCommentData>> getKolCommentData) {
+        return null;
+    }
 }
 //
 //public class KolCommentMapper implements Func1<GetKolComments.Data, KolComments> {
