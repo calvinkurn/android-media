@@ -46,6 +46,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.R2;
+import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -71,7 +72,7 @@ import butterknife.OnClick;
  * Created by Irfan Khoirul on 24/01/18.
  */
 
-public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetailPresenter>
+public class ShipmentDetailFragment extends BaseCheckoutFragment
         implements IShipmentDetailView, CourierChoiceAdapter.ViewListener, OnMapReadyCallback,
         ShipmentChoiceBottomSheet.ActionListener {
 
@@ -228,10 +229,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         return false;
     }
 
-    @Override
-    protected void initialPresenter() {
-
-    }
 
     @Override
     protected void initialListener(Activity activity) {
@@ -418,7 +415,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @Override
     public void showPinPointChooserMap(ShipmentDetailData shipmentDetailData) {
-        Intent intent = GeolocationActivity.createInstance(context, null);
+        Intent intent = GeolocationActivity.createInstance(getActivity(), null);
         startActivityForResult(intent, REQUEST_CODE_PINPOINT);
     }
 
@@ -505,7 +502,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         int startSpan = messageTosAgreement.indexOf(formatText);
         int endSpan = messageTosAgreement.indexOf(formatText) + formatText.length();
         Spannable tosAgreementText = new SpannableString(messageTosAgreement);
-        int color = ContextCompat.getColor(context, R.color.tkpd_green_header);
+        int color = ContextCompat.getColor(getActivity(), R.color.tkpd_green_header);
         tosAgreementText.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         tosAgreementText.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
@@ -598,7 +595,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     private void setupPinPointMap() {
         GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
-        int resultCode = availability.isGooglePlayServicesAvailable(context);
+        int resultCode = availability.isGooglePlayServicesAvailable(getActivity());
         if (ConnectionResult.SUCCESS == resultCode) {
             presenter.getPinPointMapData();
         } else {

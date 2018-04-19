@@ -49,11 +49,6 @@ public class CartItemHolderData implements Parcelable {
             this.errorFormItemValidationMessage = "";
             return ERROR_EMPTY;
         }
-
-    }
-
-    public void setErrorFormItemValidationType(int errorFormItemValidationType) {
-        this.errorFormItemValidationType = errorFormItemValidationType;
     }
 
     public String getErrorFormItemValidationMessage() {
@@ -90,7 +85,7 @@ public class CartItemHolderData implements Parcelable {
         dest.writeByte(this.editableRemark ? (byte) 1 : (byte) 0);
     }
 
-    protected CartItemHolderData(Parcel in) {
+    private CartItemHolderData(Parcel in) {
         this.cartItemData = in.readParcelable(CartItemData.class.getClassLoader());
         this.errorFormItemValidationType = in.readInt();
         this.errorFormItemValidationMessage = in.readString();

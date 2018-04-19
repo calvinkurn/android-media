@@ -2,9 +2,10 @@ package com.tokopedia.checkout.view.view.shipmentform;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -36,6 +37,7 @@ public class ResetShipmentFormDialog extends DialogFragment {
         mCallbackAction = callbackAction;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         ForegroundColorSpan fgSpanBlack70 =

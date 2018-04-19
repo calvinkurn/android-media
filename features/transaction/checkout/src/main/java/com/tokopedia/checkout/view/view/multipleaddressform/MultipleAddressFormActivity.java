@@ -1,24 +1,22 @@
 package com.tokopedia.checkout.view.view.multipleaddressform;
 
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 
-import com.tokopedia.checkout.R;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.view.shipmentform.ResetShipmentFormDialog;
 
 /**
  * Created by kris on 2/22/18. Tokopedia
  */
 
-public class MultipleAddressFormActivity extends BasePresenterActivity {
+public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     public static final int REQUEST_CODE = 982;
 
     private static final String EXTRA_CART_LIST_DATA = "EXTRA_CART_LIST_DATA";
@@ -39,6 +37,11 @@ public class MultipleAddressFormActivity extends BasePresenterActivity {
     }
 
     @Override
+    protected void initInjector() {
+
+    }
+
+    @Override
     protected void setupURIPass(Uri data) {
 
     }
@@ -50,25 +53,8 @@ public class MultipleAddressFormActivity extends BasePresenterActivity {
     }
 
     @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.multiple_address_form_activity;
-    }
-
-    @Override
     protected void initView() {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !(fragment instanceof MultipleAddressFragment)) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container, MultipleAddressFragment.newInstance(
-                            cartListData,
-                            addressData))
-                    .commit();
-        }
+
     }
 
     @Override
@@ -102,13 +88,15 @@ public class MultipleAddressFormActivity extends BasePresenterActivity {
 
                     }
                 });
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(dialog, ResetShipmentFormDialog.DIALOG_FRAGMENT_TAG);
         ft.commitAllowingStateLoss();
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+    protected android.support.v4.app.Fragment getNewFragment() {
+        return MultipleAddressFragment.newInstance(
+                cartListData,
+                addressData);
     }
 }

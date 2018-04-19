@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.data.repository;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.apiservice.CartResponse;
 import com.tokopedia.checkout.data.apiservice.CartService;
 import com.tokopedia.checkout.data.entity.response.addtocart.AddToCartDataResponse;
@@ -15,6 +14,8 @@ import com.tokopedia.checkout.data.entity.response.resetcart.ResetCartDataRespon
 import com.tokopedia.checkout.data.entity.response.shippingaddress.ShippingAddressDataResponse;
 import com.tokopedia.checkout.data.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.checkout.data.entity.response.updatecart.UpdateCartDataResponse;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -36,7 +37,7 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<CartDataListResponse> getCartList(TKPDMapParam<String, String> param) {
+    public Observable<CartDataListResponse> getCartList(Map<String, String> param) {
         return cartService.getApi().getCartList(param).map(
                 new Func1<Response<CartResponse>, CartDataListResponse>() {
                     @Override
@@ -47,7 +48,7 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<DeleteCartDataResponse> deleteCartData(TKPDMapParam<String, String> param) {
+    public Observable<DeleteCartDataResponse> deleteCartData(Map<String, String> param) {
         return cartService.getApi().postDeleteCart(param).map(
                 new Func1<Response<CartResponse>, DeleteCartDataResponse>() {
                     @Override
@@ -58,7 +59,7 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<AddToCartDataResponse> addToCartData(TKPDMapParam<String, String> param) {
+    public Observable<AddToCartDataResponse> addToCartData(Map<String, String> param) {
         return cartService.getApi().postAddToCart(param).map(
                 new Func1<Response<CartResponse>, AddToCartDataResponse>() {
                     @Override
@@ -70,7 +71,7 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<UpdateCartDataResponse> updateCartData(TKPDMapParam<String, String> param) {
+    public Observable<UpdateCartDataResponse> updateCartData(Map<String, String> param) {
         return cartService.getApi().postUpdateCart(param).map(new Func1<Response<CartResponse>, UpdateCartDataResponse>() {
             @Override
             public UpdateCartDataResponse call(Response<CartResponse> cartResponseResponse) {
@@ -80,7 +81,7 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<ShippingAddressDataResponse> shippingAddress(TKPDMapParam<String, String> param) {
+    public Observable<ShippingAddressDataResponse> shippingAddress(Map<String, String> param) {
         return cartService.getApi().postSetShippingAddress(param).map(new Func1<Response<CartResponse>, ShippingAddressDataResponse>() {
             @Override
             public ShippingAddressDataResponse call(Response<CartResponse> cartResponseResponse) {
@@ -90,7 +91,7 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<ShipmentAddressFormDataResponse> getShipmentAddressForm(TKPDMapParam<String, String> param) {
+    public Observable<ShipmentAddressFormDataResponse> getShipmentAddressForm(Map<String, String> param) {
         return cartService.getApi().getShipmentAddressForm(param).map(new Func1<Response<CartResponse>, ShipmentAddressFormDataResponse>() {
             @Override
             public ShipmentAddressFormDataResponse call(Response<CartResponse> cartResponseResponse) {
@@ -100,7 +101,7 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<ResetCartDataResponse> resetCart(TKPDMapParam<String, String> param) {
+    public Observable<ResetCartDataResponse> resetCart(Map<String, String> param) {
         return cartService.getApi().resetCart(param).map(new Func1<Response<CartResponse>, ResetCartDataResponse>() {
             @Override
             public ResetCartDataResponse call(Response<CartResponse> cartResponseResponse) {
@@ -110,7 +111,7 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<CheckoutDataResponse> checkout(TKPDMapParam<String, String> param) {
+    public Observable<CheckoutDataResponse> checkout(Map<String, String> param) {
         return cartService.getApi().checkout(param).map(new Func1<Response<CartResponse>, CheckoutDataResponse>() {
             @Override
             public CheckoutDataResponse call(Response<CartResponse> cartResponseResponse) {
@@ -120,7 +121,7 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<CheckPromoCodeCartListDataResponse> checkPromoCodeCartList(TKPDMapParam<String, String> param) {
+    public Observable<CheckPromoCodeCartListDataResponse> checkPromoCodeCartList(Map<String, String> param) {
         return cartService.getApi().checkPromoCodeCartList(param).map(
                 new Func1<Response<CartResponse>, CheckPromoCodeCartListDataResponse>() {
                     @Override
@@ -131,7 +132,7 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<CheckPromoCodeFinalDataResponse> checkPromoCodeCartShipment(TKPDMapParam<String, String> param) {
+    public Observable<CheckPromoCodeFinalDataResponse> checkPromoCodeCartShipment(Map<String, String> param) {
         return cartService.getApi().checkPromoCodeCartShipment(param).map(
                 new Func1<Response<CartResponse>, CheckPromoCodeFinalDataResponse>() {
                     @Override
@@ -142,7 +143,7 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<CouponDataResponse> getCouponList(TKPDMapParam<String, String> param) {
+    public Observable<CouponDataResponse> getCouponList(Map<String, String> param) {
         return cartService.getApi().getCouponList(param).map(
                 new Func1<Response<CartResponse>, CouponDataResponse>() {
                     @Override

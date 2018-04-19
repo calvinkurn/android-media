@@ -3,6 +3,8 @@ package com.tokopedia.checkout.data.service;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 
+import java.util.Map;
+
 import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.QueryMap;
@@ -16,7 +18,7 @@ public interface RatesApi {
 
     @GET(TkpdBaseURL.Shipment.PATH_RATES_V2)
     Observable<Response<String>> calculateShippingRate(
-            @QueryMap TKPDMapParam<String, String> stringStringMap
+            @QueryMap Map<String, String> stringStringMap
     );
 
 }

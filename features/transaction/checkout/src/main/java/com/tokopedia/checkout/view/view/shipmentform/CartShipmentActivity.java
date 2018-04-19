@@ -1,14 +1,14 @@
 package com.tokopedia.checkout.view.view.shipmentform;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentTransaction;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -121,21 +121,6 @@ public class CartShipmentActivity extends BaseCheckoutActivity implements ICartS
     @Override
     protected void initView() {
         progressDialogNormal = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
-//        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-//        if (fragment == null || !((fragment instanceof MultipleAddressFragment)
-//                || (fragment instanceof SingleAddressShipmentFragment))) {
-//            if (typeAddressShipment == TYPE_ADDRESS_SHIPMENT_SINGLE) {
-//                getFragmentManager().beginTransaction().replace(R.id.parent_view,
-//                        SingleAddressShipmentFragment.newInstance(
-//                                cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
-//                        )).commit();
-//            } else {
-//                getFragmentManager().beginTransaction().replace(R.id.parent_view,
-//                        MultipleAddressShipmentFragment.newInstance(
-//                                cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
-//                        )).commit();
-//            }
-//        }
     }
 
     @Override
@@ -248,7 +233,7 @@ public class CartShipmentActivity extends BaseCheckoutActivity implements ICartS
 
                     }
                 });
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(dialog, ResetShipmentFormDialog.DIALOG_FRAGMENT_TAG);
         ft.commitAllowingStateLoss();
     }

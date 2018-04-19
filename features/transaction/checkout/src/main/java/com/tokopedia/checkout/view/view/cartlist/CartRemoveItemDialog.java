@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.widget.Button;
@@ -44,6 +45,7 @@ public class CartRemoveItemDialog extends DialogFragment {
         this.callbackAction = callbackAction;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final List<CartItemData> dataRemoved = getArguments().getParcelableArrayList(DATA_REMOVED);
