@@ -19,6 +19,7 @@ public interface VoucherCartApi {
 
     @FormUrlEncoded
     @POST(TransactionUrl.PATH_CLEAR_PROMO)
-    Observable<String> checkVoucherCode(@FieldMap Map<String, String> params);
+    Observable<String> checkVoucherCode(@Header("X-Device") String os,
+                                        @FieldMap Map<String, String> params);
 
 }
