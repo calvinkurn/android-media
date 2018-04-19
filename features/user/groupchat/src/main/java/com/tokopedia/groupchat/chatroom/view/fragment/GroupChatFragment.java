@@ -757,7 +757,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onSprintSaleComponentClicked(SprintSaleAnnouncementViewModel sprintSaleAnnouncementViewModel) {
         if (TextUtils.isEmpty(sprintSaleAnnouncementViewModel.getRedirectUrl())) {
-//            sprintSaleAnnouncementViewModel.setRedirectUrl(GroupChatUrl.DEFAULT_SPRINT_SALE_APPLINK);
             return;
         }
 
@@ -796,7 +795,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onSprintSaleIconClicked(SprintSaleViewModel sprintSaleViewModel) {
         if (TextUtils.isEmpty(sprintSaleViewModel.getRedirectUrl())) {
-//            sprintSaleViewModel.setRedirectUrl(GroupChatUrl.DEFAULT_SPRINT_SALE_APPLINK);
             return;
         }
 
