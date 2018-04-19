@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.appindexing.Action;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -275,8 +276,17 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         UnifyTracking.eventPDPDetail(pdt);
         TrackingUtils.sendMoEngageOpenProductEvent(successResult);
 
-        if (successResult.getShopInfo().getShopIsOfficial() == 1) {
-            ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), AppScreen.SCREEN_OFFICIAL_STORE);
+        try {
+            if (successResult.getShopInfo().getShopIsOfficial() == 1) {
+                ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "official_store", "/product", String.valueOf(successResult.getInfo().getProductId()));
+            } else if (successResult.getShopInfo().getShopIsGold() == 1) {
+                ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "gold_merchant", "/product", String.valueOf(successResult.getInfo().getProductId()));
+            } else {
+                ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "reguler", "/product", String.valueOf(successResult.getInfo().getProductId()));
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            CommonUtils.dumper("GAv4 error "+e.getMessage());
         }
 
     }
