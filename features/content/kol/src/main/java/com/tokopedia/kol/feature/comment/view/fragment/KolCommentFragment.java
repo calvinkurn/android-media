@@ -2,7 +2,6 @@ package com.tokopedia.kol.feature.comment.view.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -57,8 +57,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     private ImageView wishlist;
 
     private KolCommentAdapter adapter;
-    //TODO milhamj change this progress dialog into another loading
-    private ProgressDialog progressDialog;
+    private ProgressBar progressBar;
     private KolRouter kolRouter;
     private AbstractionRouter abstractionRouter;
 
@@ -131,6 +130,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         kolComment = parentView.findViewById(R.id.new_comment);
         sendButton = parentView.findViewById(R.id.send_but);
         wishlist = parentView.findViewById(R.id.wishlist);
+        progressBar = parentView.findViewById(R.id.progress_bar);
         prepareView();
         presenter.attachView(this);
         return parentView;
@@ -311,17 +311,12 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
     @Override
     public void dismissProgressDialog() {
-        if (progressDialog != null)
-            progressDialog.dismiss();
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void showProgressDialog() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getActivity());
-        }
-
-        progressDialog.show();
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override

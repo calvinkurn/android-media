@@ -5,6 +5,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:visibility="gone"/>
+
     <LinearLayout
         android:id="@+id/view_comment"
         android:layout_width="match_parent"
@@ -60,6 +69,7 @@
         android:id="@+id/comment_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/view_comment"/>
+        android:layout_above="@id/view_comment"
+        android:layout_below="@id/progress_bar"/>
 </RelativeLayout>
 
