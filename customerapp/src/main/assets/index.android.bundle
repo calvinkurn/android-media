@@ -1283,3 +1283,4 @@ __d(function(e,t,r,n){Object.defineProperty(n,"__esModule",{value:!0});var a=t(1
 __d(function(e,t,r,n){Object.defineProperty(n,"__esModule",{value:!0});var o=t(12),l=babelHelpers.interopRequireDefault(o),i=t(20);n.default=function(){return l.default.createElement(i.View,{style:{marginTop:5,marginLeft:5,width:"40%",backgroundColor:"red",borderColor:"red",borderRadius:2}},l.default.createElement(i.Text,{style:{textAlign:"center",fontSize:10,fontWeight:"500",color:"white",margin:3}},"BARU"))}},1282);
 ;require(58);
 ;require(0);
+//# sourceMappingURL=android.main.bundle.map
