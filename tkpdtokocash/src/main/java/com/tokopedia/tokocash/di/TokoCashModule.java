@@ -3,7 +3,6 @@ package com.tokopedia.tokocash.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
@@ -13,6 +12,7 @@ import com.tokopedia.tokocash.accountsetting.domain.PostUnlinkTokoCashUseCase;
 import com.tokopedia.tokocash.activation.data.ActivateRepository;
 import com.tokopedia.tokocash.activation.domain.LinkedTokoCashUseCase;
 import com.tokopedia.tokocash.activation.domain.RequestOtpTokoCashUseCase;
+import com.tokopedia.tokocash.autosweepmf.data.source.cloud.api.AutoSweepApi;
 import com.tokopedia.tokocash.historytokocash.data.repository.WalletRepository;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.domain.GetReasonHelpDataUseCase;
@@ -37,12 +37,18 @@ import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.PostQrPaymentUseCase;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.tokopedia.core.network.constants.TkpdBaseURL.WEB_DOMAIN;
+import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.DI_AUTO_SWEEP_OKHTTP_CLIENT;
+import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.DI_AUTO_SWEEP_RETROFIT;
 
 /**
  * Created by nabillasabbaha on 12/27/17.
@@ -83,6 +89,27 @@ public class TokoCashModule {
     @Provides
     TokoCashApi provideTokoCashApi(@RetrofitTokoCashQualifier Retrofit retrofit) {
         return retrofit.create(TokoCashApi.class);
+    }
+
+    @Provides
+    @Named(DI_AUTO_SWEEP_RETROFIT)
+    Retrofit provideRetrofitAutoSweep(Retrofit.Builder retrofitBuilder, @Named(DI_AUTO_SWEEP_OKHTTP_CLIENT) OkHttpClient okHttpClient) {
+        return retrofitBuilder.baseUrl(WEB_DOMAIN)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @Provides
+    @Named(DI_AUTO_SWEEP_OKHTTP_CLIENT)
+    OkHttpClient provideOkHttpClientHttp(WalletAuthInterceptor authInterceptor) {
+        return new OkHttpClient.Builder()
+                .addInterceptor(authInterceptor)
+                .build();
+    }
+
+    @Provides
+    AutoSweepApi provideAutoSweepApi(@Named(DI_AUTO_SWEEP_RETROFIT) Retrofit retrofit) {
+        return retrofit.create(AutoSweepApi.class);
     }
 
     @Provides
