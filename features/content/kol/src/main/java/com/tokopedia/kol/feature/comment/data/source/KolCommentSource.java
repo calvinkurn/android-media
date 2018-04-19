@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.data.source.api.KolApi;
-import com.tokopedia.kol.feature.comment.data.mapper.KolCommentMapper;
+import com.tokopedia.kol.feature.comment.data.mapper.KolGetCommentMapper;
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
 import com.tokopedia.usecase.RequestParams;
@@ -22,26 +22,27 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * @author by milhamj on 18/04/18.
+ * @author by nisie on 11/2/17.
+ * Moved to features and removed appolo watcher by milhamj on 18/04/18.
  */
 
 public class KolCommentSource {
     private final Context context;
     private final KolApi kolApi;
-    private final KolCommentMapper kolCommentMapper;
+    private final KolGetCommentMapper kolGetCommentMapper;
 
     @Inject
     public KolCommentSource(@ApplicationContext Context context,
                             KolApi kolApi,
-                            KolCommentMapper kolCommentMapper) {
+                            KolGetCommentMapper kolGetCommentMapper) {
         this.context = context;
         this.kolApi = kolApi;
-        this.kolCommentMapper = kolCommentMapper;
+        this.kolGetCommentMapper = kolGetCommentMapper;
     }
 
     public Observable<KolComments> getComments(RequestParams requestParams) {
         return kolApi.getKolComment(getRequestPayload(requestParams, R.raw.query_get_kol_comment))
-                .map(kolCommentMapper);
+                .map(kolGetCommentMapper);
     }
 
     public Observable<SendKolCommentDomain> sendComment(RequestParams requestParams) {

@@ -11,13 +11,14 @@ import rx.functions.Func1;
 
 /**
  * @author by nisie on 11/2/17.
+ * Moved to features and removed appolo watcher by milhamj on 19/04/18.
  */
 
-public class KolCommentMapper
+public class KolGetCommentMapper
         implements Func1<Response<GraphqlResponse<GetKolCommentData>>, KolComments> {
 
     @Inject
-    KolCommentMapper() {
+    KolGetCommentMapper() {
     }
 
     @Override
@@ -26,7 +27,7 @@ public class KolCommentMapper
     }
 }
 //
-//public class KolCommentMapper implements Func1<GetKolComments.Data, KolComments> {
+//public class KolGetCommentMapper implements Func1<GetKolComments.Data, KolComments> {
 //
 //    @Override
 //    public KolComments call(GetKolComments.Data data) {

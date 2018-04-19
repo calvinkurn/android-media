@@ -2,6 +2,7 @@ package com.tokopedia.kol.feature.comment.data.mapper;
 
 /**
  * @author by nisie on 11/10/17.
+ * Moved to features and removed appolo watcher by milhamj on 19/04/18.
  */
 
 public class KolDeleteCommentMapper {
