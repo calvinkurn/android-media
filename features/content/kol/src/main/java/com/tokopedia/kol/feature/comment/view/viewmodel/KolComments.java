@@ -10,17 +10,16 @@ public class KolComments {
 
     private final String lastcursor;
     private final boolean hasNextPage;
-    ArrayList<KolCommentViewModel> listComments;
+    private ArrayList<KolCommentViewModel> listComments;
+    private KolCommentHeaderViewModel headerViewModel;
 
-    public KolComments(String lastcursor, boolean hasNextPage, ArrayList<KolCommentViewModel>
-            listComments) {
-        this.listComments = listComments;
+    public KolComments(String lastcursor, boolean hasNextPage,
+                       ArrayList<KolCommentViewModel> listComments,
+                       KolCommentHeaderViewModel headerViewModel) {
         this.lastcursor = lastcursor;
         this.hasNextPage = hasNextPage;
-    }
-
-    public ArrayList<KolCommentViewModel> getListComments() {
-        return listComments;
+        this.listComments = listComments;
+        this.headerViewModel = headerViewModel;
     }
 
     public String getLastcursor() {
@@ -29,5 +28,13 @@ public class KolComments {
 
     public boolean isHasNextPage() {
         return hasNextPage;
+    }
+
+    public ArrayList<KolCommentViewModel> getListComments() {
+        return listComments;
+    }
+
+    public KolCommentHeaderViewModel getHeaderViewModel() {
+        return headerViewModel;
     }
 }

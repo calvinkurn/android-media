@@ -1,4 +1,4 @@
-{
+query GetKolComment($idPost: Int!, $limit: Int!, $cursor: String) {
   get_user_post_comment(idPost: $idPost, cursor: $cursor, limit: $limit) {
     postKol {
       id

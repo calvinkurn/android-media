@@ -1576,16 +1576,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getKolCommentActivity(Context context, String avatarUrl, String name,
-                                        String review, String time, String userId,
-                                        String productImageUrl, String contentName,
-                                        String price, boolean isWishlishted, int postId,
-                                        int rowNumber) {
-        return KolCommentActivity.getCallingIntent(context,
-                new KolCommentHeaderViewModel(avatarUrl, name, review, time, userId),
-                new KolCommentProductViewModel(productImageUrl, contentName, price, isWishlishted),
-                postId,
-                rowNumber
+    public Intent getKolCommentActivity(Context context, int postId, int rowNumber) {
+        return KolCommentActivity.getCallingIntent(context, postId, rowNumber
         );
     }
 

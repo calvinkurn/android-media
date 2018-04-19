@@ -15,7 +15,7 @@ import rx.Observable;
 
 public class GetKolCommentsUseCase extends UseCase<KolComments> {
 
-    public static final String PARAM_ID = "id";
+    public static final String PARAM_ID = "idPost";
     public static final String PARAM_CURSOR = "cursor";
     public static final String PARAM_LIMIT = "limit";
 

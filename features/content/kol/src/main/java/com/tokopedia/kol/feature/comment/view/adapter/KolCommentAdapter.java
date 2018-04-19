@@ -93,7 +93,7 @@ public class KolCommentAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
     }
 
     public void addHeader(KolCommentHeaderViewModel header) {
-        this.list.add(header);
+        this.list.add(0, header);
         notifyItemInserted(0);
     }
 

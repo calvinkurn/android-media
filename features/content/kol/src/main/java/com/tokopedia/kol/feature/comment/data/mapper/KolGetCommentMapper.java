@@ -42,11 +42,23 @@ public class KolGetCommentMapper
     @Override
     public KolComments call(Response<GraphqlResponse<GetKolCommentData>> getKolCommentData) {
         GetUserPostComment getUserPostComment = getDataOrError(getKolCommentData);
+
+        PostKol postKol = getUserPostComment.getPostKol();
+        KolCommentHeaderViewModel kolCommentHeaderViewModel = new KolCommentHeaderViewModel(
+                postKol.getUserPhoto() == null ? "" : postKol.getUserPhoto(),
+                postKol.getUserName() == null ? "" : postKol.getUserName(),
+                postKol.getDescription() == null ? "" : postKol.getDescription(),
+                postKol.getCreateTime() == null ? "" :
+                        TimeConverter.generateTime(context, postKol.getCreateTime()),
+                String.valueOf(postKol.getUserId())
+        );
+
         return new KolComments(
                 getUserPostComment.getLastCursor() == null ? "" :
                         getUserPostComment.getLastCursor(),
                 !TextUtils.isEmpty(getUserPostComment.getLastCursor()),
-                convertCommentList(getUserPostComment)
+                convertCommentList(getUserPostComment),
+                kolCommentHeaderViewModel
         );
     }
 
@@ -73,17 +85,6 @@ public class KolGetCommentMapper
     private ArrayList<KolCommentViewModel> convertCommentList(
             GetUserPostComment getUserPostComment) {
         ArrayList<KolCommentViewModel> viewModelList = new ArrayList<>();
-
-        PostKol postKol = getUserPostComment.getPostKol();
-        KolCommentHeaderViewModel kolCommentHeaderViewModel = new KolCommentHeaderViewModel(
-                postKol.getUserPhoto() == null ? "" : postKol.getUserPhoto(),
-                postKol.getUserName() == null ? "" : postKol.getUserName(),
-                postKol.getDescription() == null ? "" : postKol.getDescription(),
-                postKol.getCreateTime() == null ? "" :
-                        TimeConverter.generateTime(context, postKol.getCreateTime()),
-                String.valueOf(postKol.getUserId())
-        );
-        viewModelList.add(kolCommentHeaderViewModel);
 
         for (Comment comment : getUserPostComment.getComments()) {
             KolCommentViewModel kolCommentViewModel = new KolCommentViewModel(

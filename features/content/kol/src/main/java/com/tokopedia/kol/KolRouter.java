@@ -13,11 +13,7 @@ import okhttp3.Interceptor;
  */
 
 public interface KolRouter {
-    Intent getKolCommentActivity(Context context, String avatarUrl, String name,
-                                 String review, String time, String userId,
-                                 String productImageUrl, String contentName,
-                                 String price, boolean isWishlishted, int postId,
-                                 int rowNumber);
+    Intent getKolCommentActivity(Context context, int postId, int rowNumber);
 
     String getKolCommentArgsPosition();
 

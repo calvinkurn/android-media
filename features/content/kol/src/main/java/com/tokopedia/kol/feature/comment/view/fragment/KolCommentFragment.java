@@ -62,7 +62,6 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     ImageView wishlist;
 
     boolean isFromApplink;
-
     KolCommentHeaderViewModel header;
 
     @Inject
@@ -103,8 +102,6 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
             if (getArguments().get(KolCommentActivity.ARGS_FROM_APPLINK) != null
                     && getArguments().getBoolean(KolCommentActivity.ARGS_FROM_APPLINK)) {
                 isFromApplink = true;
-            } else {
-                header = getArguments().getParcelable(KolCommentActivity.ARGS_HEADER);
             }
             totalNewComment = 0;
         } else if (savedInstanceState != null) {
@@ -145,9 +142,6 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (header != null) {
-            setHeader(header);
-        }
         presenter.getCommentFirstTime(getArguments().getInt(KolCommentActivity.ARGS_ID));
     }
 
@@ -194,10 +188,12 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
     @Override
     public void onSuccessGetCommentsFirstTime(KolComments kolComments) {
+        header = kolComments.getHeaderViewModel();
+        setHeader(header);
+
         ArrayList<Visitable> list = new ArrayList<>();
         list.addAll(kolComments.getListComments());
         Collections.reverse(list);
-
         adapter.setList(list);
 
         if (adapter.getHeader() != null)

@@ -9,8 +9,6 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
-import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
-import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentProductViewModel;
 
 /**
  * @author by nisie on 10/27/17.
@@ -25,13 +23,9 @@ public class KolCommentActivity extends BaseSimpleActivity {
     public static final String ARGS_KOL_ID = "id";
     public static final String ARGS_FROM_APPLINK = "isFromApplink";
 
-    public static Intent getCallingIntent(Context context, KolCommentHeaderViewModel header,
-                                          KolCommentProductViewModel productViewModel,
-                                          int id, int rowNumber) {
+    public static Intent getCallingIntent(Context context, int id, int rowNumber) {
         Intent intent = new Intent(context, KolCommentActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ARGS_HEADER, header);
-        bundle.putParcelable(ARGS_FOOTER, productViewModel);
         bundle.putInt(ARGS_ID, id);
         bundle.putInt(ARGS_POSITION, rowNumber);
         intent.putExtras(bundle);
