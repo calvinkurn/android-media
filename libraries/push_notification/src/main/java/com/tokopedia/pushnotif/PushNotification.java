@@ -81,7 +81,7 @@ public class PushNotification {
         Notification notifSummary = summaryNotificationFactory
                 .createNotification(applinkNotificationModel, notificationType, notificationType);
 
-        notificationManagerCompat.notify(notificationId, notifChat);
+        if (ApplinkNotificationHelper.allowGroup()) notificationManagerCompat.notify(notificationId, notifChat);
 
         if ((ApplinkNotificationHelper.allowGroup() && summaryNotificationFactory.getTotalSummary() > 1)
                 || (!ApplinkNotificationHelper.allowGroup() && summaryNotificationFactory.getTotalSummary() >= 1)) {
