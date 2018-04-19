@@ -1,35 +1,59 @@
 package com.tokopedia.kol.feature.comment.data.mapper;
 
+import android.text.TextUtils;
+
+import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.kol.common.network.GraphqlErrorException;
+import com.tokopedia.kol.feature.comment.data.pojo.deleteKol.DeleteCommentKolData;
+import com.tokopedia.kol.feature.comment.data.pojo.deleteKol.DeleteCommentKolGraphql;
+
+import javax.inject.Inject;
+
+import retrofit2.Response;
+import rx.functions.Func1;
+
 /**
  * @author by nisie on 11/10/17.
- * Moved to features and removed appolo watcher by milhamj on 19/04/18.
+ *         Moved to features and removed appolo watcher by milhamj on 19/04/18.
  */
 
-public class KolDeleteCommentMapper {
+public class KolDeleteCommentMapper
+        implements Func1<Response<GraphqlResponse<DeleteCommentKolGraphql>>, Boolean> {
 
+    private static final String ERROR_NETWORK = "ERROR_NETWORK";
+    private static final String ERROR_EMPTY_RESPONSE = "ERROR_EMPTY_RESPONSE";
+
+    @Inject
+    KolDeleteCommentMapper() {
+    }
+
+    @Override
+    public Boolean call(Response<GraphqlResponse<DeleteCommentKolGraphql>>
+                                graphqlResponseResponse) {
+        return isDeleteSuccesful(getDataorError(graphqlResponseResponse));
+    }
+
+    private DeleteCommentKolData getDataorError(
+            Response<GraphqlResponse<DeleteCommentKolGraphql>> deleteCommentKolResponse) {
+        if (deleteCommentKolResponse != null
+                && deleteCommentKolResponse.body() != null
+                && deleteCommentKolResponse.body().getData() != null) {
+            if (deleteCommentKolResponse.isSuccessful()) {
+                DeleteCommentKolGraphql data = deleteCommentKolResponse.body().getData();
+                if (TextUtils.isEmpty(data.getDeleteCommentKol().getError())) {
+                    return data.getDeleteCommentKol().getData();
+                } else {
+                    throw new GraphqlErrorException(data.getDeleteCommentKol().getError());
+                }
+            } else {
+                throw new RuntimeException(ERROR_NETWORK);
+            }
+        } else {
+            throw new RuntimeException(ERROR_EMPTY_RESPONSE);
+        }
+    }
+
+    private Boolean isDeleteSuccesful(DeleteCommentKolData data) {
+        return (data != null && data.getSuccess() == 1);
+    }
 }
-//
-//public class KolDeleteCommentMapper implements Func1<DeleteKolComment.Data, DeleteKolCommentDomain> {
-//    @Override
-//    public DeleteKolCommentDomain call(DeleteKolComment.Data data) {
-//        if (data != null
-//                && data.delete_comment_kol() != null
-//                && data.delete_comment_kol().data() != null
-//                && (data.delete_comment_kol().error() == null
-//                || TextUtils.isEmpty(data.delete_comment_kol().error()))) {
-//            return convertToDomain(data.delete_comment_kol().data());
-//        } else if (data != null
-//                && data.delete_comment_kol() != null
-//                && (data.delete_comment_kol().error() != null
-//                && !TextUtils.isEmpty(data.delete_comment_kol().error()))) {
-//            throw new ErrorMessageException(data.delete_comment_kol().error());
-//        } else {
-//            throw new ErrorMessageException(MainApplication.getAppContext().getString(R.string
-//                    .default_request_error_unknown));
-//        }
-//    }
-//
-//    private DeleteKolCommentDomain convertToDomain(DeleteKolComment.Data.Data1 data) {
-//        return new DeleteKolCommentDomain(data.success() != null && data.success() == 1);
-//    }
-//}
