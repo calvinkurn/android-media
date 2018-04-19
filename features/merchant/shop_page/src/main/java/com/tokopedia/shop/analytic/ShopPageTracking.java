@@ -24,6 +24,10 @@ public class ShopPageTracking {
         this.shopModuleRouter = shopModuleRouter;
     }
 
+    private void sendScreenName(String screenName){
+        shopModuleRouter.sendScreenName(screenName);
+    }
+
     private void eventShopPageOfficialStore(String action, String label, String shopId, boolean myShop, int shopType) {
         HashMap<String, Object> eventMap = createEventMap(getEventNameCLick(myShop, shopType), getEventCategory(myShop, shopType),
                 action, label, shopType);
@@ -214,6 +218,7 @@ public class ShopPageTracking {
         eventShopPageOfficialStore(
                 titlePage + ShopPageTrackingConstant.TOP_SECTION_IMPRESSION,
                 "", shopId, myShop, shopType);
+        sendScreenName("/shoppage - "+shopId);
     }
 
     public void eventClickWishlistShop(String titlePage, boolean wishList, boolean isFromHomeShop, String productId, boolean myShop, int shopType) {

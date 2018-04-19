@@ -62,7 +62,7 @@ public interface IGTMContainer {
 
     GTMContainer sendScreenAuthenticated(String screenName);
 
-    GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType);
+    GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType, String pageType, String productId);
 
     GTMContainer eventAuthenticate(Authenticated authenticated);
 
