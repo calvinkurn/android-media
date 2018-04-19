@@ -47,6 +47,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
+import com.tokopedia.flight.common.view.FullDividerItemDecoration;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
@@ -151,6 +152,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         reviewDetailReturnFlight = (TextView) view.findViewById(R.id.review_detail_return_flight);
         recyclerViewReturnFlight = (RecyclerView) view.findViewById(R.id.recycler_view_return_flight);
         recyclerViewDataPassenger = (RecyclerView) view.findViewById(R.id.recycler_view_data_passenger);
+        recyclerViewDataPassenger.addItemDecoration(new FullDividerItemDecoration(recyclerViewDataPassenger.getContext()));
         recyclerViewDetailPrice = (RecyclerView) view.findViewById(R.id.recycler_view_detail_price);
         reviewTotalPrice = (TextView) view.findViewById(R.id.total_price);
         reviewDiscountPrice = (TextView) view.findViewById(R.id.tv_discount_voucher);

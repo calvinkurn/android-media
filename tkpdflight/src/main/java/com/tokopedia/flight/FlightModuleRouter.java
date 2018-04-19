@@ -18,6 +18,8 @@ public interface FlightModuleRouter {
 
     long getLongConfig(String flightAirport);
 
+    boolean isPromoNativeEnable();
+
     Intent getLoginIntent();
 
     void goToFlightActivity(Context context);

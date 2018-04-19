@@ -594,7 +594,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         if (getBannerData(position) != null && getBannerData(position).getAttributes() != null) {
             String url = getBannerData(position).getAttributes().getImgUrl();
             Uri uri = Uri.parse(url);
-            if (uri != null
+            boolean isPromoNativeActive = isPromoNativeActive();
+            if (isPromoNativeActive && uri != null
                     && uri.getPathSegments() != null
                     && uri.getPathSegments().size() == 2
                     && uri.getPathSegments().get(0).equalsIgnoreCase(PROMO_PATH)) {
@@ -618,13 +619,24 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         }
     }
 
-    private void bannerAllClickAction() {
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication())
-                .getPromoListIntent(getActivity()) != null) {
+    private boolean isPromoNativeActive() {
+        if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
+            return ((FlightModuleRouter) getActivity().getApplication())
+                    .isPromoNativeEnable();
+        } else {
+            return false;
+        }
+    }
 
-            startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getPromoListIntent(getActivity()));
+    private void bannerAllClickAction() {
+        if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
+            if (isPromoNativeActive()) {
+                startActivity(((FlightModuleRouter) getActivity().getApplication())
+                        .getPromoListIntent(getActivity()));
+            } else {
+                startActivity(((FlightModuleRouter) getActivity().getApplication())
+                        .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK));
+            }
         }
     }
 
