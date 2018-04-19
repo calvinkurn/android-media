@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.data.source.api.KolApi;
+import com.tokopedia.kol.feature.comment.data.mapper.KolDeleteCommentMapper;
 import com.tokopedia.kol.feature.comment.data.mapper.KolGetCommentMapper;
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
@@ -23,21 +24,24 @@ import rx.Observable;
 
 /**
  * @author by nisie on 11/2/17.
- * Moved to features and removed appolo watcher by milhamj on 18/04/18.
+ *         Moved to features and removed appolo watcher by milhamj on 18/04/18.
  */
 
 public class KolCommentSource {
     private final Context context;
     private final KolApi kolApi;
     private final KolGetCommentMapper kolGetCommentMapper;
+    private final KolDeleteCommentMapper kolDeleteCommentMapper;
 
     @Inject
     public KolCommentSource(@ApplicationContext Context context,
                             KolApi kolApi,
-                            KolGetCommentMapper kolGetCommentMapper) {
+                            KolGetCommentMapper kolGetCommentMapper,
+                            KolDeleteCommentMapper kolDeleteCommentMapper) {
         this.context = context;
         this.kolApi = kolApi;
         this.kolGetCommentMapper = kolGetCommentMapper;
+        this.kolDeleteCommentMapper = kolDeleteCommentMapper;
     }
 
     public Observable<KolComments> getComments(RequestParams requestParams) {
@@ -56,13 +60,8 @@ public class KolCommentSource {
     }
 
     public Observable<Boolean> deleteKolComment(RequestParams requestParams) {
-//        ApolloWatcher<DeleteKolComment.Data> apolloWatcher = apolloClient.newCall(
-//                DeleteKolComment.builder()
-//                        .idComment(requestParams.getInt(DeleteKolCommentUseCase.PARAM_ID, 0))
-//                        .build()).watcher();
-//
-//        return RxApollo.from(apolloWatcher).map(kolDeleteCommentMapper);
-        return null;
+        return kolApi.deleteKolComment(getRequestPayload(requestParams,
+                R.raw.mutation_delete_kol_comment)).map(kolDeleteCommentMapper);
     }
 
     private GraphqlRequest getRequestPayload(RequestParams requestParams, int rawResourceId) {

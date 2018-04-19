@@ -1,7 +1,7 @@
 package com.tokopedia.kol.feature.comment.view.subscriber;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.kol.R;
+import com.tokopedia.kol.common.network.GraphqlErrorHandler;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 
 import rx.Subscriber;
@@ -28,7 +28,7 @@ public class DeleteKolCommentSubscriber extends Subscriber<Boolean> {
     @Override
     public void onError(Throwable e) {
         view.dismissProgressDialog();
-        view.onErrorDeleteComment(ErrorHandler.getErrorMessage(view.getContext(), e));
+        view.onErrorDeleteComment(GraphqlErrorHandler.getErrorMessage(view.getContext(), e));
     }
 
     @Override

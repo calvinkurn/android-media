@@ -14,7 +14,7 @@ import rx.Observable;
 
 public class DeleteKolCommentUseCase extends UseCase<Boolean> {
 
-    public static final String PARAM_ID = "comment_id";
+    public static final String PARAM_ID = "idComment";
 
     private final KolCommentSource kolCommentSource;
 
