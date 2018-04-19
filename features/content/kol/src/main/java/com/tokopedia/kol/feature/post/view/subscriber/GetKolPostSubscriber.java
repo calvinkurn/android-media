@@ -3,8 +3,8 @@ package com.tokopedia.kol.feature.post.view.subscriber;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.kol.analytics.KolEnhancedTracking;
+import com.tokopedia.kol.common.network.GraphqlErrorHandler;
 import com.tokopedia.kol.feature.post.domain.model.KolProfileModel;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
@@ -35,7 +35,7 @@ public class GetKolPostSubscriber extends Subscriber<KolProfileModel> {
     public void onError(Throwable e) {
         view.hideLoading();
         view.onErrorGetProfileData(
-                ErrorHandler.getErrorMessage(view.getContext(), e)
+                GraphqlErrorHandler.getErrorMessage(view.getContext(), e)
         );
     }
 

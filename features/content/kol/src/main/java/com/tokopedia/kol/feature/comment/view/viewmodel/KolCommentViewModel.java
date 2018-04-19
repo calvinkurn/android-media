@@ -21,10 +21,9 @@ public class KolCommentViewModel implements Visitable<KolCommentTypeFactory>, Pa
     protected String userId;
     protected boolean canDeleteComment;
 
-    public KolCommentViewModel(String id, String userId, String avatarUrl, String name, String
-            review,
-                               String time,
-                               boolean isOfficial, boolean canDeleteComment) {
+    public KolCommentViewModel(String id, String userId, String avatarUrl, String name,
+                               String review, String time, boolean isOfficial,
+                               boolean canDeleteComment) {
         this.id = id;
         this.userId = userId;
         this.avatarUrl = avatarUrl;

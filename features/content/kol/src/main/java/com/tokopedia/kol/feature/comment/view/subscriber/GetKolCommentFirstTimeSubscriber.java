@@ -1,6 +1,6 @@
 package com.tokopedia.kol.feature.comment.view.subscriber;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.kol.common.network.GraphqlErrorHandler;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
 
@@ -27,7 +27,7 @@ public class GetKolCommentFirstTimeSubscriber extends rx.Subscriber<KolComments>
     public void onError(Throwable e) {
         viewListener.removeLoading();
         viewListener.onErrorGetCommentsFirstTime(
-                ErrorHandler.getErrorMessage(viewListener.getContext(), e)
+                GraphqlErrorHandler.getErrorMessage(viewListener.getContext(), e)
         );
     }
 

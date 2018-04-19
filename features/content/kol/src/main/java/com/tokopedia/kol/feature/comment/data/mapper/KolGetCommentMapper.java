@@ -1,12 +1,21 @@
 package com.tokopedia.kol.feature.comment.data.mapper;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.kol.common.network.GraphqlErrorException;
+import com.tokopedia.kol.common.util.TimeConverter;
+import com.tokopedia.kol.feature.comment.data.pojo.Comment;
 import com.tokopedia.kol.feature.comment.data.pojo.GetKolCommentData;
 import com.tokopedia.kol.feature.comment.data.pojo.GetUserPostComment;
+import com.tokopedia.kol.feature.comment.data.pojo.PostKol;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -23,17 +32,26 @@ public class KolGetCommentMapper
     private static final String ERROR_NETWORK = "ERROR_NETWORK";
     private static final String ERROR_EMPTY_RESPONSE = "ERROR_EMPTY_RESPONSE";
 
+    private final Context context;
+
     @Inject
-    KolGetCommentMapper() {
+    KolGetCommentMapper(@ApplicationContext Context context) {
+        this.context = context;
     }
 
     @Override
     public KolComments call(Response<GraphqlResponse<GetKolCommentData>> getKolCommentData) {
-        GetUserPostComment postKol = getDataOrError(getKolCommentData);
-        return null;
+        GetUserPostComment getUserPostComment = getDataOrError(getKolCommentData);
+        return new KolComments(
+                getUserPostComment.getLastCursor() == null ? "" :
+                        getUserPostComment.getLastCursor(),
+                !TextUtils.isEmpty(getUserPostComment.getLastCursor()),
+                convertCommentList(getUserPostComment)
+        );
     }
 
-    private GetUserPostComment getDataOrError(Response<GraphqlResponse<GetKolCommentData>> getKolCommentData) {
+    private GetUserPostComment getDataOrError(
+            Response<GraphqlResponse<GetKolCommentData>> getKolCommentData) {
         if (getKolCommentData != null
                 && getKolCommentData.body() != null
                 && getKolCommentData.body().getData() != null) {
@@ -51,51 +69,37 @@ public class KolGetCommentMapper
             throw new RuntimeException(ERROR_EMPTY_RESPONSE);
         }
     }
+
+    private ArrayList<KolCommentViewModel> convertCommentList(
+            GetUserPostComment getUserPostComment) {
+        ArrayList<KolCommentViewModel> viewModelList = new ArrayList<>();
+
+        PostKol postKol = getUserPostComment.getPostKol();
+        KolCommentHeaderViewModel kolCommentHeaderViewModel = new KolCommentHeaderViewModel(
+                postKol.getUserPhoto() == null ? "" : postKol.getUserPhoto(),
+                postKol.getUserName() == null ? "" : postKol.getUserName(),
+                postKol.getDescription() == null ? "" : postKol.getDescription(),
+                postKol.getCreateTime() == null ? "" :
+                        TimeConverter.generateTime(context, postKol.getCreateTime()),
+                String.valueOf(postKol.getUserId())
+        );
+        viewModelList.add(kolCommentHeaderViewModel);
+
+        for (Comment comment : getUserPostComment.getComments()) {
+            KolCommentViewModel kolCommentViewModel = new KolCommentViewModel(
+                    String.valueOf(comment.getId()),
+                    String.valueOf(comment.getUserID()),
+                    comment.getUserPhoto() == null ? "" : comment.getUserPhoto(),
+                    comment.getUserName() == null ? "" : comment.getUserName(),
+                    comment.getComment() == null ? "" : comment.getComment(),
+                    comment.getCreateTime() == null ? "" :
+                            TimeConverter.generateTime(context, comment.getCreateTime()),
+                    comment.isKol(),
+                    comment.isCommentOwner()
+            );
+            viewModelList.add(kolCommentViewModel);
+        }
+
+        return viewModelList;
+    }
 }
-//
-//public class KolGetCommentMapper implements Func1<GetKolComments.Data, KolComments> {
-//
-//    @Override
-//    public KolComments call(GetKolComments.Data data) {
-//        if (data != null
-//                && data.get_kol_list_comment() != null
-//                && data.get_kol_list_comment().data() != null
-//                && (data.get_kol_list_comment().error() == null
-//                || TextUtils.isEmpty(data.get_kol_list_comment().error()))) {
-//            return convertToDomain(data.get_kol_list_comment().data());
-//        } else if (data != null
-//                && data.get_kol_list_comment() != null
-//                && (data.get_kol_list_comment().error() != null
-//                && !TextUtils.isEmpty(data.get_kol_list_comment().error()))) {
-//            throw new ErrorMessageException(data.get_kol_list_comment().error());
-//        } else {
-//            throw new ErrorMessageException(MainApplication.getAppContext().getString(R.string
-//                    .default_request_error_unknown));
-//        }
-//    }
-//
-//    private KolComments convertToDomain(GetKolComments.Data.Data1 data) {
-//        return new KolComments(data.lastcursor() == null ? "" : data.lastcursor(),
-//                data.has_next_page() == null ? false : data.has_next_page(),
-//                convertToList(data.comment()));
-//    }
-//
-//    private ArrayList<KolCommentViewModel> convertToList(List<GetKolComments.Data.Comment>
-//                                                                 comments) {
-//        ArrayList<KolCommentViewModel> list = new ArrayList<>();
-//        if (comments != null)
-//            for (GetKolComments.Data.Comment comment : comments) {
-//                list.add(new KolCommentViewModel(
-//                        comment.id() == null ? "0" : comment.id().toString(),
-//                        comment.userID() == null ? "" : comment.userID().toString(),
-//                        comment.userPhoto() == null ? "" : comment.userPhoto(),
-//                        comment.userName() == null ? "" : comment.userName(),
-//                        comment.comment() == null ? "" : comment.comment(),
-//                        TimeConverter.generateTime(comment.create_time() == null ? "" : comment
-//                                .create_time()),
-//                        comment.isKol() == null ? false : comment.isKol(),
-//                        comment.isCommentOwner() == null ? false : comment.isCommentOwner()));
-//            }
-//        return list;
-//    }
-//}
