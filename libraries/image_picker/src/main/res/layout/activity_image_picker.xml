@@ -31,9 +31,8 @@
             android:layout_height="wrap_content">
             <View
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@color/grey_400"
-                app:layout_scrollFlags="scroll|enterAlways" />
+                android:layout_height="100dp"
+                android:background="@color/grey_400" />
         </android.support.design.widget.AppBarLayout>
 
         <com.tokopedia.imagepicker.widget.NonSwipeableViewPager
