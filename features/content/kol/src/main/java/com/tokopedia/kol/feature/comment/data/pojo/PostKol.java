@@ -10,7 +10,7 @@ public class PostKol {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("headerTitle")
     @Expose
     private Object headerTitle;
@@ -19,16 +19,16 @@ public class PostKol {
     private String description;
     @SerializedName("commentCount")
     @Expose
-    private Integer commentCount;
+    private int commentCount;
     @SerializedName("likeCount")
     @Expose
-    private Integer likeCount;
+    private int likeCount;
     @SerializedName("isLiked")
     @Expose
-    private Boolean isLiked;
+    private boolean isLiked;
     @SerializedName("isFollowed")
     @Expose
-    private Boolean isFollowed;
+    private boolean isFollowed;
     @SerializedName("userName")
     @Expose
     private String userName;
@@ -37,7 +37,7 @@ public class PostKol {
     private String userPhoto;
     @SerializedName("userId")
     @Expose
-    private Integer userId;
+    private int userId;
     @SerializedName("userInfo")
     @Expose
     private String userInfo;
@@ -49,129 +49,89 @@ public class PostKol {
     private String createTime;
     @SerializedName("showComment")
     @Expose
-    private Boolean showComment;
+    private boolean showComment;
     @SerializedName("content")
     @Expose
     private List<Content> content = null;
 
-    public Integer getId() {
-        return id;
+    public PostKol(int id, Object headerTitle, String description, int commentCount,
+                   int likeCount, boolean isLiked, boolean isFollowed, String userName,
+                   String userPhoto, int userId, String userInfo, String userUrl, String createTime,
+                   boolean showComment, List<Content> content) {
+        this.id = id;
+        this.headerTitle = headerTitle;
+        this.description = description;
+        this.commentCount = commentCount;
+        this.likeCount = likeCount;
+        this.isLiked = isLiked;
+        this.isFollowed = isFollowed;
+        this.userName = userName;
+        this.userPhoto = userPhoto;
+        this.userId = userId;
+        this.userInfo = userInfo;
+        this.userUrl = userUrl;
+        this.createTime = createTime;
+        this.showComment = showComment;
+        this.content = content;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public int getId() {
+        return id;
     }
 
     public Object getHeaderTitle() {
         return headerTitle;
     }
 
-    public void setHeaderTitle(Object headerTitle) {
-        this.headerTitle = headerTitle;
-    }
-
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getCommentCount() {
+    public int getCommentCount() {
         return commentCount;
     }
 
-    public void setCommentCount(Integer commentCount) {
-        this.commentCount = commentCount;
-    }
-
-    public Integer getLikeCount() {
+    public int getLikeCount() {
         return likeCount;
     }
 
-    public void setLikeCount(Integer likeCount) {
-        this.likeCount = likeCount;
-    }
-
-    public Boolean getIsLiked() {
+    public boolean isLiked() {
         return isLiked;
     }
 
-    public void setIsLiked(Boolean isLiked) {
-        this.isLiked = isLiked;
-    }
-
-    public Boolean getIsFollowed() {
+    public boolean isFollowed() {
         return isFollowed;
-    }
-
-    public void setIsFollowed(Boolean isFollowed) {
-        this.isFollowed = isFollowed;
     }
 
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public String getUserPhoto() {
         return userPhoto;
     }
 
-    public void setUserPhoto(String userPhoto) {
-        this.userPhoto = userPhoto;
-    }
-
-    public Integer getUserId() {
+    public int getUserId() {
         return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
     }
 
     public String getUserInfo() {
         return userInfo;
     }
 
-    public void setUserInfo(String userInfo) {
-        this.userInfo = userInfo;
-    }
-
     public String getUserUrl() {
         return userUrl;
-    }
-
-    public void setUserUrl(String userUrl) {
-        this.userUrl = userUrl;
     }
 
     public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
-
-    public Boolean getShowComment() {
+    public boolean isShowComment() {
         return showComment;
-    }
-
-    public void setShowComment(Boolean showComment) {
-        this.showComment = showComment;
     }
 
     public List<Content> getContent() {
         return content;
     }
-
-    public void setContent(List<Content> content) {
-        this.content = content;
-    }
-
 }

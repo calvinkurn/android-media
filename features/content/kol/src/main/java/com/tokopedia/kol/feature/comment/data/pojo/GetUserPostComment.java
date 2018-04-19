@@ -13,44 +13,35 @@ public class GetUserPostComment {
     private PostKol postKol;
     @SerializedName("comments")
     @Expose
-    private List<Object> comments = null;
+    private List<Comment> comments = null;
     @SerializedName("lastCursor")
     @Expose
     private String lastCursor;
     @SerializedName("error")
     @Expose
-    private Object error;
+    private String error;
+
+    public GetUserPostComment(PostKol postKol, List<Comment> comments, String lastCursor, String
+            error) {
+        this.postKol = postKol;
+        this.comments = comments;
+        this.lastCursor = lastCursor;
+        this.error = error;
+    }
 
     public PostKol getPostKol() {
         return postKol;
     }
 
-    public void setPostKol(PostKol postKol) {
-        this.postKol = postKol;
-    }
-
-    public List<Object> getComments() {
+    public List<Comment> getComments() {
         return comments;
-    }
-
-    public void setComments(List<Object> comments) {
-        this.comments = comments;
     }
 
     public String getLastCursor() {
         return lastCursor;
     }
 
-    public void setLastCursor(String lastCursor) {
-        this.lastCursor = lastCursor;
-    }
-
-    public Object getError() {
+    public String getError() {
         return error;
     }
-
-    public void setError(Object error) {
-        this.error = error;
-    }
-
 }

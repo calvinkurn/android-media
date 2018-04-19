@@ -10,12 +10,11 @@ public class GetKolCommentData {
     @Expose
     private GetUserPostComment getUserPostComment;
 
-    public GetUserPostComment getGetUserPostComment() {
-        return getUserPostComment;
-    }
-
-    public void setGetUserPostComment(GetUserPostComment getUserPostComment) {
+    public GetKolCommentData(GetUserPostComment getUserPostComment) {
         this.getUserPostComment = getUserPostComment;
     }
 
+    public GetUserPostComment getGetUserPostComment() {
+        return getUserPostComment;
+    }
 }

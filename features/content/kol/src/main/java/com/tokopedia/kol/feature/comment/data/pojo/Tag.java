@@ -8,7 +8,7 @@ public class Tag {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("type")
     @Expose
     private String type;
@@ -25,52 +25,36 @@ public class Tag {
     @Expose
     private String caption;
 
-    public Integer getId() {
-        return id;
+    public Tag(int id, String type, String link, String price, String url, String caption) {
+        this.id = id;
+        this.type = type;
+        this.link = link;
+        this.price = price;
+        this.url = url;
+        this.caption = caption;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public int getId() {
+        return id;
     }
 
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getLink() {
         return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
     }
 
     public String getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
     public String getUrl() {
         return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public String getCaption() {
         return caption;
     }
-
-    public void setCaption(String caption) {
-        this.caption = caption;
-    }
-
 }

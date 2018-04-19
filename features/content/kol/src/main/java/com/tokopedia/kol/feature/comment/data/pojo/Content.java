@@ -15,20 +15,16 @@ public class Content {
     @Expose
     private List<Tag> tags = null;
 
-    public String getImageurl() {
-        return imageurl;
+    public Content(String imageurl, List<Tag> tags) {
+        this.imageurl = imageurl;
+        this.tags = tags;
     }
 
-    public void setImageurl(String imageurl) {
-        this.imageurl = imageurl;
+    public String getImageurl() {
+        return imageurl;
     }
 
     public List<Tag> getTags() {
         return tags;
     }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
-
 }
