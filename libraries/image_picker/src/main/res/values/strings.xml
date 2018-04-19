@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">image_picker</string>
+    <string name="choose_image">Pilih Gambar</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
+    <string name="instagram">Instagram</string>
+</resources>
