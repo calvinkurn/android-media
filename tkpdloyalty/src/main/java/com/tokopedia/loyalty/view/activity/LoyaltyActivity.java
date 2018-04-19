@@ -1,5 +1,6 @@
 package com.tokopedia.loyalty.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -16,6 +17,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.gcm.IFCMInstanceIDService;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.R2;
@@ -48,8 +50,32 @@ import butterknife.BindView;
 public class LoyaltyActivity extends BasePresenterActivity
         implements HasComponent<AppComponent>,
         PromoCodeFragment.ManualInsertCodeListener,
-        PromoCouponFragment.ChooseCouponListener {
-
+        PromoCouponFragment.ChooseCouponListener
+{
+    public static final String EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE";
+    public static final String EXTRA_SELECTED_TAB = "EXTRA_SELECTED_TAB";
+    public static final String EXTRA_PLATFORM = "EXTRA_PLATFORM";
+    public static final String EXTRA_CATEGORY = "EXTRA_CATEGORY";
+    public static final String EXTRA_CART_ID = "EXTRA_CART_ID";
+    public static final String DIGITAL_STRING = "digital";
+    public static final String FLIGHT_STRING = "flight";
+    public static final String VOUCHER_CODE = "voucher_code";
+    public static final String VOUCHER_MESSAGE = "voucher_message";
+    public static final String VOUCHER_AMOUNT = "voucher_amount";
+    public static final int LOYALTY_REQUEST_CODE = 77;
+    public static final int VOUCHER_RESULT_CODE = 12;
+    public static final int COUPON_RESULT_CODE = 15;
+    public static final String COUPON_STATE = "coupon";
+    public static final String COUPON_CODE = "coupon_code";
+    public static final String COUPON_MESSAGE = "coupon_message";
+    public static final String COUPON_AMOUNT = "coupon_amount";
+    public static final String COUPON_TITLE = "coupon_title";
+    public static final String VOUCHER_CASHBACK_AMOUNT = "VOUCHER_CASHBACK_AMOUNT";
+    public static final String VOUCHER_DISCOUNT_AMOUNT = "VOUCHER_DISCOUNT_AMOUNT";
+    public static final String COUPON_DISCOUNT_AMOUNT = "COUPON_DISCOUNT_AMOUNT";
+    public static final String COUPON_CASHBACK_AMOUNT = "COUPON_CASHBACK_AMOUNT";
+    public static final int VOUCHER_TAB = 0;
+    public static final int COUPON_TAB = 1;
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
@@ -124,7 +150,9 @@ public class LoyaltyActivity extends BasePresenterActivity
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(indicator));
         indicator.setOnTabSelectedListener(new LoyaltyActivityTabSelectedListener(viewPager));
         setShowCase();
-
+        if (getIntent().hasExtra(EXTRA_SELECTED_TAB)){
+            viewPager.setCurrentItem(getIntent().getIntExtra(EXTRA_SELECTED_TAB, VOUCHER_TAB));
+        }
     }
 
     private void setShowCase() {
@@ -246,6 +274,17 @@ public class LoyaltyActivity extends BasePresenterActivity
         finish();
     }
 
+    public static Intent newInstanceCouponActive(Activity activity, String platform, String categoryId, String cartId) {
+        Intent intent = new Intent(activity, LoyaltyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, categoryId);
+        bundle.putString(EXTRA_CART_ID, cartId);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {
 
         OnTabPageChangeListener(TabLayout tabLayout) {
@@ -262,6 +301,18 @@ public class LoyaltyActivity extends BasePresenterActivity
             ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                     .hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
         }
+    }
+
+
+    public static Intent newInstanceCouponActiveAndSelected(Context context, String platform, String categoryId) {
+        Intent intent = new Intent(context, LoyaltyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putInt(EXTRA_SELECTED_TAB, COUPON_TAB);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, categoryId);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     public static Intent newInstanceCouponActive(Context context, String platform, String category) {

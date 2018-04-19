@@ -61,6 +61,9 @@
             android:layout_toEndOf="@id/label_promo_code"
             android:layout_toRightOf="@+id/label_promo_code"
             android:textColor="@color/tkpd_main_orange"
+            android:singleLine="true"
+            android:lines="1"
+            android:ellipsize="end"
             tools:text="TOPEDONGKIR"/>
 
         <TextView

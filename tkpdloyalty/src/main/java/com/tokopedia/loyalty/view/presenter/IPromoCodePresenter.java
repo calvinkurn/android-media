@@ -16,4 +16,6 @@ public interface IPromoCodePresenter {
     void processCheckMarketPlaceCartListPromoCode(Activity activity, String voucherCode);
 
     void processCheckMarketPlaceCartShipmentPromoCode(Activity activity, String voucherCode, String paramCartShipment);
+
+    void processCheckFlightPromoCode(Activity activity, String voucherCode, String cartId);
 }

@@ -10,6 +10,7 @@ import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.transaction.addtocart.model.OrderData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
+import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 
 import java.util.HashMap;
@@ -45,6 +46,10 @@ public interface AddToCartPresenter {
     void addToCart(@NonNull Context context, @NonNull OrderData orderData);
 
     boolean isValidOrder(@NonNull Context context, @NonNull OrderData orderData);
+
+    void sendAddToCartCheckoutAnalytic(@NonNull Context context,
+                                       @NonNull ProductCartPass productCartPass,
+                                       @NonNull ProductDetail mProductDetail, String quantity);
 
     void processAddToCartSuccess(@NonNull Context context, String message);
 

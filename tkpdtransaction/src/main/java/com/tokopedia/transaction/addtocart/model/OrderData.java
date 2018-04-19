@@ -36,6 +36,8 @@ public class OrderData implements Parcelable {
     private String catId;
     private Integer mustInsurance;
     private int storeId;
+    private String homeAttribution;
+    private String listNameProduct;
 
     public OrderData() {
     }
@@ -184,6 +186,22 @@ public class OrderData implements Parcelable {
         this.storeId = storeId;
     }
 
+    public String getHomeAttribution() {
+        return homeAttribution;
+    }
+
+    public void setHomeAttribution(String homeAttribution) {
+        this.homeAttribution = homeAttribution;
+    }
+
+    public String getListNameProduct() {
+        return listNameProduct;
+    }
+
+    public void setListNameProduct(String listNameProduct) {
+        this.listNameProduct = listNameProduct;
+    }
+
     protected OrderData(Parcel in) {
         insurance = in.readString();
         notes = in.readString();
@@ -203,6 +221,8 @@ public class OrderData implements Parcelable {
         catId = in.readString();
         mustInsurance = in.readInt();
         storeId = in.readInt();
+        homeAttribution = in.readString();
+        listNameProduct = in.readString();
     }
 
     @Override
@@ -230,6 +250,8 @@ public class OrderData implements Parcelable {
         dest.writeString(catId);
         dest.writeInt(mustInsurance);
         dest.writeInt(storeId);
+        dest.writeString(homeAttribution);
+        dest.writeString(listNameProduct);
     }
 
     @SuppressWarnings("unused")
@@ -263,6 +285,8 @@ public class OrderData implements Parcelable {
         orderData.setShipments(data.getForm().getShipment());
         orderData.setCatId(data.getForm().getProductDetail().getProductCatId());
         orderData.setMustInsurance(data.getForm().getProductDetail().getProductMustInsurance());
+        orderData.setHomeAttribution(productCartPass.getTrackerAttribution());
+        orderData.setListNameProduct(productCartPass.getListName());
         return orderData;
     }
 }

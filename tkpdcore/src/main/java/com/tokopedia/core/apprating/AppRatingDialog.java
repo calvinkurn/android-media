@@ -1,6 +1,7 @@
 package com.tokopedia.core.apprating;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -39,16 +40,16 @@ public abstract class AppRatingDialog {
         globalCacheManager = new GlobalCacheManager();
     }
 
-    protected void openPlayStore() {
+    public static void openPlayStore(Context context) {
         try {
-            activity.startActivity(
+            context.startActivity(
                     new Intent(
                             Intent.ACTION_VIEW,
                             Uri.parse(APPLINK_PLAYSTORE + getAppPackageName())
                     )
             );
         } catch (android.content.ActivityNotFoundException anfe) {
-            activity.startActivity(
+            context.startActivity(
                     new Intent(
                             Intent.ACTION_VIEW,
                             Uri.parse(URL_PLAYSTORE + getAppPackageName())
@@ -57,7 +58,7 @@ public abstract class AppRatingDialog {
         }
     }
 
-    private String getAppPackageName() {
+    public static String getAppPackageName() {
         if(GlobalConfig.isSellerApp()) {
             return PACKAGE_SELLER_APP;
         }

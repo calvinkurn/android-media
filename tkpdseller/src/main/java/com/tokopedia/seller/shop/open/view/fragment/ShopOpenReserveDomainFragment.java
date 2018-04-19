@@ -43,6 +43,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
 
     public static final int MIN_SHOP_NAME_LENGTH = 3;
     public static final int MIN_SHOP_DOMAIN_LENGTH = 3;
+    private static final String SCREEN_NAME = "Nama Toko";
     private View buttonSubmit;
     private TkpdHintTextInputLayout textInputShopName;
     private EditText editTextInputShopName;
@@ -139,7 +140,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        trackingOpenShop.eventMoEngageOpenShop(SCREEN_NAME);
         if (isFromAppShortCut())
             UnifyTracking.eventJualLongClick();
     }

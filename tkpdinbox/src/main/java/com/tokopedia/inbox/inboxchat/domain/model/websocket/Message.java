@@ -21,6 +21,9 @@ public class Message {
     @SerializedName("timestamp_fmt")
     @Expose
     private String timestampFmt;
+    @SerializedName("timestamp_unix_nano")
+    @Expose
+    private String timeStampUnixNano;
     @SerializedName("timestamp_unix")
     @Expose
     private String timeStampUnix;
@@ -63,5 +66,13 @@ public class Message {
 
     public void setTimeStampUnix(String timeStampUnix) {
         this.timeStampUnix = timeStampUnix;
+    }
+
+    public String getTimeStampUnixNano() {
+        return timeStampUnixNano;
+    }
+
+    public void setTimeStampUnixNano(String timeStampUnixNano) {
+        this.timeStampUnixNano = timeStampUnixNano;
     }
 }

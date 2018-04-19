@@ -18,6 +18,10 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CART_ID;
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CATEGORY;
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_PLATFORM;
+
 /**
  * @author anggaprasetiyo on 30/11/17.
  */
@@ -55,7 +59,10 @@ public class LoyaltyViewModule {
                                                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, ""),
                                 activity.getIntent()
                                         .getExtras()
-                                        .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, "")))
+                                        .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, ""),
+                                activity.getIntent()
+                                        .getExtras()
+                                        .getString(EXTRA_CART_ID, "")))
                         .position(0)
                         .tabTitle("Kode Promo")
                         .build()
@@ -68,7 +75,11 @@ public class LoyaltyViewModule {
                                         .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, ""),
                                 activity.getIntent()
                                         .getExtras()
-                                        .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, "")))
+                                        .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, ""),
+                                activity.getIntent()
+                                        .getExtras()
+                                        .getString(EXTRA_CART_ID, "")))
+
                         .position(0)
                         .tabTitle("Kupon Saya")
                         .build()

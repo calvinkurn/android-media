@@ -98,10 +98,12 @@ public class AuthUtil {
      * default key is KEY_WSV$
      */
     public static class KEY {
-        private static final int[] RAW_KEY_WSV4 = new int[]{65, 107, 102, 105, 101, 119, 56, 51, 52, 50, 57, 56, 80, 79, 105, 110, 118};
-        private static final int[] RAW_SCROOGE_KEY = new int[]{49, 50, 69, 56, 77, 105, 69, 55, 89, 69, 54, 86, 122, 115, 69, 80, 66, 80, 101, 77};
-        private static final int[] RAW_ZEUS_KEY = new int[]{102, 100, 100, 98, 100, 56, 49, 101, 101, 52, 49, 49, 54, 98, 56, 99, 98, 55, 97, 52, 48, 56, 100, 55, 102, 98, 102, 98, 57, 99, 49, 55};
-        private static final int[] RAW_NOTP_KEY = new int[]{110, 117, 108, 97, 121, 117, 107, 97, 119, 111, 106, 117};
+        private static final int[] RAW_KEY_WSV4 = new int[]{65,107,102,105,101,119,56,51,52,50,57,56,80,79,105,110,118};
+        private static final int[] RAW_SCROOGE_KEY = new int[]{49,50,69,56,77,105,69,55,89,69,54,86,122,115,69,80,66,80,101,77 };
+        private static final int[] RAW_ZEUS_KEY = new int[]{102,100,100,98,100,56,49,101,101,52,49,49,54,98,56,99,98,55,97,52,48,56,100,55,102,98,102,98,57,99,49,55 };
+        private static final int[] RAW_NOTP_KEY = new int[]{110,117,108,97,121,117,107,97,119,111,106,117};
+        private static final int[] RAW_ALIYUN_SECRET_KEY = new int[]{101,74,76,86,51,80,74,67,67,69,110,55,115,113,102,53,118,86,114,73,122,97,69,83,84,102,115,78,100,109};
+        private static final int[] RAW_ALIYUN_ACCESS_KEY_ID = new int[]{76,84,65,73,85,101,69,87,83,118,105,97,49,75,107,87};
         public static final String KEY_WSV4_NEW = convert(RAW_KEY_WSV4);
         public static final String KEY_WSV4 = "web_service_v4";
         public static final String KEY_MOJITO = "mojito_api_v1";
@@ -110,6 +112,8 @@ public class AuthUtil {
         public static String KEY_CREDIT_CARD_VAULT = convert(RAW_SCROOGE_KEY);
         public static String ZEUS_WHITELIST = convert(RAW_ZEUS_KEY);
         public static String KEY_NOTP = convert(RAW_NOTP_KEY);
+        public static String ALIYUN_SECRET_KEY = convert(RAW_ALIYUN_SECRET_KEY);
+        public static String ALIYUN_ACCESS_KEY_ID = convert(RAW_ALIYUN_ACCESS_KEY_ID);
     }
 
     public static Map<String, String> generateHeadersWithXUserId(

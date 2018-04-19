@@ -25,11 +25,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.youtube.player.YouTubeApiServiceUtil;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -81,6 +83,7 @@ import com.tokopedia.topads.sdk.view.TopAdsView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -169,6 +172,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private Runnable incrementPage;
 
     private String departmentId = "";
+    private String trackerAttribution = "";
     private IntermediaryCategoryAdapter categoryAdapter;
     private IntermediaryBrandsAdapter brandsAdapter;
     private IntermediaryCategoryAdapter.CategoryListener categoryListener;
@@ -179,9 +183,10 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private IntermediaryContract.Presenter presenter;
     private NonScrollGridLayoutManager gridLayoutManager;
 
-    public static IntermediaryFragment createInstance(String departmentId) {
+    public static IntermediaryFragment createInstance(String departmentId, String trackerAttribution) {
         IntermediaryFragment intermediaryFragment = new IntermediaryFragment();
         intermediaryFragment.departmentId = departmentId;
+        intermediaryFragment.setTrackerAttribution(trackerAttribution);
         return intermediaryFragment;
     }
 
@@ -336,6 +341,11 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
+    public void trackEventEnhance(Map<String, Object> maps) {
+        CategoryPageTracking.eventEnhance(maps);
+    }
+
+    @Override
     public void renderHotList(List<HotListModel> hotListModelList) {
         cardViewHotList.setVisibility(View.VISIBLE);
 
@@ -480,7 +490,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                     getActivity(),
                     departmentId,
                     ((IntermediaryActivity) getActivity()).getCategoryName(),
-                    true
+                    true,
+                    trackerAttribution
             );
             getActivity().overridePendingTransition(0, 0);
             getActivity().finish();
@@ -493,7 +504,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             CategoryActivity.moveTo(
                     getActivity(),
                     CategoryHeaderModel.convertIntermediaryToCategoryHeader(categoryHadesModel),
-                    true
+                    true,
+                    trackerAttribution
             );
             getActivity().overridePendingTransition(0, 0);
             getActivity().finish();
@@ -555,18 +567,46 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 getActivity(),
                 departmentId,
                 ((IntermediaryActivity) getActivity()).getCategoryName(),
-                true
+                true,
+                ""
         );
         getActivity().finish();
     }
 
     @Override
     public void onItemClicked(ProductModel productModel, String curatedName) {
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                Integer.toString(productModel.getId()));
+        trackEventEnhance(createClickProductDataLayer(productModel));
+        com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
+        data.setId(String.valueOf(productModel.getId()));
+        data.setName(productModel.getName());
+        data.setPrice(productModel.getPrice());
+        data.setImgUri(productModel.getImageUrl());
+        data.setTrackerAttribution(productModel.getTrackerAttribution());
+        data.setTrackerListName(productModel.getTrackerListName());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
         getActivity().startActivity(intent);
         UnifyTracking.eventCuratedIntermediary(departmentId,
                 curatedName, productModel.getName());
+    }
+
+    private Map<String, Object> createClickProductDataLayer(ProductModel product) {
+        return DataLayer.mapOf("event", "productClick",
+                "eventCategory", "intermediary page",
+                "eventAction", "click product curation",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "click", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", product.getTrackerListName()),
+                                "products", DataLayer.listOf(
+                                        product.generateClickDataLayer()
+                                )
+                        )
+                )
+        );
     }
 
     @Override
@@ -623,6 +663,16 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     public void setDepartmentId(String departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public void setTrackerAttribution(String trackerAttribution) {
+        this.trackerAttribution = trackerAttribution;
+    }
+
+    @Override
+    public String getTrackerAttribution() {
+        if (trackerAttribution == null || trackerAttribution.isEmpty()) return "none/other";
+        else return trackerAttribution;
     }
 
     private GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {

@@ -408,6 +408,7 @@ public class TkpdBaseURL {
         public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
         public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
         public static final String PATH_PRODUCT_VARIANT = "v2/product/{productId}/variant";
+        public static final String PATH_PRODUCT_STOCK = "v2/product/{productId}/stock";
     }
 
     public static class ResCenter {
@@ -772,6 +773,7 @@ public class TkpdBaseURL {
         public static final String PATH_ADD_TO_CART = "cart";
         public static final String PATH_CHECKOUT = "checkout";
         public static final String PATH_CHECK_VOUCHER = "voucher/check";
+        public static final String PATH_CANCEL_VOUCHER = "voucher/cancel";
         public static final String PATH_USSD = "ussd/balance";
     }
 
@@ -945,6 +947,7 @@ public class TkpdBaseURL {
     public class Maps {
         public static final String PATH_MAPS_PLACES = "maps/places/autocomplete";
         public static final String PATH_MAPS_PLACES_DETAIL = "maps/places/place-details";
+        public static final String PATH_MAPS_GEOCODE = "maps/geocode";
     }
 
     public class TokoPoint {
@@ -979,7 +982,6 @@ public class TkpdBaseURL {
     public class Promo {
         public static final String PATH_MENU_INDEX = "wp-json/wp/v2/hmenu";
         public static final String PATH_PROMO_LIST = "wp-json/wp/v2/posts";
-
     }
 
     public class Cart {
