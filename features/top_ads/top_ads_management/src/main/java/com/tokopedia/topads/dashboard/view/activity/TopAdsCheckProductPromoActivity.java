@@ -10,12 +10,13 @@ import android.text.TextUtils;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.TopAdsModuleRouter;
-import com.tokopedia.topads.common.constant.TopAdsConstant;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsCheckProductPromoFragment;
 
@@ -31,7 +32,7 @@ public class TopAdsCheckProductPromoActivity extends BaseSimpleActivity implemen
     private String itemId;
     private String source;
 
-    @DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)
+    @DeepLink(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
             String userId = extras.getString(PARAM_USER_ID, "");
@@ -40,11 +41,11 @@ public class TopAdsCheckProductPromoActivity extends BaseSimpleActivity implemen
                     Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                     return getCallingIntent(context)
                             .setData(uri.build())
-                            .putExtra(TopAdsConstant.PARAM_EXTRA_ITEM_ID,
-                                    uri.build().getQueryParameter(TopAdsConstant.PARAM_EXTRA_ITEM_ID))
-                            .putExtra(TopAdsConstant.PARAM_EXTRA_SHOP_ID,
-                                    uri.build().getQueryParameter(TopAdsConstant.PARAM_EXTRA_SHOP_ID))
-                            .putExtra(TopAdsConstant.PARAM_KEY_SOURCE,
+                            .putExtra(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID,
+                                    uri.build().getQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID))
+                            .putExtra(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID,
+                                    uri.build().getQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID))
+                            .putExtra(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
                                     uri.build().getQueryParameter(PARAM_SOURCE))
                             .putExtras(extras);
                 } else {
@@ -55,21 +56,21 @@ public class TopAdsCheckProductPromoActivity extends BaseSimpleActivity implemen
                 Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                 return getCallingIntent(context)
                         .setData(uri.build())
-                        .putExtra(TopAdsConstant.PARAM_EXTRA_ITEM_ID, uri.build().getQueryParameter(TopAdsConstant.PARAM_EXTRA_ITEM_ID))
-                        .putExtra(TopAdsConstant.PARAM_EXTRA_SHOP_ID,
-                                uri.build().getQueryParameter(TopAdsConstant.PARAM_EXTRA_SHOP_ID))
-                        .putExtra(TopAdsConstant.PARAM_KEY_SOURCE,
+                        .putExtra(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, uri.build().getQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID))
+                        .putExtra(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID,
+                                uri.build().getQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID))
+                        .putExtra(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
                                 uri.build().getQueryParameter(PARAM_SOURCE))
                         .putExtras(extras);
             }
         } else {
             Intent launchIntent = ApplinkUtils.getSellerAppApplinkIntent(context, extras);
             Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
-            String itemId = uri.getQueryParameter(TopAdsConstant.PARAM_EXTRA_ITEM_ID);
-            launchIntent.putExtra(TopAdsConstant.PARAM_EXTRA_ITEM_ID, itemId)
-                    .putExtra(TopAdsConstant.PARAM_EXTRA_SHOP_ID,
-                            uri.getQueryParameter(TopAdsConstant.PARAM_EXTRA_SHOP_ID))
-                    .putExtra(TopAdsConstant.PARAM_KEY_SOURCE,
+            String itemId = uri.getQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID);
+            launchIntent.putExtra(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, itemId)
+                    .putExtra(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID,
+                            uri.getQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID))
+                    .putExtra(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
                             uri.getQueryParameter(PARAM_SOURCE));
             return launchIntent;
         }
@@ -77,8 +78,8 @@ public class TopAdsCheckProductPromoActivity extends BaseSimpleActivity implemen
 
     public static Intent createIntent(Context context, String shopId, String itemId){
         Intent intent = getCallingIntent(context);
-        intent.putExtra(TopAdsConstant.PARAM_EXTRA_SHOP_ID, shopId);
-        intent.putExtra(TopAdsConstant.PARAM_EXTRA_ITEM_ID, itemId);
+        intent.putExtra(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopId);
+        intent.putExtra(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, itemId);
         return intent;
     }
 
@@ -89,9 +90,9 @@ public class TopAdsCheckProductPromoActivity extends BaseSimpleActivity implemen
     private void initFromIntent() {
         Intent intent = getIntent();
         if (intent != null) {
-            shopId = getIntent().getStringExtra(TopAdsConstant.PARAM_EXTRA_SHOP_ID);
-            itemId = getIntent().getStringExtra(TopAdsConstant.PARAM_EXTRA_ITEM_ID);
-            source = getIntent().getStringExtra(TopAdsConstant.PARAM_KEY_SOURCE);
+            shopId = getIntent().getStringExtra(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID);
+            itemId = getIntent().getStringExtra(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID);
+            source = getIntent().getStringExtra(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE);
         }
     }
 

@@ -23,12 +23,12 @@ import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepositor
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.topads.common.constant.TopAdsConstant;
-import com.tokopedia.topads.common.data.repository.TopAdsSourceTaggingRepositoryImpl;
-import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingDataSource;
-import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingLocal;
-import com.tokopedia.topads.common.domain.interactor.TopAdsAddSourceTaggingUseCase;
-import com.tokopedia.topads.common.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.common.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
+import com.tokopedia.topads.common.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
+import com.tokopedia.topads.common.sourcetagging.data.source.TopAdsSourceTaggingLocal;
+import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.common.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -100,7 +100,7 @@ public class ProductManageModule {
     @Provides
     @ProductManageScope
     public TopAdsSourceTaggingLocal provideTopAdsSourceTracking(@ApplicationContext Context context){
-        return new TopAdsSourceTaggingLocal(context, TopAdsConstant.KEY_SOURCE_PREFERENCE);
+        return new TopAdsSourceTaggingLocal(context, TopAdsSourceTaggingConstant.KEY_SOURCE_PREFERENCE);
     }
 
     @Provides

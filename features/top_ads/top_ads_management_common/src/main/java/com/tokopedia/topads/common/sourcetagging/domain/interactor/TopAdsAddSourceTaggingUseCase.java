@@ -1,8 +1,8 @@
-package com.tokopedia.topads.common.domain.interactor;
+package com.tokopedia.topads.common.sourcetagging.domain.interactor;
 
-import com.tokopedia.topads.common.constant.TopAdsConstant;
-import com.tokopedia.topads.common.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -27,10 +27,9 @@ public class TopAdsAddSourceTaggingUseCase extends UseCase<Void>{
         return topAdsSourceTaggingRepository.saveSource(requestParams);
     }
 
-    public static RequestParams createRequestParams(@TopAdsSourceOption String source, long timestamp){
+    public static RequestParams createRequestParams(@TopAdsSourceOption String source){
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(TopAdsConstant.PARAM_KEY_SOURCE, source);
-        requestParams.putLong(TopAdsConstant.PARAM_KEY_TIMESTAMP, timestamp);
+        requestParams.putString(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE, source);
 
         return requestParams;
     }

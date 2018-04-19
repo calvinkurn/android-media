@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.common.constant.TopAdsConstant;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
@@ -39,8 +39,8 @@ public class TopAdsCheckProductPromoFragment extends BasePresenterFragment<TopAd
         TopAdsCheckProductPromoFragment fragment = new TopAdsCheckProductPromoFragment();
         Bundle bundle = new Bundle();
 
-        bundle.putString(TopAdsConstant.PARAM_EXTRA_SHOP_ID, shopId);
-        bundle.putString(TopAdsConstant.PARAM_EXTRA_ITEM_ID, itemId);
+        bundle.putString(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopId);
+        bundle.putString(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, itemId);
 
         fragment.setArguments(bundle);
         return fragment;
@@ -50,9 +50,9 @@ public class TopAdsCheckProductPromoFragment extends BasePresenterFragment<TopAd
         TopAdsCheckProductPromoFragment fragment = new TopAdsCheckProductPromoFragment();
         Bundle bundle = new Bundle();
 
-        bundle.putString(TopAdsConstant.PARAM_EXTRA_SHOP_ID, shopId);
-        bundle.putString(TopAdsConstant.PARAM_EXTRA_ITEM_ID, itemId);
-        bundle.putString(TopAdsConstant.PARAM_KEY_SOURCE, source);
+        bundle.putString(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopId);
+        bundle.putString(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, itemId);
+        bundle.putString(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE, source);
 
         fragment.setArguments(bundle);
         return fragment;
@@ -97,9 +97,9 @@ public class TopAdsCheckProductPromoFragment extends BasePresenterFragment<TopAd
     @Override
     protected void initialVar() {
         super.initialVar();
-        shopId = getArguments().getString(TopAdsConstant.PARAM_EXTRA_SHOP_ID, "");
-        itemId = getArguments().getString(TopAdsConstant.PARAM_EXTRA_ITEM_ID, "");
-        source = getArguments().getString(TopAdsConstant.PARAM_KEY_SOURCE, "");
+        shopId = getArguments().getString(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, "");
+        itemId = getArguments().getString(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, "");
+        source = getArguments().getString(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE, "");
         if (TextUtils.isEmpty(itemId)){
             moveToCreateAds();
         } else {

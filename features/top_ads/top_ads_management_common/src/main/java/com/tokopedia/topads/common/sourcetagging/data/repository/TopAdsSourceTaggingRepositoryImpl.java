@@ -1,17 +1,16 @@
-package com.tokopedia.topads.common.data.repository;
+package com.tokopedia.topads.common.sourcetagging.data.repository;
 
 import android.text.TextUtils;
 
-import com.tokopedia.topads.common.constant.TopAdsTimeConstant;
-import com.tokopedia.topads.common.data.TopAdsSourceTaggingModel;
-import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingDataSource;
-import com.tokopedia.topads.common.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.common.sourcetagging.data.TopAdsSourceTaggingModel;
+import com.tokopedia.topads.common.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
+import com.tokopedia.topads.common.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.Date;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -38,7 +37,7 @@ public class TopAdsSourceTaggingRepositoryImpl implements TopAdsSourceTaggingRep
                 if (value == null || TextUtils.isEmpty(value)){
                     return null;
                 }
-                return new TopAdsSourceTaggingModel(value);
+                return transformFromString(value);
             }
         });
     }
@@ -58,11 +57,21 @@ public class TopAdsSourceTaggingRepositoryImpl implements TopAdsSourceTaggingRep
 
                 long diff = (new Date().getTime() - topAdsSourceTaggingModel.getTimestamp());
 
-                if (diff > TopAdsTimeConstant.EXPIRING_TIME_IN_SECOND)
+                if (diff > TopAdsSourceTaggingConstant.EXPIRING_TIME_IN_SECOND)
                     return saveSource(requestParams);
 
                 return Observable.just(null);
             }
         });
+    }
+
+    protected TopAdsSourceTaggingModel transformFromString(String value) throws NumberFormatException{
+        if (!value.contains(TopAdsSourceTaggingConstant.SEPARATOR)) {
+            throw new IllegalArgumentException("The value format is wrong");
+        }
+        String[] tmp = value.split(TopAdsSourceTaggingConstant.SEPARATOR);
+        long timestamp = Long.parseLong(tmp[1]);
+
+        return new TopAdsSourceTaggingModel(tmp[0], timestamp);
     }
 }

@@ -1,6 +1,6 @@
-package com.tokopedia.topads.common.domain.repository;
+package com.tokopedia.topads.common.sourcetagging.domain.repository;
 
-import com.tokopedia.topads.common.data.TopAdsSourceTaggingModel;
+import com.tokopedia.topads.common.sourcetagging.data.TopAdsSourceTaggingModel;
 import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;

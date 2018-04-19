@@ -1,10 +1,8 @@
-package com.tokopedia.topads.common.data.source;
+package com.tokopedia.topads.common.sourcetagging.data.source;
 
-import com.tokopedia.topads.common.constant.TopAdsConstant;
-import com.tokopedia.topads.common.data.TopAdsSourceTaggingModel;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.common.sourcetagging.data.TopAdsSourceTaggingModel;
 import com.tokopedia.usecase.RequestParams;
-
-import java.util.concurrent.Callable;
 
 import rx.Observable;
 
@@ -21,8 +19,9 @@ public class TopAdsSourceTaggingDataSource {
 
     public Observable<Void> save(final RequestParams requestParams){
         final TopAdsSourceTaggingModel data =
-                new TopAdsSourceTaggingModel(requestParams.getString(TopAdsConstant.PARAM_KEY_SOURCE, null),
-                        requestParams.getLong(TopAdsConstant.PARAM_KEY_TIMESTAMP, 0));
+                new TopAdsSourceTaggingModel(requestParams
+                        .getString(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE, null),
+                        System.currentTimeMillis());
 
         return topAdsSourceTaggingLocal.savingSource(data);
     }

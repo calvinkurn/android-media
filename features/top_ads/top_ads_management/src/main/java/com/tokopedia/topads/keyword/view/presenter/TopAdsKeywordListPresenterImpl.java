@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
-import com.tokopedia.topads.common.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
@@ -50,7 +50,7 @@ public class TopAdsKeywordListPresenterImpl extends
 
     public void saveSourceTagging(@TopAdsSourceOption String source){
         topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase
-                .createRequestParams(source, new Date().getTime()), new Subscriber<Void>() {
+                .createRequestParams(source), new Subscriber<Void>() {
             @Override
             public void onCompleted() {
 

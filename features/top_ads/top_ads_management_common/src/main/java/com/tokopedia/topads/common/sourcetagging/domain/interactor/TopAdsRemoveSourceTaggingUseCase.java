@@ -1,6 +1,6 @@
-package com.tokopedia.topads.common.domain.interactor;
+package com.tokopedia.topads.common.sourcetagging.domain.interactor;
 
-import com.tokopedia.topads.common.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.topads.common.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

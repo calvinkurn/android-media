@@ -1,10 +1,10 @@
-package com.tokopedia.topads.common.data.source;
+package com.tokopedia.topads.common.sourcetagging.data.source;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.tokopedia.topads.common.constant.TopAdsConstant;
-import com.tokopedia.topads.common.data.TopAdsSourceTaggingModel;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.common.sourcetagging.data.TopAdsSourceTaggingModel;
 
 import java.util.concurrent.Callable;
 
@@ -27,11 +27,12 @@ public class TopAdsSourceTaggingLocal {
     }
 
     public Observable<Void> savingSource(final TopAdsSourceTaggingModel data){
+        final String formatedInput = data.getSource()+TopAdsSourceTaggingConstant.SEPARATOR+data.getTimestamp();
         return Observable.fromCallable(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putString(TopAdsConstant.KEY_TAGGING_SOURCE, data.toString());
+                editor.putString(TopAdsSourceTaggingConstant.KEY_TAGGING_SOURCE, formatedInput);
                 editor.apply();
                 return null;
             }
@@ -53,7 +54,7 @@ public class TopAdsSourceTaggingLocal {
         return Observable.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return preferences.getString(TopAdsConstant.KEY_TAGGING_SOURCE, null);
+                return preferences.getString(TopAdsSourceTaggingConstant.KEY_TAGGING_SOURCE, null);
             }
         });
     }
