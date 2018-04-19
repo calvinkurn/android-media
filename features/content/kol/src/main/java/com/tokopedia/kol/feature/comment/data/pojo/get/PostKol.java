@@ -1,5 +1,5 @@
 
-package com.tokopedia.kol.feature.comment.data.pojo;
+package com.tokopedia.kol.feature.comment.data.pojo.get;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
