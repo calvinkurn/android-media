@@ -2,14 +2,21 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
 
 buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath 'io.hansel.preprocessor:preprocessor:6.0.1'
     }
 }
 
@@ -41,4 +48,9 @@ dependencies {
 
     compile 'at.blogc:expandabletextview:1.0.5'
     compile project(rootProject.ext.features.payment)
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.testDependencies.junit
 }

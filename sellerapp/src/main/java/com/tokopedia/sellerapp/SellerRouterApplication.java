@@ -145,6 +145,9 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
+import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
+import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
+import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
@@ -369,8 +372,6 @@ public abstract class SellerRouterApplication extends MainApplication
                 );
 
         GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
-                new JobExecutor(),
-                new UIThread(),
                 new ProfileRepositoryImpl(profileSourceFactory)
         );
 
@@ -424,6 +425,21 @@ public abstract class SellerRouterApplication extends MainApplication
         } else {
             return intent;
         }
+    }
+
+    @Override
+    public Intent getAddEmailIntent(Context context) {
+        return AddEmailActivity.newInstance(context);
+    }
+
+    @Override
+    public Intent getAddPasswordIntent(Context context) {
+        return AddPasswordActivity.newInstance(context);
+    }
+
+    @Override
+    public Intent getChangeNameIntent(Context context) {
+        return ChangeNameActivity.newInstance(context);
     }
 
     @Override
@@ -856,7 +872,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     public void goToAddProduct(Activity activity) {
         if (activity != null) {
-             ProductAddActivity.start(activity);
+            ProductAddActivity.start(activity);
         }
     }
 
@@ -994,6 +1010,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void sendEventTracking(String event, String category, String action, String label) {
         UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
+    }
+
+    @Override
+    public void sendMoEngageOpenShopEventTracking(String screenName) {
+        TrackingUtils.sendMoEngageCreateShopEvent(screenName);
     }
 
     /**
@@ -1144,7 +1165,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToAddProduct(Context context) {
-        if(context != null && context instanceof Activity){
+        if (context != null && context instanceof Activity) {
             ProductAddActivity.start((Activity) context);
         }
     }
@@ -1157,7 +1178,7 @@ public abstract class SellerRouterApplication extends MainApplication
             context.startActivity(intent);
         } else {
             Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
-            ((Activity)context).startActivityForResult(intent, 100);
+            ((Activity) context).startActivityForResult(intent, 100);
         }
     }
 
@@ -1173,7 +1194,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId);
+        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
     }
 
     public Intent getGroupChatIntent(Context context, String channelUrl) {
@@ -1254,6 +1275,10 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void sendTrackingGroupChatLeftNavigation() {
+    }
 
+    @Override
+    public String getDesktopLinkGroupChat() {
+        return "";
     }
 }

@@ -21,10 +21,9 @@ import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView
 import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.topads.common.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -147,8 +146,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     @Override
     public void saveSourceTagging(boolean isSellerApp) {
         String source = isSellerApp ? TopAdsSourceOption.SA_MANAGE_SHOP : TopAdsSourceOption.MA_MANAGE_SHOP;
-        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source,
-                new Date().getTime()),
+        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source),
                 new Subscriber<Void>() {
             @Override
             public void onCompleted() {

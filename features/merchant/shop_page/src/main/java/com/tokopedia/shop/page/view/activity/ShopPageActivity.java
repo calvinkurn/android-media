@@ -12,9 +12,11 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +25,7 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -64,8 +67,10 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     private static final float OFFSET_TOOLBAR_TITLE_SHOWN = 0.76f;
     private static final float OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED = 0.813f;
     public static final String APP_LINK_EXTRA_SHOP_ID = "shop_id";
+    public static final String APP_LINK_EXTRA_SHOP_ATTRIBUTION = "tracker_attribution";
     private static final String SHOP_ID = "EXTRA_SHOP_ID";
     private static final String SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN";
+    private static final String SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION";
     private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
     private static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     private static final int REQUEST_CODER_USER_LOGIN = 100;
@@ -83,6 +88,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
+    private SwipeToRefresh swipeToRefresh;
     private Toolbar toolbar;
     private View loadingStateView;
     private View errorStateView;
@@ -94,6 +100,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     private String shopId;
     private String shopDomain;
+    private String shopAttribution;
 
     private ShopComponent component;
     private ShopModuleRouter shopModuleRouter;
@@ -116,10 +123,12 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     @DeepLink(ShopAppLink.SHOP)
     public static Intent getCallingIntent(Context context, Bundle extras) {
+
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
                 .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
+                .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
                 .putExtras(extras);
     }
@@ -130,6 +139,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
                 .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
+                .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_TALK)
                 .putExtras(extras);
     }
@@ -140,6 +150,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
                 .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
+                .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_REVIEW)
                 .putExtras(extras);
     }
@@ -148,6 +159,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     protected void onCreate(Bundle savedInstanceState) {
         shopId = getIntent().getStringExtra(SHOP_ID);
         shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
+        shopAttribution = getIntent().getStringExtra(SHOP_ATTRIBUTION);
         updateShopDiscussionIntent();
         if (getApplication() != null && getApplication() instanceof ShopModuleRouter) {
             shopModuleRouter = (ShopModuleRouter) getApplication();
@@ -200,6 +212,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         shopPageViewHolder = new ShopPageHeaderViewHolder(findViewById(android.R.id.content), this);
         appBarLayout = findViewById(R.id.app_bar_layout);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
+        swipeToRefresh = findViewById(R.id.swipe_refresh_layout);
         toolbar = findViewById(R.id.toolbar);
         loadingStateView = findViewById(R.id.shop_page_loading_state);
         errorStateView = findViewById(R.id.shop_page_error_state);
@@ -232,6 +245,26 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.font_black_primary_70));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         collapsingToolbarLayout.setTitle(" ");
+
+        swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+               refreshData();
+            }
+        });
+    }
+
+    public void refreshData(){
+        shopPagePresenter.clearCache();
+        if (viewPager.getAdapter() instanceof ShopPagePagerAdapter) {
+            ShopPagePagerAdapter adapter = (ShopPagePagerAdapter) viewPager.getAdapter();
+            Fragment fragment = (Fragment) adapter.instantiateItem(viewPager, 0);
+            if(fragment instanceof ShopProductListLimitedFragment){
+                ((ShopProductListLimitedFragment) fragment).resetRecyclerview();
+            }
+        }
+        getShopInfo();
+        swipeToRefresh.setRefreshing(true);
     }
 
     @Override
@@ -260,6 +293,14 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
                 } else if (percentage >= offset && !toolbarTitleShown) {
                     showToolbarTitle(true);
                     toolbarTitleShown = true;
+                }
+
+                if (verticalOffset == 0)
+                {
+                    swipeToRefresh.setEnabled(true);
+                }
+                else {
+                    swipeToRefresh.setEnabled(false);
                 }
             }
 
@@ -301,7 +342,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
                 getString(R.string.shop_info_title_tab_discussion)
         };
         return new ShopPagePagerAdapter(getSupportFragmentManager(), title,
-                shopModuleRouter, this, shopId, shopDomain);
+                shopModuleRouter, this, shopId, shopDomain, shopAttribution);
     }
 
     @Override
@@ -539,6 +580,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
             default:
                 setOffsetChangeListener(OFFSET_TOOLBAR_TITLE_SHOWN);
         }
+        swipeToRefresh.setRefreshing(false);
     }
 
     public void setOffsetChangeListener(Float offset){
@@ -555,6 +597,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
                 getShopInfo();
             }
         });
+        swipeToRefresh.setRefreshing(false);
     }
 
     @Override

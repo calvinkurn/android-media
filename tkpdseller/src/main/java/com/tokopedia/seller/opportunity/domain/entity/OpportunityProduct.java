@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Created by nakama on 27/03/18.
+ * Created by hadi-putra on 27/03/18.
  */
 
 public class OpportunityProduct {

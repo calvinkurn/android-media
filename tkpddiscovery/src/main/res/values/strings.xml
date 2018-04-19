@@ -41,4 +41,5 @@
     <string name="button_term_and_condition"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="template_widget_promo_period">Periode : %1$s</string>
     <string name="template_widget_promo_min_transaction">Min Transaksi : %1$s</string>
+    <string name="no_result_found">No Results Found</string>
 </resources>

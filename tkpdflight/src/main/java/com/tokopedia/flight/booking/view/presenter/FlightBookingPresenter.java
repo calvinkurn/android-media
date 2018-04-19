@@ -11,7 +11,6 @@ import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.booking.domain.FlightBookingDeleteAllPassengerListUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetPhoneCodeUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
@@ -67,7 +66,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private FlightAddToCartUseCase flightAddToCartUseCase;
     private FlightBookingCartDataMapper flightBookingCartDataMapper;
     private FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase;
-    private FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase;
     private CompositeSubscription compositeSubscription;
     private FlightAnalytics flightAnalytics;
     private UserSession userSession;
@@ -81,7 +79,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     public FlightBookingPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
                                   FlightAddToCartUseCase flightAddToCartUseCase,
                                   FlightBookingCartDataMapper flightBookingCartDataMapper,
-                                  FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase,
                                   FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase,
                                   FlightAnalytics flightAnalytics,
                                   UserSession userSession) {
@@ -89,7 +86,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         this.flightBookingGetSingleResultUseCase = flightBookingGetSingleResultUseCase;
         this.flightAddToCartUseCase = flightAddToCartUseCase;
         this.flightBookingCartDataMapper = flightBookingCartDataMapper;
-        this.flightBookingDeleteAllPassengerListUseCase = flightBookingDeleteAllPassengerListUseCase;
         this.flightBookingGetPhoneCodeUseCase = flightBookingGetPhoneCodeUseCase;
         this.flightAnalytics = flightAnalytics;
         this.userSession = userSession;
@@ -296,7 +292,37 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                                 flightBookingCartData.setDepartureTrip(flightDetailViewModel);
                                 return flightBookingCartData;
                             }
+                        }).onBackpressureDrop()
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<FlightBookingCartData>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                if (isViewAttached()) {
+                                    getView().hideFullPageLoading();
+                                    getView().showGetCartDataErrorStateLayout(e);
+                                }
+                            }
+
+                            @Override
+                            public void onNext(FlightBookingCartData flightBookingCartData) {
+                                actionGetReturnTripDataAndGetCart(flightBookingCartData);
+                            }
                         })
+
+        );
+    }
+
+    private void actionGetReturnTripDataAndGetCart(FlightBookingCartData flightBookingCartData) {
+        compositeSubscription.add(
+                Observable.just(flightBookingCartData)
                         .flatMap(getFlightRoundTripDataObservable())
                         .flatMap(new Func1<FlightBookingCartData, Observable<FlightBookingCartData>>() {
                             @Override
@@ -352,7 +378,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                                 e.printStackTrace();
                                 if (isViewAttached()) {
                                     getView().hideFullPageLoading();
-                                    if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.FLIGHT_SOLD_OUT))) {
+                                    if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.ADD_TO_CART))) {
+                                        getView().showExpireTransactionDialog(e.getMessage());
+                                    } else if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.FLIGHT_SOLD_OUT))) {
                                         getView().showSoldOutDialog();
                                     } else {
                                         getView().showGetCartDataErrorStateLayout(e);
@@ -762,30 +790,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                 toggleSameAsContactCheckbox();
             }
         }
-    }
-
-    @Override
-    public void deleteAllPassengerList() {
-        flightBookingDeleteAllPassengerListUseCase.execute(
-                flightBookingDeleteAllPassengerListUseCase.createEmptyRequestParams(),
-                new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        throwable.printStackTrace();
-                        getView().closePage();
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        getView().closePage();
-                    }
-                }
-        );
     }
 
     private boolean isMandatoryDoB() {

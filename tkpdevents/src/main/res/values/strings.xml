@@ -42,6 +42,7 @@
     <string name="promo_button_text">Lihat Semua Promo</string>
     <string name="top_events">TOP EVENTS</string>
     <string name="max_ticket_warning">Maks. %1$d tiket</string>
+    <string name="min_ticket_warning">Min. %1$d tiket</string>
     <string name="zero">0</string>
     <string name="habis_terjual">HABIS TERJUAL</string>
     <string name="ticket_desc">Anak kecil di bawah umur 12 tahun harus didampingi orang dewasa berusia 18 tahun ke atas. Harga tiket sudah termasuk biaya layanan.</string>

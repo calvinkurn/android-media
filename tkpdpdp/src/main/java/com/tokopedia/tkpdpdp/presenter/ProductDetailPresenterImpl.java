@@ -29,6 +29,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.network.entity.variant.Campaign;
+import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -69,13 +70,12 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-import com.tokopedia.topads.common.constant.TopAdsConstant;
-import com.tokopedia.topads.common.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.data.repository.TopAdsSourceTaggingRepositoryImpl;
-import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingDataSource;
-import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingLocal;
-import com.tokopedia.topads.common.domain.interactor.TopAdsAddSourceTaggingUseCase;
-import com.tokopedia.topads.common.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.common.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
+import com.tokopedia.topads.common.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
+import com.tokopedia.topads.common.sourcetagging.data.source.TopAdsSourceTaggingLocal;
+import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.common.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -310,7 +310,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.refreshMenu();
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
-                            setGoldMerchantFeatures(context, productDetailData);
+                            setVideoProduct(context, productDetailData);
                             getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context, productDetailData.getInfo().getProductId
                                     ().toString(), productDetailData.getShopInfo().getShopId());
@@ -324,6 +324,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                         , Integer.toString(productDetailData.getInfo().getProductId()));
                             } else {
                                 productDetailData.getInfo().setHasVariant(false);
+                                viewListener.trackingEnhanceProductDetail();
+                                getProductStock(context
+                                        ,Integer.toString(productDetailData.getInfo().getProductId()));
                             }
                             validateProductDataWithProductPassAndShowMessage(productDetailData,productPass,context);
                         }
@@ -642,6 +645,13 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void saveStateProductStockNonVariant(Bundle outState, String key, Child value) {
+        if (value != null) {
+            outState.putParcelable(key, value);
+        }
+    }
+
+    @Override
     public void saveStateProductOthers(Bundle outState, String key, List<ProductOther> values) {
         if (values != null) outState.putParcelableArrayList(key, new ArrayList<Parcelable>(values));
     }
@@ -675,6 +685,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         VideoData videoData = savedInstanceState.getParcelable(ProductDetailFragment.STATE_VIDEO);
         PromoAttributes promoAttributes = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PROMO_WIDGET);
         ProductVariant productVariant = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PRODUCT_VARIANT);
+        Child productStockNonVariant = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PRODUCT_STOCK_NON_VARIANT);
         boolean isAppBarCollapsed = savedInstanceState.getBoolean(ProductDetailFragment.STATE_APP_BAR_COLLAPSED);
 
         if (productData != null & productOthers != null) {
@@ -689,6 +700,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             viewListener.addProductVariant(productVariant);
         } else if (productData != null && productData.getInfo() != null && productData.getInfo().getHasVariant() && productVariant==null) {
             getProductVariant(context,Integer.toString(productData.getInfo().getProductId()));
+        } else if (productStockNonVariant != null ){
+            viewListener.addProductStock(productStockNonVariant);
+        } else {
+            getProductStock(context,Integer.toString(productData.getInfo().getProductId()));
         }
 
         if (productData != null && productData.getCampaign() != null) {
@@ -827,7 +842,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.hideProgressLoading();
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
-                        setGoldMerchantFeatures(context, data);
+                        setVideoProduct(context, data);
                         getMostHelpfulReview(context, data.getInfo().getProductId().toString(),
                                 data.getShopInfo().getShopId());
                         getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
@@ -842,6 +857,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                     , Integer.toString(data.getInfo().getProductId()));
                         } else {
                             data.getInfo().setHasVariant(false);
+                            viewListener.trackingEnhanceProductDetail();
+                            getProductStock(context
+                                    ,Integer.toString(data.getInfo().getProductId()));
                         }
                         validateProductDataWithProductPassAndShowMessage(data,productPass,context);
                     }
@@ -930,10 +948,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 });
     }
 
-    private void setGoldMerchantFeatures(Context context, ProductDetailData productDetailData) {
-        if (productDetailData.getShopInfo().getShopIsGold() == 1) {
-            requestVideo(context, productDetailData.getInfo().getProductId().toString());
-        }
+    private void setVideoProduct(Context context, ProductDetailData productDetailData) {
+        requestVideo(context, productDetailData.getInfo().getProductId().toString());
     }
 
     public void getPromoWidget(final @NonNull Context context, @NonNull final String targetType, @NonNull final String userId, @NonNull final String shopType) {
@@ -1039,7 +1055,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void onPromoAdsClicked(final Context context, String shopId, final int itemId, final String userId) {
         if (topAdsSourceTaggingLocal == null){
-            topAdsSourceTaggingLocal = new TopAdsSourceTaggingLocal(context, TopAdsConstant.KEY_SOURCE_PREFERENCE);
+            topAdsSourceTaggingLocal = new TopAdsSourceTaggingLocal(context, TopAdsSourceTaggingConstant.KEY_SOURCE_PREFERENCE);
         }
         retrofitInteractor.checkPromoAds(shopId, itemId, userId, new RetrofitInteractor.CheckPromoAdsListener() {
             @Override
@@ -1085,7 +1101,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void initTopAdsSourceTaggingUseCase(Context context) {
-        TopAdsSourceTaggingLocal topAdsSourceTaggingLocal = new TopAdsSourceTaggingLocal(context, TopAdsConstant.KEY_SOURCE_PREFERENCE);
+        TopAdsSourceTaggingLocal topAdsSourceTaggingLocal = new TopAdsSourceTaggingLocal(context, TopAdsSourceTaggingConstant.KEY_SOURCE_PREFERENCE);
         TopAdsSourceTaggingDataSource topAdsSourceTaggingDataSource = new TopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal);
         TopAdsSourceTaggingRepository topAdsSourceTaggingRepository = new TopAdsSourceTaggingRepositoryImpl(topAdsSourceTaggingDataSource);
         topAdsAddSourceTaggingUseCase = new TopAdsAddSourceTaggingUseCase(topAdsSourceTaggingRepository);
@@ -1093,8 +1109,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void saveSource(String source){
-        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source,
-                new Date().getTime()), new Subscriber<Void>() {
+        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source), new Subscriber<Void>() {
             @Override
             public void onCompleted() {
 
@@ -1117,8 +1132,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 new RetrofitInteractor.ProductVariantListener() {
                     @Override
                     public void onSucccess(final ProductVariant productVariant) {
-                        if (productVariant != null && productVariant.getVariant() != null && productVariant.getVariant().size() > 0) {
+                        if (productVariant!=null && productVariant.getVariant()!=null && productVariant.getVariant().size()>0
+                                && productVariant.getChildren() != null && productVariant.getChildren().size()>0  ) {
                             viewListener.addProductVariant(productVariant);
+                        } else {
+                            viewListener.setVariantFalse();
                         }
                         viewListener.updateButtonBuyListener();
                     }
@@ -1126,6 +1144,23 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     @Override
                     public void onError(String error) {
                         viewListener.showErrorVariant();
+                    }
+                }
+        );
+    }
+
+    public void getProductStock(@NonNull Context context, @NonNull String id) {
+        retrofitInteractor.getProductStock(context, id,
+                new RetrofitInteractor.ProductStockListener() {
+                    @Override
+                    public void onSucccess(final Child productStock) {
+                        if (productStock!=null) {
+                            viewListener.addProductStock(productStock);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
                     }
                 }
         );

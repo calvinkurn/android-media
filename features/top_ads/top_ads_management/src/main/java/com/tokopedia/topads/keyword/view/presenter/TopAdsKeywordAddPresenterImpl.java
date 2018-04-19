@@ -1,7 +1,7 @@
 package com.tokopedia.topads.keyword.view.presenter;
 
-import com.tokopedia.topads.common.data.TopAdsSourceTaggingModel;
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetSourceTaggingUseCase;
+import com.tokopedia.topads.common.sourcetagging.data.TopAdsSourceTaggingModel;
+import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 import com.tokopedia.topads.keyword.domain.interactor.KeywordAddUseCase;
 import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
 

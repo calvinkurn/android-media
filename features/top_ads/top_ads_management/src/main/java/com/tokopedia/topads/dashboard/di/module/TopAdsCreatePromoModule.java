@@ -6,12 +6,12 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.product.apis.PromoTopAdsApi;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.topads.common.constant.TopAdsConstant;
-import com.tokopedia.topads.common.data.repository.TopAdsSourceTaggingRepositoryImpl;
-import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingDataSource;
-import com.tokopedia.topads.common.data.source.TopAdsSourceTaggingLocal;
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetSourceTaggingUseCase;
-import com.tokopedia.topads.common.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.common.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
+import com.tokopedia.topads.common.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
+import com.tokopedia.topads.common.sourcetagging.data.source.TopAdsSourceTaggingLocal;
+import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
+import com.tokopedia.topads.common.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsProductAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsShopAdFactory;
@@ -201,7 +201,7 @@ public class TopAdsCreatePromoModule {
     @TopAdsDashboardScope
     @Provides
     public TopAdsSourceTaggingLocal provideTopAdsSourceTracking(@ApplicationContext Context context){
-        return new TopAdsSourceTaggingLocal(context, TopAdsConstant.KEY_SOURCE_PREFERENCE);
+        return new TopAdsSourceTaggingLocal(context, TopAdsSourceTaggingConstant.KEY_SOURCE_PREFERENCE);
     }
 
     @TopAdsDashboardScope

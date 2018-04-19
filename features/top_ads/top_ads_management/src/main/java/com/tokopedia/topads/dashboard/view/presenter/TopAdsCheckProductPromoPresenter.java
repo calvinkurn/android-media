@@ -1,16 +1,12 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
-import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
-import com.tokopedia.topads.common.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.domain.interactor.TopAdsAddSourceTaggingUseCase;
-import com.tokopedia.topads.common.domain.interactor.TopAdsCheckTimeAndSaveSourceTaggingUseCase;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsCheckTimeAndSaveSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCheckProductPromoUseCase;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsCheckProductPromoView;
 
-import java.io.IOException;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -38,7 +34,7 @@ public class TopAdsCheckProductPromoPresenter extends BaseDaggerPresenter<TopAds
 
     public void save(String source){
         adsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase
-                .createRequestParams(source, new Date().getTime()), new Subscriber<Void>() {
+                .createRequestParams(source), new Subscriber<Void>() {
             @Override
             public void onCompleted() {
 
@@ -58,7 +54,7 @@ public class TopAdsCheckProductPromoPresenter extends BaseDaggerPresenter<TopAds
 
     public void checkAndSaveSource(){
         checkAndSaveSourceTaggingUseCase.execute(TopAdsCheckTimeAndSaveSourceTaggingUseCase
-                        .createRequestParams(TopAdsSourceOption.APPLINK, new Date().getTime()),
+                        .createRequestParams(TopAdsSourceOption.APPLINK),
                 new Subscriber<Void>() {
                     @Override
                     public void onCompleted() {

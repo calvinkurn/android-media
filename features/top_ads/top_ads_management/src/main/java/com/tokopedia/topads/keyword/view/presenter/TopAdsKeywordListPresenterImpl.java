@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
-import com.tokopedia.topads.common.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
@@ -50,7 +50,7 @@ public class TopAdsKeywordListPresenterImpl extends
 
     public void saveSourceTagging(@TopAdsSourceOption String source){
         topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase
-                .createRequestParams(source, new Date().getTime()), new Subscriber<Void>() {
+                .createRequestParams(source), new Subscriber<Void>() {
             @Override
             public void onCompleted() {
 
@@ -163,9 +163,11 @@ public class TopAdsKeywordListPresenterImpl extends
         if (baseKeywordParam.groupId > 0)
             requestParams.putString(KeywordTypeDef.GROUP_ID, Long.toString(baseKeywordParam.groupId));
 
+        if (baseKeywordParam.sortingParam != null && !baseKeywordParam.sortingParam.isEmpty())
+            requestParams.putString(KeywordTypeDef.SORTING, baseKeywordParam.sortingParam);
+
         requestParams.putString(KeywordTypeDef.KEYWORD_STATUS, Integer.toString(baseKeywordParam.keywordStatus));
 //        requestParams.putString("keyword_type_id", Integer.toString(baseKeywordParam.keywordTypeId));
-//        requestParams.putString("sorting", Integer.toString(baseKeywordParam.sortingParam));
         return requestParams;
     }
 

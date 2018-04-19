@@ -7,6 +7,7 @@ import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -45,7 +46,8 @@ public class GetShopProductFeaturedUseCase extends GetShopProductAttributeUseCas
     public Observable<List<ShopProductViewModel>> createObservable(RequestParams requestParams) {
         final String shopId = requestParams.getString(SHOP_ID, "");
         final boolean officialStore = requestParams.getBoolean(OFFICIAL_STORE, false);
-        return getFeatureProductListUseCase.createObservable(GetFeatureProductListUseCase.createRequestParam(shopId)).flatMap(new Func1<List<GMFeaturedProduct>, Observable<List<ShopProductViewModel>>>() {
+        return getFeatureProductListUseCase.createObservable(GetFeatureProductListUseCase.createRequestParam(shopId))
+                .flatMap(new Func1<List<GMFeaturedProduct>, Observable<List<ShopProductViewModel>>>() {
             @Override
             public Observable<List<ShopProductViewModel>> call(final List<GMFeaturedProduct> gmFeaturedProductList) {
                 List<ShopProductViewModel> shopProductViewModelList = shopProductMapper.convertFromProductFeatured(gmFeaturedProductList);

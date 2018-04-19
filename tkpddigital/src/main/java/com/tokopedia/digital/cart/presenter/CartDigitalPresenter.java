@@ -28,6 +28,7 @@ import com.tokopedia.digital.cart.data.entity.requestbody.checkout.Data;
 import com.tokopedia.digital.cart.data.entity.requestbody.checkout.Relationships;
 import com.tokopedia.digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
+import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
 import com.tokopedia.digital.cart.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
@@ -190,6 +191,30 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         gtmCart.setAddAction(GTMCart.ADD_ACTION);
 
         UnifyTracking.eventATCSuccess(gtmCart);
+    }
+
+    @Override
+    public void onClearVoucher() {
+        RequestBodyCancelVoucher requestBodyCancelVoucher = new RequestBodyCancelVoucher();
+        com.tokopedia.digital.cart.data.entity.requestbody.voucher.Attributes attributes = new com.tokopedia.digital.cart.data.entity.requestbody.voucher.Attributes();
+        attributes.setIdentifier(view.getDigitalIdentifierParam());
+        requestBodyCancelVoucher.setAttributes(attributes);
+        cartDigitalInteractor.cancelVoucher(requestBodyCancelVoucher, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(String s) {
+
+            }
+        });
     }
 
     @NonNull

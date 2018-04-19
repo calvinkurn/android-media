@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
-import com.tokopedia.topads.common.data.TopAdsSourceTaggingModel;
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetSourceTaggingUseCase;
+import com.tokopedia.topads.common.sourcetagging.data.TopAdsSourceTaggingModel;
+import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCreateDetailProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCreateNewGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;

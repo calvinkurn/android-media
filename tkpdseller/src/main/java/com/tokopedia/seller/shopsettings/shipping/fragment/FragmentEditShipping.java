@@ -477,13 +477,19 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         int resultCode = availability.isGooglePlayServicesAvailable(getActivity());
 
         if (ConnectionResult.SUCCESS == resultCode) {
-            LocationPass locationPass = null;
+            LocationPass locationPass = new LocationPass();
+
             if (!editShippingPresenter.getShopInformation().getShopLatitude().isEmpty()
                     && !editShippingPresenter.getShopInformation().getShopLongitude().isEmpty()) {
-                locationPass = new LocationPass();
+
                 locationPass.setLatitude(editShippingPresenter.getShopInformation().getShopLatitude());
                 locationPass.setLongitude(editShippingPresenter.getShopInformation().getShopLongitude());
                 locationPass.setGeneratedAddress(addressLayout.getGoogleMapAddressString());
+            } else {
+                locationPass.setDistrictName(
+                        editShippingPresenter.getShopInformation().getDistrictName()
+                );
+                locationPass.setCityName(editShippingPresenter.getShopInformation().getCityName());
             }
             Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
             startActivityForResult(intent, OPEN_MAP_CODE);

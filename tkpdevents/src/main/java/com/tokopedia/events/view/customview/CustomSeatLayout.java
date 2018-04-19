@@ -82,7 +82,8 @@ public class CustomSeatLayout extends LinearLayout {
             individualSeat.setText(text);
             individualSeat.setClickable(false);
             individualSeat.setBackgroundResource(R.drawable.booked_seat_bg);
-        } else if (status == 0 || text.length() == 0) {
+        } else if (text.equalsIgnoreCase("-") || status == 0) {
+            individualSeat.setText(text);
             individualSeat.setBackground(null);
             individualSeat.setClickable(false);
         }

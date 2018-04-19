@@ -3,14 +3,22 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.apollographql.android'
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+
 
 buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath 'io.hansel.preprocessor:preprocessor:6.0.1'
     }
 }
 
@@ -35,6 +43,7 @@ dependencies {
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
+    compile project(rootProject.ext.libraries.reactNative)
 
     compile rootProject.ext.miscDependencies.lottie
 
@@ -44,4 +53,5 @@ dependencies {
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    compile rootProject.ext.supportLibDependencies.constraintLayout
 }

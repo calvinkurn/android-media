@@ -6,7 +6,7 @@ import android.view.View;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.common.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordDetailNegativeActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;

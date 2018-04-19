@@ -26,6 +26,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -79,8 +81,8 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
-import com.tokopedia.topads.common.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.util.TopAdsAppLinkUtil;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.sourcetagging.util.TopAdsAppLinkUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,6 +118,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private ActionMode actionMode;
     private Boolean goldMerchant;
     private boolean isOfficialStore;
+    private UserSession userSession;
 
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
@@ -226,6 +229,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         productManageFilterModel = new ProductManageFilterModel();
         productManageFilterModel.reset();
         hasNextPage = false;
+
+        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
     }
 
     @Override
@@ -471,20 +476,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onItemChecked(ProductManageViewModel productManageViewModel, boolean checked) {
-        if (checked && productManageViewModel.getProductVariant() == 1) {
-            NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.product_manage_label_snackbar_variant));
-            ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), false);
-            adapter.notifyDataSetChanged();
+        if (actionMode != null) {
+            int totalChecked = ((ProductManageListAdapter) adapter).getTotalChecked();
+            actionMode.setTitle(String.valueOf(totalChecked));
+            MenuItem deleteMenuItem = actionMode.getMenu().findItem(R.id.delete_product_menu);
+            deleteMenuItem.setVisible(totalChecked > 0);
         } else {
-            if (actionMode != null) {
-                int totalChecked = ((ProductManageListAdapter) adapter).getTotalChecked();
-                actionMode.setTitle(String.valueOf(totalChecked));
-                MenuItem deleteMenuItem = actionMode.getMenu().findItem(R.id.delete_product_menu);
-                deleteMenuItem.setVisible(totalChecked > 0);
-            } else {
-                ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), checked);
-                adapter.notifyDataSetChanged();
-            }
+            ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), checked);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -687,7 +686,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     private void onPromoTopAdsClicked(ProductManageViewModel productManageViewModel) {
         openPromoteAds(getActivity(),
-                TopAdsAppLinkUtil.createAppLink(SessionHandler.getLoginID(getActivity()), productManageViewModel.getItemId(),
+                TopAdsAppLinkUtil.createAppLink(userSession.getUserId(), productManageViewModel.getItemId(),
                         productManageViewModel.getProductShopId(),
                         GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_MANAGE_SHOP : TopAdsSourceOption.MA_MANAGE_SHOP));
     }
@@ -792,6 +791,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private void goToShareProduct(ProductManageViewModel productManageViewModel) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setName(productManageViewModel.getProductName())
+                .setTextContent(productManageViewModel.getProductName())
                 .setDescription(productManageViewModel.getProductName())
                 .setImgUri(productManageViewModel.getImageUrl())
                 .setPrice(productManageViewModel.getProductPrice())

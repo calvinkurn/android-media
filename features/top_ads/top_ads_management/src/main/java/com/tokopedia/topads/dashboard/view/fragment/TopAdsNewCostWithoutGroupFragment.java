@@ -18,7 +18,6 @@ import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTyp
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
-import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoWithoutGroupModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
