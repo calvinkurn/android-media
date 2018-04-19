@@ -1,21 +1,19 @@
 package com.tokopedia.checkout.view.view.shippingoptions;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 
 /**
  * Created by Irfan Khoirul on 26/01/18.
  */
 
-public class ShipmentDetailActivity extends BasePresenterActivity
+public class ShipmentDetailActivity extends BaseCheckoutActivity
         implements ShipmentDetailFragment.FragmentListener {
 
     public static final String EXTRA_SHIPMENT_DETAIL_DATA = "shipmentDetailData";
@@ -30,6 +28,11 @@ public class ShipmentDetailActivity extends BasePresenterActivity
     }
 
     @Override
+    protected void initInjector() {
+
+    }
+
+    @Override
     protected void setupURIPass(Uri data) {
 
     }
@@ -40,23 +43,7 @@ public class ShipmentDetailActivity extends BasePresenterActivity
     }
 
     @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
-    }
-
-    @Override
     protected void initView() {
-        ShipmentDetailFragment fragment = ShipmentDetailFragment.newInstance(
-                (ShipmentDetailData) getIntent().getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA));
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentTransaction.add(R.id.container, fragment, ShipmentDetailFragment.class.getSimpleName());
-        fragmentTransaction.commit();
     }
 
     @Override
@@ -75,16 +62,18 @@ public class ShipmentDetailActivity extends BasePresenterActivity
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
     public void onCourierSelected(ShipmentDetailData shipmentDetailData) {
         Intent intentResult = new Intent();
         intentResult.putExtra(EXTRA_SHIPMENT_DETAIL_DATA, shipmentDetailData);
         intentResult.putExtra(EXTRA_POSITION, getIntent().getIntExtra(EXTRA_POSITION, 0));
         setResult(Activity.RESULT_OK, intentResult);
         finish();
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return ShipmentDetailFragment.newInstance(
+                (ShipmentDetailData) getIntent().getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA)
+        );
     }
 }

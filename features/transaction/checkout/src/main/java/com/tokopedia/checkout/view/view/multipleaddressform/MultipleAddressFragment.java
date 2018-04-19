@@ -8,12 +8,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.view.adapter.MultipleAddressAdapter;
+import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.DaggerMultipleAddressComponent;
 import com.tokopedia.checkout.view.di.component.MultipleAddressComponent;
 import com.tokopedia.checkout.view.di.module.MultipleAddressModule;
@@ -31,7 +31,7 @@ import static com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddre
  * Created by kris on 1/24/18. Tokopedia
  */
 
-public class MultipleAddressFragment extends BasePresenterFragment
+public class MultipleAddressFragment extends BaseCheckoutFragment
         implements IMultipleAddressView,
         MultipleAddressAdapter.MultipleAddressAdapterListener {
 
@@ -166,11 +166,6 @@ public class MultipleAddressFragment extends BasePresenterFragment
     @Override
     protected boolean getOptionsMenuEnable() {
         return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-
     }
 
     @Override
