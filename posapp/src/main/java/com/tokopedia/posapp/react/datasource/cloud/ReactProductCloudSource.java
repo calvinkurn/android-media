@@ -111,6 +111,8 @@ public class ReactProductCloudSource extends ReactDataSource {
         requestParams.putString(ProductConstant.Key.KEYWORD, request.getKeyword());
         if (!TextUtils.isEmpty(request.getEtalaseId())) {
             requestParams.putString(ProductConstant.Key.ETALASE_ID, request.getEtalaseId());
+        } else {
+            requestParams.putString(ProductConstant.Key.ETALASE_ID, "");
         }
 
         requestParams.putString(ProductConstant.Key.PAGE, request.getPage().toString());

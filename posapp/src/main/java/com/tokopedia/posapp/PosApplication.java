@@ -85,6 +85,8 @@ public class PosApplication extends PosRouterApplication {
         TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = PosAppBaseUrl.SCROOGE_CREDIT_CARD_DOMAIN;
         TkpdBaseURL.PAYMENT_DOMAIN = PosAppBaseUrl.PAYMENT_DOMAIN;
         TkpdBaseURL.POS_DOMAIN = PosAppBaseUrl.POS_DOMAIN;
+        TkpdBaseURL.CHAT_DOMAIN = PosAppBaseUrl.CHAT_DOMAIN;
+        TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN = PosAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
         PosUrl.POS_DOMAIN = PosAppBaseUrl.POS_DOMAIN;
         AbstractionBaseURL.JS_DOMAIN = PosAppBaseUrl.BASE_JS_DOMAIN;
         SessionUrl.ACCOUNTS_DOMAIN = PosAppBaseUrl.BASE_ACCOUNTS_DOMAIN;

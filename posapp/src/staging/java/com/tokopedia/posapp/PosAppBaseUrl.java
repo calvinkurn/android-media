@@ -30,5 +30,7 @@ public class PosAppBaseUrl {
     public static final String SCROOGE_DOMAIN = "https://pay-staging.tokopedia.com/";
     public static final String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay-staging.tokopedia.id/";
     public static final String PAYMENT_DOMAIN = "https://payment-staging.tokopedia.com/";
+    public static final String CHAT_DOMAIN = "https://chat-staging.tokopedia.com";
+    public static final String CHAT_WEBSOCKET_DOMAIN = "wss://chat-staging.tokopedia.com";
     public static final String POS_DOMAIN = "http://o2o-staging.tokopedia.com/";
 }
