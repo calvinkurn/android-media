@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.kol.analytics.KolEventTracking;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 
 /**
@@ -54,8 +56,17 @@ public class KolCommentActivity extends BaseSimpleActivity {
 
     @Override
     public void onBackPressed() {
-        //TODO milhamj tracking
-//        UnifyTracking.eventKolCommentDetailBack();
+        if (getApplicationContext() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplicationContext()).getAnalyticTracker().sendEventTracking(
+                    KolEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                    KolEventTracking.Category.FEED_CONTENT_COMMENT_DETAIL,
+                    KolEventTracking.Action.FEED_COMMENT_CLICK_BACK,
+                    KolEventTracking.EventLabel.FEED_CONTENT_COMMENT_DETAIL_BACK
+            );
+        } else {
+            throw new IllegalStateException("Application must be an instance of " +
+                    AbstractionRouter.class.getSimpleName());
+        }
         super.onBackPressed();
     }
 }
