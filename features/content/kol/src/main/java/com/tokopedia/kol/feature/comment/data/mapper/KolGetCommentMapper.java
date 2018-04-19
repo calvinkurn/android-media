@@ -1,7 +1,11 @@
 package com.tokopedia.kol.feature.comment.data.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.kol.common.network.GraphqlErrorException;
 import com.tokopedia.kol.feature.comment.data.pojo.GetKolCommentData;
+import com.tokopedia.kol.feature.comment.data.pojo.GetUserPostComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
 
 import javax.inject.Inject;
@@ -16,6 +20,8 @@ import rx.functions.Func1;
 
 public class KolGetCommentMapper
         implements Func1<Response<GraphqlResponse<GetKolCommentData>>, KolComments> {
+    private static final String ERROR_NETWORK = "ERROR_NETWORK";
+    private static final String ERROR_EMPTY_RESPONSE = "ERROR_EMPTY_RESPONSE";
 
     @Inject
     KolGetCommentMapper() {
@@ -23,7 +29,27 @@ public class KolGetCommentMapper
 
     @Override
     public KolComments call(Response<GraphqlResponse<GetKolCommentData>> getKolCommentData) {
+        GetUserPostComment postKol = getDataOrError(getKolCommentData);
         return null;
+    }
+
+    private GetUserPostComment getDataOrError(Response<GraphqlResponse<GetKolCommentData>> getKolCommentData) {
+        if (getKolCommentData != null
+                && getKolCommentData.body() != null
+                && getKolCommentData.body().getData() != null) {
+            if (getKolCommentData.isSuccessful()) {
+                GetKolCommentData data = getKolCommentData.body().getData();
+                if (TextUtils.isEmpty(data.getGetUserPostComment().getError())) {
+                    return data.getGetUserPostComment();
+                } else {
+                    throw new GraphqlErrorException(data.getGetUserPostComment().getError());
+                }
+            } else {
+                throw new RuntimeException(ERROR_NETWORK);
+            }
+        } else {
+            throw new RuntimeException(ERROR_EMPTY_RESPONSE);
+        }
     }
 }
 //
