@@ -505,7 +505,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
             case REQUEST_CODE_SORT:
                 if (resultCode == Activity.RESULT_OK) {
                     sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME);
-                    startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), "", "", sortName));
+                    startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), "", "", "", sortName));
                 }
                 break;
             default:
