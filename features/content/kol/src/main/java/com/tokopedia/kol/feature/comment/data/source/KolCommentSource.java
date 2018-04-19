@@ -9,6 +9,7 @@ import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.feature.comment.data.mapper.KolDeleteCommentMapper;
 import com.tokopedia.kol.feature.comment.data.mapper.KolGetCommentMapper;
+import com.tokopedia.kol.feature.comment.data.mapper.KolSendCommentMapper;
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
 import com.tokopedia.usecase.RequestParams;
@@ -32,16 +33,19 @@ public class KolCommentSource {
     private final KolApi kolApi;
     private final KolGetCommentMapper kolGetCommentMapper;
     private final KolDeleteCommentMapper kolDeleteCommentMapper;
+    private final KolSendCommentMapper kolSendCommentMapper;
 
     @Inject
     public KolCommentSource(@ApplicationContext Context context,
                             KolApi kolApi,
                             KolGetCommentMapper kolGetCommentMapper,
-                            KolDeleteCommentMapper kolDeleteCommentMapper) {
+                            KolDeleteCommentMapper kolDeleteCommentMapper,
+                            KolSendCommentMapper kolSendCommentMapper) {
         this.context = context;
         this.kolApi = kolApi;
         this.kolGetCommentMapper = kolGetCommentMapper;
         this.kolDeleteCommentMapper = kolDeleteCommentMapper;
+        this.kolSendCommentMapper = kolSendCommentMapper;
     }
 
     public Observable<KolComments> getComments(RequestParams requestParams) {
@@ -50,13 +54,8 @@ public class KolCommentSource {
     }
 
     public Observable<SendKolCommentDomain> sendComment(RequestParams requestParams) {
-//        ApolloWatcher<CreateKolComment.Data> apolloWatcher = apolloClient.newCall(
-//                CreateKolComment.builder()
-//                        .comment(requestParams.getString(SendKolCommentUseCase.PARAM_COMMENT, ""))
-//                        .idPost(requestParams.getInt(SendKolCommentUseCase.PARAM_ID, 0))
-//                        .build()).watcher();
-//        return RxApollo.from(apolloWatcher).map(kolSendCommentMapper);
-        return null;
+        return kolApi.sendKolComment(getRequestPayload(requestParams,
+                R.raw.mutation_create_kol_comment)).map(kolSendCommentMapper);
     }
 
     public Observable<Boolean> deleteKolComment(RequestParams requestParams) {
