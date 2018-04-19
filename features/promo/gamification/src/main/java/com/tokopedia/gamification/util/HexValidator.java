@@ -1,4 +1,4 @@
-package com.tokopedia.gamification;
+package com.tokopedia.gamification.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,4 +22,5 @@ public class HexValidator {
         Matcher matcher = pattern.matcher(hex);
         return matcher.matches();
     }
+
 }
