@@ -362,6 +362,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 fingerPrintDialogRegister.setListenerRegister(TopPayActivity.this);
                 fingerPrintDialogRegister.setContext(TopPayActivity.this);
                 fingerPrintDialogRegister.show(getSupportFragmentManager(), "fingerprintRegister");
+                fingerPrintDialogPayment.getDialog().setCanceledOnTouchOutside(false);
                 return true;
             }
 
@@ -450,6 +451,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 view.post(new Runnable() {
                     @Override
                     public void run() {
+                        fingerPrintDialogPayment.getDialog().setCanceledOnTouchOutside(false);
                         view.stopLoading();
                     }
                 });
