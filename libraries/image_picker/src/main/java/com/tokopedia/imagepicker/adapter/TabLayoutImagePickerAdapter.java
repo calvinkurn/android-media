@@ -71,9 +71,10 @@ public class TabLayoutImagePickerAdapter {
         }
     }
 
-    public void selectTab(TabLayout.Tab tab) {
+    public void selectTab(int position) {
+        TabLayout.Tab tab = tabLayout.getTabAt(position);
         setColorFilterForTab(tab, TabLayoutImagePickerAdapter.SELECTED_COLOR);
-        if (tabLayout.getSelectedTabPosition()!= tab.getPosition()) {
+        if (tabLayout.getSelectedTabPosition()!= position) {
             tab.select();
         }
     }

@@ -57,7 +57,7 @@ public class AlbumLoader extends CursorLoader {
 
     public static CursorLoader createInstance(Context context, int galleryType){
         String[] selectionArgs;
-        if(galleryType == GalleryType.ofImageOnly()){
+        if(galleryType == GalleryType.IMAGE_ONLY){
             selectionArgs = new String[]{String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)};
         }else{
             selectionArgs = SELECTION_ARGS;

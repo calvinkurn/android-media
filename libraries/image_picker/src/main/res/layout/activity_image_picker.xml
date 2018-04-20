@@ -23,11 +23,11 @@
                 android:id="@+id/selected_album"
                 android:layout_width="wrap_content"
                 android:layout_height="?actionBarSize"
-                app:drawableRightCompat="@drawable/ic_arrow_drop_down_white_24dp"
+                app:drawableRightCompat="@drawable/ic_arrow_drop_down_black_24dp"
                 android:foreground="?selectableItemBackground"
                 android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_20"/>
+                android:textColor="@color/font_black_primary_70"
+                android:textSize="@dimen/sp_16"/>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
@@ -45,7 +45,7 @@
                 android:background="@color/grey_400" />
         </android.support.design.widget.AppBarLayout>
 
-        <com.tokopedia.imagepicker.widget.NonSwipeableViewPager
+        <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

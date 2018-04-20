@@ -2,26 +2,43 @@ package com.tokopedia.imagepicker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.imagepicker.adapter.AlbumAdapter;
 import com.tokopedia.imagepicker.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.adapter.TabLayoutImagePickerAdapter;
+import com.tokopedia.imagepicker.gallery.ImagePickerGalleryFragment;
+import com.tokopedia.imagepicker.gallery.model.AlbumItem;
 
-public class ImagePickerActivity extends BaseSimpleActivity {
+public class ImagePickerActivity extends BaseSimpleActivity
+        implements AdapterView.OnItemSelectedListener,
+        ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener {
 
     public static final String EXTRA_IMAGE_PICKER_BUILDER = "x_img_pick_builder";
 
     public static final String SAVED_SELECTED_TAB = "saved_sel_tab";
+    public static final String SAVED_SELECTED_ALBUM_POS = "saved_sel_album";
 
     private TabLayout tabLayout;
     private ImagePickerBuilder imagePickerBuilder;
 
     private int selectedTab = 0;
+    private int selectedAlbumPos = 0;
     private ViewPager viewPager;
+
+    private AlbumsSpinner albumSpinner;
+    private AlbumAdapter albumAdapter;
+    private TextView tvSelectedAlbum;
+    private ImagePickerViewPagerAdapter imagePickerViewPagerAdapter;
 
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
@@ -45,25 +62,29 @@ public class ImagePickerActivity extends BaseSimpleActivity {
 
         setupViewPager();
         setupTabLayout();
+        setupAlbumSpinner();
     }
 
     private void setupViewPager() {
         viewPager = findViewById(R.id.view_pager);
-        ImagePickerViewPagerAdapter imagePickerViewPagerAdapter = new ImagePickerViewPagerAdapter(getSupportFragmentManager(),
-                imagePickerBuilder.getTabTypeDef());
+        imagePickerViewPagerAdapter = new ImagePickerViewPagerAdapter(getSupportFragmentManager(),
+                imagePickerBuilder.getTabTypeDef(),
+                imagePickerBuilder.getGalleryType());
         viewPager.setAdapter(imagePickerViewPagerAdapter);
     }
 
     private void setupTabLayout() {
         tabLayout = findViewById(R.id.tab_layout);
         final TabLayoutImagePickerAdapter tabLayoutImagePickerAdapter =
-                new TabLayoutImagePickerAdapter( tabLayout, this, imagePickerBuilder.getTabTypeDef());
+                new TabLayoutImagePickerAdapter(tabLayout, this, imagePickerBuilder.getTabTypeDef());
         tabLayoutImagePickerAdapter.notifyDataSetChanged();
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                tabLayoutImagePickerAdapter.selectTab(tab);
-                viewPager.setCurrentItem(tab.getPosition());
+                int position = tab.getPosition();
+                if (viewPager.getCurrentItem() != position) {
+                    viewPager.setCurrentItem(position);
+                }
             }
 
             @Override
@@ -76,7 +97,48 @@ public class ImagePickerActivity extends BaseSimpleActivity {
 
             }
         });
-        tabLayoutImagePickerAdapter.selectTab(tabLayout.getTabAt(selectedTab));
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                selectedTab = position;
+                tabLayoutImagePickerAdapter.selectTab(position);
+                changeSpinnerVisibilityByPosition(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        tabLayoutImagePickerAdapter.selectTab(selectedTab);
+    }
+
+    private void changeSpinnerVisibilityByPosition(int position) {
+        if (imagePickerBuilder.isTypeDef(ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY, position)) {
+            getSupportActionBar().setTitle("");
+            tvSelectedAlbum.setVisibility(View.VISIBLE);
+        } else {
+            getSupportActionBar().setTitle(getTitle());
+            tvSelectedAlbum.setVisibility(View.GONE);
+        }
+    }
+
+    private void setupAlbumSpinner() {
+        tvSelectedAlbum = findViewById(R.id.selected_album);
+        if (imagePickerBuilder.indexTypeDef(ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY) > -1) {
+            albumAdapter = new AlbumAdapter(this, null, false);
+            albumSpinner = new AlbumsSpinner(this);
+            albumSpinner.setOnItemSelectedListener(this);
+            albumSpinner.setSelectedTextView(tvSelectedAlbum);
+            albumSpinner.setPopupAnchorView(toolbar);
+            albumSpinner.setAdapter(albumAdapter);
+        }
+        changeSpinnerVisibilityByPosition(selectedTab);
     }
 
     @Override
@@ -90,8 +152,59 @@ public class ImagePickerActivity extends BaseSimpleActivity {
     }
 
     @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        selectedAlbumPos = position;
+        albumAdapter.getCursor().moveToPosition(position);
+        AlbumItem albumItem = AlbumItem.valueOf(albumAdapter.getCursor());
+        if (albumItem.isAll()) {
+            albumItem.addCaptureCount();
+        }
+        //TODO will done in respective fragment
+//        albumCollection.setStateCurrentSelection(position);
+//        onAlbumSelected(albumItem);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    @Override
+    public void onAlbumLoaded(final Cursor cursor) {
+        albumAdapter.swapCursor(cursor);
+        if (cursor!= null && cursor.getCount() > selectedAlbumPos) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    cursor.moveToPosition(selectedAlbumPos);
+                    albumSpinner.setSelection(ImagePickerActivity.this, selectedAlbumPos);
+                    AlbumItem albumItem = AlbumItem.valueOf(cursor);
+                    if (albumItem.isAll()) {
+                        albumItem.addCaptureCount();
+                    }
+                    ImagePickerGalleryFragment imagePickerGalleryFragment = getGalleryFragment();
+                    if (imagePickerGalleryFragment!= null) {
+                        imagePickerGalleryFragment.selectAlbum(albumItem);
+                    }
+                    changeSpinnerVisibilityByPosition(selectedTab);
+                }
+            });
+        }
+    }
+
+    private ImagePickerGalleryFragment getGalleryFragment() {
+        int tabGallery = imagePickerBuilder.indexTypeDef(ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY);
+        if (tabGallery > -1) {
+            return (ImagePickerGalleryFragment) imagePickerViewPagerAdapter.getRegisteredFragment(tabGallery);
+        }
+        return null;
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(SAVED_SELECTED_TAB, tabLayout.getSelectedTabPosition());
+        outState.putInt(SAVED_SELECTED_ALBUM_POS, selectedAlbumPos);
     }
+
 }

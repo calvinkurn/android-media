@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.gallery;
+package com.tokopedia.imagepicker;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.gallery.model.AlbumItem;
 
 /**

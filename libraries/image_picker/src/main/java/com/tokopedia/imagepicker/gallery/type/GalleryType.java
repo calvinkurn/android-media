@@ -1,24 +1,18 @@
 package com.tokopedia.imagepicker.gallery.type;
 
+import android.support.annotation.IntDef;
+
+import static com.tokopedia.imagepicker.gallery.type.GalleryType.ALL;
+import static com.tokopedia.imagepicker.gallery.type.GalleryType.IMAGE_ONLY;
+import static com.tokopedia.imagepicker.gallery.type.GalleryType.VIDEO_ONLY;
+
 /**
  * Created by hangnadi on 5/19/17.
  */
 
-public class GalleryType {
-
-    private static final int ALL = 0x0001;
-    private static final int IMAGE = 0x0002;
-    private static final int VIDEO = 0x0003;
-
-    public static int ofAll() {
-        return GalleryType.ALL;
-    }
-
-    public static int ofImageOnly() {
-        return GalleryType.IMAGE;
-    }
-
-    public static int ofVideoOnly() {
-        return GalleryType.VIDEO;
-    }
+@IntDef({ALL, IMAGE_ONLY, VIDEO_ONLY})
+public @interface GalleryType {
+    int ALL = 0x0001;
+    int IMAGE_ONLY = 0x0002;
+    int VIDEO_ONLY = 0x0003;
 }
