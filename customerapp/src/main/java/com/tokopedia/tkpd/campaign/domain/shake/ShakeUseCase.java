@@ -19,6 +19,8 @@ import rx.Observable;
 public class ShakeUseCase extends UseCase<CampaignResponseEntity> {
 
     public static final String IS_AUDIO ="is_audio";
+
+    public static final String SCREEN_NAME = "source";
     private final CampaignDataRepository campaignDataRepository;
 
     public ShakeUseCase(CampaignDataRepository campaignDataRepository) {
@@ -27,7 +29,7 @@ public class ShakeUseCase extends UseCase<CampaignResponseEntity> {
     @Override
     public Observable<CampaignResponseEntity> createObservable(RequestParams requestParams) {
 
-        return campaignDataRepository.getCampaignFromShake(generateRequestBody(requestParams));
+        return campaignDataRepository.getCampaignFromShake(requestParams.getParameters());
     }
 
     protected HashMap<String, RequestBody> generateRequestBody(RequestParams requestParams) {
@@ -35,8 +37,12 @@ public class ShakeUseCase extends UseCase<CampaignResponseEntity> {
         RequestBody isAudio = RequestBody.create(MediaType.parse("text/plain"),
                 requestParams.getString(IS_AUDIO,
                         "false"));
+        RequestBody screenName = RequestBody.create(MediaType.parse("text/plain"),
+                requestParams.getString(SCREEN_NAME,
+                        "false"));
         HashMap<String, RequestBody> requestBodyMap = new HashMap<>();
         requestBodyMap.put(IS_AUDIO, isAudio);
+        requestBodyMap.put(SCREEN_NAME,screenName);
         return requestBodyMap;
     }
 
