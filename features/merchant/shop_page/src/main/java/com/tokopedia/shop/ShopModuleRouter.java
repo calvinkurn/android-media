@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -27,7 +26,7 @@ public interface ShopModuleRouter {
 
     void goToShareShop(Context context, String shopId, String shopUrl, String shareLabel);
 
-    void goToProductDetail(Context context, String productUrl);
+    void goToProductDetail(Context context, String productId, String name, String displayedPrice, String imageUrl, String attribution, String listNameOfProduct);
 
     void goToWebview(Context context, String url);
 
