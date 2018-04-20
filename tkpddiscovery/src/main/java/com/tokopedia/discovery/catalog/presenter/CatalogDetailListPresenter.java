@@ -104,7 +104,7 @@ public class CatalogDetailListPresenter implements ICatalogDetailListPresenter {
 
     @Override
     public void goToShopPage(CatalogDetailItemShop shop) {
-        Intent intent = ((DiscoveryRouter) view.getActivity().getApplication()).getShopPageIntentByDomain(view.getActivity(), shop.getDomain());
+        Intent intent = ((DiscoveryRouter) view.getActivity().getApplication()).getShopPageIntent(view.getActivity(), shop.getId());
         view.getActivity().startActivity(intent);
     }
 

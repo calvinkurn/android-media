@@ -131,6 +131,8 @@ public class FlightSearchActivity extends BaseFlightActivity
                         case FlightFlowConstant.PRICE_CHANGE:
                             Fragment fragment = getFragment();
                             if (fragment instanceof FlightSearchFragment) {
+                                ((FlightSearchFragment) fragment).flightSearchPresenter
+                                        .attachView((FlightSearchFragment) fragment);
                                 ((FlightSearchFragment) fragment).loadInitialData();
                             }
                             break;

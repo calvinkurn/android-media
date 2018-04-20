@@ -177,13 +177,11 @@
                         android:paddingRight="@dimen/dp_20" />
                 </LinearLayout>
 
-                <com.tokopedia.design.voucher.VoucherCartView
+                <com.tokopedia.design.voucher.VoucherCartHachikoView
                     android:id="@+id/voucher_check_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_20">
-
-                </com.tokopedia.design.voucher.VoucherCartView>
+                    android:layout_marginTop="@dimen/dp_20"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"

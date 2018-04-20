@@ -24,8 +24,8 @@ public class ShopProductSingleViewHolder extends ShopProductViewHolder {
     @Override
     protected String getImageUrl(ShopProductViewModel shopProductViewModel) {
         String imageUrl = super.getImageUrl(shopProductViewModel);
-        if (!TextUtils.isEmpty(shopProductViewModel.getImageUrl300())) {
-            imageUrl = shopProductViewModel.getImageUrl300();
+        if (!TextUtils.isEmpty(shopProductViewModel.getImageUrl700())) {
+            imageUrl = shopProductViewModel.getImageUrl700();
         }
         return imageUrl;
     }

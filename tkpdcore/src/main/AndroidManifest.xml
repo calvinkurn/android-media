@@ -43,7 +43,7 @@
     <uses-permission
         android:name="android.permission.RECORD_AUDIO"
         tools:node="remove" />
-    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
 
     <permission
         android:name="${applicationId}.permission.C2D_MESSAGE"
@@ -89,6 +89,12 @@
         <meta-data
             android:name="io.branch.sdk.BranchKey"
             android:value="@string/BRANCH_SDK_KEY" />
+        <meta-data
+            android:name="HANSEL_APP_ID"
+            android:value="JM8LWF8S5B951JQOAZAFRNX14"/>
+        <meta-data
+            android:name="HANSEL_APP_KEY"
+            android:value="8CDH74MC9EZLPFIHNNJPT39ERKS5BODETYX2LBFQ83ECSV86WY"/>
         <!-- <meta-data -->
         <!-- android:name="com.google.android.gms.version" -->
         <!-- android:value="@integer/google_play_services_version" /> -->
@@ -133,7 +139,7 @@
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ShopStatistic"
             android:label="@string/title_activity_shop_statistic"
@@ -368,6 +374,17 @@
         <activity
             android:name=".gallery.GalleryActivity"
             android:screenOrientation="portrait" />
+
+        <activity android:name=".apprating.nps.FeedbackActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:label="@string/fb_app_title"/>
+
+        <activity android:name=".apprating.nps.FeedbackThankPageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:label="@string/fb_app_title"/>
+
         <activity
             android:name=".shopinfo.activity.ShopDiscussionActivity"
             android:label="@string/title_talk_only"

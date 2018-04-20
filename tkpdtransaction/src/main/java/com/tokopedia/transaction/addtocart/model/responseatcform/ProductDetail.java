@@ -17,6 +17,9 @@ public class ProductDetail implements Parcelable {
     @SerializedName("product_cat_name")
     @Expose
     private String productCatName;
+    @SerializedName("product_cat_name_tracking")
+    @Expose
+    private String productCatNameTracking;
     @SerializedName("product_min_order")
     @Expose
     private String productMinOrder;
@@ -42,57 +45,13 @@ public class ProductDetail implements Parcelable {
     @Expose
     private ProductPreorder productPreorder;
 
-    protected ProductDetail(Parcel in) {
-        productPicture = in.readString();
-        productPrice = in.readString();
-        productCatName = in.readString();
-        productMinOrder = in.readString();
-        productMustInsurance = in.readByte() == 0x00 ? null : in.readInt();
-        productId = in.readString();
-        productWeight = in.readString();
-        productCatId = in.readString();
-        productName = in.readString();
-        productWeightGram = in.readString();
-        productPreorder = (ProductPreorder) in.readValue(ProductPreorder.class.getClassLoader());
+    public String getProductCatNameTracking() {
+        return productCatNameTracking;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setProductCatNameTracking(String productCatNameTracking) {
+        this.productCatNameTracking = productCatNameTracking;
     }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(productPicture);
-        dest.writeString(productPrice);
-        dest.writeString(productCatName);
-        dest.writeString(productMinOrder);
-        if (productMustInsurance == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(productMustInsurance);
-        }
-        dest.writeString(productId);
-        dest.writeString(productWeight);
-        dest.writeString(productCatId);
-        dest.writeString(productName);
-        dest.writeString(productWeightGram);
-        dest.writeValue(productPreorder);
-    }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ProductDetail> CREATOR = new Parcelable.Creator<ProductDetail>() {
-        @Override
-        public ProductDetail createFromParcel(Parcel in) {
-            return new ProductDetail(in);
-        }
-
-        @Override
-        public ProductDetail[] newArray(int size) {
-            return new ProductDetail[size];
-        }
-    };
 
     /**
      * @return The productPicture
@@ -241,4 +200,55 @@ public class ProductDetail implements Parcelable {
     public void setProductPreorder(ProductPreorder productPreorder) {
         this.productPreorder = productPreorder;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.productPicture);
+        dest.writeString(this.productPrice);
+        dest.writeString(this.productCatName);
+        dest.writeString(this.productCatNameTracking);
+        dest.writeString(this.productMinOrder);
+        dest.writeValue(this.productMustInsurance);
+        dest.writeString(this.productId);
+        dest.writeString(this.productWeight);
+        dest.writeString(this.productCatId);
+        dest.writeString(this.productName);
+        dest.writeString(this.productWeightGram);
+        dest.writeParcelable(this.productPreorder, flags);
+    }
+
+    public ProductDetail() {
+    }
+
+    protected ProductDetail(Parcel in) {
+        this.productPicture = in.readString();
+        this.productPrice = in.readString();
+        this.productCatName = in.readString();
+        this.productCatNameTracking = in.readString();
+        this.productMinOrder = in.readString();
+        this.productMustInsurance = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.productId = in.readString();
+        this.productWeight = in.readString();
+        this.productCatId = in.readString();
+        this.productName = in.readString();
+        this.productWeightGram = in.readString();
+        this.productPreorder = in.readParcelable(ProductPreorder.class.getClassLoader());
+    }
+
+    public static final Creator<ProductDetail> CREATOR = new Creator<ProductDetail>() {
+        @Override
+        public ProductDetail createFromParcel(Parcel source) {
+            return new ProductDetail(source);
+        }
+
+        @Override
+        public ProductDetail[] newArray(int size) {
+            return new ProductDetail[size];
+        }
+    };
 }

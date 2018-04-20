@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'android-apt'
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath 'io.hansel.preprocessor:preprocessor:6.0.1'
+    }
+}
+dependencies {
+    compile project(rootProject.ext.libraries.abstraction)
+    compile project(rootProject.ext.libraries.design)
+    compile project(rootProject.ext.libraries.useCase)
+    compile project(rootProject.ext.libraries.applink)
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.testDependencies.junit
+    testCompile 'org.mockito:mockito-all:1.10.19'
+
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}

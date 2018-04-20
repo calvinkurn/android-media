@@ -32,7 +32,7 @@
     <string name="product_label_free_returns">Free Returns</string>
     <string name="product_add_label_sku">SKU (Stock Keeping Unit)</string>
     <string name="product_add_sku_hint">Tulis SKU Produk</string>
-    <string name="product_add_sku_allowed_character">123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ./-</string>
+    <string name="product_add_sku_allowed_character">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ./-</string>
     <string name="product_label_product_description">Deskripsi Produk</string>
     <string name="product_label_enter_product_description">Tulis dengan lengkap dan jelas deskripsi produk Anda</string>
     <string name="product_label_upload_and_add_new_product">Upload dan Tambah Produk Baru</string>

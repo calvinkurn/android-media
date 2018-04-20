@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -31,6 +30,7 @@ import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.di.component.DaggerPromoListFragmentComponent;
 import com.tokopedia.loyalty.di.component.PromoListFragmentComponent;
 import com.tokopedia.loyalty.di.module.PromoListFragmentModule;
+import com.tokopedia.loyalty.view.activity.PromoDetailActivity;
 import com.tokopedia.loyalty.view.adapter.PromoListAdapter;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
@@ -53,9 +53,12 @@ import rx.subscriptions.CompositeSubscription;
 public class PromoListFragment extends BasePresenterFragment implements IPromoListView,
         PromoListAdapter.ActionListener, RefreshHandler.OnRefreshHandlerListener {
     private static final String ARG_EXTRA_PROMO_MENU_DATA = "ARG_EXTRA_PROMO_MENU_DATA";
+    private static final String ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID = "ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID";
 
     private static final String EXTRA_STATE_PROMO_MENU_DATA = "EXTRA_STATE_PROMO_MENU_DATA";
     private static final String EXTRA_STATE_FILTER_SELECTED = "EXTRA_STATE_FILTER_SELECTED";
+
+    private static final int PROMO_DETAIL_REQUEST_CODE = 0;
 
     private static final String TYPE_FILTER_ALL = "all";
     @BindView(R2.id.quick_filter)
@@ -72,12 +75,16 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     private RefreshHandler refreshHandler;
 
+    private OnFragmentInteractionListener actionListener;
+
     private PromoMenuData promoMenuData;
     private PromoListAdapter adapter;
     private BottomSheetView bottomSheetViewInfoPromoCode;
     private boolean isLoadMore;
     private String filterSelected = "";
     private EndlessRecyclerviewListener endlessRecyclerviewListener;
+
+    private String autoSelectedCategoryId;
 
     @Override
     protected void initInjector() {
@@ -267,6 +274,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     @Override
     protected void setupArguments(Bundle arguments) {
         this.promoMenuData = arguments.getParcelable(ARG_EXTRA_PROMO_MENU_DATA);
+        this.autoSelectedCategoryId = arguments.getString(ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID, "0");
     }
 
     @Override
@@ -299,16 +307,31 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     protected void initialVar() {
+        int indexAutoSelectCategoryFilter = 0;
+
         final List<QuickFilterItem> quickFilterItemList = setQuickFilterItems(promoMenuData.getPromoSubMenuDataList());
+
+        for (int i = 0; i < quickFilterItemList.size(); i++) {
+            QuickFilterItem item = quickFilterItemList.get(i);
+            if (autoSelectedCategoryId.equalsIgnoreCase(item.getType())) {
+                indexAutoSelectCategoryFilter = i;
+            }
+        }
+
         quickSingleFilterView.renderFilter(quickFilterItemList);
-        quickSingleFilterView.setDefaultItem(quickFilterItemList.get(0));
+        quickSingleFilterView.setDefaultItem(quickFilterItemList.get(indexAutoSelectCategoryFilter));
         quickSingleFilterView.setListener(new QuickSingleFilterView.ActionListener() {
             @Override
             public void selectFilter(String typeFilter) {
                 String subCategoryName = getSubCategoryNameById(typeFilter);
                 UnifyTracking.eventPromoListClickSubCategory(subCategoryName);
+
+                actionListener.onChangeFilter(typeFilter);
+
                 filterSelected = typeFilter.equals(TYPE_FILTER_ALL) ?
-                        promoMenuData.getAllSubCategoryId() : typeFilter;
+                        promoMenuData.getAllSubCategoryId() :
+                        typeFilter;
+
                 refreshHandler.startRefresh();
             }
 
@@ -319,11 +342,13 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
                 return "";
             }
         });
-        quickSingleFilterView.actionSelect(0);
+
+        quickSingleFilterView.actionSelect(indexAutoSelectCategoryFilter);
     }
 
     private List<QuickFilterItem> setQuickFilterItems(List<PromoSubMenuData> promoSubMenuDataList) {
         List<QuickFilterItem> quickFilterItemList = new ArrayList<>();
+
         for (int i = 0; i < promoSubMenuDataList.size(); i++) {
             QuickFilterItem quickFilterItem = new QuickFilterItem();
             quickFilterItem.setName(promoSubMenuDataList.get(i).getTitle());
@@ -332,6 +357,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
             quickFilterItem.setColorBorder(R.color.tkpd_main_green);
             quickFilterItemList.add(quickFilterItem);
         }
+
         return quickFilterItemList;
     }
 
@@ -340,12 +366,30 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     }
 
-    public static Fragment newInstance(PromoMenuData promoMenuData) {
+    public static Fragment newInstance(PromoMenuData promoMenuData, String autoSelectCategoryId) {
         Fragment fragment = new PromoListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_EXTRA_PROMO_MENU_DATA, promoMenuData);
+        bundle.putString(ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID, autoSelectCategoryId);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            this.actionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        this.actionListener = null;
     }
 
     @Override
@@ -364,11 +408,10 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void onItemPromoClicked(PromoData promoData, int position) {
-        String redirectUrl = promoData.getPromoLink();
-        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-            TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
-            tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
-        }
+        Intent intent = PromoDetailActivity.getCallingIntent(getActivity(), promoData, position,
+                dPresenter.getPage());
+        startActivityForResult(intent, PROMO_DETAIL_REQUEST_CODE);
+
         dPresenter.sendClickItemPromoListTrackingData(promoData, position, promoMenuData.getTitle());
     }
 
@@ -389,20 +432,17 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
                     .setBody("Masukan Kode Promo di halaman pembayaran")
                     .setImg(R.drawable.ic_promo)
                     .build());
-            bottomSheetViewInfoPromoCode.setListener(new BottomSheetView.ActionListener() {
-                @Override
-                public void clickOnTextLink(String url) {
 
-                }
-
+            bottomSheetViewInfoPromoCode.setBtnCloseOnClick(new View.OnClickListener() {
                 @Override
-                public void clickOnButton(String url, String appLink) {
+                public void onClick(View view) {
                     UnifyTracking.eventPromoTooltipClickCloseTooltip();
+                    bottomSheetViewInfoPromoCode.dismiss();
                 }
             });
         }
-        bottomSheetViewInfoPromoCode.show();
 
+        bottomSheetViewInfoPromoCode.show();
     }
 
     private void handleErrorEmptyState(String message) {
@@ -423,5 +463,11 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         endlessRecyclerviewListener.resetState();
         dPresenter.setPage(1);
         dPresenter.processGetPromoList(filterSelected, promoMenuData.getTitle());
+    }
+
+    public interface OnFragmentInteractionListener {
+
+        void onChangeFilter(String categoryId);
+
     }
 }

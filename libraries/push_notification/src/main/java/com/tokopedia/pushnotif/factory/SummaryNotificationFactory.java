@@ -1,0 +1,84 @@
+package com.tokopedia.pushnotif.factory;
+
+import android.app.Notification;
+import android.content.Context;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
+
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.pushnotif.ApplinkNotificationHelper;
+import com.tokopedia.pushnotif.Constant;
+import com.tokopedia.pushnotif.HistoryNotification;
+import com.tokopedia.pushnotif.SummaryNotification;
+import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.model.SummaryNotificationModel;
+
+/**
+ * @author ricoharisin .
+ */
+
+public class SummaryNotificationFactory extends BaseNotificationFactory {
+
+    private SummaryNotificationModel summaryNotificationModel;
+
+
+    public SummaryNotificationFactory(Context context) {
+        super(context);
+    }
+
+    @Override
+    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
+        builder.setContentTitle(getTitleSummary(notificationType));
+        builder.setSmallIcon(getDrawableIcon());
+
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+        HistoryNotification.storeNotification(applinkNotificationModel.getFullName(),
+                applinkNotificationModel.getSummary(), notificationType);
+
+        summaryNotificationModel = SummaryNotification.generateSummaryNotificationModel(context, notificationType);
+
+        for (String s : summaryNotificationModel.getHistoryString()) {
+            inboxStyle.addLine(s);
+        }
+
+        inboxStyle.setSummaryText(summaryNotificationModel.getSummaryText());
+
+        builder.setContentText(summaryNotificationModel.getHistoryString().get(0));
+        builder.setLargeIcon(getBitmapLargeIcon());
+        builder.setStyle(inboxStyle);
+        if (ApplinkNotificationHelper.allowGroup()) {
+            builder.setGroupSummary(true);
+            builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
+        }
+        builder.setContentIntent(createPendingIntent(getGenericApplinks(notificationType), notificationType, notificationId));
+        builder.setDeleteIntent(createDismissPendingIntent(notificationType));
+
+        if (isAllowBell()) {
+            builder.setSound(getRingtoneUri());
+            if (isAllowVibrate()) builder.setVibrate(getVibratePattern());
+        }
+
+        return builder.build();
+    }
+
+    private String getGenericApplinks(int notficationType) {
+        if (notficationType == Constant.NotificationId.TALK) {
+            return ApplinkConst.TALK;
+        } else {
+            return ApplinkConst.TOPCHAT_IDLESS;
+        }
+    }
+
+    private String getTitleSummary(int notficationType) {
+        if (notficationType == Constant.NotificationId.TALK) {
+            return "Tokopedia - Diskusi";
+        } else {
+            return "Tokopedia - Chat";
+        }
+    }
+
+    public int getTotalSummary() {
+        return summaryNotificationModel.getTotalHistory();
+    }
+}

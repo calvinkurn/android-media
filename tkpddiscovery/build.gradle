@@ -2,14 +2,20 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'io.hansel.preprocessor.module'
 
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
 buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath 'io.hansel.preprocessor:preprocessor:6.0.1'
     }
 }
 
@@ -21,11 +27,15 @@ dependencies {
     compile project(rootProject.ext.features.productDetail)
     compile project(rootProject.ext.libraries.design)
 
+    compile rootProject.ext.alibabaDependencies.coreLib
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler

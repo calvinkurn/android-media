@@ -178,7 +178,7 @@ public class ShopListFragment extends SearchSectionFragment
                 if (shopItemList.isEmpty()) {
                     handleEmptySearchResult();
                 } else {
-                    handleSearchResult(shopItemList, isHasNextPage);
+                    handleSearchResult(shopItemList, isHasNextPage, startRow);
                 }
                 isLoadingData = false;
                 hideRefreshLayout();
@@ -229,21 +229,27 @@ public class ShopListFragment extends SearchSectionFragment
                 AuthUtil.md5(gcmHandler.getRegistrationId());
     }
 
-    private void handleSearchResult(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage) {
+    private void handleSearchResult(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage, int startRow) {
+        enrichPositionData(shopItemList, startRow);
         isNextPageAvailable = isHasNextPage;
         adapter.removeLoading();
         adapter.appendItems(shopItemList);
         if (isHasNextPage) {
             adapter.addLoading();
-        } else {
-            recyclerView.clearOnScrollListeners();
         }
         showBottomBarNavigation(true);
     }
 
+    private void enrichPositionData(List<ShopViewModel.ShopItem> shopItemList, int startRow) {
+        int position = startRow;
+        for (ShopViewModel.ShopItem shopItem : shopItemList) {
+            position++;
+            shopItem.setPosition(position);
+        }
+    }
+
     private void handleEmptySearchResult() {
         isNextPageAvailable = false;
-        recyclerView.clearOnScrollListeners();
         adapter.removeLoading();
         if (adapter.isListEmpty()) {
             String message = String.format(getString(R.string.empty_search_content_template), query);
@@ -305,13 +311,16 @@ public class ShopListFragment extends SearchSectionFragment
     public void onItemClicked(ShopViewModel.ShopItem shopItem, int adapterPosition) {
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopItem.getShopId());
         lastSelectedItemPosition = adapterPosition;
-        UnifyTracking.eventSearchResultShopItemClick(query, shopItem.getShopName());
+        SearchTracking.eventSearchResultShopItemClick(query, shopItem.getShopName(),
+                shopItem.getPage(), shopItem.getPosition());
         startActivityForResult(intent, REQUEST_CODE_GOTO_SHOP_DETAIL);
     }
 
     @Override
     public void onFavoriteButtonClicked(ShopViewModel.ShopItem shopItem,
                                         int adapterPosition) {
+        SearchTracking.eventSearchResultFavoriteShopClick(query, shopItem.getShopName(),
+                shopItem.getPage(), shopItem.getPosition());
         presenter.handleFavoriteButtonClicked(shopItem, adapterPosition);
     }
 
@@ -412,10 +421,10 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected void switchLayoutType() {
-        super.switchLayoutType();
+    protected void switchLayoutType(boolean isImageSearch) {
+        super.switchLayoutType(isImageSearch);
         
-        if (!getUserVisibleHint() || !isNextPageAvailable) {
+        if (!getUserVisibleHint()) {
             return;
         }
         recyclerView.clearOnScrollListeners();

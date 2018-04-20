@@ -25,6 +25,8 @@ public class ShopProductRequestModel {
     private boolean shopClosed;
     private boolean officialStore;
 
+    private boolean useAce;
+
     public String getShopId() {
         return shopId;
     }
@@ -121,5 +123,13 @@ public class ShopProductRequestModel {
             hashMap.put(ShopParamApiConstant.WHOLESALE, String.valueOf(wholesale));
         }
         return hashMap;
+    }
+
+    public boolean isUseAce() {
+        return useAce;
+    }
+
+    public void setUseAce(boolean useAce) {
+        this.useAce = useAce;
     }
 }
