@@ -21,8 +21,11 @@ import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView
 import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import rx.Subscriber;
@@ -40,6 +43,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     private final GetProductListManageMapperView getProductListManageMapperView;
     private final SellerModuleRouter sellerModuleRouter;
     private final MultipleDeleteProductUseCase multipleDeleteProductUseCase;
+    private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
     public ProductManagePresenterImpl(GetShopInfoUseCase getShopInfoUseCase,
                                       GetProductListSellingUseCase getProductListSellingUseCase,
@@ -47,7 +51,8 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
                                       DeleteProductUseCase deleteProductUseCase,
                                       GetProductListManageMapperView getProductListManageMapperView,
                                       SellerModuleRouter sellerModuleRouter,
-                                      MultipleDeleteProductUseCase multipleDeleteProductUseCase) {
+                                      MultipleDeleteProductUseCase multipleDeleteProductUseCase,
+                                      TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase) {
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.getProductListSellingUseCase = getProductListSellingUseCase;
         this.editPriceProductUseCase = editPriceProductUseCase;
@@ -55,6 +60,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         this.getProductListManageMapperView = getProductListManageMapperView;
         this.sellerModuleRouter = sellerModuleRouter;
         this.multipleDeleteProductUseCase = multipleDeleteProductUseCase;
+        this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
     }
 
     @Override
@@ -133,6 +139,28 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
                 } else {
                     getView().onSuccessMultipleDeleteProduct();
                 }
+            }
+        });
+    }
+
+    @Override
+    public void saveSourceTagging(boolean isSellerApp) {
+        String source = isSellerApp ? TopAdsSourceOption.SA_MANAGE_SHOP : TopAdsSourceOption.MA_MANAGE_SHOP;
+        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source),
+                new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+
             }
         });
     }
@@ -238,5 +266,6 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         editPriceProductUseCase.unsubscribe();
         deleteProductUseCase.unsubscribe();
         multipleDeleteProductUseCase.unsubscribe();
+        topAdsAddSourceTaggingUseCase.unsubscribe();
     }
 }

@@ -7,8 +7,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,6 +36,8 @@ import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.analytics.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -81,7 +81,6 @@ import com.tokopedia.tkpdpdp.DinkFailedActivity;
 import com.tokopedia.tkpdpdp.DinkSuccessActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
@@ -107,6 +106,8 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.sourcetagging.util.TopAdsAppLinkUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -214,6 +215,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private Option variantLevel1;
     private Option variantLevel2;
     private boolean onClickBuyWhileRequestingVariant = false;
+    private UserSession userSession;
 
     private RemoteConfig remoteConfig;
 
@@ -249,6 +251,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     protected void initialPresenter() {
         this.presenter = new ProductDetailPresenterImpl(this);
+        this.presenter.initTopAdsSourceTaggingUseCase(getActivity().getApplicationContext());
     }
 
     @Override
@@ -379,6 +382,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected void initialVar() {
+        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         appIndexHandler = new AppIndexHandler(getActivity());
         loading = new ProgressDialog(context);
         loading.setCancelable(false);
@@ -984,12 +988,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected void onFirstTimeLaunched() {
-        Log.d(TAG, "onFirstTimeLaunched");
         if (productData != null) {
             onProductDetailLoaded(productData);
-            Log.d(TAG, "productData != null");
         } else {
-            Log.d(TAG, "productData == null");
             presenter.processDataPass(productPass);
             presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
         }
@@ -1261,8 +1262,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onPromoAdsClicked() {
-        presenter.onPromoAdsClicked(getActivity(), productData.getShopInfo().getShopId(),
-                productData.getInfo().getProductId(), SessionHandler.getLoginID(getActivity()));
+        presenter.openPromoteAds(getActivity(),
+                TopAdsAppLinkUtil.createAppLink(userSession.getUserId(),
+                        String.valueOf(productData.getInfo().getProductId()), productData.getShopInfo().getShopId(),
+                        GlobalConfig.isSellerApp() ? TopAdsSourceOption.SA_PDP : TopAdsSourceOption.MA_PDP));
     }
 
     @Override

@@ -1,10 +1,10 @@
-package com.tokopedia.seller.product.picker.domain.interactor;
+package com.tokopedia.topads.dashboard.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.product.picker.domain.GetProductSellingPromoTopAdsRepository;
+import com.tokopedia.topads.dashboard.domain.TopAdsCheckProductPromoRepository;
 
 import javax.inject.Inject;
 
@@ -14,23 +14,23 @@ import rx.Observable;
  * Created by hadi.putra on 12/04/18.
  */
 
-public class GetProductCheckPromoAdsUseCase extends UseCase<String> {
+public class TopAdsCheckProductPromoUseCase extends UseCase<String> {
     private static final String PARAM_ITEM_ID = "item_id";
     private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_SHOP_ID = "shop_id";
 
-    private final GetProductSellingPromoTopAdsRepository getProductSellingPromoTopAdsRepository;
+    private final TopAdsCheckProductPromoRepository topAdsCheckProductPromoRepository;
 
     @Inject
-    public GetProductCheckPromoAdsUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                          GetProductSellingPromoTopAdsRepository getProductSellingPromoTopAdsRepository) {
+    public TopAdsCheckProductPromoUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
+                                          TopAdsCheckProductPromoRepository topAdsCheckProductPromoRepository) {
         super(threadExecutor, postExecutionThread);
-        this.getProductSellingPromoTopAdsRepository = getProductSellingPromoTopAdsRepository;
+        this.topAdsCheckProductPromoRepository = topAdsCheckProductPromoRepository;
     }
 
     @Override
     public Observable<String> createObservable(RequestParams requestParams) {
-        return getProductSellingPromoTopAdsRepository.getProductPromoTopAds(requestParams);
+        return topAdsCheckProductPromoRepository.getProductPromoTopAds(requestParams);
     }
 
     public static RequestParams createRequestParams(String shopId, String itemId, String userId){

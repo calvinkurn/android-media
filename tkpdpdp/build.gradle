@@ -24,6 +24,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile project(rootProject.ext.features.core)
+    compile project(rootProject.ext.features.topAdsCommon)
     compile project(rootProject.ext.libraries.design)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {

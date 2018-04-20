@@ -9,6 +9,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
@@ -23,11 +26,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -66,7 +73,6 @@ import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.constant.StatusProductOption;
 import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
 import com.tokopedia.seller.product.manage.di.ProductManageModule;
-import com.tokopedia.seller.product.manage.view.activity.ProductManageCheckPromoAdsActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageFilterActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageSortActivity;
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageListAdapter;
@@ -75,6 +81,8 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.sourcetagging.util.TopAdsAppLinkUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +118,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private ActionMode actionMode;
     private Boolean goldMerchant;
     private boolean isOfficialStore;
+    private UserSession userSession;
 
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
@@ -220,6 +229,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         productManageFilterModel = new ProductManageFilterModel();
         productManageFilterModel.reset();
         hasNextPage = false;
+
+        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
     }
 
     @Override
@@ -599,7 +610,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .addTitleItem(productManageViewModel.getProductName());
-        bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item);
+        if(productManageViewModel.getProductStatus().equals(StatusProductOption.EMPTY)){
+            bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_no_topads);
+        }else{
+            bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item);
+        }
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))
                 .createDialog();
@@ -670,8 +685,30 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void onPromoTopAdsClicked(ProductManageViewModel productManageViewModel) {
-        startActivity(ProductManageCheckPromoAdsActivity.createIntent(getActivity(), productManageViewModel.getProductShopId(),
-                productManageViewModel.getItemId()));
+        openPromoteAds(getActivity(),
+                TopAdsAppLinkUtil.createAppLink(userSession.getUserId(), productManageViewModel.getItemId(),
+                        productManageViewModel.getProductShopId(),
+                        GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_MANAGE_SHOP : TopAdsSourceOption.MA_MANAGE_SHOP));
+    }
+
+    private void openPromoteAds(Context context, String url) {
+        Intent topadsIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
+        if (topadsIntent != null) {
+            Intent intentActionView = new Intent(Intent.ACTION_VIEW);
+            intentActionView.setData(Uri.parse(url));
+            intentActionView.putExtra(Constants.EXTRA_APPLINK, url);
+            PackageManager manager = context.getPackageManager();
+            List<ResolveInfo> infos = manager.queryIntentActivities(intentActionView, 0);
+            if (infos.size() > 0) {
+                topadsIntent = intentActionView;
+            }
+            context.startActivity(topadsIntent);
+        } else if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) context.getApplicationContext()).goToCreateMerchantRedirect(context);
+            UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
+        }
+        //getActivity().finish();
     }
 
     private void onSetCashbackClicked(ProductManageViewModel productManageViewModel) {

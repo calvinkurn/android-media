@@ -1,11 +1,19 @@
 package com.tokopedia.topads.keyword.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.common.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
+import com.tokopedia.topads.common.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
+import com.tokopedia.topads.common.sourcetagging.data.source.TopAdsSourceTaggingLocal;
+import com.tokopedia.topads.common.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.topads.keyword.data.repository.TopAdsKeywordRepositoryImpl;
 import com.tokopedia.topads.keyword.data.source.KeywordDashboardDataSouce;
 import com.tokopedia.topads.keyword.data.source.cloud.api.KeywordApi;
@@ -49,6 +57,24 @@ public class TopAdsKeywordModule {
     @Provides
     SimpleDataResponseMapper<ShopModel> provideShopModelMapper() {
         return new SimpleDataResponseMapper<>();
+    }
+
+    @TopAdsKeywordScope
+    @Provides
+    TopAdsSourceTaggingLocal provideTopAdsSourceTracking(@ApplicationContext Context context){
+        return new TopAdsSourceTaggingLocal(context, TopAdsSourceTaggingConstant.KEY_SOURCE_PREFERENCE);
+    }
+
+    @TopAdsKeywordScope
+    @Provides
+    public TopAdsSourceTaggingDataSource provideTopAdsSourceTaggingDataSource(TopAdsSourceTaggingLocal topAdsSourceTaggingLocal){
+        return new TopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal);
+    }
+
+    @TopAdsKeywordScope
+    @Provides
+    public TopAdsSourceTaggingRepository provideTopAdsSourceTaggingRepository(TopAdsSourceTaggingDataSource dataSource){
+        return new TopAdsSourceTaggingRepositoryImpl(dataSource);
     }
 
 }

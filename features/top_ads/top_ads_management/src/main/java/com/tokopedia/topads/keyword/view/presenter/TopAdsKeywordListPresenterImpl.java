@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
+import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
@@ -19,6 +21,7 @@ import com.tokopedia.topads.keyword.view.model.KeywordPositiveParam;
 import com.tokopedia.topads.keyword.view.model.NegativeKeywordAd;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,10 +39,33 @@ public class TopAdsKeywordListPresenterImpl extends
     private static final String TAG = "TopAdsKeywordListPresen";
 
     private KeywordDashboardUseCase keywordDashboardUseCase;
+    private TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
     @Inject
-    public TopAdsKeywordListPresenterImpl(KeywordDashboardUseCase keywordDashboardUseCase) {
+    public TopAdsKeywordListPresenterImpl(KeywordDashboardUseCase keywordDashboardUseCase,
+                                          TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase) {
         this.keywordDashboardUseCase = keywordDashboardUseCase;
+        this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
+    }
+
+    public void saveSourceTagging(@TopAdsSourceOption String source){
+        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase
+                .createRequestParams(source), new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+
+            }
+        });
     }
 
     public void fetchKeyword(final BaseKeywordParam baseKeywordParam) {
