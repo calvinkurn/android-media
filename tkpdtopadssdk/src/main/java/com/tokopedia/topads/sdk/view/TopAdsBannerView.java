@@ -130,7 +130,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 iconImg.setImageBitmap(resource);
-                new ImpresionTask().execute(cpm.getCpmImage().getIlustrationUrl());
+                new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
             }
         });
         nameTxt.setText(escapeHTML(cpm.getName()));
