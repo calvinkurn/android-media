@@ -28,7 +28,7 @@
         tools:visibility="visible"/>
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/user_avatar"
         android:layout_toRightOf="@id/user_avatar"
@@ -41,41 +41,46 @@
             android:id="@+id/title"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginLeft="@dimen/dp_7"
+            android:layout_marginStart="@dimen/dp_7"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/black_70"
-            android:textSize="16sp"
+            android:textSize="@dimen/sp_16"
             android:textStyle="normal"
             android:maxLines="1"
             android:ellipsize="end"
-            app:layout_constraintEnd_toStartOf="@+id/label"
             app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintEnd_toStartOf="@+id/label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_default="wrap"
-            tools:text="Store Store Store Store Store Store Store Store Store"/>
+            tools:text="Store name"/>
 
         <TextView
             android:id="@id/label"
+            android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="@dimen/dp_32"
             android:background="@drawable/label_user_chat"
             android:fontFamily="sans-serif"
             android:padding="@dimen/dp_4"
             android:textColor="@color/medium_green"
             android:textSize="@dimen/chat_person_tag_text_size"
             android:textStyle="normal"
+            android:layout_marginRight="@dimen/dp_7"
+            android:layout_marginLeft="@dimen/dp_7"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintBottom_toTopOf="@id/title"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/title"
             app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="Penjual"/>
 
         <TextView
             android:id="@+id/subtitle"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
