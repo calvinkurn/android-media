@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
-import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
@@ -21,7 +21,6 @@ import com.tokopedia.topads.keyword.view.model.KeywordPositiveParam;
 import com.tokopedia.topads.keyword.view.model.NegativeKeywordAd;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -125,7 +124,7 @@ public class TopAdsKeywordListPresenterImpl extends
         return keywordAd;
     }
 
-    protected void revealData(KeywodDashboardViewModel keywordDashboardViewModel) {
+    private void revealData(KeywodDashboardViewModel keywordDashboardViewModel) {
         if (isViewAttached()) {
             getView().onSearchLoaded(
                     keywordDashboardViewModel.getData(),
@@ -134,7 +133,7 @@ public class TopAdsKeywordListPresenterImpl extends
         }
     }
 
-    public String formatDate(long date) {
+    private String formatDate(long date) {
         return GoldMerchantDateUtils.getDateFormatForInput(
                 date, KEYWORD_DATE_FORMAT
         );
@@ -175,11 +174,11 @@ public class TopAdsKeywordListPresenterImpl extends
         return new KeywordPositiveParam();
     }
 
-    public KeywordNegativeParam generateKeywordNegativeParam() {
+    private KeywordNegativeParam generateKeywordNegativeParam() {
         return new KeywordNegativeParam();
     }
 
-    public BaseKeywordParam generateParam(String query, int page, boolean isPositive
+    private BaseKeywordParam generateParam(String query, int page, boolean isPositive
     ) {
         BaseKeywordParam baseKeywordParam = isPositive ? generateKeywordPositiveParam() : generateKeywordNegativeParam();
         if (query != null)

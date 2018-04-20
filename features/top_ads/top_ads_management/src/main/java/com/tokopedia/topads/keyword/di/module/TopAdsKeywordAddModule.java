@@ -1,10 +1,11 @@
 package com.tokopedia.topads.keyword.di.module;
 
-import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;
 import com.tokopedia.topads.keyword.domain.interactor.KeywordAddUseCase;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordAddPresenter;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordAddPresenterImpl;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsRemoveSourceTaggingUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -20,8 +21,10 @@ public class TopAdsKeywordAddModule extends TopAdsKeywordModule {
     @TopAdsKeywordScope
     @Provides
     TopAdsKeywordAddPresenter provideTopAdsKeywordAddPresenter(
-            KeywordAddUseCase keywordAddUseCase, TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
-        return new TopAdsKeywordAddPresenterImpl(keywordAddUseCase, topAdsGetSourceTaggingUseCase);
+            KeywordAddUseCase keywordAddUseCase, TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
+            TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase) {
+        return new TopAdsKeywordAddPresenterImpl(keywordAddUseCase, topAdsGetSourceTaggingUseCase,
+                topAdsRemoveSourceTaggingUseCase);
     }
 
 }

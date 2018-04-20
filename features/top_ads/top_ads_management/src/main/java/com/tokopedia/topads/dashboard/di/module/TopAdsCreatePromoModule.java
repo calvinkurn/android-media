@@ -6,12 +6,13 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.product.apis.PromoTopAdsApi;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceTaggingConstant;
-import com.tokopedia.topads.common.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
-import com.tokopedia.topads.common.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
-import com.tokopedia.topads.common.sourcetagging.data.source.TopAdsSourceTaggingLocal;
-import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
-import com.tokopedia.topads.common.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
+import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
+import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsRemoveSourceTaggingUseCase;
+import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsProductAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsShopAdFactory;
@@ -76,10 +77,11 @@ public class TopAdsCreatePromoModule {
                                                            TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                                            TopAdsProductListUseCase topAdsProductListUseCase,
                                                            TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                                           TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
+                                                           TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
+                                                           TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase) {
         return new TopAdsDetailNewGroupPresenterImpl(topAdsCreateNewGroupUseCase, topAdsGetDetailGroupUseCase,
                 topAdsSaveDetailGroupUseCase, topAdsCreateDetailProductListUseCase, topAdsProductListUseCase,
-                topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
+                topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase, topAdsRemoveSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope
@@ -95,10 +97,11 @@ public class TopAdsCreatePromoModule {
                                                                         TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                                                         TopAdsProductListUseCase topAdsProductListUseCase,
                                                                         TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                                                        TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
+                                                                        TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
+                                                                        TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase) {
         return new TopAdsDetailNewProductPresenterImpl(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase,
                 topAdsCreateDetailProductListUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase,
-                topAdsGetSourceTaggingUseCase);
+                topAdsGetSourceTaggingUseCase, topAdsRemoveSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope
