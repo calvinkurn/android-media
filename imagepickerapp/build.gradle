@@ -134,26 +134,27 @@ android {
         abortOnError false
     }
 
-//    signingConfigs {
-//        debug {
-//            storeFile file("debug.keystore")
-//        }
-//    }
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
 
-//    buildTypes {
-//        debug {
-//            signingConfig signingConfigs.debug
-//            minifyEnabled false
-//            zipAlignEnabled false
-//            testCoverageEnabled true
-//            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-//            proguardFiles  'proguard-rules.txt'
-//        }
-//        release {
-//            signingConfig signingConfigs.debug
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources true
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            zipAlignEnabled false
+            testCoverageEnabled true
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+            proguardFiles  'proguard-rules.pro'
+        }
+        release {
+            signingConfig signingConfigs.debug
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles  'proguard-rules.pro'
 //            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
 //            if (allowProguard()) {
 //                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
@@ -184,8 +185,8 @@ android {
 //                    }
 //                }
 //            }
-//        }
-//    }
+        }
+    }
 
     splits {
         density {

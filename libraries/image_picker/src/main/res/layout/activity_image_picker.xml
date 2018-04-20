@@ -18,7 +18,17 @@
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
             app:subtitleTextAppearance="?subtitleTextAppearance"
-            app:titleTextAppearance="?titleTextAppearance" />
+            app:titleTextAppearance="?titleTextAppearance" >
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/selected_album"
+                android:layout_width="wrap_content"
+                android:layout_height="?actionBarSize"
+                app:drawableRightCompat="@drawable/ic_arrow_drop_down_white_24dp"
+                android:foreground="?selectableItemBackground"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_20"/>
+        </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.CoordinatorLayout
