@@ -810,7 +810,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendEventTrackingShopPage(HashMap<String, Object> eventTracking) {
+    public void sendEventTrackingShopPage(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }

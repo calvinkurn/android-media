@@ -488,7 +488,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendEventTrackingShopPage(HashMap<String, Object> eventTracking) {
+    public void sendEventTrackingShopPage(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }

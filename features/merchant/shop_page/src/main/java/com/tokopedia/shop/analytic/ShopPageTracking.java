@@ -333,6 +333,7 @@ public class ShopPageTracking {
                 ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
         eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, attribution, adapterPosition, isGrid, ShopPageTrackingConstant.PRODUCT_FEATURED));
+        sendClearEvent();
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
@@ -358,6 +359,7 @@ public class ShopPageTracking {
                 ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
         eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, attribution, adapterPosition, isGrid, ShopPageTrackingConstant.PRODUCT_ETALASE));
+        sendClearEvent();
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
@@ -368,6 +370,7 @@ public class ShopPageTracking {
                 ShopPageTrackingConstant.CLICK_TOP_CONTENT, shopType);
         eventMap.put(ShopPageTrackingConstant.SHOP_ID, shopId);
         eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapBannerClickImpression(shopName));
+        sendClearEvent();
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
@@ -379,6 +382,15 @@ public class ShopPageTracking {
         eventMap.put(ShopPageTrackingConstant.SHOP_ID, shopId);
         eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapBannerViewImpression(shopName));
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
+    }
+
+    private void sendClearEvent() {
+        shopModuleRouter.sendEventTrackingShopPage(DataLayer.mapOf(ShopPageTrackingConstant.EVENT, null,
+                ShopPageTrackingConstant.EVENT_CATEGORY, null,
+                ShopPageTrackingConstant.EVENT_ACTION, null,
+                ShopPageTrackingConstant.EVENT_LABEL, null,
+                ShopPageTrackingConstant.ECOMMERCE, null
+        ));
     }
 
     private Map<String, Object> createMapBannerViewImpression(String shopName) {
@@ -460,7 +472,7 @@ public class ShopPageTracking {
     private Map<String, Object> createMapProductClickImpression(String name, String id, String price, String attribution, int adapterPosition, boolean isGrid, String productType) {
         return DataLayer.mapOf(
                 ShopPageTrackingConstant.CLICK, DataLayer.mapOf(
-                        ShopPageTrackingConstant.ACTION_FIELD, DataLayer.mapOf(ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + getProductPosition(adapterPosition, isGrid)),
+                        ShopPageTrackingConstant.ACTION_FIELD, DataLayer.mapOf(ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + getProductPosition(adapterPosition, isGrid)) + productType,
                         ShopPageTrackingConstant.PRODUCTS, DataLayer.listOf(
                                 DataLayer.mapOf(
                                         ShopPageTrackingConstant.NAME, name,
