@@ -130,8 +130,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        ProductComponent component = DaggerProductComponent
-                .builder()
+        ProductComponent component = DaggerProductComponent.builder()
                 .posAppComponent(((PosApplication) getActivity().getApplication()).getPosAppComponent())
                 .build();
         component.inject(this);

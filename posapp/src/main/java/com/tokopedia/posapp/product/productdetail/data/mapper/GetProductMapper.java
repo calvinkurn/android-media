@@ -11,8 +11,10 @@ import rx.functions.Func1;
 
 /**
  * Created by okasurya on 8/10/17.
+ *
+ * Will be deleted, changed by {@link GetProductMapper2}
  */
-
+@Deprecated
 public class GetProductMapper implements Func1<Response<DataResponse<ProductDetailData>>, ProductDetailData>{
     @Inject
     public GetProductMapper() {

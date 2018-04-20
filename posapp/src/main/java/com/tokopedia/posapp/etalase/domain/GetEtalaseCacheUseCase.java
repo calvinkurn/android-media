@@ -14,8 +14,10 @@ import rx.Observable;
 
 /**
  * Created by okasurya on 11/7/17.
+ *
+ * will be deleted
  */
-
+@Deprecated
 public class GetEtalaseCacheUseCase extends UseCase<List<EtalaseDomain>> {
     private EtalaseRepository etalaseRepository;
 

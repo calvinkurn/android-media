@@ -15,8 +15,10 @@ import rx.Observable;
 
 /**
  * Created by okasurya on 9/18/17.
+ *
+ * will be deleted
  */
-
+@Deprecated
 public class StoreEtalaseCacheUseCase extends UseCase<DataStatus>{
     public static final String DATA = "data";
 
