@@ -152,7 +152,6 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         reviewDetailReturnFlight = (TextView) view.findViewById(R.id.review_detail_return_flight);
         recyclerViewReturnFlight = (RecyclerView) view.findViewById(R.id.recycler_view_return_flight);
         recyclerViewDataPassenger = (RecyclerView) view.findViewById(R.id.recycler_view_data_passenger);
-        recyclerViewDataPassenger.addItemDecoration(new FullDividerItemDecoration(recyclerViewDataPassenger.getContext()));
         recyclerViewDetailPrice = (RecyclerView) view.findViewById(R.id.recycler_view_detail_price);
         reviewTotalPrice = (TextView) view.findViewById(R.id.total_price);
         reviewDiscountPrice = (TextView) view.findViewById(R.id.tv_discount_voucher);
@@ -233,6 +232,9 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         FlightBookingReviewPassengerAdapterTypeFactory flightBookingReviewPassengerAdapterTypeFactory = new FlightBookingReviewPassengerAdapterTypeFactory();
         FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter2 = new FlightBookingReviewPassengerAdapter(flightBookingReviewPassengerAdapterTypeFactory);
         flightBookingReviewPassengerAdapter2.addElement(flightBookingReviewModel.getDetailPassengers());
+        if (flightBookingReviewModel.getDetailPassengers().size() > 1) {
+            recyclerViewDataPassenger.addItemDecoration(new FullDividerItemDecoration(recyclerViewDataPassenger.getContext()));
+        }
         recyclerViewDataPassenger.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDataPassenger.setAdapter(flightBookingReviewPassengerAdapter2);
         flightBookingReviewPriceAdapter = new FlightSimpleAdapter();
