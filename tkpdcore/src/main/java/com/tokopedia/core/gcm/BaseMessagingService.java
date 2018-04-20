@@ -14,7 +14,6 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 
-import io.hansel.hanselsdk.Hansel;
 
 /**
  * Created by alvarisi on 3/17/17.
@@ -35,9 +34,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
             appNotificationReceiver.init(getApplication());
         }
 
-        if (Hansel.isPushFromHansel(data) && !GlobalConfig.isSellerApp()) {
-            Hansel.handlePushPayload(this, data);
-        }else if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
+        if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
             appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
         } else {
             AnalyticsLog.logNotification(remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
