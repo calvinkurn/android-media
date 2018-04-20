@@ -1,13 +1,5 @@
 package com.tokopedia.checkout.view.view.shipmentform;
 
-import android.support.annotation.NonNull;
-
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.checkout.data.entity.request.DataCheckoutRequest;
 import com.tokopedia.checkout.data.entity.request.DropshipDataCheckoutRequest;
@@ -18,15 +10,21 @@ import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;

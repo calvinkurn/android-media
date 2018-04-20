@@ -4,13 +4,13 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.checkout.R;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

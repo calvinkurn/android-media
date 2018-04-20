@@ -3,10 +3,10 @@ package com.tokopedia.checkout.view.view.shipmentform;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.transaction.common.base.IBaseView;
 
 import rx.Subscriber;

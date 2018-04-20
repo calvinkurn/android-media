@@ -80,7 +80,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     protected void initInjector() {
-        super.initInjector();
         MultipleAddressComponent component = DaggerMultipleAddressComponent
                 .builder()
                 .multipleAddressModule(new MultipleAddressModule(this)).build();

@@ -6,9 +6,9 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.checkout.R;
-import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
+import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

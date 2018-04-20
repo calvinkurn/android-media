@@ -79,7 +79,6 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     protected void initInjector() {
-        super.initInjector();
         CartAddressChoiceComponent component = DaggerCartAddressChoiceComponent.builder()
                 .cartAddressChoiceModule(new CartAddressChoiceModule(this))
                 .build();

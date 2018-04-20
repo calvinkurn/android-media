@@ -46,19 +46,18 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.R2;
-import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.view.adapter.CourierChoiceAdapter;
+import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.constants.InsuranceConstant;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentDetailComponent;
 import com.tokopedia.checkout.view.di.component.ShipmentDetailComponent;
+import com.tokopedia.core.geolocation.activity.GeolocationActivity;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.common.router.ICartCheckoutModuleRouter;
 
 import javax.inject.Inject;
@@ -205,6 +204,13 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
     }
 
     @Override
+    protected void initInjector() {
+        ShipmentDetailComponent shipmentDetailComponent = DaggerShipmentDetailComponent.builder()
+                .build();
+        shipmentDetailComponent.inject(this);
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return false;
     }
@@ -248,7 +254,6 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
     @Override
     protected void initView(View view) {
         ButterKnife.bind(view);
-        initializeInjector();
         presenter.attachView(this);
         courierChoiceAdapter.setViewListener(this);
         courierChoiceAdapter.setCouriers(presenter.getCouriers());
@@ -261,12 +266,6 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
                         .getParcelable(ARG_SHIPMENT_DETAIL_DATA));
             }
         });
-    }
-
-    private void initializeInjector() {
-        ShipmentDetailComponent shipmentDetailComponent = DaggerShipmentDetailComponent.builder()
-                .build();
-        shipmentDetailComponent.inject(this);
     }
 
     @Override

@@ -199,7 +199,6 @@ public class MultipleAddressShipmentFragment extends BaseCheckoutFragment implem
 
     @Override
     protected void initInjector() {
-        super.initInjector();
         MultipleAddressShipmentComponent component = DaggerMultipleAddressShipmentComponent
                 .builder()
                 .multipleAddressShipmentModule(new MultipleAddressShipmentModule(this))

@@ -1,10 +1,10 @@
 package com.tokopedia.checkout.view.view.shippingoptions;
 
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 
 import java.util.List;
 

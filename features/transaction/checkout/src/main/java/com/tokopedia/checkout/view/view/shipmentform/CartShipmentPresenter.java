@@ -2,14 +2,14 @@ package com.tokopedia.checkout.view.view.shipmentform;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;

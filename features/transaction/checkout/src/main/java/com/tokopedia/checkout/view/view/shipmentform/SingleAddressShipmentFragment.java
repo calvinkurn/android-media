@@ -53,7 +53,6 @@ import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.Data;
@@ -130,7 +129,6 @@ public class SingleAddressShipmentFragment extends BaseCheckoutFragment
 
     @Override
     protected void initInjector() {
-        super.initInjector();
         SingleAddressShipmentComponent component = DaggerSingleAddressShipmentComponent.builder()
                 .singleAddressShipmentModule(new SingleAddressShipmentModule(this))
                 .build();

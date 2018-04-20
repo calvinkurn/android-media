@@ -124,7 +124,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     protected void initInjector() {
-        super.initInjector();
         CartListComponent cartListComponent = DaggerCartListComponent.builder()
                 .cartListModule(new CartListModule(this))
                 .build();
