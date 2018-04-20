@@ -67,6 +67,7 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -160,7 +161,6 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -485,7 +485,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendEventTrackingShopPage(HashMap<String, Object> eventTracking) {
+    public void sendEventTrackingShopPage(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }
@@ -511,6 +511,22 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void gotToProductDetail(Context context) {
         Intent intent = ProductInfoActivity.createInstance(context);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToProductDetail(Context context, String productId, String name, String displayedPrice, String imageUrl, String attribution, String listNameOfProduct) {
+        ProductItem data = new ProductItem();
+        data.setId(productId);
+        data.setName(name);
+        data.setPrice(displayedPrice);
+        data.setImgUri(imageUrl);
+        data.setTrackerAttribution(attribution);
+        data.setTrackerListName(listNameOfProduct);
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
         context.startActivity(intent);
     }
 

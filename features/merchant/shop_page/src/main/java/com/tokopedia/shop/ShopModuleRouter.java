@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by normansyahputa on 2/13/18.
@@ -26,7 +26,7 @@ public interface ShopModuleRouter {
 
     void goToShareShop(Context context, String shopId, String shopUrl, String shareLabel);
 
-    void goToProductDetail(Context context, String productUrl);
+    void goToProductDetail(Context context, String productId, String name, String displayedPrice, String imageUrl, String attribution, String listNameOfProduct);
 
     void goToWebview(Context context, String url);
 
@@ -36,7 +36,7 @@ public interface ShopModuleRouter {
 
     Intent getLoginIntent(Context context);
 
-    void sendEventTrackingShopPage(HashMap<String, Object> eventTracking);
+    void sendEventTrackingShopPage(Map<String, Object> eventTracking);
 
     void sendScreenName(String screenName);
 
