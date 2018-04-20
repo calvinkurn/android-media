@@ -443,6 +443,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void goToProductDetail(Context context, String productUrl) {
+        DeepLinkChecker.openProduct(productUrl, context);
+    }
+
+    @Override
     public Class getSellingActivityClass() {
         return TkpdSeller.getSellingActivityClass();
     }

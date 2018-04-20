@@ -529,6 +529,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void goToProductDetail(Context context, String productUrl) {
+        DeepLinkChecker.openProduct(productUrl, context);
+    }
+
+    @Override
     public void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList) {
         ProductDraftListActivity.startInstagramSaveBulk(context, instagramMediaModelList);
     }
