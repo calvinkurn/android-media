@@ -17,6 +17,7 @@ import rx.Observable;
  * Created by okasurya on 8/10/17.
  */
 
+@Deprecated
 public interface ProductApi {
     @GET(TkpdBaseURL.Product.V4_PRODUCT + TkpdBaseURL.Product.PATH_GET_DETAIL_PRODUCT)
     Observable<Response<DataResponse<ProductDetailData>>> getProductDetail(@QueryMap Map<String, String> params);

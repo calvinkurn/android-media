@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
@@ -128,13 +129,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-        ProductComponent daggerProductComponent =
-                DaggerProductComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerProductComponent.inject(this);
+        ProductComponent component = DaggerProductComponent
+                .builder()
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .build();
+        component.inject(this);
     }
 
     @Override

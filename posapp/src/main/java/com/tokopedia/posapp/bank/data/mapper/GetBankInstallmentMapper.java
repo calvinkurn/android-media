@@ -16,6 +16,8 @@ import com.tokopedia.posapp.bank.domain.model.InstallmentDomain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func2;
 
@@ -26,6 +28,7 @@ import rx.functions.Func2;
 public class GetBankInstallmentMapper implements Func2<Response<TkpdResponse>, Response<TkpdResponse>, List<BankDomain>> {
     private Gson gson;
 
+    @Inject
     public GetBankInstallmentMapper(Gson gson) {
         this.gson = gson;
     }

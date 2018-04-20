@@ -43,9 +43,9 @@ import com.tokopedia.posapp.auth.login.view.activity.PosLoginActivity;
 import com.tokopedia.posapp.base.drawer.DrawerPosHelper;
 import com.tokopedia.posapp.cache.PosCacheHandler;
 import com.tokopedia.posapp.cache.view.service.SchedulerService;
-import com.tokopedia.posapp.di.component.DaggerReactNativeComponent;
-import com.tokopedia.posapp.di.component.ReactNativeComponent;
-import com.tokopedia.posapp.di.module.PosReactNativeModule;
+import com.tokopedia.posapp.di.component.DaggerPosReactNativeComponent;
+import com.tokopedia.posapp.react.di.component.PosReactNativeComponent;
+import com.tokopedia.posapp.react.di.module.PosReactNativeModule;
 import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
 import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
@@ -70,8 +70,8 @@ public class PosRouterApplication extends MainApplication implements
     ReactNativeHost reactNativeHost;
     @Inject
     ReactUtils reactUtils;
-    private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
-    private ReactNativeComponent reactNativeComponent;
+    private DaggerPosReactNativeComponent.Builder daggerReactNativeBuilder;
+    private PosReactNativeComponent posReactNativeComponent;
     private UserSession userSession;
     private CacheManager cacheManager;
 
@@ -500,20 +500,19 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     private void initializeDagger() {
-        daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
-                .appComponent(getApplicationComponent())
+        daggerReactNativeBuilder = DaggerPosReactNativeComponent.builder()
+                .baseAppComponent(getBaseAppComponent())
                 .posReactNativeModule(new PosReactNativeModule(this));
     }
 
     private void initDaggerInjector() {
-        getReactNativeComponent().inject(this);
-//        CodePush.setReactInstanceHolder((ReactInstanceHolder) reactNativeHost);
+        getPosReactNativeComponent().inject(this);
     }
 
-    private ReactNativeComponent getReactNativeComponent() {
-        if (reactNativeComponent == null)
-            reactNativeComponent = daggerReactNativeBuilder.build();
-        return reactNativeComponent;
+    private PosReactNativeComponent getPosReactNativeComponent() {
+        if (posReactNativeComponent == null)
+            posReactNativeComponent = daggerReactNativeBuilder.build();
+        return posReactNativeComponent;
     }
 
     @Override

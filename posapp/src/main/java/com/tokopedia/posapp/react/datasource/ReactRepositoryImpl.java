@@ -11,11 +11,11 @@ import rx.Observable;
  * Created by okasurya on 8/25/17.
  */
 
-public class ReactCacheRepositoryImpl implements ReactCacheRepository {
+public class ReactRepositoryImpl implements ReactRepository {
     ReactDataFactory reactDataFactory;
 
     @Inject
-    public ReactCacheRepositoryImpl(ReactDataFactory reactDataFactory) {
+    public ReactRepositoryImpl(ReactDataFactory reactDataFactory) {
         this.reactDataFactory = reactDataFactory;
     }
 

@@ -6,7 +6,7 @@ import rx.Observable;
  * Created by okasurya on 8/25/17.
  */
 
-public interface ReactCacheRepository {
+public interface ReactRepository {
 
     Observable<String> getData(String tableName, String id);
 

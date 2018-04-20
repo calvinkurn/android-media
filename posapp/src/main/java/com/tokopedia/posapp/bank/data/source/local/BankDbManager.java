@@ -20,6 +20,8 @@ import com.tokopedia.posapp.bank.domain.model.InstallmentDomain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
@@ -28,6 +30,10 @@ import rx.functions.Func1;
  * Created by okasurya on 9/19/17.
  */
 public class BankDbManager extends PosDbOperation<BankDomain, BankDb> {
+
+    @Inject
+    public BankDbManager() {}
+
     @Override
     protected BankDb mapToDb(BankDomain data) {
         if(data != null) {

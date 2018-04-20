@@ -4,7 +4,7 @@ package com.tokopedia.posapp.etalase.data.factory;
 import com.tokopedia.posapp.etalase.data.mapper.GetEtalaseMapper;
 import com.tokopedia.posapp.etalase.data.source.EtalaseCloudSource;
 import com.tokopedia.posapp.etalase.data.source.EtalaseLocalSource;
-import com.tokopedia.posapp.product.productlist.data.source.cloud.ProductListApi;
+import com.tokopedia.posapp.product.common.data.source.cloud.ProductApi;
 
 import javax.inject.Inject;
 
@@ -14,17 +14,17 @@ import javax.inject.Inject;
 @Deprecated
 public class EtalaseFactory {
     private GetEtalaseMapper getEtalaseMapper;
-    private ProductListApi productListApi;
+    private ProductApi productApi;
 
     @Inject
-    public EtalaseFactory(ProductListApi productListApi,
+    public EtalaseFactory(ProductApi productApi,
                           GetEtalaseMapper getEtalaseMapper) {
-        this.productListApi = productListApi;
+        this.productApi = productApi;
         this.getEtalaseMapper = getEtalaseMapper;
     }
 
     public EtalaseCloudSource cloud() {
-        return new EtalaseCloudSource(productListApi, getEtalaseMapper);
+        return new EtalaseCloudSource(productApi, getEtalaseMapper);
     }
 
     public EtalaseLocalSource local() {

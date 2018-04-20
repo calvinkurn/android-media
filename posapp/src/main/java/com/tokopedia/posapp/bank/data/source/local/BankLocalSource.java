@@ -9,6 +9,8 @@ import com.tokopedia.posapp.bank.domain.model.BankSavedResult;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -19,8 +21,9 @@ import rx.functions.Func1;
 public class BankLocalSource {
     private BankDbManager bankDbManager;
 
-    public BankLocalSource() {
-        bankDbManager = new BankDbManager();
+    @Inject
+    public BankLocalSource(BankDbManager bankDbManager) {
+        this.bankDbManager = bankDbManager;
     }
 
     public Observable<BankSavedResult> storeBankToCache(BankInstallmentDomain data) {

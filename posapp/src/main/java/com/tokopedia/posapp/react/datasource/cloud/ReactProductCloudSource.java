@@ -3,7 +3,6 @@ package com.tokopedia.posapp.react.datasource.cloud;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.base.data.pojo.Paging;
 import com.tokopedia.posapp.product.common.ProductConstant;
@@ -15,6 +14,7 @@ import com.tokopedia.posapp.react.datasource.ReactDataSource;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 import com.tokopedia.posapp.react.datasource.model.ProductSearchRequest;
 import com.tokopedia.posapp.product.common.data.pojo.ShopProductResponse;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,17 +49,11 @@ public class ReactProductCloudSource extends ReactDataSource {
 
     @Override
     public Observable<String> getDataList(int offset, int limit) {
-//        RequestParams requestParams = RequestParams.create();
-//        requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
-//        return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
         return Observable.error(new RuntimeException("Method not implemented"));
     }
 
     @Override
     public Observable<String> getDataAll() {
-//        RequestParams requestParams = RequestParams.create();
-//        requestParams.putString(ProductConstant.Key.SHOP_ID, sessionHandler.getShopID());
-//        return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
         return Observable.error(new RuntimeException("Method not implemented"));
     }
 

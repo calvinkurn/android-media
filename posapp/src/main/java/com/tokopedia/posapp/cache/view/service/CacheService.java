@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.content.Context;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.cache.view.Cache;
 import com.tokopedia.posapp.cache.view.presenter.CachePresenter;
 import com.tokopedia.posapp.di.component.DaggerPosCacheComponent;
+import com.tokopedia.posapp.cache.di.PosCacheComponent;
 
 import javax.inject.Inject;
 
@@ -47,10 +47,9 @@ public class CacheService extends IntentService implements Cache.CallbackListene
     }
 
     private void initInjection() {
-        AppComponent appComponent = ((MainApplication) getApplication()).getAppComponent();
-        DaggerPosCacheComponent daggerCacheComponent =
-                (DaggerPosCacheComponent) DaggerPosCacheComponent.builder()
-                        .appComponent(appComponent)
+        PosCacheComponent daggerCacheComponent =
+                DaggerPosCacheComponent.builder()
+                        .baseAppComponent(((MainApplication) getApplication()).getBaseAppComponent())
                         .build();
 
         daggerCacheComponent.inject(this);

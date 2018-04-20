@@ -1,6 +1,5 @@
 package com.tokopedia.posapp.bank.data.source.cloud.api;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.posapp.common.PosUrl;
 

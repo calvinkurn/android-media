@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.di.scope;
+package com.tokopedia.posapp.bank.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -6,10 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import javax.inject.Scope;
 
 /**
- * Created by okasurya on 9/5/17.
+ * Created by okasurya on 9/6/17.
  */
 
 @Scope
 @Retention(RetentionPolicy.CLASS)
-public @interface PosCacheScope {
+public @interface BankScope {
 }

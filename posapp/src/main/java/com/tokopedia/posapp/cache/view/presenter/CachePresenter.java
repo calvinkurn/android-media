@@ -32,34 +32,16 @@ import rx.schedulers.Schedulers;
  */
 
 public class CachePresenter implements Cache.Presenter {
-    private static final String SHOP_ID = "shop_id";
-    private static final String START_OFFSET = "startoffset";
-    private static final String ROW_OFFSET = "rowoffset";
-    private static final String DATA_PER_ROW = "data_per_row";
-    private static final String ETALASE = "etalase";
-
-    private Context context;
     private GetBankUseCase getBankUseCase;
     private StoreBankUsecase storeBankUsecase;
-//    private GetEtalaseUseCase getEtalaseUseCase;
-//    private StoreEtalaseCacheUseCase storeEtalaseCacheUseCase;
 
     private Cache.CallbackListener callbackListener;
 
-//    private int defaultRowPerPage = 10;
-
     @Inject
-    public CachePresenter(@ApplicationContext Context context,
-                          GetBankUseCase getBankUseCase,
-                          StoreBankUsecase storeBankUsecase,
-                          GetEtalaseUseCase getEtalaseUseCase,
-                          StoreEtalaseCacheUseCase storeEtalaseCacheUseCase
-    ) {
-        this.context = context;
+    public CachePresenter(GetBankUseCase getBankUseCase,
+                          StoreBankUsecase storeBankUsecase) {
         this.getBankUseCase = getBankUseCase;
         this.storeBankUsecase = storeBankUsecase;
-//        this.getEtalaseUseCase = getEtalaseUseCase;
-//        this.storeEtalaseCacheUseCase = storeEtalaseCacheUseCase;
     }
 
     @Override
@@ -77,51 +59,6 @@ public class CachePresenter implements Cache.Presenter {
     public void onDestroy() {
 
     }
-
-//    private void getEtalase() {
-//        RequestParams etalaseParams = RequestParams.create();
-//        etalaseParams.putString(SHOP_ID, SessionHandler.getShopID(context));
-//        getEtalaseUseCase.createObservable(etalaseParams)
-//                .flatMap(new Func1<List<EtalaseDomain>, Observable<DataStatus>>() {
-//                    @Override
-//                    public Observable<DataStatus> call(List<EtalaseDomain> etalaseDomains) {
-//                        ListDomain<EtalaseDomain> data = new ListDomain<>();
-//                        data.setList(etalaseDomains);
-//
-//                        RequestParams requestParams = RequestParams.create();
-//                        requestParams.putObject(StoreEtalaseCacheUseCase.DATA, data);
-//
-//                        return storeEtalaseCacheUseCase.createObservable(requestParams);
-//                    }
-//                })
-//                .subscribeOn(Schedulers.newThread())
-//                .subscribe(new Subscriber<DataStatus>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onNext(DataStatus dataStatus) {
-//                        Log.d("CachePresenter", dataStatus.getMessage());
-//                    }
-//                });
-//    }
-
-//    private RequestParams getGatewayProductParam(String etalaseId) {
-//        RequestParams params = RequestParams.create();
-//        params.putString(SHOP_ID, SessionHandler.getShopID(context));
-//        params.putString(START_OFFSET, "0");
-//        params.putString(ROW_OFFSET, defaultRowPerPage + "");
-//        params.putString(ETALASE, etalaseId);
-//        params.putInt(DATA_PER_ROW, defaultRowPerPage);
-//        return params;
-//    }
 
     private void getBankList() {
         getBankUseCase.createObservable(null)
@@ -161,24 +98,4 @@ public class CachePresenter implements Cache.Presenter {
             }
         };
     }
-
-//    private class SaveProductSubscriber extends Subscriber<List<DataStatus>> {
-//
-//        @Override
-//        public void onCompleted() {
-//
-//        }
-//
-//        @Override
-//        public void onError(Throwable e) {
-//            e.printStackTrace();
-//        }
-//
-//        @Override
-//        public void onNext(List<DataStatus> statuses) {
-//            for (DataStatus dataStatus : statuses) {
-//                Log.d("o2o", "product data saved : " + dataStatus.getStatus() + " | " + dataStatus.getMessage());
-//            }
-//        }
-//    }
 }

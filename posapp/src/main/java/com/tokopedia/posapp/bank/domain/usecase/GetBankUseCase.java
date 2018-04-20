@@ -1,13 +1,14 @@
 package com.tokopedia.posapp.bank.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.posapp.bank.data.repository.BankCloudRepository;
 import com.tokopedia.posapp.bank.data.repository.BankRepository;
 import com.tokopedia.posapp.bank.domain.model.BankDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -15,13 +16,11 @@ import rx.Observable;
  * Created by okasurya on 9/5/17.
  */
 
-public class GetBankUseCase extends UseCase<List<BankDomain>>{
+public class GetBankUseCase extends UseCase<List<BankDomain>> {
     BankRepository bankRepository;
 
-    public GetBankUseCase(ThreadExecutor threadExecutor,
-                          PostExecutionThread postExecutionThread,
-                          BankRepository bankRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public GetBankUseCase(BankCloudRepository bankRepository) {
         this.bankRepository = bankRepository;
     }
 

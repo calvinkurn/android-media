@@ -20,8 +20,8 @@ import java.util.Map;
  * Created by okasurya on 10/3/17.
  */
 
-public class UtilRNModule extends ReactContextBaseJavaModule {
-    public UtilRNModule(ReactApplicationContext reactContext) {
+public class UtilReactModule extends ReactContextBaseJavaModule {
+    public UtilReactModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
 

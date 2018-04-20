@@ -1,10 +1,7 @@
 package com.tokopedia.posapp.product.common.di;
 
-import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
-import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.posapp.product.common.di.ProductScope;
-import com.tokopedia.posapp.product.productdetail.data.source.cloud.api.ProductApi;
-import com.tokopedia.posapp.product.productlist.data.source.cloud.ProductListApi;
+import com.tokopedia.posapp.common.PosApiModule;
+import com.tokopedia.posapp.product.common.data.source.cloud.ProductApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -14,15 +11,15 @@ import retrofit2.Retrofit;
  * Created by okasurya on 8/10/17.
  */
 @ProductScope
-@Module
+@Module(includes = PosApiModule.class)
 public class ProductModule {
     @Provides
-    ProductListApi provideGatewayProductApi(@PosGatewayAuth Retrofit retrofit) {
-        return retrofit.create(ProductListApi.class);
+    ProductApi provideGatewayProductApi(Retrofit retrofit) {
+        return retrofit.create(ProductApi.class);
     }
 
     @Provides
-    ProductApi provideProductApi(@WsV4QualifierWithErrorHander Retrofit retrofit) {
+    ProductApi provideProductApi(Retrofit retrofit) {
         return retrofit.create(ProductApi.class);
     }
 }

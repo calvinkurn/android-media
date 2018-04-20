@@ -15,10 +15,10 @@ import com.tokopedia.posapp.PosSessionHandler;
  * Created by okasurya on 9/14/17.
  */
 
-public class SessionRNModule extends ReactContextBaseJavaModule {
+public class SessionReactModule extends ReactContextBaseJavaModule {
     private Context context;
 
-    public SessionRNModule(ReactApplicationContext reactContext) {
+    public SessionReactModule(ReactApplicationContext reactContext) {
         super(reactContext);
         context = reactContext;
     }

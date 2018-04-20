@@ -7,6 +7,8 @@ import com.tokopedia.posapp.bank.domain.model.BankDomain;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -14,9 +16,10 @@ import rx.Observable;
  */
 
 public class BankCloudSource {
-    BankApi bankApi;
-    GetBankInstallmentMapper getBankInstallmentMapper;
+    private BankApi bankApi;
+    private GetBankInstallmentMapper getBankInstallmentMapper;
 
+    @Inject
     public BankCloudSource(BankApi bankApi,
                            GetBankInstallmentMapper getBankMapper) {
         this.bankApi = bankApi;

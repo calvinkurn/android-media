@@ -1,6 +1,5 @@
 package com.tokopedia.posapp.cart.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.posapp.cart.CartConstant;
 import com.tokopedia.posapp.cart.domain.model.CartDomain;
@@ -16,10 +15,10 @@ import javax.inject.Inject;
  * Created by okasurya on 8/22/17.
  */
 
-public class AddToCartPresenter extends BaseDaggerPresenter<AddToCart.View>
-        implements AddToCart.Presenter {
+public class AddToCartPresenter implements AddToCart.Presenter {
 
     private AddToCartUseCase addToCartUseCase;
+    private AddToCart.View view;
 
     @Inject
     public AddToCartPresenter(AddToCartUseCase addToCartUseCase) {
@@ -30,13 +29,13 @@ public class AddToCartPresenter extends BaseDaggerPresenter<AddToCart.View>
     public void add(ProductDetailData product, int quantity) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CartConstant.KEY_CART, getCart(product, quantity));
-        addToCartUseCase.execute(requestParams, new ATCSubscriber(getView()));
+        addToCartUseCase.execute(requestParams, new ATCSubscriber(this.view));
     }
 
     public void addAndCheckout(ProductDetailData product, int quantity) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CartConstant.KEY_CART, getCart(product, quantity));
-        addToCartUseCase.execute(requestParams, new ATCPaymentSubscriber(getView()));
+        addToCartUseCase.execute(requestParams, new ATCPaymentSubscriber(this.view));
     }
 
     private CartDomain getCart(ProductDetailData product, int quantity) {
@@ -49,5 +48,15 @@ public class AddToCartPresenter extends BaseDaggerPresenter<AddToCart.View>
         cartDomain.setProductPriceUnformatted(product.getInfo().getProductPriceUnformatted());
         cartDomain.setQuantity(quantity);
         return cartDomain;
+    }
+
+    @Override
+    public void attachView(AddToCart.View view) {
+        this.view = view;
+    }
+
+    @Override
+    public void detachView() {
+        this.view = null;
     }
 }

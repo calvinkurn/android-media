@@ -1,9 +1,9 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
-import com.tokopedia.posapp.bank.data.factory.BankFactory;
 import com.tokopedia.posapp.bank.data.pojo.BankItemResponse;
 import com.tokopedia.posapp.bank.data.pojo.InstallmentResponse;
+import com.tokopedia.posapp.bank.data.source.local.BankLocalSource;
 import com.tokopedia.posapp.base.data.pojo.ListResponse;
 import com.tokopedia.posapp.bank.domain.model.BankDomain;
 import com.tokopedia.posapp.bank.domain.model.InstallmentDomain;
@@ -23,27 +23,27 @@ import rx.functions.Func1;
  */
 
 public class ReactBankCacheSource extends ReactDataSource {
-    private BankFactory bankFactory;
+    private BankLocalSource bankLocalSource;
 
     @Inject
-    public ReactBankCacheSource(BankFactory bankFactory, Gson gson) {
+    public ReactBankCacheSource(BankLocalSource bankLocalSource, Gson gson) {
         super(gson);
-        this.bankFactory = bankFactory;
+        this.bankLocalSource = bankLocalSource;
     }
 
     @Override
     public Observable<String> getData(String id) {
-        return bankFactory.local().getBank(id).map(mapData()).map(mapToJson());
+        return bankLocalSource.getBank(id).map(mapData()).map(mapToJson());
     }
 
     @Override
     public Observable<String> getDataList(int offset, int limit) {
-        return bankFactory.local().getBanks(offset, limit).map(mapListData()).map(mapToJson());
+        return bankLocalSource.getBanks(offset, limit).map(mapListData()).map(mapToJson());
     }
 
     @Override
     public Observable<String> getDataAll() {
-        return bankFactory.local().getAllBank().map(mapListData()).map(mapToJson());
+        return bankLocalSource.getAllBank().map(mapListData()).map(mapToJson());
     }
 
     @Override

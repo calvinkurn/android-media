@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.product.productlist.data.source.cloud;
+package com.tokopedia.posapp.product.common.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -20,7 +20,11 @@ import rx.Observable;
  * Created by okasurya on 10/13/17.
  */
 
-public interface ProductListApi {
+public interface ProductApi {
+
+    @GET(PosUrl.Product.GET_CUSTOMER_PRODUCT_LIST)
+    Observable<Response<DataResponse<ProductList>>> getProductDetail(@Path(ProductConstant.Key.OUTLET_ID) String outletId,
+                                                                     @QueryMap Map<String, String> params);
 
     @GET(PosUrl.Product.GET_CUSTOMER_PRODUCT_LIST)
     Observable<Response<DataResponse<ProductList>>> getProductList(@Path(ProductConstant.Key.OUTLET_ID) String outletId,

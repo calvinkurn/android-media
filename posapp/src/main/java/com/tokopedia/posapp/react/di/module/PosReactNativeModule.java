@@ -1,9 +1,8 @@
-package com.tokopedia.posapp.di.module;
+package com.tokopedia.posapp.react.di.module;
 
 import android.app.Application;
 
 import com.facebook.react.ReactNativeHost;
-import com.tokopedia.posapp.react.PosReactNativeHost;
 import com.tokopedia.posapp.react.PosReactNativeHostFactory;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeScope;
@@ -17,6 +16,7 @@ import dagger.Provides;
 @Module
 public class PosReactNativeModule {
     private Application reactApplication;
+
     public PosReactNativeModule(Application reactApplication) {
         this.reactApplication = reactApplication;
     }
