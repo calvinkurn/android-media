@@ -538,7 +538,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCountDownFinished() {
-        presenter.updateHomeData();
+        if (presenter != null) {
+            presenter.updateHomeData();
+        }
     }
 
     @Override
