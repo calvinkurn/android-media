@@ -1,12 +1,6 @@
 package com.tokopedia.checkout.view.view.cartlist;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.network.exception.HttpErrorException;
-import com.tokopedia.core.network.exception.ResponseDataNullException;
-import com.tokopedia.core.network.exception.ResponseErrorException;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.checkout.data.entity.request.RemoveCartRequest;
 import com.tokopedia.checkout.data.entity.request.UpdateCartRequest;
 import com.tokopedia.checkout.data.exception.ResponseCartApiErrorException;
@@ -22,6 +16,12 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddr
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
+import com.tokopedia.core.network.exception.HttpErrorException;
+import com.tokopedia.core.network.exception.ResponseDataNullException;
+import com.tokopedia.core.network.exception.ResponseErrorException;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -74,7 +74,7 @@ public class CartListPresenter implements ICartListPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorInitialGetCartListData(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -138,7 +138,7 @@ public class CartListPresenter implements ICartListPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorActionDeleteCartData(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -197,20 +197,20 @@ public class CartListPresenter implements ICartListPresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         if (e instanceof UnknownHostException) {
-                    /* Ini kalau ga ada internet */
+                            /* Ini kalau ga ada internet */
                             view.renderErrorNoConnectionActionDeleteCartData(
                                     ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                             );
                         } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    /* Ini kalau timeout */
+                            /* Ini kalau timeout */
                             view.renderErrorTimeoutConnectionActionDeleteCartData(
                                     ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                             );
                         } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                            /* Ini kalau error dari API kasih message error */
                             view.renderErrorActionDeleteCartData(e.getMessage());
                         } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
                             view.renderErrorActionDeleteCartData(e.getMessage());
                         } else if (e instanceof HttpErrorException) {
                     /* Ini Http error, misal 403, 500, 404,
@@ -220,7 +220,7 @@ public class CartListPresenter implements ICartListPresenter {
                         } else if (e instanceof ResponseCartApiErrorException) {
                             view.renderErrorActionDeleteCartData(e.getMessage());
                         } else {
-                    /* Ini diluar dari segalanya hahahaha */
+                            /* Ini diluar dari segalanya hahahaha */
                             view.renderErrorHttpActionDeleteCartData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
                     }
@@ -277,20 +277,20 @@ public class CartListPresenter implements ICartListPresenter {
                         e.printStackTrace();
                         view.hideProgressLoading();
                         if (e instanceof UnknownHostException) {
-                    /* Ini kalau ga ada internet */
+                            /* Ini kalau ga ada internet */
                             view.renderErrorNoConnectionToShipmentForm(
                                     ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                             );
                         } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    /* Ini kalau timeout */
+                            /* Ini kalau timeout */
                             view.renderErrorTimeoutConnectionToShipmentForm(
                                     ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                             );
                         } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                            /* Ini kalau error dari API kasih message error */
                             view.renderErrorToShipmentForm(e.getMessage());
                         } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
                             view.renderErrorToShipmentForm(e.getMessage());
                         } else if (e instanceof HttpErrorException) {
                     /* Ini Http error, misal 403, 500, 404,
@@ -300,7 +300,7 @@ public class CartListPresenter implements ICartListPresenter {
                         } else if (e instanceof ResponseCartApiErrorException) {
                             view.renderErrorToShipmentForm(e.getMessage());
                         } else {
-                    /* Ini diluar dari segalanya hahahaha */
+                            /* Ini diluar dari segalanya hahahaha */
                             view.renderErrorHttpToShipmentForm(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
 
@@ -358,7 +358,7 @@ public class CartListPresenter implements ICartListPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorToShipmentMultipleAddress(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -457,7 +457,7 @@ public class CartListPresenter implements ICartListPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorToShipmentForm(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -519,7 +519,7 @@ public class CartListPresenter implements ICartListPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorInitialGetCartListData(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -586,7 +586,7 @@ public class CartListPresenter implements ICartListPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorToShipmentForm(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */

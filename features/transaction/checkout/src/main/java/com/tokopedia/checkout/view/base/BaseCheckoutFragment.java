@@ -42,8 +42,7 @@ public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
         }
     }
 
-    protected void initInjector() {
-    }
+    protected abstract void initInjector();
 
     @SuppressWarnings("unchecked")
     protected <C> C getComponent(Class<C> componentType) {

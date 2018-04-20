@@ -129,7 +129,6 @@ public class SingleAddressShipmentFragment extends BaseCheckoutFragment
 
     @Override
     protected void initInjector() {
-        super.initInjector();
         SingleAddressShipmentComponent component = DaggerSingleAddressShipmentComponent.builder()
                 .singleAddressShipmentModule(new SingleAddressShipmentModule(this))
                 .build();

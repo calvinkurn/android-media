@@ -153,6 +153,13 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
     }
 
     @Override
+    protected void initInjector() {
+        ShipmentDetailComponent shipmentDetailComponent = DaggerShipmentDetailComponent.builder()
+                .build();
+        shipmentDetailComponent.inject(this);
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return false;
     }

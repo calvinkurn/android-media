@@ -66,7 +66,6 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
 
     @Override
     protected void initInjector() {
-        super.initInjector();
         CartRemoveProductComponent component = DaggerCartRemoveProductComponent.builder()
                 .cartRemoveProductModule(new CartRemoveProductModule(this))
                 .build();

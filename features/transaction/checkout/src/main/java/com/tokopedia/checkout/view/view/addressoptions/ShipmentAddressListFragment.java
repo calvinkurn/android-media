@@ -83,7 +83,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     protected void initInjector() {
-        super.initInjector();
         ShipmentAddressListComponent component = DaggerShipmentAddressListComponent.builder()
                 .shipmentAddressListModule(new ShipmentAddressListModule(this))
                 .build();
