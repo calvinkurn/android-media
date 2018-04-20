@@ -39,12 +39,12 @@
                 tools:text="@string/prompt_phone"
                 tools:visibility="visible" />
 
-            <com.tokopedia.design.text.TkpdHintTextInputLayout
+            <!--<com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/wrapper_email"
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_label_client_number">
+                android:layout_below="@+id/tv_label_client_number">-->
 
                 <AutoCompleteTextView
                     android:id="@+id/ac_client_number"
@@ -60,12 +60,12 @@
                     android:textColor="@color/digital_item_title"
                     android:textColorHint="@color/grey_400"
                     android:textSize="@dimen/fonts" />
-            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+            <!--</com.tokopedia.design.text.TkpdHintTextInputLayout>-->
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/wrapper_email"
+                android:layout_alignBaseline="@+id/ac_client_number"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/tv_label_client_number"

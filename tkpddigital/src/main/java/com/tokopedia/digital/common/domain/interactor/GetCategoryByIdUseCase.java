@@ -99,9 +99,9 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
 
     private Observable<DigitalNumberList> getFavoriteList
             (TKPDMapParam<String, String> paramQueryLastNumber) {
-        /*if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
+        if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
             return digitalCategoryRepository.getFavoriteList(paramQueryLastNumber);
-        } else {*/
+        } else {
             List<OrderClientNumber> orderClientNumbers = new ArrayList<>();
             DigitalNumberList digitalNumberList = new DigitalNumberList(orderClientNumbers, null);
             if (paramQueryLastNumber.get(PARAM_CATEGORY_ID) != null
@@ -122,7 +122,7 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
                 digitalNumberList = new DigitalNumberList(orderClientNumbers, orderClientNumber);
             }
             return Observable.just(digitalNumberList);
-//        }
+        }
     }
 
     @NonNull
