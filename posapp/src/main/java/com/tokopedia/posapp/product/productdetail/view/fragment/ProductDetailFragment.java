@@ -516,7 +516,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void showProductCampaign() {
-        headerInfoView.renderProductCampaign(productData.getCampaign());
+//        headerInfoView.renderProductCampaign(productData.getCampaign());
     }
 
     @Override

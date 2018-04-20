@@ -110,20 +110,20 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     public void renderProductCampaign(Campaign data) {
 //        if(data != null && data.getOriginalPriceFmt() != null) {
 //            textOriginalPrice.setText(data.getOriginalPriceFmt());
-        textOriginalPrice.setText("20000");
-            textOriginalPrice.setPaintFlags(
-                    textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
-            );
-
-            textDiscount.setText(String.format(
-                    getContext().getString(com.tokopedia.tkpdpdp.R.string.label_discount_percentage),
-                    data.getDiscountedPercentage()
-            ));
-
-            textDiscount.setVisibility(VISIBLE);
-            textOriginalPrice.setVisibility(VISIBLE);
-
-            showCountdownTimer(data);
+//        textOriginalPrice.setText("20000");
+//            textOriginalPrice.setPaintFlags(
+//                    textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+//            );
+//
+//            textDiscount.setText(String.format(
+//                    getContext().getString(com.tokopedia.tkpdpdp.R.string.label_discount_percentage),
+//                    data.getDiscountedPercentage()
+//            ));
+//
+//            textDiscount.setVisibility(VISIBLE);
+//            textOriginalPrice.setVisibility(VISIBLE);
+//
+//            showCountdownTimer(data);
 //        }
     }
 

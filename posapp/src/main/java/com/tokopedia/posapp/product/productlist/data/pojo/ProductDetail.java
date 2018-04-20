@@ -46,6 +46,9 @@ public class ProductDetail {
     @SerializedName("product_gtin")
     @Expose
     private String gtin;
+    @SerializedName("product_description")
+    @Expose
+    private String productDescription;
 
     public long getId() {
         return id;
@@ -141,5 +144,13 @@ public class ProductDetail {
 
     public void setGtin(String gtin) {
         this.gtin = gtin;
+    }
+
+    public String getProductDescription() {
+        return productDescription;
+    }
+
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
     }
 }

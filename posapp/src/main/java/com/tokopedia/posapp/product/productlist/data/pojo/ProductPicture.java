@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 public class ProductPicture {
     @SerializedName("product_pic_id")
     @Expose
-    private long picId;
+    private int picId;
     @SerializedName("url_original")
     @Expose
     private String urlOriginal;
@@ -18,11 +18,11 @@ public class ProductPicture {
     @Expose
     private String urlThumbnail;
 
-    public long getPicId() {
+    public int getPicId() {
         return picId;
     }
 
-    public void setPicId(long picId) {
+    public void setPicId(int picId) {
         this.picId = picId;
     }
 
