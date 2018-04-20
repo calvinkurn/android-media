@@ -33,7 +33,7 @@ public class StoreEtalaseCacheUseCase extends UseCase<DataStatus>{
     @Override
     public Observable<DataStatus> createObservable(RequestParams requestParams) {
         ListDomain<EtalaseDomain> data = (ListDomain<EtalaseDomain>) requestParams.getObject(DATA);
-        return etalaseRepository.storeEtalaseToCache(data);
+        return etalaseRepository.storeEtalase(data);
 
     }
 }

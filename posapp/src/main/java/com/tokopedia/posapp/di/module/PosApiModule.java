@@ -1,8 +1,7 @@
-package com.tokopedia.posapp.common;
+package com.tokopedia.posapp.di.module;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
@@ -10,7 +9,9 @@ import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.posapp.PosSessionHandler;
-import com.tokopedia.posapp.product.management.di.scope.ProductManagementScope;
+import com.tokopedia.posapp.common.PosAuthInterceptor;
+import com.tokopedia.posapp.common.PosUrl;
+import com.tokopedia.posapp.di.scope.PosApplicationScope;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,7 +20,6 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author okasurya on 3/26/18.
@@ -28,8 +28,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class PosApiModule {
     @Provides
+    @PosApplicationScope
     public OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
-                                            @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                            HttpLoggingInterceptor httpLoggingInterceptor,
                                             PosAuthInterceptor posAuthInterceptor) {
         OkHttpRetryPolicy okHttpRetryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -46,6 +47,7 @@ public class PosApiModule {
     }
 
     @Provides
+    @PosApplicationScope
     public Retrofit providePosAuthRetrofit(OkHttpClient okHttpClient,
                                            Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder
@@ -55,6 +57,7 @@ public class PosApiModule {
     }
 
     @Provides
+    @PosApplicationScope
     PosSessionHandler providePosSessionHandler(@ApplicationContext Context context) {
         return new PosSessionHandler(context);
     }

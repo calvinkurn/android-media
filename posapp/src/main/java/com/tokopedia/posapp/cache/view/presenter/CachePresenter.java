@@ -1,22 +1,12 @@
 package com.tokopedia.posapp.cache.view.presenter;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.bank.domain.model.BankDomain;
 import com.tokopedia.posapp.bank.domain.model.BankInstallmentDomain;
 import com.tokopedia.posapp.bank.domain.model.BankSavedResult;
 import com.tokopedia.posapp.bank.domain.usecase.GetBankUseCase;
 import com.tokopedia.posapp.bank.domain.usecase.StoreBankUsecase;
-import com.tokopedia.posapp.base.domain.model.DataStatus;
-import com.tokopedia.posapp.base.domain.model.ListDomain;
 import com.tokopedia.posapp.cache.view.Cache;
-import com.tokopedia.posapp.etalase.domain.GetEtalaseUseCase;
-import com.tokopedia.posapp.etalase.domain.StoreEtalaseCacheUseCase;
-import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 

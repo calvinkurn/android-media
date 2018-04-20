@@ -1,12 +1,12 @@
 package com.tokopedia.posapp.product.common.data.repository;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.posapp.base.domain.model.DataStatus;
 import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.posapp.product.common.data.source.local.ProductLocalSource;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 

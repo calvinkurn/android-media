@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.posapp.PosApplication;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.applink.PosAppLink;
 import com.tokopedia.posapp.cart.di.CartComponent;
@@ -172,8 +173,10 @@ public class ProductDetailActivity extends BasePresenterActivity
     }
 
     private void initInjector() {
-        BaseAppComponent appComponent = ((BaseMainApplication) this.getApplicationContext()).getBaseAppComponent();
-        CartComponent cartComponent = DaggerCartComponent.builder().baseAppComponent(appComponent).build();
+        CartComponent cartComponent = DaggerCartComponent
+                .builder()
+                .posAppComponent(((PosApplication) getApplication()).getPosAppComponent())
+                .build();
         cartComponent.inject(this);
         cartMenuPresenter.attachView(this);
     }

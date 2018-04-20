@@ -43,7 +43,9 @@ import com.tokopedia.posapp.auth.login.view.activity.PosLoginActivity;
 import com.tokopedia.posapp.base.drawer.DrawerPosHelper;
 import com.tokopedia.posapp.cache.PosCacheHandler;
 import com.tokopedia.posapp.cache.view.service.SchedulerService;
-import com.tokopedia.posapp.di.component.DaggerPosReactNativeComponent;
+import com.tokopedia.posapp.di.component.DaggerPosAppComponent;
+import com.tokopedia.posapp.di.component.PosAppComponent;
+import com.tokopedia.posapp.react.di.component.DaggerPosReactNativeComponent;
 import com.tokopedia.posapp.react.di.component.PosReactNativeComponent;
 import com.tokopedia.posapp.react.di.module.PosReactNativeModule;
 import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
@@ -74,6 +76,7 @@ public class PosRouterApplication extends MainApplication implements
     private PosReactNativeComponent posReactNativeComponent;
     private UserSession userSession;
     private CacheManager cacheManager;
+    private PosAppComponent posAppComponent;
 
     @Override
     public String getOutletName() {
@@ -501,7 +504,7 @@ public class PosRouterApplication extends MainApplication implements
 
     private void initializeDagger() {
         daggerReactNativeBuilder = DaggerPosReactNativeComponent.builder()
-                .baseAppComponent(getBaseAppComponent())
+                .posAppComponent(getPosAppComponent())
                 .posReactNativeModule(new PosReactNativeModule(this));
     }
 
@@ -601,5 +604,13 @@ public class PosRouterApplication extends MainApplication implements
     @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(response.request().url().toString());
+    }
+
+    public PosAppComponent getPosAppComponent() {
+        if(posAppComponent == null) {
+            posAppComponent = DaggerPosAppComponent.builder().baseAppComponent(getBaseAppComponent()).build();
+        }
+
+        return posAppComponent;
     }
 }

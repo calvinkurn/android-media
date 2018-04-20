@@ -14,24 +14,24 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.posapp.PosApplication;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
-import com.tokopedia.posapp.outlet.di.OutletComponent;
+import com.tokopedia.posapp.base.fragment.PosAlertDialog;
+import com.tokopedia.posapp.di.component.PosAppComponent;
 import com.tokopedia.posapp.outlet.di.DaggerOutletComponent;
+import com.tokopedia.posapp.outlet.di.OutletComponent;
 import com.tokopedia.posapp.outlet.view.Outlet;
-import com.tokopedia.posapp.shop.view.Shop;
-import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
 import com.tokopedia.posapp.outlet.view.adapter.OutletAdapter;
 import com.tokopedia.posapp.outlet.view.presenter.OutletPresenter;
-import com.tokopedia.posapp.shop.view.presenter.ShopPresenter;
 import com.tokopedia.posapp.outlet.view.viewmodel.OutletItemViewModel;
 import com.tokopedia.posapp.outlet.view.viewmodel.OutletViewModel;
+import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
+import com.tokopedia.posapp.shop.view.Shop;
+import com.tokopedia.posapp.shop.view.presenter.ShopPresenter;
 import com.tokopedia.posapp.shop.view.viewmodel.ShopViewModel;
-import com.tokopedia.posapp.base.fragment.PosAlertDialog;
 
 import javax.inject.Inject;
 
@@ -40,18 +40,16 @@ import javax.inject.Inject;
  */
 
 public class OutletFragment extends BaseDaggerFragment implements Outlet.View, Shop.View {
+    @Inject
+    OutletPresenter outletPresenter;
+    @Inject
+    ShopPresenter shopPresenter;
     private RecyclerView recyclerOutlet;
     private TextView textShopName;
     private EditText editSearchOutlet;
     private OutletAdapter adapter;
     private GridLayoutManager gridLayoutManager;
     private EndlessRecyclerViewScrollListener scrollListener;
-
-    @Inject
-    OutletPresenter outletPresenter;
-
-    @Inject
-    ShopPresenter shopPresenter;
 
     public static OutletFragment createInstance(Bundle bundle) {
         OutletFragment fragment = new OutletFragment();
@@ -81,8 +79,8 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
 
     @Override
     protected void initInjector() {
-        BaseAppComponent appcomponent = ((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent();
-        OutletComponent outletComponent = DaggerOutletComponent.builder().baseAppComponent(appcomponent).build();
+        PosAppComponent appcomponent = ((PosApplication) getActivity().getApplicationContext()).getPosAppComponent();
+        OutletComponent outletComponent = DaggerOutletComponent.builder().posAppComponent(appcomponent).build();
         outletComponent.inject(this);
     }
 
@@ -133,7 +131,7 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
 
     @Override
     public void onSuccessGetShop(ShopViewModel shop) {
-        if(shop != null && shop.getShopInfo() != null && shop.getShopInfo().getShopName() != null) {
+        if (shop != null && shop.getShopInfo() != null && shop.getShopInfo().getShopName() != null) {
             textShopName.setText(shop.getShopInfo().getShopName());
 
         }

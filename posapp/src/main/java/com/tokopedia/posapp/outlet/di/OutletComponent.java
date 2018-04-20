@@ -1,9 +1,9 @@
 package com.tokopedia.posapp.outlet.di;
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.posapp.di.component.PosAppComponent;
+import com.tokopedia.posapp.outlet.view.fragment.OutletFragment;
 import com.tokopedia.posapp.shop.di.ShopModule;
 import com.tokopedia.posapp.shop.di.ShopScope;
-import com.tokopedia.posapp.outlet.view.fragment.OutletFragment;
 
 import dagger.Component;
 
@@ -13,7 +13,7 @@ import dagger.Component;
 
 @OutletScope
 @ShopScope
-@Component(modules = {ShopModule.class, OutletModule.class}, dependencies = BaseAppComponent.class)
+@Component(modules = {ShopModule.class, OutletModule.class}, dependencies = PosAppComponent.class)
 public interface OutletComponent {
     void inject(OutletFragment outletFragment);
 }

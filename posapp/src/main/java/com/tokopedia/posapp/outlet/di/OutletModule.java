@@ -1,6 +1,5 @@
 package com.tokopedia.posapp.outlet.di;
 
-import com.tokopedia.posapp.common.PosApiModule;
 import com.tokopedia.posapp.outlet.data.source.OutletApi;
 
 import dagger.Module;
@@ -11,7 +10,7 @@ import retrofit2.Retrofit;
  * Created by okasurya on 7/31/17.
  */
 
-@Module(includes = PosApiModule.class)
+@Module
 public class OutletModule {
     @OutletScope
     @Provides

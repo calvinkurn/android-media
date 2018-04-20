@@ -1,6 +1,6 @@
 package com.tokopedia.posapp.react.di.component;
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.posapp.di.component.PosAppComponent;
 import com.tokopedia.posapp.react.di.module.ReactDataModule;
 import com.tokopedia.posapp.react.di.scope.ReactDataScope;
 import com.tokopedia.posapp.react.reactmodule.DataReactModule;
@@ -15,7 +15,7 @@ import dagger.Component;
 @ReactDataScope
 @Component(
         modules = ReactDataModule.class,
-        dependencies = BaseAppComponent.class
+        dependencies = PosAppComponent.class
 )
 public interface ReactDataComponent {
     void inject(DataReactModule dataReactModule);

@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.payment.utils.ErrorNetMessage;
+import com.tokopedia.posapp.PosApplication;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.applink.PosAppLink;
 import com.tokopedia.posapp.payment.di.PaymentComponent;
@@ -92,10 +93,10 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     @Override
     protected void initialPresenter() {
-        BaseAppComponent appComponent = ((BaseMainApplication) getApplication()).getBaseAppComponent();
-        PaymentComponent daggerPaymentComponent = DaggerPaymentComponent.builder().baseAppComponent(appComponent).build();
+        PaymentComponent paymentComponent = DaggerPaymentComponent.builder()
+                .posAppComponent(((PosApplication) getApplication()).getPosAppComponent()).build();
 
-        daggerPaymentComponent.inject(this);
+        paymentComponent.inject(this);
 
         otpPresenter.attachView(this);
     }

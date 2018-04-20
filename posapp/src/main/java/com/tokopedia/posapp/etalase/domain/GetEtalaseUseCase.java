@@ -1,11 +1,9 @@
 package com.tokopedia.posapp.etalase.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.posapp.etalase.data.repository.EtalaseRepository;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
 
@@ -21,10 +19,7 @@ public class GetEtalaseUseCase extends UseCase<List<EtalaseDomain>> {
     private EtalaseRepository etalaseRepository;
 
     @Inject
-    public GetEtalaseUseCase(ThreadExecutor threadExecutor,
-                             PostExecutionThread postExecutionThread,
-                             EtalaseRepository etalaseRepository) {
-        super(threadExecutor, postExecutionThread);
+    public GetEtalaseUseCase(EtalaseRepository etalaseRepository) {
         this.etalaseRepository = etalaseRepository;
     }
 

@@ -1,11 +1,7 @@
 package com.tokopedia.posapp.product.management.di.module;
 
-import android.content.Context;
-
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.posapp.PosSessionHandler;
-import com.tokopedia.posapp.common.PosApiModule;
 import com.tokopedia.posapp.product.management.data.source.ProductManagementApi;
 import com.tokopedia.posapp.product.management.di.scope.ProductManagementScope;
 import com.tokopedia.posapp.product.management.domain.EditProductUseCase;
@@ -24,7 +20,7 @@ import retrofit2.Retrofit;
  */
 
 @ProductManagementScope
-@Module(includes = {PosApiModule.class})
+@Module
 public class ProductManagementModule {
     @Provides
     @ProductManagementScope

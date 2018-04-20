@@ -1,7 +1,6 @@
 package com.tokopedia.posapp.bank.di;
 
 import com.tokopedia.posapp.bank.data.source.cloud.api.BankApi;
-import com.tokopedia.posapp.common.PosApiModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -12,7 +11,7 @@ import retrofit2.Retrofit;
  */
 
 @BankScope
-@Module(includes = PosApiModule.class)
+@Module
 public class BankModule {
     @Provides
     BankApi provideBankApi(Retrofit retrofit) {

@@ -1,7 +1,7 @@
 package com.tokopedia.posapp.product.common.di;
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.posapp.cart.di.CartModule;
+import com.tokopedia.posapp.di.component.PosAppComponent;
 import com.tokopedia.posapp.product.productdetail.view.fragment.ProductDetailFragment;
 
 import dagger.Component;
@@ -13,7 +13,7 @@ import dagger.Component;
 @ProductScope
 @Component(
         modules = {ProductModule.class, CartModule.class},
-        dependencies = BaseAppComponent.class
+        dependencies = PosAppComponent.class
 )
 public interface ProductComponent {
     void inject(ProductDetailFragment fragment);

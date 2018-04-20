@@ -7,7 +7,8 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.posapp.di.component.DaggerReactDataComponent;
+import com.tokopedia.posapp.PosApplication;
+import com.tokopedia.posapp.react.di.component.DaggerReactDataComponent;
 import com.tokopedia.posapp.react.di.component.ReactDataComponent;
 import com.tokopedia.posapp.react.datasource.ReactRepositoryImpl;
 
@@ -35,7 +36,7 @@ public class DataReactModule extends ReactContextBaseJavaModule {
     private void initInjection() {
         ReactDataComponent reactDataComponent = DaggerReactDataComponent
                 .builder()
-                .baseAppComponent(((BaseMainApplication) context.getApplicationContext()).getBaseAppComponent())
+                .posAppComponent(((PosApplication) context.getApplicationContext()).getPosAppComponent())
                 .build();
 
         reactDataComponent.inject(this);

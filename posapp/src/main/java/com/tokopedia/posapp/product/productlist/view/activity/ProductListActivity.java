@@ -11,9 +11,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.posapp.PosApplication;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.applink.PosAppLink;
 import com.tokopedia.posapp.base.activity.ReactDrawerPresenterActivity;
@@ -22,6 +21,7 @@ import com.tokopedia.posapp.cart.di.DaggerCartComponent;
 import com.tokopedia.posapp.cart.view.CartMenu;
 import com.tokopedia.posapp.cart.view.activity.LocalCartActivity;
 import com.tokopedia.posapp.cart.view.presenter.CartMenuPresenter;
+import com.tokopedia.posapp.di.component.PosAppComponent;
 import com.tokopedia.posapp.payment.process.ReactInstallmentActivity;
 import com.tokopedia.posapp.product.productlist.view.fragment.ReactProductListFragment;
 
@@ -32,11 +32,10 @@ import javax.inject.Inject;
  */
 
 public class ProductListActivity extends ReactDrawerPresenterActivity implements CartMenu.View {
-    private View vCart;
-    private TextView tvNotif;
-
     @Inject
     CartMenuPresenter cartMenuPresenter;
+    private View vCart;
+    private TextView tvNotif;
 
     @DeepLink(PosAppLink.PRODUCT_LIST)
     public static Intent getApplinkIntent(Context context, Bundle extras) {
@@ -146,7 +145,7 @@ public class ProductListActivity extends ReactDrawerPresenterActivity implements
 
     @Override
     public void onCartFilled(int cartCount) {
-        if(tvNotif != null) {
+        if (tvNotif != null) {
             tvNotif.setVisibility(View.VISIBLE);
             tvNotif.setText(Integer.toString(cartCount));
         }
@@ -154,14 +153,14 @@ public class ProductListActivity extends ReactDrawerPresenterActivity implements
 
     @Override
     public void onCartEmpty() {
-        if(tvNotif != null) {
+        if (tvNotif != null) {
             tvNotif.setVisibility(View.GONE);
         }
     }
 
     protected void initInjector() {
-        BaseAppComponent appComponent = ((BaseMainApplication) this.getApplicationContext()).getBaseAppComponent();
-        CartComponent cartComponent = DaggerCartComponent.builder().baseAppComponent(appComponent).build();
+        PosAppComponent appComponent = ((PosApplication) this.getApplicationContext()).getPosAppComponent();
+        CartComponent cartComponent = DaggerCartComponent.builder().posAppComponent(appComponent).build();
         cartComponent.inject(this);
         cartMenuPresenter.attachView(this);
     }

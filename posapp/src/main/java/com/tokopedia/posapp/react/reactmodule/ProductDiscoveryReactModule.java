@@ -8,7 +8,8 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.posapp.di.component.DaggerReactDataComponent;
+import com.tokopedia.posapp.PosApplication;
+import com.tokopedia.posapp.react.di.component.DaggerReactDataComponent;
 import com.tokopedia.posapp.react.di.component.ReactDataComponent;
 import com.tokopedia.posapp.react.datasource.cloud.ReactProductCloudSource;
 import com.tokopedia.posapp.react.datasource.model.ProductSearchRequest;
@@ -36,7 +37,7 @@ public class ProductDiscoveryReactModule extends ReactContextBaseJavaModule {
 
     private void initInjection() {
         ReactDataComponent daggerReactDataComponent = DaggerReactDataComponent.builder()
-                .baseAppComponent(((BaseMainApplication) context.getApplicationContext()).getBaseAppComponent())
+                .posAppComponent(((PosApplication) context.getApplicationContext()).getPosAppComponent())
                 .build();
 
         daggerReactDataComponent.inject(this);

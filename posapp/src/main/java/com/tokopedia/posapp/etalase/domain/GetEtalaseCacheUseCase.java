@@ -25,6 +25,6 @@ public class GetEtalaseCacheUseCase extends UseCase<List<EtalaseDomain>> {
     }
     @Override
     public Observable<List<EtalaseDomain>> createObservable(RequestParams requestParams) {
-        return etalaseRepository.getEtalaseCache();
+        return etalaseRepository.getEtalase(requestParams);
     }
 }

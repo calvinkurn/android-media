@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.posapp.PosApplication;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.base.util.RupiahNumberTextWatcher;
 import com.tokopedia.posapp.product.management.di.component.DaggerProductManagementComponent;
@@ -126,7 +127,7 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
     private void initInjector() {
         ProductManagementComponent component = DaggerProductManagementComponent
                 .builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .posAppComponent(((PosApplication) getActivity().getApplication()).getPosAppComponent())
                 .build();
         component.inject(this);
         presenter.attachView(this);

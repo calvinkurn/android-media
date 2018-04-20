@@ -1,15 +1,14 @@
 package com.tokopedia.posapp.react.datasource.cloud;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.posapp.etalase.data.repository.EtalaseRepository;
-import com.tokopedia.posapp.etalase.data.repository.EtalaseRepositoryImpl;
-import com.tokopedia.posapp.etalase.data.source.EtalaseCloudSource;
+import com.tokopedia.posapp.etalase.data.repository.EtalaseCloudRepository;
 import com.tokopedia.posapp.react.datasource.ReactDataSource;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 import com.tokopedia.posapp.react.datasource.model.ListResult;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -24,15 +23,15 @@ import rx.functions.Func1;
 
 public class ReactEtalaseCloudSource extends ReactDataSource {
     private EtalaseRepository etalaseRepository;
-    private SessionHandler sessionHandler;
+    private UserSession userSession;
 
     @Inject
     protected ReactEtalaseCloudSource(Gson gson,
-                                      EtalaseRepositoryImpl etalaseRepository,
-                                      SessionHandler sessionHandler) {
+                                      EtalaseCloudRepository etalaseRepository,
+                                      UserSession userSession) {
         super(gson);
         this.etalaseRepository = etalaseRepository;
-        this.sessionHandler = sessionHandler;
+        this.userSession = userSession;
     }
 
     @Override
@@ -48,7 +47,7 @@ public class ReactEtalaseCloudSource extends ReactDataSource {
     @Override
     protected Observable<String> getDataAll() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString("shop_id", sessionHandler.getShopID());
+        requestParams.putString("shop_id", userSession.getShopId());
         return etalaseRepository.getEtalase(requestParams).map(mapEtalaseList()).map(mapToJson());
     }
 

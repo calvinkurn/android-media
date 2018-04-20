@@ -11,6 +11,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.posapp.PosApplication;
 import com.tokopedia.posapp.base.fragment.PosBaseListFragment;
 import com.tokopedia.posapp.product.management.di.component.DaggerProductManagementComponent;
 import com.tokopedia.posapp.product.management.di.component.ProductManagementComponent;
@@ -54,7 +55,7 @@ public class ProductManagementFragment
     protected void initInjector() {
         ProductManagementComponent component = DaggerProductManagementComponent
                 .builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .posAppComponent(((PosApplication) getActivity().getApplication()).getPosAppComponent())
                 .build();
         component.inject(this);
         presenter.attachView(this);

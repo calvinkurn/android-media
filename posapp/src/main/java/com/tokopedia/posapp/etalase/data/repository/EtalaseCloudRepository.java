@@ -2,7 +2,7 @@ package com.tokopedia.posapp.etalase.data.repository;
 
 import com.tokopedia.posapp.base.domain.model.DataStatus;
 import com.tokopedia.posapp.base.domain.model.ListDomain;
-import com.tokopedia.posapp.etalase.data.source.EtalaseLocalSource;
+import com.tokopedia.posapp.etalase.data.source.EtalaseCloudSource;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 import com.tokopedia.usecase.RequestParams;
 
@@ -13,24 +13,24 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * @author okasurya on 4/2/18.
+ * Created by okasurya on 9/19/17.
  */
 
-public class EtalaseLocalRepository implements EtalaseRepository {
-    private EtalaseLocalSource etalaseLocalSource;
+public class EtalaseCloudRepository implements EtalaseRepository {
+    private EtalaseCloudSource etalaseCloudSource;
 
     @Inject
-    EtalaseLocalRepository(EtalaseLocalSource etalaseLocalSource) {
-        this.etalaseLocalSource = etalaseLocalSource;
+    public EtalaseCloudRepository(EtalaseCloudSource etalaseCloudSource) {
+        this.etalaseCloudSource = etalaseCloudSource;
     }
 
     @Override
     public Observable<List<EtalaseDomain>> getEtalase(RequestParams requestParams) {
-        return etalaseLocalSource.getAllEtalase();
+        return etalaseCloudSource.getEtalase(requestParams);
     }
 
     @Override
     public Observable<DataStatus> storeEtalase(ListDomain<EtalaseDomain> data) {
-        return etalaseLocalSource.storeEtalase(data);
+        return null;
     }
 }

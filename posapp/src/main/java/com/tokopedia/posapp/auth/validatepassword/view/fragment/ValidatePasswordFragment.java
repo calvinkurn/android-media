@@ -19,6 +19,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.auth.di.DaggerAuthComponent;
 import com.tokopedia.posapp.auth.validatepassword.di.DaggerValidatePasswordComponent;
+import com.tokopedia.posapp.auth.validatepassword.di.ValidatePasswordComponent;
 import com.tokopedia.posapp.auth.validatepassword.view.ValidatePassword;
 import com.tokopedia.posapp.auth.validatepassword.view.presenter.ValidatePasswordPresenter;
 
@@ -71,8 +72,8 @@ public class ValidatePasswordFragment extends DialogFragment implements Validate
 
     private void initInjector() {
         AppComponent appComponent = ((MainApplication) getContext().getApplicationContext()).getApplicationComponent();
-        DaggerValidatePasswordComponent daggerValidatePasswordComponent =
-                (DaggerValidatePasswordComponent) DaggerValidatePasswordComponent.builder()
+        ValidatePasswordComponent daggerValidatePasswordComponent =
+                DaggerValidatePasswordComponent.builder()
                         .authComponent(DaggerAuthComponent.builder().appComponent(appComponent).build())
                         .build();
 
