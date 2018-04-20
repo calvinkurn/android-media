@@ -44,9 +44,11 @@ import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 import java.util.HashMap;
@@ -317,11 +319,20 @@ public class MultipleAddressShipmentFragment extends BaseCheckoutFragment implem
     }
 
     @Override
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
-            TKPDMapParam<String, String> originParams
+    public com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> originParams
     ) {
-        return originParams == null ? AuthUtil.generateParamsNetwork(getActivity()) :
-                AuthUtil.generateParamsNetwork(getActivity(), originParams);
+        return originParams == null
+                ? com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
+                getActivity(), SessionHandler.getLoginID(getActivity()),
+                GCMHandler.getRegistrationId(getActivity())
+        )
+                : com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
+                getActivity(), originParams,
+                SessionHandler.getLoginID(getActivity()),
+                GCMHandler.getRegistrationId(getActivity()
+                )
+        );
     }
 
     @Override

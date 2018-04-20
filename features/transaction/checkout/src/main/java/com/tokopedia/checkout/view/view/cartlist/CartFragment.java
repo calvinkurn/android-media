@@ -20,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.R;
@@ -46,7 +48,6 @@ import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormA
 import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -150,11 +151,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     }
 
-    /**
-     * apakah fragment ini support options menu?
-     *
-     * @return iya atau tidak
-     */
     @Override
     protected boolean getOptionsMenuEnable() {
         return true;
@@ -401,14 +397,22 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         return null;
     }
 
-    @SuppressWarnings("deprecation")
+
     @Override
     public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
             TKPDMapParam<String, String> originParams
     ) {
         return originParams == null
-                ? com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity())
-                : com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity(), originParams);
+                ? AuthUtil.generateParamsNetwork(
+                getActivity(), SessionHandler.getLoginID(getActivity()),
+                GCMHandler.getRegistrationId(getActivity())
+        )
+                : AuthUtil.generateParamsNetwork(
+                getActivity(), originParams,
+                SessionHandler.getLoginID(getActivity()),
+                GCMHandler.getRegistrationId(getActivity()
+                )
+        );
     }
 
     @Override

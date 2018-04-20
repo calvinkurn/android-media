@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.R2;
@@ -21,7 +22,8 @@ import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartRemoveProductComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartRemoveProductComponent;
 import com.tokopedia.checkout.view.di.module.CartRemoveProductModule;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.util.SessionHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -186,6 +188,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
 
     }
 
+
     @OnClick(R2.id.tv_remove_product)
     public void removeCheckedProducts() {
         List<CartItemData> selectedCartList = new ArrayList<>();
@@ -203,9 +206,20 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public TKPDMapParam<String, String> getGenerateParamAuth(TKPDMapParam<String, String> param) {
-        return param == null ? com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity())
-                : com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity(), param);
+    public com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> getGenerateParamAuth(
+            com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> originParams
+    ) {
+        return originParams == null
+                ? AuthUtil.generateParamsNetwork(
+                getActivity(), SessionHandler.getLoginID(getActivity()),
+                GCMHandler.getRegistrationId(getActivity())
+        )
+                : AuthUtil.generateParamsNetwork(
+                getActivity(), originParams,
+                SessionHandler.getLoginID(getActivity()),
+                GCMHandler.getRegistrationId(getActivity()
+                )
+        );
     }
 
     @Override

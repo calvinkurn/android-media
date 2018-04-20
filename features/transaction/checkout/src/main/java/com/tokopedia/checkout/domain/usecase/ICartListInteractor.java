@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.domain.usecase;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.DeleteUpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;

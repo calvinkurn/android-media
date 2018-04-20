@@ -11,6 +11,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
@@ -22,11 +23,12 @@ import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.di.component.CartShipmentComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartShipmentComponent;
 import com.tokopedia.checkout.view.di.module.CartShipmentModule;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 
@@ -284,11 +286,21 @@ public class CartShipmentActivity extends BaseCheckoutActivity implements ICartS
     }
 
     @Override
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
+    public com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> originParams
+    ) {
         return originParams == null
-                ? com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(this)
-                : com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(this,
-                originParams);
+                ?
+                AuthUtil.generateParamsNetwork(
+                        this, SessionHandler.getLoginID(this),
+                        GCMHandler.getRegistrationId(this)
+                )
+                :
+                AuthUtil.generateParamsNetwork(
+                        this, originParams,
+                        SessionHandler.getLoginID(this),
+                        GCMHandler.getRegistrationId(this)
+                );
     }
 
     @Override

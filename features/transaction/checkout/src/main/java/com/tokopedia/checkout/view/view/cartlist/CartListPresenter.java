@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.view.cartlist;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.entity.request.RemoveCartRequest;
 import com.tokopedia.checkout.data.entity.request.UpdateCartRequest;
 import com.tokopedia.checkout.data.exception.ResponseCartApiErrorException;
@@ -20,7 +21,6 @@ import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import java.net.ConnectException;
@@ -47,7 +47,6 @@ public class CartListPresenter implements ICartListPresenter {
         this.cartListInteractor = cartListInteractor;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void processInitialGetCartData() {
         view.renderLoadGetCartData();

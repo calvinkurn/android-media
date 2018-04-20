@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.domain.usecase;
 
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.checkout.data.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
 import com.tokopedia.checkout.data.entity.response.deletecart.DeleteCartDataResponse;

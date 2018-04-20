@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.view.cartlist;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 
 /**
  * @author Aghny A. Putra on 05/02/18

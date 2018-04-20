@@ -1,11 +1,6 @@
 package com.tokopedia.checkout.view.view.shipmentform;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.checkout.data.entity.request.DataCheckoutRequest;
 import com.tokopedia.checkout.data.entity.request.DropshipDataCheckoutRequest;
@@ -25,6 +20,9 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.common.constant.PickupPointParamConstant;
 
 import java.util.ArrayList;
@@ -335,7 +333,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     );
                 }
             }
-        }, AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), new TKPDMapParam<String, String>()));
+        }, view.getGeneratedAuthParamNetwork(null));
     }
 
     private int switchValue(boolean isTrue) {

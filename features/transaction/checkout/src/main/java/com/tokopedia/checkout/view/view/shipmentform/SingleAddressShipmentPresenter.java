@@ -1,14 +1,12 @@
 package com.tokopedia.checkout.view.view.shipmentform;
 
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.transaction.common.constant.PickupPointParamConstant;
@@ -94,7 +92,7 @@ public class SingleAddressShipmentPresenter implements ISingleAddressShipmentPre
                             );
                         }
                     }
-                }, AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), paramGetShipmentForm)
+                }, view.getGeneratedAuthParamNetwork(paramGetShipmentForm)
         );
     }
 
