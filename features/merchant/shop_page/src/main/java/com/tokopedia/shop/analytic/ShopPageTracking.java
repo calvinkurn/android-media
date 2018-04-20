@@ -472,7 +472,7 @@ public class ShopPageTracking {
     private Map<String, Object> createMapProductClickImpression(String name, String id, String price, String attribution, int adapterPosition, boolean isGrid, String productType) {
         return DataLayer.mapOf(
                 ShopPageTrackingConstant.CLICK, DataLayer.mapOf(
-                        ShopPageTrackingConstant.ACTION_FIELD, DataLayer.mapOf(ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + getProductPosition(adapterPosition, isGrid)) + productType,
+                        ShopPageTrackingConstant.ACTION_FIELD, DataLayer.mapOf(ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + getProductPosition(adapterPosition, isGrid) + productType),
                         ShopPageTrackingConstant.PRODUCTS, DataLayer.listOf(
                                 DataLayer.mapOf(
                                         ShopPageTrackingConstant.NAME, name,
