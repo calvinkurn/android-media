@@ -1450,4 +1450,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
         String urlManualHandlingList[] = {CONTACT_US_URL_BASE_DOMAIN};
         return (Arrays.asList(urlManualHandlingList).contains(url) || isChatBot);
     }
+
+    @Override
+    public void showSnackbarError(String string) {
+        NetworkErrorHelper.showSnackbar(getActivity(), string);
+    }
 }
