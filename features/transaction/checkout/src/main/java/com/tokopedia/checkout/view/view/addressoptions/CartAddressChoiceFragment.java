@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.R2;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.adapter.ShipmentAddressListAdapter;
@@ -34,10 +33,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_DEFAULT_SELECTED_ADDRESS;
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA;
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS;
@@ -50,20 +45,13 @@ import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceA
 public class CartAddressChoiceFragment extends BaseCheckoutFragment
         implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener {
 
-    @BindView(R2.id.tv_choose_other_address)
-    TextView tvChooseOtherAddress;
-    @BindView(R2.id.ll_send_to_multiple_address)
-    LinearLayout llSendToMultipleAddress;
-    @BindView(R2.id.bt_send_to_current_address)
-    Button btSendToCurrentAddress;
-    @BindView(R2.id.rv_address)
-    RecyclerView rvAddress;
-    @BindView(R2.id.ll_network_error_view)
-    LinearLayout llNetworkErrorView;
-    @BindView(R2.id.ll_content)
-    LinearLayout llContent;
-    @BindView(R2.id.swipe_refresh_layout)
-    SwipeToRefresh swipeToRefreshLayout;
+    private TextView tvChooseOtherAddress;
+    private LinearLayout llSendToMultipleAddress;
+    private Button btSendToCurrentAddress;
+    private RecyclerView rvAddress;
+    private LinearLayout llNetworkErrorView;
+    private LinearLayout llContent;
+    private SwipeToRefresh swipeToRefreshLayout;
 
     private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
 
@@ -145,7 +133,35 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     protected void initView(View view) {
-        ButterKnife.bind(this, view);
+        tvChooseOtherAddress = view.findViewById(R.id.tv_choose_other_address);
+        llSendToMultipleAddress = view.findViewById(R.id.ll_send_to_multiple_address);
+        btSendToCurrentAddress = view.findViewById(R.id.bt_send_to_current_address);
+        rvAddress = view.findViewById(R.id.rv_address);
+        llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
+        llContent = view.findViewById(R.id.ll_content);
+        swipeToRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+
+        tvChooseOtherAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onChooseOtherAddressClick();
+            }
+        });
+
+        llSendToMultipleAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSendToMultipleAddress();
+            }
+        });
+
+        btSendToCurrentAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSendToCurrentAddress();
+            }
+        });
+
         setupRecyclerView();
         mCartAddressChoicePresenter.attachView(this);
         if (getArguments() != null) {
@@ -232,8 +248,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         rvAddress.setAdapter(mShipmentAddressListAdapter);
     }
 
-    @OnClick(R2.id.tv_choose_other_address)
-    void onChooseOtherAddressClick() {
+    private void onChooseOtherAddressClick() {
         ShipmentAddressListFragment fragment = ShipmentAddressListFragment.newInstance();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getFragmentManager().beginTransaction()
@@ -242,13 +257,11 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
                 .commit();
     }
 
-    @OnClick(R2.id.ll_send_to_multiple_address)
-    void onSendToMultipleAddress() {
+    private void onSendToMultipleAddress() {
         mCartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
     }
 
-    @OnClick(R2.id.bt_send_to_current_address)
-    void onSendToCurrentAddress() {
+    private void onSendToCurrentAddress() {
         RecipientAddressModel recipientAddress
                 = mCartAddressChoicePresenter.getSelectedRecipientAddress();
 

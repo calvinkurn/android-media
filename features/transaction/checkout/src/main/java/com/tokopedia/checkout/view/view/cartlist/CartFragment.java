@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.R2;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
@@ -73,8 +72,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-
 import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART_SRC;
 
 /**
@@ -84,17 +81,11 @@ import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART
 public class CartFragment extends BaseCheckoutFragment implements CartListAdapter.ActionListener,
         ICartListView, TopAdsItemClickListener, RefreshHandler.OnRefreshHandlerListener {
 
-    @BindView(R2.id.rv_cart)
-    RecyclerView cartRecyclerView;
-    @BindView(R2.id.go_to_courier_page_button)
-    TextView btnToShipment;
-
-    @BindView(R2.id.tv_item_count)
-    TextView tvItemCount;
-    @BindView(R2.id.tv_total_prices)
-    TextView tvTotalPrice;
-    @BindView(R2.id.bottom_layout)
-    View bottomLayout;
+    private RecyclerView cartRecyclerView;
+    private TextView btnToShipment;
+    private TextView tvItemCount;
+    private TextView tvTotalPrice;
+    private View bottomLayout;
     private TkpdProgressDialog progressDialogNormal;
 
     @Inject
@@ -188,6 +179,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     protected void initView(View view) {
+        cartRecyclerView = view.findViewById(R.id.rv_cart);
+        btnToShipment = view.findViewById(R.id.go_to_courier_page_button);
+        tvItemCount = view.findViewById(R.id.tv_item_count);
+        tvTotalPrice = view.findViewById(R.id.tv_total_prices);
+        bottomLayout = view.findViewById(R.id.bottom_layout);
+
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         refreshHandler = new RefreshHandler(getActivity(), view, this);
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -215,7 +212,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     protected void initialVar() {
         setHasOptionsMenu(true);
-        getActivity().setTitle("Keranjang");
+        getActivity().setTitle(getActivity().getString(R.string.title_activity_cart));
         refreshHandler.startRefresh();
     }
 

@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.R2;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.view.adapter.ShipmentChoiceAdapter;
@@ -31,10 +30,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 /**
  * Created by Irfan Khoirul on 30/01/18.
  */
@@ -42,22 +37,14 @@ import butterknife.OnClick;
 public class ShipmentChoiceBottomSheet extends BottomSheetDialog
         implements IShipmentChoiceView, ShipmentChoiceAdapter.ViewListener {
 
-    @BindView(R2.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R2.id.rv_shipment_choice)
-    RecyclerView rvShipmentChoice;
-    @BindView(R2.id.ll_network_error_view)
-    LinearLayout llNetworkErrorView;
-    @BindView(R2.id.pb_loading)
-    ProgressBar pbLoading;
-    @BindView(R2.id.ll_shipment_info_ticker)
-    LinearLayout llShipmentInfoTicker;
-    @BindView(R2.id.img_bt_close_ticker)
-    ImageView imgBtCloseTicker;
-    @BindView(R2.id.tv_shipment_info_ticker)
-    TextView tvShipmentInfoTicker;
-    @BindView(R2.id.img_bt_close)
-    ImageButton imgBtClose;
+    private Toolbar toolbar;
+    private RecyclerView rvShipmentChoice;
+    private LinearLayout llNetworkErrorView;
+    private ProgressBar pbLoading;
+    private LinearLayout llShipmentInfoTicker;
+    private ImageView imgBtCloseTicker;
+    private TextView tvShipmentInfoTicker;
+    private ImageButton imgBtClose;
 
     private ActionListener listener;
     private View bottomSheetView;
@@ -80,7 +67,29 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         bottomSheetView = layoutInflater.inflate(R.layout.fragment_shipment_choice, null);
         setContentView(bottomSheetView);
-        ButterKnife.bind(this, bottomSheetView);
+        toolbar = bottomSheetView.findViewById(R.id.toolbar);
+        rvShipmentChoice = bottomSheetView.findViewById(R.id.rv_shipment_choice);
+        llNetworkErrorView = bottomSheetView.findViewById(R.id.ll_network_error_view);
+        pbLoading = bottomSheetView.findViewById(R.id.pb_loading);
+        llShipmentInfoTicker = bottomSheetView.findViewById(R.id.ll_shipment_info_ticker);
+        imgBtCloseTicker = bottomSheetView.findViewById(R.id.img_bt_close_ticker);
+        tvShipmentInfoTicker = bottomSheetView.findViewById(R.id.tv_shipment_info_ticker);
+        imgBtClose = bottomSheetView.findViewById(R.id.img_bt_close);
+
+        imgBtCloseTicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onCloseTickerClick();
+            }
+        });
+
+        imgBtClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onCloseClick();
+            }
+        });
+
         initializeInjector();
     }
 
@@ -166,12 +175,10 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
         this.dismiss();
     }
 
-    @OnClick(R2.id.img_bt_close_ticker)
     void onCloseTickerClick() {
         llShipmentInfoTicker.setVisibility(View.GONE);
     }
 
-    @OnClick(R2.id.img_bt_close)
     void onCloseClick() {
         ShipmentChoiceBottomSheet.this.dismiss();
     }

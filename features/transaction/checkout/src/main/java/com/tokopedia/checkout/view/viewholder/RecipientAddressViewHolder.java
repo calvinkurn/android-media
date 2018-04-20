@@ -7,12 +7,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.showcase.ShowCaseContentPosition;
-import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter.ActionListener;
-import com.tokopedia.transaction.common.data.pickuppoint.Store;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseObject;
 
 import java.util.ArrayList;
 

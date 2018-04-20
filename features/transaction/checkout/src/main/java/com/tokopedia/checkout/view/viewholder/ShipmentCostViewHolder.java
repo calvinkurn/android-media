@@ -16,9 +16,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 /**
  * @author Aghny A. Putra on 02/03/18
