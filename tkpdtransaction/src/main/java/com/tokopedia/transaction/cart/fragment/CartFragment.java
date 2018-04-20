@@ -98,10 +98,10 @@ import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
 import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;
-import com.tokopedia.transaction.common.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
+import com.tokopedia.transaction.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.transaction.utils.ValueConverter;
 
@@ -114,7 +114,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART_SRC;
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_CART_ITEM;
+import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_CART_ITEM;
 
 /**
  * @author anggaprasetiyo on 11/1/16.

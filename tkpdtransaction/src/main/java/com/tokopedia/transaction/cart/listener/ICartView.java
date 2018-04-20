@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.cartdata.AutoApply;
 import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
@@ -13,7 +14,6 @@ import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartPromo;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
-import com.tokopedia.transaction.common.base.IBaseView;
 
 import java.util.List;
 

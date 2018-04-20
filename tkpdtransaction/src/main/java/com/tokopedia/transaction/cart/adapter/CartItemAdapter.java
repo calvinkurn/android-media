@@ -46,7 +46,7 @@ import com.tokopedia.transaction.customview.expandablelayout.ExpandableLayoutLis
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLinearLayout;
 import com.tokopedia.transaction.customview.expandablelayout.Utils;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
-import com.tokopedia.transaction.common.view.customview.PickupPointLayout;
+import com.tokopedia.design.pickuppoint.PickupPointLayout;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -120,14 +120,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
 
             @Override
-            public void onClearPickupPoint(Store store) {
-                cartData.setStore(store);
+            public void onClearPickupPoint() {
                 cartItemActionListener.onClearPickupPoint(cartData);
             }
 
             @Override
-            public void onEditPickupPoint(Store store) {
-                cartData.setStore(store);
+            public void onEditPickupPoint() {
                 cartItemActionListener.onEditPickupPoint(cartData);
             }
         });
@@ -141,7 +139,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         store.setStoreName("Bentengan 2");
         store.setStoreCode("Alfa - J492");
 
-        holderItemCart.pickupPointLayout.setData(holderItemCart.pickupPointLayout.getContext(), store);
+        holderItemCart.pickupPointLayout.setData(holderItemCart.pickupPointLayout.getContext(),
+                store.getStoreName(), store.getAddress());
     }
 
     private boolean unEditable(CartItem cartData) {

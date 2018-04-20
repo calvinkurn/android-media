@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view.view.shipmentform;
 
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;

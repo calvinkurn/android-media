@@ -15,7 +15,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
 import com.tokopedia.checkout.view.adapter.MultipleAddressShipmentAdapter;
-import com.tokopedia.transaction.common.view.customview.PickupPointLayout;
+import com.tokopedia.design.pickuppoint.PickupPointLayout;
 
 /**
  * Created by kris on 3/7/18. Tokopedia

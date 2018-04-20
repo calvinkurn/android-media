@@ -12,7 +12,7 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter.ActionListener;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
-import com.tokopedia.transaction.common.view.customview.PickupPointLayout;
+import com.tokopedia.design.pickuppoint.PickupPointLayout;
 
 import java.util.ArrayList;
 
@@ -95,7 +95,7 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
             pickupPointLayout.enableChooserButton(pickupPointLayout.getContext());
         } else {
             pickupPointLayout.setData(pickupPointLayout.getContext(),
-                    recipientAddress.getStore());
+                    recipientAddress.getStore().getStoreName(), recipientAddress.getStore().getAddress());
         }
 
     }
@@ -119,12 +119,12 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
             }
 
             @Override
-            public void onClearPickupPoint(Store oldStore) {
+            public void onClearPickupPoint() {
                 actionListener.onClearPickupPoint(recipientAddress);
             }
 
             @Override
-            public void onEditPickupPoint(Store oldStore) {
+            public void onEditPickupPoint() {
                 actionListener.onEditPickupPoint(recipientAddress);
             }
         };

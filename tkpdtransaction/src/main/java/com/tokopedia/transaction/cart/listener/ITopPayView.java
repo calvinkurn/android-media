@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.transaction.common.base.IBaseView;
+import com.tokopedia.transaction.base.IBaseView;
 
 /**
  * @author anggaprasetiyo on 12/8/16.

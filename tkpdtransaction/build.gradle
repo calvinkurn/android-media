@@ -14,7 +14,12 @@ buildscript {
 
 dependencies {
     compile project(':tkpdtransaction-common')
+    compile project(rootProject.ext.features.core)
+    compile project(rootProject.ext.libraries.design)
     compile project(rootProject.ext.features.loyalty)
+    compile project(rootProject.ext.features.topAdsSdk)
+    compile project(rootProject.ext.features.payment)
+
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

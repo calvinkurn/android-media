@@ -2,8 +2,8 @@ package com.tokopedia.checkout.view.view.shipmentform;
 
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.checkout.view.base.IBaseView;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
-import com.tokopedia.transaction.common.base.IBaseView;
 
 /**
  * @author Aghny A. Putra on 26/01/18

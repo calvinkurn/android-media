@@ -72,7 +72,7 @@ import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
-import com.tokopedia.transaction.common.view.customview.PickupPointLayout;
+import com.tokopedia.design.pickuppoint.PickupPointLayout;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -88,7 +88,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity.RESULT_NOT_SELECTED_DESTINATION;
-import static com.tokopedia.transaction.common.constant.PickupPointConstant.INTENT_DATA_STORE;
+import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_DATA_STORE;
 
 /**
  * @author Angga.Prasetiyo on 11/03/2016.
@@ -774,7 +774,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     break;
                 case REQUEST_CHOOSE_PICKUP_POINT:
                     pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
-                    pickupPointLayout.setData(this, pickupBooth);
+                    pickupPointLayout.setData(this, pickupBooth.getStoreName(), pickupBooth.getAddress());
                     // TODO : disable spinner alfamart
                     // TODO : show view alfamart
                     break;
@@ -1143,12 +1143,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     @Override
-    public void onClearPickupPoint(Store store) {
+    public void onClearPickupPoint() {
         showCancelPickupBoothDialog();
     }
 
     @Override
-    public void onEditPickupPoint(Store store) {
+    public void onEditPickupPoint() {
         startActivityForResult(PickupPointActivity.createInstance(this, mDestination.getDistrictName(),
                 GetPickupPointsUseCase.generateParams(orderData)), REQUEST_CHOOSE_PICKUP_POINT);
     }

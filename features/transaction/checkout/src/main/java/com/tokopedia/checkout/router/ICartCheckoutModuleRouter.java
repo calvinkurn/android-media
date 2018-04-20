@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.common.router;
+package com.tokopedia.checkout.router;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,14 +15,6 @@ import java.util.HashMap;
 public interface ICartCheckoutModuleRouter {
 
     int LOYALTY_REQUEST_CODE = 77;
-
-    Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
-            Context context, String platform, String category
-    );
-
-    Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponNotActiveIntent(
-            Context context, String platform, String category
-    );
 
     Intent tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(Context context, boolean couponActive);
 
