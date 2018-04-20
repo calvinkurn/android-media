@@ -204,7 +204,6 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
     protected void initView(View view) {
         initializeViewId(view);
         initializeViewListener();
-        initializeInjector();
         presenter.attachView(this);
         courierChoiceAdapter.setViewListener(this);
         courierChoiceAdapter.setCouriers(presenter.getCouriers());
@@ -345,12 +344,6 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
         llShipmentAddress = view.findViewById(R.id.ll_shipment_address);
         tvInsuranceTerms = view.findViewById(R.id.tv_insurance_terms);
         tvInsurancePrice = view.findViewById(R.id.tv_insurance_price);
-    }
-
-    private void initializeInjector() {
-        ShipmentDetailComponent shipmentDetailComponent = DaggerShipmentDetailComponent.builder()
-                .build();
-        shipmentDetailComponent.inject(this);
     }
 
     @Override
