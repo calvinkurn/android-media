@@ -75,9 +75,11 @@ public class TrackingUtils extends TrackingConfig {
                     .setPhoneNumber(normalizePhoneNumber(profileData.getProfile() == null || profileData.getProfile().getPhone() == null ? "" : profileData.getProfile().getPhone()))
                     .setCustomerId(profileData.getProfile() == null ? "" : profileData.getProfile().getUserId())
                     .setShopId(profileData.getShopInfoMoengage() != null ? profileData.getShopInfoMoengage().getInfo().getShopId() : "")
-                    .setSeller(profileData.getShopInfoMoengage().getOwner().getIsSeller())
+                    .setSeller((profileData.getShopInfoMoengage() != null &&
+                            profileData.getShopInfoMoengage().getOwner() != null &&
+                            profileData.getShopInfoMoengage().getOwner().getIsSeller() != null) ? profileData.getShopInfoMoengage().getOwner().getIsSeller() : false)
                     .setShopName(profileData.getShopInfoMoengage() != null ? profileData.getShopInfoMoengage().getInfo().getShopName() : "")
-                    .setFirstName(profileData.getProfile().getFirstName())
+                    .setFirstName(profileData.getProfile() != null && profileData.getProfile().getFirstName() != null ? profileData.getProfile().getFirstName() : "")
                     .build();
 
             getMoEngine().setUserData(customerWrapper, "APP OLD");
