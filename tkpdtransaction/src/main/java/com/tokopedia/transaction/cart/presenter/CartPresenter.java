@@ -107,11 +107,13 @@ public class CartPresenter implements ICartPresenter {
                     e.printStackTrace();
                 }
                 processRenderViewCartData(cartData);
-                view.renderVisibleMainCartContainer();
+                view.renderInvisibleLoading();
                 if (!cartData.getCartItemList().isEmpty()) {
+                    view.renderVisibleMainCartContainer();
                     autoApplyCouponIfAvailable(1);
 
                 }
+                processGetTickerGTM();
             }
         });
     }
@@ -652,7 +654,7 @@ public class CartPresenter implements ICartPresenter {
 
     @Override
     public void cancelPromo() {
-        cartDataInteractor.cancelVoucherCache(new Subscriber<Boolean>() {
+        cartDataInteractor.cancelVoucherCache(view.getActivity(), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
