@@ -11,11 +11,11 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
 import com.tokopedia.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 /**
  * Created by kris on 3/7/18. Tokopedia

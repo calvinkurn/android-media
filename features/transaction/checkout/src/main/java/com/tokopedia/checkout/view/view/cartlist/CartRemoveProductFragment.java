@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.R2;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CheckedCartItemData;
 import com.tokopedia.checkout.view.adapter.CartRemoveProductAdapter;
@@ -30,10 +29,6 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-
-
 /**
  * @author Aghny A. Putra on 05/02/18
  */
@@ -45,10 +40,8 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
     private static final String TAG = CartRemoveProductFragment.class.getSimpleName();
     private static final String ARG_EXTRA_CART_DATA_LIST = "ARG_EXTRA_CART_DATA_LIST";
 
-    @BindView(R2.id.rv_cart_remove_product)
-    RecyclerView mRvCartRemoveProduct;
-    @BindView(R2.id.tv_remove_product)
-    TextView mTvRemoveProduct;
+    private RecyclerView mRvCartRemoveProduct;
+    private TextView mTvRemoveProduct;
 
     @Inject
     CartRemoveProductAdapter mCartRemoveProductAdapter;
@@ -139,6 +132,15 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
      */
     @Override
     protected void initView(View view) {
+        mRvCartRemoveProduct = view.findViewById(R.id.rv_cart_remove_product);
+        mTvRemoveProduct = view.findViewById(R.id.tv_remove_product);
+        mTvRemoveProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                removeCheckedProducts();
+            }
+        });
+
         mRvCartRemoveProduct.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvCartRemoveProduct.setAdapter(mCartRemoveProductAdapter);
         mRvCartRemoveProduct.addItemDecoration(itemDecoration);
@@ -159,7 +161,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
     @Override
     protected void initialVar() {
         setHasOptionsMenu(true);
-        getActivity().setTitle("Hapus");
+        getActivity().setTitle(getActivity().getString(R.string.action_delete));
         getActivity().invalidateOptionsMenu();
     }
 
@@ -187,7 +189,6 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
 
     }
 
-    @OnClick(R2.id.tv_remove_product)
     public void removeCheckedProducts() {
         List<CartItemData> selectedCartList = new ArrayList<>();
         List<CartItemData> unselectedCartList = new ArrayList<>();

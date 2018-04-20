@@ -10,13 +10,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.R2;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Irfan Khoirul on 24/01/18.
@@ -142,20 +138,19 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
 
     static class ShipmentViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.tv_shipment_type)
-        TextView tvShipmentType;
-        @BindView(R2.id.tv_price_range)
-        TextView tvPriceRange;
-        @BindView(R2.id.img_bt_check)
-        ImageButton imgBtCheck;
-        @BindView(R2.id.tv_delivery_time_range)
-        TextView tvDeliveryTimeRange;
-        @BindView(R2.id.v_separator)
-        View vSeparator;
+        private TextView tvShipmentType;
+        private TextView tvPriceRange;
+        private ImageButton imgBtCheck;
+        private TextView tvDeliveryTimeRange;
+        private View vSeparator;
 
         ShipmentViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            tvShipmentType = itemView.findViewById(R.id.tv_shipment_type);
+            tvPriceRange = itemView.findViewById(R.id.tv_price_range);
+            imgBtCheck = itemView.findViewById(R.id.img_bt_check);
+            tvDeliveryTimeRange = itemView.findViewById(R.id.tv_delivery_time_range);
+            vSeparator = itemView.findViewById(R.id.v_separator);
         }
     }
 

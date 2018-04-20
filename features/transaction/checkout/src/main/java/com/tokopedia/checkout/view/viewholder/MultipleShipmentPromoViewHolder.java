@@ -5,9 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.checkout.view.compoundview.VoucherPromoView;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.design.voucher.VoucherCartHachikoView;
 
 /**
  * Created by kris on 3/7/18. Tokopedia

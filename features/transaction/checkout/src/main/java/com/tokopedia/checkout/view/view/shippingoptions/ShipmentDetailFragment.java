@@ -45,28 +45,21 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.R2;
-import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.checkout.view.adapter.CourierChoiceAdapter;
+import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
+import com.tokopedia.checkout.view.constants.InsuranceConstant;
+import com.tokopedia.checkout.view.di.component.DaggerShipmentDetailComponent;
+import com.tokopedia.checkout.view.di.component.ShipmentDetailComponent;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
-import com.tokopedia.checkout.view.adapter.CourierChoiceAdapter;
-import com.tokopedia.checkout.view.constants.InsuranceConstant;
-import com.tokopedia.checkout.view.di.component.DaggerShipmentDetailComponent;
-import com.tokopedia.checkout.view.di.component.ShipmentDetailComponent;
 
 import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
 
 /**
  * Created by Irfan Khoirul on 24/01/18.
@@ -80,96 +73,51 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
     private static final int DELAY_IN_MILISECOND = 300;
     private static final String ARG_SHIPMENT_DETAIL_DATA = "shipmentDetailData";
 
-    @BindView(R2.id.scroll_view_content)
-    ScrollView scrollViewContent;
-    @BindView(R2.id.ll_network_error_view)
-    LinearLayout llNetworkErrorView;
-    @BindView(R2.id.swipe_refresh_layout)
-    SwipeToRefresh swipeRefreshLayout;
-    @BindView(R2.id.img_bt_close_ticker)
-    ImageButton imgBtCloseTicker;
-    @BindView(R2.id.ll_shipment_info_ticker)
-    LinearLayout llShipmentInfoTicker;
-    @BindView(R2.id.tv_shipment_info_ticker)
-    TextView tvShipmentInfoTicker;
-    @BindView(R2.id.ll_shipment_choice)
-    LinearLayout llShipmentChoice;
-    @BindView(R2.id.tv_shipment_type)
-    TextView tvShipmentType;
-    @BindView(R2.id.rv_courier_choice)
-    RecyclerView rvCourierChoice;
-    @BindView(R2.id.ll_pinpoint)
-    LinearLayout llPinpoint;
-    @BindView(R2.id.map_view_pinpoint)
-    MapView mapViewPinpoint;
-    @BindView(R2.id.bt_change_pinpoint)
-    Button btChangePinpoint;
-    @BindView(R2.id.tv_no_ponpoint_information)
-    TextView tvNoPonpointInformation;
-    @BindView(R2.id.bt_choose_pinpoint)
-    Button btChoosePinpoint;
-    @BindView(R2.id.fl_pinpoint_map)
-    FrameLayout flPinpointMap;
-    @BindView(R2.id.tv_shipment_address)
-    TextView tvShipmentAddress;
-    @BindView(R2.id.tv_label_insurance)
-    TextView tvLabelInsurance;
-    @BindView(R2.id.img_bt_insurance_info)
-    ImageButton imgBtInsuranceInfo;
-    @BindView(R2.id.switch_insurance)
-    Switch switchInsurance;
-    @BindView(R2.id.tv_special_insurance_condition)
-    TextView tvSpecialInsuranceCondition;
-    @BindView(R2.id.ll_insurance)
-    LinearLayout llInsurance;
-    @BindView(R2.id.separator_insurance)
-    View separatorInsurance;
-    @BindView(R2.id.img_bt_partly_accept_info)
-    ImageButton imgBtPartlyAcceptInfo;
-    @BindView(R2.id.switch_partly_accept)
-    Switch switchPartlyAccept;
-    @BindView(R2.id.ll_partial_order)
-    LinearLayout llPartialOrder;
-    @BindView(R2.id.separator_partial_order)
-    View separatorPartialOrder;
-    @BindView(R2.id.img_bt_dropshipper_info)
-    ImageButton imgBtDropshipperInfo;
-    @BindView(R2.id.switch_dropshipper)
-    Switch switchDropshipper;
-    @BindView(R2.id.ll_dropshipper)
-    LinearLayout llDropshipper;
-    @BindView(R2.id.et_shipper_name)
-    EditText etShipperName;
-    @BindView(R2.id.text_input_layout_shipper_name)
-    TextInputLayout textInputLayoutShipperName;
-    @BindView(R2.id.et_shipper_phone)
-    EditText etShipperPhone;
-    @BindView(R2.id.text_input_layout_shipper_phone)
-    TextInputLayout textInputLayoutShipperPhone;
-    @BindView(R2.id.ll_dropshipper_info)
-    LinearLayout llDropshipperInfo;
-    @BindView(R2.id.tv_delivery_fee)
-    TextView tvDeliveryFee;
-    @BindView(R2.id.bt_save)
-    Button btSave;
-    @BindView(R2.id.ll_fees_group)
-    LinearLayout llFeesGroup;
-    @BindView(R2.id.ll_insurance_fee)
-    LinearLayout llInsuranceFee;
-    @BindView(R2.id.ll_additional_fee)
-    LinearLayout llAdditionalFee;
-    @BindView(R2.id.tv_delivery_fee_total)
-    TextView tvDeliveryFeeTotal;
-    @BindView(R2.id.tv_additional_fee)
-    TextView tvAdditionalFee;
-    @BindView(R2.id.v_no_pinpoint_layer)
-    View vNoPinpointLayer;
-    @BindView(R2.id.ll_shipment_address)
-    LinearLayout llShipmentAddress;
-    @BindView(R2.id.tv_insurance_terms)
-    TextView tvInsuranceTerms;
-    @BindView(R2.id.tv_insurance_price)
-    TextView tvInsurancePrice;
+    private ScrollView scrollViewContent;
+    private LinearLayout llNetworkErrorView;
+    private SwipeToRefresh swipeRefreshLayout;
+    private ImageButton imgBtCloseTicker;
+    private LinearLayout llShipmentInfoTicker;
+    private TextView tvShipmentInfoTicker;
+    private LinearLayout llShipmentChoice;
+    private TextView tvShipmentType;
+    private RecyclerView rvCourierChoice;
+    private LinearLayout llPinpoint;
+    private MapView mapViewPinpoint;
+    private Button btChangePinpoint;
+    private TextView tvNoPonpointInformation;
+    private Button btChoosePinpoint;
+    private FrameLayout flPinpointMap;
+    private TextView tvShipmentAddress;
+    private TextView tvLabelInsurance;
+    private ImageButton imgBtInsuranceInfo;
+    private Switch switchInsurance;
+    private TextView tvSpecialInsuranceCondition;
+    private LinearLayout llInsurance;
+    private View separatorInsurance;
+    private ImageButton imgBtPartlyAcceptInfo;
+    private Switch switchPartlyAccept;
+    private LinearLayout llPartialOrder;
+    private View separatorPartialOrder;
+    private ImageButton imgBtDropshipperInfo;
+    private Switch switchDropshipper;
+    private LinearLayout llDropshipper;
+    private EditText etShipperName;
+    private TextInputLayout textInputLayoutShipperName;
+    private EditText etShipperPhone;
+    private TextInputLayout textInputLayoutShipperPhone;
+    private LinearLayout llDropshipperInfo;
+    private TextView tvDeliveryFee;
+    private Button btSave;
+    private LinearLayout llFeesGroup;
+    private LinearLayout llInsuranceFee;
+    private LinearLayout llAdditionalFee;
+    private TextView tvDeliveryFeeTotal;
+    private TextView tvAdditionalFee;
+    private View vNoPinpointLayer;
+    private LinearLayout llShipmentAddress;
+    private TextView tvInsuranceTerms;
+    private TextView tvInsurancePrice;
 
     private ShipmentChoiceBottomSheet shipmentChoiceBottomSheet;
     private FragmentListener fragmentListener;
@@ -247,7 +195,8 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
 
     @Override
     protected void initView(View view) {
-        ButterKnife.bind(view);
+        initializeViewId(view);
+        initializeViewListener();
         initializeInjector();
         presenter.attachView(this);
         courierChoiceAdapter.setViewListener(this);
@@ -261,6 +210,134 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
                         .getParcelable(ARG_SHIPMENT_DETAIL_DATA));
             }
         });
+    }
+
+    private void initializeViewListener() {
+        btChoosePinpoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setupPinPointMap();
+            }
+        });
+
+        btChangePinpoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setupPinPointMap();
+            }
+        });
+
+        imgBtInsuranceInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showBottomSheet(getString(R.string.title_bottomsheet_insurance),
+                        presenter.getSelectedCourier().getInsuranceUsedInfo(), R.drawable.ic_insurance);
+            }
+        });
+
+        imgBtPartlyAcceptInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showBottomSheet(getString(R.string.label_accept_partial_order_new), getString(R.string.label_partial_order_info), R.drawable.ic_partial_order);
+            }
+        });
+
+        imgBtDropshipperInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showBottomSheet(getString(R.string.label_dropshipper_new), getString(R.string.label_dropshipper_info), R.drawable.ic_dropshipper);
+            }
+        });
+
+        imgBtCloseTicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                llShipmentInfoTicker.setVisibility(View.GONE);
+            }
+        });
+
+        llShipmentChoice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showShipmentChoiceBottomSheet();
+            }
+        });
+
+        btSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSaveClick();
+            }
+        });
+
+        switchInsurance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                onSwitchInsuranceChanged(checked);
+            }
+        });
+
+        switchPartlyAccept.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                presenter.getShipmentDetailData().setUsePartialOrder(checked);
+            }
+        });
+
+        switchDropshipper.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                onSwitchDropshipperChanged(checked);
+            }
+        });
+    }
+
+    private void initializeViewId(View view) {
+        scrollViewContent = view.findViewById(R.id.scroll_view_content);
+        llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        imgBtCloseTicker = view.findViewById(R.id.img_bt_close_ticker);
+        llShipmentInfoTicker = view.findViewById(R.id.ll_shipment_info_ticker);
+        tvShipmentInfoTicker = view.findViewById(R.id.tv_shipment_info_ticker);
+        llShipmentChoice = view.findViewById(R.id.ll_shipment_choice);
+        tvShipmentType = view.findViewById(R.id.tv_shipment_type);
+        rvCourierChoice = view.findViewById(R.id.rv_courier_choice);
+        llPinpoint = view.findViewById(R.id.ll_pinpoint);
+        mapViewPinpoint = view.findViewById(R.id.map_view_pinpoint);
+        btChangePinpoint = view.findViewById(R.id.bt_change_pinpoint);
+        tvNoPonpointInformation = view.findViewById(R.id.tv_no_ponpoint_information);
+        btChoosePinpoint = view.findViewById(R.id.bt_choose_pinpoint);
+        flPinpointMap = view.findViewById(R.id.fl_pinpoint_map);
+        tvShipmentAddress = view.findViewById(R.id.tv_shipment_address);
+        tvLabelInsurance = view.findViewById(R.id.tv_label_insurance);
+        imgBtInsuranceInfo = view.findViewById(R.id.img_bt_insurance_info);
+        switchInsurance = view.findViewById(R.id.switch_insurance);
+        tvSpecialInsuranceCondition = view.findViewById(R.id.tv_special_insurance_condition);
+        llInsurance = view.findViewById(R.id.ll_insurance);
+        separatorInsurance = view.findViewById(R.id.separator_insurance);
+        imgBtPartlyAcceptInfo = view.findViewById(R.id.img_bt_partly_accept_info);
+        switchPartlyAccept = view.findViewById(R.id.switch_partly_accept);
+        llPartialOrder = view.findViewById(R.id.ll_partial_order);
+        separatorPartialOrder = view.findViewById(R.id.separator_partial_order);
+        imgBtDropshipperInfo = view.findViewById(R.id.img_bt_dropshipper_info);
+        switchDropshipper = view.findViewById(R.id.switch_dropshipper);
+        llDropshipper = view.findViewById(R.id.ll_dropshipper);
+        etShipperName = view.findViewById(R.id.et_shipper_name);
+        textInputLayoutShipperName = view.findViewById(R.id.text_input_layout_shipper_name);
+        etShipperPhone = view.findViewById(R.id.et_shipper_phone);
+        textInputLayoutShipperPhone = view.findViewById(R.id.text_input_layout_shipper_phone);
+        llDropshipperInfo = view.findViewById(R.id.ll_dropshipper_info);
+        tvDeliveryFee = view.findViewById(R.id.tv_delivery_fee);
+        btSave = view.findViewById(R.id.bt_save);
+        llFeesGroup = view.findViewById(R.id.ll_fees_group);
+        llInsuranceFee = view.findViewById(R.id.ll_insurance_fee);
+        llAdditionalFee = view.findViewById(R.id.ll_additional_fee);
+        tvDeliveryFeeTotal = view.findViewById(R.id.tv_delivery_fee_total);
+        tvAdditionalFee = view.findViewById(R.id.tv_additional_fee);
+        vNoPinpointLayer = view.findViewById(R.id.v_no_pinpoint_layer);
+        llShipmentAddress = view.findViewById(R.id.ll_shipment_address);
+        tvInsuranceTerms = view.findViewById(R.id.tv_insurance_terms);
+        tvInsurancePrice = view.findViewById(R.id.tv_insurance_price);
     }
 
     private void initializeInjector() {
@@ -729,44 +806,7 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
         presenter.getShipmentDetailData().setDropshipperPhone(null);
     }
 
-    @OnClick(R2.id.bt_choose_pinpoint)
-    void onChoosePinPoint() {
-        setupPinPointMap();
-    }
-
-    @OnClick(R2.id.bt_change_pinpoint)
-    void onChangePinPointClick() {
-        setupPinPointMap();
-    }
-
-    @OnClick(R2.id.img_bt_insurance_info)
-    void onInsuranceInfoClick() {
-        showBottomSheet(getString(R.string.title_bottomsheet_insurance),
-                presenter.getSelectedCourier().getInsuranceUsedInfo(), R.drawable.ic_insurance);
-    }
-
-    @OnClick(R2.id.img_bt_partly_accept_info)
-    void onPartlyAcceptInfoClick() {
-        showBottomSheet(getString(R.string.label_accept_partial_order_new), getString(R.string.label_partial_order_info), R.drawable.ic_partial_order);
-    }
-
-    @OnClick(R2.id.img_bt_dropshipper_info)
-    void onDropshipperInfoClick() {
-        showBottomSheet(getString(R.string.label_dropshipper_new), getString(R.string.label_dropshipper_info), R.drawable.ic_dropshipper);
-    }
-
-    @OnClick(R2.id.img_bt_close_ticker)
-    void onCloseTickerClick() {
-        llShipmentInfoTicker.setVisibility(View.GONE);
-    }
-
-    @OnClick(R2.id.ll_shipment_choice)
-    void onShipmentChoiceClick() {
-        showShipmentChoiceBottomSheet();
-    }
-
-    @OnClick(R2.id.bt_save)
-    void onSaveClick() {
+    private void onSaveClick() {
         if (presenter.getShipmentDetailData().getSelectedCourier() != null) {
             if (!TextUtils.isEmpty(etShipperName.getText().toString())) {
                 presenter.getShipmentDetailData().setDropshipperName(etShipperName.getText().toString());
@@ -812,8 +852,7 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
         return hasError;
     }
 
-    @OnCheckedChanged(R2.id.switch_insurance)
-    void onSwitchInsuranceChanged(CompoundButton view, boolean checked) {
+    private void onSwitchInsuranceChanged(boolean checked) {
         presenter.getShipmentDetailData().setUseInsurance(checked);
         if (presenter.getSelectedCourier() != null) {
             if (checked) {
@@ -853,22 +892,13 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
     }
 
     private boolean hasPinpoint() {
-        if (presenter.getSelectedCourier() != null && (presenter.getSelectedCourier().isUsePinPoint() &&
-                (presenter.getShipmentDetailData().getShipmentCartData().getDestinationLatitude() == null ||
-                        presenter.getShipmentDetailData().getShipmentCartData().getDestinationLongitude() == null ||
-                        presenter.getShipmentDetailData().getShipmentCartData().getDestinationAddress() == null))) {
-            return false;
-        }
-        return true;
+        return presenter.getSelectedCourier() == null || (!presenter.getSelectedCourier().isUsePinPoint() ||
+                (presenter.getShipmentDetailData().getShipmentCartData().getDestinationLatitude() != null &&
+                        presenter.getShipmentDetailData().getShipmentCartData().getDestinationLongitude() != null &&
+                        presenter.getShipmentDetailData().getShipmentCartData().getDestinationAddress() != null));
     }
 
-    @OnCheckedChanged(R2.id.switch_partly_accept)
-    void onSwitchPartlyAcceptChanged(CompoundButton view, boolean checked) {
-        presenter.getShipmentDetailData().setUsePartialOrder(checked);
-    }
-
-    @OnCheckedChanged(R2.id.switch_dropshipper)
-    void onSwitchDropshipperChanged(CompoundButton view, boolean checked) {
+    private void onSwitchDropshipperChanged(boolean checked) {
         presenter.getShipmentDetailData().setUseDropshipper(checked);
         if (checked) {
             llDropshipperInfo.setVisibility(View.VISIBLE);

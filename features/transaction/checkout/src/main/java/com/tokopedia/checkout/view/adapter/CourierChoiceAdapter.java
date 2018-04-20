@@ -10,16 +10,12 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.R2;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import java.util.List;
 
 import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Irfan Khoirul on 24/01/18.
@@ -145,20 +141,19 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
 
     static class CourierViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.tv_courier_name)
-        TextView tvCourierName;
-        @BindView(R2.id.tv_price)
-        TextView tvPrice;
-        @BindView(R2.id.tv_delivery_time_range)
-        TextView tvDeliveryTimeRange;
-        @BindView(R2.id.rb_selected)
-        RadioButton rbSelected;
-        @BindView(R2.id.tv_delivery_schedule)
-        TextView tvDeliverySchedule;
+        private TextView tvCourierName;
+        private TextView tvPrice;
+        private TextView tvDeliveryTimeRange;
+        private RadioButton rbSelected;
+        private TextView tvDeliverySchedule;
 
         CourierViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            tvCourierName = itemView.findViewById(R.id.tv_courier_name);
+            tvPrice = itemView.findViewById(R.id.tv_price);
+            tvDeliveryTimeRange = itemView.findViewById(R.id.tv_delivery_time_range);
+            rbSelected = itemView.findViewById(R.id.rb_selected);
+            tvDeliverySchedule = itemView.findViewById(R.id.tv_delivery_schedule);
         }
 
     }

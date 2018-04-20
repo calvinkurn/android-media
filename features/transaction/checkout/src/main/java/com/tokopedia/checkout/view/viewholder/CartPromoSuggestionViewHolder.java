@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.viewholder;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
