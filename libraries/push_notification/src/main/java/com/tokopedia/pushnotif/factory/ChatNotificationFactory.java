@@ -26,7 +26,9 @@ public class ChatNotificationFactory extends BaseNotificationFactory{
         builder.setSmallIcon(getDrawableIcon());
         builder.setLargeIcon(getBitmap(applinkNotificationModel.getThumbnail()));
         if (ApplinkNotificationHelper.allowGroup()) builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
-        builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), Constant.NotificationId.GENERAL, notificationId));
+        builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notifcationType, notificationId));
+        builder.setDeleteIntent(createDismissPendingIntent(notifcationType, notificationId));
+        builder.setAutoCancel(true);
 
         if (isAllowBell()) {
             builder.setSound(getRingtoneUri());
