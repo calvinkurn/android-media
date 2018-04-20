@@ -29,7 +29,7 @@ public class TalkNotificationFactory extends BaseNotificationFactory {
         if (ApplinkNotificationHelper.allowGroup()) builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
         builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notifcationType, notificationId));
         builder.setDeleteIntent(createDismissPendingIntent(notifcationType, notificationId));
-        //builder.setAutoCancel(true);
+        builder.setAutoCancel(true);
 
         if (isAllowBell()) {
             builder.setSound(getRingtoneUri());

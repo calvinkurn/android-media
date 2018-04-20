@@ -58,7 +58,7 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         }
         builder.setContentIntent(createPendingIntent(getGenericApplinks(notificationType), notificationType, 0));
         builder.setDeleteIntent(createDismissPendingIntent(notificationType, 0));
-        //builder.setAutoCancel(true);
+        builder.setAutoCancel(true);
 
         if (isAllowBell()) {
             builder.setSound(getRingtoneUri());
