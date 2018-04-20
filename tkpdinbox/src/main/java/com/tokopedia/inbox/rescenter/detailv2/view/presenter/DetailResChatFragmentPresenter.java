@@ -3,6 +3,7 @@ package com.tokopedia.inbox.rescenter.detailv2.view.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
@@ -351,6 +352,10 @@ public class DetailResChatFragmentPresenter
         }
 
         if (item.isVideo()) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_version_minimum));
+                return false;
+            }
             File file = new File(item.getRealPath());
             long length = file.length() / 1024;
             if (length >= 20000) {
