@@ -10,8 +10,11 @@ import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
 import com.tokopedia.pushnotif.SummaryNotification;
+import com.tokopedia.pushnotif.db.model.HistoryNotificationDB;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.model.SummaryNotificationModel;
+
+import java.util.List;
 
 /**
  * @author ricoharisin .
@@ -19,7 +22,7 @@ import com.tokopedia.pushnotif.model.SummaryNotificationModel;
 
 public class SummaryNotificationFactory extends BaseNotificationFactory {
 
-    private SummaryNotificationModel summaryNotificationModel;
+    private List<HistoryNotificationDB> listHistoryNotification;
 
 
     public SummaryNotificationFactory(Context context) {
@@ -33,26 +36,29 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         builder.setSmallIcon(getDrawableIcon());
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
         HistoryNotification.storeNotification(applinkNotificationModel.getFullName(),
-                applinkNotificationModel.getSummary(), notificationType);
+                applinkNotificationModel.getSummary(), notificationType,
+                ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks()));
 
-        summaryNotificationModel = SummaryNotification.generateSummaryNotificationModel(context, notificationType);
+        listHistoryNotification = HistoryNotification.getListHistoryNotification(notificationType);
 
-        for (String s : summaryNotificationModel.getHistoryString()) {
-            inboxStyle.addLine(s);
+        for (HistoryNotificationDB history : listHistoryNotification) {
+            inboxStyle.addLine(genarateContentText(history));
         }
 
-        inboxStyle.setSummaryText(summaryNotificationModel.getSummaryText());
+        inboxStyle.setSummaryText(SummaryNotification.generateSummaryText(notificationType, listHistoryNotification.size()));
 
-        builder.setContentText(summaryNotificationModel.getHistoryString().get(0));
+        builder.setContentText(genarateContentText(listHistoryNotification.get(0)));
         builder.setLargeIcon(getBitmapLargeIcon());
         builder.setStyle(inboxStyle);
         if (ApplinkNotificationHelper.allowGroup()) {
             builder.setGroupSummary(true);
             builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
         }
-        builder.setContentIntent(createPendingIntent(getGenericApplinks(notificationType), notificationType, notificationId));
-        builder.setDeleteIntent(createDismissPendingIntent(notificationType));
+        builder.setContentIntent(createPendingIntent(getGenericApplinks(notificationType), notificationType, 0));
+        builder.setDeleteIntent(createDismissPendingIntent(notificationType, 0));
+        builder.setAutoCancel(true);
 
         if (isAllowBell()) {
             builder.setSound(getRingtoneUri());
@@ -79,6 +85,25 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
     }
 
     public int getTotalSummary() {
-        return summaryNotificationModel.getTotalHistory();
+        return listHistoryNotification.size();
+    }
+
+    public String genarateContentText(HistoryNotificationDB historyNotificationDB) {
+        return historyNotificationDB.getSenderName()+" : "+historyNotificationDB.getMessage();
+
+    }
+
+    public Boolean isSingleSummary() {
+        Boolean isSingle = true;
+        int prevNotificationId = 0;
+        for (HistoryNotificationDB historyNotificationDB : listHistoryNotification) {
+            if (prevNotificationId == 0) {
+                prevNotificationId = historyNotificationDB.getNotificationId();
+            } else if (prevNotificationId != historyNotificationDB.getNotificationId()) {
+                isSingle = false;
+                prevNotificationId = historyNotificationDB.getNotificationId();
+            }
+        }
+        return isSingle;
     }
 }

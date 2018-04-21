@@ -81,6 +81,7 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.di.DaggerSessionComponent;
@@ -241,7 +242,6 @@ import com.tokopedia.transaction.wallet.WalletActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -427,6 +427,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public android.app.Fragment getFragmentSellingNewOrder() {
         return TkpdSeller.getFragmentSellingNewOrder();
+    }
+
+    @Override
+    public void goToProductDetail(Context context, String productId, String name, String displayedPrice, String imageUrl, String attribution, String listNameOfProduct) {
+        ProductItem data = new ProductItem();
+        data.setId(productId);
+        data.setName(name);
+        data.setPrice(displayedPrice);
+        data.setImgUri(imageUrl);
+        data.setTrackerAttribution(attribution);
+        data.setTrackerListName(listNameOfProduct);
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     @Override
@@ -806,7 +822,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendEventTrackingShopPage(HashMap<String, Object> eventTracking) {
+    public void sendEventTrackingShopPage(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }
