@@ -264,6 +264,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(homeFragmentBroadcastReceiver);
+        presenter.onDestroy();
         presenter.detachView();
         recyclerView.setAdapter(null);
         adapter = null;
@@ -538,7 +539,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCountDownFinished() {
-        presenter.updateHomeData();
+        if (presenter != null) {
+            presenter.updateHomeData();
+        }
     }
 
     @Override
@@ -715,9 +718,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onShowRetryGetFeed() {
-        adapter.hideLoading();
-        adapter.showRetry();
-        adapter.notifyDataSetChanged();
+        if(adapter != null ) {
+            adapter.hideLoading();
+            adapter.showRetry();
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override

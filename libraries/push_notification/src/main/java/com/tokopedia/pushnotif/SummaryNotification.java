@@ -33,7 +33,7 @@ public class SummaryNotification {
         return stringList;
     }
 
-    private static String generateSummaryText(int notificationType, int count) {
+    public static String generateSummaryText(int notificationType, int count) {
         switch (notificationType) {
             case Constant.NotificationId.TALK:
                 return count+" Diskusi";

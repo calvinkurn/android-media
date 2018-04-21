@@ -41,7 +41,6 @@ import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
-import com.tokopedia.shop.product.util.ShopTrackingUtil;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
@@ -450,8 +449,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                     ShopPageTracking.getShopType(shopInfo.getInfo()), false);
         }
-        String productUrl = ShopTrackingUtil.appendTrackerAttributionIfNeeded(shopProductViewModel.getProductUrl(), attribution);
-        shopModuleRouter.goToProductDetail(getActivity(), productUrl);
+        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(), shopProductViewModel.getName(),
+                shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(), attribution,
+                shopPageTracking.getListNameOfProduct(adapterPosition, false, ShopPageTrackingConstant.PRODUCT_ETALASE));
     }
 
     @Override
@@ -548,7 +548,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                     shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), attribution, adapterPosition, true,
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
         }
-        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
+        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(), shopProductViewModel.getName(),
+                shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(),
+                attribution, shopPageTracking.getListNameOfProduct(adapterPosition, false, ShopPageTrackingConstant.PRODUCT_FEATURED));
     }
 
     public void onLastItemVisibleTracking() {
