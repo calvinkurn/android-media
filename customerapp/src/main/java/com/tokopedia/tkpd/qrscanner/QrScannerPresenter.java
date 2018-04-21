@@ -95,7 +95,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         getView().showProgressDialog();
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("url", qrCode);
-        requestParams.putString("branch_key","key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr");
+        requestParams.putString("branch_key", KEY_BRANCHIO);
         branchIODeeplinkUseCase.execute(requestParams, new Subscriber<BranchIOAndroidDeepLink>() {
             @Override
             public void onCompleted() {
