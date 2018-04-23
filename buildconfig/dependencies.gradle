@@ -11,6 +11,7 @@ ext {
     tkpdUseCaseVersion = '2.22'
     tkpdAbstractionVersion = '2.22'
     tkpdCacheApiVersion = '2.22'
+    tkpdApplinkVersion = '2.22'
     tkpdCoreVersion = '2.22'
     tkpdInboxVersion = '2.22'
     tkpdSessionVersion = '2.22'
@@ -185,6 +186,7 @@ ext {
             abstraction: "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
             core       : "com.tokopedia.core:core:${tkpdCoreVersion}",
             cacheapi   : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
+            applink    : "com.tokopedia.applink:applink:${tkpdApplinkVersion}",
             inbox      : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             session    : "com.tokopedia.session:session:${tkpdSessionVersion}",
             transaction: "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
@@ -201,7 +203,6 @@ ext {
             loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
             flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
             flightNoOp : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
-            cacheapi   : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
             reputation : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
             reputationCommon : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
             wishListCommon : "com.tokopedia.wishlist:wishlist-common:${tkpdReputationVersion}",
