@@ -12,12 +12,19 @@ buildscript {
     }
 }
 
+project.ext {
+    artifactId = 'transaction'
+    groupId = 'com.tokopedia.transaction'
+    versionName = "2.22"
+    artifactName ="tkpdtransaction-release"
+}
+
 dependencies {
-    compile project(rootProject.ext.features.core)
-    compile project(rootProject.ext.features.topAdsSdk)
-    compile project(rootProject.ext.features.payment)
-    compile project(rootProject.ext.libraries.design)
-    compile project(rootProject.ext.features.loyalty)
+    compile rootProject.ext.tkpdDependencies.core
+    compile rootProject.ext.tkpdDependencies.payment
+    compile rootProject.ext.tkpdDependencies.design
+    compile rootProject.ext.tkpdDependencies.topads
+    compile rootProject.ext.tkpdDependencies.loyalty
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -39,4 +46,6 @@ dependencies {
     //compile rootProject.ext.miscDependencies.bcaOneClick
     compile(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
 }
+
+apply from: '../publish_local.gradle'
 

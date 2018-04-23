@@ -1,6 +1,13 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
+project.ext {
+    artifactId = 'design'
+    groupId = 'com.tokopedia.design'
+    versionName = "2.22"
+    artifactName ="tkpddesign-release"
+}
+
 dependencies {
     compile rootProject.ext.supportLibDependencies.design
     compile rootProject.ext.supportLibDependencies.cardViewV7
@@ -16,3 +23,5 @@ dependencies {
     })
     testCompile rootProject.ext.testDependencies.junit
 }
+
+apply from: '../publish_local.gradle'

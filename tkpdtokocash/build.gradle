@@ -3,10 +3,8 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
 
 dependencies {
-    compile project(rootProject.ext.features.core)
-    compile project(rootProject.ext.libraries.design)
-    compile project(rootProject.ext.features.payment)
-    compile project(rootProject.ext.libraries.useCase)
+    compile rootProject.ext.tkpdDependencies.core
+    compile rootProject.ext.tkpdDependencies.payment
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

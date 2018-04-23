@@ -16,8 +16,8 @@ buildscript {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile project(rootProject.ext.features.core)
-    compile project(rootProject.ext.libraries.useCase)
+    compile rootProject.ext.tkpdDependencies.core
+    compile rootProject.ext.tkpdDependencies.usecase
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

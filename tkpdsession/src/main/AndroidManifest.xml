@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
           package="com.tokopedia.session">
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
@@ -10,6 +11,9 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
+
+        <meta-data android:name="android.support.VERSION" android:value="26.1.0"
+            tools:replace="android:value" />
 
         <activity
             android:name=".forgotpassword.activity.ForgotPasswordActivity"

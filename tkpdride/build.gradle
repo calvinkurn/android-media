@@ -12,12 +12,19 @@ buildscript {
     }
 }
 
+project.ext {
+    artifactId = 'ride'
+    groupId = 'com.tokopedia.ride'
+    versionName = "2.22"
+    artifactName ="tkpdride-release"
+}
+
 dependencies {
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile project(rootProject.ext.features.core)
+    compile rootProject.ext.tkpdDependencies.core
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
@@ -34,3 +41,5 @@ dependencies {
     compile rootProject.ext.playServicesDependencies.mapsUtils
     testCompile rootProject.ext.testDependencies.junit
 }
+
+apply from: '../publish_local.gradle'

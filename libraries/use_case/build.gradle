@@ -1,6 +1,13 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
+project.ext {
+    artifactId = 'usecase'
+    groupId = 'com.tokopedia.usecase'
+    versionName = "2.22"
+    artifactName ="tkpdusecase-release"
+}
+
 dependencies {
     compile rootProject.ext.miscDependencies.rxAndroid
     compile rootProject.ext.miscDependencies.rxJava
@@ -10,3 +17,5 @@ dependencies {
     })
     testCompile rootProject.ext.testDependencies.junit
 }
+
+apply from: '../publish_local.gradle'

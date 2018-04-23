@@ -3,7 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'com.neenbedankt.android-apt'
 
 dependencies {
-    compile project(rootProject.ext.features.core)
+    compile rootProject.ext.tkpdDependencies.core
     compile rootProject.ext.miscDependencies.dagger
     compile rootProject.ext.miscDependencies.reactNative
     compile rootProject.ext.miscDependencies.codePushReactNative

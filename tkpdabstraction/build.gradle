@@ -2,8 +2,15 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'com.neenbedankt.android-apt'
 
+project.ext {
+    artifactId = 'abstraction'
+    groupId = 'com.tokopedia.abstraction'
+    versionName = "2.22"
+    artifactName ="tkpdabstraction-release"
+}
+
 dependencies {
-    compile project(rootProject.ext.libraries.design)
+    compile rootProject.ext.tkpdDependencies.design
     compile rootProject.ext.supportLibDependencies.appCompactV7
     compile rootProject.ext.serviceDependencies.hockeyApp
 
@@ -23,3 +30,5 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 }
+
+apply from: '../publish_local.gradle'

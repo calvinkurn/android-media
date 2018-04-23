@@ -18,10 +18,19 @@ apt {
     }
 }
 
+project.ext {
+    artifactId = 'seller'
+    groupId = 'com.tokopedia.seller'
+    versionName = "2.22"
+    artifactName ="tkpdseller-release"
+}
+
 dependencies {
-    compile project(rootProject.ext.features.core)
-    compile project(rootProject.ext.libraries.design)
-    compile project(rootProject.ext.features.payment)
+    compile rootProject.ext.tkpdDependencies.core
+    compile rootProject.ext.tkpdDependencies.payment
+    compile rootProject.ext.tkpdDependencies.design
+
+    compile rootProject.ext.tkpdDependencies.reputationCommon
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
@@ -67,3 +76,5 @@ dependencies {
     })
     testCompile rootProject.ext.testDependencies.junit
 }
+
+apply from: '../publish_local.gradle'
