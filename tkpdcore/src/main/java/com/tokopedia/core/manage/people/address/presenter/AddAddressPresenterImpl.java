@@ -26,8 +26,8 @@ import java.util.Map;
 public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddressConstant {
 
 
-    public static final double MONAS_LATITUDE = -6.175794;
-    public static final double MONAS_LONGITUDE = 106.826457;
+    private static final double MONAS_LATITUDE = -6.175794;
+    private static final double MONAS_LONGITUDE = 106.826457;
     private final AddAddressFragmentView viewListener;
     private final AddAddressRetrofitInteractor networkInteractor;
     private Destination address;
