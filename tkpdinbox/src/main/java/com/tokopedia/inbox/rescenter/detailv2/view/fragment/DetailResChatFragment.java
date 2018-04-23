@@ -471,13 +471,8 @@ public class DetailResChatFragment
 
     @Override
     public void showDummyText() {
-        ConversationDomain conversationDomain;
-        if (attachmentAdapter.getList().size() == 0) {
-            conversationDomain = getTempConversationDomain(etChat.getText().toString());
-        } else {
-            conversationDomain = getTempConversationDomain(etChat.getText().toString(), attachmentAdapter.getList());
-        }
-
+        ConversationDomain conversationDomain =
+                getTempConversationDomain(etChat.getText().toString(), attachmentAdapter.getList());
         chatAdapter.addItem(new ChatRightViewModel(null, null, conversationDomain));
         chatAdapter.notifyItemInserted(chatAdapter.getItemCount() - 1);
         scrollChatToBottom(false);
@@ -485,23 +480,6 @@ public class DetailResChatFragment
 
     private void scrollChatToBottom(boolean isInitChat) {
         rvChat.scrollToPosition(chatAdapter.getItemCount() - 1);
-    }
-
-    private ConversationDomain getTempConversationDomain(String message) {
-        conversationDomain = new ConversationDomain(
-                0,
-                null,
-                message.replaceAll("(\r\n|\n)", "<br />"),
-                null,
-                null,
-                getDummySendingMessage(),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
-        return conversationDomain;
     }
 
     private ConversationDomain getTempConversationDomain(String message, List<AttachmentViewModel> attachmentList) {
@@ -512,7 +490,9 @@ public class DetailResChatFragment
                 null,
                 null,
                 getDummySendingMessage(),
-                getConversationAttachmentTemp(attachmentList),
+                attachmentList != null ?
+                        getConversationAttachmentTemp(attachmentList)
+                        : null,
                 null,
                 null,
                 null,
@@ -581,14 +561,12 @@ public class DetailResChatFragment
         mainView.setVisibility(View.VISIBLE);
         if (detailResChatDomain.getResolution().getStatus() == STATUS_CANCEL ||
                 detailResChatDomain.getResolution().getStatus() == STATUS_FINISHED) {
-            etChat.setEnabled(false);
-            ivSend.setEnabled(false);
+            disableIvSend();
             etChat.clearFocus();
             ivNextStepStatic.setVisibility(View.VISIBLE);
         } else {
             ffChat.setVisibility(View.VISIBLE);
-            etChat.setEnabled(true);
-            ivSend.setEnabled(true);
+            enableIvSend();
             glowingView.setVisibility(View.VISIBLE);
             glowingView.renderData(new Object());
 

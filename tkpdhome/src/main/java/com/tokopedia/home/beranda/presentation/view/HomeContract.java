@@ -77,5 +77,7 @@ public interface HomeContract {
         void onResume();
 
         void onFirstLaunch();
+
+        void onDestroy();
     }
 }

@@ -144,7 +144,13 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 } else if (bundle.getBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, false)) {
                     int notificationType = bundle.getInt(Constant.EXTRA_NOTIFICATION_TYPE, 0);
                     int notificationId = bundle.getInt(Constant.EXTRA_NOTIFICATION_ID, 0);
-                    HistoryNotification.clearHistoryNotification(this, notificationType);
+
+                    if (notificationId == 0) {
+                        HistoryNotification.clearAllHistoryNotification(this, notificationType);
+                    } else {
+                        HistoryNotification.clearHistoryNotification(this, notificationType, notificationId);
+                    }
+
                     NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
                     notificationManagerCompat.cancel(notificationId);
                     notificationManagerCompat.cancel(notificationType);
