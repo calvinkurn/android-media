@@ -15,6 +15,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.view.FullDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,6 +99,22 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
         );
 
         passengerAdapter.addData(element.getPassengerViewModelList());
+
+        if (element.getPassengerViewModelList().size() < 2) {
+            removePassengerRecyclerDivider();
+        } else {
+            addPassengerRecyclerDivider();
+        }
+    }
+
+
+
+    private void removePassengerRecyclerDivider() {
+        verticalRecyclerView.clearItemDecoration();
+    }
+
+    private void addPassengerRecyclerDivider() {
+        verticalRecyclerView.addItemDecoration(new FullDividerItemDecoration(context));
     }
 
     private class PassengerAdapter extends RecyclerView.Adapter<PassengerViewHolder> {
