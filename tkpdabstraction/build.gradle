@@ -10,6 +10,7 @@ project.ext {
 
 dependencies {
     compile rootProject.ext.tkpdDependencies.design
+
     compile rootProject.ext.supportLibDependencies.appCompactV7
     compile rootProject.ext.serviceDependencies.hockeyApp
 
