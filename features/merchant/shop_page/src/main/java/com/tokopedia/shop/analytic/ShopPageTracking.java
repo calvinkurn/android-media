@@ -216,9 +216,11 @@ public class ShopPageTracking {
     }
 
     public void eventViewShopPage(String titlePage, String shopId, boolean myShop, int shopType) {
-        eventShopPageOfficialStore(
-                titlePage + ShopPageTrackingConstant.TOP_SECTION_IMPRESSION,
-                "", shopId, myShop, shopType);
+        HashMap<String, Object> eventMap = createEventMap(getEventNameCLick(myShop, shopType), getEventCategory(myShop, shopType),
+                titlePage + ShopPageTrackingConstant.TOP_SECTION_IMPRESSION, "", shopType);
+        eventMap.put(ShopPageTrackingConstant.SHOP_ID, shopId);
+        eventMap.put(ShopPageTrackingConstant.PAGE_TYPE, ShopPageTrackingConstant.SHOP_PAGE_TYPE);
+        shopModuleRouter.sendEventTrackingShopPage(eventMap);
         sendScreenName("/shoppage - "+shopId);
     }
 

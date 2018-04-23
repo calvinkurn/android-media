@@ -90,6 +90,7 @@ public class ShopPageTrackingConstant {
     public static final String EVENT_ACTION = "eventAction";
     public static final String EVENT_LABEL = "eventLabel";
     public static final String SHOP_ID = "shop_id";
+    public static final String PAGE_TYPE = "page_type";
     public static final String PRODUCT_ID = "product_id";
     public static final String ECOMMERCE = "ecommerce";
     public static final String CLICK = "click";
@@ -129,4 +130,5 @@ public class ShopPageTrackingConstant {
     public static final String PRODUCT_CLICK = "productClick";
     public static final String PRODUCT_VIEW = "productView";
     public static final int DEFAULT_PER_PAGE = 10;
+    public static final String SHOP_PAGE_TYPE = "/shoppage";
 }
