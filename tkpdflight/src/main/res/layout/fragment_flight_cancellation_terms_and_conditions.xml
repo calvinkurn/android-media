@@ -11,6 +11,7 @@
         android:orientation="vertical">
 
         <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/txt_cancellation_tnc"
             style="@style/TextView.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,8 +19,7 @@
             android:paddingBottom="@dimen/dp_25"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_25"
-            android:text="@string/flight_cancellation_terms_and_cancellation_text" />
+            android:paddingTop="@dimen/dp_25" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_next"
