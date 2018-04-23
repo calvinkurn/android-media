@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker.gallery;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -51,7 +53,6 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     private static final int ALBUM_LOADER_ID = 1;
     private static final int MEDIA_LOADER_ID = 2;
 
-    private static final int PERMISSION_REQ_CODE = 125;
     public static final int SPAN_COUNT = 3;
 
     private OnImagePickerGalleryFragmentListener onImagePickerGalleryFragmentListener;
@@ -71,6 +72,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         void onAlbumItemClicked(MediaItem item, boolean isChecked);
     }
 
+    @SuppressLint("MissingPermission")
+    @RequiresPermission("android.permission.CAMERA")
     public static ImagePickerGalleryFragment newInstance(@GalleryType int galleryType,
                                                          boolean supportMultipleSelection,
                                                          int minImageResolution) {
@@ -118,17 +121,6 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @Override
     public void onResume() {
         super.onResume();
-        if (ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQ_CODE);
-        } else {
-            // permissions is already available
-            onPermissionGranted();
-        }
-    }
-
-    private void onPermissionGranted() {
         showLoading();
         getLoaderManager().initLoader(ALBUM_LOADER_ID, null, this);
     }
@@ -139,31 +131,6 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     private void hideLoading(){
         loadingView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // permission has been granted
-            onPermissionGranted();
-        } else {
-            onPermissionDenied();
-        }
-    }
-
-    private void onPermissionDenied() {
-        //TODO change alert alert dialog to view?
-        new AlertDialog.Builder(getContext())
-                .setMessage(getString(R.string.please_grant_external_storage_permission_in_settings))
-                .setCancelable(true)
-                .setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).show();
     }
 
     @Override

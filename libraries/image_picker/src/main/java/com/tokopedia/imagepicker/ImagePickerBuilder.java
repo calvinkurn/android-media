@@ -4,6 +4,9 @@ import android.support.annotation.IntDef;
 
 import com.tokopedia.imagepicker.gallery.type.GalleryType;
 
+import static com.tokopedia.imagepicker.ImagePickerBuilder.CameraRatioDef.TYPE_1_1;
+import static com.tokopedia.imagepicker.ImagePickerBuilder.CameraRatioDef.TYPE_3_4;
+import static com.tokopedia.imagepicker.ImagePickerBuilder.CameraRatioDef.TYPE_4_3;
 import static com.tokopedia.imagepicker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY;
 import static com.tokopedia.imagepicker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
@@ -12,15 +15,17 @@ import static com.tokopedia.imagepicker.ImagePickerBuilder.ImagePickerTabTypeDef
  * Created by hendry on 19/04/18.
  */
 
-public enum  ImagePickerBuilder {
-    ADD_PRODUCT (new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM},
+public enum ImagePickerBuilder {
+    ADD_PRODUCT(new int[]{TYPE_GALLERY, TYPE_INSTAGRAM, TYPE_CAMERA},
             GalleryType.IMAGE_ONLY,
             false,
             false,
             300);
 
-    private @ImagePickerTabTypeDef int[] tabTypeDef;
-    private @GalleryType int galleryType;
+    private @ImagePickerTabTypeDef
+    int[] tabTypeDef;
+    private @GalleryType
+    int galleryType;
     private boolean isMultipleSelection;
     private boolean hasThumbnailPreview;
     private int minResolution;
@@ -30,6 +35,13 @@ public enum  ImagePickerBuilder {
         int TYPE_GALLERY = 1;
         int TYPE_CAMERA = 2;
         int TYPE_INSTAGRAM = 3;
+    }
+
+    @IntDef({TYPE_1_1, TYPE_3_4, TYPE_4_3})
+    public @interface CameraRatioDef {
+        int TYPE_1_1 = 1;
+        int TYPE_3_4 = 2;
+        int TYPE_4_3 = 3;
     }
 
     private ImagePickerBuilder(@ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
@@ -52,9 +64,9 @@ public enum  ImagePickerBuilder {
         return tabTypeDef[index];
     }
 
-    public int indexTypeDef(@ImagePickerTabTypeDef int typeDefToLookFor){
+    public int indexTypeDef(@ImagePickerTabTypeDef int typeDefToLookFor) {
         if (tabTypeDef != null && tabTypeDef.length > 0) {
-            for (int i = 0, sizei = tabTypeDef.length; i< sizei; i++) {
+            for (int i = 0, sizei = tabTypeDef.length; i < sizei; i++) {
                 int tabTypeDefItem = tabTypeDef[i];
                 if (tabTypeDefItem == typeDefToLookFor) {
                     return i;
@@ -66,7 +78,7 @@ public enum  ImagePickerBuilder {
         }
     }
 
-    public boolean isTypeDef(@ImagePickerTabTypeDef int typeDefToCompare, int index){
+    public boolean isTypeDef(@ImagePickerTabTypeDef int typeDefToCompare, int index) {
         return getTabTypeDef(index) == typeDefToCompare;
     }
 

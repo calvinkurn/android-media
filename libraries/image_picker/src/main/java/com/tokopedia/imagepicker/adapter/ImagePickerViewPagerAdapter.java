@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker.adapter;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
@@ -24,14 +25,14 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private SparseArrayCompat<Fragment> registeredFragments = new SparseArrayCompat<>();
     private ImagePickerBuilder imagePickerBuilder;
-    private Context context;
 
-    public ImagePickerViewPagerAdapter(Context context, FragmentManager fm, ImagePickerBuilder imagePickerBuilder) {
+    public ImagePickerViewPagerAdapter(FragmentManager fm, ImagePickerBuilder imagePickerBuilder) {
         super(fm);
         this.imagePickerBuilder = imagePickerBuilder;
-        this.context = context;
     }
 
+    // Note: camera permission will be handled in activity, before the adapter is attached.
+    @SuppressLint("MissingPermission")
     @Override
     public Fragment getItem(int position) {
         switch (imagePickerBuilder.getTabTypeDef(position)) {
@@ -41,10 +42,11 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
                         imagePickerBuilder.supportMultipleSelection(),
                         imagePickerBuilder.getMinResolution());
             case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA:
+                Configuration.Builder builder = new Configuration.Builder();
+                builder.setMediaQuality(Configuration.MEDIA_QUALITY_HIGH);
                 return ImagePickerCameraFragment.newInstance(
-                        new Configuration.Builder().build()
+                        builder.build()
                 );
-
             case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM:
                 return ImagePickerInstagramFragment.newInstance();
             default:

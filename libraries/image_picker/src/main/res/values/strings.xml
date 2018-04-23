@@ -9,4 +9,5 @@
     <string name="OK">Ok</string>
     <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
     <string name="image_under_x_resolution">Gambar di bawah %1$d pixel</string>
+    <string name="take_picture">Ambil Gambar</string>
 </resources>
