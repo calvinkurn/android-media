@@ -1,11 +1,16 @@
 package com.tokopedia.imagepicker.adapter;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.util.SparseArrayCompat;
 import android.view.ViewGroup;
 
+import com.github.florent37.camerafragment.configuration.Configuration;
 import com.tokopedia.imagepicker.ImagePickerBuilder;
 import com.tokopedia.imagepicker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.gallery.ImagePickerGalleryFragment;
@@ -19,10 +24,12 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private SparseArrayCompat<Fragment> registeredFragments = new SparseArrayCompat<>();
     private ImagePickerBuilder imagePickerBuilder;
+    private Context context;
 
-    public ImagePickerViewPagerAdapter(FragmentManager fm, ImagePickerBuilder imagePickerBuilder) {
+    public ImagePickerViewPagerAdapter(Context context, FragmentManager fm, ImagePickerBuilder imagePickerBuilder) {
         super(fm);
         this.imagePickerBuilder = imagePickerBuilder;
+        this.context = context;
     }
 
     @Override
@@ -34,7 +41,10 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
                         imagePickerBuilder.supportMultipleSelection(),
                         imagePickerBuilder.getMinResolution());
             case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA:
-                return ImagePickerCameraFragment.newInstance();
+                return ImagePickerCameraFragment.newInstance(
+                        new Configuration.Builder().build()
+                );
+
             case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM:
                 return ImagePickerInstagramFragment.newInstance();
             default:

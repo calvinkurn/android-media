@@ -17,8 +17,5 @@ dependencies {
 
 //    compile project(rootProject.ext.libraries.applink)
 
-    apt rootProject.ext.dbDependencies.dbFlowProcessor
-    compile rootProject.ext.dbDependencies.dbFlowCore
-    compile rootProject.ext.dbDependencies.dbFlow
-
+    compile 'com.github.florent37:camerafragment:1.0.9'
 }
