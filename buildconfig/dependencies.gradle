@@ -29,10 +29,10 @@ ext {
     tkpdFlightVersion = '2.22'
     tkpdCacheApiVersion = '2.22'
     tkpdReputationVersion = '2.22'
-    compileSdkVersion = 26
+    compileSdkVersion = 27
     minSdkVersion = 16
-    targetSdkVersion = 26
-    buildToolsVersion = "26.0.2"
+    targetSdkVersion = 27
+    buildToolsVersion = "27.0.3"
     espressoVersion = "2.2.2"
     runnerVersion = "0.5"
     rulesVersion = "0.5"
@@ -204,6 +204,7 @@ ext {
             cacheapi   : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
             reputation : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
             reputationCommon : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
+            wishListCommon : "com.tokopedia.wishlist:wishlist-common:${tkpdReputationVersion}",
             events      : "com.tokopedia.events:events:${tkpdReputationVersion}"
     ]
 

@@ -11,7 +11,7 @@ dependencies {
     compile project(rootProject.ext.features.shopCommon)
     compile project(rootProject.ext.features.goldMerchantCommon)
     compile project(rootProject.ext.features.reputationCommon)
-    compile project(rootProject.ext.features.wishlistCommon)
+    compile rootProject.ext.tkpdDependencies.wishListCommon
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler

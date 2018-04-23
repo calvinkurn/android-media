@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'com.neenbedankt.android-apt'
 
 project.ext {
     artifactId = 'abstraction'
@@ -28,7 +27,7 @@ dependencies {
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 }
 
 apply from: '../publish_local.gradle'

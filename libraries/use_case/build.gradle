@@ -5,7 +5,7 @@ project.ext {
     artifactId = 'usecase'
     groupId = 'com.tokopedia.usecase'
     versionName = "2.22"
-    artifactName ="tkpdusecase-release"
+    artifactName ="use_case-release"
 }
 
 dependencies {
@@ -18,4 +18,4 @@ dependencies {
     testCompile rootProject.ext.testDependencies.junit
 }
 
-apply from: '../publish_local.gradle'
+apply from: '../../publish_local.gradle'

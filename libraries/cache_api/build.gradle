@@ -1,14 +1,26 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apt {
-    arguments {
-        targetModuleName 'TkpdCacheApi'
+
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'TkpdCacheApi']
+            }
+        }
     }
 }
 
+
+project.ext {
+    artifactId = 'cacheapi'
+    groupId = 'com.tokopedia.cacheapi'
+    versionName = "2.22"
+    artifactName ="cache_api-release"
+}
+
 dependencies {
-    compile project(rootProject.ext.libraries.useCase)
+    compile rootProject.ext.tkpdDependencies.usecase
 
     compile rootProject.ext.networkDependencies.retrofit
 
@@ -16,7 +28,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.rxJava
     compile rootProject.ext.testDependencies.androidAnnotation
 
-    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore
     compile rootProject.ext.dbDependencies.dbFlow
 
@@ -24,5 +36,6 @@ dependencies {
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
 }
+
+apply from: '../../publish_local.gradle'

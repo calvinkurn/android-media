@@ -1,6 +1,13 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
+project.ext {
+    artifactId = 'reputation-common'
+    groupId = 'com.tokopedia.reputation'
+    versionName = "2.22"
+    artifactName ="reputation_common-release"
+}
+
 dependencies {
     compile project(rootProject.ext.libraries.useCase)
     compile project(rootProject.ext.libraries.abstraction)
@@ -10,3 +17,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }
+
+apply from: '../../../publish_local.gradle'
