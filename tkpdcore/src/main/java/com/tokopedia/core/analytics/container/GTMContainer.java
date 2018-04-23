@@ -85,12 +85,6 @@ public class GTMContainer implements IGTMContainer {
         }
     }
 
-    private Boolean isAllowRefreshDefault() {
-        long lastRefresh = ContainerHolderSingleton.getContainerHolder().getContainer().getLastRefreshTime();
-        Log.i("GTM TKPD", "Last refresh " + CommonUtils.getDate(lastRefresh));
-        return System.currentTimeMillis() - lastRefresh > EXPIRE_CONTAINER_TIME_DEFAULT;
-    }
-
     private Boolean isAllowRefreshDefault(ContainerHolder containerHolder) {
         long lastRefresh = containerHolder.getContainer().getLastRefreshTime();
         Log.i("GTM TKPD", "Last refresh " + CommonUtils.getDate(lastRefresh));
