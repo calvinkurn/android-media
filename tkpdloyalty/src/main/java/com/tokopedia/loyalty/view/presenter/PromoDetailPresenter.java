@@ -46,7 +46,7 @@ public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView>
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                checkViewAttached();
 
                 if (e instanceof UnknownHostException) {
                     // No internet connection
@@ -65,10 +65,14 @@ public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView>
                     // Undefined errors
                     getMvpView().renderErrorHttpGetPromoDetail(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
+
+                e.printStackTrace();
             }
 
             @Override
             public void onNext(List<PromoData> promoData) {
+                checkViewAttached();
+
                 if (promoData != null && !promoData.isEmpty()) {
                     getMvpView().renderPromoDetail(promoData.get(0));
                 } else {
