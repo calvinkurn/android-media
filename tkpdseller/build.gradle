@@ -1,7 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'android-apt'
-apply plugin: 'com.neenbedankt.android-apt'
 
 buildscript {
     repositories {
@@ -12,9 +10,13 @@ buildscript {
     }
 }
 
-apt {
-    arguments {
-        targetModuleName 'TkpdSeller'
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'TkpdSeller']
+            }
+        }
     }
 }
 
@@ -33,18 +35,18 @@ dependencies {
     compile rootProject.ext.tkpdDependencies.reputationCommon
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.miscDependencies.parcelerApi
-    apt rootProject.ext.miscDependencies.parceler
+    annotationProcessor  rootProject.ext.miscDependencies.parceler
 
-    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore
     compile rootProject.ext.dbDependencies.dbFlow
 
@@ -57,7 +59,7 @@ dependencies {
     compile rootProject.ext.supportLibDependencies.exifinterface
 
     compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.supportLibDependencies.constraintLayout
 
