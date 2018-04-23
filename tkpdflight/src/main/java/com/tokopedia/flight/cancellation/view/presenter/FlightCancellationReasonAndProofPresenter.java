@@ -137,28 +137,6 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                 }
             }
         });
-
-//        checkIfAttachmentMandatory()
-//                .subscribeOn(Schedulers.io())
-//                .unsubscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<Boolean>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(Boolean aBoolean) {
-//                        validateFields(aBoolean);
-//                    }
-//                });
-
     }
 
     @NonNull
@@ -210,74 +188,10 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
         if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
     }
 
-    private void validateFields(Boolean requiredAttachment) {
-        List<FlightCancellationAttachmentViewModel> attachments = getView().getAttachments();
-        Observable<Boolean> isValidRequiredAttachment = Observable.zip(Observable.just(attachments), Observable.just(requiredAttachment), new Func2<List<FlightCancellationAttachmentViewModel>, Boolean, Boolean>() {
-            @Override
-            public Boolean call(List<FlightCancellationAttachmentViewModel> flightCancellationAttachmentViewModels, Boolean aBoolean) {
-                return !aBoolean || (aBoolean && flightCancellationAttachmentViewModels.size() > 0);
-            }
-        });
-
-        isValidRequiredAttachment.subscribe(new Action1<Boolean>() {
-            @Override
-            public void call(Boolean aBoolean) {
-                if (!aBoolean)
-                    getView().showRequiredMinimalOneAttachmentErrorMessage(R.string.flight_cancellation_attachment_required_error_message);
-            }
-        });
-
-        Observable<Boolean> isValidAttachmentLength = Observable.just(getView().getCancellationViewModel())
-                .map(new Func1<FlightCancellationWrapperViewModel, Integer>() {
-                    @Override
-                    public Integer call(FlightCancellationWrapperViewModel flightCancellationWrapperViewModel) {
-                        return calculateTotalPassenger(getView().getCancellationViewModel());
-                    }
-                }).zipWith(Observable.just(requiredAttachment), new Func2<Integer, Boolean, Boolean>() {
-                    @Override
-                    public Boolean call(Integer integer, Boolean aBoolean) {
-                        return !aBoolean || (aBoolean && integer > 0);
-                    }
-                });
-
-        isValidAttachmentLength.subscribe(new Action1<Boolean>() {
-            @Override
-            public void call(Boolean aBoolean) {
-                if (!aBoolean) {
-                    int totalPassenger = calculateTotalPassenger(getView().getCancellationViewModel());
-                    getView().showAttachmentGreaterThanPassengersTotalAndRequiredAttachmentErrorMessage(
-                            String.format(
-                                    getView().getString(R.string.flight_cancellation_attachment_more_than_max_error_message), totalPassenger + 1)
-                    );
-                }
-            }
-        });
-
-        Observable.combineLatest(
-                isValidRequiredAttachment, isValidAttachmentLength, new Func2<Boolean, Boolean, Boolean>() {
-                    @Override
-                    public Boolean call(Boolean aBoolean, Boolean aBoolean2) {
-                        return aBoolean && aBoolean2;
-                    }
-                }
-        ).subscribe(new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                if (aBoolean) {
-                    actionUploadImageAndBuildModel();
-                }
-            }
-        });
+    @Override
+    public void onComeFromEstimateRefundScreen() {
+        getView().hideLoading();
+        getView().showFullPageContainer();
     }
 
     private void actionUploadImageAndBuildModel() {
