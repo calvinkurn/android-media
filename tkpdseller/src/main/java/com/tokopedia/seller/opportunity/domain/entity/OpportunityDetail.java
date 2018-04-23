@@ -50,12 +50,15 @@ public class OpportunityDetail {
     @Expose
     private String orderDeadlineColor;
 
+    @SerializedName("shipment")
     @Expose
     private OrderShipment shipment;
 
+    @SerializedName("destination")
     @Expose
     private OpportunityDetailDestination destination;
 
+    @SerializedName("detail")
     @Expose
     private OpportunityProduct detail;
 

@@ -94,7 +94,6 @@ import java.util.List;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /**
@@ -797,7 +796,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (tabs != null
                 && tabAdapter != null
                 && hasVoteTab()) {
-            View view = ToolTipUtils.setToolTip(this, R.layout.tooltip, this);
+            View view = ToolTipUtils.setToolTip(this, R.layout.tooltip_vote, this);
             TextView temp = view.findViewById(R.id.text);
             MethodChecker.setBackground(temp, MethodChecker.getDrawable(this, R.drawable.ic_combined_shape));
             View anchorView = tabs.getChildAt(CHANNEL_VOTE_FRAGMENT);
@@ -978,6 +977,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else if (currentFragmentIsInfo()) {
             populateChannelInfoFragment();
         }
+        setGreenIndicator(channelInfoViewModel.getVoteInfoViewModel());
     }
 
     private void refreshTab() {

@@ -380,7 +380,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
                 }
             });
-
         }
     }
 
@@ -517,7 +516,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         boolean isValid = true;
         if (getView().getReplyMessage().trim().length() == 0) {
             isValid = false;
-            getView().showError(getView().getString(R.string.error_empty_report));
+            getView().showSnackbarError(getView().getString(R.string.error_empty_report));
         }
         return isValid;
     }
