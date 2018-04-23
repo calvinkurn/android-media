@@ -116,6 +116,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
             }
         });
         tabLayoutImagePickerAdapter.selectTab(selectedTab);
+        if (tabLayout.getTabCount() <= 1) {
+            tabLayout.setVisibility(View.GONE);
+        }
     }
 
     private void changeSpinnerVisibilityByPosition(int position) {

@@ -130,6 +130,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     }
 
     private void onPermissionDenied() {
+        //TODO change alert alert dialog to view?
         new AlertDialog.Builder(getContext())
                 .setMessage(getString(R.string.please_grant_external_storage_permission_in_settings))
                 .setCancelable(true)
