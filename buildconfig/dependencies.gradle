@@ -206,6 +206,7 @@ ext {
             reputationCommon : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
             wishListCommon : "com.tokopedia.wishlist:wishlist-common:${tkpdReputationVersion}",
             tokocash : "com.tokopedia.tokocash:tokocash:${tkpdReputationVersion}",
+            applink : "com.tokopedia.applink:applink:${tkpdReputationVersion}",
             events      : "com.tokopedia.events:events:${tkpdReputationVersion}"
     ]
 

@@ -1,8 +1,16 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+
+project.ext {
+    artifactId = 'applink'
+    groupId = 'com.tokopedia.applink'
+    versionName = "2.22"
+    artifactName ="applink-release"
+}
 
 dependencies {
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+apply from: '../../publish_local.gradle'
