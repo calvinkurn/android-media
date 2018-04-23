@@ -18,6 +18,7 @@ import com.tokopedia.imagepicker.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.adapter.TabLayoutImagePickerAdapter;
 import com.tokopedia.imagepicker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.gallery.model.AlbumItem;
+import com.tokopedia.imagepicker.gallery.model.MediaItem;
 
 public class ImagePickerActivity extends BaseSimpleActivity
         implements AdapterView.OnItemSelectedListener,
@@ -26,7 +27,6 @@ public class ImagePickerActivity extends BaseSimpleActivity
     public static final String EXTRA_IMAGE_PICKER_BUILDER = "x_img_pick_builder";
 
     public static final String SAVED_SELECTED_TAB = "saved_sel_tab";
-    public static final String SAVED_SELECTED_ALBUM_POS = "saved_sel_album";
 
     private TabLayout tabLayout;
     private ImagePickerBuilder imagePickerBuilder;
@@ -47,6 +47,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_image_picker;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null && intent.getExtras().containsKey(EXTRA_IMAGE_PICKER_BUILDER)) {
@@ -60,16 +65,25 @@ public class ImagePickerActivity extends BaseSimpleActivity
             selectedTab = savedInstanceState.getInt(SAVED_SELECTED_TAB, 0);
         }
 
+        setupPreview();
         setupViewPager();
         setupTabLayout();
         setupAlbumSpinner();
     }
 
+    private void setupPreview(){
+        View vgPreviewContainer = findViewById(R.id.vg_preview_container);
+        if (imagePickerBuilder.supportMultipleSelection() &&
+                imagePickerBuilder.hasThumbnailPreview()) {
+            vgPreviewContainer.setVisibility(View.VISIBLE);
+        } else {
+            vgPreviewContainer.setVisibility(View.GONE);
+        }
+    }
+
     private void setupViewPager() {
         viewPager = findViewById(R.id.view_pager);
-        imagePickerViewPagerAdapter = new ImagePickerViewPagerAdapter(getSupportFragmentManager(),
-                imagePickerBuilder.getTabTypeDef(),
-                imagePickerBuilder.getGalleryType());
+        imagePickerViewPagerAdapter = new ImagePickerViewPagerAdapter(getSupportFragmentManager(), imagePickerBuilder);
         viewPager.setAdapter(imagePickerViewPagerAdapter);
     }
 
@@ -145,26 +159,16 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     @Override
-    protected int getLayoutRes() {
-        return R.layout.activity_image_picker;
-    }
-
-    @Override
     protected Fragment getNewFragment() {
         return null;
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        selectedAlbumPos = position;
-        albumAdapter.getCursor().moveToPosition(position);
-        AlbumItem albumItem = AlbumItem.valueOf(albumAdapter.getCursor());
-        if (albumItem.isAll()) {
-            albumItem.addCaptureCount();
+        if (selectedAlbumPos!= position) {
+            selectedAlbumPos = position;
+            onAlbumLoaded(albumAdapter.getCursor());
         }
-        //TODO will done in respective fragment
-//        albumCollection.setStateCurrentSelection(position);
-//        onAlbumSelected(albumItem);
     }
 
     @Override
@@ -195,6 +199,18 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
+    @Override
+    public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
+        if (imagePickerBuilder.supportMultipleSelection()) {
+            // TODO will do later, currently only support single selection
+            if (imagePickerBuilder.hasThumbnailPreview()) {
+                // TODO change the UI of selection
+            }
+        } else {
+            //TODO select image; go to image editor
+        }
+    }
+
     private ImagePickerGalleryFragment getGalleryFragment() {
         int tabGallery = imagePickerBuilder.indexTypeDef(ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY);
         if (tabGallery > -1) {
@@ -207,7 +223,6 @@ public class ImagePickerActivity extends BaseSimpleActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(SAVED_SELECTED_TAB, tabLayout.getSelectedTabPosition());
-        outState.putInt(SAVED_SELECTED_ALBUM_POS, selectedAlbumPos);
     }
 
 }

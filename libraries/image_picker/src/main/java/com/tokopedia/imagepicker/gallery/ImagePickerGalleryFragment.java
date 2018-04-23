@@ -15,6 +15,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.tokopedia.imagepicker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.gallery.widget.MediaGridInset;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by hendry on 19/04/18.
@@ -41,6 +43,10 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         AlbumMediaAdapter.OnMediaClickListener {
 
     public static final String ARGS_GALLERY_TYPE = "args_gallery_type";
+    public static final String ARGS_SUPPORT_MULTIPLE = "args_support_multiple";
+    public static final String ARGS_MIN_RESOLUTION = "args_min_resolution";
+
+    public static final String SAVED_ALBUM_SELECTION = "svd_album_selection";
 
     private static final int ALBUM_LOADER_ID = 1;
     private static final int MEDIA_LOADER_ID = 2;
@@ -55,26 +61,40 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     private AlbumItem selectedAlbumItem;
     private @GalleryType int galleryType;
+    private boolean supportMultipleSelection;
+    private int minImageResolution;
+
+    private ArrayList<Long> albumSelectionId;
 
     public interface OnImagePickerGalleryFragmentListener {
         void onAlbumLoaded(Cursor cursor);
+        void onAlbumItemClicked(MediaItem item, boolean isChecked);
     }
 
-    // TODO read external directory permission
-    public static ImagePickerGalleryFragment newInstance(@GalleryType int galleryType) {
+    public static ImagePickerGalleryFragment newInstance(@GalleryType int galleryType,
+                                                         boolean supportMultipleSelection,
+                                                         int minImageResolution) {
         ImagePickerGalleryFragment imagePickerGalleryFragment = new ImagePickerGalleryFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARGS_GALLERY_TYPE, galleryType);
+        bundle.putBoolean(ARGS_SUPPORT_MULTIPLE, supportMultipleSelection);
+        bundle.putInt(ARGS_MIN_RESOLUTION, minImageResolution);
         imagePickerGalleryFragment.setArguments(bundle);
         return imagePickerGalleryFragment;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        galleryType = getArguments().getInt(ARGS_GALLERY_TYPE);
-        albumMediaAdapter = new AlbumMediaAdapter();
-        albumMediaAdapter.registerOnMediaClickListener(this);
+        Bundle bundle = getArguments();
+        galleryType = bundle.getInt(ARGS_GALLERY_TYPE);
+        supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
+        minImageResolution = bundle.getInt(ARGS_MIN_RESOLUTION);
+        if (savedInstanceState!= null) {
+            albumSelectionId = (ArrayList<Long>) savedInstanceState.getSerializable(SAVED_ALBUM_SELECTION);
+        }
+        albumMediaAdapter = new AlbumMediaAdapter(supportMultipleSelection, albumSelectionId,this);
     }
 
     @Nullable
@@ -88,6 +108,10 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         int spacing = getResources().getDimensionPixelSize(R.dimen.media_grid_spacing);
         recyclerView.addItemDecoration(new MediaGridInset (SPAN_COUNT, spacing, false));
         recyclerView.setAdapter(albumMediaAdapter);
+        RecyclerView.ItemAnimator itemAnimator = recyclerView.getItemAnimator();
+        if (itemAnimator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) itemAnimator).setSupportsChangeAnimations(false);
+        }
         return view;
     }
 
@@ -95,9 +119,9 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     public void onResume() {
         super.onResume();
         if (ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE)
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQ_CODE);
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQ_CODE);
         } else {
             // permissions is already available
             onPermissionGranted();
@@ -180,26 +204,31 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         if (albumItem.isAll() && albumItem.isEmpty()) {
             NetworkErrorHelper.showEmptyState(getContext(), getView(), getString(R.string.error_no_media_storage), null);
         } else {
-            getLoaderManager().initLoader(MEDIA_LOADER_ID, null, this);
+            getLoaderManager().restartLoader(MEDIA_LOADER_ID, null, this);
         }
     }
 
     @Override
-    public void onMediaClick(AlbumItem album, MediaItem item, int adapterPosition) {
-        getHeightAndWidth(item);
+    public void onMediaClick(MediaItem item, boolean isChecked, int adapterPosition) {
+        //getHeightAndWidth(item);
         // TODO select the item
 //        Intent intent = new Intent();
 //        intent.putExtra(GallerySelectedFragment.EXTRA_RESULT_SELECTION, item);
 //        setResult(Activity.RESULT_OK, intent);
 //        finish();
+        onImagePickerGalleryFragmentListener.onAlbumItemClicked(item, isChecked);
     }
 
-    public void getHeightAndWidth(MediaItem item) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(new File(item.getRealPath()).getAbsolutePath(), options);
-        item.width = options.outWidth;
-        item.height = options.outHeight;
+    @Override
+    public boolean isImageValid(MediaItem item) {
+        //TODO check the image number allowed.
+
+        //TODO check image resolution
+        if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
+            NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_under_x_resolution, minImageResolution));
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -224,5 +253,11 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
         onImagePickerGalleryFragmentListener = (OnImagePickerGalleryFragmentListener) context;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(SAVED_ALBUM_SELECTION, albumSelectionId);
     }
 }

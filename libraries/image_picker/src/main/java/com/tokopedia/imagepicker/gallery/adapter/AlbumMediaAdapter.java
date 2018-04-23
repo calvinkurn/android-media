@@ -2,7 +2,6 @@ package com.tokopedia.imagepicker.gallery.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,9 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.gallery.model.AlbumItem;
 import com.tokopedia.imagepicker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.gallery.widget.MediaGrid;
+
+import java.util.ArrayList;
 
 /**
  * Created by hangnadi on 5/29/17.
@@ -26,30 +26,63 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
     private OnMediaClickListener mOnMediaClickListener;
     private int mImageResize;
 
-    public AlbumMediaAdapter() {
+    private boolean supportMultipleSelection;
+    private ArrayList<Long> selectionIdList;
+
+    public AlbumMediaAdapter(boolean supportMultipleSelection, ArrayList<Long> selectionIdList, OnMediaClickListener listener) {
         super(null);
+        setSelectionIdList(selectionIdList);
+        this.supportMultipleSelection = supportMultipleSelection;
+        mOnMediaClickListener = listener;
+    }
+
+    private void setSelectionIdList(ArrayList<Long> selectionIdList) {
+        if (selectionIdList == null) {
+            this.selectionIdList = new ArrayList<>();
+        } else {
+            this.selectionIdList = selectionIdList;
+        }
     }
 
     public interface OnMediaClickListener {
-        void onMediaClick(AlbumItem album, MediaItem item, int adapterPosition);
-    }
-
-    public void registerOnMediaClickListener(OnMediaClickListener listener) {
-        mOnMediaClickListener = listener;
+        void onMediaClick(MediaItem item, boolean checked, int adapterPosition);
+        boolean isImageValid(MediaItem item);
     }
 
     @Override
     public void onThumbnailClicked(ImageView thumbnail, MediaItem item, RecyclerView.ViewHolder holder) {
+        boolean isChecked = true;
+        if (supportMultipleSelection) {
+            if (selectionIdList.contains(item.getId())) {
+                selectionIdList.remove(item.getId());
+                isChecked = false;
+            } else {
+                selectionIdList.add(item.getId());
+                isChecked = true;
+
+            }
+        }
+
+        if (!mOnMediaClickListener.isImageValid(item)) {
+            selectionIdList.remove(item.getId()); //in case support multiple selection
+            return;
+        }
+
+        notifyItemChanged(holder.getAdapterPosition());
+
         if (mOnMediaClickListener != null) {
-            mOnMediaClickListener.onMediaClick(null, item, holder.getAdapterPosition());
+            mOnMediaClickListener.onMediaClick(
+                    item,
+                    isChecked,
+                    holder.getAdapterPosition());
         }
     }
 
-    protected class MediaViewHolder extends RecyclerView.ViewHolder {
+    class MediaViewHolder extends RecyclerView.ViewHolder {
 
         private MediaGrid mMediaGrid;
 
-        public MediaViewHolder(View itemView) {
+        MediaViewHolder(View itemView) {
             super(itemView);
 
             mMediaGrid = (MediaGrid) itemView;
@@ -58,16 +91,15 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
 
     @Override
     protected void onBindViewHolder(MediaViewHolder holder, Cursor cursor) {
-        MediaViewHolder mediaViewHolder = holder;
 
         final MediaItem item = MediaItem.valueOf(cursor);
-        mediaViewHolder.mMediaGrid.preBindMedia(
-                new MediaGrid.PreBindInfo(getImageResize(mediaViewHolder.mMediaGrid.getContext()),
-                null,
-                holder
-        ));
-        mediaViewHolder.mMediaGrid.bindMedia(item);
-        mediaViewHolder.mMediaGrid.setOnMediaGridClickListener(this);
+        holder.mMediaGrid.preBindMedia(
+                new MediaGrid.PreBindInfo(getImageResize(holder.mMediaGrid.getContext()),
+                        null,
+                        holder
+                ));
+        holder.mMediaGrid.bindMedia(item, selectionIdList);
+        holder.mMediaGrid.setOnMediaGridClickListener(this);
     }
 
     private int getImageResize(Context context) {

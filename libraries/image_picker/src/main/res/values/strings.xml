@@ -8,4 +8,5 @@
     <string name="please_grant_external_storage_permission_in_settings">Untuk dapat menggunakan fitur ini, silakan mengaktifkan \"Read external Storage Permission\" di Pengaturan.</string>
     <string name="OK">Ok</string>
     <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
+    <string name="image_under_x_resolution">Gambar di bawah %1$d pixel</string>
 </resources>

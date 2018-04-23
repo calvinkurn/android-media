@@ -2,10 +2,13 @@ package com.tokopedia.imagepicker.gallery.model;
 
 import android.content.ContentUris;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+
+import java.io.File;
 
 /**
  * Created by hangnadi on 5/29/17.
@@ -15,13 +18,13 @@ public class MediaItem implements Parcelable {
 
     public static final long ITEM_ID_CAPTURE = -1;
     public static final String ITEM_DISPLAY_NAME_CAPTURE = "Capture";
-    public final long id;
-    public final String mimeType;
-    public final Uri uri;
-    public final long size;
-    public final long duration; // only for video, in ms
-    public long height;
-    public long width;
+    private final long id;
+    private final String mimeType;
+    private final Uri uri;
+    private final long size;
+    private final long duration; // only for video, in ms
+    private long height;
+    private long width;
     private final String realPath;
 
     private MediaItem(long id, String realPath, String mimeType, long size, long duration) {
@@ -40,6 +43,30 @@ public class MediaItem implements Parcelable {
         this.size = size;
         this.duration = duration;
         this.realPath = realPath;
+    }
+
+    public long getWidth() {
+        calculateWidthAndHeight();
+        return width;
+    }
+
+    public long getHeight() {
+        calculateWidthAndHeight();
+        return height;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    private void calculateWidthAndHeight() {
+        if (width == 0 || height == 0) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(new File(getRealPath()).getAbsolutePath(), options);
+            width = options.outWidth;
+            height = options.outHeight;
+        }
     }
 
     public static MediaItem valueOf(Cursor cursor) {
@@ -86,6 +113,10 @@ public class MediaItem implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public long getId() {
+        return id;
     }
 
     @Override

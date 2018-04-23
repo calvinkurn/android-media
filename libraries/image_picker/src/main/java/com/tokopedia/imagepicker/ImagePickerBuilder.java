@@ -15,13 +15,15 @@ import static com.tokopedia.imagepicker.ImagePickerBuilder.ImagePickerTabTypeDef
 public enum  ImagePickerBuilder {
     ADD_PRODUCT (new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM},
             GalleryType.IMAGE_ONLY,
-            true,
-            true);
+            false,
+            false,
+            300);
 
     private @ImagePickerTabTypeDef int[] tabTypeDef;
     private @GalleryType int galleryType;
     private boolean isMultipleSelection;
     private boolean hasThumbnailPreview;
+    private int minResolution;
 
     @IntDef({TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM})
     public @interface ImagePickerTabTypeDef {
@@ -33,11 +35,13 @@ public enum  ImagePickerBuilder {
     private ImagePickerBuilder(@ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
                                @GalleryType int galleryType,
                                boolean isMultipleSelection,
-                               boolean hasThumbnailPreview) {
+                               boolean hasThumbnailPreview,
+                               int minResolution) {
         this.tabTypeDef = imagePickerTabTypeDef;
         this.galleryType = galleryType;
         this.isMultipleSelection = isMultipleSelection;
         this.hasThumbnailPreview = hasThumbnailPreview;
+        this.minResolution = minResolution;
     }
 
     public int[] getTabTypeDef() {
@@ -70,11 +74,15 @@ public enum  ImagePickerBuilder {
         return galleryType;
     }
 
-    public boolean hsThumbnailPreview() {
+    public boolean hasThumbnailPreview() {
         return hasThumbnailPreview;
     }
 
-    public boolean isMultipleSelection() {
+    public boolean supportMultipleSelection() {
         return isMultipleSelection;
+    }
+
+    public int getMinResolution() {
+        return minResolution;
     }
 }

@@ -14,6 +14,8 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.gallery.model.MediaItem;
 
+import java.util.ArrayList;
+
 /**
  * Created by hangnadi on 5/29/17.
  */
@@ -27,6 +29,7 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     private MediaItem mMedia;
     private PreBindInfo mPreBindInfo;
     private OnMediaGridClickListener mListener;
+    private View ivCheck;
 
     public MediaGrid(Context context) {
         super(context);
@@ -44,6 +47,7 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
         mThumbnail = (ImageView) findViewById(R.id.media_thumbnail);
         mGifTag = (TextView) findViewById(R.id.gif);
         mVideoDuration = (TextView) findViewById(R.id.video_duration);
+        ivCheck = findViewById(R.id.iv_check);
 
         mThumbnail.setOnClickListener(this);
     }
@@ -59,15 +63,12 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
         mPreBindInfo = info;
     }
 
-    public void bindMedia(MediaItem item) {
+    public void bindMedia(MediaItem item, ArrayList<Long> selectionIdList) {
         mMedia = item;
         setGifTag();
         setImage();
         setVideoDuration();
-    }
-
-    public MediaItem getMedia() {
-        return mMedia;
+        setSelection(selectionIdList);
     }
 
     private void setGifTag() {
@@ -98,18 +99,22 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     private void setVideoDuration() {
         if (mMedia.isVideo()) {
             mVideoDuration.setVisibility(VISIBLE);
-            mVideoDuration.setText(DateUtils.formatElapsedTime(mMedia.duration / 1000));
+            mVideoDuration.setText(DateUtils.formatElapsedTime(mMedia.getDuration() / 1000));
         } else {
             mVideoDuration.setVisibility(GONE);
         }
     }
 
-    public void setOnMediaGridClickListener(OnMediaGridClickListener listener) {
-        mListener = listener;
+    private void setSelection(ArrayList<Long> selectionIdList){
+        if ( selectionIdList.contains(mMedia.getId())){
+            ivCheck.setVisibility(View.VISIBLE);
+        } else {
+            ivCheck.setVisibility(View.GONE);
+        }
     }
 
-    public void removeOnMediaGridClickListener() {
-        mListener = null;
+    public void setOnMediaGridClickListener(OnMediaGridClickListener listener) {
+        mListener = listener;
     }
 
     public interface OnMediaGridClickListener {
