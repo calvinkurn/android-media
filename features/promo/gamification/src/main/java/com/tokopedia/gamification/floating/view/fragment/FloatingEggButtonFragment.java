@@ -436,6 +436,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         countDownTimer = new CountDownTimer(timeRemainingSeconds * 1000L, 1000L) {
             @Override
             public void onTick(long millisUntilFinished) {
+                if (!isAdded()) {
+                    return;
+                }
                 long ms = millisUntilFinished / 1000L;
                 ms--;
                 if (ms <= 0) {

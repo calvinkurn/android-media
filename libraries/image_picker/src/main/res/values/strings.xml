@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">image_picker</string>
+    <string name="choose_image">Pilih Gambar</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
+    <string name="instagram">Instagram</string>
+    <string name="album_name_all">Semua Media</string>
+    <string name="please_grant_external_storage_permission_in_settings">Untuk dapat menggunakan fitur ini, silakan mengaktifkan \"Read external Storage Permission\" di Pengaturan.</string>
+    <string name="OK">Ok</string>
+    <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
+    <string name="image_under_x_resolution">Gambar di bawah %1$d pixel</string>
+</resources>

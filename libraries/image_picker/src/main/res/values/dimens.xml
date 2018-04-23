@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bottom_navigation_height">64dp</dimen>
+    <dimen name="tab_min_width">50dp</dimen>
+    <dimen name="img_thumb_holder">72dp</dimen>
+    <dimen name="img_thumb_m">50dp</dimen>
+    <dimen name="media_grid_spacing">2dp</dimen>
+</resources>
