@@ -25,7 +25,6 @@ import rx.Observable;
 
 /**
  * @author by nisie on 11/2/17.
- *         Moved to features and removed appolo watcher by milhamj on 18/04/18.
  */
 
 public class KolCommentSource {

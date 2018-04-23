@@ -24,7 +24,6 @@ import rx.functions.Func1;
 
 /**
  * @author by nisie on 11/2/17.
- *         Moved to features and removed appolo watcher by milhamj on 19/04/18.
  */
 
 public class KolGetCommentMapper
