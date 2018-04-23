@@ -21,11 +21,10 @@ import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView
 import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import rx.Subscriber;

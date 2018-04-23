@@ -23,12 +23,12 @@ import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepositor
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceTaggingConstant;
-import com.tokopedia.topads.common.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
-import com.tokopedia.topads.common.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
-import com.tokopedia.topads.common.sourcetagging.data.source.TopAdsSourceTaggingLocal;
-import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
-import com.tokopedia.topads.common.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
+import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
+import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 
 import dagger.Module;
 import dagger.Provides;

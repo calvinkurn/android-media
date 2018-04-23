@@ -1,13 +1,11 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
-import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsCheckTimeAndSaveSourceTaggingUseCase;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsCheckTimeAndSaveSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCheckProductPromoUseCase;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsCheckProductPromoView;
-
-import java.util.Date;
 
 import javax.inject.Inject;
 

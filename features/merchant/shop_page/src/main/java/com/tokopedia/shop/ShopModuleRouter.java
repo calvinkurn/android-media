@@ -38,5 +38,7 @@ public interface ShopModuleRouter {
 
     void sendEventTrackingShopPage(HashMap<String, Object> eventTracking);
 
+    void sendScreenName(String screenName);
+
     Intent getTopProfileIntent(Context context, String userId);
 }

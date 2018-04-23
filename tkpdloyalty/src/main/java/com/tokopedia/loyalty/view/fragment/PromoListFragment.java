@@ -75,6 +75,8 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     private RefreshHandler refreshHandler;
 
+    private OnFragmentInteractionListener actionListener;
+
     private PromoMenuData promoMenuData;
     private PromoListAdapter adapter;
     private BottomSheetView bottomSheetViewInfoPromoCode;
@@ -306,21 +308,30 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     @Override
     protected void initialVar() {
         int indexAutoSelectCategoryFilter = 0;
+
         final List<QuickFilterItem> quickFilterItemList = setQuickFilterItems(promoMenuData.getPromoSubMenuDataList());
+
         for (int i = 0; i < quickFilterItemList.size(); i++) {
             QuickFilterItem item = quickFilterItemList.get(i);
-            if (autoSelectedCategoryId.equalsIgnoreCase(item.getType()))
+            if (autoSelectedCategoryId.equalsIgnoreCase(item.getType())) {
                 indexAutoSelectCategoryFilter = i;
+            }
         }
+
         quickSingleFilterView.renderFilter(quickFilterItemList);
-        quickSingleFilterView.setDefaultItem(quickFilterItemList.get(0));
+        quickSingleFilterView.setDefaultItem(quickFilterItemList.get(indexAutoSelectCategoryFilter));
         quickSingleFilterView.setListener(new QuickSingleFilterView.ActionListener() {
             @Override
             public void selectFilter(String typeFilter) {
                 String subCategoryName = getSubCategoryNameById(typeFilter);
                 UnifyTracking.eventPromoListClickSubCategory(subCategoryName);
+
+                actionListener.onChangeFilter(typeFilter);
+
                 filterSelected = typeFilter.equals(TYPE_FILTER_ALL) ?
-                        promoMenuData.getAllSubCategoryId() : typeFilter;
+                        promoMenuData.getAllSubCategoryId() :
+                        typeFilter;
+
                 refreshHandler.startRefresh();
             }
 
@@ -331,11 +342,13 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
                 return "";
             }
         });
+
         quickSingleFilterView.actionSelect(indexAutoSelectCategoryFilter);
     }
 
     private List<QuickFilterItem> setQuickFilterItems(List<PromoSubMenuData> promoSubMenuDataList) {
         List<QuickFilterItem> quickFilterItemList = new ArrayList<>();
+
         for (int i = 0; i < promoSubMenuDataList.size(); i++) {
             QuickFilterItem quickFilterItem = new QuickFilterItem();
             quickFilterItem.setName(promoSubMenuDataList.get(i).getTitle());
@@ -344,6 +357,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
             quickFilterItem.setColorBorder(R.color.tkpd_main_green);
             quickFilterItemList.add(quickFilterItem);
         }
+
         return quickFilterItemList;
     }
 
@@ -362,6 +376,23 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            this.actionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        this.actionListener = null;
+    }
+
+    @Override
     public void onItemPromoCodeCopyClipboardClicked(String promoCode, String promoName) {
         UnifyTracking.eventPromoListClickCopyToClipboardPromoCode(promoName);
         ClipboardManager clipboard = (ClipboardManager)
@@ -377,9 +408,10 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void onItemPromoClicked(PromoData promoData, int position) {
-        int page = dPresenter.getPage();
-        Intent intent = PromoDetailActivity.getCallingIntent(getActivity(), promoData, position, page);
+        Intent intent = PromoDetailActivity.getCallingIntent(getActivity(), promoData, position,
+                dPresenter.getPage());
         startActivityForResult(intent, PROMO_DETAIL_REQUEST_CODE);
+
         dPresenter.sendClickItemPromoListTrackingData(promoData, position, promoMenuData.getTitle());
     }
 
@@ -431,5 +463,11 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         endlessRecyclerviewListener.resetState();
         dPresenter.setPage(1);
         dPresenter.processGetPromoList(filterSelected, promoMenuData.getTitle());
+    }
+
+    public interface OnFragmentInteractionListener {
+
+        void onChangeFilter(String categoryId);
+
     }
 }

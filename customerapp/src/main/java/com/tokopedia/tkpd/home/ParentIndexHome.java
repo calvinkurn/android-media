@@ -21,6 +21,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -149,8 +150,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private NudgeView nudgeView ;
 
     @DeepLink(Constants.Applinks.HOME)
-    public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
-        return new Intent(context, ParentIndexHome.class);
+    public static TaskStackBuilder getApplinkCallingIntent(Context context, Bundle extras) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.from(context);
+        taskStackBuilder.addNextIntent(new Intent(context, ParentIndexHome.class));
+        return taskStackBuilder;
     }
 
     @DeepLink({Constants.Applinks.HOME_FEED, Constants.Applinks.FEED})
@@ -440,7 +443,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 if (tab.getPosition() == INIT_STATE_FRAGMENT_HOME ||tab.getPosition() == INIT_STATE_FRAGMENT_FEED) {
-                    Fragment fragment = adapter.getFragments().get(tab.getPosition()); // scroll to top
+                    Fragment fragment = (Fragment) mViewPager.getAdapter().instantiateItem(mViewPager, mViewPager.getCurrentItem());
                     if (fragment != null) {
                         if (fragment instanceof FeedPlusFragment)
                             ((FeedPlusFragment) fragment).scrollToTop();

@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
     compile project(rootProject.ext.features.seller)
-    compile project(rootProject.ext.features.topAdsCommon)
+    compile project(rootProject.ext.features.topAdsSourceTagging)
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

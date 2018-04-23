@@ -1,9 +1,11 @@
 package com.tokopedia.topads.keyword.view.presenter;
 
-import com.tokopedia.topads.common.sourcetagging.data.TopAdsSourceTaggingModel;
-import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.sourcetagging.data.TopAdsSourceTaggingModel;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 import com.tokopedia.topads.keyword.domain.interactor.KeywordAddUseCase;
 import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsRemoveSourceTaggingUseCase;
 
 import java.util.ArrayList;
 
@@ -19,12 +21,15 @@ public class TopAdsKeywordAddPresenterImpl extends TopAdsKeywordAddPresenter {
 
     private KeywordAddUseCase keywordAddUseCase;
     private TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase;
+    private TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase;
 
     @Inject
     public TopAdsKeywordAddPresenterImpl(KeywordAddUseCase keywordAddUseCase,
-                                         TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
+                                         TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
+                                         TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase) {
         this.keywordAddUseCase = keywordAddUseCase;
         this.topAdsGetSourceTaggingUseCase = topAdsGetSourceTaggingUseCase;
+        this.topAdsRemoveSourceTaggingUseCase = topAdsRemoveSourceTaggingUseCase;
     }
 
     public void addKeyword (final String groupId,
@@ -43,9 +48,13 @@ public class TopAdsKeywordAddPresenterImpl extends TopAdsKeywordAddPresenter {
 
             @Override
             public void onNext(TopAdsSourceTaggingModel topAdsSourceTaggingModel) {
+                String source = TopAdsNetworkConstant.VALUE_SOURCE_ANDROID;
+                if (topAdsSourceTaggingModel != null){
+                    source = topAdsSourceTaggingModel.getSource();
+                }
                 keywordAddUseCase.execute(
                         KeywordAddUseCase.createRequestParam(groupId, keywordType,
-                                keywordList, topAdsSourceTaggingModel.getSource()),
+                                keywordList, source),
                         getAddKeywordSubscriber());
             }
         });
@@ -68,6 +77,22 @@ public class TopAdsKeywordAddPresenterImpl extends TopAdsKeywordAddPresenter {
             @Override
             public void onNext(AddKeywordDomainModel addKeywordDomainModel) {
                 getView().onSuccessSaveKeyword();
+                topAdsRemoveSourceTaggingUseCase.execute(new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+
+                    }
+                });
             }
         };
     }
