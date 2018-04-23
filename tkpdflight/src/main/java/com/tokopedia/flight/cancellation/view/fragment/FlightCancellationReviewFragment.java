@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
@@ -36,6 +37,7 @@ import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationReview
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 
 import javax.inject.Inject;
 
@@ -181,6 +183,12 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     @Override
     public FlightCancellationWrapperViewModel getCancellationWrapperViewModel() {
         return flightCancellationPassData;
+    }
+
+    @Override
+    public void showCancellationError(Throwable throwable) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), FlightErrorUtil
+                .getMessageFromException(getContext(), throwable));
     }
 
     private void renderView() {

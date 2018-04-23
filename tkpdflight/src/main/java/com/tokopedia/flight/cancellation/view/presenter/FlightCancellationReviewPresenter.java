@@ -8,6 +8,7 @@ import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReviewC
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 
 import java.util.List;
 
@@ -60,6 +61,7 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
                     @Override
                     public void onError(Throwable throwable) {
                         throwable.printStackTrace();
+                        getView().showCancellationError(throwable);
                         getView().hideLoading();
                     }
 

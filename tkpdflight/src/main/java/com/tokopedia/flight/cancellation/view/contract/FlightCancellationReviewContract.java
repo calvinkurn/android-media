@@ -22,6 +22,7 @@ public interface FlightCancellationReviewContract {
 
         FlightCancellationWrapperViewModel getCancellationWrapperViewModel();
 
+        void showCancellationError(Throwable throwable);
     }
 
     interface Presenter {
