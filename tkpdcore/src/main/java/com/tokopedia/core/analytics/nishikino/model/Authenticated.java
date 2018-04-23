@@ -39,6 +39,8 @@ public class Authenticated extends BaseGTMModel {
     private static final String KEY_AF_UNIQUE_ID =       "afUniqueId";
     public static final String KEY_NETWORK_SPEED =      "networkSpeed";
     public static final String KEY_COMPETITOR_INTELLIGENCE =      "cIntel";
+    public static final String KEY_PAGE_TYPE =         "pageType";
+    public static final String KEY_PRODUCT_ID =        "productId";
 
 
     private Map<String, Object> contactInfo = new HashMap<>();
@@ -53,6 +55,8 @@ public class Authenticated extends BaseGTMModel {
     private String shopType;
     private String networkSpeed;
     private String cIntel;
+    private String productId;
+    private String pageType;
 
     public void setUserDefaultShipping(){
         contactInfo.put(KEY_USER_DEF_SHIPPING, userDefaultShipping);
@@ -156,6 +160,22 @@ public class Authenticated extends BaseGTMModel {
 
     public void clearAuth(){
 
+    }
+
+    public String getPageType() {
+        return pageType;
+    }
+
+    public void setPageType(String pageType) {
+        this.pageType = pageType;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     public void setShopType(String shopType) {
