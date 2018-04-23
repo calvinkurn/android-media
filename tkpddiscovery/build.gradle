@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
 
 buildscript {
@@ -31,16 +30,16 @@ dependencies {
 
     compile rootProject.ext.alibabaDependencies.coreLib
     compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+    annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
