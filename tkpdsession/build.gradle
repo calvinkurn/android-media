@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'com.jakewharton.butterknife'
 
@@ -9,8 +8,14 @@ buildscript {
     }
     dependencies {
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
+}
+
+project.ext {
+    artifactId = 'session'
+    groupId = 'com.tokopedia.session'
+    versionName = "2.22"
+    artifactName ="tkpdsession-release"
 }
 
 dependencies {
@@ -20,17 +25,17 @@ dependencies {
     compile rootProject.ext.tkpdDependencies.usecase
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+    annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -38,3 +43,5 @@ dependencies {
 
     testCompile rootProject.ext.testDependencies.junit
 }
+
+apply from: '../publish_local.gradle'
