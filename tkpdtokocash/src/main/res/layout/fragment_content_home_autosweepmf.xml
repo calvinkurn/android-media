@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingBottom="@dimen/mf_padding_regular"
     android:paddingTop="@dimen/mf_padding_regular">
 
     <TextView
@@ -89,7 +88,7 @@
 
     <LinearLayout
         android:id="@+id/container_warning"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/mf_margin_medium"
         android:layout_marginRight="@dimen/mf_margin_medium"
@@ -98,6 +97,8 @@
         android:orientation="vertical"
         android:padding="@dimen/mf_padding_small"
         android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_limit_tokocash">
 
         <TextView
@@ -124,10 +125,10 @@
 
     <View
         android:id="@+id/view_line_separator"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="16dp"
-        android:background="#e0e0e0"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/mf_height_line_separator"
+        android:layout_marginTop="@dimen/mf_margin_medium"
+        android:background="@color/white_four"
         app:layout_constraintTop_toBottomOf="@+id/container_warning" />
 
     <Button

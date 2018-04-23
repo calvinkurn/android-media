@@ -979,8 +979,8 @@ public class TkpdBaseURL {
 
     public interface AutoSweep {
         String WEB_LINK_MF_DASHBOARD = WEB_DOMAIN + "reksa-dana/dashboard";
-        String WEB_LINK_MF_USE = WEB_DOMAIN + "reksa-dana/autosweep-info";
-        String WEB_LINK_MF_RETURN_POLICY = WEB_DOMAIN + "reksa-dana/autosweep-info";
+        String WEB_LINK_MF_USE = WEB_DOMAIN + "reksa-dana/autosweep-info?tab=penggunaan";
+        String WEB_LINK_MF_RETURN_POLICY = WEB_DOMAIN + "reksa-dana/autosweep-info?tab=pengambilan";
         String API_AUTO_SWEEP_HOME = "mutualfund/api/user/autosweep";
     }
 }

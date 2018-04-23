@@ -34,4 +34,5 @@
 
     <dimen name="size_progress_bar">24dp</dimen>
     <dimen name="height_submit_button">52dp</dimen>
+    <dimen name="mf_height_line_separator">2dp</dimen>
 </resources>
