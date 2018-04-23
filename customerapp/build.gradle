@@ -263,12 +263,12 @@ dependencies {
     compile rootProject.ext.tkpdDependencies.loyalty // udah
     compile rootProject.ext.tkpdDependencies.session // udah
     compile rootProject.ext.tkpdDependencies.reputation // udah
-    compile rootProject.ext.tkpdDependencies.events
-    compile rootProject.ext.tkpdDependencies.ride
-    compile project(rootProject.ext.features.flight)
-    compile project(rootProject.ext.features.digital)
-    compile project(rootProject.ext.features.tokoCash)
-    compile project(rootProject.ext.features.home)
+    compile rootProject.ext.tkpdDependencies.events // udah
+    compile rootProject.ext.tkpdDependencies.ride // udah
+    compile rootProject.ext.tkpdDependencies.flight // udah
+    compile rootProject.ext.tkpdDependencies.digital // udah
+    compile rootProject.ext.tkpdDependencies.tokocash // udah
+    compile rootProject.ext.tkpdDependencies.home // udah
     compile project(rootProject.ext.features.groupchat)
     compile project(rootProject.ext.features.shopPage)
     compile project(rootProject.ext.features.kol)

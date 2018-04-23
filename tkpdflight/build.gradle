@@ -1,11 +1,21 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
-apt {
-    arguments {
-        targetModuleName 'TkpdFlight'
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'TkpdFlight']
+            }
+        }
     }
+}
+
+project.ext {
+    artifactId = 'flight'
+    groupId = 'com.tokopedia.flight'
+    versionName = "2.22"
+    artifactName ="tkpdflight-release"
 }
 
 dependencies {
@@ -23,19 +33,21 @@ dependencies {
     }
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     compile rootProject.ext.supportLibDependencies.supportV4
-    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore
     compile rootProject.ext.dbDependencies.dbFlow
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.debugToolsDependencies.stetho
 
     testCompile rootProject.ext.testDependencies.junit
     testCompile rootProject.ext.testDependencies.mockitorCore
 }
+
+apply from: '../publish_local.gradle'
