@@ -269,12 +269,12 @@ dependencies {
     compile rootProject.ext.tkpdDependencies.digital // udah
     compile rootProject.ext.tkpdDependencies.tokocash // udah
     compile rootProject.ext.tkpdDependencies.home // udah
-    compile project(rootProject.ext.features.groupchat)
-    compile project(rootProject.ext.features.shopPage)
-    compile project(rootProject.ext.features.kol)
-    compile project(rootProject.ext.libraries.pushNotif)
-    compile project(rootProject.ext.libraries.applink)
-    compile project(rootProject.ext.features.gamification)
+    compile rootProject.ext.tkpdDependencies.groupchat // udah
+    compile rootProject.ext.tkpdDependencies.applink // udah
+    compile rootProject.ext.tkpdDependencies.shopPage // udah
+    compile rootProject.ext.tkpdDependencies.gamification // udah
+    compile rootProject.ext.tkpdDependencies.kol // udah
+    compile rootProject.ext.tkpdDependencies.pushNotif // udah
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -283,14 +283,14 @@ dependencies {
     testCompile rootProject.ext.testDependencies.junit
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.miscDependencies.multiDex
 

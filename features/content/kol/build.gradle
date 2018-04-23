@@ -1,10 +1,16 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
+project.ext {
+    artifactId = 'kol'
+    groupId = 'com.tokopedia.kol'
+    versionName = "2.22"
+    artifactName ="kol-release"
+}
+
 dependencies {
-    compile project(rootProject.ext.libraries.useCase)
-    compile project(rootProject.ext.libraries.abstraction)
+    compile rootProject.ext.tkpdDependencies.usecase
+    compile rootProject.ext.tkpdDependencies.abstraction
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -17,13 +23,14 @@ dependencies {
     }
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     compile rootProject.ext.supportLibDependencies.supportV4
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.debugToolsDependencies.stetho
-
 }
+
+apply from: '../../../publish_local.gradle'

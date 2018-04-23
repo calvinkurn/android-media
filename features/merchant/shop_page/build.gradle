@@ -1,23 +1,29 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
+project.ext {
+    artifactId = 'shop-page'
+    groupId = 'com.tokopedia.shop'
+    versionName = "2.22"
+    artifactName ="shop_page-release"
+}
 
 dependencies {
-    compile project(rootProject.ext.libraries.useCase)
-    compile project(rootProject.ext.libraries.abstraction)
-    compile project(rootProject.ext.libraries.cacheApi)
 
-    compile project(rootProject.ext.features.shopCommon)
-    compile project(rootProject.ext.features.goldMerchantCommon)
-    compile project(rootProject.ext.features.reputationCommon)
+    compile rootProject.ext.tkpdDependencies.abstraction
+    compile rootProject.ext.tkpdDependencies.usecase
+    compile rootProject.ext.tkpdDependencies.cacheapi
+
+    compile rootProject.ext.tkpdDependencies.shopCommon
+    compile rootProject.ext.tkpdDependencies.goldMerchantCommon
+    compile rootProject.ext.tkpdDependencies.reputationCommon
     compile rootProject.ext.tkpdDependencies.wishListCommon
 
     compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     compile rootProject.ext.playServicesDependencies.analytics
     compile rootProject.ext.supportLibDependencies.constraintLayout
@@ -27,3 +33,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }
+
+apply from: '../../../publish_local.gradle'

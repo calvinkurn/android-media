@@ -30,6 +30,10 @@ ext {
     tkpdFlightVersion = '2.22'
     tkpdCacheApiVersion = '2.22'
     tkpdReputationVersion = '2.22'
+    tkpdGroupchatVersion = '2.22'
+    tkpdShopVersion = '2.22'
+    tkpdKolVersion = '2.22'
+    tkpdPushNotifVersion = '2.22'
     compileSdkVersion = 27
     minSdkVersion = 16
     targetSdkVersion = 27
@@ -207,7 +211,13 @@ ext {
             reputationCommon : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
             wishListCommon : "com.tokopedia.wishlist:wishlist-common:${tkpdReputationVersion}",
             tokocash : "com.tokopedia.tokocash:tokocash:${tkpdReputationVersion}",
-            events      : "com.tokopedia.events:events:${tkpdReputationVersion}"
+            events      : "com.tokopedia.events:events:${tkpdReputationVersion}",
+            groupchat      : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
+            shopCommon  : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",
+            goldMerchantCommon: "com.tokopedia.gm:gold_merchant-common:${tkpdShopVersion}",
+            shopPage: "com.tokopedia.shop:shop_page:${tkpdShopVersion}",
+            kol: "com.tokopedia.kol:kol:${tkpdKolVersion}",
+            pushNotif: "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}"
     ]
 
     tkpdLibDependencies = [
