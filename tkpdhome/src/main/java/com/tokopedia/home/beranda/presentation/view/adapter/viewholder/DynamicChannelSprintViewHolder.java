@@ -122,7 +122,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventClickSeeAllDynamicChannel(DynamicLinkHelper.getActionLink(channel.getHeader()));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), "");
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
             }
         });
     }
@@ -162,9 +162,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 if (grid != null) {
                     ImageHandler.loadImageThumbs(holder.getContext(),
                             holder.channelImage1, grid.getImageUrl());
-                    holder.channelPrice1.setText(grid.getPrice());
+                    TextViewHelper.displayText(holder.channelPrice1, grid.getPrice());
                     TextViewHelper.displayText(holder.channelDiscount1, grid.getDiscount());
-                    holder.channelBeforeDiscPrice1.setText(grid.getSlashedPrice());
+                    TextViewHelper.displayText(holder.channelBeforeDiscPrice1, grid.getSlashedPrice());
 
                     holder.itemContainer1.setOnClickListener(new View.OnClickListener() {
                         @Override
