@@ -89,8 +89,8 @@ public class ShopPageTrackingConstant {
     public static final String EVENT_CATEGORY = "eventCategory";
     public static final String EVENT_ACTION = "eventAction";
     public static final String EVENT_LABEL = "eventLabel";
-    public static final String SHOP_ID = "shop_id";
-    public static final String PAGE_TYPE = "page_type";
+    public static final String SHOP_ID = "shopId";
+    public static final String PAGE_TYPE = "pageType";
     public static final String PRODUCT_ID = "product_id";
     public static final String ECOMMERCE = "ecommerce";
     public static final String CLICK = "click";
@@ -117,7 +117,7 @@ public class ShopPageTrackingConstant {
     public static final int OFFICIAL_STORE = 1;
     public static final int GOLD_MERCHANT = 2;
     public static final int REGULAR_MERCHANT = 3;
-    public static final String SHOP_TYPE = "shop_type";
+    public static final String SHOP_TYPE = "shopType";
     public static final String OFFICIAL_STORE_NAME = "official_store";
     public static final String GOLD_MERCHANT_NAME = "gold_merchant";
     public static final String REGULAR_MERCHANT_NAME = "regular";
