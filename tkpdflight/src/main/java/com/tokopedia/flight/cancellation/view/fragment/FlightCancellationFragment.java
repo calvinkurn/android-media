@@ -3,6 +3,7 @@ package com.tokopedia.flight.cancellation.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
@@ -11,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -103,6 +106,17 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
         flightCancellationPresenter.attachView(this);
         flightCancellationPresenter.onViewCreated();
+    }
+
+    @NonNull
+    @Override
+    protected BaseListAdapter<FlightCancellationViewModel, FlightCancellationAdapterTypeFactory> createAdapterInstance() {
+        BaseListAdapter<FlightCancellationViewModel, FlightCancellationAdapterTypeFactory> adapter = super.createAdapterInstance();
+        ErrorNetworkModel errorNetworkModel = adapter.getErrorNetworkModel();
+        errorNetworkModel.setIconDrawableRes(R.drawable.ic_flight_empty_state);
+        errorNetworkModel.setOnRetryListener(this);
+        adapter.setErrorNetworkModel(errorNetworkModel);
+        return adapter;
     }
 
     private void initialVariable() {
