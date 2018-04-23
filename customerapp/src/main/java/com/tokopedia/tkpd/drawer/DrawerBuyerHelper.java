@@ -40,18 +40,15 @@ import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
@@ -95,9 +92,9 @@ public class DrawerBuyerHelper extends DrawerHelper
         this.sessionHandler = sessionHandler;
         this.drawerCache = drawerCache;
         this.globalCacheManager = globalCacheManager;
-        shopName = (TextView) activity.findViewById(R.id.label);
-        shopLabel = (TextView) activity.findViewById(R.id.sublabel);
-        shopIcon = (ImageView) activity.findViewById(R.id.icon);
+        shopName = activity.findViewById(R.id.label);
+        shopLabel = activity.findViewById(R.id.sublabel);
+        shopIcon = activity.findViewById(R.id.icon);
         shopLayout = activity.findViewById(R.id.drawer_shop);
         footerShadow = activity.findViewById(R.id.drawer_footer_shadow);
     }
@@ -317,6 +314,12 @@ public class DrawerBuyerHelper extends DrawerHelper
                     )
             );
         }
+        buyerMenu.add(new DrawerItem(
+                        context.getString(R.string.drawer_title_travel_train_transaction_list),
+                        TkpdState.DrawerPosition.PEOPLE_TRAIN_TRANSACTION_LIST,
+                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
+                )
+        );
         return buyerMenu;
     }
 
@@ -509,6 +512,11 @@ public class DrawerBuyerHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST:
                     context.startActivity(FlightOrderListActivity.getCallingIntent(context));
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST);
+                    break;
+                case TkpdState.DrawerPosition.PEOPLE_TRAIN_TRANSACTION_LIST:
+                    context.startActivity(DigitalWebActivity.newInstance(context, TkpdBaseURL.TRAIN_WEBSITE_DOMAIN
+                            + TkpdBaseURL.TrainWebsite.PATH_USER_BOOKING_LIST + "?ispulsa=1"));
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.TRAIN_TRANSACTION_LIST);
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
                     intent = SellerRouter.getActivitySellingTransactionNewOrder(context);
