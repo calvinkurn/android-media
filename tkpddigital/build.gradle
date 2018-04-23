@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
 
 buildscript {
@@ -13,6 +12,13 @@ buildscript {
     }
 }
 
+project.ext {
+    artifactId = 'digital'
+    groupId = 'com.tokopedia.digital'
+    versionName = "2.22"
+    artifactName ="tkpddigital-release"
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -21,7 +27,7 @@ dependencies {
     compile rootProject.ext.tkpdDependencies.payment
     compile rootProject.ext.tkpdDependencies.loyalty
     compile rootProject.ext.tkpdDependencies.usecase
-    compile project(rootProject.ext.features.session)
+    compile rootProject.ext.tkpdDependencies.session
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -30,13 +36,13 @@ dependencies {
     testCompile 'org.mockito:mockito-all:1.10.19'
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+    annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     compile rootProject.ext.playServicesDependencies.firebase
 
     compile rootProject.ext.playServicesDependencies.remoteConfig
@@ -50,3 +56,5 @@ dependencies {
         exclude group: 'com.google.code.gson', module: 'gson'
     }
 }
+
+apply from: '../publish_local.gradle'
