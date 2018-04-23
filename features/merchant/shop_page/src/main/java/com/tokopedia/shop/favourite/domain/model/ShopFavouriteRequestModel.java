@@ -15,39 +15,28 @@ public class ShopFavouriteRequestModel {
 
     private String shopId;
     private String userId;
+    private String deviceId;
     private int page;
     private int perPage;
 
-    public String getShopId() {
-        return shopId;
-    }
-
     public void setShopId(String shopId) {
         this.shopId = shopId;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public int getPage() {
-        return page;
-    }
-
     public void setPage(int page) {
         this.page = page;
     }
 
-    public int getPerPage() {
-        return perPage;
-    }
-
     public void setPerPage(int perPage) {
         this.perPage = perPage;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public HashMap<String, String> getHashMap() {
@@ -57,6 +46,9 @@ public class ShopFavouriteRequestModel {
         }
         if (!TextUtils.isEmpty(userId)) {
             hashMap.put(ShopParamApiConstant.KEYWORD, userId);
+        }
+        if (!TextUtils.isEmpty(deviceId)) {
+            hashMap.put(ShopCommonParamApiConstant.DEVICE_ID, deviceId);
         }
         hashMap.put(ShopParamApiConstant.PAGE, String.valueOf(page));
         if (perPage > 0) {

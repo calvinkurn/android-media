@@ -163,7 +163,8 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
             public void onClick(View view) {
                 Application application = ShopInfoFragment.this.getActivity().getApplication();
                 if (application instanceof ShopModuleRouter) {
-                    ((ShopModuleRouter) application).goToProfileShop(getActivity(), Long.toString(shopInfo.getOwner().getOwnerId()));
+                    startActivity(((ShopModuleRouter) application)
+                            .getTopProfileIntent(getActivity(), Long.toString(shopInfo.getOwner().getOwnerId())));
                 }
             }
         });
