@@ -21,6 +21,7 @@ dependencies {
     compile project(rootProject.ext.features.core)
     compile project(rootProject.ext.libraries.design)
     compile project(rootProject.ext.libraries.abstraction)
+    compile project(rootProject.ext.features.inbox)
 
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
@@ -29,6 +30,10 @@ dependencies {
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
 
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler

@@ -6,7 +6,7 @@ package com.tokopedia.tkpd.tkpdcontactus.common.api;
  */
 
 public interface ContactUsURL {
-    String BASE_URL ="https://staging.tokopedia.com/";
+    String BASE_URL ="https://www.tokopedia.com/";
 
     String POPULAR_ARTICLE = "/bantuan/wp-json/wp/v2/posts";
     String BUYER_LIST ="/contact-us/ws/order/buyer";
