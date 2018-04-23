@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.thankyou.data.mapper;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.util.SessionHandler;
@@ -63,7 +64,7 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
         com.tokopedia.core.analytics.nishikino.model.Product productTracker = new com.tokopedia.core.analytics.nishikino.model.Product();
         productTracker.setProductID(product.getId());
         productTracker.setProductName(product.getName());
-        productTracker.setPrice(product.getPrice());
+        productTracker.setPrice(CurrencyFormatHelper.convertRupiahToInt(product.getPrice()));
         productTracker.setCategory(product.getCategory());
         productTracker.setQty(String.valueOf(product.getQuantity()));
         return productTracker;

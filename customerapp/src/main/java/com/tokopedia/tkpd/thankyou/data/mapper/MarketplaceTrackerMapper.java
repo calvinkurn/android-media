@@ -58,8 +58,8 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setTransactionID(String.valueOf(orderData.getOrderId()));
         purchase.setLogisticType(getLogisticType(orderData));
         purchase.setUserId(sessionHandler.getLoginID());
-        purchase.setShipping(String.valueOf(orderData.getShippingPrice()));
-        purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
+        purchase.setShipping((long)orderData.getShippingPrice());
+        purchase.setRevenue((long)paymentData.getPaymentAmount());
         purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
 
         for (Product product : getProductList(orderData)) {
@@ -123,7 +123,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             Product product = new Product();
             product.setProductID(String.valueOf(orderDetail.getProductId()));
             product.setProductName(getProductName(orderDetail));
-            product.setPrice(String.valueOf(orderDetail.getProductPrice()));
+            product.setPrice(String.valueOf((long)orderDetail.getProductPrice()));
             product.setCategory(getProductCategory(orderDetail));
             product.setQty(String.valueOf(orderDetail.getQuantity()));
 

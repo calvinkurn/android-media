@@ -11,7 +11,6 @@ import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
@@ -221,7 +220,7 @@ public class BranchSdkUtils {
     private static double convertIDRtoDouble(String value) {
         double result = 0;
         try {
-            result = CurrencyFormatHelper.convertRupiahToInt(value);
+            result = CurrencyFormatHelper.convertRupiahToLong(value);
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
         }

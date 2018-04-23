@@ -9,6 +9,7 @@ import com.appsflyer.AFInAppEventParameterName;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
@@ -141,7 +142,7 @@ public class CartPresenter implements ICartPresenter {
                 afQty = afQty + cartProduct.getProductQuantity();
                 Product product = new Product();
                 product.setProductID(cartProduct.getProductId());
-                product.setPrice(cartProduct.getProductPrice());
+                product.setPrice(CurrencyFormatHelper.convertRupiahToInt(cartProduct.getProductPrice()));
                 product.setQty(String.valueOf(cartProduct.getProductQuantity()));
                 product.setShopId(cartItem.getCartShop().getShopId());
                 product.setShopType(cartItem.getCartShop().getShopType());
@@ -437,7 +438,7 @@ public class CartPresenter implements ICartPresenter {
         Product analysisProduct = new Product();
         analysisProduct.setProductName(cartProduct.getProductName());
         analysisProduct.setProductID(cartProduct.getProductId());
-        analysisProduct.setPrice(cartProduct.getProductPrice());
+        analysisProduct.setPrice(CurrencyFormatHelper.convertRupiahToInt(cartProduct.getProductPrice()));
         analysisProduct.setQty(quantity);
         analysisProduct.setDimension38(cartProduct.getProductTrackerData().getAttribution());
         analysisProduct.setDimension40(cartProduct.getProductTrackerData().getListDataName());
