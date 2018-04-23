@@ -16,7 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -298,7 +298,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void updatePassengerList(List<FlightDetailPassenger> flightDetailPassengers) {
         if (flightDetailPassengers.size() < 2) {
             removePassengerRecyclerDivider();
-        }else {
+        } else {
             addPassengerRecyclerDivider();
         }
 
@@ -542,7 +542,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         int color = getContext().getResources().getColor(R.color.green_500);
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(Html.fromHtml(getString(
+        dialog.setDesc(MethodChecker.fromHtml(getString(
                 R.string.flight_cancellation_recommendation_to_contact_airlines_description,
                 color, "#")));
         dialog.setBtnOk("OK");
@@ -559,7 +559,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void showRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> items) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(Html.fromHtml(
+        dialog.setDesc(MethodChecker.fromHtml(
                 getString(R.string.flight_cancellation_dialog_refundable_description)));
         dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {
@@ -583,7 +583,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void showNonRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> items) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(Html.fromHtml(getString(
+        dialog.setDesc(MethodChecker.fromHtml(getString(
                 R.string.flight_cancellation_dialog_non_refundable_description)));
         dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {

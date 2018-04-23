@@ -11,7 +11,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
@@ -249,7 +249,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         int color = getContext().getResources().getColor(R.color.green_500);
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(Html.fromHtml(getString(
+        dialog.setDesc(MethodChecker.fromHtml(getString(
             R.string.flight_cancellation_recommendation_to_contact_airlines_description,
             color, "#")));
         dialog.setBtnOk("OK");
@@ -267,7 +267,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
         dialog.setDesc(
-            Html.fromHtml(getString(
+            MethodChecker.fromHtml(getString(
                 R.string.flight_cancellation_dialog_non_refundable_description)));
         dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {
@@ -292,7 +292,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
         dialog.setDesc(
-            Html.fromHtml(getString(R.string.flight_cancellation_dialog_refundable_description)));
+            MethodChecker.fromHtml(getString(R.string.flight_cancellation_dialog_refundable_description)));
         dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
