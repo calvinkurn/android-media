@@ -36,6 +36,8 @@ public interface TopProfileActivityListener {
         void onSuccessGetProfileData(TopProfileViewModel topProfileViewModel);
 
         void onErrorGetProfileData(String message);
+
+        void onGoToLoginPage();
     }
 
     interface Presenter extends CustomerPresenter<View>{
