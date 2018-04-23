@@ -22,6 +22,7 @@
     <string name="ride_phone_verification_header">Anda harus Verifikasi nomor ponsel untuk melanjutkan.</string>
     <string name="protect_your_account_with_phone_verification">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel</string>
     <string name="title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
+    <string name="span_already_have_tokopedia_account">Sudah punya akun Tokopedia? Masuk</string>
     <string name="title_resend_otp_sms">Kirim SMS Ulang</string>
     <string name="change_number">Ubah Nomor</string>
     <string name="title_phone_number">Nomor Ponsel</string>
@@ -52,7 +53,9 @@
     <string name="default_error_upload_image">Gagal mengupload gambar</string>
     <string name="title_activate_account">Aktivasi Akun Tokopedia</string>
     <string name="activation_resend_email">Belum menerima email? Kirim ulang email</string>
+    <string name="activation_resend_email_2">Tidak menerima kode? Kirim ulang</string>
     <string name="activation_header_text">Kode aktivasi akun telah dikirimkan ke</string>
+    <string name="activation_header_text_2">Kode aktivasi akun telah dikirimkan melalui \nemail ke</string>
     <string name="resend_activation_email">Kirim Ulang Email</string>
     <string name="message_resend_email_to">Apakah anda ingin kirim ulang email ke</string>
     <string name="button_change_email">Ubah Email</string>
@@ -60,7 +63,7 @@
     <string name="default_relogin">Autentikasi gagal. Mohon coba kembali.</string>
     <string name="tokocash">TokoCash</string>
     <string name="tokocash_phone_verification">Dengan memverifikasi nomor ponsel, TokoCash akan diaktifkan</string>
-    <string name="register_now">Daftar Sekarang di Tokopedia</string>
+    <string name="register_now">Daftar sekarang dengan:</string>
     <string name="profile_completion_title">Data Diri</string>
     <string name="continue_form">Lanjut</string>
     <string name="skip_form">Lewati</string>
@@ -95,6 +98,7 @@
     <string name="error_register_webview">Terjadi kesalahan. Mohon coba kembali.</string>
     <string name="hi">Hai</string>
     <string name="success_request_otp">Kode verifikasi telah dikirim.</string>
+    <string name="title_activity_register_2">Daftar dengan Email</string>
 
     <!-- LOGIN PHONE NUMBER -->
     <string name="login_with_phone_number">Masuk dengan Nomor Ponsel</string>
@@ -116,6 +120,8 @@
     <string name="verification_sms_to"><![CDATA[Melalui <b>SMS</b> ke nomor]]></string>
     <string name="verification_call_to"><![CDATA[Melalui <b>panggilan telepon</b> ke
     nomor]]></string>
+
+    <string name="verification_masking_x">**** - **** - %1$s</string>
     <string name="verification_code_sent_to_call"><![CDATA[Kode verifikasi telah dikirimkan
         lewat<br>panggilan telepon ke]]></string>
     <string name="choose_account">Pilih Akun</string>
@@ -133,6 +139,9 @@
     <string name="limit_otp_reached">Anda sudah 3 kali melakukan pengiriman ulang, silakan coba lagi dalam 60 menit.</string>
     <string name="limit_otp_email_reached">Anda Sudah Melakukan 3 Kali Validasi. Silakan Mencoba Kembali 1 Jam Kemudian.</string>
     <string name="phone_number_not_registered">Nomor ponsel belum terdaftar</string>
+    <string name="phone_number_already_registered">Nomor Ponsel Sudah Terdaftar</string>
+    <string name="email_already_registered">Email Sudah Terdaftar</string>
+    <string name="email_already_registered_info">Masuk dengan email %1$s?</string>
     <string name="phone_number_invalid">Nomor ponsel tidak benar</string>
     <string name="error_wrong_otp">Kode yang Anda masukkan salah</string>
     <string name="login">Masuk</string>
@@ -141,6 +150,7 @@
     <string name="second">detik</string>
     <string name="not_received_code">Tidak menerima kode?</string>
     <string name="register">Daftar</string>
+    <string name="change">Ganti</string>
 
     <!-- Change Phone Number strings -->
     <string name="you_have">Anda memiliki:</string>
@@ -162,7 +172,13 @@
     <string name="change_phone_text">Setelah pengajuan Anda berhasil dan diterima, Saldo Tokopedia Anda <b>tidak dapat digunakan untuk bertransaksi selama 3x24 jam.</b></string>
 
     <string name="make_sure_phone_is_active">Pastikan nomor ponsel Anda aktif untuk keamanan dan kemudahan transaksi.</string>
-    <string name="minimal_6_character">Minimal 6 karakter</string>
+    <string name="phone_example">Contoh: 08XXXXXXXXX</string>
+    <string name="wrong_email_format">Format email salah</string>
+    <string name="send_verif_to_email">Kami akan mengirimkan kode melalui email</string>
+    <string name="error_minimal_name">Minimum 3 karakter</string>
+    <string name="error_minimal_phone">Nomor ponsel terlalu pendek, minimum 8 angka</string>
+    <string name="error_minimal_password">Kata sandi terlalu pendek, minimum 6 karakter</string>
+    <string name="minimal_6_character">Minimum 6 karakter</string>
     <string name="please_click_this_button_to_continue">Silahkan klik tombol ini untuk melanjutkan</string>
     <string name="to_verify_sms">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui SMS ke</string>
     <string name="send_sms_verification">Kirim SMS Verifikasi</string>
@@ -215,4 +231,55 @@
     <string name="title_disabled_post">Oops, post belum bisa ditampilkan</string>
     <string name="subtitle_disabled_post">Anda dapat melihat post ini melalui Tokopedia App</string>
 
+    <!--REGISTER PHONE NUMBER-->
+    <string name="register_with_phone_number">Daftar dengan Nomor Ponsel</string>
+    <string name="register_with_phone_number_button">Nomor Ponsel</string>
+    <string name="register_with_email">Email</string>
+    <string name="register_we_will_send_verification_code">Kami akan mengirimkan SMS kode verifikasi</string>
+    <string name="error_field_required_phone">Masukkan nomor ponsel untuk mendaftar</string>
+    <string name="error_char_count_under">Nomor ponsel terlalu pendek, minimum 8 angka</string>
+    <string name="error_char_count_over">Nomor ponsel terlalu panjang, maksimal 15 angka</string>
+    <string name="error_input_phone_number">Masukkan nomor ponsel untuk mendaftar</string>
+    <string name="string_bottom_info">Dengan mendaftar, saya menyetujui \n<a href="https://m.tokopedia.com/terms.pl">Syarat dan Ketentuan</a> serta <a href="https://m.tokopedia.com/privacy.pl">Kebijakan Privasi</a>.</string>
+    <string name="phone_number_already_registered_info">Masuk dengan nomor %1$s?</string>
+    <string name="phone_number_not_registered_info">Apakah nomor ponsel yang Anda masukkan sudah benar?</string>
+    <string name="phone_number_already_registered_no">Ubah</string>
+    <string name="phone_number_already_registered_yes">Masuk</string>
+    <string name="phone_number_not_registered_no">Ubah</string>
+    <string name="phone_number_not_registered_yes">Ya, Lanjut</string>
+    <string name="activation_title">Masukkan Kode Aktivasi</string>
+
+    <!--ADD CHANGE EMAIL-->
+    <string name="title_add_email">Tambah Email</string>
+    <string name="email_title_top">Pastikan email Anda aktif untuk keamanan\n dan kemudahan transaksi.</string>
+    <string name="we_will_send_email_verification_code">Kami akan mengirimkan email kode verifikasi</string>
+    <string name="button_continue">Lanjutkan</string>
+
+    <!--ADD CHANGE NAME-->
+    <string name="title_name_full">Nama Lengkap</string>
+    <string name="title_change_name">Ubah Nama Lengkap</string>
+    <string name="title_complete_name">Nama Lengkap</string>
+    <string name="email_name_top">Masukkan nama lengkap Anda dengan benar.\nNama lengkap hanya dapat diubah satu kali.</string>
+    <string name="button_name_continue">Ubah Nama Lengkap</string>
+    <string name="name_confirmation">Apakah nama lengkap Anda sudah benar?</string>
+    <string name="name_confirmation_content">Nama lengkap hanya dapat diubah satu kali</string>
+    <string name="error_name_too_short">Minimum 3 karakter.</string>
+    <string name="error_name_too_long">Maksimal 128 karakter.</string>
+    <string name="name_confirmation_yes">Ya, benar</string>
+    <string name="name_confirmation_no">Tidak</string>
+
+
+    <!--ADD CHANGE PASSWORD-->
+    <string name="title_add_password">Buat Kata Sandi</string>
+    <string name="add_password_top">Membuat kata sandi membantu Anda menjaga keamanan akun dan transaksi di Tokopedia.</string>
+    <string name="title_add_password_hint">Masukkan Kata Sandi Baru</string>
+    <string name="info_password_min_char">Minimum 6 karakter</string>
+    <string name="button_password_continue">Buat Kata Sandi</string>
+
+
+    <!--WELCOME PAGE-->
+    <string name="title_welcome">Selamat Bergabung di Tokopedia</string>
+    <string name="sub_title_welcome">Silahkan lanjut atau lengkapi profil \nuntuk menjadi <i>Verified Account</i>.</string>
+    <string name="welcome_button_continue">Lanjut</string>
+    <string name="welcome_button_complete">Lengkapi Profil</string>
 </resources>

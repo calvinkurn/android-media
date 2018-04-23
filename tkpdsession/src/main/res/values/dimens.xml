@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="dimen_id_image">300dp</dimen>
-    <dimen name="width_icon_register">216dp</dimen>
+    <dimen name="width_icon_register">125dp</dimen>
+    <dimen name="height_icon_register">95dp</dimen>
     <dimen name="btn_login_height">52dp</dimen>
     <dimen name="space_vs">5dp</dimen>
     <dimen name="space_small">10dp</dimen>
@@ -12,12 +13,14 @@
     <dimen name="space_slightly_very_large">41dp</dimen>
     <dimen name="space_very_large">43dp</dimen>
     <dimen name="image_size">90dp</dimen>
+    <dimen name="layout_250">250dp</dimen>
+    <dimen name="layout_50">50dp</dimen>
 
     <dimen name="padding_textview_prof_comp">2dp</dimen>
-    <dimen name="padding_vsmall_prof_comp">6dp</dimen>
-    <dimen name="padding_small_prof_comp">8dp</dimen>
-    <dimen name="padding_small_med_prof_comp">8dp</dimen>
-    <dimen name="padding_medium_prof_comp">16dp</dimen>
+    <dimen name="dp_5mall_prof_comp">6dp</dimen>
+    <dimen name="dp_10_prof_comp">8dp</dimen>
+    <dimen name="dp_10_med_prof_comp">8dp</dimen>
+    <dimen name="dp_20ium_prof_comp">16dp</dimen>
     <dimen name="padding_large_prof_comp">18dp</dimen>
 
 
@@ -28,6 +31,8 @@
     <dimen name="text_size_13">13sp</dimen>
     <dimen name="text_size_14">14sp</dimen>
     <dimen name="text_size_16">16sp</dimen>
+    <dimen name="dp_18">18dp</dimen>
+    <dimen name="sp_32">32sp</dimen>
 
     <dimen name="padding_activity">24dp</dimen>
     <dimen name="verification_icon">38dp</dimen>

@@ -35,6 +35,8 @@ public class OrderData implements Parcelable {
     private List<Shipment> shipments;
     private String catId;
     private Integer mustInsurance;
+    private String homeAttribution;
+    private String listNameProduct;
 
     public OrderData() {
     }
@@ -175,6 +177,22 @@ public class OrderData implements Parcelable {
         this.mustInsurance = mustInsurance;
     }
 
+    public String getHomeAttribution() {
+        return homeAttribution;
+    }
+
+    public void setHomeAttribution(String homeAttribution) {
+        this.homeAttribution = homeAttribution;
+    }
+
+    public String getListNameProduct() {
+        return listNameProduct;
+    }
+
+    public void setListNameProduct(String listNameProduct) {
+        this.listNameProduct = listNameProduct;
+    }
+
     protected OrderData(Parcel in) {
         insurance = in.readString();
         notes = in.readString();
@@ -193,6 +211,8 @@ public class OrderData implements Parcelable {
         shipments = in.readArrayList(Shipment.class.getClassLoader());
         catId = in.readString();
         mustInsurance = in.readInt();
+        homeAttribution = in.readString();
+        listNameProduct = in.readString();
     }
 
     @Override
@@ -219,6 +239,8 @@ public class OrderData implements Parcelable {
         dest.writeArray(shipments.toArray());
         dest.writeString(catId);
         dest.writeInt(mustInsurance);
+        dest.writeString(homeAttribution);
+        dest.writeString(listNameProduct);
     }
 
     @SuppressWarnings("unused")
@@ -252,6 +274,8 @@ public class OrderData implements Parcelable {
         orderData.setShipments(data.getForm().getShipment());
         orderData.setCatId(data.getForm().getProductDetail().getProductCatId());
         orderData.setMustInsurance(data.getForm().getProductDetail().getProductMustInsurance());
+        orderData.setHomeAttribution(productCartPass.getTrackerAttribution());
+        orderData.setListNameProduct(productCartPass.getListName());
         return orderData;
     }
 }

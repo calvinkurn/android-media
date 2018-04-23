@@ -167,4 +167,9 @@
 
     <string name="title_topup_tokocash">Nominal Top Up</string>
 
+    <string name="ussd_permission_allowed_label">both allowed</string>
+    <string name="ussd_permission_denied_label">failed denied both of them</string>
+    <string name="status_success_label">Success</string>
+    <string name="status_failed_label">Failed</string>
+
 </resources>

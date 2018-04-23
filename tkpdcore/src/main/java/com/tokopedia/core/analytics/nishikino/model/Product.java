@@ -10,19 +10,24 @@ public class Product extends BaseGTMModel {
 
     private Map<String, Object> Product = new HashMap<>();
 
-    public static final String KEY_NAME     = "name";
-    public static final String KEY_ID       = "id";
-    public static final String KEY_PRICE    = "price";
-    public static final String KEY_BRAND    = "brand";
-    public static final String KEY_CAT      = "category";
-    public static final String KEY_VARIANT  = "variant";
-    public static final String KEY_QTY      = "quantity";
-    public static final String KEY_SHOP_ID  = "shop_id";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_ID = "id";
+    public static final String KEY_PRICE = "price";
+    public static final String KEY_BRAND = "brand";
+    public static final String KEY_CAT = "category";
+    public static final String KEY_VARIANT = "variant";
+    public static final String KEY_QTY = "quantity";
+    public static final String KEY_SHOP_ID = "shop_id";
+    public static final String KEY_SHOP_TYPE = "shop_type";
     public static final String KEY_SHOP_NAME = "shop_name";
     public static final String KEY_CATEGORY_ID = "category_id";
     public static final String KEY_CART_ID = "cart_id";
-    public static final String KEY_POS      = "position";
-    public static final String KEY_LIST     = "list";
+    public static final String KEY_POS = "position";
+    public static final String KEY_LIST = "list";
+    public static final String KEY_DIMENSION_38 = "dimension38";
+    public static final String KEY_DIMENSION_40 = "dimension40";
+
+    public static final String DEFAULT_VALUE_NONE_OTHER = "none/other";
 
     public Product() {
 
@@ -48,8 +53,12 @@ public class Product extends BaseGTMModel {
         Product.put(KEY_CAT, category);
     }
 
-    public void setList(Object list) {
-        Product.put(KEY_LIST, list);
+    public void setDimension38(Object data) {
+        Product.put(KEY_DIMENSION_38, data);
+    }
+
+    public void setDimension40(Object data) {
+        Product.put(KEY_DIMENSION_40, data);
     }
 
     public void setPosition(Object position) {
@@ -70,6 +79,10 @@ public class Product extends BaseGTMModel {
 
     public void setShopId(String shopId) {
         Product.put(KEY_SHOP_ID, shopId);
+    }
+
+    public void setShopType(String shopType) {
+        Product.put(KEY_SHOP_TYPE, shopType);
     }
 
     public void setShopName(String shopName) {

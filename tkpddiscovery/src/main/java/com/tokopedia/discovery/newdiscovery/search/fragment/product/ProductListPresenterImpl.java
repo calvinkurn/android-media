@@ -18,6 +18,7 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
+import com.tokopedia.discovery.newdiscovery.search.fragment.GetQuickFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
@@ -206,6 +207,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     @Override
                     public void onCompleted() {
                         getView().getDynamicFilter();
+                        getView().getQuickFilter();
                         getView().hideRefreshLayout();
                     }
 
@@ -263,6 +265,29 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 getView().onGetGuidedSearchComplete(guidedSearchViewModel);
             }
         });
+    }
+
+    @Override
+    public void requestQuickFilter(HashMap<String, String> additionalParams) {
+        RequestParams params = getQuickFilterRequestParams();
+        params = enrichWithFilterAndSortParams(params);
+        params = enrichWithAdditionalParams(params, additionalParams);
+        getDynamicFilterUseCase.execute(params, new GetQuickFilterSubscriber(getView()));
+    }
+
+    private RequestParams getQuickFilterRequestParams() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(AuthUtil.generateParamsNetwork2(context, requestParams.getParameters()));
+        requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_QUICK_FILTER);
+        requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        requestParams.putString(BrowseApi.Q, getView().getQueryKey());
+        if (getView().getSearchParameter().getDepartmentId() != null
+                && !getView().getSearchParameter().getDepartmentId().isEmpty()) {
+            requestParams.putString(BrowseApi.SC, getView().getSearchParameter().getDepartmentId());
+        } else {
+            requestParams.putString(BrowseApi.SC, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SC);
+        }
+        return requestParams;
     }
 
     private void enrichWithForceSearchParam(RequestParams requestParams, boolean isForceSearch) {

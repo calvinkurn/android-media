@@ -21,8 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -398,7 +398,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                presenter.onDepartureDateChange(year, month, dayOfMonth);
+                presenter.onDepartureDateChange(year, month, dayOfMonth, true);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
@@ -414,7 +414,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                presenter.onReturnDateChange(year, month, dayOfMonth);
+                presenter.onReturnDateChange(year, month, dayOfMonth, true);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
@@ -603,10 +603,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private void bannerAllClickAction() {
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication())
-                .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK) != null) {
+                .getPromoListIntent(getActivity()) != null) {
 
             startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK));
+                    .getPromoListIntent(getActivity()));
         }
     }
 

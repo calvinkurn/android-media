@@ -18,7 +18,9 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
+import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -30,6 +32,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         implements BaseListViewListener<T>, BaseListAdapter.OnAdapterInteractionListener<T>,
         ErrorNetworkModel.OnRetryListener{
 
+    private static final int DEFAULT_INITIAL_PAGE = 1;
     private BaseListAdapter<T, F> adapter;
     private SwipeRefreshLayout swipeToRefresh;
     private SnackbarRetry snackBarRetry;
@@ -99,7 +102,6 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         }
 
         if (callInitialLoadAutomatically()) {
-            showLoading();
             loadInitialData();
         }
     }
@@ -111,17 +113,22 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     protected void loadInitialData() {
-        // Note that we don't clear data when load initial
-        // instead, we just set the flag, so that the data is still there
-        // do this flag check on renderList.
+        // Load all from the beginning / reset data
+        // Need to clear all data to avoid invalid data in case of error
         isLoadingInitialData = true;
-        loadData(1);
+        adapter.clearAllElements();
+        showLoading();
+        loadData(getDefaultInitialPage());
     }
 
     /**
      * need for data with paging, page = 1 is initial load
      */
     public abstract void loadData(int page);
+
+    public int getDefaultInitialPage() {
+        return DEFAULT_INITIAL_PAGE;
+    }
 
     protected boolean callInitialLoadAutomatically() {
         return true;
@@ -140,8 +147,13 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
                     loadData(page);
                 }
             };
+            endlessRecyclerViewScrollListener.setEndlessLayoutManagerListener(getEndlessLayoutManagerListener());
         }
         recyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
+    }
+
+    @Nullable protected EndlessLayoutManagerListener getEndlessLayoutManagerListener(){
+        return null;
     }
 
     public void disableLoadMore() {
@@ -159,6 +171,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     protected void showLoading() {
         adapter.removeErrorNetwork();
+        adapter.setLoadingModel(getLoadingModel());
         adapter.showLoading();
         hideSnackBarRetry();
     }
@@ -212,7 +225,9 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     protected Visitable getEmptyDataViewModel() {
-        return new EmptyModel();
+        EmptyModel emptyModel = new EmptyModel();
+        emptyModel.setContent(getString(R.string.title_no_result));
+        return emptyModel;
     }
 
     @Override
@@ -233,6 +248,9 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     private void onGetListErrorWithEmptyData(Throwable throwable) {
+        if (getView() != null) {
+            return;
+        }
         String message = getMessageFromThrowable(getView().getContext(), throwable);
         adapter.showErrorNetwork(message, this);
         if (swipeToRefresh != null) {
@@ -293,4 +311,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         return endlessRecyclerViewScrollListener.getCurrentPage();
     }
 
+    public LoadingModel getLoadingModel() {
+        return new LoadingModel();
+    }
 }
