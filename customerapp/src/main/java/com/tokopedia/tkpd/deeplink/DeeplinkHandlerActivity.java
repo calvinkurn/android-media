@@ -57,6 +57,8 @@ import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
+import com.tokopedia.gamification.applink.GamificationApplinkModule;
+import com.tokopedia.gamification.applink.GamificationApplinkModuleLoader;
 
 import org.json.JSONObject;
 
@@ -82,7 +84,8 @@ import io.branch.referral.BranchError;
         EventsDeepLinkModule.class,
         LoyaltyAppLinkModule.class,
         ShopAppLinkModule.class,
-        GroupChatApplinkModule.class
+        GroupChatApplinkModule.class,
+        GamificationApplinkModule.class,
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -107,7 +110,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new EventsDeepLinkModuleLoader(),
                 new LoyaltyAppLinkModuleLoader(),
                 new ShopAppLinkModuleLoader(),
-                new GroupChatApplinkModuleLoader()
+                new GroupChatApplinkModuleLoader(),
+                new GamificationApplinkModuleLoader()
         );
     }
 
@@ -140,7 +144,13 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 } else if (bundle.getBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, false)) {
                     int notificationType = bundle.getInt(Constant.EXTRA_NOTIFICATION_TYPE, 0);
                     int notificationId = bundle.getInt(Constant.EXTRA_NOTIFICATION_ID, 0);
-                    HistoryNotification.clearHistoryNotification(this, notificationType);
+
+                    if (notificationId == 0) {
+                        HistoryNotification.clearAllHistoryNotification(this, notificationType);
+                    } else {
+                        HistoryNotification.clearHistoryNotification(this, notificationType, notificationId);
+                    }
+
                     NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
                     notificationManagerCompat.cancel(notificationId);
                     notificationManagerCompat.cancel(notificationType);

@@ -15,11 +15,12 @@ import java.util.List;
 public class HistoryNotification {
 
 
-    public static void storeNotification(String senderName, String message, int notificationType) {
+    public static void storeNotification(String senderName, String message, int notificationType, int notificationId) {
         HistoryNotificationDB historyNotificationDB = new HistoryNotificationDB();
         historyNotificationDB.setMessage(message);
         historyNotificationDB.setSenderName(senderName);
         historyNotificationDB.setNotificationType(notificationType);
+        historyNotificationDB.setNotificationId(notificationId);
         historyNotificationDB.save();
     }
 
@@ -32,7 +33,14 @@ public class HistoryNotification {
     }
 
 
-    public static void clearHistoryNotification(Context context, int notificationType) {
+    public static void clearHistoryNotification(Context context, int notificationType, int notificationId) {
+        SQLite.delete().from(HistoryNotificationDB.class)
+                .where(HistoryNotificationDB_Table.notification_type.eq(notificationType))
+                .and(HistoryNotificationDB_Table.notification_id.eq(notificationId))
+                .execute();
+    }
+
+    public static void clearAllHistoryNotification(Context context, int notificationType) {
         SQLite.delete().from(HistoryNotificationDB.class)
                 .where(HistoryNotificationDB_Table.notification_type.eq(notificationType))
                 .execute();

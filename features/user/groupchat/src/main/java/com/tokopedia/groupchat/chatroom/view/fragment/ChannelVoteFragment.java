@@ -1,6 +1,5 @@
 package com.tokopedia.groupchat.chatroom.view.fragment;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -15,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +31,11 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
+import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.view.ProgressBarWithTimer;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
+import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.presenter.ChannelVotePresenter;
@@ -43,7 +44,6 @@ import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
-import com.tokopedia.groupchat.common.util.TextFormatter;
 import com.tokopedia.groupchat.vote.view.adapter.VoteAdapter;
 import com.tokopedia.groupchat.vote.view.adapter.typefactory.VoteTypeFactory;
 import com.tokopedia.groupchat.vote.view.adapter.typefactory.VoteTypeFactoryImpl;
@@ -245,8 +245,10 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         voteInfoLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
-                        (getActivity(), voteInfoViewModel.getVoteInfoUrl());
+                if(!TextUtils.isEmpty(voteInfoViewModel.getVoteInfoUrl())) {
+                    ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
+                            (getActivity(), voteInfoViewModel.getVoteInfoUrl());
+                }
             }
         });
 
@@ -274,6 +276,14 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 iconVote.setImageResource(R.drawable.ic_timer_inactive);
             }
             voteAdapter.updateStatistic();
+            if (voteInfoViewModel != null) {
+                voteInfoViewModel.setStatusId(VoteInfoViewModel.STATUS_FINISH);
+
+                if (getActivity() instanceof GroupChatContract.View) {
+                    ((GroupChatContract.View) getActivity()).updateVoteViewModel(
+                            voteInfoViewModel, "");
+                }
+            }
         }
     }
 
@@ -387,9 +397,13 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_LOGIN
-                && resultCode == Activity.RESULT_OK) {
-            userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+        if (requestCode == REQUEST_LOGIN) {
+            if (getActivity().getApplication() instanceof AbstractionRouter) {
+                userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+            }
+            if (getActivity() instanceof GroupChatActivity) {
+                ((GroupChatActivity) getActivity()).onSuccessLogin();
+            }
         }
     }
 

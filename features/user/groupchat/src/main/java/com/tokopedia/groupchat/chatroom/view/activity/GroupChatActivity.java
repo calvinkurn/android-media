@@ -685,6 +685,9 @@ public class GroupChatActivity extends BaseSimpleActivity
             if (!TextUtils.isEmpty(channelInfoViewModel.getAdsImageUrl())) {
                 trackAdsEE(channelInfoViewModel);
             }
+            if (getApplication() instanceof AbstractionRouter) {
+                userSession = ((AbstractionRouter) getApplication()).getSession();
+            }
             presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                     userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken());
 
@@ -975,6 +978,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else if (currentFragmentIsInfo()) {
             populateChannelInfoFragment();
         }
+        setGreenIndicator(channelInfoViewModel.getVoteInfoViewModel());
     }
 
     private void refreshTab() {
@@ -1314,6 +1318,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onUserBanned(User user) {
+        hideLoading();
         if (user != null
                 && !TextUtils.isEmpty(user.getUserId())
                 && userSession.getUserId().equals(user.getUserId())) {

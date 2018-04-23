@@ -252,30 +252,32 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
-    public GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType) {
+    public GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType, String pageType, String productId) {
         Authenticated authEvent = new Authenticated();
         authEvent.setUserFullName(SessionHandler.getLoginName(context));
         authEvent.setUserID(SessionHandler.getGTMLoginID(context));
         authEvent.setShopId(shopID);
         authEvent.setShopType(shopType);
+        authEvent.setPageType(pageType);
+        authEvent.setProductId(productId);
         authEvent.setUserSeller(SessionHandler.isUserHasShop(context) ? 1 : 0);
 
-        CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
+        CommonUtils.dumper("GAv4 appdata authenticated " + new JSONObject(authEvent.getAuthDataLayar()).toString());
 
-        eventAuthenticate(authEvent);
-        sendScreen(screenName);
+        eventAuthenticate(authEvent).sendScreen(screenName);
 
         return this;
     }
 
     @Override
     public GTMContainer eventAuthenticate(Authenticated authenticated) {
-        CommonUtils.dumper("GAv4 send authenticated");
         if (TextUtils.isEmpty(authenticated.getcIntel())) {
             GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
                     Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
                     Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
                     Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
+                    Authenticated.KEY_PAGE_TYPE, authenticated.getPageType(),
+                    Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
                     Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed()
             ));
 
@@ -285,6 +287,8 @@ public class GTMContainer implements IGTMContainer {
                     Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
                     Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
                     Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
+                    Authenticated.KEY_PAGE_TYPE, authenticated.getPageType(),
+                    Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
                     Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel()
             ));
         }
@@ -786,7 +790,7 @@ public class GTMContainer implements IGTMContainer {
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf("event", "productView",
-                        "eventCategory", "search result",
+                        "eventCategory", AppEventTracking.Category.IMAGE_SEARCH_RESULT,
                         "eventAction", "impression - product",
                         "eventLabel", "",
                         "ecommerce", DataLayer.mapOf(

@@ -1,6 +1,5 @@
 package com.tokopedia.groupchat.chatroom.view.fragment;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -77,6 +76,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private static final long DELAY_TIME_SPRINT_SALE = TimeUnit.SECONDS.toMillis(3);
     private static final int REQUEST_LOGIN = 111;
+    private static final String NO_USER_ID = "anonymous";
 
     @Inject
     ChatroomPresenter presenter;
@@ -638,7 +638,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private boolean canShowUserEnter(UserActionViewModel userActionViewModel) {
         try {
-            return !TextUtils.isEmpty(userActionViewModel.getUserName())
+            return !TextUtils.isEmpty(userActionViewModel.getUserId())
+                    && !userActionViewModel.getUserId().toLowerCase().equals(NO_USER_ID)
+                    && !TextUtils.isEmpty(userActionViewModel.getUserName())
                     && (isListEmpty()
                     || lastItemIsNotUserAction()
                     || lastItemIsNotSameUser(userActionViewModel));
@@ -755,7 +757,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onSprintSaleComponentClicked(SprintSaleAnnouncementViewModel sprintSaleAnnouncementViewModel) {
         if (TextUtils.isEmpty(sprintSaleAnnouncementViewModel.getRedirectUrl())) {
-            sprintSaleAnnouncementViewModel.setRedirectUrl(GroupChatUrl.DEFAULT_SPRINT_SALE_APPLINK);
+            return;
         }
 
         ArrayList<EEPromotion> list = new ArrayList<>();
@@ -793,7 +795,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onSprintSaleIconClicked(SprintSaleViewModel sprintSaleViewModel) {
         if (TextUtils.isEmpty(sprintSaleViewModel.getRedirectUrl())) {
-            sprintSaleViewModel.setRedirectUrl(GroupChatUrl.DEFAULT_SPRINT_SALE_APPLINK);
+            return;
         }
 
         ArrayList<EEPromotion> list = new ArrayList<>();
@@ -823,8 +825,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_LOGIN
-                && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_LOGIN) {
+            refreshChat();
             ((GroupChatContract.View) getActivity()).onSuccessLogin();
             userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
             setForLoginUser(userSession != null && userSession.isLoggedIn());

@@ -20,7 +20,6 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.discovery.imagesearch.data.repository.ImageSearchRepository;
-import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchItemRequest;
 import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchItemResponse;
 import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
@@ -33,13 +32,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by sachinbansal on 1/10/18.
@@ -146,9 +142,13 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                                             }
                                             List<ProductModel> productItemList = new ArrayList<>();
                                             for (String productId : strings) {
-                                                if (productItemHashMap.get(productId) != null)
-                                                    productItemList.add(productItemHashMap.get(productId));
+                                                if (productItemHashMap.get(productId) != null) {
+                                                    ProductModel productModel = productItemHashMap.get(productId);
+                                                    productItemList.add(productModel);
+                                                    productItemHashMap.remove(productModel.getProductID());
+                                                }
                                             }
+                                            productItemList.addAll(productItemHashMap.values());
                                             searchResultModel.setProductList(productItemList);
                                             searchResultModel.setTotalData(productItemList.size());
                                             return searchResultModel;

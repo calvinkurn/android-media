@@ -27,6 +27,9 @@ public class HistoryNotificationDB extends BaseModel{
     @Column(name = "notification_type")
     private int NotificationType;
 
+    @Column(name = "notification_id")
+    private int NotificationId;
+
     public int getId() {
         return Id;
     }
@@ -60,4 +63,11 @@ public class HistoryNotificationDB extends BaseModel{
     }
 
 
+    public int getNotificationId() {
+        return NotificationId;
+    }
+
+    public void setNotificationId(int notificationId) {
+        NotificationId = notificationId;
+    }
 }

@@ -91,7 +91,8 @@ public class TopProfileDataMapper
 
     private void setOwnNameandAvatar(TopProfileViewModel model, ProfileData.Data data, ProfileInfo info){
         int userIdData = data.getId();
-        int userIdInfo = Integer.valueOf(info.getUserId());
+        int userIdInfo = (TextUtils.isEmpty(info.getUserId()) ?
+                0 : Integer.valueOf(info.getUserId()));
 
         if (userIdData == userIdInfo){
             model.setName(info.getFullName());

@@ -21,6 +21,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -44,7 +45,6 @@ import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -59,7 +59,7 @@ import com.tokopedia.core.appupdate.ApplicationUpdate;
 import com.tokopedia.core.appupdate.model.DetailUpdate;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
+import com.tokopedia.core.drawer2.data.pojo.UserData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -150,8 +150,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private NudgeView nudgeView ;
 
     @DeepLink(Constants.Applinks.HOME)
-    public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
-        return new Intent(context, ParentIndexHome.class);
+    public static TaskStackBuilder getApplinkCallingIntent(Context context, Bundle extras) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.from(context);
+        taskStackBuilder.addNextIntent(new Intent(context, ParentIndexHome.class));
+        return taskStackBuilder;
     }
 
     @DeepLink({Constants.Applinks.HOME_FEED, Constants.Applinks.FEED})
@@ -401,10 +403,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         AnalyticsCacheHandler.GetUserDataListener listener
                 = new AnalyticsCacheHandler.GetUserDataListener() {
-            @Override
-            public void onSuccessGetUserData(ProfileData result) {
-                TrackingUtils.setMoEUserAttributes(result);
-            }
 
             @Override
             public void onError(Throwable e) {
@@ -412,13 +410,13 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
 
             @Override
-            public void onSuccessGetUserAttr(UserAttribute.Data data) {
+            public void onSuccessGetUserAttr(UserData data) {
                 if (data != null)
-                    TrackingUtils.setMoEUserAttributes(data);
+                    TrackingUtils.setMoEUserAttributesOld(data);
+                TrackingUtils.setMoEUserAttributes(data);
             }
         };
 
-        cacheHandler.getUserDataCache(listener);
         cacheHandler.getUserAttrGraphQLCache(listener);
 
     }
@@ -445,7 +443,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 if (tab.getPosition() == INIT_STATE_FRAGMENT_HOME ||tab.getPosition() == INIT_STATE_FRAGMENT_FEED) {
-                    Fragment fragment = adapter.getFragments().get(tab.getPosition()); // scroll to top
+                    Fragment fragment = (Fragment) mViewPager.getAdapter().instantiateItem(mViewPager, mViewPager.getCurrentItem());
                     if (fragment != null) {
                         if (fragment instanceof FeedPlusFragment)
                             ((FeedPlusFragment) fragment).scrollToTop();
@@ -481,6 +479,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mViewPager.setAdapter(null);
+        adapter = null;
     }
 
     public static Intent getHomeHotlistIntent(Context context) {

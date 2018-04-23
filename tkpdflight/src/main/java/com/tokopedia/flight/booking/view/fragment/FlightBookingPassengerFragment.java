@@ -451,6 +451,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void showPassengerChildBirthdateShouldLessThanEqual12Years(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
     public void hideKeyboard() {
         KeyboardHandler.hideSoftKeyboard(getActivity());
     }

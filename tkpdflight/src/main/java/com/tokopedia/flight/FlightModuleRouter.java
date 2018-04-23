@@ -19,6 +19,8 @@ public interface FlightModuleRouter {
 
     long getLongConfig(String flightAirport);
 
+    boolean isPromoNativeEnable();
+
     Intent getLoginIntent();
 
     void goToFlightActivity(Context context);
@@ -62,4 +64,6 @@ public interface FlightModuleRouter {
     FlightVoucherCodeWrapper getFlightVoucherCodeWrapper();
 
     Intent getPromoListIntent(Activity activity);
+
+    Intent getPromoDetailIntent(Context context, String slug);
 }

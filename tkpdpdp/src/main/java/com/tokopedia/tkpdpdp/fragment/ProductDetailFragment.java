@@ -1022,6 +1022,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             if (productData != null) {
                 ShareData shareData = ShareData.Builder.aShareData()
                         .setName(productData.getInfo().getProductName())
+                        .setTextContent(productData.getInfo().getProductName())
                         .setDescription(productData.getInfo().getProductDescription())
                         .setImgUri(productData.getProductImages().get(0).getImageSrc())
                         .setPrice(productData.getInfo().getProductPrice())
@@ -1525,14 +1526,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                                 )
                         ),
                         "key", productData.getEnhanceUrl(productData.getInfo().getProductUrl()),
-                        "shop_name", productData.getShopInfo().getShopName(),
-                        "shop_id", productData.getShopInfo().getShopId(),
-                        "shop_domain", productData.getShopInfo().getShopDomain(),
-                        "shop_location", productData.getShopInfo().getShopLocation(),
-                        "shop_is_gold", String.valueOf(productData.getShopInfo().shopIsGoldBadge() ? 1 : 0),
-                        "category_id", productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1).getDepartmentId(),
+                        "shopName", productData.getShopInfo().getShopName(),
+                        "shopId", productData.getShopInfo().getShopId(),
+                        "shopDomain", productData.getShopInfo().getShopDomain(),
+                        "shopLocation", productData.getShopInfo().getShopLocation(),
+                        "shopIsGold", String.valueOf(productData.getShopInfo().shopIsGoldBadge() ? 1 : 0),
+                        "categoryId", productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1).getDepartmentId(),
                         "url", productData.getInfo().getProductUrl(),
-                        "shop_type", productData.getEnhanceShopType()
+                        "shopType", productData.getEnhanceShopType()
                 )
         );
     }

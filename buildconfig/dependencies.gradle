@@ -243,7 +243,9 @@ ext {
             event           : ":tkpdevents",
             home            : ":tkpdhome",
             kol             : ":features:content:kol",
-            groupchat       : ":features:user:groupchat"
+            groupchat       : ":features:user:groupchat",
+            gamification    : ":features:promo:gamification"
+
     ]
 
     libraries = [
@@ -253,7 +255,6 @@ ext {
             pushNotif       : ":libraries:push_notification",
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
-            reactNative     : ":libraries:react_native",
             useCase         : ":libraries:use_case"
     ]
 
