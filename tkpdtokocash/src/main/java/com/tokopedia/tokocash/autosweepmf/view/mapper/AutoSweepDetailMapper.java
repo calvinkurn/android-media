@@ -26,6 +26,8 @@ public class AutoSweepDetailMapper {
         data.setError(detail.getError());
         data.setCode(detail.getCode());
         data.setLatency(detail.getLatency());
+        data.setEnable(detail.isEnable());
+        data.setDashboardLink(detail.getDashboardLink());
         return data;
     }
 }

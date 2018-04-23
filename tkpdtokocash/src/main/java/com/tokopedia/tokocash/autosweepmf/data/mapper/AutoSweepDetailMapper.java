@@ -22,6 +22,14 @@ public class AutoSweepDetailMapper {
             data.setAmountLimit(detail.getData().getAmountLimit());
             data.setAutoSweepStatus(detail.getData().getAutoSweepStatus());
             data.setBalance(detail.getData().getBalance());
+            data.setDashboardLink(detail.getData().getDashboardLink());
+
+            if (detail.getData().getShowAutoSweep() == 1) {
+                data.setEnable(true);
+            } else {
+                data.setEnable(false);
+            }
+
             if (detail.getData().getText() != null) {
                 data.setTitle(detail.getData().getText().getTitle());
                 data.setContent(detail.getData().getText().getContent());

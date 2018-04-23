@@ -10,6 +10,7 @@
         android:id="@+id/container_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:measureAllChildren="false">
 
         <ProgressBar
@@ -37,7 +38,6 @@
                 android:id="@+id/text_error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/mf_margin_large"
                 android:layout_marginTop="@dimen/mf_padding_medium"
                 android:textColor="@color/text_error"
                 app:layout_constraintTop_toBottomOf="@+id/text_error_title_mutual_fund" />
@@ -47,7 +47,7 @@
                 style="@style/HeaderText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@null"
+                android:background="?attr/selectableItemBackground"
                 android:text="@string/mf_action_retry"
                 android:textAllCaps="false"
                 android:textColor="@color/tkpd_main_green"

@@ -16,6 +16,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -59,6 +60,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
+    private static String WEB_LINK_MF_DASHBOARD = TkpdBaseURL.AutoSweep.WEB_LINK_MF_DASHBOARD;
     private TextView mTextLimitTokocash, mTextLimitTokocashValue, mTextDescription;
     private Button mBtnPositive, mBtnNegative;
     private LinearLayout mContainerWarning;
@@ -102,6 +104,9 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
         mPresenter.attachView(this);
         initListener();
         mPresenter.getAutoSweepDetail();
+
+        //initially hide the view to avoid the loader in case of feature has already disable from server
+        view.setVisibility(View.GONE);
     }
 
     @Override
@@ -142,6 +147,20 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
      */
     @Override
     public void onSuccessAutoSweepDetail(@NonNull AutoSweepDetail data) {
+
+        if (getView() == null) {
+            //To ensure UI get setup
+            return;
+        }
+
+        //Checking for feature visibility  mode, If its disable by server then hide self and do nothing
+        if (!data.isEnable()) {
+            getView().setVisibility(View.GONE);
+            return;
+        }
+
+        getView().setVisibility(View.VISIBLE);
+
         if (data.getAccountStatus() == MF_ACTIVE) {
             onAccountActive(data);
         } else if (data.getAccountStatus() == MF_INACTIVE) {
@@ -159,6 +178,11 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
         //init tooltip
         if (data.getTooltipContent() != null && !data.getTooltipContent().trim().isEmpty()) {
             initToolTip(data.getTitle(), data.getTooltipContent());
+        }
+
+        //init dashboard url
+        if (URLUtil.isValidUrl(data.getDashboardLink())) {
+            WEB_LINK_MF_DASHBOARD = data.getDashboardLink();
         }
     }
 
@@ -260,8 +284,8 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
 
     @Override
     public void showError(String message) {
-        mTextError.setError(message);
         mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+        mTextError.setText(message);
     }
 
     @Override
@@ -340,7 +364,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
     public void onClick(View source) {
         if (source.getId() == R.id.button_positive) {
             if (mAutoSweepStatus == AUTO_SWEEP_ACTIVE) {
-                openWebView(TkpdBaseURL.AutoSweep.WEB_LINK_MF_DASHBOARD);
+                openWebView(WEB_LINK_MF_DASHBOARD);
             } else {
                 if (mAccountStatus == MF_INACTIVE) {
                     showDialog(R.string.mf_titile_mf_account_in_process, R.string.mf_message_mutual_fund_not_listed);
@@ -377,6 +401,9 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
         mContainerWarning = view.findViewById(R.id.container_warning);
     }
 
+    /**
+     * Set the listener on view this method should be call from only onViewCreated
+     */
     private void initListener() {
         mBtnPositive.setOnClickListener(this);
         mBtnNegative.setOnClickListener(this);
@@ -401,7 +428,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
                 .BottomSheetFieldBuilder()
                 .setTitle(title)
                 .setBody(content)
-                .setUrlButton(TkpdBaseURL.AutoSweep.WEB_LINK_MF_DASHBOARD, getString(R.string.mf_action_goto_dashboard))
+                .setUrlButton(WEB_LINK_MF_DASHBOARD, getString(R.string.mf_action_goto_dashboard))
                 .build());
         mToolTip.setListener(new BottomSheetView.ActionListener() {
             @Override
@@ -410,7 +437,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
 
             @Override
             public void clickOnButton(String url, String appLink) {
-                openWebView(TkpdBaseURL.AutoSweep.WEB_LINK_MF_DASHBOARD);
+                openWebView(WEB_LINK_MF_DASHBOARD);
             }
         });
     }

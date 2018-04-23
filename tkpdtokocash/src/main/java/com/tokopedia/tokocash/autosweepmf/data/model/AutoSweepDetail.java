@@ -13,6 +13,26 @@ public class AutoSweepDetail {
     private long amountLimit;
     @SerializedName("text")
     private DetailText text;
+    @SerializedName("show_autosweep")
+    private int showAutoSweep;
+    @SerializedName("dashboard_link")
+    private String dashboardLink;
+
+    public String getDashboardLink() {
+        return dashboardLink;
+    }
+
+    public void setDashboardLink(String dashboardLink) {
+        this.dashboardLink = dashboardLink;
+    }
+
+    public int getShowAutoSweep() {
+        return showAutoSweep;
+    }
+
+    public void setShowAutoSweep(int showAutoSweep) {
+        this.showAutoSweep = showAutoSweep;
+    }
 
     public DetailText getText() {
         return text;
@@ -57,11 +77,13 @@ public class AutoSweepDetail {
     @Override
     public String toString() {
         return "AutoSweepDetail{" +
-                "autoSweepLimit=" + accountStatus +
+                "accountStatus=" + accountStatus +
                 ", balance=" + balance +
                 ", autoSweepStatus=" + autoSweepStatus +
                 ", amountLimit=" + amountLimit +
                 ", text=" + text +
+                ", showAutoSweep=" + showAutoSweep +
+                ", dashboardLink=" + dashboardLink +
                 '}';
     }
 }

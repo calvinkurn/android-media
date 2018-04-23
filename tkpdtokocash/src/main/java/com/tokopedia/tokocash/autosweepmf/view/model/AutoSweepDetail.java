@@ -8,6 +8,24 @@ public class AutoSweepDetail extends BaseModel {
     private String title;
     private String content;
     private String tooltipContent;
+    private boolean isEnable;
+    private String dashboardLink;
+
+    public String getDashboardLink() {
+        return dashboardLink;
+    }
+
+    public void setDashboardLink(String dashboardLink) {
+        this.dashboardLink = dashboardLink;
+    }
+
+    public boolean isEnable() {
+        return isEnable;
+    }
+
+    public void setEnable(boolean enable) {
+        isEnable = enable;
+    }
 
     public String getTooltipContent() {
         return tooltipContent;
@@ -75,6 +93,8 @@ public class AutoSweepDetail extends BaseModel {
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", tooltipContent='" + tooltipContent + '\'' +
+                ", isEnable=" + isEnable +
+                ", dashboardLink=" + dashboardLink +
                 '}';
     }
 }
