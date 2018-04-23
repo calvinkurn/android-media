@@ -37,6 +37,10 @@ public interface FlightCancellationContract {
 
         void showShouldChooseAtLeastOnePassengerError();
 
+        void hideFullLoading();
+
+        void showFullLoading();
+
     }
 
     interface Presenter {

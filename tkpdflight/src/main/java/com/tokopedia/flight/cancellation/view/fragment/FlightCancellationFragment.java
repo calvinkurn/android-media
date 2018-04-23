@@ -9,6 +9,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -59,6 +60,8 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     private AppCompatButton btnSubmit;
     private AppCompatTextView txtCancellationSteps;
+    private LinearLayout loadingContainer;
+    private LinearLayout contentContainer;
 
     public static FlightCancellationFragment createInstance(String invoiceId,
                                                             int totalPrice,
@@ -77,6 +80,8 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_cancellation, container, false);
 
+        contentContainer = view.findViewById(R.id.content_container);
+        loadingContainer = view.findViewById(R.id.full_page_loading);
         txtCancellationSteps = view.findViewById(R.id.txt_cancellation_steps);
         btnSubmit = view.findViewById(R.id.button_submit);
 
@@ -184,6 +189,18 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     public void showShouldChooseAtLeastOnePassengerError() {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
                 getString(R.string.flight_cancellation_should_choose_at_least_one_passenger_error));
+    }
+
+    @Override
+    public void hideFullLoading() {
+        contentContainer.setVisibility(View.VISIBLE);
+        loadingContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showFullLoading() {
+        contentContainer.setVisibility(View.GONE);
+        loadingContainer.setVisibility(View.VISIBLE);
     }
 
     @Override

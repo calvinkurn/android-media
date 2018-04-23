@@ -76,6 +76,7 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
     }
 
     private void getCancelablePassenger() {
+        getView().showFullLoading();
         this.flightCancellationGetCancelablePassengerUseCase.execute(
                 flightCancellationGetCancelablePassengerUseCase.generateRequestParams(
                         getView().getInvoiceId()
@@ -88,6 +89,7 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
 
                     @Override
                     public void onError(Throwable throwable) {
+                        getView().hideFullLoading();
                         throwable.printStackTrace();
                     }
 
@@ -120,6 +122,7 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
             }
         }
 
+        getView().hideFullLoading();
         getView().setSelectedCancellationViewModel(selectedViewModel);
         getView().setFlightCancellationViewModel(cancellationModelList);
         getView().renderCancelableList();
