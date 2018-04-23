@@ -1,10 +1,8 @@
 package com.tokopedia.core.analytics;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -13,7 +11,7 @@ import java.util.Map;
 public class SearchTracking extends TrackingUtils {
 
     private static final String ACTION_FIELD = "/searchproduct - p$1 - product";
-    public static String imageClick = "/imagesearch - %s";
+    public static String imageClick = "/imagesearch - p%s";
 
     public static String getActionFieldString(int pageNumber) {
         return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
@@ -26,8 +24,14 @@ public class SearchTracking extends TrackingUtils {
                 eventLabel, getActionFieldString(pageNumber));
     }
 
-    public static void trackEventClickImageSearchResultProduct(Object item, int position){
+    public static void trackEventClickImageSearchResultProduct(Object item, int position) {
         getGTMEngine().enhanceClickImageSearchResultProduct(item, String.format(imageClick, position));
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.PRODUCT_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH_RESULT,
+                AppEventTracking.Action.CLICK_PRODUCT,
+                ""
+        ).getEvent());
     }
 
     public static void eventImpressionSearchResultProduct(List<Object> list, String eventLabel) {
@@ -72,6 +76,15 @@ public class SearchTracking extends TrackingUtils {
                 AppEventTracking.Category.SEARCH_SHARE,
                 AppEventTracking.Action.CLICK_BAR + screenName,
                 ""
+        ).setUserId().getEvent());
+    }
+
+    public static void eventImageSearchResultChangeGrid(String gridName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.CLICK_CHANGE_GRID,
+                gridName
         ).setUserId().getEvent());
     }
 

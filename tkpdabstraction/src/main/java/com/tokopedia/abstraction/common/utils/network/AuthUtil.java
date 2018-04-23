@@ -38,6 +38,7 @@ public class AuthUtil {
     public static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_USER_ID = "X-User-ID";
     private static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
+    private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
     public static final String HEADER_DEVICE = "X-Device";
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
     public static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
@@ -185,6 +186,11 @@ public class AuthUtil {
                 authKey, DATE_FORMAT, userId
         );
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+
+        if (userId != null && !userId.equals("")) {
+            finalHeader.put(HEADER_TKPD_USER_ID, userId);
+            finalHeader.put(HEADER_X_TKPD_USER_ID, userId);
+        }
         return finalHeader;
     }
 

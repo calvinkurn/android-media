@@ -356,15 +356,6 @@ public class TopProfileActivity extends BaseSimpleActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         presenter.getTopProfileData(userId);
-        switch (requestCode) {
-            case MANAGE_PEOPLE_CODE:
-                if (resultCode == Activity.RESULT_OK) {
-                    presenter.getTopProfileData(userId);
-                }
-                break;
-            default:
-                break;
-        }
     }
 
     private void initTabLoad() {

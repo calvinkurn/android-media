@@ -40,6 +40,7 @@ import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.data.SendbirdKey;
 import com.tokopedia.inbox.inboxchat.data.network.ChatBotUrl;
+import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.profile.data.network.ProfileUrl;
@@ -179,6 +180,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         ProfileUrl.BASE_URL = ConsumerAppBaseUrl.TOPPROFILE_DOMAIN;
         DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         GroupChatUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
+        GamificationUrl.GQL_BASE_URL = ConsumerAppBaseUrl.GAMIFICATION_BASE_URL;
         ChatBotUrl.BASE_URL = ConsumerAppBaseUrl.CHATBOT_DOMAIN;
     }
 

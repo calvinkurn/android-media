@@ -84,6 +84,7 @@ public class ProductListFragment extends SearchSectionFragment
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
     private static final String EXTRA_FORCE_SEARCH = "EXTRA_FORCE_SEARCH";
     private static final String EXTRA_QUICK_FILTER_LIST = "EXTRA_QUICK_FILTER_LIST";
+    private static final int MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT = 12;
 
     protected RecyclerView recyclerView;
     @Inject
@@ -142,7 +143,7 @@ public class ProductListFragment extends SearchSectionFragment
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
-            switchLayoutType();
+            switchLayoutType(productViewModel.isImageSearch());
         }
     }
 
@@ -296,8 +297,32 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setProductList(List<Visitable> list) {
-        sendProductImpressionTrackingEvent(list);
+        if (productViewModel.isImageSearch()) {
+            sendImageTrackingDataInChunks(list);
+        } else {
+            sendProductImpressionTrackingEvent(list);
+        }
+
         adapter.appendItems(list);
+    }
+
+    private void sendImageTrackingDataInChunks(List<Visitable> list) {
+        if (list != null && list.size() > 0) {
+            String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
+            List<Object> dataLayerList = new ArrayList<>();
+            for (int j = 0; j < list.size(); ) {
+                int count = 0;
+                dataLayerList.clear();
+                while (count < MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT && j < list.size()) {
+                    count++;
+                    if (list.get(j) instanceof ProductItem) {
+                        dataLayerList.add(((ProductItem) list.get(j)).getProductAsObjectDataLayer(userId));
+                    }
+                    j++;
+                }
+                SearchTracking.eventImpressionImageSearchResultProduct(dataLayerList);
+            }
+        }
     }
 
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {
@@ -308,11 +333,7 @@ public class ProductListFragment extends SearchSectionFragment
                 dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
             }
         }
-        if (productViewModel.isImageSearch()) {
-            SearchTracking.eventImpressionImageSearchResultProduct(dataLayerList);
-        } else {
-            SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
-        }
+        SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
     }
 
     @Override
@@ -404,7 +425,7 @@ public class ProductListFragment extends SearchSectionFragment
                 switch (position) {
                     case 0:
                         if (productViewModel.isImageSearch())
-                            switchLayoutType();
+                            switchLayoutType(true);
                         else
                             openSortActivity();
                         return true;
@@ -522,7 +543,7 @@ public class ProductListFragment extends SearchSectionFragment
 
         if (productViewModel.isImageSearch()) {
             SearchTracking.trackEventClickImageSearchResultProduct(
-                    item.getProductAsObjectDataLayerForImageSearch(userId), item.getPosition() / 2);
+                    item.getProductAsObjectDataLayerForImageSearch(userId), (item.getPosition() + 1) / 2);
         } else {
             SearchTracking.trackEventClickSearchResultProduct(
                     item.getProductAsObjectDataLayer(userId),
@@ -809,6 +830,9 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void getQuickFilter() {
+        if (productViewModel.isImageSearch()) {
+            return;
+        }
         presenter.requestQuickFilter(NetworkParamHelper.getParamMap(productViewModel.getAdditionalParams()));
     }
 

@@ -96,7 +96,8 @@ public class Promotion {
                                         )
                                 )
                         )
-                )
+                ),
+                "attribution", String.format("1 - sliderBanner - %s - %s", getPromotionPosition(), getPromotionAlias())
         );
     }
 
@@ -113,12 +114,12 @@ public class Promotion {
                                                 "id", getPromotionID(),
                                                 "name", getPromotionName(),
                                                 "creative", getPromotionAlias(),
-                                                "position", getPromotionPosition(),
-                                                "attribution", String.format("1 - sliderBanner - %s - %s", getPromotionPosition(), getPromotionAlias())
+                                                "position", getPromotionPosition()
                                         )
                                 )
                         )
-                )
+                ),
+                "attribution", String.format("1 - sliderBanner - %s - %s", getPromotionPosition(), getPromotionAlias())
         );
     }
 

@@ -16,6 +16,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -29,6 +30,7 @@ import com.tokopedia.events.view.customview.CustomSeatAreaLayout;
 import com.tokopedia.events.view.customview.CustomSeatLayout;
 import com.tokopedia.events.view.presenter.SeatSelectionPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
@@ -188,7 +190,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
                             seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getStatus(),
                             maxTickets, rowId, currentChar);
                 } else {
-                    customSeatAreaLayout.addColumn("", 0, 0, 0, "");
+                    customSeatAreaLayout.addColumn("-", 0, 0, 0, "");
                 }
             }
             seatTextLayout.addView(customSeatAreaLayout);
@@ -315,5 +317,16 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPresenter.onActivityResult(requestCode);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+    }
+
+    @Override
+    public String getScreenName() {
+        return mPresenter.getSCREEN_NAME();
     }
 }
