@@ -48,7 +48,7 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
                         reason,
                         attachmentViewModelList,
                         estimatedRefund,
-                        viewModel.getViewModels()
+                        viewModel.getGetCancellations()
                 ),
                 new Subscriber<CancellationRequestEntity>() {
                     @Override
@@ -76,7 +76,7 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
     private boolean isRefundable() {
         boolean isRefundable = false;
 
-        for (FlightCancellationViewModel item : getView().getCancellationWrapperViewModel().getViewModels()) {
+        for (FlightCancellationViewModel item : getView().getCancellationWrapperViewModel().getGetCancellations()) {
             if (item.getFlightCancellationJourney().isRefundable()) {
                 isRefundable = true;
                 break;
