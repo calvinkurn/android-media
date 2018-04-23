@@ -91,6 +91,12 @@ public class GTMContainer implements IGTMContainer {
         return System.currentTimeMillis() - lastRefresh > EXPIRE_CONTAINER_TIME_DEFAULT;
     }
 
+    private Boolean isAllowRefreshDefault(ContainerHolder containerHolder) {
+        long lastRefresh = containerHolder.getContainer().getLastRefreshTime();
+        Log.i("GTM TKPD", "Last refresh " + CommonUtils.getDate(lastRefresh));
+        return System.currentTimeMillis() - lastRefresh > EXPIRE_CONTAINER_TIME_DEFAULT;
+    }
+
     private Boolean isAllowRefresh() {
         //if (MainApplication.isDebug()) return true;
         LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.ALLOW_REFRESH);
@@ -110,6 +116,14 @@ public class GTMContainer implements IGTMContainer {
 
     private void validateGTM() {
         if (ContainerHolderSingleton.getContainerHolder().getStatus().isSuccess()) {
+            Log.i(TAG, STR_GTM_EXCEPTION_ENABLED + TrackingUtils.getGtmString(GTMContainer.IS_EXCEPTION_ENABLED));
+        } else {
+            Log.e("GTMContainer", "failure loading container");
+        }
+    }
+
+    private void validateGTM(ContainerHolder containerHolder) {
+        if (containerHolder.getStatus().isSuccess()) {
             Log.i(TAG, STR_GTM_EXCEPTION_ENABLED + TrackingUtils.getGtmString(GTMContainer.IS_EXCEPTION_ENABLED));
         } else {
             Log.e("GTMContainer", "failure loading container");
@@ -142,13 +156,13 @@ public class GTMContainer implements IGTMContainer {
                 @Override
                 public void onResult(ContainerHolder cHolder) {
                     ContainerHolderSingleton.setContainerHolder(cHolder);
-                    if (isAllowRefreshDefault()) {
+                    if (isAllowRefreshDefault(cHolder)) {
                         Log.i("GTM TKPD", "Refreshed Container ");
-                        ContainerHolderSingleton.getContainerHolder().refresh();
+                        cHolder.refresh();
                         //setExpiryRefresh();
                     }
 
-                    validateGTM();
+                    validateGTM(cHolder);
                 }
             }, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
