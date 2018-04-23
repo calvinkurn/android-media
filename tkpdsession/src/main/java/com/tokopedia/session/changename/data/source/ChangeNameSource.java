@@ -33,8 +33,8 @@ public class ChangeNameSource {
     public Observable<ChangeNameViewModel> changeName(RequestParams params) {
         return accountsService.getApi()
                 .changeName(params.getParameters())
-                .map(changeNameMapper)
-                .doOnNext(updateCache(params.getString(ChangeNameUseCase.PARAM_NAME, "")));
+                .map(changeNameMapper);
+//                .doOnNext(updateCache(params.getString(ChangeNameUseCase.PARAM_NAME, "")));
     }
 
     private Action1<ChangeNameViewModel> updateCache(final String name) {

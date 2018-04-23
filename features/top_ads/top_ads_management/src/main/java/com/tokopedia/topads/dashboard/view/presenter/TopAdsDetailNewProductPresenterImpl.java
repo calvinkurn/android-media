@@ -1,7 +1,8 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
-import com.tokopedia.topads.common.sourcetagging.data.TopAdsSourceTaggingModel;
-import com.tokopedia.topads.common.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.sourcetagging.data.TopAdsSourceTaggingModel;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailProductUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCreateDetailProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
@@ -13,6 +14,7 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.topads.dashboard.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsRemoveSourceTaggingUseCase;
 
 import java.util.ArrayList;
 
@@ -23,17 +25,20 @@ import rx.Subscriber;
  */
 public class TopAdsDetailNewProductPresenterImpl extends TopAdsDetailEditProductPresenterImpl<TopAdsDetailEditView> implements TopAdsDetailNewProductPresenter {
 
-    TopAdsCreateDetailProductListUseCase topAdsSaveDetailProductListUseCase;
-    TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase;
+    private TopAdsCreateDetailProductListUseCase topAdsSaveDetailProductListUseCase;
+    private TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase;
+    private TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase;
 
     public TopAdsDetailNewProductPresenterImpl(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase,
                                                TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
                                                TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                                TopAdsProductListUseCase topAdsProductListUseCase, TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                               TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
+                                               TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
+                                               TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase) {
         super(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase);
         this.topAdsSaveDetailProductListUseCase = topAdsCreateDetailProductListUseCase;
         this.topAdsGetSourceTaggingUseCase = topAdsGetSourceTaggingUseCase;
+        this.topAdsRemoveSourceTaggingUseCase = topAdsRemoveSourceTaggingUseCase;
     }
 
     @Override
@@ -51,9 +56,13 @@ public class TopAdsDetailNewProductPresenterImpl extends TopAdsDetailEditProduct
 
             @Override
             public void onNext(TopAdsSourceTaggingModel topAdsSourceTaggingModel) {
+                String source = TopAdsNetworkConstant.VALUE_SOURCE_ANDROID;
+                if (topAdsSourceTaggingModel != null){
+                    source = topAdsSourceTaggingModel.getSource();
+                }
                 topAdsSaveDetailProductListUseCase.execute(TopAdsCreateDetailProductListUseCase.createRequestParams(
                         TopAdDetailProductMapper.convertViewToDomainList(detailAd, topAdsProductList),
-                        topAdsSourceTaggingModel.getSource()), getSubscriberSaveListAd());
+                        source), getSubscriberSaveListAd());
             }
         });
     }
@@ -73,6 +82,22 @@ public class TopAdsDetailNewProductPresenterImpl extends TopAdsDetailEditProduct
             @Override
             public void onNext(TopAdsDetailProductDomainModel topAdsDetailProductDomainModel) {
                 getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(topAdsDetailProductDomainModel));
+                topAdsRemoveSourceTaggingUseCase.execute(new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+
+                    }
+                });
             }
         };
     }

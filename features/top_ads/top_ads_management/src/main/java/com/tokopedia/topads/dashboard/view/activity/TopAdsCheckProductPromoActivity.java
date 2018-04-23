@@ -11,12 +11,11 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.TopAdsModuleRouter;
-import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsCheckProductPromoFragment;
 

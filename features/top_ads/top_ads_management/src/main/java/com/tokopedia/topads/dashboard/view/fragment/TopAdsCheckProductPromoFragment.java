@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;

@@ -40,7 +40,6 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.seller.R;
@@ -81,8 +80,8 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
-import com.tokopedia.topads.common.sourcetagging.constant.TopAdsSourceOption;
-import com.tokopedia.topads.common.sourcetagging.util.TopAdsAppLinkUtil;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 
 import java.util.ArrayList;
 import java.util.List;
