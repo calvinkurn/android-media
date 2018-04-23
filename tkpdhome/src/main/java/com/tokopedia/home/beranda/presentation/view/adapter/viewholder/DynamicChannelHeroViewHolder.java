@@ -151,7 +151,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
 
         @Override
         public int getItemCount() {
-            return list.length;
+            return list != null ? list.length : 0;
         }
     }
 
