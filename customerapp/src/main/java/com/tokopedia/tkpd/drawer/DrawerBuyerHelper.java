@@ -515,7 +515,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_TRAIN_TRANSACTION_LIST:
                     context.startActivity(DigitalWebActivity.newInstance(context, TkpdBaseURL.TRAIN_WEBSITE_DOMAIN
-                            + TkpdBaseURL.TrainWebsite.PATH_USER_BOOKING_LIST + "?ispulsa=1"));
+                            + TkpdBaseURL.TrainWebsite.PATH_USER_BOOKING_LIST + TkpdBaseURL.DigitalWebsite.PARAM_DIGITAL_ISPULSA));
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.TRAIN_TRANSACTION_LIST);
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
