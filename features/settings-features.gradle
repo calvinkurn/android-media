@@ -4,7 +4,7 @@
 //include "features:merchant:gold_merchant_common"
 //include "features:merchant:gold_merchant"
 //include "features:merchant:reputation_common"
-//include "features:merchant:reputation"
+include "features:merchant:reputation"
 //include "features:merchant:shop_common"
 //include "features:merchant:shop_page"
 //include "features:top_ads:top_ads_management"

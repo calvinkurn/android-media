@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.apollographql.android'
 
@@ -26,6 +25,7 @@ dependencies {
 
     compile rootProject.ext.tkpdDependencies.core
     compile rootProject.ext.tkpdDependencies.topads
+    compile rootProject.ext.tkpdDependencies.reactNative
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -34,15 +34,14 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    annotationProcessor   rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+    annotationProcessor   rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
-    compile project(rootProject.ext.libraries.reactNative)
+    annotationProcessor   rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.miscDependencies.lottie
 
@@ -51,7 +50,7 @@ dependencies {
     compile rootProject.ext.apolloDependencies.apolloAndroidSupport
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor   rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     compile rootProject.ext.supportLibDependencies.constraintLayout
 }
 
