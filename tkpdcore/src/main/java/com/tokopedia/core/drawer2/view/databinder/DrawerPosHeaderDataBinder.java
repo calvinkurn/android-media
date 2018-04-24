@@ -2,6 +2,7 @@ package com.tokopedia.core.drawer2.view.databinder;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,11 +81,17 @@ public class DrawerPosHeaderDataBinder extends DataBinder<DrawerPosHeaderDataBin
         holder.tvName.setText(data.getDrawerProfile().getShopName());
         holder.tvOnline.setText("Online");
         holder.tvOutlet.setText(((PosAppDataGetter)context.getApplicationContext()).getOutletName());
-        if (data.getDrawerProfile().getUserAvatar() != null
-                && !data.getDrawerProfile().getUserAvatar().equals("")) {
-            ImageHandler.LoadImage(holder.ivAvatar, data.getDrawerProfile().getUserAvatar());
+        if (data.getDrawerProfile().getShopAvatar() != null
+                && !data.getDrawerProfile().getShopAvatar().equals("")) {
+            ImageHandler.LoadImage(holder.ivAvatar, data.getDrawerProfile().getShopAvatar());
         } else {
-            holder.ivAvatar.setImageResource(R.drawable.qc_launcher);
+            if (data.getDrawerProfile().getUserAvatar() != null
+                    && !data.getDrawerProfile().getUserAvatar().equals("")) {
+                ImageHandler.LoadImage(holder.ivAvatar, data.getDrawerProfile().getUserAvatar());
+            }
+            else{
+                holder.ivAvatar.setImageResource(R.drawable.qc_launcher);
+            }
         }
     }
 
