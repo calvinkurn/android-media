@@ -260,19 +260,19 @@ dependencies {
     implementation rootProject.ext.tkpdDependencies.transaction // udah
     implementation rootProject.ext.tkpdDependencies.seller // udah
     implementation rootProject.ext.tkpdDependencies.inbox // udah
-    implementation rootProject.ext.tkpdDependencies.tkpdpdp // udah
-    implementation rootProject.ext.tkpdDependencies.feed // udah
+    implementation rootProject.ext.tkpdDependencies.tkpdpdp
+    implementation rootProject.ext.tkpdDependencies.feed
     implementation rootProject.ext.tkpdDependencies.reactNative// udah
     implementation rootProject.ext.tkpdDependencies.loyalty // udah
     implementation rootProject.ext.tkpdDependencies.session // udah
-    implementation rootProject.ext.tkpdDependencies.reputation // udah
-    implementation rootProject.ext.tkpdDependencies.events // udah
+    implementation rootProject.ext.tkpdDependencies.reputation  // udah
+    implementation rootProject.ext.tkpdDependencies.events
     implementation rootProject.ext.tkpdDependencies.ride // udah
-    implementation rootProject.ext.tkpdDependencies.flight // udah
-    implementation rootProject.ext.tkpdDependencies.digital // udah
+    implementation rootProject.ext.tkpdDependencies.flight
+    implementation rootProject.ext.tkpdDependencies.digital
     implementation rootProject.ext.tkpdDependencies.tokocash // udah
-    implementation rootProject.ext.tkpdDependencies.home // udah
-    implementation rootProject.ext.tkpdDependencies.groupchat // udah
+    implementation rootProject.ext.tkpdDependencies.home
+    implementation rootProject.ext.tkpdDependencies.groupchat
     implementation rootProject.ext.tkpdDependencies.applink
     implementation rootProject.ext.tkpdDependencies.shopPage
     implementation rootProject.ext.tkpdDependencies.gamification
