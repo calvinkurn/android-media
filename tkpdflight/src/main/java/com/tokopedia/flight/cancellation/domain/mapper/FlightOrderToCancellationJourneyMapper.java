@@ -33,6 +33,8 @@ public class FlightOrderToCancellationJourneyMapper {
         flightCancellationJourney.setArrivalCityCode(flightOrderJourney.getArrivalCityCode());
         flightCancellationJourney.setArrivalAirportId(flightOrderJourney.getArrivalAirportId());
 
+        List<String> airlineIds = new ArrayList<>();
+
         for (FlightDetailRouteViewModel item : flightOrderJourney.getRouteViewModels()) {
             if (flightCancellationJourney.getAirlineName() != null && flightCancellationJourney.getAirlineName().length() > 0 &&
                     flightCancellationJourney.getAirlineName().equals(item.getAirlineName())) {
@@ -49,7 +51,9 @@ public class FlightOrderToCancellationJourneyMapper {
                 flightCancellationJourney.setAirlineName(item.getAirlineName());
                 flightCancellationJourney.setRefundable(item.isRefundable());
             }
+            airlineIds.add(item.getAirlineCode());
         }
+        flightCancellationJourney.setAirlineIds(airlineIds);
 
         flightCancellationJourneyList.add(flightCancellationJourney);
         return flightCancellationJourneyList;
@@ -70,6 +74,8 @@ public class FlightOrderToCancellationJourneyMapper {
             flightCancellationJourney.setArrivalCityCode(flightOrderJourney.getArrivalCityCode());
             flightCancellationJourney.setArrivalAirportId(flightOrderJourney.getArrivalAirportId());
 
+            List<String> airlineIds = new ArrayList<>();
+
             for (FlightDetailRouteViewModel item : flightOrderJourney.getRouteViewModels()) {
                 if (flightCancellationJourney.getAirlineName() != null && flightCancellationJourney.getAirlineName().length() > 0 &&
                         flightCancellationJourney.getAirlineName().equals(item.getAirlineName())) {
@@ -86,8 +92,9 @@ public class FlightOrderToCancellationJourneyMapper {
                     flightCancellationJourney.setAirlineName(item.getAirlineName());
                     flightCancellationJourney.setRefundable(item.isRefundable());
                 }
+                airlineIds.add(item.getAirlineCode());
             }
-
+            flightCancellationJourney.setAirlineIds(airlineIds);
             flightCancellationJourneyList.add(flightCancellationJourney);
         }
 

@@ -58,5 +58,7 @@ public interface FlightCancellationReasonAndProofContract {
         void onNextButtonClicked();
 
         void onDestroy();
+
+        void onComeFromEstimateRefundScreen();
     }
 }

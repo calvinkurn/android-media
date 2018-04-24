@@ -10,7 +10,6 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -20,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -192,7 +190,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     }
 
     private void renderView() {
-        renderList(flightCancellationPassData.getViewModels());
+        renderList(flightCancellationPassData.getGetCancellations());
 
         if (flightCancellationPassData.getCancellationReasonAndAttachment().getReason() != null &&
                 flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments() != null) {

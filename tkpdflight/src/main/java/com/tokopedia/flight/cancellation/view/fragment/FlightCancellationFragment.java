@@ -176,7 +176,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @Override
     public void setSelectedCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList) {
-        this.flightCancellationWrapperViewModel.setViewModels(flightCancellationViewModelList);
+        this.flightCancellationWrapperViewModel.setGetCancellations(flightCancellationViewModelList);
     }
 
     @Override
@@ -196,7 +196,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @Override
     public List<FlightCancellationViewModel> getSelectedCancellationViewModel() {
-        return flightCancellationWrapperViewModel.getViewModels();
+        return flightCancellationWrapperViewModel.getGetCancellations();
     }
 
     @Override

@@ -88,9 +88,16 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_REFUND_CANCELLATION && resultCode == Activity.RESULT_OK) {
-            closeReasonAndProofPage();
+        switch (requestCode){
+            case REQUEST_REFUND_CANCELLATION:
+                if (resultCode == Activity.RESULT_OK){
+                    closeReasonAndProofPage();
+                }else {
+                    if (getFragment() instanceof FlightCancellationReasonAndProofFragment){
+                        ((FlightCancellationReasonAndProofFragment) getFragment()).onEstimateRefundActivityResultCancelled();
+                    }
+                }
+                break;
         }
     }
 

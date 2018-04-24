@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.flight.FlightModuleRouter;
+import com.tokopedia.flight.airline.domain.FlightAirlineUseCase;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationEstimateRefundUseCase;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationUploadImageUseCase;
 import com.tokopedia.flight.common.domain.FlightRepository;
@@ -26,5 +27,10 @@ public class FlightCancellationModule {
     @Provides
     FlightCancellationEstimateRefundUseCase provideFlightCancellationEstimateRefundUseCase(FlightRepository flightRepository){
         return new FlightCancellationEstimateRefundUseCase(flightRepository);
+    }
+
+    @Provides
+    FlightAirlineUseCase provideFlightAirlineUseCase(FlightRepository flightRepository){
+        return new FlightAirlineUseCase(flightRepository);
     }
 }

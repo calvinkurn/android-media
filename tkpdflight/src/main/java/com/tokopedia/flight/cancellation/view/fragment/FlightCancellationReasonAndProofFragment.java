@@ -288,6 +288,11 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         }
     }
 
+    public void onEstimateRefundActivityResultCancelled() {
+        presenter.attachView(this);
+        presenter.onComeFromEstimateRefundScreen();
+    }
+
     public interface OnFragmentInteractionListener {
 
         void goToEstimateReview(FlightCancellationWrapperViewModel viewModel);
