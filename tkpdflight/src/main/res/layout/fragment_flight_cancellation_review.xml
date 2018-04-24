@@ -57,32 +57,48 @@
                     android:background="@color/white"
                     android:text="@string/flight_label_additional_data" />
 
-                <android.support.v7.widget.AppCompatTextView
-                    style="@style/TextView.Micro.BlackDisabled"
+                <LinearLayout
+                    android:id="@+id/container_additional_reason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:text="@string/flight_cancellation_reason_label" />
+                    android:orientation="vertical">
 
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/txt_cancellation_reason"
-                    style="@style/TextView.Title"
+                    <android.support.v7.widget.AppCompatTextView
+                        style="@style/TextView.Micro.BlackDisabled"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:text="@string/flight_cancellation_reason_label" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/txt_cancellation_reason"
+                        style="@style/TextView.Title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/flight_cancellation_reason_label" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/container_additional_documents"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/flight_cancellation_reason_label" />
+                    android:orientation="vertical">
 
+                    <android.support.v7.widget.AppCompatTextView
+                        style="@style/TextView.Micro.BlackDisabled"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:text="@string/flight_cancellation_support_docs_label" />
 
-                <android.support.v7.widget.AppCompatTextView
-                    style="@style/TextView.Micro.BlackDisabled"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:text="@string/flight_cancellation_support_docs_label" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_attachments"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_attachments"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout

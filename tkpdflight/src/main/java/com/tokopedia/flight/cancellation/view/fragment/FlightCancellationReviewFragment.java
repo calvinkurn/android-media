@@ -50,6 +50,8 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
 
     private LinearLayout containerAdditionalData;
+    private LinearLayout containerAdditionalReason;
+    private LinearLayout containerAdditionalDocuments;
     private AppCompatButton btnSubmit;
     private AppCompatTextView txtDescription;
     private AppCompatTextView txtReason;
@@ -83,6 +85,8 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         loadingContainer = view.findViewById(R.id.full_page_loading);
         rvAttachments = view.findViewById(R.id.rv_attachments);
         containerAdditionalData = view.findViewById(R.id.container_additional_data);
+        containerAdditionalReason = view.findViewById(R.id.container_additional_reason);
+        containerAdditionalDocuments = view.findViewById(R.id.container_additional_documents);
         txtReason = view.findViewById(R.id.txt_cancellation_reason);
         txtDescription = view.findViewById(R.id.tv_description);
         txtTotalRefund = view.findViewById(R.id.txt_total_refund);
@@ -193,10 +197,23 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         renderList(flightCancellationPassData.getGetCancellations());
 
         if (flightCancellationPassData.getCancellationReasonAndAttachment().getReason() != null &&
-                flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments() != null) {
+                !flightCancellationPassData.getCancellationReasonAndAttachment().getReason().isEmpty()) {
             txtReason.setText(flightCancellationPassData.getCancellationReasonAndAttachment().getReason());
+        } else {
+            containerAdditionalReason.setVisibility(View.GONE);
+        }
+
+        if (flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments() != null &&
+                flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments().size() > 0) {
             attachmentAdapter.addElement(flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments());
         } else {
+            containerAdditionalDocuments.setVisibility(View.GONE);
+        }
+
+        if ((flightCancellationPassData.getCancellationReasonAndAttachment().getReason() == null &&
+                flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments() == null) ||
+                (flightCancellationPassData.getCancellationReasonAndAttachment().getReason().isEmpty() &&
+                flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments().size() == 0)) {
             containerAdditionalData.setVisibility(View.GONE);
         }
 
