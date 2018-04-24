@@ -20,37 +20,37 @@ project.ext {
 
 dependencies {
 
-    compile rootProject.ext.tkpdDependencies.usecase
-    compile rootProject.ext.tkpdDependencies.abstraction
-    compile rootProject.ext.tkpdDependencies.feed
-    compile rootProject.ext.tkpdDependencies.gamification
-    compile rootProject.ext.tkpdDependencies.digital
+    implementation rootProject.ext.tkpdDependencies.usecase
+    implementation rootProject.ext.tkpdDependencies.abstraction
+    implementation rootProject.ext.tkpdDependencies.feed
+    implementation rootProject.ext.tkpdDependencies.gamification
+    implementation rootProject.ext.tkpdDependencies.digital
 
-    compile(rootProject.ext.tkpdLibDependencies.expandableOption) {
+    implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
 
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile rootProject.ext.testDependencies.mockitorCore
-    testCompile 'junit:junit:4.12'
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation 'junit:junit:4.12'
 
-    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    compile rootProject.ext.supportLibDependencies.supportV4
+    implementation rootProject.ext.supportLibDependencies.supportV4
     annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
-    compile rootProject.ext.dbDependencies.dbFlowCore
-    compile rootProject.ext.dbDependencies.dbFlow
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
-    compile rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
 
-    compile rootProject.ext.debugToolsDependencies.stetho
+    implementation rootProject.ext.debugToolsDependencies.stetho
 }
 
 apply from: '../publish_local.gradle'

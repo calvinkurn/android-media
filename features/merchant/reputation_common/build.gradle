@@ -9,11 +9,11 @@ project.ext {
 }
 
 dependencies {
-    compile rootProject.ext.tkpdDependencies.usecase
-    compile rootProject.ext.tkpdDependencies.abstraction
+    implementation rootProject.ext.tkpdDependencies.usecase
+    implementation rootProject.ext.tkpdDependencies.abstraction
 
-    testCompile rootProject.ext.testDependencies.junit
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    testImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }

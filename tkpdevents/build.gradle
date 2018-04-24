@@ -20,38 +20,38 @@ project.ext {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile rootProject.ext.tkpdDependencies.core
-    compile rootProject.ext.tkpdDependencies.design
-    compile rootProject.ext.tkpdDependencies.payment
+    implementation rootProject.ext.tkpdDependencies.core
+    implementation rootProject.ext.tkpdDependencies.design
+    implementation rootProject.ext.tkpdDependencies.payment
 
-    compile rootProject.ext.butterKnifeDependencies.butterKnife
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    compile rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
 
-    compile rootProject.ext.supportLibDependencies.recyclerViewV7
-    compile rootProject.ext.supportLibDependencies.supportV4
-    compile rootProject.ext.supportLibDependencies.appCompactV7
-    compile rootProject.ext.supportLibDependencies.supportV13
-    compile rootProject.ext.supportLibDependencies.design
-    compile rootProject.ext.supportLibDependencies.cardViewV7
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.supportLibDependencies.supportV4
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.supportV13
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
 
-    compile 'at.blogc:expandabletextview:1.0.5'
+    implementation 'at.blogc:expandabletextview:1.0.5'
 
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.junit
 }
 
 apply from: '../publish_local.gradle'
