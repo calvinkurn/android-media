@@ -9,12 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.tkpd.tkpdcontactus.common.customview.ShadowTransformer;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.ContactUsArticleResponse;
 import com.tokopedia.tkpd.tkpdcontactus.home.di.ContactUsComponent;
@@ -23,7 +25,6 @@ import com.tokopedia.tkpd.tkpdcontactus.home.view.BuyerPurchaseListActivity;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.ContactUsWebViewActivity;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.adapter.CardPagerAdapter;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.customview.ArticleTextView;
-import com.tokopedia.tkpd.tkpdcontactus.common.customview.ShadowTransformer;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.presenter.ContactUsHomePresenter;
 
@@ -49,6 +50,8 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     @BindView(R2.id.order_list_viewpager)
     ViewPager orderListViewpager;
     CardPagerAdapter cardAdapter;
+    @BindView(R2.id.btn_chat)
+    TextView btnChat;
 
     private ContactUsComponent campaignComponent;
 
@@ -70,8 +73,8 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
         initInjector();
         ButterKnife.bind(this, view);
         cardAdapter = new CardPagerAdapter();
-        ShadowTransformer shadowTransformer = new ShadowTransformer(orderListViewpager,cardAdapter);
-        orderListViewpager.setPageTransformer(false,shadowTransformer);
+        ShadowTransformer shadowTransformer = new ShadowTransformer(orderListViewpager, cardAdapter);
+        orderListViewpager.setPageTransformer(false, shadowTransformer);
         orderListViewpager.setOffscreenPageLimit(3);
         return view;
     }
@@ -129,6 +132,11 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
         orderListViewpager.setAdapter(cardAdapter);
     }
 
+    @Override
+    public void setChatBotVisible() {
+        btnChat.setVisibility(View.VISIBLE);
+    }
+
 
     @OnClick(R2.id.btn_view_more)
     public void onViewClicked() {
@@ -139,4 +147,16 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     public void onViewFullClicked() {
         startActivity(BuyerPurchaseListActivity.getInstance(getContext()));
     }
+
+
+    @OnClick(R2.id.btn_contact_us)
+    public void onBtnContactUsClicked() {
+        startActivity(ContactUsWebViewActivity.getInstance(getContext(), "www.tokopedia.com/contact-us"));
+    }
+
+    @OnClick(R2.id.btn_chat)
+    public void onBtnChatClicked() {
+    }
+
+
 }

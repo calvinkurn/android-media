@@ -7,8 +7,10 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.ContactUsArticleResponse;
+import com.tokopedia.tkpd.tkpdcontactus.home.data.TopBotStatus;
 import com.tokopedia.tkpd.tkpdcontactus.home.domain.ContactUsArticleUseCase;
 import com.tokopedia.tkpd.tkpdcontactus.home.domain.ContactUsPurchaseListUseCase;
+import com.tokopedia.tkpd.tkpdcontactus.home.domain.ContactUsTopBotUseCase;
 
 import java.util.List;
 
@@ -25,12 +27,14 @@ public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCo
     ContactUsArticleUseCase articleUseCase;
     Context context;
     ContactUsPurchaseListUseCase purchaseListUseCase;
+    ContactUsTopBotUseCase topBotUseCase;
 
     @Inject
-    public ContactUsHomePresenter(ContactUsPurchaseListUseCase purchaseListUseCase,ContactUsArticleUseCase contactUsArticleUseCase, @ApplicationContext Context context) {
+    public ContactUsHomePresenter(ContactUsPurchaseListUseCase purchaseListUseCase,ContactUsArticleUseCase contactUsArticleUseCase, ContactUsTopBotUseCase topBotUseCase,@ApplicationContext Context context) {
         this.articleUseCase = contactUsArticleUseCase;
         this.context = context;
         this.purchaseListUseCase = purchaseListUseCase;
+        this.topBotUseCase = topBotUseCase;
     }
 
     @Override
@@ -79,6 +83,27 @@ public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCo
                 }else {
                     getView().setPurchaseList(buyerPurchaseLists);
                 }
+            }
+        });
+
+        topBotUseCase.execute(new Subscriber<TopBotStatus>() {
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(TopBotStatus topBotStatus) {
+                if(topBotStatus.isIsActive()) {
+                    getView().setChatBotVisible();
+                }
+
             }
         });
 

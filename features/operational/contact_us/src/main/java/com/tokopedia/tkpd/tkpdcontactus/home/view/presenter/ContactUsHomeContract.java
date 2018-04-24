@@ -20,6 +20,8 @@ public interface ContactUsHomeContract {
         public void setEmptyPurchaseListHide();
         public void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists);
 
+        public void setChatBotVisible();
+
     }
 
     public interface Presenter extends CustomerPresenter<View> {

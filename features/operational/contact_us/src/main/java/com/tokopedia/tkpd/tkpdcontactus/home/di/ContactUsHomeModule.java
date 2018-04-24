@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdcontactus.home.di;
 
 import com.tokopedia.tkpd.tkpdcontactus.home.domain.ContactUsArticleUseCase;
 import com.tokopedia.tkpd.tkpdcontactus.home.domain.ContactUsPurchaseListUseCase;
+import com.tokopedia.tkpd.tkpdcontactus.home.domain.ContactUsTopBotUseCase;
 import com.tokopedia.tkpd.tkpdcontactus.home.domain.IContactUsDataRepository;
 import com.tokopedia.tkpd.tkpdcontactus.home.source.ContactUsArticleData;
 import com.tokopedia.tkpd.tkpdcontactus.home.source.ContactUsArticleDataFactory;
@@ -39,5 +40,10 @@ public class ContactUsHomeModule {
     @Provides
     ContactUsPurchaseListUseCase providePurchaseListUseCase(IContactUsDataRepository repository) {
         return new ContactUsPurchaseListUseCase(repository);
+    }
+
+    @Provides
+    ContactUsTopBotUseCase provideTopBotUseCase(IContactUsDataRepository repository) {
+        return new ContactUsTopBotUseCase(repository);
     }
 }

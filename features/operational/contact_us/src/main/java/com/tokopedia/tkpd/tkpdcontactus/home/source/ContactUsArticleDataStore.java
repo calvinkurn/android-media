@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.BuyerPurchaseData;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.ContactUsArticleResponse;
+import com.tokopedia.tkpd.tkpdcontactus.home.data.TopBotStatus;
 import com.tokopedia.tkpd.tkpdcontactus.home.source.api.ContactUsAPI;
 
 
@@ -41,6 +42,18 @@ public class ContactUsArticleDataStore {
                 List<BuyerPurchaseList> buyerPurchaseList;
                 buyerPurchaseList = buyerpurchasedata.body().getData().getBuyerPurchaseList();
                 return buyerPurchaseList;
+            }
+        });
+
+
+
+    }
+
+    public Observable<TopBotStatus> getTopBotStatus() {
+        return this.contactUsAPI.getTopBotStatus().map(new Func1<Response<DataResponse<TopBotStatus>>, TopBotStatus>() {
+            @Override
+            public TopBotStatus call(Response<DataResponse<TopBotStatus>> topBotStatus) {
+                return topBotStatus.body().getData();
             }
         });
 

@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdcontactus.home.source;
 
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.ContactUsArticleResponse;
+import com.tokopedia.tkpd.tkpdcontactus.home.data.TopBotStatus;
 import com.tokopedia.tkpd.tkpdcontactus.home.domain.IContactUsDataRepository;
 
 import java.util.List;
@@ -27,5 +28,10 @@ public class ContactUsArticleData implements IContactUsDataRepository {
     @Override
     public Observable<List<BuyerPurchaseList>> getPurchaseList() {
         return articleDataFactory.getCloudArticleRepository().getBuyerPurchaseList();
+    }
+
+    @Override
+    public Observable<TopBotStatus> getTopBotStatus() {
+        return articleDataFactory.getCloudArticleRepository().getTopBotStatus();
     }
 }

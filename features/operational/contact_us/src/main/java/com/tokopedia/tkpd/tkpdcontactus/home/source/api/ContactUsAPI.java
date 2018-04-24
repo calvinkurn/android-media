@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.tkpd.tkpdcontactus.common.api.ContactUsURL;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.BuyerPurchaseData;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.ContactUsArticleResponse;
+import com.tokopedia.tkpd.tkpdcontactus.home.data.TopBotStatus;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface ContactUsAPI {
     @GET(ContactUsURL.BUYER_LIST)
     Observable<Response<DataResponse<BuyerPurchaseData>>> getBuyerPurchaseList();
 
+    @GET(ContactUsURL.TOPBOT_STATUS)
+    Observable<Response<DataResponse<TopBotStatus>>> getTopBotStatus();
 }
