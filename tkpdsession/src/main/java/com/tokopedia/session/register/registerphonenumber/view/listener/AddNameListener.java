@@ -26,6 +26,10 @@ public interface AddNameListener {
 
         String getPhoneNumber();
 
+        void showValidationError(String error);
+
+        void hideValidationError();
+
         Context getContext();
     }
 

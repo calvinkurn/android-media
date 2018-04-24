@@ -14,11 +14,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameActivity;
@@ -35,14 +35,13 @@ import javax.inject.Inject;
 
 public class AddNameFragment extends BaseDaggerFragment implements AddNameListener.View {
 
-    private static final int COUNT_CHAR_MIN = 3;
-    private static final int COUNT_CHAR_MAX = 128;
 
     private String phoneNumber;
 
     private EditText etName;
-    private TextView btnContinue, bottomInfo;
+    private TextView btnContinue, bottomInfo, message;
     private TkpdProgressDialog progressDialog;
+    private TkpdHintTextInputLayout wrapperName;
 
     @Inject
     AddNamePresenter presenter;
@@ -60,6 +59,8 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
         etName = (EditText) view.findViewById(R.id.et_name);
         btnContinue = (TextView) view.findViewById(R.id.btn_continue);
         bottomInfo = (TextView) view.findViewById(R.id.bottom_info);
+        message = (TextView) view.findViewById(R.id.message);
+        wrapperName = (TkpdHintTextInputLayout) view.findViewById(R.id.wrapper_name);
         return view;
     }
 
@@ -106,7 +107,7 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (isValidName(charSequence.toString())) {
+                if (charSequence.length() == 0) {
                     enableNextButton();
                 } else {
                     disableNextButton();
@@ -127,15 +128,6 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
         });
     }
 
-    private boolean isValidName(String name) {
-        if (name.length() < COUNT_CHAR_MIN) {
-            return false;
-        }
-        else if (name.length() > COUNT_CHAR_MAX) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     protected String getScreenName() {
@@ -196,6 +188,21 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
                     .NORMAL_PROGRESS);
 
         progressDialog.showDialog();
+    }
+
+    @Override
+    public void showValidationError(String error) {
+        wrapperName.setErrorEnabled(true);
+        wrapperName.setError(error);
+        message.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void hideValidationError() {
+        wrapperName.setErrorEnabled(false);
+        wrapperName.setError("");
+        message.setVisibility(View.VISIBLE);
     }
 
     @Override
