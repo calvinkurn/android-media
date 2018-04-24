@@ -1,7 +1,6 @@
 package com.tokopedia.posapp.product.productdetail.data.mapper;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
 import javax.inject.Inject;
@@ -12,7 +11,7 @@ import rx.functions.Func1;
 /**
  * Created by okasurya on 8/10/17.
  *
- * Will be deleted, changed by {@link GetProductMapper2}
+ * Will be deleted, changed by {@link GetProductDetailMapper}
  */
 @Deprecated
 public class GetProductMapper implements Func1<Response<DataResponse<ProductDetailData>>, ProductDetailData>{

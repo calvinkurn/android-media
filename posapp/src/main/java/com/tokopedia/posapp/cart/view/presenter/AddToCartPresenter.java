@@ -43,7 +43,9 @@ public class AddToCartPresenter implements AddToCart.Presenter {
         cartDomain.setProductId(product.getInfo().getProductId());
         cartDomain.setProductId(product.getInfo().getProductId());
         cartDomain.setProductName(product.getInfo().getProductName());
-        cartDomain.setProductImage300(product.getProductImages().get(0).getImageSrc300());
+        if(product.getProductImages() != null && product.getProductImages().size() > 0) {
+            cartDomain.setProductImage300(product.getProductImages().get(0).getImageSrc300());
+        }
         cartDomain.setProductPrice(product.getInfo().getProductPrice());
         cartDomain.setProductPriceUnformatted(product.getInfo().getProductPriceUnformatted());
         cartDomain.setQuantity(quantity);

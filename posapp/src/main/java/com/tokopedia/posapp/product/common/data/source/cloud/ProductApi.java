@@ -26,7 +26,7 @@ import rx.Observable;
 public interface ProductApi {
 
     @GET(PosUrl.Product.GET_CUSTOMER_PRODUCT_LIST)
-    Observable<Response<DataResponse<ProductList>>> getProductDetail(@Path(ProductConstant.Key.OUTLET_ID) String outletId,
+    Observable<Response<PosSimpleResponse<List<ProductDetail>>>> getProductDetail(@Path(ProductConstant.Key.OUTLET_ID) String outletId,
                                                                      @QueryMap Map<String, String> params);
 
     @GET(PosUrl.Product.GET_CUSTOMER_PRODUCT_LIST)

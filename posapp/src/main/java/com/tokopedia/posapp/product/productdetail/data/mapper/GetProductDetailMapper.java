@@ -1,10 +1,14 @@
 package com.tokopedia.posapp.product.productdetail.data.mapper;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.core.people.model.PeopleInfoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.product.model.productdetail.ProductInfo;
+import com.tokopedia.core.product.model.productdetail.ProductShopInfo;
+import com.tokopedia.core.shop.model.shopinfo.ShopInfo;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.posapp.base.data.pojo.PosSimpleResponse;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductDetail;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductList;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductPicture;
@@ -21,28 +25,35 @@ import rx.functions.Func1;
  * @author okasurya on 4/19/18.
  */
 
-public class GetProductMapper2 implements Func1<Response<DataResponse<ProductList>>, ProductDetailData> {
+public class GetProductDetailMapper implements Func1<Response<PosSimpleResponse<List<ProductDetail>>>, ProductDetailData> {
     @Inject
-    public GetProductMapper2() {}
+    public GetProductDetailMapper() {}
 
     @Override
-    public ProductDetailData call(Response<DataResponse<ProductList>> response) {
-        if(response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-            ProductDetail productResponse = response.body().getData().getProducts().get(0);
+    public ProductDetailData call(Response<PosSimpleResponse<List<ProductDetail>>> response) {
+        if(response.isSuccessful()
+                && response.body() != null
+                & response.body().getData() != null
+                && response.body().getData().getData() != null
+                && response.body().getData().getData().size() > 0) {
+            ProductDetail productResponse = response.body().getData().getData().get(0);
             if(productResponse != null) {
                 ProductDetailData productDetailData = new ProductDetailData();
 
-                List<ProductImage> images = new ArrayList<>();
-                for (ProductPicture picture : productResponse.getPictures()) {
-                    ProductImage productImage = new ProductImage();
-                    productImage.setImageSrc(picture.getUrlOriginal());
-                    productImage.setImageSrc300(picture.getUrlThumbnail());
-                    productImage.setImageId(picture.getPicId());
-                    images.add(productImage);
+                if(productResponse.getPictures() != null && productResponse.getPictures().size() > 0) {
+                    List<ProductImage> images = new ArrayList<>();
+                    for (ProductPicture picture : productResponse.getPictures()) {
+                        ProductImage productImage = new ProductImage();
+                        productImage.setImageSrc(picture.getUrlOriginal());
+                        productImage.setImageSrc300(picture.getUrlThumbnail());
+                        productImage.setImageId(picture.getPicId());
+                        images.add(productImage);
+                    }
+                    productDetailData.setProductImages(images);
                 }
-                productDetailData.setProductImages(images);
 
                 ProductInfo info = new ProductInfo();
+                info.setProductId(productResponse.getId());
                 info.setProductName(productResponse.getName());
                 info.setProductPrice(CurrencyFormatUtil.convertPriceValueToIdrFormat(productResponse.getLocalPrice().getPrice(), true));
                 info.setProductPriceUnformatted((int) productResponse.getLocalPrice().getPrice());

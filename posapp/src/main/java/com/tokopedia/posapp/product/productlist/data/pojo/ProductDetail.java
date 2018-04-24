@@ -12,7 +12,7 @@ import java.util.List;
 public class ProductDetail {
     @SerializedName("product_id")
     @Expose
-    private long id;
+    private int id;
     @SerializedName("product_name")
     @Expose
     private String name;
@@ -53,11 +53,11 @@ public class ProductDetail {
     @Expose
     private String productDescription;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
