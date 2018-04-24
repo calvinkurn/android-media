@@ -9,6 +9,8 @@ import android.os.Parcelable;
 
 public class ParamsActionHistory implements Parcelable {
 
+    private long amount;
+
     private String refundId;
 
     private String refundType;
@@ -17,19 +19,9 @@ public class ParamsActionHistory implements Parcelable {
     }
 
     protected ParamsActionHistory(Parcel in) {
+        amount = in.readLong();
         refundId = in.readString();
         refundType = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(refundId);
-        dest.writeString(refundType);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public static final Creator<ParamsActionHistory> CREATOR = new Creator<ParamsActionHistory>() {
@@ -43,6 +35,18 @@ public class ParamsActionHistory implements Parcelable {
             return new ParamsActionHistory[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(amount);
+        parcel.writeString(refundId);
+        parcel.writeString(refundType);
+    }
 
     public String getRefundId() {
         return refundId;
@@ -58,5 +62,13 @@ public class ParamsActionHistory implements Parcelable {
 
     public void setRefundType(String refundType) {
         this.refundType = refundType;
+    }
+
+    public long getAmount() {
+        return amount;
+    }
+
+    public void setAmount(long amount) {
+        this.amount = amount;
     }
 }

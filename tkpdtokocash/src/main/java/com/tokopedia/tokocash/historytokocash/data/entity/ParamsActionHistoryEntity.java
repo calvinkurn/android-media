@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class ParamsActionHistoryEntity {
 
+    @SerializedName("amount")
+    @Expose
+    private long amount;
     @SerializedName("refund_id")
     @Expose
     private String refund_id;
@@ -17,6 +20,10 @@ public class ParamsActionHistoryEntity {
     private String refund_type;
 
     public ParamsActionHistoryEntity() {
+    }
+
+    public long getAmount() {
+        return amount;
     }
 
     public String getRefundId() {
