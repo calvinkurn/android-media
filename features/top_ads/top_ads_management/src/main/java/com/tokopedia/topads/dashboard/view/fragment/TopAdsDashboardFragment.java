@@ -13,15 +13,18 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.label.DateLabelView;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.data.model.DataDeposit;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsDashboardComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsDashboardModule;
@@ -46,9 +49,14 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private TextView shopTitleTextView;
     private TextView depositValueTextView;
     TextView addCreditTextView;
+    private LabelView groupSummaryLabelView;
+    private LabelView itemSummaryLabelView;
+    private LabelView keywordLabelView;
+
     private SessionHandler sessionHandler;
 
     DateLabelView dateLabelView;
+    Date startDate, endDate;
 
     @Inject
     TopAdsDashboardPresenter topAdsDashboardPresenter;
@@ -84,13 +92,60 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         topAdsDashboardPresenter.attachView(this);
         initShopInfoComponent(view);
         sessionHandler = new SessionHandler(getContext().getApplicationContext());
-        loadData();
+        initSummaryComponent(view);
+    }
+
+    private void initSummaryComponent(View view) {
+        groupSummaryLabelView = view.findViewById(R.id.label_view_group_summary);
+        itemSummaryLabelView = view.findViewById(R.id.label_view_item_summary);
+        keywordLabelView = view.findViewById(R.id.label_view_keyword);
+        groupSummaryLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSummaryGroupClicked();
+            }
+        });
+        itemSummaryLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSummaryProductClicked();
+            }
+        });
+        keywordLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSummaryKeywordClicked();
+            }
+        });
+    }
+
+    private void onSummaryKeywordClicked() {
+
+    }
+
+    private void onSummaryProductClicked() {
+
+    }
+
+    private void onSummaryGroupClicked() {
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (topAdsDashboardPresenter.isDateUpdated(startDate, endDate)){
+            startDate = topAdsDashboardPresenter.getStartDate();
+            endDate = topAdsDashboardPresenter.getEndDate();
+            loadData();
+        }
     }
 
     private void loadData() {
         topAdsDashboardPresenter.getShopDeposit(sessionHandler.getShopID());
         topAdsDashboardPresenter.getShopInfo(sessionHandler.getShopID());
-        //dateLabelView.setDate(null, null);
+        updateLabelDateView(startDate, endDate);
+        topAdsDashboardPresenter.populateTotalAds(sessionHandler.getShopID());
     }
 
     private void initShopInfoComponent(View view) {
@@ -114,7 +169,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     private void onDateLayoutClicked() {
-        Intent intent = getDatePickerIntent(getActivity(), null, null);
+        Intent intent = getDatePickerIntent(getActivity(), startDate, endDate);
         startActivityForResult(intent, DatePickerConstant.REQUEST_CODE_DATE);
     }
 
@@ -154,12 +209,32 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode == getActivity().RESULT_OK && requestCode == REQUEST_CODE_ADD_CREDIT) {
-            /*if (callback != null) {
-                callback.onCreditAdded();
-            }*/
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == getActivity().RESULT_OK){
+            if (requestCode == REQUEST_CODE_ADD_CREDIT) {
+
+            } else if (requestCode == DatePickerConstant.REQUEST_CODE_DATE){
+                if (data != null){
+                    handlingResultDateSelection(data);
+                }
+            }
+        }
+
+    }
+
+    private void handlingResultDateSelection(Intent data){
+        long sDate = data.getLongExtra(DatePickerConstant.EXTRA_START_DATE, -1);
+        long eDate = data.getLongExtra(DatePickerConstant.EXTRA_END_DATE, -1);
+        int lastSelection = data.getIntExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, 1);
+        int selectionType = data.getIntExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
+        if (sDate != -1 && eDate != -1) {
+            startDate = new Date(sDate);
+            endDate = new Date(eDate);
+            topAdsDashboardPresenter.saveDate(startDate, endDate);
+            topAdsDashboardPresenter.saveSelectionDatePicker(selectionType, lastSelection);
+
+            loadData();
         }
     }
 
@@ -187,6 +262,22 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         } else {
             shopTitleTextView.setText(Html.fromHtml(shopInfo.getInfo().getShopName()));
         }
+    }
+
+    @Override
+    public void onErrorPopulateTotalAds(Throwable throwable) {
+
+    }
+
+    @Override
+    public void onSuccessPopulateTotalAds(TotalAd totalAd) {
+        groupSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductGroupAd()));
+        itemSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductAd()));
+        keywordLabelView.setContent(String.valueOf(totalAd.getTotalKeyword()));
+    }
+
+    public void updateLabelDateView(Date startDate, Date endDate) {
+        dateLabelView.setDate(startDate, endDate);
     }
 
     @Override

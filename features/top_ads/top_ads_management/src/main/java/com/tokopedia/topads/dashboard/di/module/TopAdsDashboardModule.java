@@ -17,12 +17,18 @@ import com.tokopedia.topads.common.data.repository.TopAdsShopDepositRepositoryIm
 import com.tokopedia.topads.common.data.source.deposit.ShopDepositDataSource;
 import com.tokopedia.topads.common.data.source.deposit.ShopDepositDataSourceCloud;
 import com.tokopedia.topads.common.domain.repository.TopAdsShopDepositRepository;
+import com.tokopedia.topads.dashboard.data.repository.TopAdsDashboardRepositoryImpl;
+import com.tokopedia.topads.dashboard.data.source.TopAdsDashboardDataSource;
+import com.tokopedia.topads.dashboard.data.source.cloud.TopAdsDashboardDataSourceCloud;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsDashboardApi;
 import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSource;
 import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.di.qualifier.ShopWsQualifier;
+import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsDashboardScope;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractorImpl;
+import com.tokopedia.topads.dashboard.domain.repository.TopAdsDashboardRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -101,6 +107,30 @@ public class TopAdsDashboardModule {
     @TopAdsDashboardScope
     public TopAdsDatePickerInteractor provideTopAdsDatePickerInteractor(TopAdsCacheDataSource topAdsCacheDataSource){
         return new TopAdsDatePickerInteractorImpl(topAdsCacheDataSource);
+    }
+
+    @Provides
+    @TopAdsDashboardScope
+    public TopAdsDashboardApi provideTopAdsDashboadrApi(@TopAdsManagementQualifier Retrofit retrofit){
+        return retrofit.create(TopAdsDashboardApi.class);
+    }
+
+    @Provides
+    @TopAdsDashboardScope
+    public TopAdsDashboardDataSourceCloud provideTopAdsDashboardDataSourceCloud(TopAdsDashboardApi topAdsDashboardApi){
+        return new TopAdsDashboardDataSourceCloud(topAdsDashboardApi);
+    }
+
+    @Provides
+    @TopAdsDashboardScope
+    public TopAdsDashboardDataSource provideTopAdsDashboardDataSource(TopAdsDashboardDataSourceCloud topAdsDashboardDataSourceCloud){
+        return new TopAdsDashboardDataSource(topAdsDashboardDataSourceCloud);
+    }
+
+    @Provides
+    @TopAdsDashboardScope
+    public TopAdsDashboardRepository provideTopAdsDashboardRepository(TopAdsDashboardDataSource topAdsDashboardDataSource){
+        return new TopAdsDashboardRepositoryImpl(topAdsDashboardDataSource);
     }
 
 }

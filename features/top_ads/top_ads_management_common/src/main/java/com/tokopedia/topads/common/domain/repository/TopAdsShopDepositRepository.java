@@ -6,7 +6,7 @@ import com.tokopedia.usecase.RequestParams;
 import rx.Observable;
 
 /**
- * Created by nakama on 23/04/18.
+ * Created by hadi.putra on 23/04/18.
  */
 
 public interface TopAdsShopDepositRepository {

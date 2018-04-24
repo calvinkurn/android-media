@@ -23,6 +23,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.topads.common.data.api.TopAdsManagementApi;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
+import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 
@@ -87,4 +88,7 @@ public interface TopAdsComponent {
     HttpLoggingInterceptor httpLoggingInterceptor();
 
     CacheApiInterceptor cacheApiInterceptor();
+
+    @TopAdsManagementQualifier
+    Retrofit topAdsManagementRetrofit();
 }
