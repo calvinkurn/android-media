@@ -24,7 +24,7 @@ import rx.schedulers.Schedulers;
 
 import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.AUTO_SWEEP_MF_MAX_LIMIT;
 import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.AUTO_SWEEP_MF_MIN_LIMIT;
-import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.EXTRA_AUTOS_WEEP_LIMIT;
+import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.EXTRA_AUTO_SWEEP_LIMIT;
 import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.EXTRA_AVAILABLE_TOKOCASH;
 
 public class SetAutoSweepLimitPresenter extends BaseDaggerPresenter<SetAutoSweepLimitContract.View>
@@ -118,11 +118,11 @@ public class SetAutoSweepLimitPresenter extends BaseDaggerPresenter<SetAutoSweep
     }
 
     public long getAutoSweepLimit(@NonNull Bundle bundle) {
-        if (bundle.getLong(EXTRA_AUTOS_WEEP_LIMIT) < 0) {
+        if (bundle.getLong(EXTRA_AUTO_SWEEP_LIMIT) <= 0) {
             return getAutoSweepMinLimit();
         }
 
-        return bundle.getLong(EXTRA_AUTOS_WEEP_LIMIT);
+        return bundle.getLong(EXTRA_AUTO_SWEEP_LIMIT);
     }
 
 }

@@ -303,7 +303,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
         extras.putString(CommonConstant.EXTRA_AVAILABLE_TOKOCASH,
                 getArguments().getString(CommonConstant.EXTRA_AVAILABLE_TOKOCASH,
                         CommonConstant.NOT_AVAILABLE));
-        extras.putLong(CommonConstant.EXTRA_AUTOS_WEEP_LIMIT, mValueAutoSweepLimit);
+        extras.putLong(CommonConstant.EXTRA_AUTO_SWEEP_LIMIT, mValueAutoSweepLimit);
         startActivity(SetAutoSweepLimitActivity.getCallingIntent(getApplicationContext(),
                 extras));
     }

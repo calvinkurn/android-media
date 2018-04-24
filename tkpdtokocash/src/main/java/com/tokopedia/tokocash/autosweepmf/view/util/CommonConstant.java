@@ -8,7 +8,7 @@ public interface CommonConstant {
     int AUTO_SWEEP_MF_MAX_LIMIT = 9900000;
     int AUTO_SWEEP_SEEK_BAR_STEPS = 10000;
     String EXTRA_AVAILABLE_TOKOCASH = "extra_available_tokocash";
-    String EXTRA_AUTOS_WEEP_LIMIT = "extra_auto_sweep_limit";
+    String EXTRA_AUTO_SWEEP_LIMIT = "extra_auto_sweep_limit";
     String NOT_AVAILABLE = "N/A";
     String EVENT_AUTOSWEEPMF_STATUS_CHANGED = "autosweepmf-status-changed";
     String EVENT_KEY_NEEDED_RELOADING = "event_key_needed_reloading";
