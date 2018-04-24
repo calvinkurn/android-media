@@ -4,12 +4,15 @@ import android.support.annotation.IntDef;
 
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.CameraRatioDef.TYPE_1_1;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.CameraRatioDef.TYPE_3_4;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.CameraRatioDef.TYPE_4_3;
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_1_1;
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_4_5;
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_5_4;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW;
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW;
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_SINGLE;
 
 /**
  * Created by hendry on 19/04/18.
@@ -18,17 +21,17 @@ import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImagePickerTab
 public enum ImagePickerBuilder {
     ADD_PRODUCT(new int[]{TYPE_GALLERY, TYPE_INSTAGRAM, TYPE_CAMERA},
             GalleryType.IMAGE_ONLY,
-            false,
-            false,
-            300);
+            ImageSelectionTypeDef.TYPE_SINGLE,
+            300,
+            TYPE_1_1);
 
     private @ImagePickerTabTypeDef
     int[] tabTypeDef;
     private @GalleryType
     int galleryType;
-    private boolean isMultipleSelection;
-    private boolean hasThumbnailPreview;
     private int minResolution;
+    private @ExpectedImageRatioDef int expectedImageRatio;
+    private @ImageSelectionTypeDef int imageSelectionType;
 
     @IntDef({TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM})
     public @interface ImagePickerTabTypeDef {
@@ -37,23 +40,30 @@ public enum ImagePickerBuilder {
         int TYPE_INSTAGRAM = 3;
     }
 
-    @IntDef({TYPE_1_1, TYPE_3_4, TYPE_4_3})
-    public @interface CameraRatioDef {
+    @IntDef({TYPE_SINGLE, TYPE_MULTIPLE_NO_PREVIEW, TYPE_MULTIPLE_WITH_PREVIEW})
+    public @interface ImageSelectionTypeDef {
+        int TYPE_SINGLE = 1;
+        int TYPE_MULTIPLE_NO_PREVIEW = 2;
+        int TYPE_MULTIPLE_WITH_PREVIEW = 3;
+    }
+
+    @IntDef({TYPE_1_1, TYPE_4_5, TYPE_5_4})
+    public @interface ExpectedImageRatioDef {
         int TYPE_1_1 = 1;
-        int TYPE_3_4 = 2;
-        int TYPE_4_3 = 3;
+        int TYPE_4_5 = 2;
+        int TYPE_5_4 = 3;
     }
 
     private ImagePickerBuilder(@ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
                                @GalleryType int galleryType,
-                               boolean isMultipleSelection,
-                               boolean hasThumbnailPreview,
-                               int minResolution) {
+                               @ImageSelectionTypeDef int selectionType ,
+                               int minResolution,
+                               @ExpectedImageRatioDef int expectedImageRatio) {
         this.tabTypeDef = imagePickerTabTypeDef;
         this.galleryType = galleryType;
-        this.isMultipleSelection = isMultipleSelection;
-        this.hasThumbnailPreview = hasThumbnailPreview;
+        this.imageSelectionType = selectionType;
         this.minResolution = minResolution;
+        this.expectedImageRatio = expectedImageRatio;
     }
 
     public int[] getTabTypeDef() {
@@ -86,15 +96,15 @@ public enum ImagePickerBuilder {
         return galleryType;
     }
 
-    public boolean hasThumbnailPreview() {
-        return hasThumbnailPreview;
-    }
-
-    public boolean supportMultipleSelection() {
-        return isMultipleSelection;
+    public int getImageSelectionType() {
+        return imageSelectionType;
     }
 
     public int getMinResolution() {
         return minResolution;
+    }
+
+    public int getExpectedImageRatio() {
+        return expectedImageRatio;
     }
 }

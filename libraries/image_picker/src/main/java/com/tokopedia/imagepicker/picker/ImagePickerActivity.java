@@ -35,6 +35,8 @@ import com.tokopedia.imagepicker.picker.widget.AlbumsSpinner;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW;
+
 public class ImagePickerActivity extends BaseSimpleActivity
         implements AdapterView.OnItemSelectedListener,
         ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener,
@@ -92,8 +94,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     private void setupPreview() {
         View vgPreviewContainer = findViewById(R.id.vg_preview_container);
-        if (imagePickerBuilder.supportMultipleSelection() &&
-                imagePickerBuilder.hasThumbnailPreview()) {
+        if (imagePickerBuilder.getImageSelectionType() == ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
             vgPreviewContainer.setVisibility(View.VISIBLE);
         } else {
             vgPreviewContainer.setVisibility(View.GONE);
@@ -279,19 +280,26 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
-        if (imagePickerBuilder.supportMultipleSelection()) {
-            // TODO will do later, currently only support single selection
-            if (imagePickerBuilder.hasThumbnailPreview()) {
-                // TODO change the UI of selection
+        switch (imagePickerBuilder.getImageSelectionType()) {
+            case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_SINGLE: {
+                Toast.makeText(this, "onAlbumClicked " + item.getRealPath(), Toast.LENGTH_SHORT).show();
+                startSingleEditImage(item.getRealPath());
             }
-        } else {
-            //TODO select image; go to image editor
-            Toast.makeText(this, "onAlbumClicked " + item.getRealPath(), Toast.LENGTH_SHORT).show();
-            startSingleEditImage(item.getRealPath());
+            break;
+            case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
+            case TYPE_MULTIPLE_WITH_PREVIEW: {
+                // TODO change the UI of selection
+                if (imagePickerBuilder.getImageSelectionType() == TYPE_MULTIPLE_WITH_PREVIEW) {
+                    // TODO show the preview
+                } else {
+                    // TODO hide the preview
+                }
+            }
+            break;
         }
     }
 
-    private void startSingleEditImage(String imageUrlOrPath){
+    private void startSingleEditImage(String imageUrlOrPath) {
         Intent intent = ImageEditorActivity.getIntent(this, imageUrlOrPath);
         startActivityForResult(intent, REQUEST_CODE_EDITOR);
     }
@@ -301,7 +309,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CODE_EDITOR:
-                if (resultCode == Activity.RESULT_OK && data!= null) {
+                if (resultCode == Activity.RESULT_OK && data != null) {
                     //TODO setresult the final path
                     finish();
                 }
@@ -314,20 +322,28 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onImageTaken(String filePath) {
-        if (imagePickerBuilder.supportMultipleSelection()) {
-            //TODO
-            if (imagePickerBuilder.hasThumbnailPreview()) {
-
+        switch (imagePickerBuilder.getImageSelectionType()) {
+            case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_SINGLE: {
+                Toast.makeText(this, "onAlbumClicked " + filePath, Toast.LENGTH_SHORT).show();
+                startSingleEditImage(filePath);
             }
-            //to cater the bug in library.
-            ImagePickerCameraFragment fragment = getCameraFragment();
-            if (fragment!= null) {
-                fragment.onPause();
-                fragment.onResume();
+            break;
+            case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
+            case TYPE_MULTIPLE_WITH_PREVIEW: {
+                // TODO change the UI of selection
+                if (imagePickerBuilder.getImageSelectionType() == TYPE_MULTIPLE_WITH_PREVIEW) {
+                    // TODO show the preview?
+                } else {
+                    // TODO hide the preview?
+                }
+                //to cater the bug in library.
+                ImagePickerCameraFragment fragment = getCameraFragment();
+                if (fragment != null) {
+                    fragment.onPause();
+                    fragment.onResume();
+                }
             }
-        } else {
-            Toast.makeText(this, "onPhotoTaken " + filePath, Toast.LENGTH_SHORT).show();
-            startSingleEditImage(filePath);
+            break;
         }
     }
 
