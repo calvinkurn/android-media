@@ -3,13 +3,14 @@ package com.tokopedia.checkout.domain.datamodel.addressoptions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 /**
  * @author Aghny A. Putra on 25/01/18
  */
 
-public class RecipientAddressModel implements Parcelable {
+public class RecipientAddressModel implements Parcelable, ShipmentData {
 
     private String id;
     private int addressStatus;

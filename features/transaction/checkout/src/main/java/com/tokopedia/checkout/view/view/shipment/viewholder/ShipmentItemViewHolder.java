@@ -1,0 +1,140 @@
+package com.tokopedia.checkout.view.view.shipment.viewholder;
+
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.tokopedia.checkout.R;
+import com.tokopedia.design.pickuppoint.PickupPointLayout;
+
+public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
+
+    static final int IMAGE_ALPHA_DISABLED = 128;
+    static final int IMAGE_ALPHA_ENABLED = 255;
+
+    static final int GRAM = 0;
+    static final int KILOGRAM = 1;
+
+    TextView tvError;
+    FrameLayout layoutError;
+    TextView tvWarning;
+    FrameLayout layoutWarning;
+    TextView tvTextSentBy;
+    TextView tvShopName;
+    ImageView imgShippingWarning;
+    TextView tvShippingWarning;
+    LinearLayout llShippingWarningContainer;
+    ImageView ivProductImage;
+    TextView tvProductName;
+    TextView tvProductPrice;
+    ImageView ivFreeReturnIcon;
+    TextView tvFreeReturnLabel;
+    TextView tvPreOrder;
+    TextView tvCashback;
+    RelativeLayout rlProductPoliciesLayout;
+    TextView tvTextProductWeight;
+    TextView tvProductWeight;
+    TextView tvProductTotalItem;
+    TextView tvLabelItemCount;
+    TextView tvNoteToSellerLabel;
+    TextView tvOptionalNoteToSeller;
+    LinearLayout llOptionalNoteToSellerLayout;
+    LinearLayout llItemProductContainer;
+    TextView tvAddressName;
+    TextView tvAddressStatus;
+    LinearLayout llAddressName;
+    TextView tvRecipientName;
+    TextView tvRecipientAddress;
+    TextView tvRecipientPhone;
+    TextView tvChangeAddress;
+    LinearLayout addressLayout;
+    PickupPointLayout pickupPointLayout;
+    RecyclerView rvCartItem;
+    TextView tvExpandOtherProduct;
+    RelativeLayout rlExpandOtherProduct;
+    TextView tvTextShipment;
+    TextView chooseCourierButton;
+    TextView tvSelectedShipment;
+    LinearLayout llSelectedCourier;
+    LinearLayout llShipmentOptionViewLayout;
+    TextView tvCartSubTotal;
+    ImageView ivDetailOptionChevron;
+    TextView tvSubTotalPrice;
+    TextView tvShipmentOption;
+    RelativeLayout rlCartSubTotal;
+    TextView tvTotalItem;
+    TextView tvTotalItemPrice;
+    TextView tvShippingFee;
+    TextView tvShippingFeePrice;
+    TextView tvInsuranceFee;
+    TextView tvInsuranceFeePrice;
+    TextView tvPromoText;
+    TextView tvPromoPrice;
+    RelativeLayout rlShipmentCost;
+
+    public ShipmentItemViewHolder(View itemView) {
+        super(itemView);
+
+        tvError = itemView.findViewById(R.id.tv_error);
+        layoutError = itemView.findViewById(R.id.layout_error);
+        tvWarning = itemView.findViewById(R.id.tv_warning);
+        layoutWarning = itemView.findViewById(R.id.layout_warning);
+        tvTextSentBy = itemView.findViewById(R.id.tv_text_sent_by);
+        tvShopName = itemView.findViewById(R.id.tv_shop_name);
+        imgShippingWarning = itemView.findViewById(R.id.img_shipping_warning);
+        tvShippingWarning = itemView.findViewById(R.id.tv_shipping_warning);
+        llShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
+        ivProductImage = itemView.findViewById(R.id.iv_product_image);
+        tvProductName = itemView.findViewById(R.id.tv_product_name);
+        tvProductPrice = itemView.findViewById(R.id.tv_product_price);
+        ivFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
+        tvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
+        tvPreOrder = itemView.findViewById(R.id.tv_pre_order);
+        tvCashback = itemView.findViewById(R.id.tv_cashback);
+        rlProductPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
+        tvTextProductWeight = itemView.findViewById(R.id.tv_text_product_weight);
+        tvProductWeight = itemView.findViewById(R.id.tv_product_weight);
+        tvProductTotalItem = itemView.findViewById(R.id.tv_product_total_item);
+        tvLabelItemCount = itemView.findViewById(R.id.tv_label_item_count);
+        tvNoteToSellerLabel = itemView.findViewById(R.id.tv_note_to_seller_label);
+        tvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
+        llOptionalNoteToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
+        llItemProductContainer = itemView.findViewById(R.id.ll_item_product_container);
+        tvAddressName = itemView.findViewById(R.id.tv_address_name);
+        tvAddressStatus = itemView.findViewById(R.id.tv_address_status);
+        llAddressName = itemView.findViewById(R.id.ll_address_name);
+        tvRecipientName = itemView.findViewById(R.id.tv_recipient_name);
+        tvRecipientAddress = itemView.findViewById(R.id.tv_recipient_address);
+        tvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
+        tvChangeAddress = itemView.findViewById(R.id.tv_change_address);
+        addressLayout = itemView.findViewById(R.id.address_layout);
+        pickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
+        rvCartItem = itemView.findViewById(R.id.rv_cart_item);
+        tvExpandOtherProduct = itemView.findViewById(R.id.tv_expand_other_product);
+        rlExpandOtherProduct = itemView.findViewById(R.id.rl_expand_other_product);
+        tvTextShipment = itemView.findViewById(R.id.tv_text_shipment);
+        chooseCourierButton = itemView.findViewById(R.id.choose_courier_button);
+        tvSelectedShipment = itemView.findViewById(R.id.tv_selected_shipment);
+        llSelectedCourier = itemView.findViewById(R.id.ll_selected_courier);
+        llShipmentOptionViewLayout = itemView.findViewById(R.id.ll_shipment_option_view_layout);
+        tvCartSubTotal = itemView.findViewById(R.id.tv_cart_sub_total);
+        ivDetailOptionChevron = itemView.findViewById(R.id.iv_detail_option_chevron);
+        tvSubTotalPrice = itemView.findViewById(R.id.tv_sub_total_price);
+        tvShipmentOption = itemView.findViewById(R.id.tv_shipment_option);
+        rlCartSubTotal = itemView.findViewById(R.id.rl_cart_sub_total);
+        tvTotalItem = itemView.findViewById(R.id.tv_total_item);
+        tvTotalItemPrice = itemView.findViewById(R.id.tv_total_item_price);
+        tvShippingFee = itemView.findViewById(R.id.tv_shipping_fee);
+        tvShippingFeePrice = itemView.findViewById(R.id.tv_shipping_fee_price);
+        tvInsuranceFee = itemView.findViewById(R.id.tv_insurance_fee);
+        tvInsuranceFeePrice = itemView.findViewById(R.id.tv_insurance_fee_price);
+        tvPromoText = itemView.findViewById(R.id.tv_promo_text);
+        tvPromoPrice = itemView.findViewById(R.id.tv_promo_price);
+        rlShipmentCost = itemView.findViewById(R.id.rl_shipment_cost);
+    }
+
+}

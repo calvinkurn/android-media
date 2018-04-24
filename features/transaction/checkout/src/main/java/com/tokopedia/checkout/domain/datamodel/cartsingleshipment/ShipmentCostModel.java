@@ -3,11 +3,13 @@ package com.tokopedia.checkout.domain.datamodel.cartsingleshipment;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.checkout.view.view.shipment.ShipmentData;
+
 /**
  * @author Aghny A. Putra on 25/01/18
  */
 
-public class ShipmentCostModel implements Parcelable {
+public class ShipmentCostModel implements Parcelable, ShipmentData {
 
     private int totalItem;
     private double totalItemPrice;

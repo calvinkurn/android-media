@@ -3,11 +3,13 @@ package com.tokopedia.checkout.domain.datamodel.cartlist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.checkout.view.view.shipment.ShipmentData;
+
 /**
  * @author anggaprasetiyo on 15/02/18.
  */
 
-public class CartPromoSuggestion implements Parcelable {
+public class CartPromoSuggestion implements Parcelable, ShipmentData {
     private String cta;
     private String ctaColor;
     private boolean isVisible;

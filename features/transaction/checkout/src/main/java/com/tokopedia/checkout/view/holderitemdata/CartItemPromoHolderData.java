@@ -1,12 +1,13 @@
 package com.tokopedia.checkout.view.holderitemdata;
 
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 
 /**
  * @author anggaprasetiyo on 20/02/18.
  */
 
-public class CartItemPromoHolderData {
+public class CartItemPromoHolderData implements ShipmentData {
 
     public static final int TYPE_PROMO_NOT_ACTIVE = 0;
     public static final int TYPE_PROMO_VOUCHER = 1;
