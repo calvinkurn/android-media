@@ -9,7 +9,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatSeekBar;
+import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +27,6 @@ import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.autosweepmf.view.contract.SetAutoSweepLimitContract;
 import com.tokopedia.tokocash.autosweepmf.view.model.AutoSweepLimit;
 import com.tokopedia.tokocash.autosweepmf.view.presenter.SetAutoSweepLimitPresenter;
-import com.tokopedia.tokocash.autosweepmf.view.util.InputFilterMinMax;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 
 import javax.inject.Inject;
@@ -44,6 +45,66 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements Set
 
     @Inject
     SetAutoSweepLimitPresenter mPresenter;
+
+    @Inject
+    InputFilter[] mAmountInputFilter;
+
+    /*TextWatcher for amount EditText in to format the Rp values on type*/
+    private TextWatcher mAmountTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            //Removing SeekBar listener in order avoid circular callback
+            mSeekBarAmount.setOnSeekBarChangeListener(null); /* Null will release the prevoius holds listener */
+            try {
+                mSeekBarAmount.setProgress(Integer.parseInt(s.toString()));
+            } catch (NumberFormatException nfe) {
+                //Do nothing, just for safer side
+            }
+            mSeekBarAmount.setOnSeekBarChangeListener(mSeekBarChangeListener);
+        }
+    };
+
+    /*SeekBar change listener for updating the EditText values on slide*/
+    private SeekBar.OnSeekBarChangeListener mSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            //Removing SeekBar,EditText listener in order avoid circular callback
+            mSeekBarAmount.setOnSeekBarChangeListener(null); /* Null will release the prevoius holds listener */
+            mEditAmount.removeTextChangedListener(mAmountTextWatcher);
+            if (progress < mPresenter.getAutoSweepMinLimit()) {
+                mEditAmount.setText(String.valueOf(mPresenter.getAutoSweepMinLimit()));
+            } else {
+                //Creating the steps for SeekBar to better selection experience
+                progress = Math.round(progress / AUTO_SWEEP_SEEK_BAR_STEPS) * AUTO_SWEEP_SEEK_BAR_STEPS;
+                seekBar.setProgress(progress);
+                mEditAmount.setText(String.valueOf(progress));
+                mEditAmount.setSelection(mEditAmount.getText().length());
+            }
+
+            mSeekBarAmount.setOnSeekBarChangeListener(mSeekBarChangeListener);
+            mEditAmount.addTextChangedListener(mAmountTextWatcher);
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
 
     public static SetAutoSweepLimitFragment newInstance(@NonNull Bundle bundle) {
         SetAutoSweepLimitFragment fragment = new SetAutoSweepLimitFragment();
@@ -172,13 +233,15 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements Set
 
     private void initViews(@NonNull View view) {
         mSeekBarAmount = view.findViewById(R.id.seek_bar_amount);
+
+        //Setting auto sweep progress limit if exist to maintain the consistency
         mSeekBarAmount.setProgress((int) mPresenter.getAutoSweepLimit(getArguments()));
+
         TextView textSeekBarMin = view.findViewById(R.id.text_seekbar_min);
         textSeekBarMin.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(mPresenter.getAutoSweepMinLimit(), false));
         TextView textSeekBarMax = view.findViewById(R.id.text_seekbar_max);
         textSeekBarMax.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(mPresenter.getAutoSweepMaxLimit(), false));
         mEditAmount = view.findViewById(R.id.edit_text_amount);
-        mEditAmount.setText(String.valueOf(mPresenter.getAutoSweepLimit(getArguments())));
         mEditAmount.clearFocus();
         mBtnSubmit = view.findViewById(R.id.button_submit);
         TextView textTokocashValue = view.findViewById(R.id.text_tokocash_balance_value);
@@ -186,31 +249,15 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements Set
     }
 
     private void initListener() {
-        mEditAmount.setFilters(new InputFilter[]{new InputFilterMinMax(0, mPresenter.getAutoSweepMaxLimit())});
+        //Setting up filter in order to avoid max values
+        mEditAmount.setFilters(mAmountInputFilter);
+        mEditAmount.addTextChangedListener(mAmountTextWatcher);
+
+        //Setting auto sweep limit if exist to maintain the consistency
+        mEditAmount.setText(String.valueOf(mPresenter.getAutoSweepLimit(getArguments())));
+
         mBtnSubmit.setOnClickListener(this);
-        mSeekBarAmount.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (progress < mPresenter.getAutoSweepMinLimit()) {
-                    mEditAmount.setText(String.valueOf(mPresenter.getAutoSweepMinLimit()));
-                } else {
-                    //Creating the steps for seekbar to better selection experience
-                    progress = Math.round(progress / AUTO_SWEEP_SEEK_BAR_STEPS) * AUTO_SWEEP_SEEK_BAR_STEPS;
-                    seekBar.setProgress(progress);
-                    mEditAmount.setText(String.valueOf(progress));
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
+        mSeekBarAmount.setOnSeekBarChangeListener(mSeekBarChangeListener);
     }
 
     /**
@@ -219,7 +266,12 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements Set
      * @return true for success else false
      */
     private boolean isValidate() {
-        return mEditAmount != null
-                && Integer.parseInt(mEditAmount.getText().toString()) >= AUTO_SWEEP_MF_MIN_LIMIT;
+        try {
+            return mEditAmount != null
+                    && Integer.parseInt(mEditAmount.getText().toString()) >= AUTO_SWEEP_MF_MIN_LIMIT;
+        } catch (NumberFormatException nfe) {
+            //To avoiding space NFE crash
+            return false;
+        }
     }
 }

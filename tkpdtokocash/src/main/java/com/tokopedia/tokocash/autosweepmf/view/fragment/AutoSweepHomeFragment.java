@@ -12,6 +12,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,6 @@ import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -65,7 +65,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
     private Button mBtnPositive, mBtnNegative;
     private LinearLayout mContainerWarning;
     private TextView mTextWaningTitle, mTextWarningMessage, mTextError;
-    private Switch mSwitchAutoSweep;
+    private SwitchCompat mSwitchAutoSweep;
     private ViewFlipper mContainerMain;
     private int mAccountStatus = -1;
     private int mAutoSweepStatus = -1;
@@ -350,7 +350,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
         SnackbarRetry snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                mPresenter.updateAutoSweepStatus(false, 0);
+                mPresenter.updateAutoSweepStatus(false, (int) mValueAutoSweepLimit);
             }
         });
         snackbarRetry.showRetrySnackbar();
@@ -427,7 +427,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
                     //Disabling the autosweep so that passing zero
-                    mPresenter.updateAutoSweepStatus(false, 0);
+                    mPresenter.updateAutoSweepStatus(false, (int) mValueAutoSweepLimit);
                 }
             }
         });

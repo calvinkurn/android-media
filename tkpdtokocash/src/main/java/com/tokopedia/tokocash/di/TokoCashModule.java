@@ -1,6 +1,7 @@
 package com.tokopedia.tokocash.di;
 
 import android.content.Context;
+import android.text.InputFilter;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -13,6 +14,8 @@ import com.tokopedia.tokocash.activation.data.ActivateRepository;
 import com.tokopedia.tokocash.activation.domain.LinkedTokoCashUseCase;
 import com.tokopedia.tokocash.activation.domain.RequestOtpTokoCashUseCase;
 import com.tokopedia.tokocash.autosweepmf.data.source.cloud.api.AutoSweepApi;
+import com.tokopedia.tokocash.autosweepmf.view.presenter.SetAutoSweepLimitPresenter;
+import com.tokopedia.tokocash.autosweepmf.view.util.InputFilterMinMax;
 import com.tokopedia.tokocash.historytokocash.data.repository.WalletRepository;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.domain.GetReasonHelpDataUseCase;
@@ -209,5 +212,11 @@ public class TokoCashModule {
     @TokoCashScope
     PostUnlinkTokoCashUseCase providePostUnlinkTokoCashUseCase(AccountSettingRepository accountSettingRepository) {
         return new PostUnlinkTokoCashUseCase(accountSettingRepository);
+    }
+
+    @Provides
+    @TokoCashScope
+    InputFilter[] provideInputFilterForAutoSweepLimit(SetAutoSweepLimitPresenter presenter) {
+        return new InputFilter[]{new InputFilterMinMax(0, presenter.getAutoSweepMaxLimit())};
     }
 }
