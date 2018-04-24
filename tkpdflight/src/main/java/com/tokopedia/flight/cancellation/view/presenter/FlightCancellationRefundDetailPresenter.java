@@ -6,7 +6,6 @@ import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultE
 import com.tokopedia.flight.cancellation.domain.FlightCancellationEstimateRefundUseCase;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationRefundDetailContract;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationRefundDetailContract.Presenter;
-import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 
 import javax.inject.Inject;
@@ -49,7 +48,7 @@ public class FlightCancellationRefundDetailPresenter extends BaseDaggerPresenter
                 flightCancellationEstimateRefundUseCase.createRequestParam(
                         getView().getCancellationViewModel().getInvoice(),
                         userSession.getUserId(),
-                        getView().getCancellationViewModel().getViewModels()
+                        getView().getCancellationViewModel().getGetCancellations()
                 ),
                 new Subscriber<EstimateRefundResultEntity>() {
                     @Override

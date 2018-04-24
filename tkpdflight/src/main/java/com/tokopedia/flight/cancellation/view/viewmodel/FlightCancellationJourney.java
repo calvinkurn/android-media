@@ -3,11 +3,13 @@ package com.tokopedia.flight.cancellation.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * @author by furqan on 23/03/18.
  */
 
-public class FlightCancellationJourney implements Parcelable {
+public class FlightCancellationJourney implements Parcelable{
 
     private String journeyId;
     private String departureCity;
@@ -20,6 +22,7 @@ public class FlightCancellationJourney implements Parcelable {
     private String arrivalTime;
     private String airlineName;
     private boolean isRefundable;
+    private List<String> airlineIds;
 
     public FlightCancellationJourney() {
     }
@@ -36,6 +39,7 @@ public class FlightCancellationJourney implements Parcelable {
         arrivalTime = in.readString();
         airlineName = in.readString();
         isRefundable = in.readByte() != 0;
+        airlineIds = in.createStringArrayList();
     }
 
     public static final Creator<FlightCancellationJourney> CREATOR = new Creator<FlightCancellationJourney>() {
@@ -138,21 +142,12 @@ public class FlightCancellationJourney implements Parcelable {
         isRefundable = refundable;
     }
 
-    @Override
-    public String toString() {
-        return "FlightCancellationJourney{" +
-                "journeyId='" + journeyId + '\'' +
-                ", departureCity='" + departureCity + '\'' +
-                ", departureCityCode='" + departureCityCode + '\'' +
-                ", departureAiportId='" + departureAiportId + '\'' +
-                ", departureTime='" + departureTime + '\'' +
-                ", arrivalCity='" + arrivalCity + '\'' +
-                ", arrivalCityCode='" + arrivalCityCode + '\'' +
-                ", arrivalAirportId='" + arrivalAirportId + '\'' +
-                ", arrivalTime='" + arrivalTime + '\'' +
-                ", airlineName='" + airlineName + '\'' +
-                ", isRefundable=" + isRefundable +
-                '}';
+    public List<String> getAirlineIds() {
+        return airlineIds;
+    }
+
+    public void setAirlineIds(List<String> airlineIds) {
+        this.airlineIds = airlineIds;
     }
 
     @Override
@@ -161,17 +156,18 @@ public class FlightCancellationJourney implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(journeyId);
-        dest.writeString(departureCity);
-        dest.writeString(departureCityCode);
-        dest.writeString(departureAiportId);
-        dest.writeString(departureTime);
-        dest.writeString(arrivalCity);
-        dest.writeString(arrivalCityCode);
-        dest.writeString(arrivalAirportId);
-        dest.writeString(arrivalTime);
-        dest.writeString(airlineName);
-        dest.writeByte((byte) (isRefundable ? 1 : 0));
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(journeyId);
+        parcel.writeString(departureCity);
+        parcel.writeString(departureCityCode);
+        parcel.writeString(departureAiportId);
+        parcel.writeString(departureTime);
+        parcel.writeString(arrivalCity);
+        parcel.writeString(arrivalCityCode);
+        parcel.writeString(arrivalAirportId);
+        parcel.writeString(arrivalTime);
+        parcel.writeString(airlineName);
+        parcel.writeByte((byte) (isRefundable ? 1 : 0));
+        parcel.writeStringList(airlineIds);
     }
 }
