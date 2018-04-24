@@ -273,11 +273,11 @@ dependencies {
     compile rootProject.ext.tkpdDependencies.tokocash // udah
     compile rootProject.ext.tkpdDependencies.home // udah
     compile rootProject.ext.tkpdDependencies.groupchat // udah
+    compile rootProject.ext.tkpdDependencies.applink // udah
     compile rootProject.ext.tkpdDependencies.shopPage // udah
+    compile rootProject.ext.tkpdDependencies.gamification // udah
     compile rootProject.ext.tkpdDependencies.kol // udah
     compile rootProject.ext.tkpdDependencies.pushNotif // udah
-    compile rootProject.ext.tkpdDependencies.applink // udah
-    compile rootProject.ext.tkpdDependencies.gamification // udah
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

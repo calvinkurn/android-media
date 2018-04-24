@@ -31,7 +31,6 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.debugToolsDependencies.stetho
-
 }
 
 apply from: '../../../publish_local.gradle'

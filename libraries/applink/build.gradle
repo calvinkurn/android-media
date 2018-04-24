@@ -10,7 +10,7 @@ project.ext {
 
 dependencies {
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 
 apply from: '../../publish_local.gradle'

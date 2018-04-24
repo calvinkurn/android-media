@@ -19,9 +19,8 @@ project.ext {
 }
 
 dependencies {
-
-    compile rootProject.ext.tkpdDependencies.usecase
     compile rootProject.ext.tkpdDependencies.abstraction
+    compile rootProject.ext.tkpdDependencies.usecase
     compile rootProject.ext.tkpdDependencies.design
 
     compile(rootProject.ext.tkpdLibDependencies.expandableOption) {

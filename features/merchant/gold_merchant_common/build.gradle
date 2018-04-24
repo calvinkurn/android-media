@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 project.ext {
-    artifactId = 'gold_merchant_common'
-    groupId = 'com.tokopedia.gold_merchant_common'
+    artifactId = 'gold_merchant-common'
+    groupId = 'com.tokopedia.gm'
     versionName = "2.22"
     artifactName ="gold_merchant_common-release"
 }
@@ -16,7 +16,6 @@ dependencies {
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
 }
 
 apply from: '../../../publish_local.gradle'

@@ -11,6 +11,7 @@ ext {
     tkpdUseCaseVersion = '2.22'
     tkpdAbstractionVersion = '2.22'
     tkpdCacheApiVersion = '2.22'
+    tkpdApplinkVersion = '2.22'
     tkpdCoreVersion = '2.22'
     tkpdInboxVersion = '2.22'
     tkpdSessionVersion = '2.22'
@@ -29,6 +30,10 @@ ext {
     tkpdFlightVersion = '2.22'
     tkpdCacheApiVersion = '2.22'
     tkpdReputationVersion = '2.22'
+    tkpdGroupchatVersion = '2.22'
+    tkpdShopVersion = '2.22'
+    tkpdKolVersion = '2.22'
+    tkpdPushNotifVersion = '2.22'
     compileSdkVersion = 27
     minSdkVersion = 16
     targetSdkVersion = 27
@@ -185,6 +190,7 @@ ext {
             abstraction: "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
             core       : "com.tokopedia.core:core:${tkpdCoreVersion}",
             cacheapi   : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
+            applink    : "com.tokopedia.applink:applink:${tkpdApplinkVersion}",
             inbox      : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             session    : "com.tokopedia.session:session:${tkpdSessionVersion}",
             transaction: "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
@@ -201,21 +207,17 @@ ext {
             loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
             flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
             flightNoOp : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
-            cacheapi   : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
             reputation : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
             reputationCommon : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
             wishListCommon : "com.tokopedia.wishlist:wishlist-common:${tkpdReputationVersion}",
-            goldMerchantCommon : "com.tokopedia.gold_merchant_common:gold_merchant_common:${tkpdReputationVersion}",
-            shopCommon : "com.tokopedia.shop_common:shop_common:${tkpdReputationVersion}",
-            shopPage : "com.tokopedia.shop_page:shop_page:${tkpdReputationVersion}",
             tokocash : "com.tokopedia.tokocash:tokocash:${tkpdReputationVersion}",
-            groupchat : "com.tokopedia.groupchat:groupchat:${tkpdReputationVersion}",
-            home : "com.tokopedia.home:home:${tkpdReputationVersion}",
-            gamification : "com.tokopedia.gamification:gamification:${tkpdReputationVersion}",
-            applink : "com.tokopedia.applink:applink:${tkpdReputationVersion}",
-            pushNotif : "com.tokopedia.push_notification:push_notification:${tkpdReputationVersion}",
-            kol : "com.tokopedia.kol:kol:${tkpdReputationVersion}",
-            events      : "com.tokopedia.events:events:${tkpdReputationVersion}"
+            events      : "com.tokopedia.events:events:${tkpdReputationVersion}",
+            groupchat      : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
+            shopCommon  : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",
+            goldMerchantCommon: "com.tokopedia.gm:gold_merchant-common:${tkpdShopVersion}",
+            shopPage: "com.tokopedia.shop:shop_page:${tkpdShopVersion}",
+            kol: "com.tokopedia.kol:kol:${tkpdKolVersion}",
+            pushNotif: "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}"
     ]
 
     tkpdLibDependencies = [

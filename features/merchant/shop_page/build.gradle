@@ -2,15 +2,16 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 project.ext {
-    artifactId = 'shop_page'
-    groupId = 'com.tokopedia.shop_page'
+    artifactId = 'shop-page'
+    groupId = 'com.tokopedia.shop'
     versionName = "2.22"
     artifactName ="shop_page-release"
 }
 
 dependencies {
-    compile rootProject.ext.tkpdDependencies.usecase
+
     compile rootProject.ext.tkpdDependencies.abstraction
+    compile rootProject.ext.tkpdDependencies.usecase
     compile rootProject.ext.tkpdDependencies.cacheapi
 
     compile rootProject.ext.tkpdDependencies.shopCommon
