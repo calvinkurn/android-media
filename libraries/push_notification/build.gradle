@@ -19,16 +19,16 @@ project.ext {
 }
 
 dependencies {
-    compile rootProject.ext.tkpdDependencies.abstraction
-    compile rootProject.ext.tkpdDependencies.applink
+    implementation rootProject.ext.tkpdDependencies.abstraction
+    implementation rootProject.ext.tkpdDependencies.applink
 
-    compile rootProject.ext.supportLibDependencies.supportV4
-    compile rootProject.ext.supportLibDependencies.appCompactV7
-    compile rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.supportLibDependencies.supportV4
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.playServicesDependencies.firebase
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
-    compile rootProject.ext.dbDependencies.dbFlowCore
-    compile rootProject.ext.dbDependencies.dbFlow
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
 }
 
 apply from: '../../publish_local.gradle'

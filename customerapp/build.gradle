@@ -253,111 +253,87 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-//    compile project(rootProject.ext.features.core)
-//    compile project(rootProject.ext.features.discovery)
-//    compile project(rootProject.ext.features.transaction)
-//    compile project(rootProject.ext.features.seller)
-//    compile project(rootProject.ext.features.session)
-//    compile project(rootProject.ext.features.inbox)
-    compile project(rootProject.ext.features.ride)
-//    compile project(rootProject.ext.features.digital)
-//    compile project(rootProject.ext.features.productDetail)
-//    compile project(rootProject.ext.features.feed)
-//    compile project(rootProject.ext.features.event)
-//    compile project(rootProject.ext.features.loyalty)
-//    compile project(rootProject.ext.features.reputation)
-//    compile project(rootProject.ext.features.tokoCash)
-//    compile project(rootProject.ext.features.flight)
-//    compile project(rootProject.ext.features.home)
-//    compile project(rootProject.ext.features.groupchat)
-//    compile project(rootProject.ext.features.shopPage)
-//    compile project(rootProject.ext.libraries.reactNative)
-//    compile project(rootProject.ext.features.kol)
-//    compile project(rootProject.ext.libraries.pushNotif)
-//    compile project(rootProject.ext.libraries.applink)
-//    compile project(rootProject.ext.features.gamification)
+    implementation rootProject.ext.tkpdDependencies.core // udah
+    implementation rootProject.ext.tkpdDependencies.discovery // udah
+    implementation rootProject.ext.tkpdDependencies.transaction // udah
+    implementation rootProject.ext.tkpdDependencies.seller // udah
+    implementation rootProject.ext.tkpdDependencies.inbox // udah
+    implementation rootProject.ext.tkpdDependencies.tkpdpdp // udah
+    implementation rootProject.ext.tkpdDependencies.feed // udah
+    implementation rootProject.ext.tkpdDependencies.reactNative// udah
+    implementation rootProject.ext.tkpdDependencies.loyalty // udah
+    implementation rootProject.ext.tkpdDependencies.session // udah
+    implementation rootProject.ext.tkpdDependencies.reputation // udah
+    implementation rootProject.ext.tkpdDependencies.events // udah
+    implementation rootProject.ext.tkpdDependencies.ride // udah
+    implementation rootProject.ext.tkpdDependencies.flight // udah
+    implementation rootProject.ext.tkpdDependencies.digital // udah
+    implementation rootProject.ext.tkpdDependencies.tokocash // udah
+    implementation rootProject.ext.tkpdDependencies.home // udah
+    implementation rootProject.ext.tkpdDependencies.groupchat // udah
+    implementation rootProject.ext.tkpdDependencies.applink
+    implementation rootProject.ext.tkpdDependencies.shopPage
+    implementation rootProject.ext.tkpdDependencies.gamification
+    implementation rootProject.ext.tkpdDependencies.kol
+    implementation rootProject.ext.tkpdDependencies.pushNotif
 
-    compile rootProject.ext.tkpdDependencies.core // udah
-    compile rootProject.ext.tkpdDependencies.discovery // udah
-    compile rootProject.ext.tkpdDependencies.transaction // udah
-    compile rootProject.ext.tkpdDependencies.seller // udah
-    compile rootProject.ext.tkpdDependencies.inbox // udah
-    compile rootProject.ext.tkpdDependencies.tkpdpdp // udah
-    compile rootProject.ext.tkpdDependencies.feed // udah
-    compile rootProject.ext.tkpdDependencies.reactNative// udah
-    compile rootProject.ext.tkpdDependencies.loyalty // udah
-    compile rootProject.ext.tkpdDependencies.session // udah
-    compile rootProject.ext.tkpdDependencies.reputation // udah
-    compile rootProject.ext.tkpdDependencies.events // udah
-//    compile rootProject.ext.tkpdDependencies.ride // udah
-    compile rootProject.ext.tkpdDependencies.flight // udah
-    compile rootProject.ext.tkpdDependencies.digital // udah
-    compile rootProject.ext.tkpdDependencies.tokocash // udah
-    compile rootProject.ext.tkpdDependencies.home // udah
-    compile rootProject.ext.tkpdDependencies.groupchat // udah
-    compile rootProject.ext.tkpdDependencies.applink // udah
-    compile rootProject.ext.tkpdDependencies.shopPage // udah
-    compile rootProject.ext.tkpdDependencies.gamification // udah
-    compile rootProject.ext.tkpdDependencies.kol // udah
-    compile rootProject.ext.tkpdDependencies.pushNotif // udah
-
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile rootProject.ext.testDependencies.mockitorCore
     testCompile rootProject.ext.testDependencies.junit
 
-    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
-    compile rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
-    compile rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.multiDex
 
-    compile(rootProject.ext.miscDependencies.trueCaller) {
+    implementation(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
     }
 
     //[START] test and androidTest dependencies
-    testCompile rootProject.ext.testDependencies.junit
-    testCompile rootProject.ext.testDependencies.mockitorCore
-    testCompile rootProject.ext.miscDependencies.rxJava
-    androidTestCompile rootProject.ext.miscDependencies.rxJava
-    androidTestCompile rootProject.ext.testDependencies.uiautomator
-    androidTestCompile rootProject.ext.testDependencies.spoon
-    androidTestCompile rootProject.ext.testDependencies.androidAnnotation
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.miscDependencies.rxJava
+    androidTestImplementation rootProject.ext.miscDependencies.rxJava
+    androidTestImplementation rootProject.ext.testDependencies.uiautomator
+    androidTestImplementation rootProject.ext.testDependencies.spoon
+    androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestCompile(rootProject.ext.testDependencies.androidTestRunner) {
+    androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
         exclude module: 'support-annotations'
     }
-    androidTestCompile(rootProject.ext.testDependencies.androidRulesVersion) {
+    androidTestImplementation(rootProject.ext.testDependencies.androidRulesVersion) {
         exclude module: 'support-annotations'
     }
-    androidTestCompile(rootProject.ext.testDependencies.espressoIntents) {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestCompile rootProject.ext.testDependencies.retrofitMock
-    androidTestCompile rootProject.ext.testDependencies.retrofitMockWebser
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMock
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    androidTestCompile rootProject.ext.miscDependencies.dagger
-    androidTestCompile rootProject.ext.miscDependencies.gson
-    androidTestCompile rootProject.ext.miscDependencies.parcelerApi
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.miscDependencies.gson
+    androidTestImplementation rootProject.ext.miscDependencies.parcelerApi
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.parceler
-    androidTestCompile rootProject.ext.testDependencies.dexMaker
-    androidTestCompile(rootProject.ext.testDependencies.dexMakerMockito) {
+    androidTestImplementation rootProject.ext.testDependencies.dexMaker
+    androidTestImplementation(rootProject.ext.testDependencies.dexMakerMockito) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
     // Cloud testing
-    androidTestCompile (name:'cloudtestingscreenshotter_lib', ext:'aar')
+    androidTestImplementation (name:'cloudtestingscreenshotter_lib', ext:'aar')
     //[END] test and androidTest dependencies
 }
 
