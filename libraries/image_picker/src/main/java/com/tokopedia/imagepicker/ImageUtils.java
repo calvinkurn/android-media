@@ -537,7 +537,7 @@ public class ImageUtils {
         return inSampleSize;
     }
 
-    public static Bitmap rotate(Context context, Uri uri, Bitmap bitmap) throws IOException {
+    public static Bitmap rotate(Bitmap bitmap, Context context, Uri uri) throws IOException {
         int orientation = ExifInterface.ORIENTATION_NORMAL;
         InputStream inputStream = null;
         try {
