@@ -172,12 +172,13 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements Set
 
     private void initViews(@NonNull View view) {
         mSeekBarAmount = view.findViewById(R.id.seek_bar_amount);
+        mSeekBarAmount.setProgress((int) mPresenter.getAutoSweepLimit(getArguments()));
         TextView textSeekBarMin = view.findViewById(R.id.text_seekbar_min);
         textSeekBarMin.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(mPresenter.getAutoSweepMinLimit(), false));
         TextView textSeekBarMax = view.findViewById(R.id.text_seekbar_max);
         textSeekBarMax.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(mPresenter.getAutoSweepMaxLimit(), false));
         mEditAmount = view.findViewById(R.id.edit_text_amount);
-        mEditAmount.setText(String.valueOf(mPresenter.getAutoSweepMinLimit()));
+        mEditAmount.setText(String.valueOf(mPresenter.getAutoSweepLimit(getArguments())));
         mEditAmount.clearFocus();
         mBtnSubmit = view.findViewById(R.id.button_submit);
         TextView textTokocashValue = view.findViewById(R.id.text_tokocash_balance_value);

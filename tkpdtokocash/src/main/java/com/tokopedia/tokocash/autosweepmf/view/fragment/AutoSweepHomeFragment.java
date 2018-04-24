@@ -69,6 +69,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
     private ViewFlipper mContainerMain;
     private int mAccountStatus = -1;
     private int mAutoSweepStatus = -1;
+    private long mValueAutoSweepLimit = -1;
     private BottomSheetView mToolTip;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -184,6 +185,9 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
         if (URLUtil.isValidUrl(data.getDashboardLink())) {
             WEB_LINK_MF_DASHBOARD = data.getDashboardLink();
         }
+
+        //init auto sweep limit
+        this.mValueAutoSweepLimit = data.getAmountLimit();
     }
 
     @Override
@@ -299,6 +303,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
         extras.putString(CommonConstant.EXTRA_AVAILABLE_TOKOCASH,
                 getArguments().getString(CommonConstant.EXTRA_AVAILABLE_TOKOCASH,
                         CommonConstant.NOT_AVAILABLE));
+        extras.putLong(CommonConstant.EXTRA_AUTOS_WEEP_LIMIT, mValueAutoSweepLimit);
         startActivity(SetAutoSweepLimitActivity.getCallingIntent(getApplicationContext(),
                 extras));
     }

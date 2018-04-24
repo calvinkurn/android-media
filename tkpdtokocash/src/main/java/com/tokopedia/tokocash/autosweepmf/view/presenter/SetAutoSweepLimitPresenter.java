@@ -24,6 +24,7 @@ import rx.schedulers.Schedulers;
 
 import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.AUTO_SWEEP_MF_MAX_LIMIT;
 import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.AUTO_SWEEP_MF_MIN_LIMIT;
+import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.EXTRA_AUTOS_WEEP_LIMIT;
 import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.EXTRA_AVAILABLE_TOKOCASH;
 
 public class SetAutoSweepLimitPresenter extends BaseDaggerPresenter<SetAutoSweepLimitContract.View>
@@ -75,7 +76,7 @@ public class SetAutoSweepLimitPresenter extends BaseDaggerPresenter<SetAutoSweep
                 });
     }
 
-    public String getTokocashBalance(Bundle bundle) {
+    public String getTokocashBalance(@NonNull Bundle bundle) {
         return bundle.getString(EXTRA_AVAILABLE_TOKOCASH);
     }
 
@@ -89,8 +90,9 @@ public class SetAutoSweepLimitPresenter extends BaseDaggerPresenter<SetAutoSweep
 
     /**
      * Payload creator utility method for auto sweep detail api
+     *
      * @param isEnable - Auto sweep status
-     * @param amount - Auto sweep limit (Min CommonConstant.AUTO_SWEEP_MF_MIN_LIMIT)
+     * @param amount   - Auto sweep limit (Min CommonConstant.AUTO_SWEEP_MF_MIN_LIMIT)
      * @return Payload JSON object
      */
     private JsonObject getPayload(boolean isEnable, int amount) {
@@ -113,6 +115,14 @@ public class SetAutoSweepLimitPresenter extends BaseDaggerPresenter<SetAutoSweep
         Intent intent = new Intent(CommonConstant.EVENT_AUTOSWEEPMF_STATUS_CHANGED);
         intent.putExtra(CommonConstant.EVENT_KEY_NEEDED_RELOADING, true);
         LocalBroadcastManager.getInstance(getView().getAppContext()).sendBroadcast(intent);
+    }
+
+    public long getAutoSweepLimit(@NonNull Bundle bundle) {
+        if (bundle.getLong(EXTRA_AUTOS_WEEP_LIMIT) < 0) {
+            return getAutoSweepMinLimit();
+        }
+
+        return bundle.getLong(EXTRA_AUTOS_WEEP_LIMIT);
     }
 
 }
