@@ -98,7 +98,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.requestCancellation();
+                showConfirmationDialog();
             }
         });
 
@@ -261,5 +261,27 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
 
     private void navigateToTermsAndConditionsPage() {
         startActivity(FlightCancellationTermsAndConditionsActivity.createIntent(getContext()));
+    }
+
+    private void showConfirmationDialog() {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
+        dialog.setDesc("Apakah anda yakin ingin membatalkan pesanan?");
+        dialog.setBtnOk("Kembali");
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setBtnCancel("Batalkan");
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.requestCancellation();
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 }
