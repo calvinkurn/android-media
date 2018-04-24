@@ -20,7 +20,7 @@ import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsViewHolder;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardStoreFragmentListener;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardShopPresenterImpl;
 
-public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsDashboardShopPresenterImpl> implements TopAdsDashboardStoreFragmentListener {
+public class TopAdsDashboardShopFragment extends TopAdsOldDashboardFragment<TopAdsDashboardShopPresenterImpl> implements TopAdsDashboardStoreFragmentListener {
 
     protected static final int REQUEST_CODE_AD_STATUS = 2;
 

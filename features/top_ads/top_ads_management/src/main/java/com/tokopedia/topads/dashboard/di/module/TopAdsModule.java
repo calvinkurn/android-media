@@ -2,24 +2,38 @@ package com.tokopedia.topads.dashboard.di.module;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+import com.tokopedia.topads.common.data.api.TopAdsManagementApi;
+import com.tokopedia.topads.common.data.interceptor.TopAdsAuthInterceptor;
+import com.tokopedia.topads.common.data.interceptor.TopAdsResponseError;
+import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator;
 import com.tokopedia.topads.dashboard.data.repository.GetDepositTopAdsRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.source.GetDepositTopadsDataSource;
-import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
+import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
 import com.tokopedia.topads.dashboard.domain.GetDepositTopAdsRepository;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -29,6 +43,61 @@ import retrofit2.Retrofit;
 @TopAdsScope
 @Module
 public class TopAdsModule {
+
+    @TopAdsScope
+    @Provides
+    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        } else {
+            logging.setLevel(HttpLoggingInterceptor.Level.NONE);
+        }
+        return logging;
+    }
+
+    @TopAdsScope
+    @Provides
+    public TopAdsAuthInterceptor provideTopAdsAuthTempInterceptor(@ApplicationContext Context context,
+                                                                  AbstractionRouter abstractionRouter,
+                                                                  UserSession userSession){
+        return new TopAdsAuthInterceptor(context, abstractionRouter, userSession);
+    }
+
+    @TopAdsScope
+    @Provides
+    public CacheApiInterceptor provideApiCacheInterceptor() {
+        return new CacheApiInterceptor(new CacheApiTKPDResponseValidator<>(TopAdsResponseError.class));
+    }
+
+    @TopAdsScope
+    @Provides
+    public ErrorResponseInterceptor provideErrorInterceptor(){
+        return new ErrorResponseInterceptor(TopAdsResponseError.class);
+    }
+
+    @TopAdsManagementQualifier
+    @Provides
+    public OkHttpClient provideOkHttpClient(TopAdsAuthInterceptor topAdsAuthInterceptor,
+                                            HttpLoggingInterceptor httpLoggingInterceptor,
+                                            ErrorResponseInterceptor errorResponseInterceptor,
+                                            CacheApiInterceptor cacheApiInterceptor) {
+        return new OkHttpClient.Builder()
+                .addInterceptor(cacheApiInterceptor)
+                .addInterceptor(topAdsAuthInterceptor)
+                .addInterceptor(errorResponseInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
+                .build();
+    }
+
+    @TopAdsManagementQualifier
+    @TopAdsScope
+    @Provides
+    public Retrofit provideRetrofit(@TopAdsManagementQualifier OkHttpClient okHttpClient,
+                                    Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TopAdsCommonConstant.BASE_DOMAIN_URL).client(okHttpClient).build();
+    }
+
 
     @TopAdsScope
     @Provides
@@ -45,7 +114,13 @@ public class TopAdsModule {
 
     @TopAdsScope
     @Provides
-    public TopAdsManagementApi provideTopAdsManagementApi(@TopAdsQualifier Retrofit retrofit){
+    public TopAdsOldManagementApi provideTopAdsOldManagementApi(@TopAdsQualifier Retrofit retrofit){
+        return retrofit.create(TopAdsOldManagementApi.class);
+    }
+
+    @Provides
+    @TopAdsScope
+    public TopAdsManagementApi provideTopAdsManagementApi(@TopAdsManagementQualifier Retrofit retrofit){
         return retrofit.create(TopAdsManagementApi.class);
     }
 
@@ -59,5 +134,21 @@ public class TopAdsModule {
     @Provides
     public ShopApi provideShopApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(ShopApi.class);
+    }
+
+    @TopAdsScope
+    @Provides
+    UserSession provideUserSession(AbstractionRouter abstractionRouter){
+        return abstractionRouter.getSession();
+    }
+
+    @TopAdsScope
+    @Provides
+    AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context){
+        if(context instanceof AbstractionRouter){
+            return ((AbstractionRouter)context);
+        }else{
+            return null;
+        }
     }
 }

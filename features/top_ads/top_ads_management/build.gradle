@@ -7,6 +7,7 @@ dependencies {
     compile project(rootProject.ext.features.topAdsSourceTagging)
     compile project(rootProject.ext.features.topAdsCommon)
     compile project(rootProject.ext.libraries.williamchart)
+    compile project(rootProject.ext.features.shopCommon)
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

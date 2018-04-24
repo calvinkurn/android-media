@@ -8,7 +8,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsBulkActionMapper;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailProductMapper;
 import com.tokopedia.topads.dashboard.data.model.TopAdsProductDetailDataSourceModel;
-import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;import com.tokopedia.topads.dashboard.data.model.data.ProductAdAction;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
@@ -24,11 +24,11 @@ import rx.Observable;
 public class TopAdsProductAdsDataSource {
 
     private final TopAdsDetailProductMapper topAdsDetailProductMapper;
-    private final TopAdsManagementApi topAdsManagementApi;
+    private final TopAdsOldManagementApi topAdsManagementApi;
     private final Context context;
     private final TopAdsBulkActionMapper topAdsBulkActionMapper;
 
-    public TopAdsProductAdsDataSource(Context context, TopAdsManagementApi topAdsManagementApi,
+    public TopAdsProductAdsDataSource(Context context, TopAdsOldManagementApi topAdsManagementApi,
                                       TopAdsDetailProductMapper topAdsDetailProductMapper,
                                       TopAdsBulkActionMapper topAdsBulkActionMapper) {
         this.context = context;

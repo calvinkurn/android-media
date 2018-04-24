@@ -19,7 +19,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsStatisticProductActivi
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardProductFragmentListener;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardProductPresenterImpl;
 
-public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardProductFragmentListener {
+public class TopAdsDashboardProductFragment extends TopAdsOldDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardProductFragmentListener {
 
     public static final int REQUEST_CODE_AD_STATUS = 2;
 
