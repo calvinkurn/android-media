@@ -317,18 +317,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyIsTyping.subscribe(new Action1<Boolean>() {
             @Override
             public void call(Boolean isNotEmpty) {
-                try {
-                    if (isNotEmpty) {
-                        presenter.setIsTyping(getArguments().getString(ChatRoomActivity
-                                .PARAM_MESSAGE_ID));
-                        if (needCreateWebSocket()) {
-                            maximize.setVisibility(isChatBot ? View.GONE : View.VISIBLE);
-                        }
-                        pickerButton.setVisibility(isChatBot ? View.VISIBLE : View.GONE);
-                        attachButton.setVisibility(View.GONE);
+                if (isNotEmpty) {
+                    presenter.setIsTyping(getArguments().getString(ChatRoomActivity
+                            .PARAM_MESSAGE_ID));
+                    if (needCreateWebSocket()) {
+                        maximize.setVisibility(isChatBot ? View.GONE : View.VISIBLE);
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    pickerButton.setVisibility(isChatBot ? View.VISIBLE : View.GONE);
+                    attachButton.setVisibility(View.GONE);
                 }
             }
         });
@@ -723,7 +719,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
                     presenter.setResult(model);
                 }
             });
@@ -1201,12 +1196,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     private void attachInvoiceRetrieved(SelectedInvoice selectedInvoice) {
         String msgId = getArguments().getString(PARAM_MESSAGE_ID);
-        try {
-            addInvoiceChatBalloonToChatList(selectedInvoice);
-            presenter.sendInvoiceAttachment(msgId, selectedInvoice);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        addInvoiceChatBalloonToChatList(selectedInvoice);
+        presenter.sendInvoiceAttachment(msgId, selectedInvoice);
     }
 
 
@@ -1455,5 +1446,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void showSnackbarError(String string) {
         NetworkErrorHelper.showSnackbar(getActivity(), string);
+    }
+
+    @Override
+    public UserSession getUserSession() {
+        return ((AbstractionRouter) getActivity().getApplication()).getSession();
     }
 }

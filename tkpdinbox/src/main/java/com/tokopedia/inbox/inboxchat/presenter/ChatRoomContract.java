@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
@@ -144,6 +145,8 @@ public class ChatRoomContract {
         boolean shouldHandleUrlManually(String url);
 
         void showSnackbarError(String string);
+
+        UserSession getUserSession();
     }
 
     interface Presenter extends CustomerPresenter<View>{
