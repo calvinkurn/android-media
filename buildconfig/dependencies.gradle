@@ -224,6 +224,7 @@ ext {
             useCase         : ":tkpdusecase",
             flight          : ":tkpdflight",
             flightNoOp      : ":features:digital:flight_no_op",
+            train           : ":features:travel:train",
             mitraToppers    : ":features:fintech:mitra_toppers",
             event           : ":tkpdevents",
             home            : ":tkpdhome"

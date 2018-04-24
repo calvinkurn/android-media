@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.tokopedia.tkpdtrain.homepage.presentation.activity.TrainHomepageActivity;
+import com.tokopedia.train.homepage.presentation.activity.TrainHomepageActivity;
 
 public class MainActivity extends AppCompatActivity {
 
