@@ -5,6 +5,8 @@ import com.tokopedia.kol.feature.following_list.domain.model.KolFollowingResultD
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -21,6 +23,7 @@ public class GetKolFollowingListLoadMoreUseCase extends UseCase<KolFollowingResu
     public static final int DEFAULT_LIMIT = 10;
     private KolFollowingListSource kolFollowingListSource;
 
+    @Inject
     public GetKolFollowingListLoadMoreUseCase(KolFollowingListSource kolFollowingListSource) {
         this.kolFollowingListSource = kolFollowingListSource;
     }

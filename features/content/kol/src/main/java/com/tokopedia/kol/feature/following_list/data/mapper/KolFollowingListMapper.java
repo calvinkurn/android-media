@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.kol.feature.following_list.data.pojo.GetKolFollowingData;
 import com.tokopedia.kol.feature.following_list.domain.model.KolFollowingResultDomain;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -13,6 +15,10 @@ import rx.functions.Func1;
 
 public class KolFollowingListMapper
         implements Func1<Response<GraphqlResponse<GetKolFollowingData>>, KolFollowingResultDomain> {
+
+    @Inject
+    public KolFollowingListMapper() {
+    }
 
     @Override
     public KolFollowingResultDomain call(Response<GraphqlResponse<GetKolFollowingData>>

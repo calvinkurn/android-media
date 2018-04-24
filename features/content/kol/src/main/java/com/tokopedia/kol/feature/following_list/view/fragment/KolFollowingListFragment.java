@@ -15,10 +15,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.kol.R;
+import com.tokopedia.kol.feature.following_list.di.DaggerKolFollowingListComponent;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.following_list.view.adapter.KolFollowingAdapter;
 import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList;
-import com.tokopedia.kol.feature.following_list.view.presenter.KolFollowingListPresenter;
 import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingResultViewModel;
 import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingViewModel;
 
@@ -46,7 +46,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
     private Button emptyButton;
 
     @Inject
-    KolFollowingListPresenter presenter;
+    KolFollowingList.Presenter presenter;
 
     public static KolFollowingListFragment createInstance(Bundle bundle) {
         KolFollowingListFragment fragment = new KolFollowingListFragment();
@@ -124,15 +124,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-
-        DaggerFeedPlusComponent daggerFeedPlusComponent =
-                (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerFeedPlusComponent.inject(this);
-
+        DaggerKolFollowingListComponent.builder().build().inject(this);
     }
 
     private RecyclerView.OnScrollListener getRecyclerViewListener() {

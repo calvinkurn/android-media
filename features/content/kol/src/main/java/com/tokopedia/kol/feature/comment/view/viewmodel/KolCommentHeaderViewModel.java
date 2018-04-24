@@ -12,13 +12,8 @@ import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentType
 
 public class KolCommentHeaderViewModel extends KolCommentViewModel implements
         Visitable<KolCommentTypeFactory>, Parcelable {
-    boolean canLoadMore;
-    boolean isLoading;
-
-    public  KolCommentHeaderViewModel() {
-        super();
-
-    }
+    private boolean canLoadMore;
+    private boolean isLoading;
 
     public KolCommentHeaderViewModel(String avatarUrl, String name, String review, String time,
                                      String userId) {
