@@ -226,8 +226,8 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onResume() {
+        super.onResume();
         screenTrack();
     }
 
