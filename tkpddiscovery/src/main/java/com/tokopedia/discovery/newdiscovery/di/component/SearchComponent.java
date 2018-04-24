@@ -5,7 +5,7 @@ import com.tokopedia.discovery.imagesearch.di.module.ImageSearchModule;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchActiviy;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchPresenter;
 import com.tokopedia.discovery.imagesearch.search.fragment.ImageSearchProductListFragment;
-import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenter;
+import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
@@ -35,7 +35,7 @@ public interface SearchComponent {
 
     void inject(ProductListPresenterImpl presenter);
 
-    void inject(ImageProductListPresenter imageProductListPresenter);
+    void inject(ImageProductListPresenterImpl imageProductListPresenter);
 
     void inject(CatalogFragment catalogFragment);
 
