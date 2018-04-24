@@ -37,11 +37,12 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/iv_avatar"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/margin_small">
+            android:paddingLeft="@dimen/margin_small"
+            android:paddingRight="@dimen/margin_small">
 
             <TextView
                 android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:text="Loading.."
@@ -54,14 +55,15 @@
             <TextView
                 android:id="@+id/tv_outlet"
                 android:visibility="gone"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:layout_below="@id/tv_name"
                 android:text="Loading.."
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/text_size_l_medium"
-                android:textStyle="normal"/>
+                android:textStyle="normal"
+                android:gravity="center_horizontal"/>
 
             <RelativeLayout
                 android:visibility="gone"

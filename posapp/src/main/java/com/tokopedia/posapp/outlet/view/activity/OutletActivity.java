@@ -25,9 +25,6 @@ import com.tokopedia.posapp.outlet.view.fragment.OutletFragment;
  */
 public class OutletActivity extends DrawerPresenterActivity {
 
-    LocalCacheHandler drawerCache;
-    DrawerHelper drawerHelper;
-
     public static Intent newTopIntent(Context context) {
         Intent intent = new Intent(context, OutletActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -53,11 +50,11 @@ public class OutletActivity extends DrawerPresenterActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        sessionHandler = new SessionHandler(this);
-        drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
-        drawerHelper = DrawerInjector.getDrawerHelper(this, sessionHandler, drawerCache);
-        drawerHelper.initDrawer(this);
-        drawerHelper.setEnabled(true);
+//        sessionHandler = new SessionHandler(this);
+//        drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+//        drawerHelper = DrawerInjector.getDrawerHelper(this, sessionHandler, drawerCache);
+//        drawerHelper.initDrawer(this);
+//        drawerHelper.setEnabled(true);
     }
 
     @Override

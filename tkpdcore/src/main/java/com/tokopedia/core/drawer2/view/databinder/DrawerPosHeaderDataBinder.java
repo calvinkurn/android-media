@@ -79,15 +79,19 @@ public class DrawerPosHeaderDataBinder extends DataBinder<DrawerPosHeaderDataBin
         holder.ivOnline.setVisibility(View.VISIBLE);
         holder.tvOutlet.setVisibility(View.VISIBLE);
         holder.tvName.setText(data.getDrawerProfile().getShopName());
-        holder.tvName.setGravity(Gravity.CENTER_HORIZONTAL);
         holder.tvOnline.setText("Online");
         holder.tvOutlet.setText(((PosAppDataGetter)context.getApplicationContext()).getOutletName());
-        holder.tvOutlet.setGravity(Gravity.CENTER_HORIZONTAL);
-        if (data.getDrawerProfile().getUserAvatar() != null
-                && !data.getDrawerProfile().getUserAvatar().equals("")) {
-            ImageHandler.LoadImage(holder.ivAvatar, data.getDrawerProfile().getUserAvatar());
+        if (data.getDrawerProfile().getShopAvatar() != null
+                && !data.getDrawerProfile().getShopAvatar().equals("")) {
+            ImageHandler.LoadImage(holder.ivAvatar, data.getDrawerProfile().getShopAvatar());
         } else {
-            holder.ivAvatar.setImageResource(R.drawable.qc_launcher);
+            if (data.getDrawerProfile().getUserAvatar() != null
+                    && !data.getDrawerProfile().getUserAvatar().equals("")) {
+                ImageHandler.LoadImage(holder.ivAvatar, data.getDrawerProfile().getUserAvatar());
+            }
+            else{
+                holder.ivAvatar.setImageResource(R.drawable.qc_launcher);
+            }
         }
     }
 
