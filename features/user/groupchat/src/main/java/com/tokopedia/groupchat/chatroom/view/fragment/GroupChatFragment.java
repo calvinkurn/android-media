@@ -630,8 +630,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     public void onUserEntered(UserActionViewModel userActionViewModel) {
         if (canShowUserEnter(userActionViewModel)) {
-            adapter.addAction(userActionViewModel);
-            adapter.notifyItemInserted(0);
+//            adapter.addAction(userActionViewModel);
+//            adapter.notifyItemInserted(0);
             scrollToBottomWhenPossible();
         }
     }
