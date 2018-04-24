@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model;
+package com.tokopedia.kol.feature.following_list.domain.model;
 
 /**
  * Created by yfsx on 28/12/17.

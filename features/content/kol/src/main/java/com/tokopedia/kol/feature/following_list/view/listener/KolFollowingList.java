@@ -1,11 +1,11 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener;
+package com.tokopedia.kol.feature.following_list.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolFollowingResultViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolFollowingViewModel;
+import android.content.Context;
 
-import java.util.List;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingResultViewModel;
+import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingViewModel;
 
 /**
  * Created by yfsx on 28/12/17.
@@ -14,6 +14,8 @@ import java.util.List;
 public interface KolFollowingList {
 
     interface View extends CustomerView {
+
+        Context getContext();
 
         void showLoading();
 

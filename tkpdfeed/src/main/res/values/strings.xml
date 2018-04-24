@@ -50,7 +50,6 @@
     <string name="action_like">Like</string>
     <string name="following">Following</string>
     <string name="explore_more">Explore Lebih Lanjut</string>
-    <string name="title_following_kol">Following</string>
     <string name="comment">Comment</string>
     <string name="failed_to_follow">Gagal follow </string>
     <string name="failed_to_unfollow">Gagal unfollow </string>

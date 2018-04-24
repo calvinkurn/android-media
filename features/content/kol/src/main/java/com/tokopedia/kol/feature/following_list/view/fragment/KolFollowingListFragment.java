@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
+package com.tokopedia.kol.feature.following_list.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,22 +11,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolProfileWebViewActivity;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.KolFollowingAdapter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.KolFollowingList;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.KolFollowingListPresenter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolFollowingResultViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolFollowingViewModel;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.kol.R;
+import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
+import com.tokopedia.kol.feature.following_list.view.adapter.KolFollowingAdapter;
+import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList;
+import com.tokopedia.kol.feature.following_list.view.presenter.KolFollowingListPresenter;
+import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingResultViewModel;
+import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingViewModel;
 
 import javax.inject.Inject;
+
 
 /**
  * Created by yfsx on 28/12/17.
@@ -84,10 +81,10 @@ public class KolFollowingListFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_kol_following_list, container, false);
-        rvItem = (RecyclerView) parentView.findViewById(R.id.rv_item);
-        progressBar = (ProgressBar) parentView.findViewById(R.id.progress_bar);
+        rvItem = parentView.findViewById(R.id.rv_item);
+        progressBar = parentView.findViewById(R.id.progress_bar);
         emptyState = parentView.findViewById(R.id.view_empty_state);
-        emptyButton = (Button) parentView.findViewById(R.id.btn_empty);
+        emptyButton = parentView.findViewById(R.id.btn_empty);
         presenter.attachView(this);
         return parentView;
     }
@@ -107,7 +104,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
         rvItem.setLayoutManager(layoutManager);
         rvItem.setHasFixedSize(true);
         rvItem.setAdapter(adapter);
-        rvItem.addOnScrollListener(getRVListener());
+        rvItem.addOnScrollListener(getRecyclerViewListener());
         showLoading();
         presenter.getKolFollowingList(userId);
     }
@@ -116,9 +113,10 @@ public class KolFollowingListFragment extends BaseDaggerFragment
         emptyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!TextUtils.isEmpty(emptyApplink)) {
-                    ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
-                            , emptyApplink);
+                if (!TextUtils.isEmpty(emptyApplink)
+                        && getActivity().getApplication() instanceof ApplinkRouter) {
+                    ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
+                    applinkRouter.goToApplinkActivity(getActivity(), emptyApplink);
                 }
             }
         });
@@ -137,7 +135,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
 
     }
 
-    private RecyclerView.OnScrollListener getRVListener() {
+    private RecyclerView.OnScrollListener getRecyclerViewListener() {
         return new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -222,8 +220,8 @@ public class KolFollowingListFragment extends BaseDaggerFragment
     public void onListItemClicked(KolFollowingViewModel item) {
         String url = item.getProfileApplink();
         if (!TextUtils.isEmpty(url)) {
-            ((TkpdCoreRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity()
-                    , url);
+            ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
+            applinkRouter.goToApplinkActivity(getActivity(), url);
         }
     }
 

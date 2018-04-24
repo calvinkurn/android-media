@@ -1,11 +1,13 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter;
+package com.tokopedia.kol.feature.following_list.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolFollowingListLoadMoreUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolFollowingListUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.KolFollowingList;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetKolFollowingListLoadMoreSubscriber;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetKolFollowingListSubscriber;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.kol.feature.following_list.domain.interactor
+        .GetKolFollowingListLoadMoreUseCase;
+import com.tokopedia.kol.feature.following_list.domain.interactor.GetKolFollowingListUseCase;
+import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList;
+import com.tokopedia.kol.feature.following_list.view.subscriber
+        .GetKolFollowingListLoadMoreSubscriber;
+import com.tokopedia.kol.feature.following_list.view.subscriber.GetKolFollowingListSubscriber;
 
 import javax.inject.Inject;
 

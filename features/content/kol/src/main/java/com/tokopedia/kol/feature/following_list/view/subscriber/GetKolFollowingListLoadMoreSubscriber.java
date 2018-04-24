@@ -1,8 +1,8 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
+package com.tokopedia.kol.feature.following_list.view.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.KolFollowingResultDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.KolFollowingList;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.kol.feature.following_list.domain.model.KolFollowingResultDomain;
+import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList;
 
 import rx.Subscriber;
 
@@ -25,7 +25,9 @@ public class GetKolFollowingListLoadMoreSubscriber extends Subscriber<KolFollowi
     @Override
     public void onError(Throwable throwable) {
         mainView.hideLoading();
-        mainView.onErrorLoadMoreKolFollowingList(ErrorHandler.getErrorMessage(throwable));
+        mainView.onErrorLoadMoreKolFollowingList(
+                ErrorHandler.getErrorMessage(mainView.getContext(), throwable)
+        );
     }
 
     @Override

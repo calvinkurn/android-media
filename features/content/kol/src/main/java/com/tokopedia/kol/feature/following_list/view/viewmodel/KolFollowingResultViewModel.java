@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol;
+package com.tokopedia.kol.feature.following_list.view.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;

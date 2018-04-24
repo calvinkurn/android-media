@@ -21,4 +21,7 @@
 
     <string name="kol_title_delete">Hapus</string>
     <string name="kol_title_cancel">Batal</string>
+
+    <!--Kol Following List-->
+    <string name="title_following_kol">Following</string>
 </resources>

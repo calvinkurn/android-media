@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model;
+package com.tokopedia.kol.feature.following_list.domain.model;
 
 import java.util.List;
 

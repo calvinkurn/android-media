@@ -1,4 +1,4 @@
-package com.tokopedia.kol.feature.comment.data.source;
+package com.tokopedia.kol.feature.following_list.data.source;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -7,11 +7,8 @@ import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.data.source.api.KolApi;
-import com.tokopedia.kol.feature.comment.data.mapper.KolDeleteCommentMapper;
-import com.tokopedia.kol.feature.comment.data.mapper.KolGetCommentMapper;
-import com.tokopedia.kol.feature.comment.data.mapper.KolSendCommentMapper;
-import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain;
-import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
+import com.tokopedia.kol.feature.following_list.data.mapper.KolFollowingListMapper;
+import com.tokopedia.kol.feature.following_list.domain.model.KolFollowingResultDomain;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.BufferedReader;
@@ -27,39 +24,25 @@ import rx.Observable;
  * @author by nisie on 11/2/17.
  */
 
-public class KolCommentSource {
+public class KolFollowingListSource {
     private final Context context;
     private final KolApi kolApi;
-    private final KolGetCommentMapper kolGetCommentMapper;
-    private final KolDeleteCommentMapper kolDeleteCommentMapper;
-    private final KolSendCommentMapper kolSendCommentMapper;
+    private final KolFollowingListMapper kolFollowingListMapper;
 
     @Inject
-    public KolCommentSource(@ApplicationContext Context context,
-                            KolApi kolApi,
-                            KolGetCommentMapper kolGetCommentMapper,
-                            KolDeleteCommentMapper kolDeleteCommentMapper,
-                            KolSendCommentMapper kolSendCommentMapper) {
+    public KolFollowingListSource(@ApplicationContext Context context,
+                                  KolApi kolApi,
+                                  KolFollowingListMapper kolFollowingListMapper) {
         this.context = context;
         this.kolApi = kolApi;
-        this.kolGetCommentMapper = kolGetCommentMapper;
-        this.kolDeleteCommentMapper = kolDeleteCommentMapper;
-        this.kolSendCommentMapper = kolSendCommentMapper;
+        this.kolFollowingListMapper = kolFollowingListMapper;
     }
 
-    public Observable<KolComments> getComments(RequestParams requestParams) {
-        return kolApi.getKolComment(getRequestPayload(requestParams, R.raw.query_get_kol_comment))
-                .map(kolGetCommentMapper);
-    }
-
-    public Observable<SendKolCommentDomain> sendComment(RequestParams requestParams) {
-        return kolApi.sendKolComment(getRequestPayload(requestParams,
-                R.raw.mutation_create_kol_comment)).map(kolSendCommentMapper);
-    }
-
-    public Observable<Boolean> deleteKolComment(RequestParams requestParams) {
-        return kolApi.deleteKolComment(getRequestPayload(requestParams,
-                R.raw.mutation_delete_kol_comment)).map(kolDeleteCommentMapper);
+    public Observable<KolFollowingResultDomain> getFollowingList(RequestParams requestParams) {
+        return kolApi
+                .getKolFollowingList(
+                        getRequestPayload(requestParams, R.raw.query_get_kol_following_list))
+                .map(kolFollowingListMapper);
     }
 
     private GraphqlRequest getRequestPayload(RequestParams requestParams, int rawResourceId) {

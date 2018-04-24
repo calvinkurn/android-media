@@ -1,11 +1,11 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
+package com.tokopedia.kol.feature.following_list.view.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.KolFollowingDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.KolFollowingResultDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.KolFollowingList;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolFollowingResultViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolFollowingViewModel;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.kol.feature.following_list.domain.model.KolFollowingDomain;
+import com.tokopedia.kol.feature.following_list.domain.model.KolFollowingResultDomain;
+import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList;
+import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingResultViewModel;
+import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,9 @@ public class GetKolFollowingListSubscriber extends Subscriber<KolFollowingResult
     @Override
     public void onError(Throwable throwable) {
         mainView.hideLoading();
-        mainView.onErrorGetKolFollowingList(ErrorHandler.getErrorMessage(throwable));
+        mainView.onErrorGetKolFollowingList(
+                ErrorHandler.getErrorMessage(mainView.getContext(), throwable)
+        );
     }
 
     @Override

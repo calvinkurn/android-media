@@ -1,9 +1,10 @@
 
-package com.example;
+package com.tokopedia.kol.feature.following_list.data.pojo;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class GetUserKolFollowing {
 
