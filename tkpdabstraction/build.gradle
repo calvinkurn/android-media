@@ -25,10 +25,6 @@ dependencies {
     compile rootProject.ext.networkDependencies.retrofit
     compile rootProject.ext.networkDependencies.adapterRxJava
     compile rootProject.ext.networkDependencies.loggingInterceptor
-
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    compile rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 }
 
 apply from: '../publish_local.gradle'

@@ -274,10 +274,10 @@ dependencies {
     implementation rootProject.ext.tkpdDependencies.home // udah
     implementation rootProject.ext.tkpdDependencies.groupchat // udah
     implementation rootProject.ext.tkpdDependencies.applink
-    implementation rootProject.ext.tkpdDependencies.shopPage // udah
-    implementation rootProject.ext.tkpdDependencies.gamification // udah
-    implementation rootProject.ext.tkpdDependencies.kol // udah
-    implementation rootProject.ext.tkpdDependencies.pushNotif // udah
+    implementation rootProject.ext.tkpdDependencies.shopPage
+    implementation rootProject.ext.tkpdDependencies.gamification
+    implementation rootProject.ext.tkpdDependencies.kol
+    implementation rootProject.ext.tkpdDependencies.pushNotif
 
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

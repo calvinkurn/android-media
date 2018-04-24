@@ -10,26 +10,26 @@ project.ext {
 
 dependencies {
 
-    compile rootProject.ext.tkpdDependencies.abstraction
-    compile rootProject.ext.tkpdDependencies.usecase
-    compile rootProject.ext.tkpdDependencies.cacheapi
+    implementation rootProject.ext.tkpdDependencies.abstraction
+    implementation rootProject.ext.tkpdDependencies.usecase
+    implementation rootProject.ext.tkpdDependencies.cacheapi
 
-    compile rootProject.ext.tkpdDependencies.shopCommon
-    compile rootProject.ext.tkpdDependencies.goldMerchantCommon
-    compile rootProject.ext.tkpdDependencies.reputationCommon
-    compile rootProject.ext.tkpdDependencies.wishListCommon
+    implementation rootProject.ext.tkpdDependencies.shopCommon
+    implementation rootProject.ext.tkpdDependencies.goldMerchantCommon
+    implementation rootProject.ext.tkpdDependencies.reputationCommon
+    implementation rootProject.ext.tkpdDependencies.wishListCommon
 
-    compile rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    compile rootProject.ext.playServicesDependencies.analytics
-    compile rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    testCompile rootProject.ext.testDependencies.junit
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    testImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }

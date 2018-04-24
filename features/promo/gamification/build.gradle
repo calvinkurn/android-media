@@ -9,22 +9,22 @@ project.ext {
 }
 
 dependencies {
-    compile rootProject.ext.tkpdDependencies.abstraction
-    compile rootProject.ext.tkpdDependencies.design
-    compile rootProject.ext.tkpdDependencies.usecase
-    compile rootProject.ext.tkpdDependencies.applink
+    implementation rootProject.ext.tkpdDependencies.abstraction
+    implementation rootProject.ext.tkpdDependencies.design
+    implementation rootProject.ext.tkpdDependencies.usecase
+    implementation rootProject.ext.tkpdDependencies.applink
 
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile rootProject.ext.testDependencies.junit
-    testCompile 'org.mockito:mockito-all:1.10.19'
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation 'org.mockito:mockito-all:1.10.19'
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
-    compile rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 
