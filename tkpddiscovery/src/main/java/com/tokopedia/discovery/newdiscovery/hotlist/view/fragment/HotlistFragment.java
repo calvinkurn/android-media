@@ -225,6 +225,12 @@ public class HotlistFragment extends SearchSectionFragment
         }
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        screenTrack();
+    }
+
     public void setTrackerAttribution(String trackerAttribution) {
         this.trackerAttribution = trackerAttribution;
     }
