@@ -19,7 +19,7 @@ public class GetUserKolFollowing {
     public List<User> users = null;
     @SerializedName("error")
     @Expose
-    public Object error;
+    public String error;
     @SerializedName("lastCursor")
     @Expose
     public String lastCursor;

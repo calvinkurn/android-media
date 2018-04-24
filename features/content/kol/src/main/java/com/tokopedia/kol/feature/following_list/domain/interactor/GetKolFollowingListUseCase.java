@@ -15,7 +15,7 @@ import rx.Observable;
 
 public class GetKolFollowingListUseCase extends UseCase<KolFollowingResultDomain> {
 
-    public static final String PARAM_ID = "id";
+    public static final String PARAM_ID = "userID";
     public static final String PARAM_CURSOR = "cursor";
     public static final String PARAM_LIMIT = "limit";
 

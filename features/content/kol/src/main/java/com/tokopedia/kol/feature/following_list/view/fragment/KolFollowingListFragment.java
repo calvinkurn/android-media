@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.following_list.di.DaggerKolFollowingListComponent;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
@@ -89,6 +90,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
         return parentView;
     }
 
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -124,7 +126,10 @@ public class KolFollowingListFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        DaggerKolFollowingListComponent.builder().build().inject(this);
+        DaggerKolFollowingListComponent.builder()
+                .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
+                .build()
+                .inject(this);
     }
 
     private RecyclerView.OnScrollListener getRecyclerViewListener() {
