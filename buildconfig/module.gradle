@@ -30,4 +30,6 @@ dependencies {
     provided rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.tkpdDependencies.abstraction
 }
