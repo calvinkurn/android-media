@@ -1,3 +1,5 @@
+apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
