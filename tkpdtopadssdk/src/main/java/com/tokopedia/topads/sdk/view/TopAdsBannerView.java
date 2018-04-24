@@ -126,6 +126,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         final ImageView iconImg = (ImageView) findViewById(R.id.image);
         TextView nameTxt = (TextView) findViewById(R.id.name);
         TextView descriptionTxt = (TextView) findViewById(R.id.description);
+        TextView ctaTxt = (TextView) findViewById(R.id.cta_btn);
         Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -134,8 +135,8 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             }
         });
         nameTxt.setText(escapeHTML(cpm.getName()));
-        String desc = String.format("%s\n%s", escapeHTML(cpm.getDecription()), cpm.getCta());
-        setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
+        descriptionTxt.setText(escapeHTML(cpm.getDecription()));
+        ctaTxt.setText(cpm.getCta());
     }
 
     public void setConfig(Config config) {
