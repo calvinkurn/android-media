@@ -71,7 +71,6 @@ public class FlightCancellationRefundDetailPresenter extends BaseDaggerPresenter
                         getView().showFullPageContainer();
                         getView().getCancellationViewModel().getCancellationReasonAndAttachment().setEstimateRefund(estimateRefundResultEntity.getAttribute().getValueNumeric());
                         getView().getCancellationViewModel().getCancellationReasonAndAttachment().setEstimateFmt(estimateRefundResultEntity.getAttribute().getValue());
-                        getView().renderTotalPrice(getView().getCancellationViewModel().getTotalPrice());
                         getView().renderTotalRefund(estimateRefundResultEntity.getAttribute().getValue());
                     }
                 }

@@ -51,7 +51,6 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
     private AppCompatTextView tvStepTitle;
     private ProgressBar progressBar;
     private LinearLayout container;
-    private AppCompatTextView tvTotalPrice;
     private AppCompatTextView tvTotalRefund;
     private AppCompatButton btnNext;
 
@@ -83,7 +82,6 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         container = (LinearLayout) view.findViewById(R.id.container);
         tvStepTitle = (AppCompatTextView) view.findViewById(R.id.tv_step_title);
-        tvTotalPrice = (AppCompatTextView) view.findViewById(R.id.tv_total_price);
         tvTotalRefund = (AppCompatTextView) view.findViewById(R.id.tv_total_refund);
         btnNext = (AppCompatButton) view.findViewById(R.id.btn_next);
         btnNext.setOnClickListener(getNextButtonClickListener());
@@ -148,11 +146,6 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
     @Override
     public void renderTotalRefund(String totalRefund) {
         tvTotalRefund.setText(totalRefund);
-    }
-
-    @Override
-    public void renderTotalPrice(String totalPrice) {
-        tvTotalPrice.setText(totalPrice);
     }
 
     @Override

@@ -26,8 +26,6 @@ public interface FlightCancellationRefundDetailContract {
 
         void renderTotalRefund(String totalRefund);
 
-        void renderTotalPrice(String totalPrice);
-
         void showFullPageContainer();
 
         void hideFullPageContainer();
