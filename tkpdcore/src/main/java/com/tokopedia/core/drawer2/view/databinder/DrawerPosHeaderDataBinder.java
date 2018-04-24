@@ -2,6 +2,7 @@ package com.tokopedia.core.drawer2.view.databinder;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,8 +79,10 @@ public class DrawerPosHeaderDataBinder extends DataBinder<DrawerPosHeaderDataBin
         holder.ivOnline.setVisibility(View.VISIBLE);
         holder.tvOutlet.setVisibility(View.VISIBLE);
         holder.tvName.setText(data.getDrawerProfile().getShopName());
+        holder.tvName.setGravity(Gravity.CENTER_HORIZONTAL);
         holder.tvOnline.setText("Online");
         holder.tvOutlet.setText(((PosAppDataGetter)context.getApplicationContext()).getOutletName());
+        holder.tvOutlet.setGravity(Gravity.CENTER_HORIZONTAL);
         if (data.getDrawerProfile().getUserAvatar() != null
                 && !data.getDrawerProfile().getUserAvatar().equals("")) {
             ImageHandler.LoadImage(holder.ivAvatar, data.getDrawerProfile().getUserAvatar());
