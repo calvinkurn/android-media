@@ -45,6 +45,7 @@ import permissions.dispatcher.RuntimePermissions;
 public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implements ShopEditorView {
 
     private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+    private static final String DEFAULT_VALUE_0 = "0";
 
     EditText mShopNameText;
     EditText mShopSloganText;
@@ -258,14 +259,14 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
                 mShopNameText.setText(MethodChecker.fromHtml((String) data[0]));
                 break;
             case ShopEditorPresenter.SHOP_SLOGAN:
-                if(MethodChecker.fromHtml((String) data[0]).toString().equalsIgnoreCase("0")){
+                if(MethodChecker.fromHtml((String) data[0]).toString().equalsIgnoreCase(DEFAULT_VALUE_0)){
                     mShopSloganText.setText("");
                 } else {
                     mShopSloganText.setText(MethodChecker.fromHtml((String) data[0]));
                 }
                 break;
             case ShopEditorPresenter.SHOP_DESC:
-                if(MethodChecker.fromHtml((String) data[0]).toString().equalsIgnoreCase("0")){
+                if(MethodChecker.fromHtml((String) data[0]).toString().equalsIgnoreCase(DEFAULT_VALUE_0)){
                     mShopDescText.setText("");
                 } else {
                     mShopDescText.setText(MethodChecker.fromHtml((String) data[0]));

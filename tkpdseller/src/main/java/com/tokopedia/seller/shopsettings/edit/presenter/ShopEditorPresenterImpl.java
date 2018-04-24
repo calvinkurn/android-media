@@ -139,16 +139,6 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
             cancel = true;
         }
 
-        if(isEmpty(shopEditorModel.getmShopSlogan())) {
-            view.setData(SHOP_SLOGAN_ERROR, context.getString(R.string.error_field_required));
-            cancel = true;
-        }
-
-        if(isEmpty(shopEditorModel.getmShopDesc())) {
-            view.setData(SHOP_DESC_ERROR, context.getString(R.string.error_field_required));
-            cancel = true;
-        }
-
         if (!cancel) {
             postShopData();
         }
