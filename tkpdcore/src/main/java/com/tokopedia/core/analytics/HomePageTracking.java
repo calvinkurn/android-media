@@ -46,7 +46,7 @@ public class HomePageTracking extends TrackingUtils {
 
     public static void eventClickJumpRecomendation() {
         sendGTMEvent(new EventTracking(
-                "",
+                "clickHomePage",
                 STATIC_VALUE_HOMEPAGE,
                 "cek rekomendasi jumper click",
                 ""
@@ -55,7 +55,7 @@ public class HomePageTracking extends TrackingUtils {
 
     public static void eventImpressionJumpRecomendation() {
         sendGTMEvent(new EventTracking(
-                "",
+                "eventImpressionHomePage",
                 STATIC_VALUE_HOMEPAGE,
                 "cek rekomendasi jumper impression",
                 ""
