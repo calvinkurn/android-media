@@ -1,11 +1,21 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'android-apt'
 
-apt {
-    arguments {
-        targetModuleName 'PushNotification'
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'PushNotification']
+            }
+        }
     }
+}
+
+project.ext {
+    artifactId = 'push_notification'
+    groupId = 'com.tokopedia.push_notification'
+    versionName = "2.22"
+    artifactName ="push_notification-release"
 }
 
 
@@ -13,10 +23,12 @@ dependencies {
     compile rootProject.ext.supportLibDependencies.supportV4
     compile rootProject.ext.supportLibDependencies.appCompactV7
     compile rootProject.ext.playServicesDependencies.firebase
-    compile project(rootProject.ext.libraries.abstraction)
-    compile project(rootProject.ext.libraries.applink)
-    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    compile rootProject.ext.tkpdDependencies.abstraction
+    compile rootProject.ext.tkpdDependencies.applink
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore
     compile rootProject.ext.dbDependencies.dbFlow
 
 }
+
+apply from: '../../publish_local.gradle'

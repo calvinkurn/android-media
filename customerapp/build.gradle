@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 if (!project.hasProperty("disable-performance-plugin")) { apply plugin: 'com.google.firebase.firebase-perf' }
-apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
 
 
@@ -96,15 +95,15 @@ android {
         ]
     }
 
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/rxjava.properties'
+    }
+
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     useLibrary 'org.apache.http.legacy'
     sourceSets {
-
-        packagingOptions {
-            exclude 'META-INF/LICENSE.txt'
-            exclude 'META-INF/rxjava.properties'
-        }
 
         main {
             java.srcDirs = ['src/main/java']
@@ -234,9 +233,13 @@ android {
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
 
+    // Specifies two flavor dimensions.
+    flavorDimensions "tier", "minApi"
+
     productFlavors {
         staging {
             minSdkVersion 21
+            dimension "tier"
             resConfigs ("en", "xxhdpi")
             splits.abi.enable = false
             splits.density.enable = false
@@ -244,7 +247,7 @@ android {
         }
 
         live {
-
+            dimension "minApi"
         }
     }
 }
@@ -269,12 +272,12 @@ dependencies {
     compile rootProject.ext.tkpdDependencies.digital // udah
     compile rootProject.ext.tkpdDependencies.tokocash // udah
     compile rootProject.ext.tkpdDependencies.home // udah
-    compile project(rootProject.ext.features.groupchat)
-    compile project(rootProject.ext.features.shopPage)
-    compile project(rootProject.ext.features.kol)
-    compile project(rootProject.ext.libraries.pushNotif)
-    compile rootProject.ext.tkpdDependencies.applink
-    compile rootProject.ext.tkpdDependencies.gamification
+    compile rootProject.ext.tkpdDependencies.groupchat // udah
+    compile rootProject.ext.tkpdDependencies.shopPage // udah
+    compile rootProject.ext.tkpdDependencies.kol // udah
+    compile rootProject.ext.tkpdDependencies.pushNotif // udah
+    compile rootProject.ext.tkpdDependencies.applink // udah
+    compile rootProject.ext.tkpdDependencies.gamification // udah
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -283,14 +286,14 @@ dependencies {
     testCompile rootProject.ext.testDependencies.junit
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.miscDependencies.multiDex
 
@@ -320,11 +323,11 @@ dependencies {
     }
     androidTestCompile rootProject.ext.testDependencies.retrofitMock
     androidTestCompile rootProject.ext.testDependencies.retrofitMockWebser
-    androidTestApt rootProject.ext.miscDependencies.daggerCompiler
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestCompile rootProject.ext.miscDependencies.dagger
     androidTestCompile rootProject.ext.miscDependencies.gson
     androidTestCompile rootProject.ext.miscDependencies.parcelerApi
-    androidTestApt rootProject.ext.miscDependencies.parceler
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.parceler
     androidTestCompile rootProject.ext.testDependencies.dexMaker
     androidTestCompile(rootProject.ext.testDependencies.dexMakerMockito) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'

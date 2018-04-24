@@ -205,8 +205,16 @@ ext {
             reputation : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
             reputationCommon : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
             wishListCommon : "com.tokopedia.wishlist:wishlist-common:${tkpdReputationVersion}",
+            goldMerchantCommon : "com.tokopedia.gold_merchant_common:gold_merchant_common:${tkpdReputationVersion}",
+            shopCommon : "com.tokopedia.shop_common:shop_common:${tkpdReputationVersion}",
+            shopPage : "com.tokopedia.shop_page:shop_page:${tkpdReputationVersion}",
             tokocash : "com.tokopedia.tokocash:tokocash:${tkpdReputationVersion}",
+            groupchat : "com.tokopedia.groupchat:groupchat:${tkpdReputationVersion}",
+            home : "com.tokopedia.home:home:${tkpdReputationVersion}",
+            gamification : "com.tokopedia.gamification:gamification:${tkpdReputationVersion}",
             applink : "com.tokopedia.applink:applink:${tkpdReputationVersion}",
+            pushNotif : "com.tokopedia.push_notification:push_notification:${tkpdReputationVersion}",
+            kol : "com.tokopedia.kol:kol:${tkpdReputationVersion}",
             events      : "com.tokopedia.events:events:${tkpdReputationVersion}"
     ]
 
