@@ -25,8 +25,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_128"
             android:layout_centerVertical="true"
             android:orientation="vertical">
@@ -52,12 +50,10 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif"
-                android:lineSpacingExtra="5sp"
                 android:textColor="@color/black_54"
                 android:textSize="@dimen/font_very_small"
                 android:textStyle="normal"
-                android:maxLines="1"
-                android:singleLine="true"
+                android:maxLines="2"
                 tools:text="Mulai dari harga Rp 197,000 sampai Rp 321,000" />
 
             <TextView
