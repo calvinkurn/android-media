@@ -258,10 +258,18 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
                 mShopNameText.setText(MethodChecker.fromHtml((String) data[0]));
                 break;
             case ShopEditorPresenter.SHOP_SLOGAN:
-                mShopSloganText.setText(MethodChecker.fromHtml((String) data[0]));
+                if(MethodChecker.fromHtml((String) data[0]).toString().equalsIgnoreCase("0")){
+                    mShopSloganText.setText("");
+                } else {
+                    mShopSloganText.setText(MethodChecker.fromHtml((String) data[0]));
+                }
                 break;
             case ShopEditorPresenter.SHOP_DESC:
-                mShopDescText.setText(MethodChecker.fromHtml((String) data[0]));
+                if(MethodChecker.fromHtml((String) data[0]).toString().equalsIgnoreCase("0")){
+                    mShopDescText.setText("");
+                } else {
+                    mShopDescText.setText(MethodChecker.fromHtml((String) data[0]));
+                }
                 break;
             default:
                 throw new RuntimeException("please register type here!!!");
