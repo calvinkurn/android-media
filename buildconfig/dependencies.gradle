@@ -216,7 +216,7 @@ ext {
             groupchat      : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
             shopCommon  : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",
             goldMerchantCommon: "com.tokopedia.gm:gold_merchant-common:${tkpdShopVersion}",
-            shopPage: "com.tokopedia.shop:shop_page:${tkpdShopVersion}",
+            shopPage: "com.tokopedia.shop:shop-page:${tkpdShopVersion}",
             kol: "com.tokopedia.kol:kol:${tkpdKolVersion}",
             pushNotif: "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
             gamification : "com.tokopedia.gamification:gamification:${tkpdReputationVersion}"

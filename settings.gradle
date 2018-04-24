@@ -1,5 +1,5 @@
-//apply from: "features/settings-features.gradle"
-//apply from: "libraries/settings-libraries.gradle"
+apply from: "features/settings-features.gradle"
+apply from: "libraries/settings-libraries.gradle"
 
 include 'customerapp'
 include 'tkpdhome'
@@ -8,7 +8,7 @@ include 'tkpdride'
 include 'tkpdfeed'
 include 'tkpddigital'
 //include 'tkpdcore'
-//include 'tkpdinbox'
+include 'tkpdinbox'
 //include 'tkpddiscovery'
 //include 'tkpdtransaction'
 //include 'tkpdsession'
@@ -16,7 +16,7 @@ include 'tkpdtopadssdk'
 //include 'tkpdpdp'
 //include 'tkpddesign'
 //include 'sellerapp'
-//include 'tkpdseller'
+include 'tkpdseller'
 include 'tkpdtokocash'
 //include 'tkpdabstraction'
 include 'tkpdflight'
