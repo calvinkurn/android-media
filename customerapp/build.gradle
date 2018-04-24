@@ -255,6 +255,8 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    implementation project(rootProject.ext.features.ride)
+
     implementation rootProject.ext.tkpdDependencies.core // udah
     implementation rootProject.ext.tkpdDependencies.discovery // udah
     implementation rootProject.ext.tkpdDependencies.transaction // udah
@@ -267,7 +269,7 @@ dependencies {
     implementation rootProject.ext.tkpdDependencies.session // udah
     implementation rootProject.ext.tkpdDependencies.reputation  // udah
     implementation rootProject.ext.tkpdDependencies.events
-    implementation rootProject.ext.tkpdDependencies.ride // udah
+//    implementation rootProject.ext.tkpdDependencies.ride // udah
     implementation rootProject.ext.tkpdDependencies.flight
     implementation rootProject.ext.tkpdDependencies.digital
     implementation rootProject.ext.tkpdDependencies.tokocash // udah
