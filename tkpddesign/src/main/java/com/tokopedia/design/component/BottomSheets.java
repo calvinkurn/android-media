@@ -19,12 +19,22 @@ import com.tokopedia.design.R;
 
 public abstract class BottomSheets extends BottomSheetDialogFragment {
 
+    private View inflatedView;
+
     public abstract int getLayoutResourceId();
 
     public abstract void initView(View view);
 
+    public enum BottomSheetsState {
+        NORMAL, FULL
+    }
+
     protected String title() {
         return getString(R.string.app_name);
+    }
+
+    protected BottomSheetsState state() {
+        return BottomSheetsState.NORMAL;
     }
 
     private BottomSheetBehavior bottomSheetBehavior;
@@ -33,7 +43,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        View inflatedView = View.inflate(getContext(), R.layout.widget_bottomsheet, null);
+        inflatedView = View.inflate(getContext(), R.layout.widget_bottomsheet, null);
 
         configView(inflatedView);
 
@@ -42,18 +52,24 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         View parent = (View) inflatedView.getParent();
         parent.setFitsSystemWindows(true);
 
+        inflatedView.measure(0, 0);
+        int height = inflatedView.getMeasuredHeight();
+
         bottomSheetBehavior = BottomSheetBehavior.from(parent);
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) inflatedView.getParent()).getLayoutParams();
 
         inflatedView.measure(0, 0);
-
-        int height = inflatedView.getMeasuredHeight();
-        bottomSheetBehavior.setPeekHeight(height);
-
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        params.height = displaymetrics.heightPixels;
+        int screenHeight = displaymetrics.heightPixels;
+
+        if (state() == BottomSheetsState.FULL) {
+            height = screenHeight;
+        }
+        bottomSheetBehavior.setPeekHeight(height);
+
+        params.height = screenHeight;
         parent.setLayoutParams(params);
     }
 
@@ -61,7 +77,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         return bottomSheetBehavior;
     }
 
-    private void configView(final View parentView) {
+    protected void configView(final View parentView) {
         TextView textViewTitle = parentView.findViewById(R.id.tv_title);
         textViewTitle.setText(title());
 
@@ -69,7 +85,11 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    BottomSheets.this.dismiss();
+                }
             }
         });
 
@@ -77,5 +97,11 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         View subView = View.inflate(getContext(), getLayoutResourceId(), null);
         initView(subView);
         frameParent.addView(subView);
+    }
+
+    protected void updateHeight() {
+        inflatedView.invalidate();
+        inflatedView.measure(0, 0);
+        bottomSheetBehavior.setPeekHeight(inflatedView.getMeasuredHeight());
     }
 }
