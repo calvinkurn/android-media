@@ -46,6 +46,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -762,10 +763,29 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onBannerItemClicked(BannerData bannerData) {
-        if (TextUtils.isEmpty(bannerData.getLink())) return;
-        navigateToActivity(DigitalWebActivity.newInstance(
-                getActivity(), bannerData.getLink())
-        );
+        if (!TextUtils.isEmpty(bannerData.getLink())) {
+            int deeplinkType = DeepLinkChecker.getDeepLinkType(bannerData.getLink());
+            if (deeplinkType == DeepLinkChecker.PROMO) {
+                Uri uriData = Uri.parse(bannerData.getLink());
+                List<String> linkSegment = uriData.getPathSegments();
+                openPromo(linkSegment);
+            } else {
+                navigateToActivity(DigitalWebActivity.newInstance(
+                        getActivity(), bannerData.getLink())
+                );
+            }
+        }
+    }
+
+    private void openPromo(List<String> linkSegment) {
+        IDigitalModuleRouter router = ((IDigitalModuleRouter) getActivity().getApplication());
+        if (linkSegment.size() == 2) {
+            Intent intent = router.getPromoDetailIntent(context, linkSegment.get(1));
+            startActivity(intent);
+        } else if (linkSegment.size() == 1) {
+            Intent intent = router.getPromoListIntent(getActivity());
+            startActivity(intent);
+        }
     }
 
     @Override
