@@ -82,6 +82,7 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
         presenter.attachView(this);
         setView();
         setViewListener();
+        disableNextButton();
     }
 
     private void setView() {
@@ -107,7 +108,7 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() == 0) {
+                if (charSequence.length() != 0) {
                     enableNextButton();
                 } else {
                     disableNextButton();
