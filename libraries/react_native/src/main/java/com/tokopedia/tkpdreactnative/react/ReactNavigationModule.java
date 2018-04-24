@@ -1,6 +1,8 @@
 package com.tokopedia.tkpdreactnative.react;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -20,7 +22,10 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.component.Dialog;
+import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
+import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;
 
 import org.json.JSONObject;
 
@@ -32,10 +37,11 @@ import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
  * @author ricoharisin .
  */
 
-public class ReactNavigationModule extends ReactContextBaseJavaModule{
+public class ReactNavigationModule extends ReactContextBaseJavaModule implements FingerPrintUIHelper.Callback {
     private static final int LOGIN_REQUEST_CODE = 1005;
 
     private Context context;
+    private ProgressDialog progressDialog;
 
     public ReactNavigationModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -108,6 +114,15 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule{
     }
 
     @ReactMethod
+    public void goToFingerprintThanks(String transactionId){
+        Dialog dialog = new Dialog();
+        if(getCurrentActivity() instanceof  AppCompatActivity) {
+            FingerPrintUIHelper fingerPrintUIHelper = new FingerPrintUIHelper((AppCompatActivity)getCurrentActivity(), transactionId, this);
+            fingerPrintUIHelper.startListening();
+        }
+    }
+
+    @ReactMethod
     public void getFlavor(Promise promise) {
         if (getCurrentActivity() != null && getCurrentActivity().getApplication() instanceof TkpdCoreRouter){
             promise.resolve(((TkpdCoreRouter) getCurrentActivity().getApplication()).getFlavor());
@@ -131,6 +146,20 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule{
     public void finish() {
         if(getCurrentActivity() != null) {
             getCurrentActivity().finish();
+        }
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog = new ProgressDialog(getCurrentActivity());
+        progressDialog.setMessage(getCurrentActivity().getString(R.string.title_loading));
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideProgressDialog() {
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 }
