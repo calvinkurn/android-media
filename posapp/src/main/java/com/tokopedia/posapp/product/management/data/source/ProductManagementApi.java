@@ -6,7 +6,9 @@ import com.tokopedia.posapp.base.data.pojo.PosSimpleResponse;
 import com.tokopedia.posapp.common.PosUrl;
 import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.posapp.product.management.data.pojo.ProductListData;
+import com.tokopedia.posapp.product.productlist.data.pojo.ProductDetail;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Response;
@@ -24,7 +26,7 @@ import rx.Observable;
 
 public interface ProductManagementApi {
     @GET(PosUrl.Product.GET_ADMIN_PRODUCT_LIST)
-    Observable<Response<PosResponse<ProductListData>>> getProducts(@QueryMap Map<String, String> params);
+    Observable<Response<PosSimpleResponse<List<ProductDetail>>>> getProducts(@QueryMap Map<String, String> params);
 
     @POST(PosUrl.Product.EDIT_PRODUCT)
     @Headers({PosUrl.ContentType.JSON})

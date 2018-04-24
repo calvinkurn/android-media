@@ -3,6 +3,7 @@ package com.tokopedia.posapp.react.datasource.cloud;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.base.data.pojo.Paging;
 import com.tokopedia.posapp.product.common.ProductConstant;
@@ -23,6 +24,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
+import twitter4j.api.UsersResources;
 
 /**
  * @author okasurya on 3/22/18.
@@ -32,14 +34,17 @@ public class ReactProductCloudSource extends ReactDataSource {
 
     private ProductRepository productRepository;
     private PosSessionHandler sessionHandler;
+    private UserSession userSession;
 
     @Inject
     ReactProductCloudSource(ProductCloudRepository productRepository,
                             Gson gson,
-                            PosSessionHandler sessionHandler) {
+                            PosSessionHandler sessionHandler,
+                            UserSession userSession) {
         super(gson);
         this.productRepository = productRepository;
         this.sessionHandler = sessionHandler;
+        this.userSession = userSession;
     }
 
     @Override
@@ -102,7 +107,11 @@ public class ReactProductCloudSource extends ReactDataSource {
         if (request.getLimit() == null) request.setLimit(10);
 
         RequestParams requestParams = RequestParams.EMPTY;
-        requestParams.putString(ProductConstant.Key.KEYWORD, request.getKeyword());
+
+        if(!TextUtils.isEmpty(request.getKeyword())) {
+            requestParams.putString(ProductConstant.Key.KEYWORD, request.getKeyword());
+        }
+
         if (!TextUtils.isEmpty(request.getEtalaseId())) {
             requestParams.putString(ProductConstant.Key.ETALASE_ID, request.getEtalaseId());
         } else {
@@ -112,6 +121,7 @@ public class ReactProductCloudSource extends ReactDataSource {
         requestParams.putString(ProductConstant.Key.PAGE, request.getPage().toString());
         requestParams.putString(ProductConstant.Key.PER_PAGE, request.getLimit().toString());
         requestParams.putString(ProductConstant.Key.OUTLET_ID, sessionHandler.getOutletId());
+        requestParams.putString(ProductConstant.Key.SHOP_ID, userSession.getShopId());
         return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
     }
 
