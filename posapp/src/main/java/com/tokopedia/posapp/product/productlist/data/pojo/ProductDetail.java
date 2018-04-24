@@ -22,6 +22,9 @@ public class ProductDetail {
     @SerializedName("product_condition")
     @Expose
     private String condition;
+    @SerializedName("product_price")
+    @Expose
+    private double price;
     @SerializedName("product_local_price")
     @Expose
     private ProductLocalPrice localPrice;
@@ -80,6 +83,14 @@ public class ProductDetail {
 
     public void setCondition(String condition) {
         this.condition = condition;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public ProductLocalPrice getLocalPrice() {

@@ -55,7 +55,7 @@ public class OutletActivity extends DrawerPresenterActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         sessionHandler = new SessionHandler(this);
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
-        drawerHelper = DrawerInjector.getDrawerHelper(this, sessionHandler, drawerCache);
+        drawerHelper = DrawerInjecto r.getDrawerHelper(this, sessionHandler, drawerCache);
         drawerHelper.initDrawer(this);
         drawerHelper.setEnabled(true);
     }

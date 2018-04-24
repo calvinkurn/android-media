@@ -2,16 +2,20 @@ package com.tokopedia.posapp.product.common.data.source.cloud;
 
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.posapp.PosSessionHandler;
+import com.tokopedia.posapp.base.data.pojo.PosSimpleResponse;
 import com.tokopedia.posapp.product.productdetail.data.mapper.GetProductMapper2;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.productlist.data.mapper.GetProductListMapper;
+import com.tokopedia.posapp.product.productlist.data.pojo.ProductDetail;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import retrofit2.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by okasurya on 8/9/17.
@@ -40,6 +44,6 @@ public class ProductCloudSource {
     }
 
     public Observable<List<ProductDomain>> getProductList(String outletId, RequestParams params) {
-        return productApi.getProductList(outletId, params.getParamsAllValueInString()).map(getProductListMapper);
+        return productApi.getProductList(outletId, params.getParamsAllValueInString()).flatMap(getProductListMapper);
     }
 }
