@@ -205,6 +205,9 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
             mTextLimitTokocashValue.setVisibility(View.VISIBLE);
             mTextLimitTokocashValue.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat((int)
                     data.getAmountLimit(), false));
+        } else {
+            mTextLimitTokocash.setVisibility(View.GONE);
+            mTextLimitTokocashValue.setVisibility(View.GONE);
         }
 
         if (data.getTitle() != null
@@ -235,6 +238,9 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
             mTextLimitTokocashValue.setVisibility(View.VISIBLE);
             mTextLimitTokocashValue.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat((int)
                     data.getAmountLimit(), false));
+        } else {
+            mTextLimitTokocash.setVisibility(View.GONE);
+            mTextLimitTokocashValue.setVisibility(View.GONE);
         }
     }
 

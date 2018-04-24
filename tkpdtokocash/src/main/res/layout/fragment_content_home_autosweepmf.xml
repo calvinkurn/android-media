@@ -80,7 +80,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/mf_margin_medium"
         android:layout_marginRight="@dimen/mf_margin_medium"
-        android:enabled="true"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/text_title_mutual_fund"
         app:layout_constraintEnd_toEndOf="parent"
