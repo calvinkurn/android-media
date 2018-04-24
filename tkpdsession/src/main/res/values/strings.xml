@@ -266,8 +266,8 @@
     <string name="button_name_continue">Ubah Nama Lengkap</string>
     <string name="name_confirmation">Apakah nama lengkap Anda sudah benar?</string>
     <string name="name_confirmation_content">Nama lengkap hanya dapat diubah satu kali</string>
-    <string name="error_name_too_short">Minimum 3 karakter</string>
-    <string name="error_name_too_long">Maksimal 128 karakter</string>
+    <string name="error_name_too_short">Nama lengkap terlalu pendek, minimum 3 karakter</string>
+    <string name="error_name_too_long">Nama lengkap terlalu panjang, maksimal 128 karakter</string>
     <string name="name_confirmation_yes">Ya, benar</string>
     <string name="name_confirmation_no">Tidak</string>
 

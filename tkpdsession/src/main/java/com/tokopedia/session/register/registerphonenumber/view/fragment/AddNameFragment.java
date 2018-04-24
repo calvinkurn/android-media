@@ -7,16 +7,18 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
@@ -42,6 +44,8 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
     private TextView btnContinue, bottomInfo, message;
     private TkpdProgressDialog progressDialog;
     private TkpdHintTextInputLayout wrapperName;
+
+    private boolean isError = false;
 
     @Inject
     AddNamePresenter presenter;
@@ -113,6 +117,9 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
                 } else {
                     disableNextButton();
                 }
+                if (isError) {
+                    hideValidationError();
+                }
             }
 
             @Override
@@ -124,7 +131,18 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                KeyboardHandler.DropKeyboard(getActivity(), getView());
                 presenter.registerPhoneNumberAndName(etName.getText().toString());
+            }
+        });
+        btnContinue.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int id, KeyEvent event) {
+                if (id == R.id.btn_continue || id == EditorInfo.IME_NULL) {
+                    presenter.registerPhoneNumberAndName(etName.getText().toString());
+                    return true;
+                }
+                return false;
             }
         });
     }
@@ -166,7 +184,7 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
     @Override
     public void onErrorRegister(String error) {
         dismissLoading();
-        NetworkErrorHelper.showSnackbar(getActivity(), error);
+        showValidationError(error);
     }
 
     @Override
@@ -187,20 +205,20 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
         if (progressDialog == null)
             progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
                     .NORMAL_PROGRESS);
-
         progressDialog.showDialog();
     }
 
     @Override
     public void showValidationError(String error) {
+        isError = true;
         wrapperName.setErrorEnabled(true);
         wrapperName.setError(error);
         message.setVisibility(View.GONE);
-
     }
 
     @Override
     public void hideValidationError() {
+        isError = false;
         wrapperName.setErrorEnabled(false);
         wrapperName.setError("");
         message.setVisibility(View.VISIBLE);
