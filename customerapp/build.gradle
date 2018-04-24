@@ -234,7 +234,7 @@ android {
     }
 
     // Specifies two flavor dimensions.
-    flavorDimensions "tier", "minApi"
+    flavorDimensions "tier"
 
     productFlavors {
         staging {
@@ -247,7 +247,7 @@ android {
         }
 
         live {
-            dimension "minApi"
+            dimension "tier"
         }
     }
 }

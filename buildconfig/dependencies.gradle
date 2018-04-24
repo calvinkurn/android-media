@@ -205,6 +205,7 @@ ext {
             ride       : "com.tokopedia.ride:ride:${tkpdRideVersion}",
             reactNative: "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
             loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
+            home : "com.tokopedia.home:home:${tkpdReputationVersion}",
             flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
             flightNoOp : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
             reputation : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
@@ -217,7 +218,8 @@ ext {
             goldMerchantCommon: "com.tokopedia.gm:gold_merchant-common:${tkpdShopVersion}",
             shopPage: "com.tokopedia.shop:shop_page:${tkpdShopVersion}",
             kol: "com.tokopedia.kol:kol:${tkpdKolVersion}",
-            pushNotif: "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}"
+            pushNotif: "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
+            gamification : "com.tokopedia.gamification:gamification:${tkpdReputationVersion}"
     ]
 
     tkpdLibDependencies = [
