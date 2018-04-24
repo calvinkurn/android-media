@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         tools:replace="label">
-        <activity android:name="com.tokopedia.imagepicker.ImagePickerActivity">
+        <activity android:name="com.tokopedia.imagepicker.picker.ImagePickerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
