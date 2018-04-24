@@ -148,6 +148,12 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDialog().setCanceledOnTouchOutside(false);
+    }
+
     public interface ListenerPayment {
 
         void onGoToOtpPage(String transactionId, String urlOtp);
