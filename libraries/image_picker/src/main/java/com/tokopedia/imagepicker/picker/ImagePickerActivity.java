@@ -287,9 +287,13 @@ public class ImagePickerActivity extends BaseSimpleActivity
         } else {
             //TODO select image; go to image editor
             Toast.makeText(this, "onAlbumClicked " + item.getRealPath(), Toast.LENGTH_SHORT).show();
-            Intent intent = ImageEditorActivity.getIntent(this, item.getRealPath());
-            startActivityForResult(intent, REQUEST_CODE_EDITOR);
+            startSingleEditImage(item.getRealPath());
         }
+    }
+
+    private void startSingleEditImage(String imageUrlOrPath){
+        Intent intent = ImageEditorActivity.getIntent(this, imageUrlOrPath);
+        startActivityForResult(intent, REQUEST_CODE_EDITOR);
     }
 
     @Override
@@ -315,9 +319,15 @@ public class ImagePickerActivity extends BaseSimpleActivity
             if (imagePickerBuilder.hasThumbnailPreview()) {
 
             }
+            //to cater the bug in library.
+            ImagePickerCameraFragment fragment = getCameraFragment();
+            if (fragment!= null) {
+                fragment.onPause();
+                fragment.onResume();
+            }
         } else {
             Toast.makeText(this, "onPhotoTaken " + filePath, Toast.LENGTH_SHORT).show();
-
+            startSingleEditImage(filePath);
         }
     }
 
@@ -327,6 +337,19 @@ public class ImagePickerActivity extends BaseSimpleActivity
             Fragment fragment = imagePickerViewPagerAdapter.getRegisteredFragment(tabGallery);
             if (fragment instanceof ImagePickerGalleryFragment) {
                 return (ImagePickerGalleryFragment) fragment;
+            } else {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private ImagePickerCameraFragment getCameraFragment() {
+        int tabCamera = imagePickerBuilder.indexTypeDef(ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA);
+        if (tabCamera > -1) {
+            Fragment fragment = imagePickerViewPagerAdapter.getRegisteredFragment(tabCamera);
+            if (fragment instanceof ImagePickerCameraFragment) {
+                return (ImagePickerCameraFragment) fragment;
             } else {
                 return null;
             }

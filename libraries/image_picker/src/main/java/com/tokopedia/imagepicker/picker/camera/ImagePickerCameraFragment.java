@@ -35,6 +35,7 @@ public class ImagePickerCameraFragment extends CameraFragment {
     private CameraSwitchView cameraSwitchView;
 
     private OnImagePickerCameraFragmentListener onImagePickerCameraFragmentListener;
+
     public interface OnImagePickerCameraFragmentListener {
         void onImageTaken(String filePath);
     }
@@ -170,8 +171,6 @@ public class ImagePickerCameraFragment extends CameraFragment {
                             @Override
                             public void onPhotoTaken(byte[] bytes, String filePath) {
                                 onImagePickerCameraFragmentListener.onImageTaken(filePath);
-                                onPause();
-                                onResume();
                             }
                         },
                         ImageUtils.getTokopediaPublicDirectory().getAbsolutePath(),

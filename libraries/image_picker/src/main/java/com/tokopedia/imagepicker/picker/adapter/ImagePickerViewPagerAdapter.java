@@ -39,7 +39,7 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
                         imagePickerBuilder.getMinResolution());
             case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA:
                 Configuration.Builder builder = new Configuration.Builder();
-                builder.setMediaQuality(Configuration.MEDIA_QUALITY_HIGH);
+                // builder.setMediaQuality(Configuration.MEDIA_QUALITY_HIGH);
                 return ImagePickerCameraFragment.newInstance(
                         builder.build()
                 );
