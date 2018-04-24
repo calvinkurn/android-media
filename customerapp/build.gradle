@@ -272,7 +272,7 @@ dependencies {
 //    implementation rootProject.ext.tkpdDependencies.ride // udah
     implementation rootProject.ext.tkpdDependencies.flight
     implementation rootProject.ext.tkpdDependencies.digital
-    implementation rootProject.ext.tkpdDependencies.tokocash // udah
+    implementation rootProject.ext.tkpdDependencies.tokocash
     implementation rootProject.ext.tkpdDependencies.home
     implementation rootProject.ext.tkpdDependencies.groupchat
     implementation rootProject.ext.tkpdDependencies.applink

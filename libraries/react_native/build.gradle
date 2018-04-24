@@ -9,16 +9,16 @@ project.ext {
 }
 
 dependencies {
-    compile rootProject.ext.tkpdDependencies.core
-    compile rootProject.ext.miscDependencies.dagger
-    compile rootProject.ext.miscDependencies.reactNative
-    compile rootProject.ext.miscDependencies.codePushReactNative
+    implementation rootProject.ext.tkpdDependencies.core
+    implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.reactNative
+    implementation rootProject.ext.miscDependencies.codePushReactNative
     annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
 
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.junit
 }
 
 apply from: '../../publish_local.gradle'

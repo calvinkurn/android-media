@@ -36,6 +36,15 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.viewDependencies.appIntro
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
