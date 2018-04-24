@@ -1,3 +1,20 @@
+ext.isCiServer = System.getenv().containsKey("CI")
+
+buildCache {
+    local {
+        enabled = !isCiServer
+    }
+    remote(HttpBuildCache) {
+        url = 'http://10.164.8.12:8885/cache/'
+        push = isCiServer
+
+        credentials {
+            username = 'dev'
+            password = 'tokopedia789'
+        }
+    }
+}
+
 apply from: "features/settings-features.gradle"
 apply from: "libraries/settings-libraries.gradle"
 
@@ -21,3 +38,4 @@ include 'tkpdtokocash'
 //include 'tkpdabstraction'
 include 'tkpdflight'
 include 'tkpdevents'
+

@@ -9,7 +9,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.uber:okbuck:0.32.2'
+        classpath 'com.uber:okbuck:0.34.1'
         classpath 'com.android.tools.build:gradle:3.1.1'
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.0.1"
         classpath 'com.apollographql.apollo:gradle-plugin:0.3.0'
