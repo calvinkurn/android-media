@@ -1,16 +1,24 @@
 package com.tokopedia.core.network.retrofit.utils;
 
 import android.content.Context;
+import android.provider.Settings;
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 import android.util.Base64;
 
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.gson.Gson;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -22,6 +30,12 @@ import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author Angga.Prasetiyo on 25/11/2015.
@@ -582,5 +596,49 @@ public class AuthUtil {
         header.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
         Gson gson = new Gson();
         return gson.toJson(header);
+    }
+
+    public static String getGoogleAdId(final Context context) {
+        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ADVERTISINGID);
+
+        String adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID);
+        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
+            return adsId;
+        }
+
+        return (Observable.just("").subscribeOn(Schedulers.newThread())
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String string) {
+                        AdvertisingIdClient.Info adInfo = null;
+                        try {
+                            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+                        } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
+                            e.printStackTrace();
+                        }
+                        return adInfo.getId();
+                    }
+                }).onErrorReturn(new Func1<Throwable, String>() {
+                    @Override
+                    public String call(Throwable throwable) {
+                        return "";
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<String>() {
+                    @Override
+                    public void call(String adID) {
+                        if (!TextUtils.isEmpty(adID)) {
+                            localCacheHandler.putString(TkpdCache.Key.KEY_ADVERTISINGID, adID);
+                            localCacheHandler.applyEditor();
+                        }
+                    }
+                })).toBlocking().single();
+    }
+
+    public static String getAndroidId(Context context) {
+        String android_id = Settings.Secure.getString(context.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        return generateContentMd5(android_id);
     }
 }

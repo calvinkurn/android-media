@@ -68,7 +68,7 @@ public class FingerprintInterceptor implements Interceptor {
         }
         newRequest.addHeader(KEY_ACC_AUTH, BEARER + session.getAccessToken(MainApplication.getAppContext()));
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
-        newRequest.addHeader(KEY_ADSID, getGoogleAdId(MainApplication.getAppContext()));
+        newRequest.addHeader(KEY_ADSID, AuthUtil.getGoogleAdId(MainApplication.getAppContext()));
 
         return newRequest;
     }
@@ -116,41 +116,5 @@ public class FingerprintInterceptor implements Interceptor {
      * @param context
      * @return
      */
-    private String getGoogleAdId(final Context context) {
-        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ADVERTISINGID);
 
-        String adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID);
-        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
-            return adsId;
-        }
-
-        return (Observable.just("").subscribeOn(Schedulers.newThread())
-                .map(new Func1<String, String>() {
-                    @Override
-                    public String call(String string) {
-                        AdvertisingIdClient.Info adInfo = null;
-                        try {
-                            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
-                        } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
-                            e.printStackTrace();
-                        }
-                        return adInfo.getId();
-                    }
-                }).onErrorReturn(new Func1<Throwable, String>() {
-                    @Override
-                    public String call(Throwable throwable) {
-                        return "";
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<String>() {
-                    @Override
-                    public void call(String adID) {
-                        if (!TextUtils.isEmpty(adID)) {
-                            localCacheHandler.putString(TkpdCache.Key.KEY_ADVERTISINGID, adID);
-                            localCacheHandler.applyEditor();
-                        }
-                    }
-                })).toBlocking().single();
-    }
 }

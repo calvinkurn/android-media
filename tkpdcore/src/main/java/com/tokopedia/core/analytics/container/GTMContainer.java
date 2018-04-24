@@ -24,20 +24,18 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.ButtonClickEvent;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
-import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -241,7 +239,7 @@ public class GTMContainer implements IGTMContainer {
         authEvent.setUserID(SessionHandler.getGTMLoginID(context));
         authEvent.setShopID(SessionHandler.getShopID(context));
         authEvent.setShopId(SessionHandler.getShopID(context));
-        authEvent.setUserSeller(SessionHandler.isUserHasShop(context)? 1 : 0);
+        authEvent.setUserSeller(SessionHandler.isUserHasShop(context) ? 1 : 0);
 
         CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
 
@@ -271,12 +269,18 @@ public class GTMContainer implements IGTMContainer {
     @Override
     public GTMContainer eventAuthenticate(Authenticated authenticated) {
         CommonUtils.dumper("GAv4 send authenticated");
+
+        authenticated.setAndroidId(AuthUtil.getAndroidId(context));
+        authenticated.setAdsId(AuthUtil.getGoogleAdId(context));
+
         if (TextUtils.isEmpty(authenticated.getcIntel())) {
             GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
                     Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
                     Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
                     Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
-                    Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed()
+                    Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
+                    Authenticated.ANDROID_ID, authenticated.getAndroidId(),
+                    Authenticated.ADS_ID, authenticated.getAdsId()
             ));
 
         } else {
@@ -285,7 +289,9 @@ public class GTMContainer implements IGTMContainer {
                     Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
                     Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
                     Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
-                    Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel()
+                    Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel(),
+                    Authenticated.ANDROID_ID, authenticated.getAndroidId(),
+                    Authenticated.ADS_ID, authenticated.getAdsId()
             ));
         }
 
@@ -648,7 +654,7 @@ public class GTMContainer implements IGTMContainer {
     public GTMContainer eventAddToCartPurchase(Product product) {
         try {
             GTMDataLayer.pushEvent(
-                    context, "addToCart",DataLayer.mapOf(
+                    context, "addToCart", DataLayer.mapOf(
                             AppEventTracking.ECOMMERCE, DataLayer.mapOf(
                                     "currencyCode", "IDR",
                                     "add", DataLayer.mapOf(
@@ -657,7 +663,7 @@ public class GTMContainer implements IGTMContainer {
                     )
             );
         } catch (Exception e) {
-            CommonUtils.dumper("GAv4 DATA LAYER "+e.getMessage());
+            CommonUtils.dumper("GAv4 DATA LAYER " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -697,7 +703,7 @@ public class GTMContainer implements IGTMContainer {
                         "ecommerce", DataLayer.mapOf(
                                 "promoView", DataLayer.mapOf(
                                         "promotions", DataLayer.listOf(list.toArray(new Object[list.size()]))))
-                        )
+                )
         );
     }
 
