@@ -258,7 +258,7 @@ dependencies {
     implementation project(rootProject.ext.features.ride)
 
     implementation rootProject.ext.tkpdDependencies.core // udah
-    implementation rootProject.ext.tkpdDependencies.discovery // udah
+    implementation rootProject.ext.tkpdDependencies.discovery
     implementation rootProject.ext.tkpdDependencies.transaction // udah
     implementation rootProject.ext.tkpdDependencies.seller // udah
     implementation rootProject.ext.tkpdDependencies.inbox // udah
@@ -266,7 +266,7 @@ dependencies {
     implementation rootProject.ext.tkpdDependencies.feed
     implementation rootProject.ext.tkpdDependencies.reactNative// udah
     implementation rootProject.ext.tkpdDependencies.loyalty // udah
-    implementation rootProject.ext.tkpdDependencies.session // udah
+    implementation rootProject.ext.tkpdDependencies.session
     implementation rootProject.ext.tkpdDependencies.reputation  // udah
     implementation rootProject.ext.tkpdDependencies.events
 //    implementation rootProject.ext.tkpdDependencies.ride // udah

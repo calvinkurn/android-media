@@ -9,19 +9,19 @@ project.ext {
 }
 
 dependencies {
-    compile rootProject.ext.supportLibDependencies.design
-    compile rootProject.ext.supportLibDependencies.cardViewV7
-    compile rootProject.ext.supportLibDependencies.constraintLayout
-    compile (rootProject.ext.miscDependencies.loaderviewlibrary){
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
 
-    compile rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.networkDependencies.glide
 
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.junit
 }
 
 apply from: '../publish_local.gradle'
