@@ -196,7 +196,7 @@
         <!-- RECEIVERS REGISTRY -->
         <!-- ======================================================= -->
         <receiver
-            android:name="com.tokopedia.util.IncomingSmsReceiver"
+            android:name="com.tokopedia.common.IncomingSmsReceiver"
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
