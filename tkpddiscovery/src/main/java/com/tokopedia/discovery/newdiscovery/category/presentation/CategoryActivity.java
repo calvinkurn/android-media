@@ -12,10 +12,12 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
+import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
@@ -33,7 +35,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class CategoryActivity extends DiscoveryActivity implements CategoryContract.View {
+public class CategoryActivity extends DiscoveryActivity implements CategoryContract.View, BottomSheetListener {
 
     private static final String EXTRA_CATEGORY_HEADER_VIEW_MODEL = "CATEGORY_HADES_MODEL";
     private static final String EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION";
@@ -270,6 +272,31 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             setResult(CategoryNavigationActivity.DESTROY_INTERMEDIARY);
             finish();
         }
+    }
+
+    @Override
+    public void loadFilterItems(ArrayList<Filter> filters) {
+
+    }
+
+    @Override
+    public void setFilterResultCount(String formattedResultCount) {
+
+    }
+
+    @Override
+    public void closeFilterBottomSheet() {
+
+    }
+
+    @Override
+    public boolean isBottomSheetShown() {
+        return false;
+    }
+
+    @Override
+    public void launchFilterBottomSheet() {
+
     }
 
     @Override

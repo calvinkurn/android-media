@@ -560,6 +560,11 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         return selectedOptions;
     }
 
+    @Override
+    public List<Option> getPresetOptions(Filter filter) {
+        return getSelectedOptions(filter);
+    }
+
     private boolean isCategorySelected() {
         return !TextUtils.isEmpty(selectedCategoryRootId) &&
                 !TextUtils.isEmpty(selectedCategoryId) &&

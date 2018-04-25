@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
@@ -17,6 +19,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistPresen
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -25,7 +28,7 @@ import javax.inject.Inject;
  */
 
 public class HotlistActivity extends DiscoveryActivity
-        implements HotlistContract.View {
+        implements HotlistContract.View, BottomSheetListener {
 
     private static final String EXTRA_HOTLIST_PARAM_URL = "HOTLIST_URL";
     private static final String EXTRA_HOTLIST_PARAM_QUERY = "EXTRA_HOTLIST_PARAM_QUERY";
@@ -110,6 +113,31 @@ public class HotlistActivity extends DiscoveryActivity
                 .appComponent(getComponent())
                 .build();
         hotlistComponent.inject(this);
+    }
+
+    @Override
+    public void loadFilterItems(ArrayList<Filter> filters) {
+
+    }
+
+    @Override
+    public void setFilterResultCount(String formattedResultCount) {
+
+    }
+
+    @Override
+    public void closeFilterBottomSheet() {
+
+    }
+
+    @Override
+    public boolean isBottomSheetShown() {
+        return false;
+    }
+
+    @Override
+    public void launchFilterBottomSheet() {
+
     }
 
     @Override

@@ -19,6 +19,7 @@ public interface DynamicFilterView {
     void saveTextInput(String key, String textInput);
 
     List<Option> getSelectedOptions(Filter filter);
+    List<Option> getPresetOptions(Filter filter);
     void removeSelectedOption(Option option);
 
     void updateLastRangeValue(int minValue, int maxValue);

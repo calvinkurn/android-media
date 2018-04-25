@@ -28,6 +28,7 @@ import com.tokopedia.design.search.EmptySearchResultView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapter;
+import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.BottomSheetDynamicFilterTypeFactoryImpl;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactoryImpl;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
@@ -216,6 +217,22 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
         return selectedOptions;
     }
 
+    @Override
+    public List<Option> getPresetOptions(Filter filter) {
+        enrichWithInputState(filter);
+
+        List<Option> selectedOptions = new ArrayList<>();
+
+        if (filter.isCategoryFilter() && isCategorySelected()) {
+            selectedOptions.add(getSelectedCategoryAsOption());
+        } else {
+            selectedOptions.addAll(getCustomSelectedOptionList(filter));
+        }
+
+        selectedOptions.addAll(getPopularOptionList(filter));
+        return selectedOptions;
+    }
+
     private boolean isCategorySelected() {
         return !TextUtils.isEmpty(selectedCategoryRootId) &&
                 !TextUtils.isEmpty(selectedCategoryId) &&
@@ -224,6 +241,28 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
 
     private Option getSelectedCategoryAsOption() {
         return OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryName);
+    }
+
+    private List<Option> getPopularOptionList(Filter filter) {
+        List<Option> checkedOptions = new ArrayList<>();
+
+        for (Option option : filter.getOptions()) {
+            if (option.isPopular()) {
+                checkedOptions.add(option);
+            }
+        }
+        return checkedOptions;
+    }
+
+    private List<Option> getCustomSelectedOptionList(Filter filter) {
+        List<Option> checkedOptions = new ArrayList<>();
+
+        for (Option option : filter.getOptions()) {
+            if (Boolean.TRUE.equals(loadLastCheckedState(option)) && !option.isPopular()) {
+                checkedOptions.add(option);
+            }
+        }
+        return checkedOptions;
     }
 
     private List<Option> getCheckedOptionList(Filter filter) {
@@ -331,7 +370,7 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
     }
 
     private void initFilterMainRecyclerView() {
-        DynamicFilterTypeFactory dynamicFilterTypeFactory = new DynamicFilterTypeFactoryImpl(this);
+        DynamicFilterTypeFactory dynamicFilterTypeFactory = new BottomSheetDynamicFilterTypeFactoryImpl(this);
         filterMainAdapter = new DynamicFilterAdapter(dynamicFilterTypeFactory);
         filterMainRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         DividerItemDecoration dividerItemDecoration
