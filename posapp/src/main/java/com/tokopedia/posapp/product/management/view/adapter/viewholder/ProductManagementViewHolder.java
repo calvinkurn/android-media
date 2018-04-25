@@ -54,21 +54,21 @@ public class ProductManagementViewHolder extends AbstractViewHolder<ProductViewM
         switchStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                listener.onShowProductCheckedChange(element, isChecked);
+                listener.onShowProductCheckedChange(element, isChecked, getAdapterPosition());
             }
         });
 
         editOutletPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onClickEditProduct(v, element);
+                listener.onClickEditProduct(v, element, getAdapterPosition());
             }
         });
 
         buttonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onClickEditProduct(v, element);
+                listener.onClickEditProduct(v, element, getAdapterPosition());
             }
         });
 

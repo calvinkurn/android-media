@@ -17,15 +17,5 @@ import com.tokopedia.posapp.R;
  */
 
 public abstract class PosBaseListFragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseListFragment<T, F> {
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_pos_base_list, container, false);
-    }
 
-    @Nullable
-    @Override
-    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
-        return view.findViewById(R.id.swipe_refresh_layout);
-    }
 }
