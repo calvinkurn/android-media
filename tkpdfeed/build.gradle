@@ -23,6 +23,25 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation(rootProject.ext.miscDependencies.facebook) {
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.playServicesDependencies.plus
+
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.viewDependencies.appIntro
+
     implementation rootProject.ext.tkpdDependencies.core
     implementation rootProject.ext.tkpdDependencies.topads
     implementation rootProject.ext.tkpdDependencies.reactNative

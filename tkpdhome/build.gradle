@@ -19,12 +19,28 @@ project.ext {
 }
 
 dependencies {
-
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+    implementation rootProject.ext.tkpdDependencies.core
     implementation rootProject.ext.tkpdDependencies.usecase
     implementation rootProject.ext.tkpdDependencies.abstraction
     implementation rootProject.ext.tkpdDependencies.feed
     implementation rootProject.ext.tkpdDependencies.gamification
     implementation rootProject.ext.tkpdDependencies.digital
+    implementation rootProject.ext.tkpdDependencies.cacheapi
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdDependencies.loyalty
+    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.viewDependencies.appIntro
+    implementation rootProject.ext.tkpdDependencies.topads
+    implementation rootProject.ext.miscDependencies.lottie
 
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"

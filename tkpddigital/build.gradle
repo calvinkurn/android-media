@@ -45,6 +45,9 @@ dependencies {
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.playServicesDependencies.firebase
 
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.viewDependencies.appIntro
+
     implementation rootProject.ext.playServicesDependencies.remoteConfig
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"

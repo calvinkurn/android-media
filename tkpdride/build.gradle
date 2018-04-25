@@ -23,22 +23,31 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile rootProject.ext.tkpdDependencies.core
+    implementation rootProject.ext.tkpdDependencies.core
+    implementation rootProject.ext.playServicesDependencies.location
+    implementation rootProject.ext.playServicesDependencies.places
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.viewDependencies.appIntro
 
-    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
-    compile rootProject.ext.butterKnifeDependencies.butterKnife
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    compile rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
 
-    compile rootProject.ext.miscDependencies.slidinguppanel
-    compile rootProject.ext.playServicesDependencies.mapsUtils
-    testCompile rootProject.ext.testDependencies.junit
+    implementation rootProject.ext.miscDependencies.slidinguppanel
+    implementation rootProject.ext.playServicesDependencies.mapsUtils
+    testImplementation rootProject.ext.testDependencies.junit
 }
 
 apply from: '../publish_local.gradle'
