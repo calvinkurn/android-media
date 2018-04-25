@@ -1,15 +1,14 @@
 package com.tokopedia.transaction.network.api;
 
-import com.tokopedia.abstraction.common.network.response.TokopediaApiResponse;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.transaction.network.TransactionUrl;
 
 import java.util.Map;
 
-import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import rx.Observable;
 
@@ -21,6 +20,7 @@ public interface VoucherCartApi {
 
     @FormUrlEncoded
     @POST(TransactionUrl.PATH_CLEAR_PROMO)
-    Observable<String> checkVoucherCode(@FieldMap Map<String, String> params);
+    Observable<String> checkVoucherCode(@Header(AuthUtil.HEADER_DEVICE) String os,
+                                        @FieldMap Map<String, String> params);
 
 }

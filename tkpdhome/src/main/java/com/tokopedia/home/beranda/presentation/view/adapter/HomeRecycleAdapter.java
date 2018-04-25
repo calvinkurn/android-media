@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 
 import java.util.ArrayList;
@@ -102,14 +103,13 @@ public class HomeRecycleAdapter extends BaseAdapter {
     }
 
     public int findFirstInspirationPosition() {
-        int pos = 0;
         for (int i = 0; i < getItemCount(); i++) {
-            if (getItems().get(i) instanceof DigitalsViewModel) {
-                pos = (i + 1);
-                break;
+            if (getItems().get(i) instanceof TopAdsViewModel
+                    || getItems().get(i) instanceof InspirationViewModel) {
+                return i;
             }
         }
-        return pos;
+        return getItemCount();
     }
 
     public void updateItems(List<Visitable> visitables) {

@@ -57,6 +57,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
+import com.tokopedia.flight.common.view.FullDividerItemDecoration;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
@@ -97,7 +98,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private AppCompatTextView priceTotalAppCompatTextView;
     private CardWithActionView departureInfoView;
     private CardWithActionView returnInfoView;
-    private VerticalRecyclerView passengerRecyclerView;
+    private RecyclerView passengerRecyclerView;
     private AppCompatButton submitButton;
     private TkpdHintTextInputLayout tilContactName;
     private AppCompatEditText etContactName;
@@ -173,7 +174,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         priceTotalAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_total_price);
         departureInfoView = (CardWithActionView) view.findViewById(R.id.cwa_departure_info);
         returnInfoView = (CardWithActionView) view.findViewById(R.id.cwa_return_info);
-        passengerRecyclerView = (VerticalRecyclerView) view.findViewById(R.id.rv_passengers);
+        passengerRecyclerView = (RecyclerView) view.findViewById(R.id.rv_passengers);
+        passengerRecyclerView.addItemDecoration(new FullDividerItemDecoration(passengerRecyclerView.getContext()));
         submitButton = (AppCompatButton) view.findViewById(R.id.button_submit);
         tilContactName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_contact_name);
         etContactName = (AppCompatEditText) view.findViewById(R.id.et_contact_name);

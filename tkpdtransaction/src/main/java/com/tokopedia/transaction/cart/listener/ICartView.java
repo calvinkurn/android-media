@@ -62,6 +62,8 @@ public interface ICartView extends IBaseView {
 
     void renderErrorEmptyCart(AutoApply autoApply);
 
+    void renderInvisibleLoading();
+
     void renderVisibleMainCartContainer();
 
     void renderInitialLoadingCartInfo();
