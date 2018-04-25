@@ -51,6 +51,19 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+
+    implementation rootProject.ext.miscDependencies.parcelerApi
+    annotationProcessor rootProject.ext.miscDependencies.parceler
+    implementation rootProject.ext.viewDependencies.ahBottomNavigation
+
+    annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+    implementation rootProject.ext.tkpdDependencies.usecase
+    implementation rootProject.ext.playServicesDependencies.analytics
+
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.viewDependencies.appIntro
 }
 
 apply from: '../publish_local.gradle'
