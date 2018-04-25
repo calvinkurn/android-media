@@ -4,6 +4,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
@@ -14,7 +17,7 @@ import java.util.List;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener {
+public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener, HasComponent<BaseAppComponent> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,5 +88,10 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     @Override
     protected Fragment getNewFragment() {
         return CartFragment.newInstance();
+    }
+
+    @Override
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 }

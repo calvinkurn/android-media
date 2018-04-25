@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.R;
@@ -203,6 +204,7 @@ public class MultipleAddressShipmentFragment extends BaseCheckoutFragment implem
     protected void initInjector() {
         MultipleAddressShipmentComponent component = DaggerMultipleAddressShipmentComponent
                 .builder()
+                .baseAppComponent(getComponent(BaseAppComponent.class))
                 .multipleAddressShipmentModule(new MultipleAddressShipmentModule(this))
                 .build();
         component.inject(this);

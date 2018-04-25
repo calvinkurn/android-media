@@ -15,7 +15,6 @@ import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
-import com.google.gson.Gson;
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -27,17 +26,13 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
-import com.tokopedia.checkout.data.apiservice.CartService;
 import com.tokopedia.checkout.data.entity.response.addtocart.AddToCartDataResponse;
-import com.tokopedia.checkout.data.repository.CartRepository;
-import com.tokopedia.checkout.domain.mapper.MapperUtil;
-import com.tokopedia.checkout.domain.mapper.VoucherCouponMapper;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
-import com.tokopedia.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
 import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
+import com.tokopedia.checkout.view.di.module.DataModule;
 import com.tokopedia.checkout.view.view.cartlist.CartActivity;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -45,10 +40,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
@@ -76,7 +69,6 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -133,6 +125,11 @@ import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gamification.GamificationRouter;
+import com.tokopedia.groupchat.GroupChatModuleRouter;
+import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
+import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
+import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
+import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
@@ -142,14 +139,15 @@ import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
-import com.tokopedia.inbox.rescenter.product.ProductDetailActivity;
+import com.tokopedia.kol.KolRouter;
+import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
+import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
 import com.tokopedia.loyalty.router.ITkpdLoyaltyModuleRouter;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
-import com.tokopedia.loyalty.view.activity.PromoDetailActivity;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
+import com.tokopedia.loyalty.view.activity.PromoDetailActivity;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
@@ -192,10 +190,10 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
-import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
@@ -246,19 +244,14 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActi
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.TokoCashPendingCashbackMapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
-import com.tokopedia.kol.KolRouter;
-import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
-import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
+import com.tokopedia.tkpd.transaction.CartApiServiceComponent;
+import com.tokopedia.tkpd.transaction.CartApiServiceComponentInjector;
+import com.tokopedia.tkpd.transaction.DaggerCartApiServiceComponent;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
-import com.tokopedia.groupchat.GroupChatModuleRouter;
-import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
-import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
-import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
-import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
@@ -315,6 +308,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private ContentConsumerComponent contentConsumerComponent;
     private ProductComponent productComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
+    private CartApiServiceComponent cartApiServiceComponent;
     private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
     private RemoteConfig remoteConfig;
@@ -394,6 +388,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         daggerContentBuilder = DaggerContentConsumerComponent.builder()
                 .feedPlusComponent(feedPlusComponent);
+
+        cartApiServiceComponent = DaggerCartApiServiceComponent.builder()
+                .baseAppComponent((this).getBaseAppComponent())
+                .dataModule(new DataModule())
+                .build();
     }
 
     private void initRemoteConfig() {
@@ -1491,12 +1490,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
 
     public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
-        AddToCartUseCase addToCartUseCase =
-                new AddToCartUseCase(new CartRepository(new CartService()), new Gson());
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
-
-        return addToCartUseCase.createObservable(requestParams)
+        return CartApiServiceComponentInjector.newInstance(cartApiServiceComponent).getAddToCartUseCase()
+                .createObservable(requestParams)
                 .map(new Func1<AddToCartDataResponse, AddToCartResult>() {
                     @Override
                     public AddToCartResult call(AddToCartDataResponse addToCartDataResponse) {
@@ -1570,11 +1567,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     ) {
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putString(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
-        CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase = new CheckPromoCodeCartListUseCase(
-                new CartRepository(new CartService()),
-                new VoucherCouponMapper(new MapperUtil())
-        );
-        return checkPromoCodeCartListUseCase.createObservable(requestParams);
+        return CartApiServiceComponentInjector.newInstance(cartApiServiceComponent)
+                .getCheckPromoCodeCartListUseCase()
+                .createObservable(requestParams);
     }
 
     @Override
@@ -1583,12 +1578,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     ) {
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putObject(CheckPromoCodeCartShipmentUseCase.PARAM_CARTS, checkPromoCodeCartShipmentRequest);
-        CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase =
-                new CheckPromoCodeCartShipmentUseCase(
-                        new CartRepository(new CartService()),
-                        new VoucherCouponMapper(new MapperUtil())
-                );
-        return checkPromoCodeCartShipmentUseCase.createObservable(requestParams);
+        return CartApiServiceComponentInjector.newInstance(cartApiServiceComponent)
+                .getCheckPromoCodeCartShipmentUseCase().createObservable(requestParams);
     }
 
     @Override
@@ -1596,12 +1587,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putString(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE, page);
         requestParams.putString(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE_SIZE, pageSize);
-        GetCouponListCartMarketPlaceUseCase getCouponListCartMarketPlaceUseCase =
-                new GetCouponListCartMarketPlaceUseCase(
-                        new CartRepository(new CartService()),
-                        new VoucherCouponMapper(new MapperUtil())
-                );
-        return getCouponListCartMarketPlaceUseCase.createObservable(requestParams);
+        return CartApiServiceComponentInjector.newInstance(cartApiServiceComponent)
+                .getGetCouponListCartMarketPlaceUseCase().createObservable(requestParams);
     }
 
     @Override
@@ -1956,9 +1943,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
-        GetMarketPlaceCartCounterUseCase getMarketPlaceCartCounterUseCase =
-                new GetMarketPlaceCartCounterUseCase(new CartRepository(new CartService()));
-        getMarketPlaceCartCounterUseCase.executeWithSubscriber(this, listener);
+        CartApiServiceComponentInjector.newInstance(cartApiServiceComponent)
+                .getGetMarketPlaceCartCounterUseCase()
+                .executeWithSubscriber(this, listener);
     }
 
 

@@ -1,11 +1,31 @@
 package com.tokopedia.checkout.view.di.module;
 
-import com.tokopedia.checkout.data.apiservice.CartService;
+import android.content.Context;
+
+import com.google.gson.Gson;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.checkout.data.apiservice.CartApi;
+import com.tokopedia.checkout.data.apiservice.CartApiInterceptor;
+import com.tokopedia.checkout.data.apiservice.CartResponseConverter;
 import com.tokopedia.checkout.data.repository.CartRepository;
 import com.tokopedia.checkout.data.repository.ICartRepository;
+import com.tokopedia.checkout.view.di.CartApiQualifier;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.core.TkpdOkHttpBuilder;
+import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author anggaprasetiyo on 29/01/18.
@@ -14,13 +34,52 @@ import dagger.Provides;
 public class DataModule {
 
     @Provides
-    CartService provideCartService() {
-        return new CartService();
+    @CartApiQualifier
+    CartApiInterceptor getCartApiInterceptor(@ApplicationContext Context context,
+                                             UserSession userSession,
+                                             AbstractionRouter abstractionRouter) {
+        return new CartApiInterceptor(context, abstractionRouter, userSession, TkpdBaseURL.Cart.HMAC_KEY);
     }
 
     @Provides
-    ICartRepository provideICartRepository(CartService cartService) {
-        return new CartRepository(cartService);
+    @CartApiQualifier
+    public OkHttpClient provideOkHttpClient(@CartApiQualifier CartApiInterceptor cartApiInterceptor) {
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+        OkHttpClient.Builder builder = OkHttpFactory.create()
+                .addOkHttpRetryPolicy(OkHttpRetryPolicy.createdOkHttpNoAutoRetryPolicy())
+                .getClientBuilder();
+        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder);
+        tkpdOkHttpBuilder.addInterceptor(loggingInterceptor);
+        tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor());
+        tkpdOkHttpBuilder.addInterceptor(cartApiInterceptor);
+        tkpdOkHttpBuilder.setOkHttpRetryPolicy(OkHttpRetryPolicy.createdOkHttpNoAutoRetryPolicy());
+        tkpdOkHttpBuilder.addDebugInterceptor();
+        return tkpdOkHttpBuilder.build();
+    }
+
+    @Provides
+    @CartApiQualifier
+    public Retrofit provideCartRetrofit(@CartApiQualifier OkHttpClient okHttpClient) {
+        return new Retrofit.Builder()
+                .baseUrl(TkpdBaseURL.BASE_API_DOMAIN)
+                .addConverterFactory(CartResponseConverter.create())
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(okHttpClient)
+                .build();
+    }
+
+    @Provides
+    @CartApiQualifier
+    public CartApi provideCartApi(@CartApiQualifier Retrofit retrofit) {
+        return retrofit.create(CartApi.class);
+    }
+
+    @Provides
+    ICartRepository provideICartRepository(@CartApiQualifier CartApi cartApi) {
+        return new CartRepository(cartApi);
     }
 
 }

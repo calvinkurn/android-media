@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -117,6 +118,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     protected void initInjector() {
         CartListComponent cartListComponent = DaggerCartListComponent.builder()
+                .baseAppComponent((BaseAppComponent) getComponent(BaseAppComponent.class))
                 .cartListModule(new CartListModule(this))
                 .build();
         cartListComponent.inject(this);

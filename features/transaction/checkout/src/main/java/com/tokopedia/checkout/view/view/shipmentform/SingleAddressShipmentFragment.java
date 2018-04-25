@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
@@ -132,6 +133,7 @@ public class SingleAddressShipmentFragment extends BaseCheckoutFragment
     @Override
     protected void initInjector() {
         SingleAddressShipmentComponent component = DaggerSingleAddressShipmentComponent.builder()
+                .baseAppComponent(getComponent(BaseAppComponent.class))
                 .singleAddressShipmentModule(new SingleAddressShipmentModule(this))
                 .build();
         component.inject(this);

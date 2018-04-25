@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
@@ -82,6 +83,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     protected void initInjector() {
         MultipleAddressComponent component = DaggerMultipleAddressComponent
                 .builder()
+                .baseAppComponent(getComponent(BaseAppComponent.class))
                 .multipleAddressModule(new MultipleAddressModule(this)).build();
         component.inject(this);
     }

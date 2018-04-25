@@ -11,6 +11,9 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
@@ -41,7 +44,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 25/01/18.
  */
 
-public class CartShipmentActivity extends BaseCheckoutActivity implements ICartShipmentActivity {
+public class CartShipmentActivity extends BaseCheckoutActivity implements ICartShipmentActivity, HasComponent<BaseAppComponent> {
     public static final int REQUEST_CODE = 983;
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 1;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2;
@@ -109,6 +112,7 @@ public class CartShipmentActivity extends BaseCheckoutActivity implements ICartS
 
     protected void initInjector() {
         CartShipmentComponent component = DaggerCartShipmentComponent.builder()
+                .baseAppComponent(getComponent())
                 .cartShipmentModule(new CartShipmentModule(this))
                 .build();
         component.inject(this);
@@ -360,5 +364,10 @@ public class CartShipmentActivity extends BaseCheckoutActivity implements ICartS
                             cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
                     );
         }
+    }
+
+    @Override
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 }

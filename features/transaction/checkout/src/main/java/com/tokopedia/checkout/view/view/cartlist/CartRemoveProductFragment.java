@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
@@ -69,6 +70,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
     @Override
     protected void initInjector() {
         CartRemoveProductComponent component = DaggerCartRemoveProductComponent.builder()
+                .baseAppComponent(getComponent(BaseAppComponent.class))
                 .cartRemoveProductModule(new CartRemoveProductModule(this))
                 .build();
         component.inject(this);
