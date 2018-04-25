@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
+import com.tokopedia.discovery.autocomplete.TabAutoCompleteViewModel;
 import com.tokopedia.discovery.search.domain.DeleteParam;
 import com.tokopedia.discovery.search.domain.SearchParam;
 import com.tokopedia.discovery.search.domain.interactor.DeleteSearchUseCase;
@@ -102,24 +104,28 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
 
         @Override
         public void onNext(List<SearchData> searchDatas) {
+            DefaultAutoCompleteViewModel defaultAutoCompleteViewModel = new DefaultAutoCompleteViewModel();
+            TabAutoCompleteViewModel tabAutoCompleteViewModel = new TabAutoCompleteViewModel();
             List<Visitable> list = new ArrayList<>();
             for (SearchData searchData : searchDatas) {
                 if (searchData.getItems().size() > 0) {
                     switch (searchData.getId()) {
-                        case "autocomplete":
                         case "popular_search":
+                        case "recent_search":
+                            defaultAutoCompleteViewModel.addList(searchData);
+                            continue;
+                        case "digital":
+                        case "category":
+                        case "autocomplete":
                         case "hotlist":
                         case "in_category":
-                        case "recent_search":
-                            list.add(prepareDefaultViewModel(searchData));
-                            continue;
                         case "shop":
-                            list.add(prepareShopViewModel(searchData));
+                            tabAutoCompleteViewModel.addList(searchData);
                             continue;
                     }
                 }
             }
-            getView().showSearchResult(list);
+            getView().showAutoCompleteResult(defaultAutoCompleteViewModel, tabAutoCompleteViewModel);
         }
     }
 

@@ -19,6 +19,7 @@ public class SearchParam implements DefaultParams {
     public static final String KEY_QUERY = "q";
     public static final String KEY_UNIQUE_ID = "unique_id";
     public static final String KEY_COUNT = "count";
+    public static final String KEY_USER_ID = "user_id";
     public static final String DEFAULT_DEVICE = "android";
     public static final String DEFAULT_SOURCE = "searchbar";
     public static final String DEFAULT_COUNT = "5";
@@ -32,7 +33,9 @@ public class SearchParam implements DefaultParams {
         param.put(KEY_COUNT, DEFAULT_COUNT);
         String unique_id = AuthUtil.md5(GCMHandler.getRegistrationId(context));
         if (SessionHandler.isV4Login(context)) {
-            unique_id = AuthUtil.md5(SessionHandler.getLoginID(context));
+            String userId = SessionHandler.getLoginID(context);
+            unique_id = AuthUtil.md5(userId);
+            param.put(KEY_USER_ID, userId);
         }
         param.put(KEY_UNIQUE_ID, unique_id);
     }
