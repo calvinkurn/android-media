@@ -1,5 +1,7 @@
 package com.tokopedia.flight.cancellation.view.presenter;
 
+import android.util.Log;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationGetCancelablePassengerUseCase;
@@ -91,7 +93,6 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
                     public void onError(Throwable throwable) {
                         throwable.printStackTrace();
                         if (isViewAttached()) {
-                            getView().hideFullLoading();
                             getView().showGetListError(throwable);
                         }
                     }
@@ -125,7 +126,6 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
             }
         }
 
-        getView().hideFullLoading();
         getView().setSelectedCancellationViewModel(selectedViewModel);
         getView().setFlightCancellationViewModel(cancellationModelList);
         getView().renderCancelableList();
