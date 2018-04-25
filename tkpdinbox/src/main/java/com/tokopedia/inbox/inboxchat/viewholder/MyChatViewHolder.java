@@ -6,23 +6,17 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.format.DateFormat;
 import android.text.style.BackgroundColorSpan;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentProductProfile;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewholder.movement.ChatLinkHandlerMovementMethod;
@@ -34,7 +28,7 @@ import java.util.Date;
  * Created by stevenfredian on 9/27/17.
  */
 
-public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
+public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel> {
 
     View view;
     View progressBarSendImage;

@@ -34,11 +34,11 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
@@ -566,7 +566,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         recyclerView.setAdapter(adapter);
         templateRecyclerView.setAdapter(templateAdapter);
 
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
+        layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         templateLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .HORIZONTAL, false);
@@ -578,7 +579,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int index = layoutManager.findFirstCompletelyVisibleItemPosition();
+                int index = layoutManager.findLastVisibleItemPosition();
                 if (adapter.checkLoadMore(index)) {
                     presenter.onLoadMore();
                 }
@@ -743,7 +744,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void scrollToBottom() {
-        recyclerView.scrollToPosition(adapter.getItemCount());
+        recyclerView.scrollToPosition(0);
     }
 
     @Override
@@ -828,9 +829,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void scrollToBottomWithCheck() {
-        int index = layoutManager.findLastCompletelyVisibleItemPosition();
-        if (Math.abs(index - adapter.getList().size()) < 3) {
-            recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+        int index = layoutManager.findFirstCompletelyVisibleItemPosition();
+        if (index < 3) {
+            recyclerView.scrollToPosition(0);
         }
     }
 
@@ -909,7 +910,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         item.setDummy(true);
         item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
         adapter.addReply(item);
-        recyclerView.scrollToPosition(adapter.getList().size() - 1);
+        recyclerView.scrollToPosition(0);
     }
 
 
@@ -921,7 +922,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         item.setDummy(true);
         item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
         adapter.addReply(item);
-        scrollToBottom();
+        recyclerView.scrollToPosition(0);
     }
 
     private MyChatViewModel addAttachImageBalloonToChatList(ImageUpload imageUpload) {
@@ -937,7 +938,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         item.setDummy(true);
         item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
         adapter.addReply(item);
-        recyclerView.scrollToPosition(adapter.getList().size() - 1);
+        recyclerView.scrollToPosition(0);
 
         return item;
     }
@@ -1007,9 +1008,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         @Override
                         public void run() {
                             adapter.showTyping();
-                            if (layoutManager.findLastCompletelyVisibleItemPosition() == adapter
-                                    .getList().size() - 2) {
-                                layoutManager.scrollToPosition(adapter.getList().size() - 1);
+                            if (layoutManager.findFirstCompletelyVisibleItemPosition() < 2) {
+                                layoutManager.scrollToPosition(0);
                             }
                         }
                     });
@@ -1024,9 +1024,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         public void run() {
                             if (adapter.isTyping()) {
                                 adapter.removeTyping();
-                                if (layoutManager.findLastCompletelyVisibleItemPosition() ==
-                                        adapter.getList().size() - 2) {
-                                    layoutManager.scrollToPosition(adapter.getList().size());
+                                if (layoutManager.findFirstCompletelyVisibleItemPosition() < 2) {
+                                    layoutManager.scrollToPosition(0);
                                 }
                             }
                         }
