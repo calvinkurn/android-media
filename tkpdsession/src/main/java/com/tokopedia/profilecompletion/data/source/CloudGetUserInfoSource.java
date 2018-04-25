@@ -8,6 +8,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 
+import java.util.Map;
+
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -31,7 +33,7 @@ public class CloudGetUserInfoSource {
         this.sessionHandler = sessionHandler;
     }
 
-    public Observable<GetUserInfoDomainModel> getUserInfo(TKPDMapParam<String, Object> parameters) {
+    public Observable<GetUserInfoDomainModel> getUserInfo(Map<String, Object> parameters) {
         return accountsService.getApi()
                 .getUserInfo(parameters)
                 .map(getUserInfoMapper)
@@ -52,6 +54,10 @@ public class CloudGetUserInfoSource {
                     sessionHandler.setTempLoginEmail(getUserInfoDomainModel
                             .getGetUserInfoDomainData().getEmail());
                 }
+                sessionHandler.setHasPassword(getUserInfoDomainModel.getGetUserInfoDomainData()
+                        .isCreatedPassword());
+                sessionHandler.setProfilePicture(getUserInfoDomainModel
+                        .getGetUserInfoDomainData().getProfilePicture());
             }
         };
     }

@@ -2,7 +2,7 @@
 <resources>
     <dimen name="search_parent_item_card_margin">8dp</dimen>
     <dimen name="search_icon_padding">16dp</dimen>
-    <dimen name="search_view_text_padding">65dp</dimen>
+    <dimen name="search_view_text_padding">25dp</dimen>
     <dimen name="toolbar_height">48dp</dimen>
     <dimen name="dynamic_filter_item_padding">16dp</dimen>
     <dimen name="dynamic_filter_item_separator_height">16dp</dimen>
@@ -22,4 +22,8 @@
     <dimen name="result_count_padding">16dp</dimen>
     <dimen name="height_banner_category_lifestyle">120dp</dimen>
     <dimen name="filter_bottom_sheet_height">420dp</dimen>
+    <dimen name="guided_search_padding_vertical">12dp</dimen>
+    <dimen name="guided_search_padding_horizontal">20dp</dimen>
+    <dimen name="quick_filter_padding_vertical">12dp</dimen>
+    <dimen name="quick_filter_padding_horizontal">20dp</dimen>
 </resources>

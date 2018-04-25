@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/add_product_share_layout"
         android:layout_width="match_parent"
@@ -10,7 +11,7 @@
         android:layout_gravity="center"
         android:background="@drawable/cards_ui_2"
         android:orientation="vertical"
-        android:padding="@dimen/new_margin_small">
+        android:padding="@dimen/dp_8">
 
         <TextView
             android:id="@+id/berbagi_title"
@@ -19,7 +20,7 @@
             android:text="@string/prompt_share_to"
             android:textColor="@color/label_color"
             android:textSize="@dimen/new_text_size_title"
-            android:padding="@dimen/new_margin_small"/>
+            android:padding="@dimen/dp_8"/>
 
         <View
             android:layout_width="match_parent"
@@ -38,14 +39,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/new_margin_small">
+                android:padding="@dimen/dp_8">
 
                 <ImageView
                     android:id="@+id/add_product_facebook"
                     android:layout_width="@dimen/new_icon_size"
                     android:layout_height="@dimen/new_icon_size"
                     android:layout_marginRight="5dp"
-                    android:src="@drawable/facebook_square_blue" />
+                    app:srcCompat="@drawable/facebook_square_blue" />
 
                 <TextView
                     android:layout_toRightOf="@+id/add_product_facebook"
@@ -76,15 +77,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/new_margin_small"
-                android:layout_marginBottom="@dimen/new_margin_small">
+                android:padding="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8">
 
                 <ImageView
                     android:id="@+id/add_product_twitter"
                     android:layout_width="@dimen/new_icon_size"
                     android:layout_height="@dimen/new_icon_size"
                     android:layout_marginRight="5dp"
-                    android:src="@drawable/twitter_square_blue" />
+                    app:srcCompat="@drawable/twitter_square_blue" />
 
                 <TextView
                     android:layout_toRightOf="@+id/add_product_twitter"

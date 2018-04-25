@@ -16,12 +16,13 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.widget.PrefixEditText;
-import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
 import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
@@ -42,6 +43,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
 
     public static final int MIN_SHOP_NAME_LENGTH = 3;
     public static final int MIN_SHOP_DOMAIN_LENGTH = 3;
+    private static final String SCREEN_NAME = "Nama Toko";
     private View buttonSubmit;
     private TkpdHintTextInputLayout textInputShopName;
     private EditText editTextInputShopName;
@@ -138,7 +140,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        trackingOpenShop.eventMoEngageOpenShop(SCREEN_NAME);
         if (isFromAppShortCut())
             UnifyTracking.eventJualLongClick();
     }
@@ -233,7 +235,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Override
     public void onErrorReserveShop(Throwable t) {
         hideSubmitLoading();
-        Crashlytics.logException(t);
+        if(!GlobalConfig.DEBUG) Crashlytics.logException(t);
         String message = ShopErrorHandler.getErrorMessage(getActivity(), t);
         sendErrorTracking(message);
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),

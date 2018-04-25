@@ -9,13 +9,17 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.app.MainApplication;
@@ -26,7 +30,6 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
@@ -61,6 +64,7 @@ import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -77,6 +81,10 @@ public class HotlistFragment extends SearchSectionFragment
         RefreshHandler.OnRefreshHandlerListener, SearchSectionGeneralAdapter.OnItemChangeView,
         ItemClickListener, TopAdsListener, TopAdsItemClickListener {
 
+    private static final String HOTLIST_DETAIL_ENHANCE_ANALYTIC = "HOTLIST_DETAIL_ENHANCE_ANALYTIC";
+    private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
+
+    private static final String EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION";
     private static final String EXTRA_URL = "extra_url";
     private static final String EXTRA_SEARCH_QUERY = "extra_search_query";
     private static final String EXTRA_ALIAS = "extra_alias";
@@ -101,8 +109,21 @@ public class HotlistFragment extends SearchSectionFragment
 
     private Config topAdsConfig;
 
+    private LocalCacheHandler trackerProductCache;
+
     @Inject
     HotlistFragmentPresenter presenter;
+    private String trackerAttribution;
+
+
+    public static Fragment createInstanceUsingAlias(String alias, String trackerAttribution) {
+        HotlistFragment fragment = new HotlistFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_ALIAS, alias);
+        bundle.putString(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     public static Fragment createInstanceUsingAlias(String alias) {
         HotlistFragment fragment = new HotlistFragment();
@@ -121,7 +142,8 @@ public class HotlistFragment extends SearchSectionFragment
         return fragment;
     }
 
-    protected String getHotlistAlias() {
+    @Override
+    public String getHotlistAlias() {
         return aliasHotlist;
     }
 
@@ -192,12 +214,52 @@ public class HotlistFragment extends SearchSectionFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setRetainInstance(true);
+        trackerProductCache = new LocalCacheHandler(getActivity(), HOTLIST_DETAIL_ENHANCE_ANALYTIC);
         if (getArguments() != null) {
+            setTrackerAttribution(getArguments().getString(EXTRA_TRACKER_ATTRIBUTION, ""));
             if (getArguments().getString(EXTRA_URL, "").isEmpty()) {
                 setHotlistAlias(getArguments().getString(EXTRA_ALIAS));
             } else {
                 setHotlistAlias(generateAliasUsingURL(getArguments().getString(EXTRA_URL, "")));
             }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        screenTrack();
+    }
+
+    public void setTrackerAttribution(String trackerAttribution) {
+        this.trackerAttribution = trackerAttribution;
+    }
+
+    @Override
+    public String getHomeAttribution() {
+        return trackerAttribution;
+    }
+
+    @Override
+    public void trackImpressionProduct(Map<String, Object> dataLayer) {
+        HotlistPageTracking.eventEnhance(dataLayer);
+    }
+
+    @Override
+    public void setLastPositionProductTracker(int lastPositionProductTracker) {
+        trackerProductCache.putInt(LAST_POSITION_ENHANCE_PRODUCT, lastPositionProductTracker);
+        trackerProductCache.applyEditor();
+    }
+
+    @Override
+    public int getLastPositionProductTracker() {
+        return trackerProductCache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0);
+    }
+
+    @Override
+    public void clearLastProductTracker(boolean clear) {
+        if (clear) {
+            LocalCacheHandler.clearCache(getActivity(), HOTLIST_DETAIL_ENHANCE_ANALYTIC);
         }
     }
 
@@ -364,7 +426,7 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         ProductItem data = new ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -409,10 +471,8 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
-        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(bundle);
+    public void onShopItemClicked(int position, Shop shop) {
+        Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
         getActivity().startActivity(intent);
     }
 
@@ -586,7 +646,26 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void onProductClicked(HotlistProductViewModel product, int adapterPosition) {
         trackingClicker(product, adapterPosition);
+        trackingClickEnhance(product);
         gotoProductDetail(mappingIntoProductItem(product), adapterPosition);
+    }
+
+    private void trackingClickEnhance(HotlistProductViewModel product) {
+        Map<String, Object> map = DataLayer.mapOf("event", "productClick",
+                "eventCategory", "hotlist page",
+                "eventAction", "click product curation",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "click", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", product.getTrackerName()),
+                                "products", DataLayer.listOf(
+                                        product.generateClickDataLayer()
+                                )
+                        )
+                )
+        );
+        HotlistPageTracking.eventEnhance(map);
     }
 
     @Override
@@ -602,6 +681,8 @@ public class HotlistFragment extends SearchSectionFragment
         data.setName(product.getProductName());
         data.setPrice(product.getPrice());
         data.setImgUri(product.getImageUrl());
+        data.setTrackerAttribution(product.getHomeAttribution());
+        data.setTrackerListName(product.getTrackerName());
         return data;
     }
 

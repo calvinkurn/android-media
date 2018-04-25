@@ -46,6 +46,8 @@ public class FlightGetProfileInfoData {
                 profileInfo.setFullname(getUserInfoDomainModel.getGetUserInfoDomainData().getFullName());
                 profileInfo.setPhoneNumber(getUserInfoDomainModel.getGetUserInfoDomainData().getPhone());
                 profileInfo.setEmail(getUserInfoDomainModel.getGetUserInfoDomainData().getEmail());
+                profileInfo.setBday(getUserInfoDomainModel.getGetUserInfoDomainData().getBday());
+                profileInfo.setGender(getUserInfoDomainModel.getGetUserInfoDomainData().getGender());
                 return profileInfo;
             }
         });

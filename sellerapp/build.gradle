@@ -11,12 +11,12 @@ def getDpiId(String density) {
 }
 
 def getAPKArchiveFolder(variant) {
-    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
+    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode
 }
 
 def allowSplit() {
     return gradle.startParameter.taskNames.contains("assembleRelease") &&
-            !project.hasProperty('tkpdBuildType');
+            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "production")
 }
 
 def allowDistribution() {
@@ -24,6 +24,10 @@ def allowDistribution() {
         return "true";
     }
     return "false";
+}
+
+def allowProguard() {
+    return project.hasProperty('tkpdBuildType')
 }
 
 def getTkpdVersionCode() {
@@ -66,17 +70,15 @@ buildscript {
 }
 
 
-
-
 android {
 
     project.ext {
-        defaultVersionCode = 113000400;
-        defaultVersionName = "1.13.0";
+        defaultVersionCode = 1000404;
+        defaultVersionName = "1.0.4";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion '25'
+    buildToolsVersion rootProject.ext.buildToolsVersion
     useLibrary 'org.apache.http.legacy'
     sourceSets {
 
@@ -109,19 +111,26 @@ android {
         }
     }
 
+
     buildTypes {
         debug {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles  'proguard-rules.txt'
         }
         release {
+            signingConfig signingConfigs.debug
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            if (allowProguard()) {
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            } else {
+                proguardFiles 'proguard-rules.txt'
+            }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
             if (allowSplit()) {
@@ -173,7 +182,8 @@ android {
 
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
+        keepRuntimeAnnotatedClasses false
     }
 
     compileOptions {
@@ -208,34 +218,16 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    /*compile (rootProject.ext.tkpdDependencies.inbox) {
-            exclude group: 'com.tokopedia.core'
-        }
-        compile (rootProject.ext.tkpdDependencies.discovery) {
-            exclude group: 'com.tokopedia.core'
-        }
-        compile (rootProject.ext.tkpdDependencies.transaction) {
-            exclude group: 'com.tokopedia.core'
-        }
-        compile (rootProject.ext.tkpdDependencies.seller) {
-            exclude group: 'com.tokopedia.core'
-        }
-        compile (rootProject.ext.tkpdDependencies.session) {
-            exclude group: 'com.tokopedia.core'
-        }
-        compile (rootProject.ext.tkpdDependecies.transaction) {
-        exclude group 'com.tokopedia.core'
-        }
-        compile (rootProject.ext.tkpdDependencies.core)*/
-    compile project(':tkpdpdp')
-    compile project(':tkpdtopads')
-    compile project(':tkpdgm')
-    compile project(':tkpdsession')
-    compile project(':tkpdinbox')
-    compile project(':tkpddigital')
-    compile project(':tkpdtransaction')
-    compile project(':tkpdreputation')
-    compile project(':tkpdmitratoppers')
+    compile project(rootProject.ext.features.productDetail)
+    compile project(rootProject.ext.features.topAdsManagement)
+    compile project(rootProject.ext.features.goldMerchant)
+    compile project(rootProject.ext.features.session)
+    compile project(rootProject.ext.features.inbox)
+    compile project(rootProject.ext.features.digital)
+    compile project(rootProject.ext.features.transaction)
+    compile project(rootProject.ext.features.reputation)
+    compile project(rootProject.ext.features.mitraToppers)
+    compile project(rootProject.ext.features.shopPage)
 
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
@@ -251,50 +243,11 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
-    // Required -- JUnit 4 framework
-    testCompile rootProject.ext.testDependencies.junit
-
-    // Optional -- Mockito framework
-    testCompile rootProject.ext.testDependencies.mockitorCore
-
-    testCompile rootProject.ext.miscDependencies.rxJava
-
-    androidTestCompile rootProject.ext.miscDependencies.rxJava
-
-    androidTestCompile rootProject.ext.testDependencies.uiautomator
-
-    androidTestCompile rootProject.ext.testDependencies.spoon
-    androidTestCompile rootProject.ext.testDependencies.androidAnnotation
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
-    androidTestCompile(rootProject.ext.testDependencies.androidTestRunner) {
-        exclude module: 'support-annotations'
-    }
-    androidTestCompile(rootProject.ext.testDependencies.androidRulesVersion) {
-        exclude module: 'support-annotations'
-    }
-
-    androidTestCompile(rootProject.ext.testDependencies.espressoIntents) {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
-
-    androidTestCompile rootProject.ext.testDependencies.retrofitMock
-    androidTestCompile rootProject.ext.testDependencies.retrofitMockWebser
-
-    androidTestApt rootProject.ext.miscDependencies.daggerCompiler
-    androidTestCompile rootProject.ext.miscDependencies.dagger
-    androidTestCompile rootProject.ext.miscDependencies.gson
-    androidTestCompile rootProject.ext.miscDependencies.parcelerApi
-    androidTestApt rootProject.ext.miscDependencies.parceler
-
-    androidTestCompile rootProject.ext.testDependencies.dexMaker
-    androidTestCompile(rootProject.ext.testDependencies.dexMakerMockito) {
-        exclude group: 'org.hamcrest', module: 'hamcrest-core'
-    }
-
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    testCompile rootProject.ext.testDependencies.junit
 }

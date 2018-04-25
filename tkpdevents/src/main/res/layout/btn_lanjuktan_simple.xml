@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#f8f8f8"
-    android:padding="@dimen/margin_default">
+    android:padding="@dimen/dp_16">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/progbar_height"
+        android:layout_height="@dimen/dp_50"
         app:cardBackgroundColor="@color/green_nob"
-        app:cardCornerRadius="@dimen/margin_padding_small"
+        app:cardCornerRadius="@dimen/dp_4"
         app:cardElevation="0dp">
 
         <TextView
@@ -20,7 +20,7 @@
             android:gravity="center"
             android:text="@string/lanjutkan"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/textsize_big"
+            android:textSize="@dimen/sp_18"
             android:textStyle="bold" />
     </android.support.v7.widget.CardView>
 </FrameLayout>

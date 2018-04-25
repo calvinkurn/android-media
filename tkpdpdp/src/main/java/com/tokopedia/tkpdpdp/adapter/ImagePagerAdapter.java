@@ -47,6 +47,7 @@ public class ImagePagerAdapter extends PagerAdapter {
     public Object instantiateItem(final ViewGroup container, final int position) {
         final ImageView imageView = new ImageView(context);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setAdjustViewBounds(true);
         final String urlImage = productImages.get(position).getImageSrc();
         
         if (!TextUtils.isEmpty(urlTemporary) && position==0) {
@@ -54,15 +55,15 @@ public class ImagePagerAdapter extends PagerAdapter {
                     .load(urlImage)
                     .dontAnimate()
                     .dontTransform()
-                    .fitCenter()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .thumbnail(
                             Glide.with(context.getApplicationContext())
                                     .load(urlTemporary)
                                     .dontAnimate()
                                     .dontTransform()
                                     .fitCenter()
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL))
+                                    .diskCacheStrategy(DiskCacheStrategy.RESULT))
                     .into(imageView);
 
         } else {

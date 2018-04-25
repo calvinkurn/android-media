@@ -17,7 +17,7 @@ public class HomePageTracking extends TrackingUtils {
     public static final String BAYAR_INI_ITU_CLICK = "bayar ini itu click";
     public static final String PESAN_INI_ITU_CLICK = "pesan ini itu click";
     public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
-    private static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
+    public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
 
     public static void eventPromoImpression(Promotion promotion) {
         getGTMEngine().clearEnhanceEcommerce();
@@ -41,6 +41,24 @@ public class HomePageTracking extends TrackingUtils {
     private static void flushEventTracker() {
         sendGTMEvent(new EventTracking(
                 null, null, null, null
+        ).getEvent());
+    }
+
+    public static void eventClickJumpRecomendation() {
+        sendGTMEvent(new EventTracking(
+                "",
+                STATIC_VALUE_HOMEPAGE,
+                "cek rekomendasi jumper click",
+                ""
+        ).getEvent());
+    }
+
+    public static void eventImpressionJumpRecomendation() {
+        sendGTMEvent(new EventTracking(
+                "",
+                STATIC_VALUE_HOMEPAGE,
+                "cek rekomendasi jumper impression",
+                ""
         ).getEvent());
     }
 
@@ -76,6 +94,15 @@ public class HomePageTracking extends TrackingUtils {
                 STATIC_VALUE_CLICK_HOMEPAGE,
                 STATIC_VALUE_HOMEPAGE,
                 "sprint sale click view all",
+                ""
+        ).getEvent());
+    }
+
+    public static void eventClickSeeAllProductSprintBackground() {
+        sendGTMEvent(new EventTracking(
+                STATIC_VALUE_CLICK_HOMEPAGE,
+                STATIC_VALUE_HOMEPAGE,
+                "sprint sale with backgroud click view all",
                 ""
         ).getEvent());
     }

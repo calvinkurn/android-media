@@ -1,230 +1,231 @@
 package com.tokopedia.events.data.entity.response.checkoutreponse;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class Parameter{
+import java.util.List;
 
-	@SerializedName("transaction_id")
-	private String transactionId;
+public class Parameter {
 
-	@SerializedName("transaction_date")
-	private String transactionDate;
+    @SerializedName("transaction_id")
+    private String transactionId;
 
-	@SerializedName("items[price]")
-	private List<Integer> itemsPrice;
+    @SerializedName("transaction_date")
+    private String transactionDate;
 
-	@SerializedName("transaction_code")
-	private String transactionCode;
+    @SerializedName("items[price]")
+    private List<Integer> itemsPrice;
 
-	@SerializedName("merchant_code")
-	private String merchantCode;
+    @SerializedName("transaction_code")
+    private String transactionCode;
 
-	@SerializedName("amount")
-	private String amount;
+    @SerializedName("merchant_code")
+    private String merchantCode;
 
-	@SerializedName("user_defined_value")
-	private String userDefinedValue;
+    @SerializedName("amount")
+    private String amount;
 
-	@SerializedName("signature")
-	private String signature;
+    @SerializedName("user_defined_value")
+    private String userDefinedValue;
 
-	@SerializedName("fee")
-	private String fee;
+    @SerializedName("signature")
+    private String signature;
 
-	@SerializedName("profile_code")
-	private String profileCode;
+    @SerializedName("fee")
+    private String fee;
 
-	@SerializedName("nid")
-	private String nid;
+    @SerializedName("profile_code")
+    private String profileCode;
 
-	@SerializedName("language")
-	private String language;
+    @SerializedName("nid")
+    private String nid;
 
-	@SerializedName("items[name]")
-	private List<String> itemsName;
+    @SerializedName("language")
+    private String language;
 
-	@SerializedName("customer_email")
-	private String customerEmail;
+    @SerializedName("items[name]")
+    private List<String> itemsName;
 
-	@SerializedName("items[quantity]")
-	private List<Integer> itemsQuantity;
+    @SerializedName("customer_email")
+    private String customerEmail;
 
-	@SerializedName("currency")
-	private String currency;
+    @SerializedName("items[quantity]")
+    private List<Integer> itemsQuantity;
 
-	@SerializedName("customer_name")
-	private String customerName;
+    @SerializedName("currency")
+    private String currency;
 
-	@SerializedName("state")
-	private int state;
+    @SerializedName("customer_name")
+    private String customerName;
 
-	public void setTransactionId(String transactionId){
-		this.transactionId = transactionId;
-	}
+    @SerializedName("state")
+    private int state;
 
-	public String getTransactionId(){
-		return transactionId;
-	}
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
 
-	public void setTransactionDate(String transactionDate){
-		this.transactionDate = transactionDate;
-	}
+    public String getTransactionId() {
+        return transactionId;
+    }
 
-	public String getTransactionDate(){
-		return transactionDate;
-	}
+    public void setTransactionDate(String transactionDate) {
+        this.transactionDate = transactionDate;
+    }
 
-	public void setItemsPrice(List<Integer> itemsPrice){
-		this.itemsPrice = itemsPrice;
-	}
+    public String getTransactionDate() {
+        return transactionDate;
+    }
 
-	public List<Integer> getItemsPrice(){
-		return itemsPrice;
-	}
+    public void setItemsPrice(List<Integer> itemsPrice) {
+        this.itemsPrice = itemsPrice;
+    }
 
-	public void setTransactionCode(String transactionCode){
-		this.transactionCode = transactionCode;
-	}
+    public List<Integer> getItemsPrice() {
+        return itemsPrice;
+    }
 
-	public String getTransactionCode(){
-		return transactionCode;
-	}
+    public void setTransactionCode(String transactionCode) {
+        this.transactionCode = transactionCode;
+    }
 
-	public void setMerchantCode(String merchantCode){
-		this.merchantCode = merchantCode;
-	}
+    public String getTransactionCode() {
+        return transactionCode;
+    }
 
-	public String getMerchantCode(){
-		return merchantCode;
-	}
+    public void setMerchantCode(String merchantCode) {
+        this.merchantCode = merchantCode;
+    }
 
-	public void setAmount(String amount){
-		this.amount = amount;
-	}
+    public String getMerchantCode() {
+        return merchantCode;
+    }
 
-	public String getAmount(){
-		return amount;
-	}
+    public void setAmount(String amount) {
+        this.amount = amount;
+    }
 
-	public void setUserDefinedValue(String userDefinedValue){
-		this.userDefinedValue = userDefinedValue;
-	}
+    public String getAmount() {
+        return amount;
+    }
 
-	public String getUserDefinedValue(){
-		return userDefinedValue;
-	}
+    public void setUserDefinedValue(String userDefinedValue) {
+        this.userDefinedValue = userDefinedValue;
+    }
 
-	public void setSignature(String signature){
-		this.signature = signature;
-	}
+    public String getUserDefinedValue() {
+        return userDefinedValue;
+    }
 
-	public String getSignature(){
-		return signature;
-	}
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
 
-	public void setFee(String fee){
-		this.fee = fee;
-	}
+    public String getSignature() {
+        return signature;
+    }
 
-	public String getFee(){
-		return fee;
-	}
+    public void setFee(String fee) {
+        this.fee = fee;
+    }
 
-	public void setProfileCode(String profileCode){
-		this.profileCode = profileCode;
-	}
+    public String getFee() {
+        return fee;
+    }
 
-	public String getProfileCode(){
-		return profileCode;
-	}
+    public void setProfileCode(String profileCode) {
+        this.profileCode = profileCode;
+    }
 
-	public void setNid(String nid){
-		this.nid = nid;
-	}
+    public String getProfileCode() {
+        return profileCode;
+    }
 
-	public String getNid(){
-		return nid;
-	}
+    public void setNid(String nid) {
+        this.nid = nid;
+    }
 
-	public void setLanguage(String language){
-		this.language = language;
-	}
+    public String getNid() {
+        return nid;
+    }
 
-	public String getLanguage(){
-		return language;
-	}
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
-	public void setItemsName(List<String> itemsName){
-		this.itemsName = itemsName;
-	}
+    public String getLanguage() {
+        return language;
+    }
 
-	public List<String> getItemsName(){
-		return itemsName;
-	}
+    public void setItemsName(List<String> itemsName) {
+        this.itemsName = itemsName;
+    }
 
-	public void setCustomerEmail(String customerEmail){
-		this.customerEmail = customerEmail;
-	}
+    public List<String> getItemsName() {
+        return itemsName;
+    }
 
-	public String getCustomerEmail(){
-		return customerEmail;
-	}
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
 
-	public void setItemsQuantity(List<Integer> itemsQuantity){
-		this.itemsQuantity = itemsQuantity;
-	}
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
 
-	public List<Integer> getItemsQuantity(){
-		return itemsQuantity;
-	}
+    public void setItemsQuantity(List<Integer> itemsQuantity) {
+        this.itemsQuantity = itemsQuantity;
+    }
 
-	public void setCurrency(String currency){
-		this.currency = currency;
-	}
+    public List<Integer> getItemsQuantity() {
+        return itemsQuantity;
+    }
 
-	public String getCurrency(){
-		return currency;
-	}
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
 
-	public void setCustomerName(String customerName){
-		this.customerName = customerName;
-	}
+    public String getCurrency() {
+        return currency;
+    }
 
-	public String getCustomerName(){
-		return customerName;
-	}
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
 
-	public void setState(int state){
-		this.state = state;
-	}
+    public String getCustomerName() {
+        return customerName;
+    }
 
-	public int getState(){
-		return state;
-	}
+    public void setState(int state) {
+        this.state = state;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"Parameter{" + 
-			"transaction_id = '" + transactionId + '\'' + 
-			",transaction_date = '" + transactionDate + '\'' + 
-			",items[price] = '" + itemsPrice + '\'' + 
-			",transaction_code = '" + transactionCode + '\'' + 
-			",merchant_code = '" + merchantCode + '\'' + 
-			",amount = '" + amount + '\'' + 
-			",user_defined_value = '" + userDefinedValue + '\'' + 
-			",signature = '" + signature + '\'' + 
-			",fee = '" + fee + '\'' + 
-			",profile_code = '" + profileCode + '\'' + 
-			",nid = '" + nid + '\'' + 
-			",language = '" + language + '\'' + 
-			",items[name] = '" + itemsName + '\'' + 
-			",customer_email = '" + customerEmail + '\'' + 
-			",items[quantity] = '" + itemsQuantity + '\'' + 
-			",currency = '" + currency + '\'' + 
-			",customer_name = '" + customerName + '\'' + 
-			",state = '" + state + '\'' + 
-			"}";
-		}
+    public int getState() {
+        return state;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "Parameter{" +
+                        "transaction_id = '" + transactionId + '\'' +
+                        ",transaction_date = '" + transactionDate + '\'' +
+                        ",items[price] = '" + itemsPrice + '\'' +
+                        ",transaction_code = '" + transactionCode + '\'' +
+                        ",merchant_code = '" + merchantCode + '\'' +
+                        ",amount = '" + amount + '\'' +
+                        ",user_defined_value = '" + userDefinedValue + '\'' +
+                        ",signature = '" + signature + '\'' +
+                        ",fee = '" + fee + '\'' +
+                        ",profile_code = '" + profileCode + '\'' +
+                        ",nid = '" + nid + '\'' +
+                        ",language = '" + language + '\'' +
+                        ",items[name] = '" + itemsName + '\'' +
+                        ",customer_email = '" + customerEmail + '\'' +
+                        ",items[quantity] = '" + itemsQuantity + '\'' +
+                        ",currency = '" + currency + '\'' +
+                        ",customer_name = '" + customerName + '\'' +
+                        ",state = '" + state + '\'' +
+                        "}";
+    }
 }

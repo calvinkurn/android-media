@@ -1,49 +1,78 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
+import android.Manifest;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.manage.people.profile.customdialog.UploadImageDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by hangnadi on 10/3/17.
  */
 
+@RuntimePermissions
 public class DiscoveryActivity extends BaseDiscoveryActivity implements
         DiscoverySearchView.SearchViewListener,
+        DiscoverySearchView.ImageSearchClickListener,
         DiscoverySearchView.OnQueryTextListener,
         BottomNavigationListener {
 
+    private static final double MIN_SCORE = 10.0;
+    private static final String FAILURE = "no matching result found";
+    private static final String NO_RESPONSE = "no response";
+    private static final String SUCCESS = "success match found";
     private Toolbar toolbar;
     private FrameLayout container;
     private AHBottomNavigation bottomNavigation;
     protected DiscoverySearchView searchView;
-    protected View loadingView;
+    protected ProgressBar loadingView;
 
     private MenuItem searchItem;
     private boolean isLastRequestForceSearch;
+
+    private UploadImageDialog uploadDialog;
+    private TkpdProgressDialog tkpdProgressDialog;
+    private boolean fromCamera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +147,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         searchView.setActivity(this);
         searchView.setOnQueryTextListener(this);
         searchView.setOnSearchViewListener(this);
+        searchView.setOnImageSearchClickListener(this);
     }
 
     protected void setLastQuerySearchView(String lastQuerySearchView) {
@@ -194,6 +224,22 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
+    private void sendCameraImageSearchProductGTM() {
+        UnifyTracking.eventDiscoveryCameraImageSearch();
+    }
+
+    private void sendGalleryImageSearchProductGTM() {
+        UnifyTracking.eventDiscoveryGalleryImageSearch();
+    }
+
+    private void sendGalleryImageSearchResultGTM(String label) {
+        UnifyTracking.eventDiscoveryGalleryImageSearchResult(label);
+    }
+
+    private void sendCameraImageSearchResultGTM(String label) {
+        UnifyTracking.eventDiscoveryCameraImageSearchResult(label);
+    }
+
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
@@ -218,8 +264,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @Override
     public void onBackPressed() {
@@ -352,6 +396,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public void onHandleResponseError() {
+
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
         showLoadingView(false);
         showContainer(true);
         NetworkErrorHelper.showEmptyState(this, container, new NetworkErrorHelper.RetryClickedListener() {
@@ -364,9 +412,65 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     @Override
+    public void onImageSearchClicked() {
+        uploadDialog = new UploadImageDialog(DiscoveryActivity.this);
+        showUploadDialog();
+    }
+
+    public void showUploadDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.dialog_image_upload_option));
+        builder.setPositiveButton(getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                sendGalleryImageSearchProductGTM();
+                DiscoveryActivityPermissionsDispatcher.actionImagePickerWithCheck(DiscoveryActivity.this);
+
+            }
+        }).setNegativeButton(getString(R.string.title_camera), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                sendCameraImageSearchProductGTM();
+                DiscoveryActivityPermissionsDispatcher.actionCameraWithCheck(DiscoveryActivity.this);
+            }
+        });
+
+        Dialog dialog = builder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+
+        if (requestCode == UploadImageDialog.REQUEST_CAMERA || requestCode == UploadImageDialog.REQUEST_GALLERY) {
+
+            fromCamera = requestCode == UploadImageDialog.REQUEST_CAMERA;
+
+            uploadDialog.onResult(
+                    requestCode,
+                    resultCode,
+                    data,
+                    new UploadImageDialog.UploadImageDialogListener() {
+                        @Override
+                        public void onSuccess(String imagePath) {
+
+                            File file = new File(imagePath);
+                            if (file.exists()) {
+                                onImagePickedSuccess(imagePath);
+                            } else {
+                                showSnackBarView(getString(com.tokopedia.core.R.string.error_gallery_valid));
+                            }
+                        }
+
+                        @Override
+                        public void onFailed() {
+                            showSnackBarView(getString(com.tokopedia.core.R.string.error_gallery_valid));
+                        }
+                    });
+
+        } else if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case DiscoverySearchView.REQUEST_VOICE:
                     List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
@@ -379,5 +483,130 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                     break;
             }
         }
+    }
+
+    private void onImagePickedSuccess(String imagePath) {
+        tkpdProgressDialog = new TkpdProgressDialog(this, 1);
+        tkpdProgressDialog.showDialog();
+        getPresenter().requestImageSearch(imagePath);
+    }
+
+    @Override
+    public void onHandleImageSearchResponseError() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+
+        if (fromCamera) {
+            sendCameraImageSearchResultGTM(FAILURE);
+        } else {
+            sendGalleryImageSearchResultGTM(FAILURE);
+        }
+
+        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.no_result_found));
+    }
+
+    @Override
+    public void onHandleInvalidImageSearchResponse() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+
+        if (fromCamera) {
+            sendCameraImageSearchResultGTM(NO_RESPONSE);
+        } else {
+            sendGalleryImageSearchResultGTM(NO_RESPONSE);
+        }
+
+        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.no_result_found));
+    }
+
+    @Override
+    public void onHandleImageSearchResponseSuccess() {
+        if (fromCamera) {
+            sendCameraImageSearchResultGTM(SUCCESS);
+        } else {
+            sendGalleryImageSearchResultGTM(SUCCESS);
+        }
+    }
+
+    public void showSnackBarView(String message) {
+        if (message == null) {
+            NetworkErrorHelper.showSnackbar(this);
+        } else {
+            NetworkErrorHelper.showSnackbar(this, message);
+        }
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void actionImagePicker() {
+        uploadDialog.openImagePicker();
+
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void actionCamera() {
+        uploadDialog.openCamera();
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        DiscoveryActivityPermissionsDispatcher.onRequestPermissionsResult(
+                DiscoveryActivity.this, requestCode, grantResults);
+
+    }
+
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    void showRationaleForStorageAndCamera(final PermissionRequest request) {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onShowRationale(this, request, listPermission);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.CAMERA);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.CAMERA);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showDeniedForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onPermissionDenied(this, listPermission);
+    }
+
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showNeverAskForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onNeverAskAgain(this, listPermission);
     }
 }

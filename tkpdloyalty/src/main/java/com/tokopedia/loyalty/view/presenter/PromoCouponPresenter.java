@@ -1,15 +1,21 @@
 package com.tokopedia.loyalty.view.presenter;
 
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
+import android.support.annotation.NonNull;
+
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
+import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.interactor.IPromoCouponInteractor;
 import com.tokopedia.loyalty.view.view.IPromoCouponView;
 
@@ -22,6 +28,8 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.FLIGHT_STRING;
+
 /**
  * @author anggaprasetiyo on 29/11/17.
  */
@@ -30,11 +38,13 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
     private final IPromoCouponInteractor promoCouponInteractor;
     private final IPromoCouponView view;
+    private FlightCheckVoucherUseCase flightCheckVoucherUseCase;
 
     @Inject
-    public PromoCouponPresenter(IPromoCouponView view, IPromoCouponInteractor promoCouponInteractor) {
+    public PromoCouponPresenter(IPromoCouponView view, IPromoCouponInteractor promoCouponInteractor, FlightCheckVoucherUseCase flightCheckVoucherUseCase) {
         this.view = view;
         this.promoCouponInteractor = promoCouponInteractor;
+        this.flightCheckVoucherUseCase = flightCheckVoucherUseCase;
     }
 
     @Override
@@ -42,13 +52,17 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         //param.put("user_id", SessionHandler.getLoginID(view.getContext()));
+        if (platform.equalsIgnoreCase(FLIGHT_STRING)){
+            platform = LoyaltyActivity.DIGITAL_STRING;
+            param.put("category_id", view.getCategoryId());
+        };
         param.put("type", platform);
 
         //TODO Revert Later
         promoCouponInteractor.getCouponList(
                 AuthUtil.generateParamsNetwork(view.getContext(), param),
                 //AuthUtil.generateDummyParamsNetwork(view.getContext(), param),
-                new Subscriber<List<CouponData>>() {
+                new Subscriber<CouponsDataWrapper>() {
                     @Override
                     public void onCompleted() {
                         view.enableSwipeRefresh();
@@ -76,11 +90,18 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                     }
 
                     @Override
-                    public void onNext(List<CouponData> couponData) {
-                        if (couponData.size() < 1) {
-                            view.couponDataNoResult();
+                    public void onNext(CouponsDataWrapper wrapper) {
+                        if (wrapper.getCoupons().size() < 1) {
+                            if (wrapper.getEmptyMessage() != null){
+                                view.couponDataNoResult(
+                                        wrapper.getEmptyMessage().getTitle(),
+                                        wrapper.getEmptyMessage().getSubTitle()
+                                );
+                            } else {
+                                view.couponDataNoResult();
+                            }
                         } else {
-                            view.renderCouponListDataResult(couponData);
+                            view.renderCouponListDataResult(wrapper.getCoupons());
                         }
                     }
                 });
@@ -140,6 +161,51 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 couponData.getCode(),
                 AuthUtil.generateParamsNetwork(view.getContext(), param
                 ), makeDigitalCouponSubscriber(couponData));
+    }
+
+    @Override
+    public void submitFlightVoucher(final CouponData data, String cartId) {
+        view.showProgressLoading();
+        flightCheckVoucherUseCase.execute(flightCheckVoucherUseCase.createCouponRequest(cartId, data.getCode()),
+                checkFlightCouponSubscriber(data));
+    }
+
+    @NonNull
+    private Subscriber<VoucherViewModel> checkFlightCouponSubscriber(final CouponData data) {
+        return new Subscriber<VoucherViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.hideProgressLoading();
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                    data.setErrorMessage(e.getMessage());
+                    view.couponError();
+                } else if (e instanceof MessageErrorException) {
+                    data.setErrorMessage(e.getMessage());
+                    view.showSnackbarError(e.getMessage());
+                } else {
+                    view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(VoucherViewModel voucherViewModel) {
+                CouponViewModel viewModel = new CouponViewModel();
+                viewModel.setAmount(voucherViewModel.getAmount());
+                viewModel.setCode(voucherViewModel.getCode());
+                viewModel.setRawCashback(voucherViewModel.getRawCashback());
+                viewModel.setRawDiscount(voucherViewModel.getRawDiscount());
+                viewModel.setMessage(voucherViewModel.getMessage());
+                viewModel.setTitle(data.getTitle());
+                viewModel.setSuccess(true);
+                view.receiveDigitalResult(viewModel);
+                view.hideProgressLoading();
+            }
+        };
     }
 
     private Subscriber<CouponViewModel> makeCouponSubscriber(final CouponData couponData) {

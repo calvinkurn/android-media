@@ -3,10 +3,10 @@ package com.tokopedia.seller.product.edit.view.model;
 import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
+
+import com.tokopedia.seller.product.common.utils.UrlUtils;
 
 import java.io.File;
-import java.net.URI;
 
 /**
  * Created by m.normansyah on 03/12/2015.
@@ -16,48 +16,48 @@ public class ImageSelectModel implements Parcelable{
     // this is for url / path from sdcard
     private String uriOrPath;
     private String description;
-    private boolean isPrimary;
-    private int width;
-    private int height;
+    private long width;
+    private long height;
     private boolean isValidURL;
-    private boolean allowDelete;
+    private long id;
+
+    private String serverFileName;
+    private String serverFilePath;
 
     public ImageSelectModel(String uriOrPath) {
-        this(uriOrPath, null, false, true);
+        this(uriOrPath, null, 0, 0, 0, null, null);
     }
 
-    public ImageSelectModel(String uriOrPath,
-                            @Nullable String description,
-                            boolean isPrimary,
-                            boolean allowDelete) {
-        setUriOrPath(uriOrPath);
+    public ImageSelectModel(String uriOrPath, String description, long width, long height, long id,
+                            String serverFilePath, String serverFileName) {
         this.description = description;
-        this.isPrimary = isPrimary;
-        this.allowDelete = allowDelete;
-    }
+        this.width = width;
+        this.height = height;
+        this.id = id;
 
-    public boolean allowDelete() {
-        return allowDelete;
+        this.serverFilePath = serverFilePath;
+        this.serverFileName = serverFileName;
+
+        setUriOrPath(uriOrPath);
     }
 
     public String getUriOrPath() {
         return uriOrPath;
     }
 
-    public boolean isValidURL(String urlStr) {
-        try {
-            URI uri = new URI(urlStr);
-            return uri.getScheme().equals("http") || uri.getScheme().equals("https");
-        } catch (Exception e) {
-            return false;
-        }
+    public String getServerFileName() {
+        return serverFileName;
+    }
+
+    public String getServerFilePath() {
+        return serverFilePath;
     }
 
     public void setUriOrPath(String uriOrPath) {
         this.uriOrPath = uriOrPath;
 
         // when uri change, recalculate its width/height
-        this.isValidURL = isValidURL(uriOrPath);
+        this.isValidURL = UrlUtils.isValidURL(uriOrPath);
         calculateWidthAndHeight(isValidURL);
     }
 
@@ -81,23 +81,15 @@ public class ImageSelectModel implements Parcelable{
         this.description = description;
     }
 
-    public boolean isPrimary() {
-        return isPrimary;
-    }
-
-    public void setPrimary(boolean primary) {
-        isPrimary = primary;
-    }
-
-    public int getWidth() {
+    public long getWidth() {
         return width;
     }
 
-    public int getHeight() {
+    public long getHeight() {
         return height;
     }
 
-    public int getMinResolution() {
+    public long getMinResolution() {
         return Math.min(width, height);
     }
 
@@ -111,6 +103,11 @@ public class ImageSelectModel implements Parcelable{
         }
     }
 
+    public long getId() {
+        return id;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -120,21 +117,23 @@ public class ImageSelectModel implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.uriOrPath);
         dest.writeString(this.description);
-        dest.writeByte(this.isPrimary ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.width);
-        dest.writeInt(this.height);
+        dest.writeLong(this.width);
+        dest.writeLong(this.height);
         dest.writeByte(this.isValidURL ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.allowDelete ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.id);
+        dest.writeString(this.serverFileName);
+        dest.writeString(this.serverFilePath);
     }
 
     protected ImageSelectModel(Parcel in) {
         this.uriOrPath = in.readString();
         this.description = in.readString();
-        this.isPrimary = in.readByte() != 0;
-        this.width = in.readInt();
-        this.height = in.readInt();
+        this.width = in.readLong();
+        this.height = in.readLong();
         this.isValidURL = in.readByte() != 0;
-        this.allowDelete = in.readByte() != 0;
+        this.id = in.readLong();
+        this.serverFileName = in.readString();
+        this.serverFilePath = in.readString();
     }
 
     public static final Creator<ImageSelectModel> CREATOR = new Creator<ImageSelectModel>() {

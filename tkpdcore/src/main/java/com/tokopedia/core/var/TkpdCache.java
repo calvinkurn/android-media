@@ -225,6 +225,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
         public static final String REFERRAL_CODE = "REFERRAL_CODE";
         public static final String KEY_ADVANCED_APP_RATING_VERSION = "ADVANCED_APP_RATING_VERSION";
+        public static final String KEY_RATING = "RATING";
         public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
 
 
@@ -246,6 +247,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String APP_REFERRAL_TITLE = "app_referral_title";
         public static final String APP_REFERRAL_HOWITWORKS = "app_referral_howitworks";
         public static final String APP_SHOW_REFERRAL_BUTTON = "app_show_referral_button";
+        public static final String APP_SHOW_RECOMENDATION_BUTTON = "mainapp_show_recomendation_button";
         public static final String APP_SHARE_DEFAULT_MESSAGE = "app_share_default_message";
 
 
@@ -256,6 +258,9 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
 
         public static final String NOTIFICATION_LOGGER = "notification_logger";
         public static final String MAINAPP_NATIVE_PROMO_LIST ="mainapp_native_promo_list";
+        public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
+        public static final String MAINAPP_FLIGHT_TRANSACTION_MENU = "mainapp_flight_transaction_menu";
+        public static final String SHOW_IMAGE_SEARCH = "enable_image_search";
     }
 
 }

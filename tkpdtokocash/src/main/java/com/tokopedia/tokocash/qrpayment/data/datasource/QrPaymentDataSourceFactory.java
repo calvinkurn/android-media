@@ -1,6 +1,6 @@
 package com.tokopedia.tokocash.qrpayment.data.datasource;
 
-import com.tokopedia.tokocash.apiservice.WalletService;
+import com.tokopedia.tokocash.network.api.WalletApi;
 
 import javax.inject.Inject;
 
@@ -10,15 +10,15 @@ import javax.inject.Inject;
 
 public class QrPaymentDataSourceFactory {
 
-    private WalletService walletService;
+    private WalletApi walletApi;
 
     @Inject
-    public QrPaymentDataSourceFactory(WalletService walletService) {
-        this.walletService = walletService;
+    public QrPaymentDataSourceFactory(WalletApi walletApi) {
+        this.walletApi = walletApi;
     }
 
     private QrPaymentDataSource createQrPaymentDataSource() {
-        return new CloudQrPaymentDataSource(walletService);
+        return new QrPaymentCloudDataSource(walletApi);
     }
 
     public QrPaymentDataSource create() {

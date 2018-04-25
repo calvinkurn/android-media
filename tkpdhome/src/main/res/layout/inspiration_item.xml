@@ -13,7 +13,7 @@
     <!--android:layout_alignParentTop="true"-->
     <!--android:layout_alignParentRight="true"-->
     <!--android:layout_alignParentEnd="true"-->
-    <!--android:src="@drawable/ic_faved"-->
+    <!--app:srcCompat="@drawable/ic_faved"-->
     <!--android:scaleType="fitCenter"-->
     <!--android:backgroundTint="@color/white"-->
     <!--android:visibility="gone"/>-->

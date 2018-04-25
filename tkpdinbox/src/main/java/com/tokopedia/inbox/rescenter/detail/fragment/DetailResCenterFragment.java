@@ -23,8 +23,7 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -461,31 +460,31 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         if (apiModelData.getDetail().getResolutionBy().getByCustomer() == 1) {
 //            return EditResCenterActivity.newBuyerInstance(getActivity(), passData, apiModelData);
             return SolutionListActivity.newBuyerEditInstance(getActivity(),
-                    passData.getResCenterId());
+                    passData.getResCenterId(), false);
         } else {
 //            return EditResCenterActivity.newSellerInstance(getActivity(), passData, apiModelData);
             return SolutionListActivity.newSellerEditInstance(getActivity(),
-                    passData.getResCenterId());
+                    passData.getResCenterId(), false);
         }
     }
 
     @Override
     public void openInputAddress() {
-        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        Intent intent = getChooseAddressIntent(false);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, CHOOSE_ADDRESS);
     }
 
     @Override
     public void openInputAddressForAcceptAdmin() {
-        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        Intent intent = getChooseAddressIntent(false);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION);
     }
 
     @Override
     public void openInputAddressMigrateVersion() {
-        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        Intent intent = getChooseAddressIntent(false);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, CHOOSE_ADDRESS_MIGRATE_VERSION);
     }
@@ -493,11 +492,15 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     @Override
     public void openEditAddress(String url) {
         this.ahrefEditAddressURL = url;
-        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        Intent intent = getChooseAddressIntent(true);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, EDIT_ADDRESS);
     }
 
+    public Intent getChooseAddressIntent(boolean isEditAddress) {
+        return ChooseAddressActivity.createResolutionInstance(
+                getActivity(), getResolutionID(), false, isEditAddress);
+    }
     @Override
     public void openAttachment(String url) {
         ArrayList<String> imageUrls = new ArrayList<>();
@@ -512,9 +515,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public void openShop() {
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        Bundle bundle = ShopInfoActivity.createBundle(apiModelData.getDetail().getResolutionShop().getShopId(), "");
-        intent.putExtras(bundle);
+        Intent intent = ((TkpdInboxRouter) getActivity()).getShopPageIntent(getActivity(), String.valueOf(apiModelData.getDetail().getResolutionShop().getShopId()));
         startActivity(intent);
     }
 
@@ -527,7 +528,13 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public void openPeople(String url) {
-        startActivity(PeopleInfoNoDrawerActivity.createInstance(context, Uri.parse(url).getQueryParameter("id")));
+        if (getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+            startActivity(
+                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                            .getTopProfileIntent(
+                                    getActivity(),
+                                    Uri.parse(url).getQueryParameter("id")));
+        }
     }
 
     @Override

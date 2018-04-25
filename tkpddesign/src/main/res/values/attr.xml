@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="LabelView">
+        <attr name="lv_image" format="reference" />
+        <attr name="lv_image_width" format="dimension" />
         <attr name="lv_title" format="string" />
         <attr name="lv_title_text_size" format="dimension" />
         <attr name="lv_title_color" format="color" />
@@ -10,6 +12,7 @@
             <flag name="bold" value="1" />
             <flag name="italic" value="2" />
         </attr>
+        <attr name="lv_sub_title" format="string" />
         <attr name="lv_content" format="string" />
         <attr name="lv_content_color" format="color" />
         <attr name="lv_content_text_size" format="dimension" />
@@ -19,8 +22,6 @@
             <flag name="bold" value="1" />
             <flag name="italic" value="2" />
         </attr>
-        <attr name="lv_font_size" format="dimension" />
-        <attr name="lv_show_arrow" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="SelectionLabelView">
@@ -105,6 +106,7 @@
         <attr name="lsv_empty_layout" format="reference" />
         <attr name="lsv_error_layout" format="reference" />
         <attr name="lsv_state" format="integer" />
+        <attr name="lsv_full_screen" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="EmptyCardContentView">
@@ -129,6 +131,7 @@
 
     <declare-styleable name="ShopReputationView">
         <attr name="srv_show_tooltip" format="boolean" />
+        <attr name="srv_medal_width" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="BottomActionView">
@@ -158,30 +161,19 @@
     <attr name="bottomSheetBuilderItemTextColor" format="color" />
     <attr name="bottomSheetBuilderTitleTextColor" format="color" />
 
-    <declare-styleable name="Button">
-        <attr name="type" format="enum">
-            <enum name="primary" value="1"/>
-            <enum name="secondary" value="2"/>
-        </attr>
-        <attr name="size" format="enum">
-            <enum name="big" value="3"/>
-            <enum name="medium" value="4"/>
-            <enum name="small" value="5"/>
-        </attr>
-    </declare-styleable>
-
     <declare-styleable name="FloatingButton">
-        <attr name="text" format="string" />
-        <attr name="buttonType" format="enum">
+        <attr name="text" format="string"/>
+        <attr name="buttonTextAllCaps" format="boolean"/>
+        <attr name="floatButtonType" format="enum">
             <enum name="primary" value="1"/>
             <enum name="secondary" value="2"/>
+            <enum name="disable" value="3"/>
         </attr>
-        <attr name="buttonSizeType" format="enum">
-            <enum name="big" value="3"/>
-            <enum name="medium" value="4"/>
-            <enum name="small" value="5"/>
+        <attr name="floatButtonSize" format="enum">
+            <enum name="big" value="4"/>
+            <enum name="medium" value="5"/>
+            <enum name="small" value="6"/>
         </attr>
-        <attr name="buttonTextAllCaps" format="boolean"/>
         <attr name="shadow" format="boolean"/>
         <attr name="shadowLeft" format="boolean"/>
         <attr name="shadowTop" format="boolean"/>
@@ -194,6 +186,37 @@
             <enum name="main" value="1"/>
             <enum name="secondary" value="2"/>
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="TextViewCompat">
+        <attr name="drawableLeftCompat" format="reference"/>
+        <attr name="drawableRightCompat" format="reference"/>
+        <attr name="drawableTopCompat" format="reference"/>
+        <attr name="drawableBottomCompat" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="EditTextCompat">
+        <attr name="editTextDrawableLeftCompat" format="reference"/>
+        <attr name="editTextDrawableRightCompat" format="reference"/>
+        <attr name="editTextDrawableTopCompat" format="reference"/>
+        <attr name="editTextDrawableBottomCompat" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="ButtonCompat">
+        <attr name="buttonCompatType" format="enum">
+            <enum name="primary" value="1"/>
+            <enum name="secondary" value="2"/>
+            <enum name="disable" value="3"/>
+        </attr>
+        <attr name="buttonCompatSize" format="enum">
+            <enum name="big" value="4"/>
+            <enum name="medium" value="5"/>
+            <enum name="small" value="6"/>
+        </attr>
+        <attr name="buttonDrawableLeftCompat" format="reference"/>
+        <attr name="buttonDrawableRightCompat" format="reference"/>
+        <attr name="buttonDrawableTopCompat" format="reference"/>
+        <attr name="buttonDrawableBottomCompat" format="reference"/>
     </declare-styleable>
 
 </resources>

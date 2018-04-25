@@ -12,7 +12,7 @@ import javax.inject.Inject;
 /**
  * Created by nabillasabbaha on 11/22/17.
  */
-
+@Deprecated
 public class FilterHistoryTokoCashMapper {
 
     private int[] colorBorder;

@@ -80,7 +80,7 @@ public class UserReputationView extends BaseCustomView {
         if (noReputation) {
             imageViewIcon.setImageResource(R.drawable.ic_smiley_empty);
         } else {
-            imageViewIcon.setImageResource(R.drawable.ic_smiley_positive);
+            imageViewIcon.setImageResource(R.drawable.ic_smiley_good);
             if (showTooltip) {
                 setBottomDialog(positiveValue, neutralValue, negativeValue);
             }

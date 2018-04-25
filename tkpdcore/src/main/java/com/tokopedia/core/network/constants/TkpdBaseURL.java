@@ -17,7 +17,6 @@ public class TkpdBaseURL {
     public static String ACE_STAGING_DOMAIN = "http://ace-staging.tokopedia.com/";
     public static String ACE_DOMAIN = "https://ace.tokopedia.com/";
     public static String TOME_DOMAIN = "https://tome.tokopedia.com/";
-    public static String CLOVER_DOMAIN = "https://points.tokopedia.com/";
     public static String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
     public static String TOPADS_STAGING_DOMAIN = "http://ta-staging.tokopedia.com/";
     public static String MOJITO_DOMAIN = "https://mojito.tokopedia.com/";
@@ -408,6 +407,7 @@ public class TkpdBaseURL {
         public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
         public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
         public static final String PATH_PRODUCT_VARIANT = "v2/product/{productId}/variant";
+        public static final String PATH_PRODUCT_STOCK = "v2/product/{productId}/stock";
     }
 
     public static class ResCenter {
@@ -471,7 +471,6 @@ public class TkpdBaseURL {
         public static final String URL_DEPOSIT_ACTION = BASE_DOMAIN + "v4/action/deposit/";
         public static final String PATH_DEPOSIT = "v4/deposit/";
         public static final String URL_DEPOSIT = BASE_DOMAIN + PATH_DEPOSIT;
-        public static final String URL_DEPOSIT_CLOVER = CLOVER_DOMAIN + "app/";
         public static final String URL_TRACKING_ORDER = BASE_DOMAIN + "v4/tracking-order/";
         public static final String URL_TX_ACTION = BASE_DOMAIN + "v4/action/tx/";
         public static final String URL_TX = BASE_DOMAIN + "v4/";
@@ -491,8 +490,6 @@ public class TkpdBaseURL {
         public static final String PATH_GET_DEPOSIT = "get_deposit.pl";
         public static final String PATH_GET_SUMMARY = "get_summary.pl";
         public static final String PATH_GET_WITHDRAW_FORM = "get_withdraw_form.pl";
-        public static final String PATH_GET_TOPPOINTS = "get_lp.pl";
-        public static final String PATH_GET_TOPPOINTS_CLOVER = "v4";
 
 
         public static final String PATH_TRACK_ORDER = "track_order.pl";
@@ -769,6 +766,7 @@ public class TkpdBaseURL {
         public static final String PATH_ADD_TO_CART = "cart";
         public static final String PATH_CHECKOUT = "checkout";
         public static final String PATH_CHECK_VOUCHER = "voucher/check";
+        public static final String PATH_CANCEL_VOUCHER = "voucher/cancel";
         public static final String PATH_USSD = "ussd/balance";
     }
 
@@ -816,6 +814,7 @@ public class TkpdBaseURL {
         public static final String ACTION_FINISH_RESOLUTION = BASE_DETAIL_RESOLUTION + "/finish";
         public static final String ACTION_CANCEL_RESOLUTION = BASE_DETAIL_RESOLUTION + "/cancel";
         public static final String ACTION_ASK_HELP_RESOLUTION = BASE_DETAIL_RESOLUTION + "/report_resolution";
+        public static final String ACTION_ACCEPT_SOLUTION = BASE_DETAIL_RESOLUTION + "/accept";
 
 
         public static final String BASE_RESOLUTION_CREATE = BASE_RESOLUTION_VERSION_2 + "create/{order_id}";
@@ -876,7 +875,7 @@ public class TkpdBaseURL {
     public static class Chat {
         public static final String CHAT_WEBSOCKET = "/connect";
         public static final String GET_MESSAGE = "/tc/v1/list_message";
-        public static final String GET_REPLY = "/tc/v1/list_reply/{msgId}";
+        public static final String GET_REPLY = "/tc/v2/list_reply/{msgId}";
         public static final String GET_USER_CONTACT = "/tc/v1/message_contact/";
         public static final String REPLY = "/tc/v1/reply";
         public static final String LISTEN_WEBSOCKET = "/connect";
@@ -941,6 +940,7 @@ public class TkpdBaseURL {
     public class Maps {
         public static final String PATH_MAPS_PLACES = "maps/places/autocomplete";
         public static final String PATH_MAPS_PLACES_DETAIL = "maps/places/place-details";
+        public static final String PATH_MAPS_GEOCODE = "maps/geocode";
     }
 
     public class TokoPoint {
@@ -975,6 +975,5 @@ public class TkpdBaseURL {
     public class Promo {
         public static final String PATH_MENU_INDEX = "wp-json/wp/v2/hmenu";
         public static final String PATH_PROMO_LIST = "wp-json/wp/v2/posts";
-
     }
 }

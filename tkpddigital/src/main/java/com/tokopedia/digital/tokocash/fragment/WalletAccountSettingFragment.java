@@ -300,6 +300,9 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
     private void deleteCacheBalanceTokoCash() {
         GlobalCacheManager cache = new GlobalCacheManager();
         cache.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
+
+        SessionHandler sessionHandler = new SessionHandler(getActivity());
+        sessionHandler.setTokenTokoCash("");
     }
 
     @Override

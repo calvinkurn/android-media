@@ -28,10 +28,11 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -50,10 +51,6 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 /**
  * Created by m.normansyah on 01/12/2015.
  */
@@ -62,7 +59,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         WishListProductAdapter.OnWishlistActionButtonClicked {
 
     public static final String FRAGMENT_TAG = "WishListFragment";
-    private Unbinder unbinder;
 
     public WishListFragment() {
     }
@@ -71,15 +67,10 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         return new WishListFragment();
     }
 
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeToRefresh swipeToRefresh;
-
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-    @BindView(R.id.progress_bar)
-    ProgressBar progressBar;
-    @BindView(R.id.wishlist_search_edittext)
-    SearchView searchEditText;
+    private SwipeToRefresh swipeToRefresh;
+    private RecyclerView recyclerView;
+    private ProgressBar progressBar;
+    private SearchView searchEditText;
 
     GridLayoutManager layoutManager;
     WishListProductAdapter adapter;
@@ -106,7 +97,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         ProductItem data = new ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -120,10 +111,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
-        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(bundle);
+    public void onShopItemClicked(int position, Shop shop) {
+        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
         getActivity().startActivity(intent);
     }
 
@@ -147,13 +136,20 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_wishlist, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+        initView(parentView);
         wishList.subscribe();
         wishList.initAnalyticsHandler(getActivity());
         prepareView();
         setListener();
         loadWishlistData();
         return parentView;
+    }
+
+    private void initView(View view) {
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        recyclerView = view.findViewById(R.id.recycler_view);
+        progressBar = view.findViewById(R.id.progress_bar);
+        searchEditText = view.findViewById(R.id.wishlist_search_edittext);
     }
 
     private void loadWishlistData() {
@@ -173,7 +169,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         wishList.unSubscribe();
     }
 

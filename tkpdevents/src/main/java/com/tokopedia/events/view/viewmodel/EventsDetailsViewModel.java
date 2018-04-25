@@ -22,16 +22,17 @@ public class EventsDetailsViewModel implements Parcelable {
     private String longRichDesc;
     private String displayTags;
     private String promotionText;
-    private Integer convenienceFee;
-    private Integer mrp;
-    private Integer salesPrice;
-    private Integer seatChartTypeId;
-    private Integer hasSeatLayout;
-    private Integer thumbsUp;
-    private Integer thumbsDown;
-    private Integer rating;
-    private Integer isFeatured;
-    private Integer isFoodAvailable;
+    private String address;
+    private int convenienceFee;
+    private int mrp;
+    private int salesPrice;
+    private int seatChartTypeId;
+    private int hasSeatLayout;
+    private int thumbsUp;
+    private int thumbsDown;
+    private int rating;
+    private int isFeatured;
+    private int isFoodAvailable;
     private String seatMapImage;
     private Boolean dateRange;
     private String cityName;
@@ -131,43 +132,51 @@ public class EventsDetailsViewModel implements Parcelable {
         this.cityName = cityName;
     }
 
-    public Integer getConvenienceFee() {
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getConvenienceFee() {
         return convenienceFee;
     }
 
-    public void setConvenienceFee(Integer convenienceFee) {
+    public void setConvenienceFee(int convenienceFee) {
         this.convenienceFee = convenienceFee;
     }
 
-    public Integer getMrp() {
+    public int getMrp() {
         return mrp;
     }
 
-    public void setMrp(Integer mrp) {
+    public void setMrp(int mrp) {
         this.mrp = mrp;
     }
 
-    public Integer getSalesPrice() {
+    public int getSalesPrice() {
         return salesPrice;
     }
 
-    public void setSalesPrice(Integer salesPrice) {
+    public void setSalesPrice(int salesPrice) {
         this.salesPrice = salesPrice;
     }
 
-    public Integer getSeatChartTypeId() {
+    public int getSeatChartTypeId() {
         return seatChartTypeId;
     }
 
-    public void setSeatChartTypeId(Integer seatChartTypeId) {
+    public void setSeatChartTypeId(int seatChartTypeId) {
         this.seatChartTypeId = seatChartTypeId;
     }
 
-    public Integer getHasSeatLayout() {
+    public int getHasSeatLayout() {
         return hasSeatLayout;
     }
 
-    public void setHasSeatLayout(Integer hasSeatLayout) {
+    public void setHasSeatLayout(int hasSeatLayout) {
         this.hasSeatLayout = hasSeatLayout;
     }
 
@@ -180,20 +189,20 @@ public class EventsDetailsViewModel implements Parcelable {
     }
 
 
-    public Integer getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
 
-    public Integer getIsFoodAvailable() {
+    public int getIsFoodAvailable() {
         return isFoodAvailable;
     }
 
-    public void setIsFoodAvailable(Integer isFoodAvailable) {
+    public void setIsFoodAvailable(int isFoodAvailable) {
         this.isFoodAvailable = isFoodAvailable;
     }
 
@@ -215,27 +224,27 @@ public class EventsDetailsViewModel implements Parcelable {
         this.genre = genre;
     }
 
-    public Integer getThumbsUp() {
+    public int getThumbsUp() {
         return thumbsUp;
     }
 
-    public void setThumbsUp(Integer thumbsUp) {
+    public void setThumbsUp(int thumbsUp) {
         this.thumbsUp = thumbsUp;
     }
 
-    public Integer getThumbsDown() {
+    public int getThumbsDown() {
         return thumbsDown;
     }
 
-    public void setThumbsDown(Integer thumbsDown) {
+    public void setThumbsDown(int thumbsDown) {
         this.thumbsDown = thumbsDown;
     }
 
-    public Integer getIsFeatured() {
+    public int getIsFeatured() {
         return isFeatured;
     }
 
-    public void setIsFeatured(Integer isFeatured) {
+    public void setIsFeatured(int isFeatured) {
         this.isFeatured = isFeatured;
     }
 
@@ -266,7 +275,6 @@ public class EventsDetailsViewModel implements Parcelable {
     public EventsDetailsViewModel() {
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -286,16 +294,17 @@ public class EventsDetailsViewModel implements Parcelable {
         dest.writeString(this.longRichDesc);
         dest.writeString(this.displayTags);
         dest.writeString(this.promotionText);
-        dest.writeValue(this.convenienceFee);
-        dest.writeValue(this.mrp);
-        dest.writeValue(this.salesPrice);
-        dest.writeValue(this.seatChartTypeId);
-        dest.writeValue(this.hasSeatLayout);
-        dest.writeValue(this.thumbsUp);
-        dest.writeValue(this.thumbsDown);
-        dest.writeValue(this.rating);
-        dest.writeValue(this.isFeatured);
-        dest.writeValue(this.isFoodAvailable);
+        dest.writeString(this.address);
+        dest.writeInt(this.convenienceFee);
+        dest.writeInt(this.mrp);
+        dest.writeInt(this.salesPrice);
+        dest.writeInt(this.seatChartTypeId);
+        dest.writeInt(this.hasSeatLayout);
+        dest.writeInt(this.thumbsUp);
+        dest.writeInt(this.thumbsDown);
+        dest.writeInt(this.rating);
+        dest.writeInt(this.isFeatured);
+        dest.writeInt(this.isFoodAvailable);
         dest.writeString(this.seatMapImage);
         dest.writeValue(this.dateRange);
         dest.writeString(this.cityName);
@@ -316,16 +325,17 @@ public class EventsDetailsViewModel implements Parcelable {
         this.longRichDesc = in.readString();
         this.displayTags = in.readString();
         this.promotionText = in.readString();
-        this.convenienceFee = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.mrp = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.salesPrice = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.seatChartTypeId = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.hasSeatLayout = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.thumbsUp = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.thumbsDown = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.rating = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.isFeatured = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.isFoodAvailable = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.address = in.readString();
+        this.convenienceFee = in.readInt();
+        this.mrp = in.readInt();
+        this.salesPrice = in.readInt();
+        this.seatChartTypeId = in.readInt();
+        this.hasSeatLayout = in.readInt();
+        this.thumbsUp = in.readInt();
+        this.thumbsDown = in.readInt();
+        this.rating = in.readInt();
+        this.isFeatured = in.readInt();
+        this.isFoodAvailable = in.readInt();
         this.seatMapImage = in.readString();
         this.dateRange = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.cityName = in.readString();

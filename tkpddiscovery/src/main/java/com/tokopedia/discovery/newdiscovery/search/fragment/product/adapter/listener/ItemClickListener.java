@@ -3,6 +3,7 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.lis
 import android.text.TextUtils;
 
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.newdiscovery.base.EmptyStateClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 
@@ -18,4 +19,8 @@ public interface ItemClickListener extends EmptyStateClickListener {
     void onSuggestionClicked(String suggestedQuery);
 
     void onBannerAdsClicked(String appLink);
+
+    void onSearchGuideClicked(String keyword);
+
+    void onQuickFilterSelected(Option option);
 }

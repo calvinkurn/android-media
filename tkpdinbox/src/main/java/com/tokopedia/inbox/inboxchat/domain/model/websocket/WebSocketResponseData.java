@@ -34,6 +34,12 @@ public class WebSocketResponseData {
     @SerializedName("attachment")
     @Expose
     private Attachment attachment;
+    @SerializedName("show_rating")
+    @Expose
+    private boolean showRating;
+    @SerializedName("rating_status")
+    @Expose
+    private int ratingStatus;
 
     public int getMsgId() {
         return msgId;
@@ -105,5 +111,21 @@ public class WebSocketResponseData {
 
     public void setAttachment(Attachment attachment) {
         this.attachment = attachment;
+    }
+
+    public boolean isShowRating() {
+        return showRating;
+    }
+
+    public void setShowRating(boolean showRating) {
+        this.showRating = showRating;
+    }
+
+    public int getRatingStatus() {
+        return ratingStatus;
+    }
+
+    public void setRatingStatus(int ratingStatus) {
+        this.ratingStatus = ratingStatus;
     }
 }

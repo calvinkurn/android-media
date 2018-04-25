@@ -48,13 +48,17 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void bind(BannerViewModel element) {
-        slidesList = element.getSlides();
-        List<String> promoUrls = new ArrayList<>();
-        for (BannerSlidesModel slidesModel : slidesList) {
-            promoUrls.add(slidesModel.getImageUrl());
+        try {
+            slidesList = element.getSlides();
+            List<String> promoUrls = new ArrayList<>();
+            for (BannerSlidesModel slidesModel : slidesList) {
+                promoUrls.add(slidesModel.getImageUrl());
+            }
+            bannerView.setPromoList(promoUrls);
+            bannerView.buildView();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        bannerView.setPromoList(promoUrls);
-        bannerView.buildView();
     }
 
     private Promotion getPromotion(int position) {
@@ -65,13 +69,14 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
         promotion.setPromotionAlias(model.getTitle().trim().replaceAll(" ", "_"));
         promotion.setPromotionPosition(position + 1);
         promotion.setRedirectUrl(slidesList.get(position).getRedirectUrl());
+        promotion.setPromoCode(model.getPromoCode());
         return promotion;
     }
 
     @Override
     public void onPromoClick(int position) {
         HomePageTracking.eventPromoClick(getPromotion(position));
-        listener.onPromoClick(slidesList.get(position));
+        listener.onPromoClick(position, slidesList.get(position));
     }
 
     @Override
@@ -90,9 +95,12 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
         remoteConfigEnable = remoteConfig.getBoolean(
                 TkpdCache.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
         );
-
         if (remoteConfigEnable) {
-            context.startActivity(PromoListActivity.newInstance(context));
+            context.startActivity(PromoListActivity.newInstance(
+                    context,
+                    PromoListActivity.DEFAULT_AUTO_SELECTED_MENU_ID,
+                    PromoListActivity.DEFAULT_AUTO_SELECTED_CATEGORY_ID
+            ));
         } else {
             Intent intent = new Intent(context, BannerWebView.class);
             intent.putExtra(BannerWebView.EXTRA_TITLE, context.getString(R.string.title_activity_promo));

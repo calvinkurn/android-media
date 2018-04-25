@@ -248,6 +248,7 @@ public abstract class MainApplication extends BaseMainApplication{
     public void onCreate() {
         super.onCreate();
         instance = this;
+        //CommonUtils.dumper("asdasas");
         MainApplication.context = getApplicationContext();
         init();
         initFacebook();
@@ -306,8 +307,10 @@ public abstract class MainApplication extends BaseMainApplication{
     }
 
     public void initCrashlytics() {
-        Fabric.with(this, new Crashlytics());
-        Crashlytics.setUserIdentifier("");
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, new Crashlytics());
+            Crashlytics.setUserIdentifier("");
+        }
     }
 
 	protected void initDbFlow() {

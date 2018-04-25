@@ -15,8 +15,8 @@ import android.view.View;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -61,6 +61,9 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     private static final String EXTRA_IS_GETTING_DYNNAMIC_FILTER = "EXTRA_IS_GETTING_DYNNAMIC_FILTER";
     private static final String EXTRA_FLAG_FILTER_HELPER = "EXTRA_FLAG_FILTER_HELPER";
+    private static final String DEFAULT_GRID = "default";
+    private static final String INSTAGRAM_GRID = "instagram grid";
+    private static final String LIST_GRID = "list";
 
     private BottomNavigationListener bottomNavigationListener;
     private BottomSheetListener bottomSheetListener;
@@ -208,7 +211,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         return linearLayoutManager;
     }
 
-    protected void switchLayoutType() {
+    protected void switchLayoutType(boolean isImageSearch) {
         if (!getUserVisibleHint()) {
             return;
         }
@@ -218,18 +221,37 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
+                if (isImageSearch) {
+                    SearchTracking.eventImageSearchResultChangeGrid(DEFAULT_GRID);
+                } else {
+                    SearchTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
+                }
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
+                if (isImageSearch) {
+                    SearchTracking.eventImageSearchResultChangeGrid(INSTAGRAM_GRID);
+                } else {
+                    SearchTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
+                }
                 break;
             case GRID_3:
                 setSpanCount(1);
                 getAdapter().changeListView();
+                if (isImageSearch) {
+                    SearchTracking.eventImageSearchResultChangeGrid(LIST_GRID);
+                } else {
+                    SearchTracking.eventSearchResultChangeGrid("list", getScreenName());
+                }
                 break;
         }
         refreshBottomBarGridIcon();
+    }
+
+    protected void switchLayoutType() {
+        switchLayoutType(false);
     }
 
     private void refreshBottomBarGridIcon() {
@@ -249,6 +271,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (TextUtils.isEmpty(shareUrl)) {
             return;
         }
+
+        SearchTracking.eventSearchResultShare(getScreenName());
 
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.DISCOVERY_TYPE)
@@ -351,8 +375,12 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     public void clearDataFilterSort() {
-        this.filters.clear();
-        this.sort.clear();
+        if (filters != null) {
+            this.filters.clear();
+        }
+        if (sort != null) {
+            this.sort.clear();
+        }
     }
 
     protected void openFilterActivity() {
@@ -466,6 +494,11 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     protected void onFirstTimeLaunch() {
 
+    }
+
+    protected void disableSwipeRefresh() {
+        refreshLayout.setEnabled(false);
+        refreshLayout.setRefreshing(false);
     }
 
     protected void onSwipeToRefresh() {

@@ -8,6 +8,7 @@ import android.os.Parcelable;
  */
 
 public class EditAppealSolutionModel implements Parcelable {
+    public boolean isChatReso;
     public boolean isEdit;
     public String resolutionId;
     public boolean isSeller;
@@ -15,6 +16,14 @@ public class EditAppealSolutionModel implements Parcelable {
     public String name;
     public String solutionName;
     public int refundAmount;
+
+    public boolean isChatReso() {
+        return isChatReso;
+    }
+
+    public void setChatReso(boolean chatReso) {
+        isChatReso = chatReso;
+    }
 
     public boolean isEdit() {
         return isEdit;
@@ -72,10 +81,11 @@ public class EditAppealSolutionModel implements Parcelable {
         this.refundAmount = refundAmount;
     }
 
-    public EditAppealSolutionModel(boolean isEdit, String resolutionId, boolean isSeller) {
+    public EditAppealSolutionModel(boolean isEdit, String resolutionId, boolean isSeller, boolean isChatReso) {
         this.isEdit = isEdit;
         this.resolutionId = resolutionId;
         this.isSeller = isSeller;
+        this.isChatReso = isChatReso;
     }
 
     @Override
@@ -85,6 +95,7 @@ public class EditAppealSolutionModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.isChatReso ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isEdit ? (byte) 1 : (byte) 0);
         dest.writeString(this.resolutionId);
         dest.writeByte(this.isSeller ? (byte) 1 : (byte) 0);
@@ -95,6 +106,7 @@ public class EditAppealSolutionModel implements Parcelable {
     }
 
     protected EditAppealSolutionModel(Parcel in) {
+        this.isChatReso = in.readByte() != 0;
         this.isEdit = in.readByte() != 0;
         this.resolutionId = in.readString();
         this.isSeller = in.readByte() != 0;

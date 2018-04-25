@@ -8,6 +8,7 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
+import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
@@ -53,13 +54,15 @@ public interface IGTMContainer {
      * @param checkout detail checkout values
      * @return GTM Container Instance
      */
+    GTMContainer eventCheckout(Checkout checkout, String paymentId);
+
     GTMContainer eventCheckout(Checkout checkout);
 
     void clearCheckoutDataLayer();
 
     GTMContainer sendScreenAuthenticated(String screenName);
 
-    GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType);
+    GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType, String pageType, String productId);
 
     GTMContainer eventAuthenticate(Authenticated authenticated);
 
@@ -119,7 +122,6 @@ public interface IGTMContainer {
 
     void clickTncButtonHotlistPromo(String hotlistName, String promoName, String promoCode);
 
-
     void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData);
 
     void clearEnhanceEcommerce();
@@ -127,6 +129,10 @@ public interface IGTMContainer {
     void eventPurchaseMarketplace(Purchase purchase);
 
     void eventPurchaseDigital(Purchase purchase);
+
+    GTMContainer eventAddToCartPurchase(Product product);
+
+    GTMContainer eventRemoveFromCartPurchase(Product product);
 
     void eventImpressionPromoList(List<Object> list, String promoName);
 
@@ -140,5 +146,10 @@ public interface IGTMContainer {
                                          String keyword,
                                          String actionField);
 
+    void enhanceClickImageSearchResultProduct(Object object,
+                                         String actionField);
+
     void enhanceImpressionSearchResultProduct(List<Object> objects, String keyword);
+
+    void enhanceImpressionImageSearchResultProduct(List<Object> objects);
 }
