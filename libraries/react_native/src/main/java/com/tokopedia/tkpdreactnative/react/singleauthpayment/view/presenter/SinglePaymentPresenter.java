@@ -76,7 +76,7 @@ public class SinglePaymentPresenter extends BaseDaggerPresenter<SinglePaymentCon
             @Override
             public void onNext(Boolean aBoolean) {
                 getView().hideProgressLoading();
-                getView().onErrorGetPreference();
+                getView().onGetPreference(aBoolean);
             }
         };
     }

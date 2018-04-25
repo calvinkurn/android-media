@@ -9,8 +9,8 @@
     <string name="dialog_fingerprint_label_register">Daftar</string>
     <string name="dialog_fingerprint_label_auth_fingerprint_title">Autentikasi Sidik Jari</string>
     <string name="dialog_fingerprint_label_desc_auth">Daftarkan sidik jari untuk kemudahan autentikasi transaksi kartu kredit selanjutnya</string>
-    <string name="single_auth_label_desc_info">Anda baru saja melakukan pembayaran dengan autentikasi tunggal (tanpa OTP). /n Anda dapat mengatur ulang autentikasi pada Menu > Pengaturan > Pembayaran > Pengaturan Autentikasi</string>
-    <string name="single_auth_label_desc">Anda hanya akan diminta memasukkan CVV untuk setiap transaksi. Verifikasi via SMS/sidik jari diperlukan hanya pada transaksi tertentu. /n Anda dapat mengatur kembali pada Menu > Pengaturan > Pembayaran > Pengaturan Autentikasi</string>
+    <string name="single_auth_label_desc_info">Anda baru saja melakukan pembayaran dengan autentikasi tunggal (tanpa OTP). \n\n Anda dapat mengatur ulang autentikasi pada Menu > Pengaturan > Pembayaran > Pengaturan Autentikasi</string>
+    <string name="single_auth_label_desc">Anda hanya akan diminta memasukkan CVV untuk setiap transaksi. Verifikasi via SMS/sidik jari diperlukan hanya pada transaksi tertentu. \n\n Anda dapat mengatur kembali pada Menu > Pengaturan > Pembayaran > Pengaturan Autentikasi</string>
     <string name="single_auth_label_setting_credit_card">Pengaturan Autentikasi Kartu Kredit</string>
     <string name="single_payment_label_activated">Aktifkan</string>
     <string name="single_payment_label_activated_single">Aktifkan Autentikasi Tunggal</string>

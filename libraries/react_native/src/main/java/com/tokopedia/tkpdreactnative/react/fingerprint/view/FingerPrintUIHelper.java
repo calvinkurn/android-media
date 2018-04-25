@@ -37,6 +37,12 @@ public class FingerPrintUIHelper implements FingerprintDialogRegister.ListenerRe
 
     @TargetApi(Build.VERSION_CODES.M)
     public void startListening() {
+        DaggerFingerprintComponent
+                .builder()
+                .fingerprintModule(new FingerprintModule())
+                .baseAppComponent(((BaseMainApplication) activity.getApplication()).getBaseAppComponent())
+                .build()
+                .inject(this);
         FingerprintManagerCompat fingerprintManagerCompat = FingerprintManagerCompat.from(activity);
         if (fingerprintManagerCompat.isHardwareDetected() && fingerprintManagerCompat.hasEnrolledFingerprints()) {
             fingerprintDialog = FingerprintDialogRegister.createInstance(fingerPrintPresenter.getUserId(), transactionId);
@@ -53,12 +59,6 @@ public class FingerPrintUIHelper implements FingerprintDialogRegister.ListenerRe
 
     @Override
     public void onCreate() {
-        DaggerFingerprintComponent
-                .builder()
-                .fingerprintModule(new FingerprintModule())
-                .baseAppComponent(((BaseMainApplication) activity.getApplication()).getBaseAppComponent())
-                .build()
-                .inject(this);
         fingerPrintPresenter.attachView(this);
     }
 

@@ -76,7 +76,7 @@ public class FingerprintConfirmationPresenter extends BaseDaggerPresenter<Finger
             @Override
             public void onNext(Boolean aBoolean) {
                 getView().hideProgressLoading();
-                getView().onErrorGetPreference();
+                getView().onGetPreference(aBoolean);
             }
         };
     }

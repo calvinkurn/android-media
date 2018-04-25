@@ -5,12 +5,15 @@ import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdreactnative.react.fingerprint.di.DaggerFingerprintComponent;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.common.view.DialogPreferenceHide;
 import com.tokopedia.tkpdreactnative.react.fingerprint.di.FingerprintModule;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;
+import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.presenter.SetSingleAuthPaymentContract;
+import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.presenter.SetSingleAuthPaymentPresenter;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.presenter.SinglePaymentConfirmationContract;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.presenter.SinglePaymentPresenter;
 
@@ -20,10 +23,12 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 4/24/18.
  */
 
-public class SingleAuthPaymentDialog extends DialogPreferenceHide implements SinglePaymentConfirmationContract.View {
+public class SingleAuthPaymentDialog extends DialogPreferenceHide implements SinglePaymentConfirmationContract.View, SetSingleAuthPaymentContract.View {
     private FingerPrintUIHelper.Callback callback;
     @Inject
     SinglePaymentPresenter singlePaymentPresenter;
+    @Inject
+    SetSingleAuthPaymentPresenter singleAuthPaymentPresenter;
 
     public SingleAuthPaymentDialog(Activity context, Type type, FingerPrintUIHelper.Callback callback) {
         super(context, type);
@@ -38,12 +43,6 @@ public class SingleAuthPaymentDialog extends DialogPreferenceHide implements Sin
         setTitle(context.getString(R.string.single_payment_label_activated_single));
         setDesc(context.getString(R.string.single_auth_label_desc));
 
-        getAlertDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                singlePaymentPresenter.detachView();
-            }
-        });
         setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,6 +59,19 @@ public class SingleAuthPaymentDialog extends DialogPreferenceHide implements Sin
     }
 
     @Override
+    protected void init() {
+        super.init();
+        getAlertDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                singlePaymentPresenter.detachView();
+                singleAuthPaymentPresenter.detachView();
+                hideProgressLoading();
+            }
+        });
+    }
+
+    @Override
     public void show() {
         DaggerFingerprintComponent
                 .builder()
@@ -68,6 +80,7 @@ public class SingleAuthPaymentDialog extends DialogPreferenceHide implements Sin
                 .build()
                 .inject(this);
         singlePaymentPresenter.attachView(this);
+        singleAuthPaymentPresenter.attachView(this);
         singlePaymentPresenter.getPreferenceHide();
     }
 
@@ -82,9 +95,21 @@ public class SingleAuthPaymentDialog extends DialogPreferenceHide implements Sin
     }
 
     @Override
+    public void onErrorNetworkSingleAuth(String errorMessage) {
+        NetworkErrorHelper.showRedCloseSnackbar(context, errorMessage);
+        dismiss();
+    }
+
+    @Override
+    public void onSuccessSingleAuth(String successMessage) {
+        NetworkErrorHelper.showGreenCloseSnackbar(context, successMessage);
+        dismiss();
+    }
+
+    @Override
     public void onSuccessSavePreference() {
         if(context instanceof AppCompatActivity) {
-
+            singleAuthPaymentPresenter.setSingleAuthenticationMode();
         }
     }
 
@@ -94,8 +119,8 @@ public class SingleAuthPaymentDialog extends DialogPreferenceHide implements Sin
     }
 
     @Override
-    public void onGetPreference(boolean isShow) {
-        if(isShow){
+    public void onGetPreference(boolean isHide) {
+        if(!isHide){
             super.show();
         }
     }

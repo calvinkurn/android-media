@@ -5,11 +5,10 @@ import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.tkpdreactnative.react.fingerprint.di.DaggerFingerprintComponent;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.common.view.DialogPreferenceHide;
+import com.tokopedia.tkpdreactnative.react.fingerprint.di.DaggerFingerprintComponent;
 import com.tokopedia.tkpdreactnative.react.fingerprint.di.FingerprintModule;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.presenter.FingerprintConfirmationContract;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.presenter.FingerprintConfirmationPresenter;
@@ -40,23 +39,44 @@ public class FingerprintDialogConfirmation extends DialogPreferenceHide implemen
         setTitle(context.getString(R.string.dialog_fingerprint_label_auth_fingerprint_title));
         setDesc(context.getString(R.string.dialog_fingerprint_label_desc_auth));
 
-        getAlertDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                fingerprintConfirmationPresenter.detachView();
-            }
-        });
         setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fingerprintConfirmationPresenter.savePreferenceHide(isCheckedBoxHideDialog());
-                dismiss();
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        fingerprintConfirmationPresenter.savePreferenceHide(isCheckedBoxHideDialog());
+                        dismiss();
+                    }
+                });
             }
         });
         setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fingerprintConfirmationPresenter.savePreferenceHide(isCheckedBoxHideDialog());
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        fingerprintConfirmationPresenter.savePreferenceHide(isCheckedBoxHideDialog());
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        getAlertDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        fingerprintConfirmationPresenter.detachView();
+                        hideProgressLoading();
+                    }
+                });
             }
         });
     }
@@ -85,8 +105,8 @@ public class FingerprintDialogConfirmation extends DialogPreferenceHide implemen
 
     @Override
     public void onSuccessSavePreference() {
-        if(context instanceof AppCompatActivity) {
-            FingerPrintUIHelper fingerPrintUIHelper = new FingerPrintUIHelper((AppCompatActivity)context, transactionId, callback);
+        if (context instanceof AppCompatActivity) {
+            FingerPrintUIHelper fingerPrintUIHelper = new FingerPrintUIHelper((AppCompatActivity) context, transactionId, callback);
             fingerPrintUIHelper.startListening();
         }
         dismiss();
@@ -98,8 +118,8 @@ public class FingerprintDialogConfirmation extends DialogPreferenceHide implemen
     }
 
     @Override
-    public void onGetPreference(boolean isShow) {
-        if(isShow){
+    public void onGetPreference(boolean isHide) {
+        if (!isHide) {
             super.show();
         }
     }

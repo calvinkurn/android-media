@@ -62,6 +62,16 @@ public class FingerprintModule {
 
     @FingerprintScope
     @Provides
+    ReactNativeRouter provideReactNativeRouter(@ApplicationContext Context context) {
+        if(context instanceof ReactNativeRouter){
+            return (ReactNativeRouter) context;
+        }else{
+            return null;
+        }
+    }
+
+    @FingerprintScope
+    @Provides
     SinglePaymentPresenter provideSinglePaymentPresenter(SinglePaymentSavePreferenceUseCase singlePaymentSavePreferenceUseCase,
                                                                    SinglePaymentGetPreferenceUseCase singlePaymentGetPreferenceUseCase){
         return new SinglePaymentPresenter(singlePaymentSavePreferenceUseCase, singlePaymentGetPreferenceUseCase);

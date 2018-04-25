@@ -107,29 +107,44 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
 
     @ReactMethod
     public void goToRBAInfo(){
-        final Dialog dialog = new Dialog(getCurrentActivity(), Dialog.Type.RETORIC);
-        dialog.setBtnOk(getCurrentActivity().getString(R.string.title_ok));
-        dialog.setDesc(getCurrentActivity().getString(R.string.single_auth_label_desc_info));
-        dialog.setTitle(getCurrentActivity().getString(R.string.single_auth_label_setting_credit_card));
-        dialog.setOnOkClickListener(new View.OnClickListener() {
+        runOnUiThread(new Runnable() {
             @Override
-            public void onClick(View view) {
-                dialog.dismiss();
+            public void run() {
+                final Dialog dialog = new Dialog(getCurrentActivity(), Dialog.Type.RETORIC);
+                dialog.setBtnOk(getCurrentActivity().getString(R.string.title_ok));
+                dialog.setDesc(getCurrentActivity().getString(R.string.single_auth_label_desc_info));
+                dialog.setTitle(getCurrentActivity().getString(R.string.single_auth_label_setting_credit_card));
+                dialog.setOnOkClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
             }
         });
-        dialog.show();
     }
 
     @ReactMethod
     public void goToRBAThanks(){
-        SingleAuthPaymentDialog singleAuthPaymentDialog = new SingleAuthPaymentDialog(getCurrentActivity(), Dialog.Type.PROMINANCE, this);
-        singleAuthPaymentDialog.show();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                SingleAuthPaymentDialog singleAuthPaymentDialog = new SingleAuthPaymentDialog(getCurrentActivity(), Dialog.Type.PROMINANCE, ReactNavigationModule.this);
+                singleAuthPaymentDialog.show();
+            }
+        });
     }
 
     @ReactMethod
-    public void goToFingerprintThanks(String transactionId){
-        FingerprintDialogConfirmation dialogPreferenceHide = new FingerprintDialogConfirmation(getCurrentActivity(), Dialog.Type.PROMINANCE, transactionId, this);
-        dialogPreferenceHide.show();
+    public void goToFingerprintThanks(final String transactionId){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                FingerprintDialogConfirmation dialogPreferenceHide = new FingerprintDialogConfirmation(getCurrentActivity(), Dialog.Type.PROMINANCE, transactionId, ReactNavigationModule.this);
+                dialogPreferenceHide.show();
+            }
+        });
     }
 
     @ReactMethod
