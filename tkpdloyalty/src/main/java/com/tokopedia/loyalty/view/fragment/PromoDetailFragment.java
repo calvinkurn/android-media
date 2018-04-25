@@ -38,6 +38,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.subscriptions.CompositeSubscription;
+
 /**
  * @author Aghny A. Putra on 23/03/18
  */
@@ -74,6 +76,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
     @Inject PromoDetailPresenter promoDetailPresenter;
     @Inject PromoDetailAdapter promoDetailAdapter;
     @Inject PromoDataMapper promoDataMapper;
+    @Inject CompositeSubscription compositeSubscription;
 
     @Override
     protected String getScreenName() {
@@ -170,14 +173,14 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
 
     @Override
     public void onDetach() {
-        this.actionListener = null;
         super.onDetach();
+        this.actionListener = null;
     }
 
     @Override
     public void onDestroyView() {
-        this.promoDetailPresenter.detachView();
         super.onDestroyView();
+        this.compositeSubscription.unsubscribe();
     }
 
     @Override
