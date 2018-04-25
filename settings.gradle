@@ -1,5 +1,5 @@
 apply from: "features/settings-features.gradle"
-//apply from: "libraries/settings-libraries.gradle"
+apply from: "libraries/settings-libraries.gradle"
 
 //include 'customerapp'
 //include 'tkpdhome'
@@ -19,7 +19,7 @@ include 'tkpddesign'
 include 'tkpdseller'
 //include 'tkpdtokocash'
 include 'tkpdabstraction'
-include 'tkpdflight'
+//include 'tkpdflight'
 //include 'tkpdevents'
 //include 'tkpdcontent'
 //include 'tkpdstream'

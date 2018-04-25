@@ -8,7 +8,7 @@
     android:clickable="true"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="@dimen/padding_small">
+    android:padding="@dimen/dp_10">
 
     <!-- Untuk onRetry satu halaman -->
     <ImageView
@@ -16,8 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginBottom="@dimen/margin_med"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_5"
         android:gravity="center_horizontal"
         android:src="@drawable/ic_error_network"
         tools:ignore="ContentDescription" />
@@ -25,14 +25,14 @@
     <TextView
         android:id="@+id/message_retry"
         style="@style/TextView.Small.Bold"
-        android:layout_margin="@dimen/margin_vs"
+        android:layout_margin="@dimen/dp_5"
         android:layout_gravity="center"
         android:text="@string/msg_network_error_1" />
 
     <TextView
         android:id="@+id/sub_message_retry"
         style="@style/TextView.Micro"
-        android:layout_margin="@dimen/margin_vs"
+        android:layout_margin="@dimen/dp_5"
         android:layout_gravity="center"
         android:text="@string/msg_network_error_2" />
 
@@ -40,7 +40,7 @@
         android:id="@+id/button_retry"
         style="@style/Button"
         android:background="@drawable/bg_button_green"
-        android:layout_margin="@dimen/margin_med"
+        android:layout_margin="@dimen/dp_20"
         android:layout_gravity="center"
         android:text="Coba Lagi"
         android:textAllCaps="false"

@@ -13,10 +13,10 @@
         <TextView
             android:id="@+id/flag_name"
             style="@style/TextView.Micro"
-            android:paddingBottom="@dimen/padding_vs"
-            android:paddingLeft="@dimen/padding_ms"
-            android:paddingRight="@dimen/padding_ms"
-            android:paddingTop="@dimen/padding_vs"
+            android:paddingBottom="@dimen/dp_5"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_5"
             android:text="TERMURAH" />
 
     </LinearLayout>

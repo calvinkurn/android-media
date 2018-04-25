@@ -39,8 +39,8 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
         if (errorNetworkModel.getErrorMessage() != null && errorNetworkModel.getErrorMessage().length() > 0) {
             tvMessage.setText(errorNetworkModel.getErrorMessage());
         }
-        if (element.getSubErrorMessage() != null && element.getSubErrorMessage().length() > 0) {
-            tvSubMessage.setText(element.getSubErrorMessage());
+        if (errorNetworkModel.getSubErrorMessage() != null && errorNetworkModel.getSubErrorMessage().length() > 0) {
+            tvSubMessage.setText(errorNetworkModel.getSubErrorMessage());
         }
         tvRetryButton.setOnClickListener(new View.OnClickListener() {
             @Override
