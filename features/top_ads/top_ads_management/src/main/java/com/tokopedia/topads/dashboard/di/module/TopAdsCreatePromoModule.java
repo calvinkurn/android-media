@@ -6,6 +6,7 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.product.apis.PromoTopAdsApi;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
@@ -25,7 +26,6 @@ import com.tokopedia.topads.dashboard.data.source.TopAdsCheckProductPromoDataSou
 import com.tokopedia.topads.dashboard.data.source.cloud.CloudTopAdsSearchProductDataSource;
 import com.tokopedia.topads.dashboard.data.source.cloud.TopAdsCheckProductPromoDataSourceCloud;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsDashboardScope;
 import com.tokopedia.topads.dashboard.domain.TopAdsCheckProductPromoRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
@@ -154,8 +154,8 @@ public class TopAdsCreatePromoModule {
 
     @TopAdsDashboardScope
     @Provides
-    TopAdsManagementApi provideTopAdsManagementApi(@TopAdsQualifier Retrofit retrofit) {
-        return retrofit.create(TopAdsManagementApi.class);
+    TopAdsOldManagementApi provideTopAdsManagementApi(@TopAdsQualifier Retrofit retrofit) {
+        return retrofit.create(TopAdsOldManagementApi.class);
     }
 
     @TopAdsDashboardScope

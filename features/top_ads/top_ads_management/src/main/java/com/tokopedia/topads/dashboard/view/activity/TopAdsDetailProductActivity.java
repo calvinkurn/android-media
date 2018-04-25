@@ -12,7 +12,6 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
@@ -52,7 +51,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
                             .putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true)
                             .putExtras(extras);
                 } else {
-                    return TopAdsDashboardActivity.getCallingIntent(context)
+                    return TopAdsOldDashboardActivity.getCallingIntent(context)
                             .putExtras(extras);
                 }
             } else {
@@ -124,7 +123,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
             if(deepLink!= null && deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)) {
                 super.onBackPressed();
             } else {
-                Intent intent = new Intent(this, TopAdsDashboardActivity.class);
+                Intent intent = new Intent(this, TopAdsOldDashboardActivity.class);
                 this.startActivity(intent);
                 this.finish();
             }

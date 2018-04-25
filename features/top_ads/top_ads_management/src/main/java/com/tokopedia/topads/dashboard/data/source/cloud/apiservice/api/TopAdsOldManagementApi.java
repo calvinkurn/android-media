@@ -36,7 +36,7 @@ import rx.Observable;
 /**
  * Created by zulfikarrahman on 11/4/16.
  */
-public interface TopAdsManagementApi {
+public interface TopAdsOldManagementApi {
 
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_STATISTIC)
     Observable<Response<DataResponse<DataStatistic>>> getDashboardStatistic(@QueryMap Map<String, String> params);

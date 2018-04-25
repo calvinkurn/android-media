@@ -23,7 +23,7 @@ import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsOldDashboardActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailProductActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 
@@ -212,7 +212,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intentToLaunch = new Intent(context, SplashScreenActivity.class);
             intentToLaunch.setData(uriData);
         } else if (TextUtils.isEmpty(type)) {
-            intentToLaunch = new Intent(context, TopAdsDashboardActivity.class);
+            intentToLaunch = new Intent(context, TopAdsOldDashboardActivity.class);
             intentToLaunch.setData(uriData);
         } else if (TOPADS_VIEW_TYPE.equals(type)) {
             String adId = uriData.getQueryParameter(PARAM_AD_ID);
