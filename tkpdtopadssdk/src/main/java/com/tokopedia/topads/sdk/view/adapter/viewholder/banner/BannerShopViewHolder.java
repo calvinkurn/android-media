@@ -110,7 +110,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                         }
                     });
                 }
-                if(productList.get(1) != null){
+                if(productList.size() > 1){
                     final Product product = productList.get(1);
                     image2.setVisibility(View.VISIBLE);
                     Glide.with(context).load(productList.get(1).getImageProduct().getImageUrl()).into(image2);
