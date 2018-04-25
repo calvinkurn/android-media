@@ -434,6 +434,14 @@ dependencies {
     }
     // Cloud testing
     androidTestImplementation (name:'cloudtestingscreenshotter_lib', ext:'aar')
+
+    androidTestImplementation(rootProject.ext.miscDependencies.facebook) {
+        exclude group: 'com.android.support'
+    }
+
+    androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
+    androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
+
     //[END] test and androidTest dependencies
 }
 
