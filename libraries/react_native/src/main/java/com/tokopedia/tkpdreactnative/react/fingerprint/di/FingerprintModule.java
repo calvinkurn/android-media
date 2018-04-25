@@ -21,6 +21,8 @@ import com.tokopedia.tkpdreactnative.react.fingerprint.domain.SaveFingerPrintUse
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.presenter.FingerprintConfirmationPresenter;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.presenter.SaveFingerPrintPresenter;
+import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.presenter.SetSingleAuthPaymentPresenter;
+import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.domain.SinglePaymentGetPreferenceUseCase;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.domain.SinglePaymentSavePreferenceUseCase;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.presenter.SinglePaymentPresenter;
@@ -50,6 +52,13 @@ public class FingerprintModule {
                                                     UserSession userSession){
         return new SaveFingerPrintPresenter(userSession, saveFingerPrintUseCase);
     };
+
+    @FingerprintScope
+    @Provides
+    SetSingleAuthPaymentPresenter provideSetSingleAuthPaymentPresenter(ReactNativeRouter reactNativeRouter,
+                                                                       UserSession userSession) {
+        return new SetSingleAuthPaymentPresenter(reactNativeRouter, userSession);
+    }
 
     @FingerprintScope
     @Provides
