@@ -125,6 +125,12 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDialog().setCanceledOnTouchOutside(false);
+    }
+
     public interface ListenerRegister {
         void onRegisterFingerPrint(String transactionId, String publicKey, String date, String signature, String userId);
 

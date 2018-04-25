@@ -16,10 +16,18 @@
 
     <TextView
         android:id="@+id/tv_desc_dialog"
-        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_14" />
+
+    <CheckBox
+        android:id="@+id/checkbox_dialog_hide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/checkBoxStyle"
+        android:text="@string/dialog_payment_label_dont_show"
+        android:layout_marginBottom="@dimen/dp_24"/>
 
     <LinearLayout
         android:layout_gravity="right|end"

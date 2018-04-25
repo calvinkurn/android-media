@@ -43,7 +43,6 @@ public class FingerPrintUIHelper implements FingerprintDialogRegister.ListenerRe
             fingerprintDialog.setListenerRegister(this);
             fingerprintDialog.setContext(activity);
             fingerprintDialog.show(activity.getSupportFragmentManager(), "fingerprintRegister");
-            fingerprintDialog.getDialog().setCanceledOnTouchOutside(false);
         }
     }
 

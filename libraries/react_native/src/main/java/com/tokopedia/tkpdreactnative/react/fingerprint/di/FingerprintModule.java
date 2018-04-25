@@ -1,18 +1,31 @@
 package com.tokopedia.tkpdreactnative.react.fingerprint.di;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.tkpdreactnative.react.common.data.PreferenceRepository;
+import com.tokopedia.tkpdreactnative.react.common.data.PreferenceRepositoryImpl;
+import com.tokopedia.tkpdreactnative.react.common.data.source.DataSourcePreference;
 import com.tokopedia.tkpdreactnative.react.fingerprint.data.AccountFingerprintApi;
 import com.tokopedia.tkpdreactnative.react.fingerprint.data.FingerprintApi;
 import com.tokopedia.tkpdreactnative.react.fingerprint.data.FingerprintDataSourceCloud;
 import com.tokopedia.tkpdreactnative.react.fingerprint.data.FingerprintRepositoryImpl;
+import com.tokopedia.tkpdreactnative.react.fingerprint.domain.FingerprintGetPreferenceUseCase;
 import com.tokopedia.tkpdreactnative.react.fingerprint.domain.FingerprintRepository;
+import com.tokopedia.tkpdreactnative.react.fingerprint.domain.FingerprintSavePreferenceUseCase;
 import com.tokopedia.tkpdreactnative.react.fingerprint.domain.SaveFingerPrintUseCase;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
+import com.tokopedia.tkpdreactnative.react.fingerprint.view.presenter.FingerprintConfirmationPresenter;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.presenter.SaveFingerPrintPresenter;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.presenter.SetSingleAuthPaymentPresenter;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
+import com.tokopedia.tkpdreactnative.react.singleauthpayment.domain.SinglePaymentGetPreferenceUseCase;
+import com.tokopedia.tkpdreactnative.react.singleauthpayment.domain.SinglePaymentSavePreferenceUseCase;
+import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.presenter.SinglePaymentPresenter;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,6 +44,7 @@ import retrofit2.Retrofit;
 public class FingerprintModule {
     public static final int READ_TIMEOUT = 60;
     public static final int WRITE_TIMEOUT = 60;
+    public static final String FINGERPRINT_PREFERENCE = "fingerprint_preference";
 
     @FingerprintScope
     @Provides
@@ -45,6 +59,32 @@ public class FingerprintModule {
                                                                        UserSession userSession) {
         return new SetSingleAuthPaymentPresenter(reactNativeRouter, userSession);
     }
+
+    @FingerprintScope
+    @Provides
+    SinglePaymentPresenter provideSinglePaymentPresenter(SinglePaymentSavePreferenceUseCase singlePaymentSavePreferenceUseCase,
+                                                                   SinglePaymentGetPreferenceUseCase singlePaymentGetPreferenceUseCase){
+        return new SinglePaymentPresenter(singlePaymentSavePreferenceUseCase, singlePaymentGetPreferenceUseCase);
+    };
+
+    @FingerprintScope
+    @Provides
+    FingerprintConfirmationPresenter provideFingerprintConfirmationPresenter(FingerprintSavePreferenceUseCase fingerprintSavePreferenceUseCase,
+                                                                     FingerprintGetPreferenceUseCase fingerprintGetPreferenceUseCase){
+        return new FingerprintConfirmationPresenter(fingerprintSavePreferenceUseCase, fingerprintGetPreferenceUseCase);
+    };
+
+    @FingerprintScope
+    @Provides
+    PreferenceRepository providePreferenceRepository(DataSourcePreference dataSourcePreference){
+        return new PreferenceRepositoryImpl(dataSourcePreference);
+    };
+
+    @FingerprintScope
+    @Provides
+    LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context){
+        return new LocalCacheHandler(context, FINGERPRINT_PREFERENCE);
+    };
 
     @FingerprintScope
     @Provides

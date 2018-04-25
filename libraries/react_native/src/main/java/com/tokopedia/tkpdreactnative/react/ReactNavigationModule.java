@@ -2,7 +2,7 @@ package com.tokopedia.tkpdreactnative.react;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -10,13 +10,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.container.GTMDataLayer;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -26,8 +20,8 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;
-
-import org.json.JSONObject;
+import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerprintDialogConfirmation;
+import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.SingleAuthPaymentDialog;
 
 import java.util.HashMap;
 
@@ -107,19 +101,35 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
                 } else {
                     promise.resolve("NOT OK");
                 }
-
             }
         });
+    }
 
+    @ReactMethod
+    public void goToRBAInfo(){
+        final Dialog dialog = new Dialog(getCurrentActivity(), Dialog.Type.RETORIC);
+        dialog.setBtnOk(getCurrentActivity().getString(R.string.title_ok));
+        dialog.setDesc(getCurrentActivity().getString(R.string.single_auth_label_desc_info));
+        dialog.setTitle(getCurrentActivity().getString(R.string.single_auth_label_setting_credit_card));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    @ReactMethod
+    public void goToRBAThanks(){
+        SingleAuthPaymentDialog singleAuthPaymentDialog = new SingleAuthPaymentDialog(getCurrentActivity(), Dialog.Type.PROMINANCE, this);
+        singleAuthPaymentDialog.show();
     }
 
     @ReactMethod
     public void goToFingerprintThanks(String transactionId){
-        Dialog dialog = new Dialog();
-        if(getCurrentActivity() instanceof  AppCompatActivity) {
-            FingerPrintUIHelper fingerPrintUIHelper = new FingerPrintUIHelper((AppCompatActivity)getCurrentActivity(), transactionId, this);
-            fingerPrintUIHelper.startListening();
-        }
+        FingerprintDialogConfirmation dialogPreferenceHide = new FingerprintDialogConfirmation(getCurrentActivity(), Dialog.Type.PROMINANCE, transactionId, this);
+        dialogPreferenceHide.show();
     }
 
     @ReactMethod
