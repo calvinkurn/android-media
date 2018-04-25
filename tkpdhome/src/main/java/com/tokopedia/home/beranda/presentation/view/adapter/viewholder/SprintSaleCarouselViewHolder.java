@@ -141,7 +141,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     }
 
     private void onClickSeeAll() {
-        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()), "");
+        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()), channels.getHomeAttribution());
         HomePageTracking.eventClickSeeAllProductSprintBackground();
     }
 

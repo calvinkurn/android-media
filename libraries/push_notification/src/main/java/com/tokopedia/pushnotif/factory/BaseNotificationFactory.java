@@ -121,9 +121,10 @@ public abstract class BaseNotificationFactory {
         return resultPendingIntent;
     }
 
-    protected PendingIntent createDismissPendingIntent(int notificationType) {
+    protected PendingIntent createDismissPendingIntent(int notificationType, int notificationId) {
         Intent intent = new Intent(context, DismissBroadcastReceiver.class);
         intent.putExtra(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
+        intent.putExtra(Constant.EXTRA_NOTIFICATION_ID, notificationId);
         return PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
     }
 

@@ -28,6 +28,8 @@ public interface GroupChatModuleRouter {
 
     String getNotificationPreferenceConstant();
 
+    boolean isEnabledGroupChat();
+
     boolean isEnabledGroupChatRoom();
 
     boolean isEnabledIdleKick();

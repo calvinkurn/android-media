@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.profile.view.customview.PartialUserDataView;
 import com.tokopedia.profile.view.customview.PartialUserInfoView;
 import com.tokopedia.profile.view.customview.PartialUserShopView;
+import com.tokopedia.profile.view.listener.TopProfileActivityListener;
 import com.tokopedia.profile.view.listener.TopProfileFragmentListener;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
@@ -50,7 +51,7 @@ public class TopProfileFragment extends TkpdBaseV4Fragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null && this.topProfileViewModel == null) {
             if (savedInstanceState.getParcelable(SAVED_MODEL) != null) {
                 this.topProfileViewModel = savedInstanceState.getParcelable(SAVED_MODEL);
             }
@@ -92,6 +93,13 @@ public class TopProfileFragment extends TkpdBaseV4Fragment
             partialUserDataView.renderData(topProfileViewModel);
             partialUserInfoView.renderData(topProfileViewModel);
             partialUserShopView.renderData(topProfileViewModel);
+
+            if (getActivity() instanceof  TopProfileActivityListener.View) {
+                partialUserShopView.setPartialShopListener((TopProfileActivityListener.View) getActivity());
+            } else {
+                throw new IllegalStateException("Activity must implement " +
+                        TopProfileActivityListener.View.class.getSimpleName());
+            }
         }
     }
 }
