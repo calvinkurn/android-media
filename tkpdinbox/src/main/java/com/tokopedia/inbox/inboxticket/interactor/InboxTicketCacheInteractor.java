@@ -18,8 +18,6 @@ public interface InboxTicketCacheInteractor {
 
     void deleteCache();
 
-    void unsubscribe();
-
     interface GetInboxTicketCacheListener {
         void onSuccess(InboxTicket result);
 
