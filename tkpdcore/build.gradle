@@ -125,11 +125,6 @@ dependencies {
         exclude module: 'answers-shim'
     }
 
-    compile rootProject.ext.apolloDependencies.apolloRxSupport
-    compile rootProject.ext.apolloDependencies.apolloRuntime
-    compile rootProject.ext.apolloDependencies.apolloAndroidSupport
-    compile rootProject.ext.apolloDependencies.apolloRxSupport
-
     compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.remoteConfig
     compile rootProject.ext.debugToolsDependencies.stetho

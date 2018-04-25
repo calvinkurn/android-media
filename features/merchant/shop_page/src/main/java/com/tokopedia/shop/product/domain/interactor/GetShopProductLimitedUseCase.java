@@ -54,6 +54,7 @@ public class GetShopProductLimitedUseCase extends UseCase<PagingList<ShopProduct
         shopProductRequestModel.setShopId(shopId);
         shopProductRequestModel.setOfficialStore(officialStore);
         shopProductRequestModel.setPage(page);
+        shopProductRequestModel.setUseAce(true);
         List<ShopProductLimitedFeaturedViewModel> defaultFeaturedProductList = new ArrayList<>();
         Observable<List<ShopProductLimitedFeaturedViewModel>> featuredProductObservable = Observable.just(defaultFeaturedProductList);
         if ((goldMerchantStore || officialStore) && page == 1) {

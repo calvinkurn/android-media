@@ -2,6 +2,7 @@ package com.tokopedia.loyalty.view.adapter;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.os.Parcelable;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
 import com.tokopedia.loyalty.view.data.PromoMenuData;
@@ -27,6 +28,18 @@ public class PromoPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         return PromoListFragment.newInstance(promoMenuDataList.get(position), autoSelectCategoryId);
+    }
+
+    /**
+     * If "Don't keep activities" is turned on, ViewPager that has FragmentStatePagerAdapter
+     * doesn't recreate fragments.
+     * This method is used to prevent Android from recreating fragment.
+     *
+     * @return null
+     */
+    @Override
+    public Parcelable saveState() {
+        return null;
     }
 
     @Override

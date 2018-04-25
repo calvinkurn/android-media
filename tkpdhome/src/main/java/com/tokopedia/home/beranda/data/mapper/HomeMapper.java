@@ -94,12 +94,14 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                     channel.getEnhanceImpressionDynamicChannelHomePage(position)
                             );
                         }
-                        list.add(mappingDynamicChannel(channel));
+                        if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
+                            list.add(new DigitalsViewModel(MainApplication.getAppContext().getString(R.string.digital_widget_title), 0));
+                        } else {
+                            list.add(mappingDynamicChannel(channel));
+                        }
                     }
                 }
             }
-
-            list.add(new DigitalsViewModel(MainApplication.getAppContext().getString(R.string.digital_widget_title), 0));
 
             return list;
         } else {
