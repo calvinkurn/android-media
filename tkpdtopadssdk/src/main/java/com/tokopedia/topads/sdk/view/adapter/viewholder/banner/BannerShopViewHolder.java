@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -112,7 +113,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                 }
                 if(productList.size() > 1){
                     final Product product = productList.get(1);
-                    image2.setVisibility(View.VISIBLE);
+                    ((CardView) image2.getParent()).setVisibility(View.VISIBLE);
                     Glide.with(context).load(productList.get(1).getImageProduct().getImageUrl()).into(image2);
                     image2.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -122,6 +123,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                             }
                         }
                     });
+                    ((LinearLayout.LayoutParams) productContainer.getLayoutParams()).setMargins(0,0,0,0);
                 }
             } else {
                 productContainer.setVisibility(View.GONE);
