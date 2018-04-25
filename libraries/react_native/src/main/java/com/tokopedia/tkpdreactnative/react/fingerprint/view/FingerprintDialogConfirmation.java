@@ -45,8 +45,8 @@ public class FingerprintDialogConfirmation extends DialogPreferenceHide implemen
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        fingerprintConfirmationPresenter.savePreferenceHide(isCheckedBoxHideDialog());
                         dismiss();
+                        fingerprintConfirmationPresenter.savePreferenceHide(isCheckedBoxHideDialog());
                     }
                 });
             }

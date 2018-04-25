@@ -29,5 +29,6 @@ public class DataSourcePreference {
         }else if(value instanceof String){
             localCacheHandler.putString(key, (String) value);
         }
+        localCacheHandler.applyEditor();
     }
 }
