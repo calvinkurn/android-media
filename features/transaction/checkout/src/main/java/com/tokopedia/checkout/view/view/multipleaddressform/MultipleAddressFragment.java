@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
@@ -15,6 +14,7 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.view.adapter.MultipleAddressAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
+import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerMultipleAddressComponent;
 import com.tokopedia.checkout.view.di.component.MultipleAddressComponent;
 import com.tokopedia.checkout.view.di.module.MultipleAddressModule;
@@ -33,8 +33,7 @@ import static com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddre
  */
 
 public class MultipleAddressFragment extends BaseCheckoutFragment
-        implements IMultipleAddressView,
-        MultipleAddressAdapter.MultipleAddressAdapterListener {
+        implements IMultipleAddressView, MultipleAddressAdapter.MultipleAddressAdapterListener {
 
     @Inject
     IMultipleAddressPresenter presenter;
@@ -83,7 +82,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     protected void initInjector() {
         MultipleAddressComponent component = DaggerMultipleAddressComponent
                 .builder()
-                .baseAppComponent(getComponent(BaseAppComponent.class))
+                .cartComponent(getComponent(CartComponent.class))
                 .multipleAddressModule(new MultipleAddressModule(this)).build();
         component.inject(this);
     }

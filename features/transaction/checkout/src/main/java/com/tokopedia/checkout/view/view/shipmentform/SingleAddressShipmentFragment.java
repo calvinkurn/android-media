@@ -27,7 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
@@ -48,6 +47,7 @@ import com.tokopedia.checkout.domain.mapper.CartShipmentAddressFormDataConverter
 import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
+import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerSingleAddressShipmentComponent;
 import com.tokopedia.checkout.view.di.component.SingleAddressShipmentComponent;
 import com.tokopedia.checkout.view.di.module.SingleAddressShipmentModule;
@@ -133,7 +133,7 @@ public class SingleAddressShipmentFragment extends BaseCheckoutFragment
     @Override
     protected void initInjector() {
         SingleAddressShipmentComponent component = DaggerSingleAddressShipmentComponent.builder()
-                .baseAppComponent(getComponent(BaseAppComponent.class))
+                .cartComponent(getComponent(CartComponent.class))
                 .singleAddressShipmentModule(new SingleAddressShipmentModule(this))
                 .build();
         component.inject(this);

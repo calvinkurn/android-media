@@ -32,6 +32,9 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
 import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
+import com.tokopedia.checkout.view.di.component.CartComponent;
+import com.tokopedia.checkout.view.di.component.CartComponentInjector;
+import com.tokopedia.checkout.view.di.component.DaggerCartComponent;
 import com.tokopedia.checkout.view.di.module.DataModule;
 import com.tokopedia.checkout.view.view.cartlist.CartActivity;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -244,9 +247,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActi
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.TokoCashPendingCashbackMapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
-import com.tokopedia.tkpd.transaction.CartApiServiceComponent;
-import com.tokopedia.tkpd.transaction.CartApiServiceComponentInjector;
-import com.tokopedia.tkpd.transaction.DaggerCartApiServiceComponent;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
@@ -308,7 +308,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private ContentConsumerComponent contentConsumerComponent;
     private ProductComponent productComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
-    private CartApiServiceComponent cartApiServiceComponent;
+    private CartComponent cartApiServiceComponent;
     private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
     private RemoteConfig remoteConfig;
@@ -389,7 +389,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         daggerContentBuilder = DaggerContentConsumerComponent.builder()
                 .feedPlusComponent(feedPlusComponent);
 
-        cartApiServiceComponent = DaggerCartApiServiceComponent.builder()
+        cartApiServiceComponent = DaggerCartComponent.builder()
                 .baseAppComponent((this).getBaseAppComponent())
                 .dataModule(new DataModule())
                 .build();
@@ -1492,7 +1492,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
-        return CartApiServiceComponentInjector.newInstance(cartApiServiceComponent).getAddToCartUseCase()
+        return CartComponentInjector.newInstance(cartApiServiceComponent).getAddToCartUseCase()
                 .createObservable(requestParams)
                 .map(new Func1<AddToCartDataResponse, AddToCartResult>() {
                     @Override
@@ -1567,7 +1567,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     ) {
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putString(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
-        return CartApiServiceComponentInjector.newInstance(cartApiServiceComponent)
+        return CartComponentInjector.newInstance(cartApiServiceComponent)
                 .getCheckPromoCodeCartListUseCase()
                 .createObservable(requestParams);
     }
@@ -1578,7 +1578,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     ) {
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putObject(CheckPromoCodeCartShipmentUseCase.PARAM_CARTS, checkPromoCodeCartShipmentRequest);
-        return CartApiServiceComponentInjector.newInstance(cartApiServiceComponent)
+        return CartComponentInjector.newInstance(cartApiServiceComponent)
                 .getCheckPromoCodeCartShipmentUseCase().createObservable(requestParams);
     }
 
@@ -1587,7 +1587,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putString(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE, page);
         requestParams.putString(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE_SIZE, pageSize);
-        return CartApiServiceComponentInjector.newInstance(cartApiServiceComponent)
+        return CartComponentInjector.newInstance(cartApiServiceComponent)
                 .getGetCouponListCartMarketPlaceUseCase().createObservable(requestParams);
     }
 
@@ -1943,7 +1943,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
-        CartApiServiceComponentInjector.newInstance(cartApiServiceComponent)
+        CartComponentInjector.newInstance(cartApiServiceComponent)
                 .getGetMarketPlaceCartCounterUseCase()
                 .executeWithSubscriber(this, listener);
     }

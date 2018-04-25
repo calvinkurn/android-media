@@ -20,8 +20,6 @@ import rx.Subscriber;
 
 public interface ICartListInteractor {
 
-    void getCartList(Subscriber<CartListData> subscriber, TKPDMapParam<String, String> param);
-
     void deleteCart(Subscriber<DeleteCartData> subscriber, TKPDMapParam<String, String> param);
 
     void deleteCartAndRefreshCartList(Subscriber<DeleteAndRefreshCartListData> subscriber,

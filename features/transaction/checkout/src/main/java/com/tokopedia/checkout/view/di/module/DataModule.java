@@ -11,7 +11,7 @@ import com.tokopedia.checkout.data.apiservice.CartApiInterceptor;
 import com.tokopedia.checkout.data.apiservice.CartResponseConverter;
 import com.tokopedia.checkout.data.repository.CartRepository;
 import com.tokopedia.checkout.data.repository.ICartRepository;
-import com.tokopedia.checkout.view.di.CartApiQualifier;
+import com.tokopedia.checkout.view.di.CartQualifier;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
@@ -34,7 +34,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class DataModule {
 
     @Provides
-    @CartApiQualifier
+    @CartQualifier
     CartApiInterceptor getCartApiInterceptor(@ApplicationContext Context context,
                                              UserSession userSession,
                                              AbstractionRouter abstractionRouter) {
@@ -42,8 +42,8 @@ public class DataModule {
     }
 
     @Provides
-    @CartApiQualifier
-    public OkHttpClient provideOkHttpClient(@CartApiQualifier CartApiInterceptor cartApiInterceptor) {
+    @CartQualifier
+    public OkHttpClient provideOkHttpClient(@CartQualifier CartApiInterceptor cartApiInterceptor) {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
         OkHttpClient.Builder builder = OkHttpFactory.create()
@@ -59,8 +59,8 @@ public class DataModule {
     }
 
     @Provides
-    @CartApiQualifier
-    public Retrofit provideCartRetrofit(@CartApiQualifier OkHttpClient okHttpClient) {
+    @CartQualifier
+    public Retrofit provideCartRetrofit(@CartQualifier OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(TkpdBaseURL.BASE_API_DOMAIN)
                 .addConverterFactory(CartResponseConverter.create())
@@ -72,13 +72,13 @@ public class DataModule {
     }
 
     @Provides
-    @CartApiQualifier
-    public CartApi provideCartApi(@CartApiQualifier Retrofit retrofit) {
+    @CartQualifier
+    public CartApi provideCartApi(@CartQualifier Retrofit retrofit) {
         return retrofit.create(CartApi.class);
     }
 
     @Provides
-    ICartRepository provideICartRepository(@CartApiQualifier CartApi cartApi) {
+    ICartRepository provideICartRepository(@CartQualifier CartApi cartApi) {
         return new CartRepository(cartApi);
     }
 

@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -23,9 +22,13 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
+import com.tokopedia.checkout.view.di.component.CartComponent;
+import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.di.component.CartShipmentComponent;
+import com.tokopedia.checkout.view.di.component.DaggerCartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartShipmentComponent;
 import com.tokopedia.checkout.view.di.module.CartShipmentModule;
+import com.tokopedia.checkout.view.di.module.DataModule;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -44,7 +47,8 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 25/01/18.
  */
 
-public class CartShipmentActivity extends BaseCheckoutActivity implements ICartShipmentActivity, HasComponent<BaseAppComponent> {
+public class CartShipmentActivity extends BaseCheckoutActivity implements ICartShipmentActivity,
+        HasComponent<CartComponent> {
     public static final int REQUEST_CODE = 983;
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 1;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2;
@@ -112,7 +116,7 @@ public class CartShipmentActivity extends BaseCheckoutActivity implements ICartS
 
     protected void initInjector() {
         CartShipmentComponent component = DaggerCartShipmentComponent.builder()
-                .baseAppComponent(getComponent())
+                .cartComponent(getComponent())
                 .cartShipmentModule(new CartShipmentModule(this))
                 .build();
         component.inject(this);
@@ -367,7 +371,12 @@ public class CartShipmentActivity extends BaseCheckoutActivity implements ICartS
     }
 
     @Override
-    public BaseAppComponent getComponent() {
-        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
+    public CartComponent getComponent() {
+        return CartComponentInjector.newInstance(
+                DaggerCartComponent.builder()
+                        .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
+                        .dataModule(new DataModule())
+                        .build())
+                .getCartApiServiceComponent();
     }
 }

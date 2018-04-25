@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.domain.usecase;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.checkout.data.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.checkout.data.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
 import com.tokopedia.checkout.data.entity.response.deletecart.DeleteCartDataResponse;
@@ -24,6 +23,7 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 
 import javax.inject.Inject;
 
@@ -56,24 +56,6 @@ public class CartListInteractor implements ICartListInteractor {
         this.cartMapper = cartMapper;
         this.shipmentMapper = shipmentMapper;
         this.voucherCouponMapper = voucherCouponMapper;
-    }
-
-
-    @Override
-    public void getCartList(Subscriber<CartListData> subscriber, TKPDMapParam<String, String> param) {
-        compositeSubscription.add(
-                cartRepository.getCartList(param)
-                        .map(new Func1<CartDataListResponse, CartListData>() {
-                            @Override
-                            public CartListData call(CartDataListResponse cartDataListResponse) {
-                                return cartMapper.convertToCartItemDataList(cartDataListResponse);
-                            }
-                        })
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(subscriber)
-        );
     }
 
     @Override

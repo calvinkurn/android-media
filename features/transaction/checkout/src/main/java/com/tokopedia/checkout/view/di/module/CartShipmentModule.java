@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.di.module;
 
-import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.checkout.data.repository.ICartRepository;
 import com.tokopedia.checkout.data.repository.ITopPayRepository;
 import com.tokopedia.checkout.data.repository.TopPayRepository;
@@ -10,7 +9,6 @@ import com.tokopedia.checkout.domain.mapper.IMapperUtil;
 import com.tokopedia.checkout.domain.mapper.ITopPayMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.checkout.domain.mapper.TopPayMapper;
-import com.tokopedia.checkout.domain.mapper.VoucherCouponMapper;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
@@ -19,6 +17,7 @@ import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.checkout.view.view.shipmentform.CartShipmentPresenter;
 import com.tokopedia.checkout.view.view.shipmentform.ICartShipmentActivity;
 import com.tokopedia.checkout.view.view.shipmentform.ICartShipmentPresenter;
+import com.tokopedia.core.network.apiservices.transaction.TXActService;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,7 +27,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 05/03/18.
  */
 
-@Module(includes = {DataModule.class, ConverterDataModule.class, UtilModule.class})
+@Module(includes = {ConverterDataModule.class})
 public class CartShipmentModule {
 
     private final ICartShipmentActivity viewListener;
@@ -55,11 +54,6 @@ public class CartShipmentModule {
         return new TopPayMapper();
     }
 
-    @Provides
-    @CartShipmentActivityScope
-    IVoucherCouponMapper provideIVoucherCouponMapper(IMapperUtil mapperUtil) {
-        return new VoucherCouponMapper(mapperUtil);
-    }
 
     @Provides
     @CartShipmentActivityScope

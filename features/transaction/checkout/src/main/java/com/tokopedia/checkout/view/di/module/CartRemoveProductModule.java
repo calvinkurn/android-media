@@ -3,13 +3,11 @@ package com.tokopedia.checkout.view.di.module;
 import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.checkout.data.repository.ICartRepository;
-import com.tokopedia.checkout.domain.mapper.CartMapper;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.IMapperUtil;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
-import com.tokopedia.checkout.domain.mapper.VoucherCouponMapper;
 import com.tokopedia.checkout.domain.usecase.CartListInteractor;
 import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.checkout.view.adapter.CartRemoveProductAdapter;
@@ -25,7 +23,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * @author Aghny A. Putra on 31/01/18.
  */
-@Module(includes = {DataModule.class, ConverterDataModule.class, UtilModule.class})
+@Module(includes = {ConverterDataModule.class})
 public class CartRemoveProductModule {
 
     private final CartRemoveProductAdapter.CartRemoveProductActionListener actionListener;
@@ -42,20 +40,8 @@ public class CartRemoveProductModule {
 
     @Provides
     @CartRemoveProductScope
-    ICartMapper provideICartMapper(IMapperUtil mapperUtil) {
-        return new CartMapper(mapperUtil);
-    }
-
-    @Provides
-    @CartRemoveProductScope
     IShipmentMapper provideIShipmentMapper(IMapperUtil mapperUtil) {
         return new ShipmentMapper(mapperUtil);
-    }
-
-    @Provides
-    @CartRemoveProductScope
-    IVoucherCouponMapper provideIVoucherCouponMapper(IMapperUtil mapperUtil) {
-        return new VoucherCouponMapper(mapperUtil);
     }
 
     @Provides

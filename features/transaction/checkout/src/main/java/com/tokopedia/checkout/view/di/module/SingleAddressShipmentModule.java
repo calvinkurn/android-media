@@ -1,13 +1,11 @@
 package com.tokopedia.checkout.view.di.module;
 
 import com.tokopedia.checkout.data.repository.ICartRepository;
-import com.tokopedia.checkout.domain.mapper.CartMapper;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.IMapperUtil;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
-import com.tokopedia.checkout.domain.mapper.VoucherCouponMapper;
 import com.tokopedia.checkout.domain.usecase.CartListInteractor;
 import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter;
@@ -25,7 +23,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author Aghny A. Putra on 31/01/18.
  */
 
-@Module(includes = {DataModule.class, ConverterDataModule.class, PeopleAddressModule.class, UtilModule.class})
+@Module(includes = {ConverterDataModule.class, PeopleAddressModule.class})
 public class SingleAddressShipmentModule {
 
     private SingleAddressShipmentAdapter.ActionListener adapterActionListener;
@@ -44,20 +42,8 @@ public class SingleAddressShipmentModule {
 
     @Provides
     @SingleAddressShipmentScope
-    ICartMapper provideICartMapper(IMapperUtil mapperUtil) {
-        return new CartMapper(mapperUtil);
-    }
-
-    @Provides
-    @SingleAddressShipmentScope
     IShipmentMapper provideIShipmentMapper(IMapperUtil mapperUtil) {
         return new ShipmentMapper(mapperUtil);
-    }
-
-    @Provides
-    @SingleAddressShipmentScope
-    IVoucherCouponMapper provideIVoucherCouponMapper(IMapperUtil mapperUtil) {
-        return new VoucherCouponMapper(mapperUtil);
     }
 
     @Provides

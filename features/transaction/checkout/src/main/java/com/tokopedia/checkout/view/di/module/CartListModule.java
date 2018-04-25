@@ -3,14 +3,13 @@ package com.tokopedia.checkout.view.di.module;
 import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.checkout.data.repository.ICartRepository;
-import com.tokopedia.checkout.domain.mapper.CartMapper;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.IMapperUtil;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
-import com.tokopedia.checkout.domain.mapper.VoucherCouponMapper;
 import com.tokopedia.checkout.domain.usecase.CartListInteractor;
+import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
@@ -28,7 +27,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-@Module(includes = {DataModule.class, ConverterDataModule.class, UtilModule.class})
+@Module(includes = {ConverterDataModule.class})
 public class CartListModule {
 
     private final ICartListView cartListView;
@@ -47,20 +46,8 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    ICartMapper provideICartMapper(IMapperUtil mapperUtil) {
-        return new CartMapper(mapperUtil);
-    }
-
-    @Provides
-    @CartListScope
     IShipmentMapper provideIShipmentMapper(IMapperUtil mapperUtil) {
         return new ShipmentMapper(mapperUtil);
-    }
-
-    @Provides
-    @CartListScope
-    IVoucherCouponMapper provideIVoucherCouponMapper(IMapperUtil mapperUtil) {
-        return new VoucherCouponMapper(mapperUtil);
     }
 
     @Provides
@@ -76,8 +63,10 @@ public class CartListModule {
     @Provides
     @CartListScope
     ICartListPresenter provideICartListPresenter(ICartRepository cartRepository,
-                                                 ICartListInteractor cartListInteractor) {
-        return new CartListPresenter(cartListView, cartListInteractor);
+                                                 ICartListInteractor cartListInteractor,
+                                                 GetCartListUseCase getCartListUseCase,
+                                                 CompositeSubscription compositeSubscription) {
+        return new CartListPresenter(cartListView, cartListInteractor, getCartListUseCase, compositeSubscription);
     }
 
     @Provides
