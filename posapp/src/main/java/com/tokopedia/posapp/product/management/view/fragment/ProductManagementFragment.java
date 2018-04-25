@@ -4,15 +4,21 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.posapp.PosApplication;
+import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.base.domain.model.DataStatus;
 import com.tokopedia.posapp.base.fragment.PosBaseListFragment;
+import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.posapp.product.management.di.component.DaggerProductManagementComponent;
 import com.tokopedia.posapp.product.management.di.component.ProductManagementComponent;
 import com.tokopedia.posapp.product.management.view.ProductManagement;
@@ -22,6 +28,7 @@ import com.tokopedia.posapp.product.management.view.viewmodel.ProductHeaderViewM
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -31,7 +38,7 @@ import javax.inject.Inject;
  */
 
 public class ProductManagementFragment
-        extends PosBaseListFragment<Visitable, ProductManagementAdapterTypeFactory>
+        extends BaseListFragment<Visitable, ProductManagementAdapterTypeFactory>
         implements ProductManagementTypeFactory.Listener, ProductManagement.View {
 
     public static final String TAG = ProductManagementFragment.class.getSimpleName();
@@ -73,6 +80,12 @@ public class ProductManagementFragment
         loadInitialData();
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_pos_base_list, container, false);
+    }
+
     @Override
     public void loadInitialData() {
         setLoadingView();
@@ -95,8 +108,8 @@ public class ProductManagementFragment
     }
 
     @Override
-    public void onShowProductCheckedChange(ProductViewModel element, boolean isChecked) {
-        presenter.editStatus(element, isChecked);
+    public void onShowProductCheckedChange(ProductViewModel element, boolean isChecked, int position) {
+        presenter.editStatus(element, isChecked, position);
     }
 
     @Override
@@ -133,13 +146,21 @@ public class ProductManagementFragment
     }
 
     @Override
-    public void onSuccessEditStatus() {
-        loadInitialData();
+    public void onSuccessEditStatus(int position, ProductViewModel productViewModel) {
+        if (productViewModel.getStatus() == ProductConstant.Status.LOCAL_PRICE_SHOW
+                || productViewModel.getStatus() == ProductConstant.Status.ONLINE_PRICE_SHOW) {
+            productViewModel.setStatus(ProductConstant.Status.LOCAL_PRICE_HIDDEN);
+        } else {
+            productViewModel.setStatus(ProductConstant.Status.LOCAL_PRICE_SHOW);
+        }
+        getAdapter().setElement(position, productViewModel);
+        Toast.makeText(getContext(), getString(R.string.editstatus_message_success), Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onErorEditStatus(String errorMessage) {
-        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+    public void onErorEditStatus(int position) {
+        Toast.makeText(getContext(), getString(R.string.error_password_unknown), Toast.LENGTH_SHORT).show();
+        getAdapter().notifyDataSetChanged();
     }
 
     @Override
@@ -155,7 +176,7 @@ public class ProductManagementFragment
     @Nullable
     @Override
     public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
-        return super.getSwipeRefreshLayout(view);
+        return view.findViewById(R.id.swipe_refresh_layout);
     }
 
     private void setLoadingView() {

@@ -17,6 +17,6 @@ public interface ProductManagementTypeFactory {
     interface Listener {
         void onClickEditProduct(View v, ProductViewModel productViewModel);
 
-        void onShowProductCheckedChange(ProductViewModel element, boolean isChecked);
+        void onShowProductCheckedChange(ProductViewModel element, boolean isChecked, int position);
     }
 }
