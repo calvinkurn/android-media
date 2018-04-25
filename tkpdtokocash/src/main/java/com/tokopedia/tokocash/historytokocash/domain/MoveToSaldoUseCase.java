@@ -15,6 +15,7 @@ public class MoveToSaldoUseCase extends UseCase<WithdrawSaldo> {
     public static final String AMOUNT = "amount";
     public static final String REFUND_ID = "refund_id";
     public static final String REFUND_TYPE = "refund_type";
+    public static final String AMOUNT_FORMATTED = "amount_formatted";
 
     private IWalletRepository walletRepository;
     private String url;

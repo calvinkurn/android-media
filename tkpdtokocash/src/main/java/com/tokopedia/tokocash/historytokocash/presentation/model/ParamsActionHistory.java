@@ -11,6 +11,8 @@ public class ParamsActionHistory implements Parcelable {
 
     private long amount;
 
+    private String amountFormatted;
+
     private String refundId;
 
     private String refundType;
@@ -20,6 +22,7 @@ public class ParamsActionHistory implements Parcelable {
 
     protected ParamsActionHistory(Parcel in) {
         amount = in.readLong();
+        amountFormatted = in.readString();
         refundId = in.readString();
         refundType = in.readString();
     }
@@ -44,6 +47,7 @@ public class ParamsActionHistory implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeLong(amount);
+        parcel.writeString(amountFormatted);
         parcel.writeString(refundId);
         parcel.writeString(refundType);
     }
@@ -70,5 +74,13 @@ public class ParamsActionHistory implements Parcelable {
 
     public void setAmount(long amount) {
         this.amount = amount;
+    }
+
+    public String getAmountFormatted() {
+        return amountFormatted;
+    }
+
+    public void setAmountFormatted(String amountFormatted) {
+        this.amountFormatted = amountFormatted;
     }
 }
