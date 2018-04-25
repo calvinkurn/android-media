@@ -45,6 +45,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(":YouTubeAndroidPlayerApi")
 
     // transitive from abstraction
     implementation project(rootProject.ext.libraries.design)

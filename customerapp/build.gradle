@@ -259,7 +259,9 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation project(rootProject.ext.features.core)
+    implementation (project(rootProject.ext.features.core)){
+        exclude module: ":YouTubeAndroidPlayerApi"
+    }
     implementation project(rootProject.ext.features.ride)
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.kol)
@@ -275,14 +277,19 @@ dependencies {
     implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.features.inbox)
-    implementation project(rootProject.ext.features.productDetail)
-    implementation project(rootProject.ext.features.discovery)
+    implementation (project(rootProject.ext.features.productDetail)){
+        exclude module: ":YouTubeAndroidPlayerApi"
+    }
+    implementation (project(rootProject.ext.features.discovery)){
+        exclude module: ":YouTubeAndroidPlayerApi"
+    }
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transaction)
     implementation project(rootProject.ext.features.seller)
+    implementation project(":YouTubeAndroidPlayerApi")
 
     // this is transitive from above
     implementation rootProject.ext.tkpdDependencies.shopCommon

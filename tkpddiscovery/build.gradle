@@ -33,6 +33,7 @@ dependencies {
 //    implementation rootProject.ext.tkpdDependencies.tkpdpdp
     implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(":YouTubeAndroidPlayerApi")
 
     implementation rootProject.ext.alibabaDependencies.coreLib
     implementation rootProject.ext.butterKnifeDependencies.butterKnife

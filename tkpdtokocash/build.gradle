@@ -14,7 +14,7 @@ dependencies {
     implementation project(rootProject.ext.features.payment)
 
     // transitive from core->abstraction
-//    implementation rootProject.ext.tkpdDependencies.usecase
+
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
 

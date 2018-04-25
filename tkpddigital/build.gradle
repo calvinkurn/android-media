@@ -27,7 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.loyalty)
-//    implementation rootProject.ext.tkpdDependencies.usecase
+
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.features.session)
 
