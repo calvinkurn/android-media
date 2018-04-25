@@ -31,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -71,11 +72,13 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     private CountDownView countDownView;
     private HomeCategoryListener listener;
     private DynamicHomeChannel.Channels channels;
+    private CountDownView.CountDownListener countDownListener;
 
-    public SprintSaleCarouselViewHolder(View itemView, HomeCategoryListener listener) {
+    public SprintSaleCarouselViewHolder(View itemView, HomeCategoryListener listener, CountDownView.CountDownListener countDownListener) {
         super(itemView);
         this.context = itemView.getContext();
         this.listener = listener;
+        this.countDownListener = countDownListener;
         itemAdapter = new ItemAdapter();
         countDownView = itemView.findViewById(R.id.count_down);
         container = itemView.findViewById(R.id.container);
@@ -107,30 +110,34 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
 
     @Override
     public void bind(DynamicChannelViewModel element) {
-        this.channels = element.getChannel();
-        title.setText(channels.getHeader().getName());
-        if (channels.getHeader().getBackColor() != null) {
-            Glide.with(context).load(channels.getHeader().getBackImage()).into(headerBg);
-        }
-        String color = channels.getHeader().getBackColor();
-        if (color != null && !color.isEmpty()) {
-            container.setBackgroundColor(Color.parseColor(color));
-        }
-        itemAdapter.setList(channels.getGrids());
-        itemAdapter.setGridItemClickListener(this);
-        Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
-        countDownView.setup(expiredTime, null);
-        if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channels.getHeader()))) {
-            seeMoreContainer.setVisibility(View.VISIBLE);
-        } else {
-            seeMoreContainer.setVisibility(View.GONE);
-        }
-        seeMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClickSeeAll();
+        try {
+            this.channels = element.getChannel();
+            title.setText(channels.getHeader().getName());
+            if (channels.getHeader().getBackColor() != null) {
+                Glide.with(context).load(channels.getHeader().getBackImage()).into(headerBg);
             }
-        });
+            itemAdapter.setList(channels.getGrids());
+            itemAdapter.setGridItemClickListener(this);
+            Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
+            countDownView.setup(expiredTime, countDownListener);
+            if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channels.getHeader()))) {
+                seeMoreContainer.setVisibility(View.VISIBLE);
+            } else {
+                seeMoreContainer.setVisibility(View.GONE);
+            }
+            seeMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onClickSeeAll();
+                }
+            });
+            String color = channels.getHeader().getBackColor();
+            if (color != null && !color.isEmpty()) {
+                container.setBackgroundColor(Color.parseColor(color));
+            }
+        } catch (Exception e) {
+            Crashlytics.log(0, TAG, e.getLocalizedMessage());
+        }
     }
 
     private void onClickSeeAll() {
@@ -138,7 +145,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         HomePageTracking.eventClickSeeAllProductSprintBackground();
     }
 
-    private class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
+    private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
         private DynamicHomeChannel.Grid[] list;
         private GridItemClickListener gridItemClickListener;
@@ -166,7 +173,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         public void onBindViewHolder(ItemViewHolder holder, final int position) {
             try {
                 final DynamicHomeChannel.Grid grid = list[position];
-                ImageHandler.loadImageThumbs(context, holder.imageView, grid.getImageUrl());
+                ImageHandler.loadImageThumbs(holder.getContext(), holder.imageView, grid.getImageUrl());
                 holder.price1.setText(grid.getSlashedPrice());
                 holder.price1.setPaintFlags(holder.price1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 holder.price2.setText(grid.getPrice());
@@ -177,7 +184,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
                     holder.channelDiscount.setVisibility(View.VISIBLE);
                     holder.channelDiscount.setText(grid.getDiscount());
                 }
-                if (grid.getLabel().equalsIgnoreCase(context.getString(R.string.hampir_habis))) {
+                if (grid.getLabel().equalsIgnoreCase(holder.getContext().getString(R.string.hampir_habis))) {
                     holder.stockStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_flame, 0, 0, 0);
                 } else {
                     holder.stockStatus.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -201,7 +208,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
                     holder.countainer.setOnClickListener(null);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Crashlytics.log(0, TAG, e.getLocalizedMessage());
             }
         }
 
@@ -211,7 +218,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         }
     }
 
-    private class ItemViewHolder extends RecyclerView.ViewHolder {
+    private static class ItemViewHolder extends RecyclerView.ViewHolder {
 
         public CardView countainer;
         public ImageView imageView;
@@ -220,9 +227,11 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         public TextView price2;
         public TextViewCompat stockStatus;
         public ProgressBar stockProgress;
+        public View view;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
+            this.view = itemView;
             countainer = itemView.findViewById(R.id.container);
             imageView = itemView.findViewById(R.id.image);
             channelDiscount = itemView.findViewById(R.id.channel_discount);
@@ -232,10 +241,17 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             stockProgress = itemView.findViewById(R.id.stock_progress);
 
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
-                ViewCompat.setBackgroundTintList(stockProgress, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.grey_hint_full)));
+                ViewCompat.setBackgroundTintList(stockProgress,
+                        ColorStateList.valueOf(ContextCompat.getColor(itemView.getContext(),
+                                R.color.grey_hint_full)));
             } else {
-                stockProgress.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.grey_hint_full)));
+                stockProgress.setBackgroundTintList(ColorStateList.valueOf(ContextCompat
+                        .getColor(itemView.getContext(), R.color.grey_hint_full)));
             }
+        }
+
+        public Context getContext() {
+            return view.getContext();
         }
     }
 
