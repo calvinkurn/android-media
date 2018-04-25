@@ -163,6 +163,8 @@ public class DrawerPosHelper extends DrawerHelper
                                 @Override
                                 public void onSuccess(ValidatePasswordFragment dialog) {
                                     dialog.dismiss();
+                                    PosSessionHandler.setOutletId(context, "");
+                                    PosSessionHandler.setOutletName(context, "");
                                     startIntent(context, OutletActivity.class);
                                     context.finish();
                                 }
