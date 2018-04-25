@@ -46,4 +46,8 @@ public interface RegisterEmailViewListener {
     void getRegisterModel(RegisterViewModel registerViewModel);
 
     void showInfo();
+
+    void onForbidden();
+
+    void goToLoginEmail();
 }

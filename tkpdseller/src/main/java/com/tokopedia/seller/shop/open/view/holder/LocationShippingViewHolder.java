@@ -10,8 +10,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
 import com.tokopedia.seller.shop.open.view.watcher.AfterTextWatcher;
 
 import java.util.ArrayList;
@@ -30,6 +30,7 @@ public class LocationShippingViewHolder {
     String hintTypePostalCode;
     private String districtName;
     private String districtId;
+    private String cityName;
 
     public LocationShippingViewHolder(View root, final ViewHolderListener2 viewHolderListener2) {
         this.root = root;
@@ -127,6 +128,10 @@ public class LocationShippingViewHolder {
         return districtName;
     }
 
+    public String getCityName() {
+        return cityName;
+    }
+
     public void updateLocationData(String completeLocation, String districtName) {
         this.districtName = districtName;
         textEditShippingCity.setText(completeLocation);
@@ -134,6 +139,7 @@ public class LocationShippingViewHolder {
 
     public void updateLocationData(String provinceName, String cityName, String districtName) {
         this.districtName = districtName;
+        this.cityName = cityName;
         textEditShippingCity.setText(provinceName + ", " + cityName + ", " + districtName);
     }
 

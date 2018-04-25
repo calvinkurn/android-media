@@ -57,6 +57,11 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return packageViewModelList.size();
     }
 
+    public void setData(List<PackageViewModel> data) {
+        packageViewModelList = data;
+        mPresenter.resetViewHolders();
+    }
+
     public class TicketViewHolder extends RecyclerView.ViewHolder {
         @BindView(R2.id.tv_ticket_name)
         TextView tvTicketName;
@@ -179,18 +184,22 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             thisView.setBackgroundColor(color);
         }
 
-        public void toggleMaxTicketWarning(int visibility) {
-            if (visibility != maksTicket.getVisibility()) {
-                if (visibility == View.VISIBLE) {
-                    maksTicket.setVisibility(visibility);
-                    btnIncrement.setBackgroundResource(R.drawable.add_button_layerlist_grey);
-                    btnIncrement.setClickable(false);
-                } else {
-                    maksTicket.setVisibility(visibility);
-                    btnIncrement.setBackgroundResource(R.drawable.add_button_layerlist_green);
-                    btnIncrement.setClickable(true);
-                }
+        public void toggleMaxTicketWarning(int visibility, int quantity) {
+            if (visibility == View.VISIBLE) {
+                maksTicket.setText(String.format(mContext.getResources().getString(R.string.max_ticket_warning), quantity));
+                maksTicket.setVisibility(visibility);
+                btnIncrement.setBackgroundResource(R.drawable.add_button_layerlist_grey);
+                btnIncrement.setClickable(false);
+            } else {
+                maksTicket.setVisibility(visibility);
+                btnIncrement.setBackgroundResource(R.drawable.add_button_layerlist_green);
+                btnIncrement.setClickable(true);
             }
+        }
+
+        public void toggleMinTicketWarning(int visibility, int quantity) {
+            maksTicket.setText(String.format(mContext.getResources().getString(R.string.min_ticket_warning), quantity));
+            maksTicket.setVisibility(visibility);
         }
     }
 }

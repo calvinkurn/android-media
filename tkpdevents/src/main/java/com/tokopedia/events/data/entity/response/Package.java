@@ -8,16 +8,16 @@ public class Package {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("product_id")
     @Expose
-    private Integer productId;
+    private int productId;
     @SerializedName("product_schedule_id")
     @Expose
-    private Integer productScheduleId;
+    private int productScheduleId;
     @SerializedName("product_group_id")
     @Expose
-    private Integer productGroupId;
+    private int productGroupId;
     @SerializedName("provider_schedule_id")
     @Expose
     private String providerScheduleId;
@@ -38,37 +38,37 @@ public class Package {
     private String tnc;
     @SerializedName("convenience_fee")
     @Expose
-    private Integer convenienceFee;
+    private int convenienceFee;
     @SerializedName("mrp")
     @Expose
-    private Integer mrp;
+    private int mrp;
     @SerializedName("commission")
     @Expose
-    private Integer commission;
+    private int commission;
     @SerializedName("commission_type")
     @Expose
     private String commissionType;
     @SerializedName("sales_price")
     @Expose
-    private Integer salesPrice;
+    private int salesPrice;
     @SerializedName("sold")
     @Expose
-    private Integer sold;
+    private int sold;
     @SerializedName("booked")
     @Expose
-    private Integer booked;
+    private int booked;
     @SerializedName("available")
     @Expose
-    private Integer available;
+    private int available;
     @SerializedName("min_qty")
     @Expose
-    private Integer minQty;
+    private int minQty;
     @SerializedName("max_qty")
     @Expose
-    private Integer maxQty;
+    private int maxQty;
     @SerializedName("status")
     @Expose
-    private Integer status;
+    private int status;
     @SerializedName("color")
     @Expose
     private String color;
@@ -86,10 +86,10 @@ public class Package {
     private String venueDetail;
     @SerializedName("start_date")
     @Expose
-    private Integer startDate;
+    private int startDate;
     @SerializedName("end_date")
     @Expose
-    private Integer endDate;
+    private int endDate;
     @SerializedName("fetch_section_url")
     @Expose
     private String fetchSectionUrl;
@@ -100,35 +100,35 @@ public class Package {
     @Expose
     private String updatedAt;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
-    public Integer getProductScheduleId() {
+    public int getProductScheduleId() {
         return productScheduleId;
     }
 
-    public void setProductScheduleId(Integer productScheduleId) {
+    public void setProductScheduleId(int productScheduleId) {
         this.productScheduleId = productScheduleId;
     }
 
-    public Integer getProductGroupId() {
+    public int getProductGroupId() {
         return productGroupId;
     }
 
-    public void setProductGroupId(Integer productGroupId) {
+    public void setProductGroupId(int productGroupId) {
         this.productGroupId = productGroupId;
     }
 
@@ -180,27 +180,27 @@ public class Package {
         this.tnc = tnc;
     }
 
-    public Integer getConvenienceFee() {
+    public int getConvenienceFee() {
         return convenienceFee;
     }
 
-    public void setConvenienceFee(Integer convenienceFee) {
+    public void setConvenienceFee(int convenienceFee) {
         this.convenienceFee = convenienceFee;
     }
 
-    public Integer getMrp() {
+    public int getMrp() {
         return mrp;
     }
 
-    public void setMrp(Integer mrp) {
+    public void setMrp(int mrp) {
         this.mrp = mrp;
     }
 
-    public Integer getCommission() {
+    public int getCommission() {
         return commission;
     }
 
-    public void setCommission(Integer commission) {
+    public void setCommission(int commission) {
         this.commission = commission;
     }
 
@@ -212,59 +212,59 @@ public class Package {
         this.commissionType = commissionType;
     }
 
-    public Integer getSalesPrice() {
+    public int getSalesPrice() {
         return salesPrice;
     }
 
-    public void setSalesPrice(Integer salesPrice) {
+    public void setSalesPrice(int salesPrice) {
         this.salesPrice = salesPrice;
     }
 
-    public Integer getSold() {
+    public int getSold() {
         return sold;
     }
 
-    public void setSold(Integer sold) {
+    public void setSold(int sold) {
         this.sold = sold;
     }
 
-    public Integer getBooked() {
+    public int getBooked() {
         return booked;
     }
 
-    public void setBooked(Integer booked) {
+    public void setBooked(int booked) {
         this.booked = booked;
     }
 
-    public Integer getAvailable() {
+    public int getAvailable() {
         return available;
     }
 
-    public void setAvailable(Integer available) {
+    public void setAvailable(int available) {
         this.available = available;
     }
 
-    public Integer getMinQty() {
+    public int getMinQty() {
         return minQty;
     }
 
-    public void setMinQty(Integer minQty) {
+    public void setMinQty(int minQty) {
         this.minQty = minQty;
     }
 
-    public Integer getMaxQty() {
+    public int getMaxQty() {
         return maxQty;
     }
 
-    public void setMaxQty(Integer maxQty) {
+    public void setMaxQty(int maxQty) {
         this.maxQty = maxQty;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -308,19 +308,19 @@ public class Package {
         this.venueDetail = venueDetail;
     }
 
-    public Integer getStartDate() {
+    public int getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Integer startDate) {
+    public void setStartDate(int startDate) {
         this.startDate = startDate;
     }
 
-    public Integer getEndDate() {
+    public int getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Integer endDate) {
+    public void setEndDate(int endDate) {
         this.endDate = endDate;
     }
 

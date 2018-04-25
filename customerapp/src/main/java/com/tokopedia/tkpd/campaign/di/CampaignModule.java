@@ -1,13 +1,18 @@
 package com.tokopedia.tkpd.campaign.di;
-
 import android.content.Context;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.campaign.data.model.CampaignErrorResponse;
-import com.tokopedia.tkpd.campaign.domain.barcode.CampaignDataRepository;
+import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
+import com.tokopedia.tkpd.campaign.domain.audio.PostAudioDataUseCase;
 import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
+import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
+import com.tokopedia.tkpd.campaign.network.CampaignAuthInterceptor;
 import com.tokopedia.tkpd.campaign.source.CampaignData;
 import com.tokopedia.tkpd.campaign.source.CampaignDataFactory;
 import com.tokopedia.tkpd.campaign.source.api.CampaignAPI;
@@ -34,6 +39,14 @@ public class CampaignModule {
     }
 
     @Provides
+    PostAudioDataUseCase providePostAudioCodeDataUseCase(CampaignDataRepository bookingRideRepository) {
+        return new PostAudioDataUseCase(bookingRideRepository);
+    }
+    @Provides
+    ShakeUseCase provideShakeUseCase(CampaignDataRepository bookingRideRepository) {
+        return new ShakeUseCase(bookingRideRepository);
+    }
+    @Provides
     CampaignDataRepository provideCampaignRideRepository(CampaignDataFactory campaignDataFactory) {
         return new CampaignData(campaignDataFactory);
     }
@@ -56,8 +69,9 @@ public class CampaignModule {
     }
 
     @Provides
-    OkHttpClient provideOkHttpClient(HttpLoggingInterceptor httpLoggingInterceptor) {
+    OkHttpClient provideOkHttpClient(CampaignAuthInterceptor tkpdAuthInterceptor,HttpLoggingInterceptor httpLoggingInterceptor) {
         return new OkHttpClient.Builder()
+                .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(new ErrorResponseInterceptor(CampaignErrorResponse.class))
                 .build();
@@ -67,5 +81,13 @@ public class CampaignModule {
     @Provides
     LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
         return new LocalCacheHandler(context, GetInfoQrTokoCashUseCase.IDENTIFIER);
+    }
+
+    @Provides
+    CampaignAuthInterceptor provideContactUsAuthInterceptor(@ApplicationContext Context context,
+                                                             AbstractionRouter abstractionRouter,
+                                                             UserSession userSession) {
+        return new CampaignAuthInterceptor(context,abstractionRouter,userSession);
+
     }
 }

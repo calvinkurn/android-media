@@ -84,7 +84,8 @@ public abstract class BaseAppNotificationReceiverUIBackground {
     }
 
     protected boolean isDedicatedNotification(Bundle data) {
-        return getCode(data) < 1000 || getCode(data) >= 1100;
+        //disable message push notif
+        return getCode(data) != 101 && (getCode(data) < 1000 || getCode(data) >= 1100);
     }
 
     protected void resetNotificationStatus(Bundle data) {

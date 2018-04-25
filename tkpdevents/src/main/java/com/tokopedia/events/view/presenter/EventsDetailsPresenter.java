@@ -3,6 +3,7 @@ package com.tokopedia.events.view.presenter;
 import android.content.Intent;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.events.domain.GetEventDetailsRequestUseCase;
@@ -11,6 +12,7 @@ import com.tokopedia.events.view.activity.EventBookTicketActivity;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.mapper.EventDetailsViewModelMapper;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 
@@ -23,7 +25,9 @@ import rx.functions.Func1;
  * Created by ashwanityagi on 23/11/17.
  */
 
-public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsContract.EventDetailsView> implements EventsDetailsContract.Presenter {
+public class EventsDetailsPresenter
+        extends BaseDaggerPresenter<EventsDetailsContract.EventDetailsView>
+        implements EventsDetailsContract.Presenter {
 
     private GetEventDetailsRequestUseCase getEventDetailsRequestUseCase;
     private EventsDetailsViewModel eventsDetailsViewModel;
@@ -54,15 +58,16 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
         super.attachView(view);
         Intent inIntent = getView().getActivity().getIntent();
         int from = inIntent.getIntExtra(EventDetailsActivity.FROM, 1);
+        CategoryItemsViewModel dataFromHome = inIntent.getParcelableExtra("homedata");
         try {
             if (from == EventDetailsActivity.FROM_HOME_OR_SEARCH) {
-                CategoryItemsViewModel dataFromHome = inIntent.getParcelableExtra("homedata");
                 getView().renderFromHome(dataFromHome);
                 url = dataFromHome.getUrl();
             } else if (from == EventDetailsActivity.FROM_DEEPLINK) {
                 url = inIntent.getExtras().getString(EventDetailsActivity.EXTRA_EVENT_NAME_KEY);
             }
         } catch (NullPointerException e) {
+            url = dataFromHome.getUrl();
             e.printStackTrace();
         }
     }
@@ -99,14 +104,17 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
 
             @Override
             public void onNext(EventsDetailsViewModel detailsViewModel) {
-                getView().renderFromCloud(detailsViewModel);   //chained using map
-                if (eventsDetailsViewModel.getSeatMapImage() != null && !eventsDetailsViewModel.getSeatMapImage().isEmpty())
-                    getView().renderSeatmap(eventsDetailsViewModel.getSeatMapImage());
+                getView().renderFromCloud(detailsViewModel);   //chained using mapl
                 hasSeatLayout = eventsDetailsViewModel.getHasSeatLayout();
                 getView().hideProgressBar();
                 CommonUtils.dumper("enter onNext");
             }
         });
+    }
+
+    @Override
+    public String getSCREEN_NAME() {
+        return EventsGAConst.EVENTS_PRODUCT_PAGE;
     }
 
 
@@ -124,6 +132,7 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
         bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL, eventsDetailsViewModel);
         bookTicketIntent.putExtra(EXTRA_SEATING_PARAMETER, hasSeatLayout);
         getView().navigateToActivityRequest(bookTicketIntent, 100);
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_LANJUKTAN,eventsDetailsViewModel.getTitle() + "-" + getSCREEN_NAME());
     }
 
 }

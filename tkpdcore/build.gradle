@@ -24,7 +24,6 @@ apt {
     }
 }
 
-
 dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
 
@@ -125,12 +124,6 @@ dependencies {
     compile(rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
-
-    compile rootProject.ext.apolloDependencies.apolloRxSupport
-    compile rootProject.ext.apolloDependencies.apolloRuntime
-    compile rootProject.ext.apolloDependencies.apolloAndroidSupport
-    compile rootProject.ext.apolloDependencies.apolloRxSupport
-    compile rootProject.ext.apolloDependencies.apolloRx2Support
 
     compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.remoteConfig

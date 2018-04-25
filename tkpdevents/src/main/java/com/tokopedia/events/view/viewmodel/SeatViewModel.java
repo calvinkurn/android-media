@@ -12,6 +12,7 @@ public class SeatViewModel implements Parcelable {
     private String areaId;
     private int no;
     private int status;
+    private int actualSeat;
 
     public String getAreaId() {
         return areaId;
@@ -37,8 +38,16 @@ public class SeatViewModel implements Parcelable {
         this.status = status;
     }
 
-    public SeatViewModel() {
+    public int getActualSeat() {
+        return actualSeat;
+    }
 
+    public void setActualSeat(int actualSeat) {
+        this.actualSeat = actualSeat;
+    }
+
+
+    public SeatViewModel() {
     }
 
     @Override
@@ -49,14 +58,16 @@ public class SeatViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.areaId);
-        dest.writeValue(this.no);
-        dest.writeValue(this.status);
+        dest.writeInt(this.no);
+        dest.writeInt(this.status);
+        dest.writeInt(this.actualSeat);
     }
 
     protected SeatViewModel(Parcel in) {
         this.areaId = in.readString();
-        this.no = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.status = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.no = in.readInt();
+        this.status = in.readInt();
+        this.actualSeat = in.readInt();
     }
 
     public static final Creator<SeatViewModel> CREATOR = new Creator<SeatViewModel>() {

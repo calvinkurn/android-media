@@ -8,10 +8,12 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.View;
 import android.view.ViewTreeObserver;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
@@ -66,6 +68,7 @@ public class SearchActivity extends DiscoveryActivity
     SearchPresenter searchPresenter;
 
     private SearchComponent searchComponent;
+    private boolean forImageSearch = false;
 
     public SearchComponent getSearchComponent() {
         return searchComponent;
@@ -126,7 +129,13 @@ public class SearchActivity extends DiscoveryActivity
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
             loadSection(productViewModel, forceSwipeToShop);
-            setToolbarTitle(productViewModel.getQuery());
+
+            forImageSearch = productViewModel.isImageSearch();
+
+            if (!forImageSearch)
+                setToolbarTitle(productViewModel.getQuery());
+            else
+                setToolbarTitle("Image Search");
         } else if (!TextUtils.isEmpty(searchQuery)) {
             onProductQuerySubmit(searchQuery);
         } else {
@@ -166,14 +175,22 @@ public class SearchActivity extends DiscoveryActivity
 
         if (productViewModel.isHasCatalog()) {
             populateThreeTabItem(searchSectionItemList, productViewModel);
-        } else {
+        } else if (!productViewModel.isImageSearch()) {
             populateTwoTabItem(searchSectionItemList, productViewModel);
+        } else {
+            populateOneTabItem(searchSectionItemList, productViewModel);
         }
         SearchSectionPagerAdapter searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
         searchSectionPagerAdapter.setData(searchSectionItemList);
         viewPager.setAdapter(searchSectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         setActiveTab(forceSwipeToShop);
+    }
+
+    private void populateOneTabItem(List<SearchSectionItem> searchSectionItemList, ProductViewModel productViewModel) {
+        productListFragment = getProductFragment(productViewModel);
+        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
+        tabLayout.setVisibility(View.GONE);
     }
 
     private void setActiveTab(final boolean swipeToShop) {
@@ -219,10 +236,22 @@ public class SearchActivity extends DiscoveryActivity
                     case TAB_THIRD_POSITION:
                         shopListFragment.backToTop();
                         break;
-
-
                 }
+            }
 
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case TAB_PRODUCT:
+                        SearchTracking.eventSearchResultTabClick(productTabTitle);
+                        break;
+                    case TAB_SECOND_POSITION:
+                        SearchTracking.eventSearchResultTabClick(catalogTabTitle);
+                        break;
+                    case TAB_THIRD_POSITION:
+                        SearchTracking.eventSearchResultTabClick(shopTabTitle);
+                        break;
+                }
             }
         });
     }
@@ -259,9 +288,19 @@ public class SearchActivity extends DiscoveryActivity
                     case TAB_SECOND_POSITION:
                         shopListFragment.backToTop();
                         break;
-
                 }
+            }
 
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case TAB_PRODUCT:
+                        SearchTracking.eventSearchResultTabClick(productTabTitle);
+                        break;
+                    case TAB_SECOND_POSITION:
+                        SearchTracking.eventSearchResultTabClick(shopTabTitle);
+                        break;
+                }
             }
         });
 

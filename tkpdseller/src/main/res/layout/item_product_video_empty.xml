@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_retry"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,7 +7,7 @@
     android:background="@color/white"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="@dimen/padding_small">
+    android:padding="@dimen/dp_10">
 
     <!-- Untuk onRetry satu halaman -->
     <ImageView
@@ -14,10 +15,10 @@
         android:layout_width="195dp"
         android:layout_height="140dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/margin_med"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_5"
         android:gravity="center_horizontal"
-        android:src="@drawable/empty_video" />
+        app:srcCompat="@drawable/empty_video" />
 
     <TextView
         android:id="@+id/text_view_empty_title_text"
@@ -33,7 +34,7 @@
         android:id="@+id/text_view_empty_content_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_vs"
+        android:layout_margin="@dimen/dp_5"
         android:gravity="center"
         android:maxLines="3"
         android:text="@string/product_add_till_three_product_video_description"

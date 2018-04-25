@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.view.adapter;
 
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +15,6 @@ import android.widget.TextView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +26,10 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
     private static final int PARAM_EMPTY_MARGIN = 0;
     private List<SimpleViewModel> viewModels;
     private float fontSize;
+    private float marginTopDp;
+    private float marginBottomDp;
+    private float marginLeftDp;
+    private float marginRightDp;
     private boolean isArrowVisible;
     private boolean isClickable;
     private boolean isTitleBold;
@@ -45,6 +49,10 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         isTitleOnly = false;
         isContentAllignmentLeft = false;
         isTitleHalfView = true;
+        marginTopDp = 0f;
+        marginBottomDp = 0f;
+        marginLeftDp = 0f;
+        marginRightDp = 0f;
     }
 
     @Override
@@ -105,6 +113,22 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
 
     public void setContentAllignmentLeft(boolean contentAllignmentLeft) {
         isContentAllignmentLeft = contentAllignmentLeft;
+    }
+
+    public void setMarginTopDp(float marginTopDp) {
+        this.marginTopDp = marginTopDp;
+    }
+
+    public void setMarginBottomDp(float marginBottomDp) {
+        this.marginBottomDp = marginBottomDp;
+    }
+
+    public void setMarginLeftDp(float marginLeftDp) {
+        this.marginLeftDp = marginLeftDp;
+    }
+
+    public void setMarginRightDp(float marginRightDp) {
+        this.marginRightDp = marginRightDp;
     }
 
     public interface OnAdapterInteractionListener {
@@ -181,6 +205,29 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
             } else {
                 containerLinearLayout.setBackground(null);
             }
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            Resources resources = itemView.getContext().getResources();
+            params.setMargins(
+                    convertToPixel(resources, marginLeftDp),
+                    convertToPixel(resources, marginTopDp),
+                    convertToPixel(resources, marginRightDp),
+                    convertToPixel(resources, marginBottomDp)
+            );
+            containerLinearLayout.setLayoutParams(params);
+
+
         }
+    }
+
+    private int convertToPixel(Resources resources, float dp){
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_PX,
+                dp,
+                resources.getDisplayMetrics()
+        );
     }
 }

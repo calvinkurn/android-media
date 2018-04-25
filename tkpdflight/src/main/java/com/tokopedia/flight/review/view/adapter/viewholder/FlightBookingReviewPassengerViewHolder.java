@@ -35,7 +35,12 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
         passengerNumber.setText(String.format("%d.", getAdapterPosition() + 1));
         passengerName.setText(flightDetailPassenger.getPassengerName());
         passengerCategory.setText(getPassengerType(flightDetailPassenger.getPassengerType()));
-        reviewPassengerDetailAdapter.addData(flightDetailPassenger.getInfoPassengerList());
+        if (flightDetailPassenger.getInfoPassengerList().size() > 0) {
+            recyclerViewPassengerDetail.setVisibility(View.VISIBLE);
+            reviewPassengerDetailAdapter.addData(flightDetailPassenger.getInfoPassengerList());
+        }else {
+            recyclerViewPassengerDetail.setVisibility(View.GONE);
+        }
     }
 
     private String getPassengerType(int flightDetailPassenger) {

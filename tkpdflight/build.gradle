@@ -10,11 +10,16 @@ apt {
 
 dependencies {
 
-    compile project(rootProject.ext.features.useCase)
+    compile project(rootProject.ext.libraries.useCase)
     compile project(rootProject.ext.libraries.abstraction)
 
     compile(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
+    }
+
+    compile (rootProject.ext.miscDependencies.loaderviewlibrary){
+
+        exclude group: 'com.android.support'
     }
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
@@ -30,4 +35,7 @@ dependencies {
     apt rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.debugToolsDependencies.stetho
+
+    testCompile rootProject.ext.testDependencies.junit
+    testCompile rootProject.ext.testDependencies.mockitorCore
 }

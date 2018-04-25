@@ -1,5 +1,7 @@
 package com.tokopedia.digital.cart.presenter;
 
+import com.tokopedia.digital.cart.model.CartDigitalInfoData;
+
 /**
  * @author anggaprasetiyo on 2/24/17.
  */
@@ -26,4 +28,7 @@ public interface ICartDigitalPresenter {
 
     void callPermissionCheckFail();
 
+    void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData);
+
+    void onClearVoucher();
 }

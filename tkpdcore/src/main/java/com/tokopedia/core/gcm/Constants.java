@@ -27,6 +27,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_RIDE = "ride";
     String ARG_NOTIFICATION_APPLINK_PROMO_LABEL = "promo";
     String ARG_NOTIFICATION_APPLINK_TOPCHAT = "topchat";
+    String ARG_NOTIFICATION_APPLINK_GROUPCHAT = "groupchat";
     String KEY_ORIGIN = "origin";
     int REGISTRATION_STATUS_OK = 1;
     int REGISTRATION_STATUS_ERROR = 2;
@@ -120,7 +121,13 @@ public interface Constants {
         String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
         String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
         String PROMO_SALE = "tokopedia://sale/{slug}/";
+        String PROMO_SALE_NO_SLASH = "tokopedia://sale/{slug}";
+        String PROMO_DETAIL = "tokopedia://promo/{slug}";
+        String BRAND_LIST = "tokopedia://official-store/brand";
+        String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
         String PROMO_SALE_TERMS = "tokopedia://promo-sale/promo-terms";
+        String SUB_PROMO = "tokopedia://sale/{slug}/{category_slug}";
+        String SUB_PROMO_WITH_SLASH = "tokopedia://sale/{slug}/{category_slug}/";
         String WALLET_HOME = "tokopedia://wallet";
         String WALLET_ACTIVATION = "tokopedia://wallet/activation";
         String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
@@ -128,14 +135,18 @@ public interface Constants {
         String FAVORITE = "tokopedia://home/favorite";
 
         String EVENTS = "tokopedia://events";
-        String EVENTS_ACTIVITIES = "tokopedia://events/activities";
+        String EVENTS_HIBURAN = "tokopedia://hiburan";
         String EVENTS_DETAILS = "tokopedia://events/{event}";
         String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
-        String PROMO_LIST = "tokopedia://promoNative";
         String EXPLORE = "tokopedia://jump/{section}";
 
         String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
+
+        String GROUPCHAT = "tokopedia://groupchat/{channel_id}";
+        String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
+        String CONTENT_DETAIL ="tokopedia://content/{post_id}";
+
 
         interface SellerApp {
             String PRODUCT_ADD = "sellerapp://product/add";
@@ -171,6 +182,7 @@ public interface Constants {
         String NOTIFICATION_PURCHASE = "notification_purchase";
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
         String NOTIFICATION_SELLER_INFO = "notification_seller_info";
+        String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
     }
 
     interface AppLinkQueryParameter {

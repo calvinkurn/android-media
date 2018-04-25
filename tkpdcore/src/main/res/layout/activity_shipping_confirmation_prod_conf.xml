@@ -1,10 +1,11 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scroll_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/background_light"
-    tools:context="com.tokopedia.seller.ShippingConfirmationProdConf" >
+    tools:context="com.tokopedia.seller.ShippingConfirmationProdConf">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -203,7 +204,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_vs"
-                        android:src="@drawable/ic_barcode" />
+                        app:srcCompat="@drawable/ic_barcode" />
                 </LinearLayout>
 
                 <TextView
@@ -244,7 +245,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/dialog_edit_courier"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
                 <LinearLayout
                     android:id="@+id/layout"
@@ -369,7 +370,7 @@
                             android:gravity="center_vertical"
                             android:text="@string/title_pickup_location"
                             android:textColor="@color/label_color"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
 
                         <TextView
                             android:id="@+id/pickup_detail_location"
@@ -380,7 +381,7 @@
                             android:gravity="left"
                             android:text="Alamat Pickup"
                             android:textIsSelectable="true"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
 
                     </RelativeLayout>
 
@@ -407,7 +408,7 @@
                             android:gravity="center_vertical"
                             android:text="@string/title_destination_address"
                             android:textColor="@color/label_color"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
 
                         <TextView
                             android:id="@+id/destination_detail_location"
@@ -418,7 +419,7 @@
                             android:gravity="left"
                             android:text="Alamat Pickup"
                             android:textIsSelectable="true"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
 
                     </RelativeLayout>
 

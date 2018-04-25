@@ -50,12 +50,15 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.RideModuleRouter;
@@ -63,6 +66,7 @@ import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
+import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.view.RideHomeContract;
 import com.tokopedia.ride.bookingride.view.RideHomePresenter;
 import com.tokopedia.ride.bookingride.view.adapter.SeatAdapter;
@@ -636,6 +640,27 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
         if (fragment != null) {
             fragment.renderNearbyRides(nearbyRides);
+        }
+    }
+
+    @Override
+    public void renderNearbyCabs(List<ProductEstimate> productEstimates) {
+
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(RideHomeActivity.this);
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_NEARBY_CABS, false)) {
+            RideHomeMapFragment rideHomeMapFragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
+            if (rideHomeMapFragment != null) {
+                rideHomeMapFragment.displayNearByCabs(productEstimates);
+            }
+        }
+
+    }
+
+    @Override
+    public void hideNearbyCabs() {
+        RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        if (fragment != null) {
+            fragment.hideNearbyCabs();
         }
     }
 

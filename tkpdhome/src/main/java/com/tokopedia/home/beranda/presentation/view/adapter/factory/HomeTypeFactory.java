@@ -10,6 +10,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicCha
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 
 /**
@@ -29,6 +30,8 @@ public interface HomeTypeFactory {
     int type(SellViewModel sellViewModel);
 
     int type(HeaderViewModel headerViewModel);
+
+    int type(TopAdsViewModel topAdsViewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 

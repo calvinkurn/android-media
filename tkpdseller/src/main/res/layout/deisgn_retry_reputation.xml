@@ -14,7 +14,7 @@
         android:layout_marginTop="28dp"
         android:layout_marginBottom="20dp"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_empty_penalti_reputasi" />
+        app:srcCompat="@drawable/ic_empty_penalti_reputasi" />
 
     <TextView
         android:id="@+id/good_job_reputation_retry"

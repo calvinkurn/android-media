@@ -3,6 +3,8 @@ package com.tokopedia.tkpd.campaign.data.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 
 import java.io.IOException;
 
@@ -13,9 +15,19 @@ import java.io.IOException;
 public class CampaignErrorResponse extends BaseResponseError {
     private static final String ERROR_KEY = "message_error";
 
+    public CampaignResponseEntity getErrorCode() {
+        return data;
+    }
+
+    public void setErrorCode(CampaignResponseEntity data) {
+        this.data = data;
+    }
+
+    private CampaignResponseEntity data;
+
     @SerializedName(ERROR_KEY)
     @Expose
-    private String error;
+    private String[] error;
 
     @Override
     public String getErrorKey() {
@@ -29,6 +41,6 @@ public class CampaignErrorResponse extends BaseResponseError {
 
     @Override
     public IOException createException() {
-        return new CampaignException(error);
+        return new CampaignException(error[0],data.getStatus());
     }
 }

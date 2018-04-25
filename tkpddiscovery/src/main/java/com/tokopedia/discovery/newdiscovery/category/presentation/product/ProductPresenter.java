@@ -123,7 +123,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     }
 
     @Override
-    public void loadDataProduct(SearchParameter searchParameter, final CategoryHeaderModel categoryHeaderModel) {
+    public void loadDataProduct(final SearchParameter searchParameter, final CategoryHeaderModel categoryHeaderModel) {
         RequestParams requestParams
                 = enrichWithFilterAndSortParams(GetProductUseCase.createInitializeSearchParam(searchParameter));
         removeDefaultCategoryParam(requestParams);
@@ -139,12 +139,16 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
             @Override
             public void onNext(SearchResultModel searchResultModel) {
                 if(isViewAttached()){
+                    int page = (searchParameter.getStartRow() / 12) + 1;
+                    getView().clearLastProductTracker(page == 1);
                     ProductViewModel productViewModel
                             = CategoryModelHelper.convertToProductViewModel(searchResultModel, categoryHeaderModel);
                     if(productViewModel.getProductList().isEmpty()){
                         getView().unSetTopAdsEndlessListener();
                         getView().showEmptyProduct();
                     } else {
+                        productViewModel.setProductList(getView().mappingTrackerProduct(productViewModel.getProductList(), page));
+                        getView().trackEnhanceProduct(getView().createImpressionProductDataLayer(productViewModel.getProductList()));
                         List<Visitable> list = new ArrayList<Visitable>();
                         list.add(productViewModel.getCategoryHeaderModel());
                         list.addAll(productViewModel.getProductList());

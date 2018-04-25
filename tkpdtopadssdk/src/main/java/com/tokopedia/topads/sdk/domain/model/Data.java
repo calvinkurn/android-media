@@ -9,7 +9,7 @@ import org.json.JSONObject;
 public class Data {
 
     private static final String KEY_ID = "id";
-    private static final String KEY_AD_REF = "id";
+    private static final String KEY_AD_REF = "ad_ref_key";
     private static final String KEY_REDIRECT = "redirect";
     private static final String KEY_STICKER_ID = "sticker_id";
     private static final String KEY_STICKER_IMAGE = "sticker_image";
@@ -28,6 +28,9 @@ public class Data {
     private Shop shop;
     private Product product;
     private boolean favorit;
+
+    public Data() {
+    }
 
     public Data(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)) {
