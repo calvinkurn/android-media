@@ -22,8 +22,8 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation rootProject.ext.tkpdDependencies.core
-    implementation rootProject.ext.tkpdDependencies.design
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.design)
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.appIndexing

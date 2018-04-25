@@ -19,9 +19,9 @@ project.ext {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdDependencies.abstraction
-    implementation rootProject.ext.tkpdDependencies.applink
-    implementation rootProject.ext.tkpdDependencies.design
+    implementation project(rootProject.ext.libraries.abstraction)\
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.design)
 
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.supportLibDependencies.appCompactV7

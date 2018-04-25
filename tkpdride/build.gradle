@@ -23,8 +23,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    implementation rootProject.ext.tkpdDependencies.core
-    implementation rootProject.ext.tkpdDependencies.design
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.design)
 
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.playServicesDependencies.places

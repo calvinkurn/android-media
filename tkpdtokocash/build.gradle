@@ -9,12 +9,13 @@ project.ext {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdDependencies.core
-    implementation rootProject.ext.tkpdDependencies.payment
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.payment)
 
     // transitive from core->abstraction
-    implementation rootProject.ext.tkpdDependencies.usecase
-    implementation rootProject.ext.tkpdDependencies.design
+//    implementation rootProject.ext.tkpdDependencies.usecase
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.design)
 
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.design

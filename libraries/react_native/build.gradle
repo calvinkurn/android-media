@@ -9,7 +9,7 @@ project.ext {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdDependencies.core
+    implementation project(rootProject.ext.features.core)
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.miscDependencies.codePushReactNative

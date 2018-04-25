@@ -21,9 +21,10 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation rootProject.ext.tkpdDependencies.core
-    implementation rootProject.ext.tkpdDependencies.usecase
-    implementation rootProject.ext.tkpdDependencies.design
+    implementation project(rootProject.ext.features.core)
+//    implementation rootProject.ext.tkpdDependencies.usecase
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.design)
 
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.multiDex

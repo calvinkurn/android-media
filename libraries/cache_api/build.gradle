@@ -20,7 +20,8 @@ project.ext {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdDependencies.usecase
+//    implementation rootProject.ext.tkpdDependencies.usecase
+    implementation project(rootProject.ext.libraries.useCase)
 
     implementation rootProject.ext.networkDependencies.retrofit
 

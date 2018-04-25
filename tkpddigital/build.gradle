@@ -22,12 +22,13 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation rootProject.ext.tkpdDependencies.core
-    implementation rootProject.ext.tkpdDependencies.design
-    implementation rootProject.ext.tkpdDependencies.payment
-    implementation rootProject.ext.tkpdDependencies.loyalty
-    implementation rootProject.ext.tkpdDependencies.usecase
-    implementation rootProject.ext.tkpdDependencies.session
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.loyalty)
+//    implementation rootProject.ext.tkpdDependencies.usecase
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.features.session)
 
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.multiDex

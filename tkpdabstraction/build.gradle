@@ -9,7 +9,7 @@ project.ext {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdDependencies.design
+    implementation project(rootProject.ext.libraries.design)
 
     // transitive from tkpddesign
     implementation rootProject.ext.supportLibDependencies.design

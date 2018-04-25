@@ -26,10 +26,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    implementation rootProject.ext.tkpdDependencies.core
-    implementation rootProject.ext.tkpdDependencies.design
-    implementation rootProject.ext.tkpdDependencies.payment
-    implementation rootProject.ext.tkpdDependencies.cacheapi
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.libraries.cacheApi)
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'

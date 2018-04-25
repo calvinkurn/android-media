@@ -15,7 +15,7 @@ dependencies {
     })
     androidTestCompile rootProject.ext.testDependencies.androidAnnotation
 
-    compile rootProject.ext.tkpdDependencies.design
+    compile project(rootProject.ext.libraries.design)
 
     testCompile rootProject.ext.testDependencies.junit
     compile group: 'org.apache.commons', name: 'commons-text', version: '1.0'

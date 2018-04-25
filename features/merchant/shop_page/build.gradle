@@ -10,14 +10,15 @@ project.ext {
 
 dependencies {
 
-    implementation rootProject.ext.tkpdDependencies.abstraction
-    implementation rootProject.ext.tkpdDependencies.design
-    implementation rootProject.ext.tkpdDependencies.usecase
-    implementation rootProject.ext.tkpdDependencies.cacheapi
+    implementation project(rootProject.ext.libraries.abstraction)\
+    implementation project(rootProject.ext.libraries.design)
+//    implementation rootProject.ext.tkpdDependencies.usecase
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.cacheApi)
 
     implementation rootProject.ext.tkpdDependencies.shopCommon
     implementation rootProject.ext.tkpdDependencies.goldMerchantCommon
-    implementation rootProject.ext.tkpdDependencies.reputationCommon
+    implementation project(rootProject.ext.features.reputationCommon)
     implementation rootProject.ext.tkpdDependencies.wishListCommon
 
     implementation rootProject.ext.supportLibDependencies.appCompactV7

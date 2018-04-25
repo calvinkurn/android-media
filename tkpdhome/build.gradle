@@ -22,15 +22,16 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-    implementation rootProject.ext.tkpdDependencies.core
-    implementation rootProject.ext.tkpdDependencies.usecase
-    implementation rootProject.ext.tkpdDependencies.abstraction
-    implementation rootProject.ext.tkpdDependencies.feed
-    implementation rootProject.ext.tkpdDependencies.gamification
-    implementation rootProject.ext.tkpdDependencies.digital
-    implementation rootProject.ext.tkpdDependencies.cacheapi
+    implementation project(rootProject.ext.features.core)
+//    implementation rootProject.ext.tkpdDependencies.usecase
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.features.feed)
+    implementation project(rootProject.ext.features.gamification)
+    implementation project(rootProject.ext.features.digital)
+    implementation project(rootProject.ext.libraries.cacheApi)
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.tkpdDependencies.loyalty
+    implementation project(rootProject.ext.features.loyalty)
     implementation rootProject.ext.playServicesDependencies.perfMon
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -39,7 +40,7 @@ dependencies {
     }
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.viewDependencies.appIntro
-    implementation rootProject.ext.tkpdDependencies.topads
+    implementation project(rootProject.ext.features.topAdsSdk)
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.multiDex
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){

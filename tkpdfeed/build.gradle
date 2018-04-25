@@ -49,9 +49,9 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.viewDependencies.appIntro
 
-    implementation rootProject.ext.tkpdDependencies.core
-    implementation rootProject.ext.tkpdDependencies.topads
-    implementation rootProject.ext.tkpdDependencies.reactNative
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.libraries.reactNative)
 
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

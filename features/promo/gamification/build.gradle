@@ -9,10 +9,11 @@ project.ext {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdDependencies.abstraction
-    implementation rootProject.ext.tkpdDependencies.design
-    implementation rootProject.ext.tkpdDependencies.usecase
-    implementation rootProject.ext.tkpdDependencies.applink
+    implementation project(rootProject.ext.libraries.abstraction)\
+    implementation project(rootProject.ext.libraries.design)
+//    implementation rootProject.ext.tkpdDependencies.usecase
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.applink)
 
     implementation rootProject.ext.networkDependencies.glide
 
