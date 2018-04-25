@@ -24,6 +24,7 @@ import com.tokopedia.posapp.product.management.di.component.ProductManagementCom
 import com.tokopedia.posapp.product.management.view.ProductManagement;
 import com.tokopedia.posapp.product.management.view.adapter.ProductManagementAdapterTypeFactory;
 import com.tokopedia.posapp.product.management.view.adapter.ProductManagementTypeFactory;
+import com.tokopedia.posapp.product.management.view.listener.EditProductListener;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductHeaderViewModel;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
 
@@ -39,7 +40,7 @@ import javax.inject.Inject;
 
 public class ProductManagementFragment
         extends BaseListFragment<Visitable, ProductManagementAdapterTypeFactory>
-        implements ProductManagementTypeFactory.Listener, ProductManagement.View {
+        implements ProductManagementTypeFactory.Listener, ProductManagement.View{
 
     public static final String TAG = ProductManagementFragment.class.getSimpleName();
     @Inject
@@ -103,8 +104,8 @@ public class ProductManagementFragment
     }
 
     @Override
-    public void onClickEditProduct(View v, ProductViewModel productViewModel) {
-        EditProductDialogFragment.show(getActivity().getSupportFragmentManager(), productViewModel);
+    public void onClickEditProduct(View v, ProductViewModel productViewModel, int position) {
+        EditProductDialogFragment.show(getActivity().getSupportFragmentManager(), productViewModel, position);
     }
 
     @Override
@@ -197,5 +198,9 @@ public class ProductManagementFragment
             loadingModel.setFullScreen(true);
         }
         return loadingModel;
+    }
+
+    public void onSucessUpdateLocalPrice(ProductViewModel productViewModel, int position) {
+        getAdapter().setElement(position, productViewModel);
     }
 }

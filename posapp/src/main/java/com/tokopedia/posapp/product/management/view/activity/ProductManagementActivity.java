@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.posapp.product.management.view.fragment.ProductManagementFragment;
 import com.tokopedia.posapp.product.management.view.listener.EditProductListener;
+import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
 
 /**
  * @author okasurya on 3/12/18.
@@ -23,11 +24,10 @@ public class ProductManagementActivity extends BaseSimpleActivity implements Edi
         return ProductManagementFragment.TAG;
     }
 
-    @Override
-    public void onDialogDismiss() {
+    public void onDialogDismiss(ProductViewModel productViewModel, int position) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
         if(fragment != null && fragment instanceof ProductManagementFragment) {
-            ((ProductManagementFragment) fragment).loadInitialData();
+            ((ProductManagementFragment) fragment).onSucessUpdateLocalPrice(productViewModel, position);
         }
     }
 }

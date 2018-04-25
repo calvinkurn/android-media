@@ -61,14 +61,14 @@ public class ProductManagementViewHolder extends AbstractViewHolder<ProductViewM
         editOutletPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onClickEditProduct(v, element);
+                listener.onClickEditProduct(v, element, getAdapterPosition());
             }
         });
 
         buttonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onClickEditProduct(v, element);
+                listener.onClickEditProduct(v, element, getAdapterPosition());
             }
         });
 
