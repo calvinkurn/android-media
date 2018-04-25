@@ -185,7 +185,7 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
 
                         return imageSearchRepository.getImageSearchResults(GetImageSearchUseCase.initializeSearchRequestParam().getParameters(),
                                 GetImageSearchUseCase.initializeFormDataSearchRequestParam(generateUniqueId(),
-                                        encodePicContent).getParameters());//.flatMap(wishlistDataEnricher(getUserId()));
+                                        encodePicContent).getParameters()).flatMap(wishlistDataEnricher(getUserId()));
                     }
                 });
     }
