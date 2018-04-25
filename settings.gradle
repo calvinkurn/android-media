@@ -17,25 +17,25 @@ buildCache {
 
 
 apply from: "features/settings-features.gradle"
-apply from: "libraries/settings-libraries.gradle"
+//apply from: "libraries/settings-libraries.gradle"
 
-include 'customerapp'
-include 'tkpdhome'
-include 'tkpdloyalty'
-include 'tkpdride'
-include 'tkpdfeed'
-include 'tkpddigital'
-include 'tkpdcore'
+//include 'customerapp'
+//include 'tkpdhome'
+//include 'tkpdloyalty'
+//include 'tkpdride'
+//include 'tkpdfeed'
+//include 'tkpddigital'
+//include 'tkpdcore'
 //include 'tkpdinbox'
 //include 'tkpddiscovery'
 //include 'tkpdtransaction'
 //include 'tkpdsession'
 //include 'tkpdtopadssdk'
-include 'tkpdpdp'
-include 'tkpddesign'
+//include 'tkpdpdp'
+//include 'tkpddesign'
 //include 'sellerapp'
 //include 'tkpdseller'
 //include 'tkpdtokocash'
-include 'tkpdabstraction'
+//include 'tkpdabstraction'
 //include 'tkpdflight'
-include 'tkpdevents'
+//include 'tkpdevents'

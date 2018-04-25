@@ -22,7 +22,29 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation rootProject.ext.tkpdDependencies.core
+    implementation rootProject.ext.tkpdDependencies.usecase
     implementation rootProject.ext.tkpdDependencies.design
+
+    implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.supportV13
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.maps
+
+    implementation rootProject.ext.viewDependencies.appIntro
 
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
