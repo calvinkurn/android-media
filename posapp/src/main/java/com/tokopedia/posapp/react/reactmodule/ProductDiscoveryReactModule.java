@@ -7,7 +7,6 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.posapp.PosApplication;
 import com.tokopedia.posapp.react.di.component.DaggerReactDataComponent;
 import com.tokopedia.posapp.react.di.component.ReactDataComponent;
@@ -24,7 +23,7 @@ import rx.Subscriber;
 
 public class ProductDiscoveryReactModule extends ReactContextBaseJavaModule {
     @Inject
-    ReactProductCloudSource reactProductCacheSource;
+    ReactProductCloudSource reactProductDataSource;
     @Inject
     Gson gson;
     private Context context;
@@ -52,7 +51,7 @@ public class ProductDiscoveryReactModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void search(String data, final Promise promise) {
         ProductSearchRequest request = gson.fromJson(data, ProductSearchRequest.class);
-        reactProductCacheSource.search(request)
+        reactProductDataSource.search(request)
                 .subscribe(
                         new Subscriber<String>() {
                             @Override

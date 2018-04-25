@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.posapp.base.data.pojo.PosResponse;
 import com.tokopedia.posapp.base.data.pojo.PosSimpleResponse;
 import com.tokopedia.posapp.common.PosUrl;
+import com.tokopedia.posapp.etalase.data.pojo.EtalaseItemResponse;
 import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.posapp.product.management.data.pojo.ProductListData;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductDetail;
@@ -34,6 +35,6 @@ public interface ProductApi {
                                                                    @QueryMap Map<String, String> params);
 
     @GET(PosUrl.Product.GET_ETALASE)
-    Observable<Response<TkpdResponse>> getEtalase(@QueryMap Map<String, String> params);
+    Observable<Response<PosSimpleResponse<List<EtalaseItemResponse>>>> getEtalase(@QueryMap Map<String, String> params);
 
 }
