@@ -23,6 +23,17 @@ dependencies {
     implementation rootProject.ext.tkpdDependencies.usecase
     implementation rootProject.ext.tkpdDependencies.design
 
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }

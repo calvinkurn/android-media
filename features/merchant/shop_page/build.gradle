@@ -11,6 +11,7 @@ project.ext {
 dependencies {
 
     implementation rootProject.ext.tkpdDependencies.abstraction
+    implementation rootProject.ext.tkpdDependencies.design
     implementation rootProject.ext.tkpdDependencies.usecase
     implementation rootProject.ext.tkpdDependencies.cacheapi
 
@@ -19,6 +20,16 @@ dependencies {
     implementation rootProject.ext.tkpdDependencies.reputationCommon
     implementation rootProject.ext.tkpdDependencies.wishListCommon
 
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+
+    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
