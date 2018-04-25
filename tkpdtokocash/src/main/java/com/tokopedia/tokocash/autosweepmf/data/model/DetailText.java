@@ -9,6 +9,26 @@ public class DetailText {
     private String content;
     @SerializedName("tooltip_content")
     private String tooltipContent;
+    @SerializedName("description_content")
+    private String description;
+    @SerializedName("dialog")
+    private DialogContent dialog;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public DialogContent getDialog() {
+        return dialog;
+    }
+
+    public void setDialog(DialogContent dialog) {
+        this.dialog = dialog;
+    }
 
     public String getTooltipContent() {
         return tooltipContent;

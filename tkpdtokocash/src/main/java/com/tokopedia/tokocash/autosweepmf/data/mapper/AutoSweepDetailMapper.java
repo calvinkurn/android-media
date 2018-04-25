@@ -14,34 +14,43 @@ public class AutoSweepDetailMapper {
     }
 
     @Nullable
-    public AutoSweepDetail transform(@NonNull ResponseAutoSweepDetail detail) {
-        AutoSweepDetail data = new AutoSweepDetail();
+    public AutoSweepDetail transform(@NonNull ResponseAutoSweepDetail data) {
+        AutoSweepDetail domain = new AutoSweepDetail();
 
-        if (detail.getData() != null) {
-            data.setAccountStatus(detail.getData().getAccountStatus());
-            data.setAmountLimit(detail.getData().getAmountLimit());
-            data.setAutoSweepStatus(detail.getData().getAutoSweepStatus());
-            data.setBalance(detail.getData().getBalance());
-            data.setDashboardLink(detail.getData().getDashboardLink());
+        if (data.getData() != null) {
+            domain.setAccountStatus(data.getData().getAccountStatus());
+            domain.setAmountLimit(data.getData().getAmountLimit());
+            domain.setAutoSweepStatus(data.getData().getAutoSweepStatus());
+            domain.setBalance(data.getData().getBalance());
+            domain.setDashboardLink(data.getData().getDashboardLink());
+            domain.setMfInfoLink(data.getData().getMfInfoLink());
 
-            if (detail.getData().getShowAutoSweep() == 1) {
-                data.setEnable(true);
+            if (data.getData().getShowAutoSweep() == 1) {
+                domain.setEnable(true);
             } else {
-                data.setEnable(false);
+                domain.setEnable(false);
             }
 
-            if (detail.getData().getText() != null) {
-                data.setTitle(detail.getData().getText().getTitle());
-                data.setContent(detail.getData().getText().getContent());
-                data.setTooltipContent(detail.getData().getText().getTooltipContent());
-            }
+            if (data.getData().getText() != null) {
+                domain.setTitle(data.getData().getText().getTitle());
+                domain.setContent(data.getData().getText().getContent());
+                domain.setTooltipContent(data.getData().getText().getTooltipContent());
+                domain.setDescription(data.getData().getText().getDescription());
 
+                if (data.getData().getText().getDialog() != null) {
+                    domain.setDialogContent(data.getData().getText().getDialog().getContent());
+                    domain.setDialogTitle(data.getData().getText().getDialog().getTitle());
+                    domain.setDialogLabelPositive(data.getData().getText().getDialog().getPositiveLabel());
+                    domain.setDialogLabelNegative(data.getData().getText().getDialog().getNegativeLabel());
+                    domain.setDialogNegativeButtonLink(data.getData().getText().getDialog().getDialogNegativeLink());
+                }
+            }
         }
 
-        data.setMessage(detail.getMessage());
-        data.setError(detail.getError());
-        data.setCode(detail.getCode());
-        data.setLatency(detail.getLatency());
-        return data;
+        domain.setMessage(data.getMessage());
+        domain.setError(data.getError());
+        domain.setCode(data.getCode());
+        domain.setLatency(data.getLatency());
+        return domain;
     }
 }

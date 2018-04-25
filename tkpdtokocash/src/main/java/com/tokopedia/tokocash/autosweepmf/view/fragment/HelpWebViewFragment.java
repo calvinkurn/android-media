@@ -34,8 +34,9 @@ public class HelpWebViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_help, container, false);
-        WebView textView = rootView.findViewById(R.id.web_view);
-        textView.loadUrl(getArguments().getString(ARG_PAGE));
+        WebView web = rootView.findViewById(R.id.help_web_view);
+        web.getSettings().setJavaScriptEnabled(true);
+        web.loadUrl(getArguments().getString(ARG_PAGE));
         return rootView;
     }
 }

@@ -10,6 +10,69 @@ public class AutoSweepDetail extends BaseModel {
     private String tooltipContent;
     private boolean isEnable;
     private String dashboardLink;
+    private String dialogContent;
+    private String dialogTitle;
+    private String dialogLabelPositive;
+    private String dialogLabelNegative;
+    private String description;
+    private String dialogNegativeButtonLink;
+    private String mfInfoLink;
+
+    public String getMfInfoLink() {
+        return mfInfoLink;
+    }
+
+    public void setMfInfoLink(String mfInfoLink) {
+        this.mfInfoLink = mfInfoLink;
+    }
+
+    public String getDialogNegativeButtonLink() {
+        return dialogNegativeButtonLink;
+    }
+
+    public void setDialogNegativeButtonLink(String dialogNegativeButtonLink) {
+        this.dialogNegativeButtonLink = dialogNegativeButtonLink;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDialogContent() {
+        return dialogContent;
+    }
+
+    public void setDialogContent(String dialogContent) {
+        this.dialogContent = dialogContent;
+    }
+
+    public String getDialogTitle() {
+        return dialogTitle;
+    }
+
+    public void setDialogTitle(String dialogTitle) {
+        this.dialogTitle = dialogTitle;
+    }
+
+    public String getDialogLabelPositive() {
+        return dialogLabelPositive;
+    }
+
+    public void setDialogLabelPositive(String dialogLabelPositive) {
+        this.dialogLabelPositive = dialogLabelPositive;
+    }
+
+    public String getDialogLabelNegative() {
+        return dialogLabelNegative;
+    }
+
+    public void setDialogLabelNegative(String dialogLabelNegative) {
+        this.dialogLabelNegative = dialogLabelNegative;
+    }
 
     public String getDashboardLink() {
         return dashboardLink;
@@ -94,7 +157,14 @@ public class AutoSweepDetail extends BaseModel {
                 ", content='" + content + '\'' +
                 ", tooltipContent='" + tooltipContent + '\'' +
                 ", isEnable=" + isEnable +
-                ", dashboardLink=" + dashboardLink +
+                ", dashboardLink='" + dashboardLink + '\'' +
+                ", dialogContent='" + dialogContent + '\'' +
+                ", dialogTitle='" + dialogTitle + '\'' +
+                ", dialogLabelPositive='" + dialogLabelPositive + '\'' +
+                ", dialogLabelNegative='" + dialogLabelNegative + '\'' +
+                ", description='" + description + '\'' +
+                ", dialogNegativeButtonLink='" + dialogNegativeButtonLink + '\'' +
+                ", mfInfoLink='" + mfInfoLink + '\'' +
                 '}';
     }
 }

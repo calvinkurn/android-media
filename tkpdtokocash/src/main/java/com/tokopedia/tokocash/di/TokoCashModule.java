@@ -59,6 +59,7 @@ import static com.tokopedia.core.network.constants.TkpdBaseURL.WEB_DOMAIN;
 import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.DI_AUTO_SWEEP_OKHTTP_CLIENT;
 import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.DI_AUTO_SWEEP_RETROFIT;
 
+
 /**
  * Created by nabillasabbaha on 12/27/17.
  */
@@ -113,27 +114,6 @@ public class TokoCashModule {
     @Provides
     TokoCashApi provideTokoCashApi(@RetrofitTokoCashQualifier Retrofit retrofit) {
         return retrofit.create(TokoCashApi.class);
-    }
-
-    @Provides
-    @Named(DI_AUTO_SWEEP_RETROFIT)
-    Retrofit provideRetrofitAutoSweep(Retrofit.Builder retrofitBuilder, @Named(DI_AUTO_SWEEP_OKHTTP_CLIENT) OkHttpClient okHttpClient) {
-        return retrofitBuilder.baseUrl(WEB_DOMAIN)
-                .client(okHttpClient)
-                .build();
-    }
-
-    @Provides
-    @Named(DI_AUTO_SWEEP_OKHTTP_CLIENT)
-    OkHttpClient provideOkHttpClientHttp(WalletAuthInterceptor authInterceptor) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(authInterceptor)
-                .build();
-    }
-
-    @Provides
-    AutoSweepApi provideAutoSweepApi(@Named(DI_AUTO_SWEEP_RETROFIT) Retrofit retrofit) {
-        return retrofit.create(AutoSweepApi.class);
     }
 
     @Provides
@@ -237,11 +217,6 @@ public class TokoCashModule {
     }
 
     @Provides
-    @TokoCashScope
-    InputFilter[] provideInputFilterForAutoSweepLimit(SetAutoSweepLimitPresenter presenter) {
-        return new InputFilter[]{new InputFilterMinMax(0, presenter.getAutoSweepMaxLimit())};
-    }
-
     WalletBalanceApi provideWalletBalanceApi() {
         Retrofit retrofit = RetrofitFactory.createRetrofitDefaultConfig(TkpdBaseURL.HOME_DATA_BASE_URL)
                 .client(OkHttpFactory.create()
@@ -255,6 +230,33 @@ public class TokoCashModule {
     @Provides
     Context provideContext(@ApplicationContext Context context) {
         return context;
+    }
+
+    @Provides
+    @TokoCashScope
+    InputFilter[] provideInputFilterForAutoSweepLimit(SetAutoSweepLimitPresenter presenter) {
+        return new InputFilter[]{new InputFilterMinMax(0, presenter.getAutoSweepMaxLimit())};
+    }
+
+    @Provides
+    @Named(DI_AUTO_SWEEP_RETROFIT)
+    Retrofit provideRetrofitAutoSweep(Retrofit.Builder retrofitBuilder, @Named(DI_AUTO_SWEEP_OKHTTP_CLIENT) OkHttpClient okHttpClient) {
+        return retrofitBuilder.baseUrl(WEB_DOMAIN)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @Provides
+    @Named(DI_AUTO_SWEEP_OKHTTP_CLIENT)
+    OkHttpClient provideOkHttpClientHttp(WalletAuthInterceptor authInterceptor) {
+        return new OkHttpClient.Builder()
+                .addInterceptor(authInterceptor)
+                .build();
+    }
+
+    @Provides
+    AutoSweepApi provideAutoSweepApi(@Named(DI_AUTO_SWEEP_RETROFIT) Retrofit retrofit) {
+        return retrofit.create(AutoSweepApi.class);
     }
 
 }

@@ -13,21 +13,28 @@ public class AutoSweepDetailMapper {
     }
 
     @Nullable
-    public AutoSweepDetail transform(@NonNull com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepDetail detail) {
-        AutoSweepDetail data = new AutoSweepDetail();
-        data.setAccountStatus(detail.getAccountStatus());
-        data.setAmountLimit(detail.getAmountLimit());
-        data.setAutoSweepStatus(detail.getAutoSweepStatus());
-        data.setBalance(detail.getBalance());
-        data.setTitle(detail.getTitle());
-        data.setContent(detail.getContent());
-        data.setTooltipContent(detail.getTooltipContent());
-        data.setMessage(detail.getMessage());
-        data.setError(detail.getError());
-        data.setCode(detail.getCode());
-        data.setLatency(detail.getLatency());
-        data.setEnable(detail.isEnable());
-        data.setDashboardLink(detail.getDashboardLink());
-        return data;
+    public AutoSweepDetail transform(@NonNull com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepDetail domain) {
+        AutoSweepDetail view = new AutoSweepDetail();
+        view.setAccountStatus(domain.getAccountStatus());
+        view.setAmountLimit(domain.getAmountLimit());
+        view.setAutoSweepStatus(domain.getAutoSweepStatus());
+        view.setBalance(domain.getBalance());
+        view.setTitle(domain.getTitle());
+        view.setContent(domain.getContent());
+        view.setTooltipContent(domain.getTooltipContent());
+        view.setMessage(domain.getMessage());
+        view.setError(domain.getError());
+        view.setCode(domain.getCode());
+        view.setLatency(domain.getLatency());
+        view.setEnable(domain.isEnable());
+        view.setDashboardLink(domain.getDashboardLink());
+        view.setDescription(domain.getDescription());
+        view.setDialogContent(domain.getDialogContent());
+        view.setDialogTitle(domain.getDialogTitle());
+        view.setDialogLabelPositive(domain.getDialogLabelPositive());
+        view.setDialogLabelNegative(domain.getDialogLabelNegative());
+        view.setDialogNegativeButtonLink(domain.getDialogNegativeButtonLink());
+        view.setMfInfoLink(domain.getMfInfoLink());
+        return view;
     }
 }

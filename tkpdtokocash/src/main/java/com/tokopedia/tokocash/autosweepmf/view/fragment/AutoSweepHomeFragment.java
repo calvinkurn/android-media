@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -33,13 +32,13 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tokocash.R;
-import com.tokopedia.tokocash.autosweepmf.view.activity.HelpActivity;
 import com.tokopedia.tokocash.autosweepmf.view.activity.SetAutoSweepLimitActivity;
 import com.tokopedia.tokocash.autosweepmf.view.contract.AutoSweepHomeContract;
 import com.tokopedia.tokocash.autosweepmf.view.model.AutoSweepDetail;
 import com.tokopedia.tokocash.autosweepmf.view.model.AutoSweepLimit;
 import com.tokopedia.tokocash.autosweepmf.view.presenter.AutoSweepHomePagePresenter;
 import com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant;
+import com.tokopedia.tokocash.autosweepmf.view.util.MfUtils;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 
 import javax.inject.Inject;
@@ -61,6 +60,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
     private static String WEB_LINK_MF_DASHBOARD = TkpdBaseURL.AutoSweep.WEB_LINK_MF_DASHBOARD;
+    private static String MF_INFO_LINK = CommonConstant.NOT_AVAILABLE;
     private TextView mTextLimitTokocash, mTextLimitTokocashValue, mTextDescription;
     private Button mBtnPositive, mBtnNegative;
     private LinearLayout mContainerWarning;
@@ -71,6 +71,8 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
     private int mAutoSweepStatus = -1;
     private long mValueAutoSweepLimit = -1;
     private BottomSheetView mToolTip;
+    private AlertDialog.Builder mDialogBuilder;
+    private String mDialogNegativeLink = CommonConstant.NOT_AVAILABLE;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -148,7 +150,6 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
      */
     @Override
     public void onSuccessAutoSweepDetail(@NonNull AutoSweepDetail data) {
-
         if (getView() == null) {
             //To ensure UI get setup
             return;
@@ -161,14 +162,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
         }
 
         getView().setVisibility(View.VISIBLE);
-
-        if (data.getAccountStatus() == MF_ACTIVE) {
-            onAccountActive(data);
-        } else if (data.getAccountStatus() == MF_INACTIVE) {
-            onAccountInActive();
-        } else if (data.getAccountStatus() == MF_ON_HOLD) {
-            onAccountHold(data);
-        }
+        mAccountStatus = data.getAccountStatus();
 
         if (data.getAutoSweepStatus() == AUTO_SWEEP_ACTIVE) {
             onAutoSweepActive();
@@ -176,18 +170,73 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
             onAutoSweepInActive();
         }
 
-        //init tooltip
-        if (data.getTooltipContent() != null && !data.getTooltipContent().trim().isEmpty()) {
-            initToolTip(data.getTitle(), data.getTooltipContent());
-        }
-
         //init dashboard url
+        if (URLUtil.isValidUrl(data.getDashboardLink())) {
+            WEB_LINK_MF_DASHBOARD = data.getDashboardLink();
+        }//init dashboard url
         if (URLUtil.isValidUrl(data.getDashboardLink())) {
             WEB_LINK_MF_DASHBOARD = data.getDashboardLink();
         }
 
+        //init MF auto sweep url
+        if (URLUtil.isValidUrl(data.getDashboardLink())) {
+            MF_INFO_LINK = data.getMfInfoLink();
+        }
+
         //init auto sweep limit
         this.mValueAutoSweepLimit = data.getAmountLimit();
+
+        //Tooltip tooltip
+        if (!MfUtils.isNullOrEmpty(data.getTooltipContent())) {
+            initToolTip(data.getTitle(), data.getTooltipContent());
+            mTextWaningTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_mf_info, 0);
+        } else {
+            mToolTip = null;
+            mTextWaningTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
+
+        //Setting description
+        if (!MfUtils.isNullOrEmpty(data.getDescription())) {
+            mTextDescription.setVisibility(View.VISIBLE);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                mTextDescription.setText(Html.fromHtml(data.getDescription(), Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                mTextDescription.setText(Html.fromHtml(data.getDescription()));
+            }
+        } else {
+            mTextDescription.setVisibility(View.GONE);
+        }
+
+        //Setting warning container
+        if (!MfUtils.isNullOrEmpty(data.getTitle())) {
+            mContainerWarning.setVisibility(View.VISIBLE);
+            mTextWaningTitle.setText(data.getTitle());
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                mTextWarningMessage.setText(Html.fromHtml(data.getContent(), Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                mTextWarningMessage.setText(Html.fromHtml(data.getContent()));
+            }
+        } else {
+            mContainerWarning.setVisibility(View.GONE);
+        }
+
+        //Setting limit amount
+        if (data.getAmountLimit() > 0) {
+            mTextLimitTokocash.setVisibility(View.VISIBLE);
+            mTextLimitTokocashValue.setVisibility(View.VISIBLE);
+            mTextLimitTokocashValue.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat((int)
+                    data.getAmountLimit(), false));
+        } else {
+            mTextLimitTokocash.setVisibility(View.GONE);
+            mTextLimitTokocashValue.setVisibility(View.GONE);
+        }
+
+        //Setting dialog
+        if (!MfUtils.isNullOrEmpty(data.getDialogContent())) {
+            initDialog(data);
+        } else {
+            mDialogBuilder = null;
+        }
     }
 
     @Override
@@ -261,35 +310,47 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
     }
 
     @Override
-    public void showDialog(@StringRes int title, @StringRes int content) {
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-        adb.setTitle(title);
+    public void initDialog(AutoSweepDetail data) {
+        mDialogBuilder = new AlertDialog.Builder(getActivity());
+        mDialogBuilder.setTitle(data.getDialogTitle());
+
+        //setting negative button link
+        this.mDialogNegativeLink = data.getDialogNegativeButtonLink();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            adb.setMessage(Html.fromHtml(getString(content), Html.FROM_HTML_MODE_LEGACY));
+            mDialogBuilder.setMessage(Html.fromHtml(data.getDialogContent(), Html.FROM_HTML_MODE_LEGACY));
         } else {
-            adb.setMessage(Html.fromHtml(getString(content)));
+            mDialogBuilder.setMessage(Html.fromHtml(data.getDialogContent()));
         }
 
-        adb.setPositiveButton(R.string.mf_action_enable_autosweep, new DialogInterface.OnClickListener() {
+        mDialogBuilder.setPositiveButton(data.getDialogLabelPositive(), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 navigateToLimitPage();
             }
         });
 
-        adb.setNegativeButton(R.string.mf_label_back, new DialogInterface.OnClickListener() {
+        mDialogBuilder.setNegativeButton(data.getDialogLabelNegative(), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-
+                if (!mDialogNegativeLink.equalsIgnoreCase(CommonConstant.NOT_AVAILABLE)
+                        && URLUtil.isValidUrl(mDialogNegativeLink)) {
+                    openWebView(mDialogNegativeLink);
+                }
             }
         });
+    }
 
-        final AlertDialog dialog = adb.show();
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                R.color.grey_warm));
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                R.color.tkpd_main_green));
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
+    @Override
+    public void showDialog() {
+        if (mDialogBuilder != null) {
+            AlertDialog dialog = mDialogBuilder.show();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
+                    R.color.grey_warm));
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
+                    R.color.tkpd_main_green));
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
+        }
     }
 
     @Override
@@ -300,7 +361,9 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
 
     @Override
     public void learMore() {
-        startActivity(HelpActivity.getCallingIntent(getAppContext()));
+        //startActivity(HelpActivity.getCallingIntent(getAppContext()));
+        //TODO for opening WenView need to discuss it with @Hameer
+        openWebView(MF_INFO_LINK);
     }
 
     @Override
@@ -377,10 +440,11 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
             if (mAutoSweepStatus == AUTO_SWEEP_ACTIVE) {
                 openWebView(WEB_LINK_MF_DASHBOARD);
             } else {
-                if (mAccountStatus == MF_INACTIVE) {
-                    showDialog(R.string.mf_titile_mf_account_in_process, R.string.mf_message_mutual_fund_not_listed);
+                if (mDialogBuilder != null) {
+                    //Show explanation dialog before navigating to limit screen if dialog content available
+                    showDialog();
                 } else {
-                    showDialog(R.string.mf_title_mutual_fund_not_listed, R.string.mf_message_mf_account_in_process);
+                    navigateToLimitPage();
                 }
             }
         } else if (source.getId() == R.id.button_negative) {

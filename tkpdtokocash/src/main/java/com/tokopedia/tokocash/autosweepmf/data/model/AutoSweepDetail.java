@@ -18,6 +18,17 @@ public class AutoSweepDetail {
     @SerializedName("dashboard_link")
     private String dashboardLink;
 
+    @SerializedName("mf_autosweep_info_link")
+    private String mfInfoLink;
+
+    public String getMfInfoLink() {
+        return mfInfoLink;
+    }
+
+    public void setMfInfoLink(String mfInfoLink) {
+        this.mfInfoLink = mfInfoLink;
+    }
+
     public String getDashboardLink() {
         return dashboardLink;
     }
@@ -83,7 +94,8 @@ public class AutoSweepDetail {
                 ", amountLimit=" + amountLimit +
                 ", text=" + text +
                 ", showAutoSweep=" + showAutoSweep +
-                ", dashboardLink=" + dashboardLink +
+                ", dashboardLink='" + dashboardLink + '\'' +
+                ", mfInfoLink='" + mfInfoLink + '\'' +
                 '}';
     }
 }

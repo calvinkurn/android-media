@@ -1,7 +1,6 @@
 package com.tokopedia.tokocash.autosweepmf.view.contract;
 
 import android.content.Context;
-import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -37,7 +36,9 @@ public interface AutoSweepHomeContract {
 
         void onAutoSweepInActive();
 
-        void showDialog(@StringRes int title, @StringRes int content);
+        void showDialog();
+
+        void initDialog(AutoSweepDetail data);
 
         Context getAppContext();
 
