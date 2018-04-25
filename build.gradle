@@ -7,16 +7,20 @@ buildscript {
         mavenCentral()
         jcenter()
         google()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
     dependencies {
         classpath 'com.uber:okbuck:0.34.1'
         classpath 'com.android.tools.build:gradle:3.1.2'
-        classpath ("org.jfrog.buildinfo:build-info-extractor-gradle:4.0.1"){
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.0.1") {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
         classpath 'com.apollographql.apollo:gradle-plugin:0.3.0'
-        if (!project.hasProperty("disable-performance-plugin")) { classpath('com.google.firebase:firebase-plugins:1.1.1') { exclude group: 'com.google.guava', module: 'guava-jdk5' } }
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        if (!project.hasProperty("disable-performance-plugin")) {
+            classpath('com.google.firebase:firebase-plugins:1.1.1') {
+                exclude group: 'com.google.guava', module: 'guava-jdk5'
+            }
+        }
 
     }
 }
@@ -27,11 +31,13 @@ allprojects {
         mavenLocal()
         jcenter()
         mavenCentral()
+        google()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         maven { url "https://www.jitpack.io" }
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://dl.bintray.com/guardian/android' }
         maven { url "https://maven.google.com" }
-        maven { url 'https://mymavenrepo.com/repo/e01iL1W9Gdxw73PGI9LA'}
+        maven { url 'https://mymavenrepo.com/repo/e01iL1W9Gdxw73PGI9LA' }
         maven {
             url "${artifactory_url}" + "/libs-release-local";
             credentials {
@@ -68,7 +74,7 @@ okbuck {
     intellij {
         sources = true
     }
-    
+
     // Allows okbuck to espresso and robolectric buck rules.
     test {
         espresso = true
