@@ -45,7 +45,6 @@ import static android.app.Activity.RESULT_OK;
 public class FlightCancellationFragment extends BaseListFragment<FlightCancellationViewModel, FlightCancellationAdapterTypeFactory>
         implements FlightCancellationContract.View, FlightCancellationViewHolder.FlightCancellationListener {
 
-    public static final String EXTRA_TOTAL_PRICE = "EXTRA_TOTAL_PRICE";
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
 
@@ -67,12 +66,10 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     private LinearLayout contentContainer;
 
     public static FlightCancellationFragment createInstance(String invoiceId,
-                                                            int totalPrice,
                                                             List<FlightCancellationJourney> flightCancellationJourneyList) {
         FlightCancellationFragment fragment = new FlightCancellationFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_INVOICE_ID, invoiceId);
-        bundle.putInt(EXTRA_TOTAL_PRICE, totalPrice);
         bundle.putParcelableArrayList(EXTRA_CANCEL_JOURNEY, (ArrayList<? extends Parcelable>) flightCancellationJourneyList);
         fragment.setArguments(bundle);
         return fragment;
@@ -124,10 +121,6 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         flightCancellationJourneyList = getArguments().getParcelableArrayList(EXTRA_CANCEL_JOURNEY);
         flightCancellationWrapperViewModel = new FlightCancellationWrapperViewModel();
         flightCancellationWrapperViewModel.setInvoice(invoiceId);
-        flightCancellationWrapperViewModel.setTotalPrice(
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
-                        getArguments().getInt(EXTRA_TOTAL_PRICE))
-        );
         flightCancellationWrapperViewModel.setCancellationReasonAndAttachment(new FlightCancellationReasonAndAttachmentViewModel());
     }
 

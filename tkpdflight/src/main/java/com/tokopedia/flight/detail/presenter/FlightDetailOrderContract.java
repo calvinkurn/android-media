@@ -54,7 +54,7 @@ public interface FlightDetailOrderContract {
 
         FlightOrder getFlightOrder();
 
-        void navigateToCancellationPage(String invoiceId, List<FlightCancellationJourney> items, int totalPrice);
+        void navigateToCancellationPage(String invoiceId, List<FlightCancellationJourney> items);
 
         void showPaymentInfoLayout();
 
