@@ -41,6 +41,7 @@ public interface FlightCancellationContract {
 
         void showFullLoading();
 
+        void showGetListError(Throwable throwable);
     }
 
     interface Presenter {

@@ -211,6 +211,13 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     }
 
     @Override
+    public void showGetListError(Throwable throwable) {
+        txtCancellationSteps.setVisibility(View.GONE);
+        btnSubmit.setVisibility(View.GONE);
+        super.showGetListError(throwable);
+    }
+
+    @Override
     public void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
         flightCancellationPresenter.checkPassenger(passengerViewModel, position);
     }
@@ -266,6 +273,12 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onRetryClicked() {
+        showFullLoading();
+        flightCancellationPresenter.onViewCreated();
     }
 
     private void closeCancellationPage() {

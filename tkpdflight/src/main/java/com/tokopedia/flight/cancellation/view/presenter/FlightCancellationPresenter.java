@@ -89,8 +89,11 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
 
                     @Override
                     public void onError(Throwable throwable) {
-                        getView().hideFullLoading();
                         throwable.printStackTrace();
+                        if (isViewAttached()) {
+                            getView().hideFullLoading();
+                            getView().showGetListError(throwable);
+                        }
                     }
 
                     @Override
