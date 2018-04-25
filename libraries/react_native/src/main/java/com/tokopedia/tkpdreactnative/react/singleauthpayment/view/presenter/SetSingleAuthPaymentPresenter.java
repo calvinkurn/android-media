@@ -24,7 +24,7 @@ public class SetSingleAuthPaymentPresenter
 
     private ReactNativeRouter reactNativeRouter;
     private UserSession userSession;
-    private UseCase<Boolean> creditCardFingerPrintUseCase;
+    private UseCase<String> creditCardFingerPrintUseCase;
 
 
     public SetSingleAuthPaymentPresenter(ReactNativeRouter reactNativeRouter,
@@ -44,8 +44,8 @@ public class SetSingleAuthPaymentPresenter
         creditCardFingerPrintUseCase.execute(requestParams, creditCardAuthenticationSubscriber());
     }
 
-    private Subscriber<Boolean> creditCardAuthenticationSubscriber() {
-        return new Subscriber<Boolean>() {
+    private Subscriber<String> creditCardAuthenticationSubscriber() {
+        return new Subscriber<String>() {
             @Override
             public void onCompleted() {
 
@@ -58,10 +58,9 @@ public class SetSingleAuthPaymentPresenter
             }
 
             @Override
-            public void onNext(Boolean isSuccess) {
+            public void onNext(String message) {
                 getView().hideProgressLoading();
-                if(isSuccess) getView().onSuccessSingleAuth();
-                else getView().onErrorNetworkSingleAuth(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                getView().onSuccessSingleAuth(message);
             }
         };
     }

@@ -1,10 +1,13 @@
 package com.tokopedia.transaction.bcaoneklik.usecase;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.Sha1EncoderUtils;
 import com.tokopedia.transaction.bcaoneklik.di.fingerprint.DaggerSingleAuthenticationComponent;
@@ -13,6 +16,7 @@ import com.tokopedia.transaction.bcaoneklik.domain.CreditCardListRepository;
 import com.tokopedia.transaction.bcaoneklik.domain.creditcardauthentication.UserInfoRepository;
 import com.tokopedia.transaction.bcaoneklik.model.creditcard.authenticator.AuthenticatorUpdateWhiteListResponse;
 import com.tokopedia.transaction.bcaoneklik.model.creditcard.authenticator.UpdateWhiteListRequestData;
+import com.tokopedia.transaction.exception.ResponseRuntimeException;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -25,7 +29,7 @@ import rx.functions.Func1;
  * Created by kris on 4/23/18. Tokopedia
  */
 
-public class CreditCardFingerPrintUseCase extends UseCase<Boolean>{
+public class CreditCardFingerPrintUseCase extends UseCase<String> {
 
     @Inject
     CreditCardListRepository creditCardListRepository;
@@ -50,7 +54,7 @@ public class CreditCardFingerPrintUseCase extends UseCase<Boolean>{
 
 
     @Override
-    public Observable<Boolean> createObservable(RequestParams requestParams) {
+    public Observable<String> createObservable(RequestParams requestParams) {
         final int updatedWhiteListState = requestParams.getInt(UPDATED_STATE, 0);
         final String deviceIdKey = requestParams.getString(DEVICE_ID_KEY, "");
         final String userIdKey = requestParams.getString(USER_ID_KEY, "");
@@ -59,26 +63,45 @@ public class CreditCardFingerPrintUseCase extends UseCase<Boolean>{
         return userInfoRepository.getUserInfo(AuthUtil.generateParamsNetwork(
                 userIdKey, deviceIdKey, userInfoParam))
                 .flatMap(new Func1<String, Observable<AuthenticatorUpdateWhiteListResponse>>() {
+                             @Override
+                             public Observable<AuthenticatorUpdateWhiteListResponse>
+                             call(String email) {
+                                 checkUserEmailError(email);
+                                 UpdateWhiteListRequestData data = new UpdateWhiteListRequestData();
+                                 data.setState(updatedWhiteListState);
+                                 data.setUserEmail(email);
+                                 JsonObject requestBody = new JsonObject();
+                                 JsonArray jsonArray = new JsonArray();
+                                 jsonArray.add(new JsonParser().parse(new Gson().toJson(data)));
+                                 requestBody.add("data", jsonArray);
+                                 requestBody.addProperty(
+                                         "signature", Sha1EncoderUtils.getRFC2104HMAC(
+                                         email + String.valueOf(updatedWhiteListState),
+                                         AuthUtil.KEY.ZEUS_WHITELIST)
+                                 );
+                                 return creditCardListRepository
+                                         .updateCreditCardWhiteList(requestBody);
+                             }
+                         }
+                ).map(new Func1<AuthenticatorUpdateWhiteListResponse, String>() {
                     @Override
-                    public Observable<AuthenticatorUpdateWhiteListResponse> call(String email) {
-                        UpdateWhiteListRequestData data = new UpdateWhiteListRequestData();
-                        data.setState(updatedWhiteListState);
-                        data.setUserEmail(email);
-                        JsonObject requestBody = new JsonObject();
-                        JsonArray jsonArray = new JsonArray();
-                        jsonArray.add(new JsonParser().parse(new Gson().toJson(data)));
-                        requestBody.add("data", jsonArray);
-                        requestBody.addProperty("signature", Sha1EncoderUtils.getRFC2104HMAC(
-                                email + String.valueOf(updatedWhiteListState),
-                                AuthUtil.KEY.ZEUS_WHITELIST));
-                        return creditCardListRepository.updateCreditCardWhiteList(requestBody);
-                    }
-                }
-        ).map(new Func1<AuthenticatorUpdateWhiteListResponse, Boolean>() {
-                    @Override
-                    public Boolean call(AuthenticatorUpdateWhiteListResponse authenticatorUpdateWhiteListResponse) {
-                        return authenticatorUpdateWhiteListResponse.getStatusCode() == 200;
+                    public String call(AuthenticatorUpdateWhiteListResponse
+                                               authenticatorUpdateWhiteListResponse) {
+                        checkError(authenticatorUpdateWhiteListResponse);
+                        return authenticatorUpdateWhiteListResponse.getMessage();
                     }
                 });
+    }
+
+    private void checkUserEmailError(String email) {
+        if(TextUtils.isEmpty(email)) {
+            throw new ResponseRuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
+    }
+
+    private void checkError(AuthenticatorUpdateWhiteListResponse authenticatorUpdateWhiteListResponse) {
+        if (authenticatorUpdateWhiteListResponse.getStatusCode() >= 400) {
+            throw new ResponseRuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
     }
 }

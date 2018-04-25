@@ -10,6 +10,6 @@ import rx.Subscriber;
 
 public interface ReactNativeRouter {
 
-    UseCase<Boolean> setCreditCardSingleAuthentication();
+    UseCase<String> setCreditCardSingleAuthentication();
 
 }

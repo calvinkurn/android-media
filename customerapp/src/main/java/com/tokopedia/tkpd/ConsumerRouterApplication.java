@@ -1866,7 +1866,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public UseCase<Boolean> setCreditCardSingleAuthentication() {
+    public UseCase<String> setCreditCardSingleAuthentication() {
         return new CreditCardFingerPrintUseCase();
     }
 

@@ -22,6 +22,6 @@ public interface SetSingleAuthPaymentContract {
 
         void onErrorNetworkSingleAuth(String errorMessage);
 
-        void onSuccessSingleAuth();
+        void onSuccessSingleAuth(String successMessage);
     }
 }
