@@ -58,7 +58,7 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    implementation 'com.github.tommus:youtube-android-player-api:1.2.2'
+    implementation 'com.github.tommus:youtube-android-player-api:1.2.1'
 
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler
