@@ -15,7 +15,7 @@ public class TkpdBaseURL {
     public static String ALPHA_DOMAIN = "https://ws-alpha.tokopedia.com/";
     public static String BASE_DOMAIN = LIVE_DOMAIN;
     public static String ACE_STAGING_DOMAIN = "http://ace-staging.tokopedia.com/";
-    public static String ACE_DOMAIN = "https://ace.tokopedia.com/";
+    public static String ACE_DOMAIN = "https://172.21.43.50:9000";
     public static String TOME_DOMAIN = "https://tome.tokopedia.com/";
     public static String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
     public static String TOPADS_STAGING_DOMAIN = "http://ta-staging.tokopedia.com/";
@@ -592,6 +592,7 @@ public class TkpdBaseURL {
         public static final String PATH_DELETE_SEARCH = "/universe/v1?device=android&source=searchbar";
 
         public static final String PATH_SEARCH_PRODUCT = "search/product/v3";
+        public static final String PATH_IMAGE_SEARCH = "search/image/";
         public static final String PATH_GET_ATTRIBUTE = "search/product/attributes/v3";
         public static final String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
         public static final String PATH_BROWSE_CATALOG = "search/v2.1/catalog";

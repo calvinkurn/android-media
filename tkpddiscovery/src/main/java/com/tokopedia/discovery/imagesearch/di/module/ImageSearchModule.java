@@ -45,7 +45,7 @@ public class ImageSearchModule {
             ImageSearchRepository imageSearchRepository,
             @MojitoGetWishlistQualifier MojitoApi service) {
         return new GetImageSearchUseCase(context, threadExecutor,
-                postExecutionThread, imageSearchRepository);
+                postExecutionThread, imageSearchRepository, service);
     }
 
     @Provides
