@@ -140,4 +140,10 @@ public class AttachInvoiceFragment extends BaseListFragment<InvoiceViewModel,
     public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
         return swipeRefreshLayout;
     }
+
+    @Override
+    public void onDestroy() {
+        if(presenter != null) presenter.onDestroy();
+        super.onDestroy();
+    }
 }

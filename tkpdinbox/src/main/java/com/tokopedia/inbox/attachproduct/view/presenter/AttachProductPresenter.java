@@ -69,4 +69,13 @@ public class AttachProductPresenter implements AttachProductContract.Presenter {
         }
         activityContract.finishActivityWithResult(resultProducts);
     }
+
+    @Override
+    public void onDestroy() {
+        if(useCase != null){
+            useCase.unsubscribe();
+        }
+        view = null;
+        activityContract = null;
+    }
 }
