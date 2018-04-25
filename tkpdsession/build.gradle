@@ -22,6 +22,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation rootProject.ext.tkpdDependencies.core
+    implementation rootProject.ext.tkpdDependencies.design
     implementation rootProject.ext.tkpdDependencies.usecase
 
     implementation(rootProject.ext.miscDependencies.facebook) {
@@ -37,14 +38,23 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.playServicesDependencies.maps
+
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
     implementation rootProject.ext.viewDependencies.appIntro
+
+    implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler

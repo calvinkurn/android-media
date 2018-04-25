@@ -116,6 +116,7 @@ subprojects {
                 substitute module('com.android.support:support-annotations') with module('com.android.support:support-annotations:26.0.2')
                 substitute module('com.android.support:multidex') with module('com.android.support:multidex:1.0.3')
                 substitute module('com.android.support:support-v13') with module('com.android.support:support-v13:26.0.2')
+                substitute module('com.android.support:support-v4') with module('com.android.support:support-v4:26.0.2')
             }
         }
     }

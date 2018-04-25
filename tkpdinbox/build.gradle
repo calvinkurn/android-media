@@ -22,6 +22,7 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation rootProject.ext.tkpdDependencies.design
     implementation rootProject.ext.tkpdDependencies.core
     implementation rootProject.ext.tkpdDependencies.usecase
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
@@ -30,6 +31,18 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.tkpdDependencies.cacheapi
+
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
@@ -59,7 +72,7 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
     testImplementation 'junit:junit:4.12'
 }
 

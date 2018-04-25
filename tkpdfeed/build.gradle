@@ -35,9 +35,16 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.perfMon
     implementation rootProject.ext.playServicesDependencies.plus
 
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.viewDependencies.appIntro

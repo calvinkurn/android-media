@@ -20,10 +20,20 @@ project.ext {
 
 dependencies {
     implementation rootProject.ext.tkpdDependencies.core
+    implementation rootProject.ext.tkpdDependencies.design
     implementation rootProject.ext.tkpdDependencies.payment
     implementation rootProject.ext.tkpdDependencies.design
     implementation rootProject.ext.tkpdDependencies.topads
     implementation rootProject.ext.tkpdDependencies.loyalty
+
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.supportV13
 
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

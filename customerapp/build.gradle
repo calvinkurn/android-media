@@ -266,7 +266,7 @@ dependencies {
     implementation project(rootProject.ext.features.event)
     implementation project(rootProject.ext.features.digital)
     implementation project(rootProject.ext.features.tokoCash)
-//    implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.features.inbox)
@@ -307,6 +307,12 @@ dependencies {
 //    implementation rootProject.ext.tkpdDependencies.gamification
 //    implementation rootProject.ext.tkpdDependencies.kol
 //    implementation rootProject.ext.tkpdDependencies.pushNotif
+
+    implementation rootProject.ext.supportLibDependencies.design
+
+    implementation rootProject.ext.networkDependencies.retrofit
+
+    implementation rootProject.ext.miscDependencies.gson
 
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

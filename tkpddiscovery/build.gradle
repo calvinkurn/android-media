@@ -62,6 +62,20 @@ dependencies {
     implementation rootProject.ext.tkpdDependencies.usecase
     implementation rootProject.ext.playServicesDependencies.analytics
 
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.gson
+
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.viewDependencies.appIntro
 }
