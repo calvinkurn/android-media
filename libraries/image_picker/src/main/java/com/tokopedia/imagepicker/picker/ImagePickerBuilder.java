@@ -100,6 +100,10 @@ public enum ImagePickerBuilder {
         return imageSelectionType;
     }
 
+    public boolean supportMultipleSelection(){
+        return imageSelectionType != ImageSelectionTypeDef.TYPE_SINGLE;
+    }
+
     public int getMinResolution() {
         return minResolution;
     }

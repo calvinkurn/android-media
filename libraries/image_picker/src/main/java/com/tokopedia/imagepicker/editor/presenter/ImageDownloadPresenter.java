@@ -6,7 +6,9 @@ import android.webkit.URLUtil;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
-import com.tokopedia.imagepicker.ImageUtils;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.imagepicker.common.util.ImageUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,26 +23,24 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class ImageDownloadPresenter {
+public class ImageDownloadPresenter extends BaseDaggerPresenter<ImageDownloadPresenter.ImageDownloadView>{
 
-    private static final int WIDTH_DOWNLOAD = 2048;
+    private static final int WIDTH_DOWNLOAD = 1024;
+    private static final int HEIGHT_DOWNLOAD = 1024;
 
     private CompositeSubscription compositeSubscription;
 
-    private OnImageDownloadListener onImageDownloadListener;
-    public interface OnImageDownloadListener{
+    public interface ImageDownloadView extends CustomerView{
         Context getContext();
         void onErrorDownloadImageToLocal(Throwable e);
         void onSuccessDownloadImageToLocal(ArrayList<String> localPaths);
     }
 
-    public void attachView(OnImageDownloadListener onImageDownloadListener){
-        this.onImageDownloadListener = onImageDownloadListener;
-    }
-
     public void detachView(){
-        onImageDownloadListener = null;
-        compositeSubscription.unsubscribe();
+        super.detachView();
+        if (compositeSubscription!= null) {
+            compositeSubscription.unsubscribe();
+        }
     }
 
     public void convertHttpPathToLocalPath(List<String> urlsToDownload) {
@@ -57,8 +57,8 @@ public class ImageDownloadPresenter {
 
                             @Override
                             public void onError(Throwable e) {
-                                if (ImageDownloadPresenter.this.onImageDownloadListener!= null) {
-                                    ImageDownloadPresenter.this.onImageDownloadListener.onErrorDownloadImageToLocal(e);
+                                if (isViewAttached()) {
+                                    getView().onErrorDownloadImageToLocal(e);
                                 }
                             }
 
@@ -71,8 +71,8 @@ public class ImageDownloadPresenter {
                                 for (int i = 0, sizei = files.size(); i < sizei; i++) {
                                     resultLocalPaths.add(files.get(i).getAbsolutePath());
                                 }
-                                if (ImageDownloadPresenter.this.onImageDownloadListener != null) {
-                                    ImageDownloadPresenter.this.onImageDownloadListener.onSuccessDownloadImageToLocal(resultLocalPaths);
+                                if (isViewAttached()) {
+                                    getView().onSuccessDownloadImageToLocal(resultLocalPaths);
                                 }
                             }
                         }
@@ -101,12 +101,12 @@ public class ImageDownloadPresenter {
                     @Override
                     public File call(String url) {
                         if (URLUtil.isNetworkUrl(url)) {
-                            if (onImageDownloadListener== null || onImageDownloadListener.getContext() == null) {
+                            if (!isViewAttached()) {
                                 return null;
                             }
-                            FutureTarget<File> future = Glide.with(onImageDownloadListener.getContext())
+                            FutureTarget<File> future = Glide.with(getView().getContext())
                                     .load(url)
-                                    .downloadOnly(WIDTH_DOWNLOAD, WIDTH_DOWNLOAD);
+                                    .downloadOnly(WIDTH_DOWNLOAD, HEIGHT_DOWNLOAD);
                             try {
                                 File cacheFile = future.get();
                                 String cacheFilePath = cacheFile.getAbsolutePath();

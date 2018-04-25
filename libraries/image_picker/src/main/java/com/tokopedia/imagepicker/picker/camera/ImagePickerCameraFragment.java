@@ -22,7 +22,7 @@ import com.github.florent37.camerafragment.widgets.CameraSwitchView;
 import com.github.florent37.camerafragment.widgets.FlashSwitchView;
 import com.github.florent37.camerafragment.widgets.RecordButton;
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.ImageUtils;
+import com.tokopedia.imagepicker.common.util.ImageUtils;
 
 /**
  * Created by hendry on 19/04/18.
