@@ -23,6 +23,12 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.reactNative)
+
+    implementation rootProject.ext.miscDependencies.reactNative
+
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'

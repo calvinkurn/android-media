@@ -10,6 +10,7 @@ project.ext {
 
 dependencies {
     implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.features.payment)
 
     // transitive from core->abstraction

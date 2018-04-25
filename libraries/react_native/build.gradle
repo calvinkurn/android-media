@@ -10,6 +10,7 @@ project.ext {
 
 dependencies {
     implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.abstraction)
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.miscDependencies.codePushReactNative

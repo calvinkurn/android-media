@@ -24,6 +24,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.abstraction)
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.appIndexing
