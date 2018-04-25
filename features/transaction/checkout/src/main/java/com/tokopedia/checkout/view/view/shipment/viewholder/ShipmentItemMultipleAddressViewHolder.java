@@ -27,6 +27,11 @@ public class ShipmentItemMultipleAddressViewHolder extends ShipmentItemViewHolde
 
     public void bindViewHolder(ShipmentMultipleAddressItem shipmentMultipleAddressItem){
         // TODO : BIND HERE
+        tvAddressName.setText("");
+        tvRecipientName.setText("");
+        tvRecipientAddress.setText("");
+        tvRecipientPhone.setText("");
+        tvChangeAddress.setVisibility(View.GONE);
     }
 
 }

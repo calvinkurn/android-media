@@ -40,7 +40,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetThanksToppayUseCase getThanksToppayUseCase;
     private final CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase;
 
-    @Inject
+//    @Inject
     public ShipmentPresenter(ICartListInteractor cartListInteractor,
                              CompositeSubscription compositeSubscription,
                              CheckoutUseCase checkoutUseCase,

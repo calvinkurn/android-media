@@ -17,15 +17,20 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.checkout.data.entity.request.DataCheckoutRequest;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -39,7 +44,8 @@ import javax.inject.Inject;
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View {
+public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
+        ShipmentAdapterActionListener {
 
     public static final int RESULT_CODE_CANCEL_SHIPMENT_PAYMENT = 4;
     public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
@@ -60,10 +66,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private List<DataCheckoutRequest> mCheckoutRequestData;
     private CheckoutData checkoutData;
 
-    @Inject
-    private ShipmentAdapter shipmentAdapter;
-    @Inject
-    private ShipmentPresenter shipmentPresenter;
+//    @Inject
+    ShipmentAdapter shipmentAdapter;
+//    @Inject
+    ShipmentPresenter shipmentPresenter;
 
     public static ShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
                                                PromoCodeAppliedData promoCodeAppliedData,
@@ -118,9 +124,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         CartShipmentAddressFormData cartShipmentAddressFormData
                 = arguments.getParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA);
 
-        singleShipmentData = mCartShipmentAddressFormDataConverter.convert(
-                cartShipmentAddressFormData
-        );
+//        singleShipmentData = mCartShipmentAddressFormDataConverter.convert(
+//                cartShipmentAddressFormData
+//        );
         promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
         cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
     }
@@ -139,6 +145,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         tvPromoMessage = view.findViewById(R.id.tv_promo_message);
         cvBottomLayout = view.findViewById(R.id.bottom_layout);
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        shipmentAdapter = new ShipmentAdapter(this);
     }
 
     @Override
@@ -177,9 +185,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             cartPromoSuggestion.setVisible(false);
         }
         shipmentAdapter.addPromoSuggestionData(cartPromoSuggestion);
-        shipmentAdapter.addAddressShipmentData(singleShipmentData.getRecipientAddress());
-        shipmentAdapter.addCartItemDataList(singleShipmentData.getCartItem());
-        shipmentAdapter.addShipmentCostData(singleShipmentData.getShipmentCost());
+//        shipmentAdapter.addAddressShipmentData(singleShipmentData.getRecipientAddress());
+//        shipmentAdapter.addCartItemDataList(singleShipmentData.getCartItem());
+//        shipmentAdapter.addShipmentCostData(singleShipmentData.getShipmentCost());
     }
 
     @Override
@@ -305,5 +313,103 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     break;
             }
         }
+    }
+
+
+    // Adapter Listener
+
+    @Override
+    public void onAddOrChangeAddress() {
+
+    }
+
+    @Override
+    public void onChooseShipment(int position, ShipmentItem shipmentItem, RecipientAddressModel recipientAddressModel) {
+
+    }
+
+    @Override
+    public void onChoosePickupPoint(RecipientAddressModel addressAdapterData) {
+
+    }
+
+    @Override
+    public void onClearPickupPoint(RecipientAddressModel addressAdapterData) {
+
+    }
+
+    @Override
+    public void onEditPickupPoint(RecipientAddressModel addressAdapterData) {
+
+    }
+
+    @Override
+    public void onTotalPaymentChange(ShipmentCostModel shipmentCostModel) {
+
+    }
+
+    @Override
+    public void onFinishChoosingShipment(List<CheckPromoCodeCartShipmentRequest.Data> data, List<DataCheckoutRequest> checkoutRequest) {
+
+    }
+
+    @Override
+    public void onShowPromoMessage(String promoMessage) {
+
+    }
+
+    @Override
+    public void onHidePromoMessage() {
+
+    }
+
+    @Override
+    public void onRemovePromoCode() {
+
+    }
+
+    @Override
+    public void onCartPromoSuggestionActionClicked(CartPromoSuggestion cartPromoSuggestion, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion cartPromoSuggestion, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoTrackingSuccess(CartItemPromoHolderData cartPromo, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoTrackingCancelled(CartItemPromoHolderData cartPromo, int position) {
+
+    }
+
+    @Override
+    public void onCartDataEnableToCheckout() {
+
+    }
+
+    @Override
+    public void onCartDataDisableToCheckout() {
+
+    }
+
+    @Override
+    public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
+
     }
 }

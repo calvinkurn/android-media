@@ -53,11 +53,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private ArrayList<ShowCaseObject> showCaseObjectList;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
+
     private List<ShipmentData> shipmentDataList;
+
     private CartItemPromoHolderData cartItemPromoHolderData;
     private CartPromoSuggestion cartPromoSuggestion;
     private RecipientAddressModel recipientAddressModel;
-    private ShipmentItem shipmentItem;
     private ShipmentCostModel shipmentCostModel;
 
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener) {
@@ -123,7 +124,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
             ((ShipmentCostViewHolder) holder).bindViewHolder((ShipmentCostModel) data);
         } else if (viewType == ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS) {
-            ((ShipmentItemSingleAddressViewHolder) holder).bindViewHolder((ShipmentSingleAddressItem) data);
+            ((ShipmentItemSingleAddressViewHolder) holder).bindViewHolder(
+                    (ShipmentSingleAddressItem) data, recipientAddressModel, showCaseObjectList);
         } else if (viewType == ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS) {
             ((ShipmentItemMultipleAddressViewHolder) holder).bindViewHolder((ShipmentMultipleAddressItem) data);
         }
@@ -182,7 +184,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         checkDataForCheckout();
     }
 
-    // For single and multiple
     public void addCartItemDataList(List<ShipmentItem> shipmentItem) {
         shipmentDataList.addAll(shipmentItem);
         notifyDataSetChanged();

@@ -11,7 +11,7 @@ public class ShipmentMultipleAddressItem extends ShipmentItem {
     private MultipleAddressItemData multipleAddressItemData;
     private int invoicePosition;
     private String productImageUrl;
-    private String productPrice;
+    private int productPrice;
     private String productName;
     private long subTotal;
     private long productPriceNumber;
@@ -45,11 +45,11 @@ public class ShipmentMultipleAddressItem extends ShipmentItem {
         this.productImageUrl = productImageUrl;
     }
 
-    public String getProductPrice() {
+    public int getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(String productPrice) {
+    public void setProductPrice(int productPrice) {
         this.productPrice = productPrice;
     }
 

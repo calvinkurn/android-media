@@ -5,6 +5,7 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.view.adapter.CartAdapterActionListener;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void onAddOrChangeAddress();
 
-    void onChooseShipment(int position, CartSellerItemModel cartSellerItemModel,
+    void onChooseShipment(int position, ShipmentItem shipmentItem,
                           RecipientAddressModel recipientAddressModel);
 
     void onChoosePickupPoint(RecipientAddressModel addressAdapterData);
