@@ -12,7 +12,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
 
     // transitive from tkpddesign
-    implementation rootProject.ext.supportLibDependencies.design
+//    implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
