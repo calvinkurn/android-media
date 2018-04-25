@@ -64,14 +64,13 @@ public class ProductManagementPresenter implements ProductManagement.Presenter {
     }
 
     @Override
-    public void editStatus(ProductViewModel productViewModel, boolean status) {
-        view.showLoadingDialog();
+    public void editStatus(ProductViewModel productViewModel, boolean status, int position) {
         RequestParams requestParams = RequestParams.EMPTY;
         requestParams.putString(ProductConstant.Key.OUTLET_ID, posSession.getOutletId());
 
         requestParams.putObject(ProductConstant.Key.EDIT_PRODUCT_REQUEST, getRequestModel(productViewModel, status));
 
-        editProductUseCase.execute(requestParams, new EditProductStatusSubscriber(view));
+        editProductUseCase.execute(requestParams, new EditProductStatusSubscriber(view, position, productViewModel));
     }
 
     private RequestParams getRequestParam(int pageNo) {

@@ -3,6 +3,7 @@ package com.tokopedia.posapp.product.management.view;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.posapp.base.domain.model.DataStatus;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
@@ -18,7 +19,7 @@ public interface ProductManagement {
 
         void loadMore();
 
-        void editStatus(ProductViewModel productViewModel, boolean status);
+        void editStatus(ProductViewModel productViewModel, boolean status, int position);
     }
 
     interface View extends CustomerView {
@@ -32,8 +33,8 @@ public interface ProductManagement {
 
         void onErrorLoadData(Throwable e);
 
-        void onSuccessEditStatus();
+        void onSuccessEditStatus(int position, ProductViewModel productViewModel);
 
-        void onErorEditStatus(String errorMessage);
+        void onErorEditStatus(int position);
     }
 }

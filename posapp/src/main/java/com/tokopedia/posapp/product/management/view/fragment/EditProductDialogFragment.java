@@ -37,6 +37,7 @@ import javax.inject.Inject;
 public class EditProductDialogFragment extends DialogFragment implements EditProduct.View {
     public static final String TAG = EditProductDialogFragment.class.getSimpleName();
     private static final String PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
+    private static final String PRODUCT_POSITION = "PRODUCT_POSITION";
 
     @Inject
     EditProduct.Presenter presenter;
@@ -50,9 +51,10 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
     private ProgressBar progressBar;
     private EditProductListener editProductListener;
 
-    public static void show(FragmentManager fragmentManager, ProductViewModel productViewModel) {
+    public static void show(FragmentManager fragmentManager, ProductViewModel productViewModel, int position) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(PRODUCT_VIEW_MODEL, productViewModel);
+        bundle.putInt(PRODUCT_POSITION, position);
 
         EditProductDialogFragment editProductDialogFragment = new EditProductDialogFragment();
         editProductDialogFragment.setArguments(bundle);
@@ -85,7 +87,8 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
             return new AlertDialog
                     .Builder(getContext())
                     .setView(getDialogView(
-                            (ProductViewModel) getArguments().getParcelable(PRODUCT_VIEW_MODEL)
+                            (ProductViewModel) getArguments().getParcelable(PRODUCT_VIEW_MODEL),
+                            getArguments().getInt(PRODUCT_POSITION)
                     ))
                     .create();
         }
@@ -113,9 +116,9 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
     }
 
     @Override
-    public void onSuccessSave() {
+    public void onSuccessSave(ProductViewModel productViewModel, int position) {
         Toast.makeText(getContext(), R.string.editproduct_message_success, Toast.LENGTH_SHORT).show();
-        editProductListener.onDialogDismiss();
+        editProductListener.onDialogDismiss(productViewModel, position);
         dismiss();
     }
 
@@ -133,7 +136,7 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
         presenter.attachView(this);
     }
 
-    private View getDialogView(final ProductViewModel product) {
+    private View getDialogView(final ProductViewModel product, final int position) {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_edit_product, null);
 
@@ -161,7 +164,7 @@ public class EditProductDialogFragment extends DialogFragment implements EditPro
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.save(product, editOutletPrice.getTextWithoutPrefix());
+                presenter.save(product, editOutletPrice.getTextWithoutPrefix(), position);
             }
         });
 
