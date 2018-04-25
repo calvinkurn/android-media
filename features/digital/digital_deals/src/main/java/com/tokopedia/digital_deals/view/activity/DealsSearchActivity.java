@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
@@ -57,7 +56,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     private TextView tvTopDeals;
     private ImageView back;
     private LinearLayoutManager layoutManager;
-    private DividerItemDecoration mDividerItemDecoration;
     private LinearLayout noContent;
 
 
@@ -93,7 +91,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
         back=findViewById(R.id.imageViewBack);
         noContent=findViewById(R.id.no_content);
         back.setOnClickListener(this);
-        mDividerItemDecoration = new DividerItemDecoration(rvTopDealsSuggestions.getContext());
     }
 
     public static Intent getCallingIntent(Activity activity) {
@@ -185,7 +182,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
             TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, mPresenter);
             rvTopDealsSuggestions.setLayoutManager(layoutManager);
             rvTopDealsSuggestions.setAdapter(adapter);
-            rvTopDealsSuggestions.addItemDecoration(mDividerItemDecoration);
             rvTopDealsSuggestions.removeOnScrollListener(rvOnScrollListener);
             rvSearchResults.removeOnScrollListener(rvOnScrollListener);
             tvTopDeals.setVisibility(View.VISIBLE);
@@ -206,7 +202,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
             adapter.setHighLightText(highlight);
             rvTopDealsSuggestions.setLayoutManager(layoutManager);
             rvTopDealsSuggestions.setAdapter(adapter);
-            rvTopDealsSuggestions.addItemDecoration(mDividerItemDecoration);
             rvTopDealsSuggestions.addOnScrollListener(rvOnScrollListener);
             llTopEvents.setVisibility(View.VISIBLE);
             tvTopDeals.setVisibility(View.GONE);

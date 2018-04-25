@@ -23,7 +23,7 @@
             android:text="@string/title_share"
             android:textColor="@color/black"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:id="@+id/textView2" />
+            android:id="@+id/tv_discount" />
 
         <GridView
             android:id="@+id/grid"

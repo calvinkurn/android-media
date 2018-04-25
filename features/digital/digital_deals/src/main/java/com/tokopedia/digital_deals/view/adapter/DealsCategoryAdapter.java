@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,8 +12,9 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.view.activity.BrandOutletDetailsActivity;
+import com.tokopedia.digital_deals.view.activity.DealDetailActivity;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.SearchViewModel;
 
 import java.util.List;
 
@@ -124,6 +126,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private View itemView;
         private ImageView dealImage;
+        private ImageView brandImage;
         private TextView discount;
         private TextView textView1;
         private TextView dealsDetails;
@@ -139,14 +142,15 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             super(itemView);
             this.itemView = itemView;
             dealImage = itemView.findViewById(R.id.imageView);
-            textView1 = itemView.findViewById(R.id.textView1);
-            discount = itemView.findViewById(R.id.textView2);
-            dealsDetails = itemView.findViewById(R.id.textView3);
-            dealOfferer = itemView.findViewById(R.id.textView4);
-            dealavailableLocations = itemView.findViewById(R.id.textView5);
-            dealListPrice = itemView.findViewById(R.id.textView6);
-            dealSoldNumberTimes = itemView.findViewById(R.id.textView7);
-            dealSellingPrice = itemView.findViewById(R.id.textView8);
+            textView1 = itemView.findViewById(R.id.tv_days_left);
+            discount = itemView.findViewById(R.id.tv_discount);
+            dealsDetails = itemView.findViewById(R.id.tv_deal_intro);
+            dealOfferer = itemView.findViewById(R.id.tv_brand_name);
+            dealavailableLocations = itemView.findViewById(R.id.tv_available_locations);
+            dealListPrice = itemView.findViewById(R.id.tv_Mrp);
+            dealSoldNumberTimes = itemView.findViewById(R.id.tv_sold_times);
+            brandImage=itemView.findViewById(R.id.iv_brand);
+            dealSellingPrice = itemView.findViewById(R.id.tv_salesPrice);
         }
 
         public void bindData(final CategoryItemsViewModel categoryItemsViewModel, int position) {
@@ -173,10 +177,10 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         @Override
         public void onClick(View v) {
-//            Intent detailsIntent = new Intent(context, EventDetailsActivity.class);
+            Intent detailsIntent = new Intent(context, BrandOutletDetailsActivity.class);
 //            detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
 //            detailsIntent.putExtra("homedata", categoryItems.get(mViewHolder.getIndex()));
-//            context.startActivity(detailsIntent);
+            context.startActivity(detailsIntent);
         }
     }
 

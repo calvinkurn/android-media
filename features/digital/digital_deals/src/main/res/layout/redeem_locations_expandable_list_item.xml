@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:background="@color/deals_backgroud_color">
+
+    <TextView
+
+        android:id="@+id/tv_location_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/new_margin_med"
+        android:fontFamily="sans-serif"
+        android:text="Pacific Place"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textColor="@color/black_39"
+        android:textSize="@dimen/text_size_medium"
+        android:textStyle="normal"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tv_location_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:lineSpacingExtra="2sp"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:maxLines="1"
+        android:text="PACIFIC PLACE MALL, 4th Floor…"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/text_size_medium"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textStyle="normal"
+        android:layout_marginRight="50dp"
+        app:layout_constraintRight_toLeftOf="@+id/iv_map"
+        app:layout_constraintTop_toBottomOf="@id/tv_location_name" />
+
+    <ImageView
+        android:id="@+id/iv_map"
+        android:layout_width="@dimen/image_width_24"
+        android:layout_height="@dimen/image_width_24"
+        android:layout_marginRight="@dimen/new_margin_med"
+        android:background="@color/card_loading_color"
+        app:layout_constraintBottom_toBottomOf="@id/tv_location_address"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_location_name" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height_thin"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/new_margin_med"
+        android:background="@color/divider_color"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_location_address" />
+
+
+</android.support.constraint.ConstraintLayout>

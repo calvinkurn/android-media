@@ -36,6 +36,7 @@
         android:text="@string/promo_button_text"
         android:textColor="@color/green_nob"
         android:textStyle="normal"
+        android:textSize="@dimen/text_size_small"
         app:layout_constraintBottom_toBottomOf="@+id/pager_indicator"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/pager_indicator"
@@ -43,7 +44,7 @@
 
 
     <TextView
-        android:id="@+id/tv_category_voucher"
+        android:id="@+id/tv_featured_brand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/new_margin_sm"
@@ -64,7 +65,7 @@
         app:spanCount="4"
         android:layout_marginTop="@dimen/new_margin_med"
         app:layoutManager="android.support.v7.widget.GridLayoutManager"
-        app:layout_constraintTop_toBottomOf="@+id/tv_category_voucher"
+        app:layout_constraintTop_toBottomOf="@+id/tv_featured_brand"
         tools:listitem="@layout/category_item" />
 
 

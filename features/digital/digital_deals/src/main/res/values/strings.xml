@@ -12,4 +12,22 @@
     <string name="search_sort_label">Urutkan</string>
     <string name="search_filter_label">Filter</string>
 
+    <string name="expand">Selengkapnya</string>
+    <string name="show_tnc"><![CDATA[Syarat & Ketentuan]]></string>
+    <string name="bigcontent"><![CDATA[Tepat lebih dari dua dekade sejak era 1990-an, era keemasan musik, film, permainan, makanan, serta segala hal yang dirindu pada era Konser 90an siap dibawa kembali. Mesin waktu menuju masa 90an siap dibuka di The 90\'s Festival. Segala hal tentang 90an maupun musisi-musisi 90an baik internasional dan nasional akan kembali reuni mengisi ruang-ruang nostalgia di The 90\'s Festival. Setelah sukses pada gelaran pertama dan keduanya kini The 90\'s Festival, sebagai salah satu festival nostalgia terbesar, bersiap hadir kembali untuk ketiga kalinya. Mulai dari Sixpence None The Richer hingga penampilan spesial reuni band-band tahun 90an lainnya, seperti Kla Project Dewa 19 feat Ari Lasso Neo Potret Reza Artamevia Stinky P Project Warna Shaden T-five Yana Yulio Wayang Voodoo DOT dan masih banyak lagi keseruan lainnya. Tokopedia yang berperan sebagai Official Ticket Partner The 90s Festival akan memberikan harga termurah. Beli tiket Presale Konser 90s Festival lebih murah & terpercaya. Yuk temukan banyak promo tiket 90s festival hanya di Tokopedia!]]></string>
+    <string name="show_description">What You Will Get</string>
+    <string name="recommended_deals">Deals Rekomendasi</string>
+    <string name="buy_now">Beli Sekarang</string>
+    <string name="payment_option">Pilih Metode Pembayaran</string>
+    <string name="empty_deals_list_text_upper">Deals Tidak Tersedia</string>
+    <string name="empty_deal_list_text_lower">Silakan temukan deals di tempat lain.</string>
+    <string name="empty_location_list_text_upper">Hasil pencarian Anda tidak dapat ditemukan.</string>
+    <string name="empty_location_list_text_lower">Silakan lakukan pencarian dengan kata  kunci lain</string>
+    <string name="title_activity_all_brands">AllBrandsActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
 </resources>

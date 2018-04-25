@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.tokopedia.design.button.BottomActionView;
@@ -137,7 +138,7 @@ public class QuickHideBehavior extends CoordinatorLayout.Behavior<View> {
     }
 
     private float getTargetHideValue(ViewGroup parent, View target) {
-        if (target instanceof AppBarLayout) {
+        if (target instanceof ImageView) {
             return -target.getHeight();
         } else if (target instanceof BottomActionView) {
             return parent.getHeight() - target.getTop();

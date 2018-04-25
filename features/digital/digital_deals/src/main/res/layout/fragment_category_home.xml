@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:background="@color/bottomnav_bg">
+
+
+    <android.support.design.widget.CoordinatorLayout
+
+        android:id="@+id/base_main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bottomnav_bg"
+        tools:context="com.tokopedia.events.view.activity.EventsHomeActivity">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@color/bottomnav_bg">
+
+            <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:minHeight="?attr/actionBarSize" />
+
+
+        </android.support.design.widget.AppBarLayout>
+
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/new_margin_med"
+            android:layout_marginTop="@dimen/new_margin_med"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:background="@color/bottomnav_bg">
+
+
+            <TextView
+                android:id="@+id/tv_featured_brand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/new_margin_med"
+                android:layout_marginTop="@dimen/new_margin_sm"
+                android:fontFamily="sans-serif-medium"
+                android:text="Brand Unggulan"
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/text_size_17"
+                android:textStyle="normal"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_see_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/new_margin_med"
+                android:text="Lihat Semua"
+                android:textColor="@color/green_nob"
+                android:textSize="@dimen/text_size_small"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_featured_brand"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_featured_brand" />
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewCatItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/new_margin_med"
+                android:layout_marginRight="@dimen/new_margin_med"
+                android:layout_marginTop="@dimen/new_margin_med"
+                app:layoutManager="android.support.v7.widget.GridLayoutManager"
+                app:layout_constraintTop_toBottomOf="@+id/tv_featured_brand"
+                app:spanCount="4"
+                tools:listitem="@layout/item_category_brand" />
+
+
+            <TextView
+                android:id="@+id/tv_popular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/new_margin_med"
+                android:layout_marginTop="@dimen/new_margin_med"
+                android:fontFamily="sans-serif-medium"
+                android:text="Populer di Jakarta "
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/text_size_17"
+                android:textStyle="normal"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerViewCatItems" />
+
+            <TextView
+                android:id="@+id/number_of_locations"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="(23)"
+                android:textColor="@color/black_38"
+                android:textSize="@dimen/text_size_17"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
+                app:layout_constraintLeft_toRightOf="@+id/tv_popular"
+                app:layout_constraintTop_toTopOf="@+id/tv_popular"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/new_margin_med"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:layout_constraintTop_toBottomOf="@id/number_of_locations"
+                tools:listitem="@layout/deals_item_card" />
+
+
+        </android.support.constraint.ConstraintLayout>
+
+        <com.tokopedia.design.button.BottomActionView
+            android:id="@+id/bottom_action_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:paddingBottom="@dimen/padding_med"
+            app:bav_1_display="true"
+            app:bav_2_display="true"
+            app:bav_icon_1="@drawable/ic_search_sort"
+            app:bav_icon_2="@drawable/ic_search_filter"
+            app:bav_label_1="@string/search_sort_label"
+            app:bav_label_2="@string/search_filter_label"
+            app:layout_behavior="com.tokopedia.digital_deals.view.behaviour.QuickHideBehavior" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="@dimen/progbar_height"
+            android:layout_height="@dimen/progbar_height"
+            android:layout_gravity="center" />
+    </FrameLayout>
+</FrameLayout>

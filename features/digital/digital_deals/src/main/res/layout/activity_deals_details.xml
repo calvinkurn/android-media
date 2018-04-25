@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="@color/green_nob"
+            app:statusBarScrim="@color/black_39"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:minHeight="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:minHeight="100dp"
+                android:scaleType="centerCrop"
+                android:src="@color/grey_400"
+                app:layout_collapseMode="parallax"
+                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+        <!--<android.support.design.widget.CollapsingToolbarLayout-->
+        <!--android:id="@+id/collapsing_toolbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">-->
+
+        <!--&lt;!&ndash;<android.support.constraint.ConstraintLayout&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;&gt;&ndash;&gt;-->
+
+        <!--<ImageView-->
+        <!--android:id="@+id/imageViewHeader"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="250dp"-->
+        <!--android:scaleType="fitXY"-->
+        <!--android:src="@color/grey_400"-->
+
+        <!--app:layout_constraintTop_toTopOf="parent" />-->
+        <!--&lt;!&ndash;<com.tokopedia.abstraction.base.view.widget.TouchViewPager&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/deals_bannerpager" &ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="@dimen/image_width_deals_details_header" />&ndash;&gt;-->
+
+
+        <!--&lt;!&ndash;<com.tokopedia.design.viewpagerindicator.CirclePageIndicator&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/pager_indicator"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="@dimen/circle_indicator_height"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginBottom="@dimen/new_margin_med"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:centered="false"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:fillColor="@color/green_nob"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintBottom_toBottomOf="@+id/deals_bannerpager"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintLeft_toLeftOf="@+id/deals_bannerpager"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintRight_toRightOf="@id/deals_bannerpager"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:pageColor="@color/grey_400"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:radius="@dimen/margin_padding_small"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:strokeColor="@color/grey_400" />&ndash;&gt;-->
+
+
+        <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintBottom_toBottomOf="@+id/imageViewHeader"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintRight_toRightOf="parent">&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/sold_times"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginBottom="-2dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginRight="-2dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:alpha="0.7"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:background="@drawable/details_header_background"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:fontFamily="sans-serif-medium"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:paddingBottom="7dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:paddingLeft="@dimen/padding_ms"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:paddingRight="10dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:paddingTop="@dimen/padding_vs"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:text="Terjual 150 kali"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:textColor="@color/white"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:textSize="@dimen/font_micro"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:textStyle="normal" />&ndash;&gt;-->
+
+        <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+
+
+        <!--&lt;!&ndash;</android.support.constraint.ConstraintLayout>&ndash;&gt;-->
+
+        <!--<android.support.v7.widget.Toolbar-->
+        <!--android:id="@+id/toolbar"-->
+        <!--app:layout_collapseMode="pin"-->
+
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="?attr/actionBarSize" />-->
+        <!--</android.support.design.widget.CollapsingToolbarLayout>-->
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/bottom_view_height"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <include layout="@layout/activity_details_sub_layout" />
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_view_height"
+        android:layout_gravity="bottom"
+        app:cardBackgroundColor="@color/white"
+        app:cardElevation="@dimen/bottomsheet_elevation">
+
+        <LinearLayout
+            android:id="@+id/ll_buynow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/new_margin_med"
+            android:background="@drawable/button_buy_now_background"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:gravity="center_horizontal"
+                android:text="@string/buy_now"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+
+</android.support.design.widget.CoordinatorLayout>

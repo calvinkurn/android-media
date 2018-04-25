@@ -16,4 +16,9 @@ dependencies {
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     compile rootProject.ext.supportLibDependencies.cardViewV7
     compile rootProject.ext.supportLibDependencies.constraintLayout
+
+    compile 'at.blogc:expandabletextview:1.0.5'
+//    compile 'com.vipulasri:ticketview:1.0.5'
+
+
 }

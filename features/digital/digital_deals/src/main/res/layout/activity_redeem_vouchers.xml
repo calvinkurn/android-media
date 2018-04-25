@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?><!--https://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/--><!--https://stackoverflow.com/questions/31653607/how-to-animate-an-icon-for-expand-collapse-view-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bottomnav_bg">
+
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/base_main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:minHeight="?attr/actionBarSize" />
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bottomnav_bg">
+
+                <View
+                    android:id="@+id/v_green"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/voucher_top_view_height"
+                    android:background="@color/green_nob" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/logo_tkpd_white"
+                    app:layout_constraintBottom_toBottomOf="@+id/v_green"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/v_green" />
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_height="match_parent">
+
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/nestedScroll"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/cl_bottom"
+                android:clipToPadding="false">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/bottomnav_bg"
+
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+                    <TextView
+                        android:id="@+id/tv_redeem_time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/new_margin_med"
+                        android:background="@drawable/background_lightgreen_voucher"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="4sp"
+                        android:padding="8dp"
+                        android:text="Redeem hanya dapat dilakukan di outlet Bakerzin, Senin - Jumat pukul 10:00 - 21:00 atau Sabtu - Minggu pukul 10:00 - 22:00 "
+                        android:textColor="@color/black_39"
+                        android:textSize="@dimen/text_size_xsmall"
+                        android:textStyle="normal"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="0dp"
+                        android:layout_marginBottom="1.5dp"
+                        android:layout_marginLeft="1dp"
+                        android:layout_marginTop="1.5dp"
+                        android:background="@drawable/line_green"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_redeem_time"
+                        app:layout_constraintLeft_toLeftOf="@id/tv_redeem_time"
+                        app:layout_constraintTop_toTopOf="@id/tv_redeem_time" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_redeem_time"
+                        tools:listitem="@layout/voucher_item_card" />
+
+
+                    <View
+                        android:id="@+id/divider1"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/divider_height_thin"
+                        android:layout_marginTop="@dimen/new_margin_med"
+                        android:background="@color/grey_300"
+                        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+
+                    <TextView
+                        android:id="@+id/tv_tnc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginTop="@dimen/new_margin_med"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/show_tnc"
+                        android:textColor="@color/black_70"
+                        android:textSize="@dimen/text_size_17"
+                        android:textStyle="normal"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/divider1" />
+
+                    <at.blogc.android.views.ExpandableTextView
+                        android:id="@+id/tv_expandable_tnc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:layout_marginTop="@dimen/margin_padding_medium"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:maxLines="3"
+                        android:text="@string/bigcontent"
+                        android:textColor="@color/expandable_text_color"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="normal"
+                        app:animation_duration="300"
+                        app:layout_constraintLeft_toLeftOf="@+id/tv_tnc"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_tnc" />
+
+                    <LinearLayout
+                        android:id="@+id/expand_view_tnc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintLeft_toLeftOf="@+id/tv_tnc"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_expandable_tnc">
+
+                        <TextView
+                            android:id="@+id/seemorebutton_tnc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_default"
+                            android:layout_marginTop="@dimen/margin_padding_medium"
+                            android:fontFamily="sans-serif"
+                            android:text="@string/expand"
+                            android:textColor="@color/green_nob"
+                            android:textSize="@dimen/font_micro"
+                            android:textStyle="normal" />
+
+                        <ImageView
+                            android:id="@+id/down_arrow_tnc"
+                            android:layout_width="@dimen/margin_padding_medium"
+                            android:layout_height="@dimen/margin_padding_medium"
+                            android:layout_marginBottom="@dimen/margin_padding_medium"
+                            android:layout_marginLeft="@dimen/margin_padding_medium"
+                            android:layout_marginStart="@dimen/margin_padding_medium"
+                            android:layout_marginTop="@dimen/font_micro"
+                            android:tint="@color/green_nob"
+                            app:srcCompat="@drawable/ic_arrow_down" />
+                    </LinearLayout>
+
+                </android.support.constraint.ConstraintLayout>
+            </android.support.v4.widget.NestedScrollView>
+
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/cl_bottom"
+                android:layout_width="wrap_content"
+                android:background="@color/deals_backgroud_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height_thin"
+                    android:layout_marginBottom="@dimen/new_margin_med"
+                    android:background="@color/grey_300"
+                    app:layout_constraintBottom_toTopOf="@+id/ll_help" />
+
+                <LinearLayout
+                    android:id="@+id/ll_help"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/new_margin_med"
+                    android:layout_marginLeft="@dimen/new_margin_med"
+                    android:layout_marginRight="@dimen/new_margin_med"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_how_to_redeem"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintWidth_default="wrap">
+
+                    <TextView
+                        android:id="@+id/tv_help"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="4sp"
+                        android:text="Untuk bantuan silakan klik "
+                        android:textColor="@color/black_39"
+                        android:textSize="@dimen/text_size_small"
+                        android:textStyle="normal" />
+
+
+                    <TextView
+                        android:id="@+id/tv_help_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="4sp"
+                        android:text="disini."
+                        android:textColor="@color/green_nob"
+                        android:textSize="@dimen/text_size_small"
+                        android:textStyle="normal" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_how_to_redeem"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/new_margin_small"
+                    android:layout_marginLeft="@dimen/new_margin_med"
+                    android:layout_marginRight="@dimen/new_margin_med"
+                    android:layout_marginTop="@dimen/new_margin_med"
+                    android:background="@drawable/rect_grey"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="@dimen/margin_sm"
+                    android:paddingTop="@dimen/margin_sm"
+                    android:text="Cara Redeem"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_resend_email_and_sms"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_resend_email_and_sms"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/new_margin_med"
+                    android:layout_marginLeft="@dimen/new_margin_med"
+                    android:layout_marginRight="@dimen/new_margin_med"
+                    android:background="@drawable/rect_grey"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="@dimen/margin_sm"
+                    android:paddingTop="@dimen/margin_sm"
+                    android:text="Kirim Ulang E-mail dan SMS"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+            </android.support.constraint.ConstraintLayout>
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="@dimen/progbar_height"
+            android:layout_height="@dimen/progbar_height"
+            android:layout_gravity="center" />
+    </FrameLayout>
+</FrameLayout>

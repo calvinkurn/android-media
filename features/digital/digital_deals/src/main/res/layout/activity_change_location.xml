@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bottomnav_bg">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:minHeight="?attr/actionBarSize" />
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/base_main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@color/bottomnav_bg"
+        tools:context="com.tokopedia.events.view.activity.EventsHomeActivity">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bottomnav_bg">
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider_height_thinv"
+                android:background="@color/divider_color" />
+
+            <com.tokopedia.digital_deals.view.customview.SearchInputView
+                android:id="@+id/search_input_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/searchview_height"
+                android:layout_marginLeft="@dimen/new_margin_med"
+                android:layout_marginRight="@dimen/new_margin_med"
+                android:layout_marginTop="@dimen/new_margin_small" />
+
+
+        </android.support.design.widget.AppBarLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_cities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <TextView
+                android:id="@+id/tv_popular_cities"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/new_margin_med"
+                android:layout_marginTop="@dimen/new_margin_sm"
+                android:fontFamily="sans-serif-medium"
+                android:text="KOTA POPULER"
+                android:textColor="@color/black_38"
+                android:textSize="@dimen/text_size_small"
+                android:textStyle="normal" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+
+                tools:listitem="@layout/location_item" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/no_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_error_text"
+            android:background="@color/bottomnav_bg"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone"
+
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/empty_location_list_text_upper"
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/empty_search_text_size"
+                android:textStyle="normal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:gravity="center_horizontal"
+                android:text="@string/empty_location_list_text_lower"
+                android:textColor="@color/black_38"
+                android:textSize="@dimen/text_size_medium"
+                android:layout_marginTop="@dimen/new_margin_small"
+                android:textStyle="normal" />
+
+        </LinearLayout>
+
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="@dimen/progbar_height"
+            android:layout_height="@dimen/progbar_height"
+            android:layout_gravity="center" />
+    </FrameLayout>
+</FrameLayout>

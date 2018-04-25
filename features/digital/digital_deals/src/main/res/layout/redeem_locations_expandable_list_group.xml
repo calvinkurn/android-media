@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/deals_backgroud_color">
+
+
+    <TextView
+        android:id="@+id/tv_city_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/new_margin_med"
+        android:fontFamily="sans-serif-medium"
+        android:text="Jakarta "
+        android:textColor="@color/black_39"
+        android:textSize="@dimen/text_size_17"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/number_of_locations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:text="(25)"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/text_size_17"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_city_name"
+        app:layout_constraintLeft_toRightOf="@+id/tv_city_name"
+        app:layout_constraintTop_toTopOf="@+id/tv_city_name" />
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/new_margin_med"
+        android:tint="@color/warm_grey"
+        app:layout_constraintBottom_toBottomOf="@id/number_of_locations"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/number_of_locations"
+        app:layout_constraintVertical_bias="0.7"
+        app:srcCompat="@drawable/ic_arrow_down" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height_thin"
+        android:layout_marginTop="@dimen/new_margin_med"
+
+        android:background="@color/divider_color"
+        app:layout_constraintTop_toBottomOf="@id/number_of_locations" />
+</android.support.constraint.ConstraintLayout>

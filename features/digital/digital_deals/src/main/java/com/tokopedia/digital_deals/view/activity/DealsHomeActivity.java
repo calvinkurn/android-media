@@ -66,7 +66,7 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
 
     private RecyclerView recyclerViewCatItems;
     private RecyclerView recyclerView;
-    private CoordinatorLayout baseMainContect;
+    private CoordinatorLayout baseMainContent;
     private int mBannnerPos;
     private final static String THEMEPARK = "themepark";
     private final static String TOP = "top";
@@ -105,11 +105,16 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
+
+        toolbar.setBackgroundResource(R.color.white);
+
         setUpVariables();
         initInjector();
         executeInjector();
         mPresenter.attachView(this);
         mPresenter.getDealsList();
+        Intent detailsIntent = new Intent(context, BrandOutletDetailsActivity.class);
+        startActivity(detailsIntent);
     }
 
     private void setUpVariables() {
@@ -120,7 +125,7 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         mainContent = findViewById(R.id.main_content);
         progressBarLayout = findViewById(R.id.progress_bar_layout);
         progBar = findViewById(R.id.prog_bar);
-        baseMainContect=findViewById(R.id.base_main_content);
+        baseMainContent = findViewById(R.id.base_main_content);
     }
 
     private void initInjector() {
@@ -166,11 +171,11 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         DealsCategoryAdapter categoryAdapter;
         DealsCategoryItemAdapter categoryItemAdapter;
 
-        if (categoryList.get(0).getItems() != null || categoryList.get(0).getItems().size() != 0 ) {
-            if(categoryList.get(0).getName().equalsIgnoreCase("top")){
-                categoryAdapter=new DealsCategoryAdapter(context, categoryList.get(0).getItems());
+        if (categoryList.get(0).getItems() != null || categoryList.get(0).getItems().size() != 0) {
+            if (categoryList.get(0).getName().equalsIgnoreCase("top")) {
+                categoryAdapter = new DealsCategoryAdapter(context, categoryList.get(0).getItems());
                 recyclerView.setAdapter(categoryAdapter);
-            }else{
+            } else {
                 adapter = new SlidingImageAdapter(context, mPresenter.getCarouselImages(categoryList.get(0).getItems()), mPresenter);
                 setViewPagerListener();
                 circlePageIndicator.setViewPager(viewPager);
@@ -179,10 +184,10 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         }
 
         if (categoryList.get(1).getItems() != null || categoryList.get(1).getItems().size() != 0) {
-            if(categoryList.get(1).getName().equalsIgnoreCase("top")){
+            if (categoryList.get(1).getName().equalsIgnoreCase("top")) {
 
-            }else{
-                categoryAdapter=new DealsCategoryAdapter(context, categoryList.get(1).getItems());
+            } else {
+                categoryAdapter = new DealsCategoryAdapter(context, categoryList.get(1).getItems());
                 recyclerView.setAdapter(categoryAdapter);
                 adapter = new SlidingImageAdapter(context, mPresenter.getCarouselImages(categoryList.get(1).getItems()), mPresenter);
                 setViewPagerListener();
@@ -190,10 +195,9 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
                 mPresenter.startBannerSlide(viewPager);
             }
         }
-        categoryItemAdapter=new DealsCategoryItemAdapter(context, categoryList);
+        categoryItemAdapter = new DealsCategoryItemAdapter(context, categoryList);
         recyclerViewCatItems.setAdapter(categoryItemAdapter);
-        baseMainContect.setVisibility(View.VISIBLE);
-
+        baseMainContent.setVisibility(View.VISIBLE);
     }
 
 
@@ -255,7 +259,6 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         item.setVisible(true);
         item.setEnabled(true);
     }
-
 
 
     @Override

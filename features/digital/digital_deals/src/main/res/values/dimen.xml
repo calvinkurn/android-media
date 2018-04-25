@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="discount_rect_width">76dp</dimen>
-    <dimen name="discount_rect_height">16dp</dimen>
-    <dimen name="empty_search_text_size">17sp</dimen>
-    <dimen name="margin_error_text">56dp</dimen>
-</resources>

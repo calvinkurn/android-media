@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tv_simple_item"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_default"
-    android:paddingEnd="@dimen/margin_default"
-    android:paddingStart="@dimen/margin_default"
-    android:textColor="@color/black_70"
-    android:textSize="@dimen/font_small">
+    android:layout_marginBottom="2dp"
+    android:orientation="vertical">
 
-</TextView>
+    <TextView
+        android:id="@+id/tv_simple_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/new_margin_med"
+        android:paddingEnd="@dimen/margin_default"
+        android:paddingStart="@dimen/new_margin_med"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/font_small"/>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:paddingStart="@dimen/new_margin_med"
+        android:layout_height="@dimen/divider_height_thin"
+        android:background="@color/divider_color" />
+
+</LinearLayout>

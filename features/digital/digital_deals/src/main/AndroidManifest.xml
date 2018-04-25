@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.digital_deals">
 
@@ -13,7 +14,22 @@
         <activity
             android:name=".view.activity.DealsSearchActivity"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".view.activity.DealDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".view.activity.BrandOutletDetailsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".view.activity.DealCategoryBrandActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".view.activity.AllBrandsActivity"
+            android:label="@string/title_activity_all_brands"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
