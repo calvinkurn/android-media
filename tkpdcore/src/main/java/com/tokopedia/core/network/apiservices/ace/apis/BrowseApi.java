@@ -1,8 +1,6 @@
 package com.tokopedia.core.network.apiservices.ace.apis;
 
 
-import com.squareup.moshi.Json;
-import com.squareup.moshi.ToJson;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
@@ -14,8 +12,6 @@ import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -210,14 +206,13 @@ public interface BrowseApi {
     );
 
     @POST(TkpdBaseURL.Ace.PATH_IMAGE_SEARCH)
-    @ToJson
     Observable<Response<String>> browseImageSearch(@QueryMap TKPDMapParam<String, Object> queryMap,
                                                    @Body TKPDMapParam<String, Object> requestParams
     );
 
     @GET(TkpdBaseURL.Ace.PATH_SEARCH_PRODUCT)
     Observable<Response<String>> browseProductsV3(
-            @QueryMap TKPDMapParam<String, Object> queryMap
+            @QueryMap TKPDMapParam<String, Object> requestParams
     );
 
     @GET(TkpdBaseURL.Ace.PATH_BROWSE_SHOP)
