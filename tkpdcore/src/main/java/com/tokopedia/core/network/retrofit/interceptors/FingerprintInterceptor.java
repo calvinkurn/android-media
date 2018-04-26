@@ -18,6 +18,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.GoogleIdHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -68,7 +69,7 @@ public class FingerprintInterceptor implements Interceptor {
         }
         newRequest.addHeader(KEY_ACC_AUTH, BEARER + session.getAccessToken(MainApplication.getAppContext()));
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
-        newRequest.addHeader(KEY_ADSID, AuthUtil.getGoogleAdId(MainApplication.getAppContext()));
+        newRequest.addHeader(KEY_ADSID, GoogleIdHelper.getGoogleAdId(MainApplication.getAppContext()));
 
         return newRequest;
     }

@@ -30,7 +30,7 @@ import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.GoogleIdHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -210,8 +210,8 @@ public class GTMContainer implements IGTMContainer {
                         AppEventTracking.EVENT_ACTION, AppEventTracking.Action.CHECKOUT,
                         AppEventTracking.EVENT_LABEL, checkout.getStep(),
                         AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                        AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
-        )));
+                                AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
+                        )));
 
         return this;
     }
@@ -279,8 +279,8 @@ public class GTMContainer implements IGTMContainer {
     public GTMContainer eventAuthenticate(Authenticated authenticated) {
         CommonUtils.dumper("GAv4 send authenticated");
 
-        authenticated.setAndroidId(AuthUtil.getAndroidId(context));
-        authenticated.setAdsId(AuthUtil.getGoogleAdId(context));
+        authenticated.setAndroidId(GoogleIdHelper.getAndroidId(context));
+        authenticated.setAdsId(GoogleIdHelper.getGoogleAdId(context));
 
         if (TextUtils.isEmpty(authenticated.getcIntel())) {
             GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
