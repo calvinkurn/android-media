@@ -21,5 +21,5 @@ public interface IWalletRepository {
 
     Observable<Boolean> submitHelpHistory(HashMap<String, String> mapParams);
 
-    Observable<WithdrawSaldo> withdrawTokoCashToSaldo(String url, HashMap<String, String> mapParams);
+    Observable<WithdrawSaldo> withdrawTokoCashToSaldo(String url, HashMap<String, Object> mapParams);
 }

@@ -39,7 +39,7 @@ public interface WalletApi {
 
     @POST
     Observable<Response<DataResponse<WithdrawSaldoEntity>>> withdrawSaldoFromTokocash(@Url String url,
-                                                                                      @Body Map<String, String> params);
+                                                                                      @Body Map<String, Object> params);
 
     @GET(TkpdBaseURL.TokoCash.PATH_CASH_BACK_DOMAIN)
     Observable<Response<DataResponse<PendingCashbackEntity>>> getTokoCashPending(@QueryMap HashMap<String, String> params);

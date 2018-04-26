@@ -30,6 +30,6 @@ public class MoveToSaldoUseCase extends UseCase<WithdrawSaldo> {
 
     @Override
     public Observable<WithdrawSaldo> createObservable(RequestParams requestParams) {
-        return walletRepository.withdrawTokoCashToSaldo(url, requestParams.getParamsAllValueInString());
+        return walletRepository.withdrawTokoCashToSaldo(url, requestParams.getParameters());
     }
 }
