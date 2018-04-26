@@ -3,6 +3,7 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -30,7 +31,7 @@ import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.GoogleIdHelper;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -279,8 +280,14 @@ public class GTMContainer implements IGTMContainer {
     public GTMContainer eventAuthenticate(Authenticated authenticated) {
         CommonUtils.dumper("GAv4 send authenticated");
 
-        authenticated.setAndroidId(GoogleIdHelper.getAndroidId(context));
-        authenticated.setAdsId(GoogleIdHelper.getGoogleAdId(context));
+        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ADVERTISINGID);
+        String adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID);
+        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
+            authenticated.setAdsId(adsId);
+        }
+
+        authenticated.setAndroidId(getAndroidId(context));
+
 
         if (TextUtils.isEmpty(authenticated.getcIntel())) {
             GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
@@ -815,5 +822,24 @@ public class GTMContainer implements IGTMContainer {
                                 ))
                 )
         );
+    }
+
+    private static String getAndroidId(Context context) {
+
+        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ANDROID_ID);
+
+        String androidId = localCacheHandler.getString(TkpdCache.Key.KEY_ANDROID_ID);
+        if (androidId != null && !"".equalsIgnoreCase(androidId.trim())) {
+            return androidId;
+        } else {
+            String android_id = AuthUtil.md5(Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.ANDROID_ID));
+            if (!TextUtils.isEmpty(android_id)) {
+                localCacheHandler.putString(TkpdCache.Key.KEY_ANDROID_ID, android_id);
+                localCacheHandler.applyEditor();
+            }
+            return android_id;
+        }
+
     }
 }

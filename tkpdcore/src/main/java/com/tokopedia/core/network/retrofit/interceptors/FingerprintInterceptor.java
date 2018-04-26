@@ -18,7 +18,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.GoogleIdHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -69,7 +68,7 @@ public class FingerprintInterceptor implements Interceptor {
         }
         newRequest.addHeader(KEY_ACC_AUTH, BEARER + session.getAccessToken(MainApplication.getAppContext()));
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
-        newRequest.addHeader(KEY_ADSID, GoogleIdHelper.getGoogleAdId(MainApplication.getAppContext()));
+        newRequest.addHeader(KEY_ADSID, getGoogleAdId(MainApplication.getAppContext()));
 
         return newRequest;
     }
@@ -118,4 +117,47 @@ public class FingerprintInterceptor implements Interceptor {
      * @return
      */
 
+    public static String getGoogleAdId(final Context context) {
+        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ADVERTISINGID);
+
+        String adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID);
+        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
+            return adsId;
+        }
+
+        return (Observable.just("").subscribeOn(Schedulers.newThread())
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String string) {
+                        AdvertisingIdClient.Info adInfo = null;
+                        try {
+                            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+                        } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            String id = adInfo.getId();
+                            return adInfo.getId();
+                        } catch (Exception e) {
+                            return "";
+                        }
+
+                    }
+                }).onErrorReturn(new Func1<Throwable, String>() {
+                    @Override
+                    public String call(Throwable throwable) {
+                        return "";
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<String>() {
+                    @Override
+                    public void call(String adID) {
+                        if (!TextUtils.isEmpty(adID)) {
+                            localCacheHandler.putString(TkpdCache.Key.KEY_ADVERTISINGID, adID);
+                            localCacheHandler.applyEditor();
+                        }
+                    }
+                })).toBlocking().single();
+    }
 }
