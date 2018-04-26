@@ -57,7 +57,7 @@ public class WalletRepository implements IWalletRepository {
     }
 
     @Override
-    public Observable<WithdrawSaldo> withdrawTokoCashToSaldo(String url, HashMap<String, Object> mapParams) {
+    public Observable<WithdrawSaldo> withdrawTokoCashToSaldo(String url, HashMap<String, String> mapParams) {
         return walletDataSourceFactory.create().withdrawTokoCashToSaldo(url, mapParams)
                 .map(withdrawSaldoMapper);
     }

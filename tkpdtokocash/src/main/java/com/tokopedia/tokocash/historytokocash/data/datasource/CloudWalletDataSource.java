@@ -60,7 +60,7 @@ public class CloudWalletDataSource implements WalletDataSource {
     }
 
     @Override
-    public Observable<WithdrawSaldoEntity> withdrawTokoCashToSaldo(String url, HashMap<String, Object> mapParams) {
+    public Observable<WithdrawSaldoEntity> withdrawTokoCashToSaldo(String url, HashMap<String, String> mapParams) {
         return walletApi.withdrawSaldoFromTokocash(url, mapParams)
                 .map(new Func1<Response<DataResponse<WithdrawSaldoEntity>>, WithdrawSaldoEntity>() {
                     @Override

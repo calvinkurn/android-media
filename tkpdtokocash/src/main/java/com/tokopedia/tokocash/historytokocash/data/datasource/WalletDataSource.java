@@ -21,5 +21,5 @@ public interface WalletDataSource {
 
     Observable<Boolean> submitHelpTokoCash(HashMap<String, String> mapParams);
 
-    Observable<WithdrawSaldoEntity> withdrawTokoCashToSaldo(String url, HashMap<String, Object> mapParams);
+    Observable<WithdrawSaldoEntity> withdrawTokoCashToSaldo(String url, HashMap<String, String> mapParams);
 }
