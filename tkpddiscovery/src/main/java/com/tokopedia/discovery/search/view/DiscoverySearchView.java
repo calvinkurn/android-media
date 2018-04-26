@@ -273,11 +273,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
         initSearchView();
 
-        /*if (isAllowImageSearch()) {
-            mImageSearchButton.setDrawingCacheEnabled(true);
-            mImageSearchButton.buildDrawingCache();
+        if (isAllowImageSearch()) {
             startShowCase();
-        }*/
+        }
         mSuggestionView.setVisibility(GONE);
         setAnimationDuration(AnimationUtil.ANIMATION_DURATION_MEDIUM);
     }
@@ -344,6 +342,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             }
         });
 
+        mImageSearchButton.setWillNotCacheDrawing(false);
         ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
         showCaseObjectList.add(new ShowCaseObject(
                 mImageSearchButton,
