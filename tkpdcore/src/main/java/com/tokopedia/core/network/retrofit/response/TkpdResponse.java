@@ -27,7 +27,6 @@ public class TkpdResponse {
     private String strResponse;
     private String stringData = "";
     private JSONObject jsonData;
-    private JSONArray jsonDataArray;
     private List<String> errorMessages = new ArrayList<>();
     private List<String> statusMessages = new ArrayList<>();
 
@@ -122,7 +121,6 @@ public class TkpdResponse {
 
         TkpdResponse tkpdResponse = new TkpdResponse();
         if (!isNullData & jsonData != null) tkpdResponse.setJsonData(jsonData);
-        if (!isNullData & jsonDataArray != null) tkpdResponse.setJsonDataArray(jsonDataArray);
         tkpdResponse.setErrorMessages(msgError);
         tkpdResponse.setIsError(isError || isNullData);
         tkpdResponse.setStatus(status);
@@ -174,11 +172,6 @@ public class TkpdResponse {
     private void setJsonData(@NonNull JSONObject jsonData) {
         this.stringData = jsonData.toString();
         this.jsonData = jsonData;
-    }
-
-    private void setJsonDataArray(@NonNull JSONArray jsonDataArray) {
-        this.stringData = jsonDataArray.toString();
-        this.jsonDataArray = jsonDataArray;
     }
 
     public boolean isError() {
