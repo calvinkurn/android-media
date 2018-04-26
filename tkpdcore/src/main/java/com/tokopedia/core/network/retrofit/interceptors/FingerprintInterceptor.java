@@ -117,7 +117,7 @@ public class FingerprintInterceptor implements Interceptor {
      * @return
      */
 
-    public static String getGoogleAdId(final Context context) {
+    private String getGoogleAdId(final Context context) {
         final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ADVERTISINGID);
 
         String adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID);
@@ -135,12 +135,7 @@ public class FingerprintInterceptor implements Interceptor {
                         } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
                             e.printStackTrace();
                         }
-                        try {
-                            String id = adInfo.getId();
-                            return adInfo.getId();
-                        } catch (Exception e) {
-                            return "";
-                        }
+                        return adInfo.getId();
 
                     }
                 }).onErrorReturn(new Func1<Throwable, String>() {
