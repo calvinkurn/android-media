@@ -6,4 +6,10 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile rootProject.ext.supportLibDependencies.supportV4
     compile rootProject.ext.supportLibDependencies.appCompactV7
+
+    compile rootProject.ext.networkDependencies.glide
+    compile rootProject.ext.networkDependencies.converterGson
+    compile rootProject.ext.networkDependencies.retrofit
+    compile rootProject.ext.networkDependencies.adapterRxJava
+    compile rootProject.ext.networkDependencies.loggingInterceptor
 }
