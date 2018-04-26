@@ -151,7 +151,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
         View view = parent.findViewWithTag(position);
         if (view != null) {
             TextView textView = view.findViewById(R.id.tv_add_to_wishlist);
-            textView.setText(mData.get(position).getLikes());
+            textView.setText(String.valueOf(mData.get(position).getLikes()));
             if (mData.get(position).isLiked()) {
                 textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist_red,
                         0, 0, 0);

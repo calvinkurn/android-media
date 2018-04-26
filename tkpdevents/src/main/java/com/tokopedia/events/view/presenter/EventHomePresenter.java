@@ -188,6 +188,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                         @Override
                         public void onError(Throwable e) {
                             Log.d("UPDATEEVENTLIKE", e.getLocalizedMessage());
+                            e.printStackTrace();
                         }
 
                         @Override
