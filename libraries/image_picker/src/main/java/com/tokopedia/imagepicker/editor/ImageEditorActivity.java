@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker.editor;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -24,10 +27,13 @@ import java.util.ArrayList;
 public class ImageEditorActivity extends BaseSimpleActivity implements ImageDownloadPresenter.ImageDownloadView {
 
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
+    public static final String EXTRA_MIN_RESOLUTION = "MIN_IMG_RESOLUTION";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
     public static final String SAVED_FINAL_PATHS = "SAVED_CROPPED_PATHS";
     public static final String SAVED_LOCAL_IMAGE_PATH = "RES_PATH";
+
+    public static final String EDIT_RESULT_PATHS = "result_paths";
 
     private ArrayList<String> localImagePaths;
     private ArrayList<String> finalImagePaths;
@@ -40,20 +46,22 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private View vgContentContainer;
     private ViewPager viewPager;
 
-    private ImageEditorViewPagerAdapter imageEditorViewPagerAdapter;
+    private View btnDone;
 
-    public static Intent getIntent(Context context, ArrayList<String> imageUrls) {
+    private ImageEditorViewPagerAdapter imageEditorViewPagerAdapter;
+    private int minResolution;
+
+    public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
+        intent.putExtra(EXTRA_MIN_RESOLUTION, minResolution);
         return intent;
     }
 
-    public static Intent getIntent(Context context, String imageUrl) {
-        Intent intent = new Intent(context, ImageEditorActivity.class);
+    public static Intent getIntent(Context context, String imageUrl, int minResolution) {
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(imageUrl);
-        intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
-        return intent;
+        return getIntent(context, imageUrls, minResolution);
     }
 
     @Override
@@ -63,16 +71,27 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        if (getIntent().hasExtra(EXTRA_IMAGE_URLS)) {
-            extraImageUrls = getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS);
+
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (getSupportActionBar()!= null) {
+            getSupportActionBar().hide();
+        }
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
+            extraImageUrls = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
         } else {
             finish();
             return;
         }
 
+        minResolution = intent.getIntExtra(EXTRA_MIN_RESOLUTION, 0);
+
         vgProgressBar = findViewById(R.id.vg_download_progress_bar);
         vgContentContainer = findViewById(R.id.vg_content_container);
+        btnDone = findViewById(R.id.btn_done);
         hideProgressDialog();
         hideContentView();
 
@@ -87,6 +106,21 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             localImagePaths = savedInstanceState.getStringArrayList(SAVED_LOCAL_IMAGE_PATH);
             finalImagePaths = savedInstanceState.getStringArrayList(SAVED_FINAL_PATHS);
         }
+
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishEditImage();
+            }
+        });
+    }
+
+    private void finishEditImage(){
+        Intent intent = new Intent();
+        intent.putStringArrayListExtra(EDIT_RESULT_PATHS, finalImagePaths);
+        setResult(Activity.RESULT_OK, intent);
+
+        finish();
     }
 
     @Override
@@ -153,7 +187,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         if (imageEditorViewPagerAdapter == null) {
             imageEditorViewPagerAdapter = new ImageEditorViewPagerAdapter(getSupportFragmentManager(),
                     localImagePaths,
-                    finalImagePaths);
+                    finalImagePaths,
+                    minResolution);
         }
         viewPager.setAdapter(imageEditorViewPagerAdapter);
 

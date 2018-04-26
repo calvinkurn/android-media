@@ -26,13 +26,16 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
     private SparseArrayCompat<Fragment> registeredFragments = new SparseArrayCompat<>();
     private ArrayList<String> originalImagePaths;
     private ArrayList<String> localImagePaths;
+    private int minResolution;
 
     public ImageEditorViewPagerAdapter(FragmentManager fm,
                                        ArrayList<String> originalImagePaths,
-                                       ArrayList<String> localImagePaths) {
+                                       ArrayList<String> localImagePaths,
+                                       int minResolution) {
         super(fm);
         this.originalImagePaths = originalImagePaths;
         this.localImagePaths = localImagePaths;
+        this.minResolution = minResolution;
     }
 
     @Override
@@ -42,7 +45,7 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
         if (TextUtils.isEmpty(localImagePath)) {
             localImagePath = oriImagePath;
         }
-        return ImageEditPreviewFragment.newInstance(oriImagePath, localImagePath);
+        return ImageEditPreviewFragment.newInstance(oriImagePath, localImagePath, minResolution);
     }
 
     @Override

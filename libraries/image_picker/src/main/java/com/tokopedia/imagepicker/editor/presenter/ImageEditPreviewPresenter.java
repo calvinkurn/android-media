@@ -45,13 +45,16 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                             @Override
                             public Bitmap call(String path) {
                                 Bitmap previewBitmap = BitmapFactory.decodeFile(path);
+                                int originalWidth = previewBitmap.getWidth();
+                                int originalHeight = previewBitmap.getWidth();
 
-                                int maxBitmapWidthOrHeight = Math.max(previewBitmap.getWidth(), previewBitmap.getHeight());
-                                float scaleToPreview = (float) maxBitmapWidthOrHeight / EXPECTED_PREVIEW_WIDTH;
+                                int maxBitmapWidthOrHeight = Math.max(originalWidth, originalHeight);
 
-                                previewBitmap = Bitmap.createScaledBitmap(previewBitmap, (int) (previewBitmap.getWidth() / scaleToPreview),
-                                        (int) (previewBitmap.getHeight() / scaleToPreview), true);
-
+                                if (maxBitmapWidthOrHeight > EXPECTED_PREVIEW_WIDTH){
+                                    float scaleToPreview = (float) maxBitmapWidthOrHeight / EXPECTED_PREVIEW_WIDTH;
+                                    previewBitmap = Bitmap.createScaledBitmap(previewBitmap, (int) (previewBitmap.getWidth() / scaleToPreview),
+                                            (int) (previewBitmap.getHeight() / scaleToPreview), true);
+                                }
                                 return previewBitmap;
                             }
                         })

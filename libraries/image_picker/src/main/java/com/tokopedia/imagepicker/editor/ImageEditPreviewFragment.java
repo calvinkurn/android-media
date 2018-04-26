@@ -32,8 +32,9 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     private ImageEditPreviewPresenter imageEditPreviewPresenter;
     private View progressBar;
+    private View snapButton;
 
-    public static ImageEditPreviewFragment newInstance(String oriImagePath, String edittedImagePath) {
+    public static ImageEditPreviewFragment newInstance(String oriImagePath, String edittedImagePath, int minResolution) {
         Bundle args = new Bundle();
         args.putString(ARG_ORI_IMAGE_PATH, oriImagePath);
         args.putString(ARG_EDITTED_IMAGE_PATH, edittedImagePath);
@@ -48,6 +49,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         View view = inflater.inflate(R.layout.fragment_image_edit_preview, container, false);
         cropperView = view.findViewById(R.id.cropper_view);
         progressBar = view.findViewById(R.id.progressbar);
+//        snapButton = view.findViewById(R.id.snap_button);
 
         Bundle bundle = getArguments();
         oriImagePath = bundle.getString(ARG_ORI_IMAGE_PATH);
@@ -57,6 +59,13 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         } else {
             edittedImagePath = savedInstanceState.getString(ARG_EDITTED_IMAGE_PATH);
         }
+
+//        snapButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                cropperView.toggleSnap();
+//            }
+//        });
         return view;
     }
 
@@ -84,6 +93,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     public void onSuccessConvertPathToPreviewBitmap(Bitmap bitmap, float expectedPreviewWidth) {
         hidePreviewLoading();
 
+        //TODO setmax zoom to allow minresolution
         cropperView.setImageBitmap(bitmap);
         if (cropperView.getWidth() != 0) {
             cropperView.setMaxZoom(cropperView.getWidth() * 2 / expectedPreviewWidth);

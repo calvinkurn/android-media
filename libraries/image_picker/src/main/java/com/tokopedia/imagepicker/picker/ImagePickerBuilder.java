@@ -23,7 +23,8 @@ public enum ImagePickerBuilder {
             GalleryType.IMAGE_ONLY,
             ImageSelectionTypeDef.TYPE_SINGLE,
             300,
-            TYPE_1_1);
+            TYPE_1_1,
+            true);
 
     private @ImagePickerTabTypeDef
     int[] tabTypeDef;
@@ -32,6 +33,7 @@ public enum ImagePickerBuilder {
     private int minResolution;
     private @ExpectedImageRatioDef int expectedImageRatio;
     private @ImageSelectionTypeDef int imageSelectionType;
+    private boolean continueToEditAfterPick;
 
     @IntDef({TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM})
     public @interface ImagePickerTabTypeDef {
@@ -64,6 +66,17 @@ public enum ImagePickerBuilder {
         this.imageSelectionType = selectionType;
         this.minResolution = minResolution;
         this.expectedImageRatio = expectedImageRatio;
+        this.continueToEditAfterPick = false;
+    }
+
+    private ImagePickerBuilder(@ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
+                               @GalleryType int galleryType,
+                               @ImageSelectionTypeDef int selectionType ,
+                               int minResolution,
+                               @ExpectedImageRatioDef int expectedImageRatio,
+                               boolean continueToEditAfterPick) {
+        this(imagePickerTabTypeDef, galleryType, selectionType, minResolution, expectedImageRatio);
+        this.continueToEditAfterPick = continueToEditAfterPick;
     }
 
     public int[] getTabTypeDef() {
@@ -110,5 +123,9 @@ public enum ImagePickerBuilder {
 
     public int getExpectedImageRatio() {
         return expectedImageRatio;
+    }
+
+    public boolean isContinueToEditAfterPick() {
+        return continueToEditAfterPick;
     }
 }

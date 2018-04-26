@@ -24,7 +24,7 @@
                 android:id="@+id/selected_album"
                 android:layout_width="wrap_content"
                 android:layout_height="?actionBarSize"
-                app:drawableRightCompat="@drawable/ic_arrow_drop_down_black_24dp"
+                app:drawableRightCompat="@drawable/ic_arrow_drop_down_black_24"
                 android:foreground="?selectableItemBackground"
                 android:gravity="center"
                 android:textColor="@color/font_black_primary_70"

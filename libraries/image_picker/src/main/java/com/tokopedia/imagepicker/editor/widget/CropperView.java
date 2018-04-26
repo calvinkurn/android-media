@@ -23,6 +23,8 @@ public class CropperView extends FrameLayout {
 
     private GridCallback gridCallback;
 
+    private boolean isSnappedToCenter;
+
     public CropperView(Context context) {
         super(context);
         init(context, null);
@@ -84,6 +86,19 @@ public class CropperView extends FrameLayout {
         addView(mGridView, 1, params);
 
         mImageView.setGestureCallback(new TouchGestureCallback());
+    }
+
+    public void toggleSnap(){
+        if (isSnappedToCenter) {
+            cropToCenter();
+        } else {
+            fitToCenter();
+        }
+        isSnappedToCenter = !isSnappedToCenter;
+    }
+
+    public void setSnappedToCenter(boolean snappedToCenter) {
+        isSnappedToCenter = snappedToCenter;
     }
 
     public void release() {
