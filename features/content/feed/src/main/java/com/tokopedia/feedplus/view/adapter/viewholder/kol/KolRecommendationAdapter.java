@@ -121,7 +121,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
         UnifyTracking.eventKolRecommendationGoToProfileClick(kolItem.getLabel(), kolItem.getName());
         kolViewListener.onGoToKolProfile(data.getPage(),
                 data.getRowNumber(),
-                kolItem.getUrl());
+                String.valueOf(kolItem.getId()));
     }
 
     @Override

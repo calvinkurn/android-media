@@ -76,6 +76,9 @@ import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewMode
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
+import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
+import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -100,6 +103,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
+    private static final int OPEN_KOL_PROFILE = 13;
+
+    private static final String ARGS_ROW_NUMBER = "row_number";
 
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
     public static final String KEY_EXPLORE_NATIVE_ENABLE = "mainapp_explore_native_enable";
@@ -702,11 +708,21 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     showSnackbar(data.getStringExtra("message"));
                 break;
             case OPEN_KOL_COMMENT:
-                // TODO milhamj
-//                if (resultCode == Activity.RESULT_OK)
-//                    onSuccessAddDeleteKolComment(data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
-//                            data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0));
-//                break;
+                if (resultCode == Activity.RESULT_OK) {
+                    onSuccessAddDeleteKolComment(
+                            data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
+                            data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0)
+                    );
+                }
+                break;
+            case OPEN_KOL_PROFILE:
+                if (resultCode == Activity.RESULT_OK) {
+                    onSuccessFollowUnfollowFromProfile(
+                            data.getIntExtra(ARGS_ROW_NUMBER, -1),
+                            data.getBooleanExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, false)
+                    );
+                }
+                break;
             default:
                 break;
         }
@@ -931,11 +947,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToKolProfile(int page, int rowNumber, String url) {
-        if (!TextUtils.isEmpty(url)) {
-            ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
-                    , url);
-        }
+    public void onGoToKolProfile(int page, int rowNumber, String userId) {
+        Intent profileIntent = TopProfileActivity.newInstance(getContext(), userId)
+                .putExtra(ARGS_ROW_NUMBER, rowNumber);
+        startActivityForResult(profileIntent, OPEN_KOL_PROFILE);
     }
 
     @Override
@@ -1054,6 +1069,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     (KolViewModel)
                             adapter.getlist().get(rowNumber)).getTotalComment() +
                     totalNewComment);
+            adapter.notifyItemChanged(rowNumber);
+        }
+    }
+
+    private void onSuccessFollowUnfollowFromProfile(int rowNumber, boolean isFollowing) {
+        if (adapter.getlist().get(rowNumber) instanceof KolViewModel) {
+            KolViewModel kolViewModel = (KolViewModel) adapter.getlist().get(rowNumber);
+            kolViewModel.setFollowed(isFollowing);
+            kolViewModel.setTemporarilyFollowed(isFollowing);
             adapter.notifyItemChanged(rowNumber);
         }
     }

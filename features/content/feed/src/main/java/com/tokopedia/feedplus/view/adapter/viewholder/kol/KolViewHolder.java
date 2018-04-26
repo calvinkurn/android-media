@@ -156,8 +156,9 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             @Override
             public void onClick(View v) {
                 UnifyTracking.eventKolContentGoToProfilePage(element.isFollowed(), element.getTagsType());
-                viewListener.onGoToKolProfile(element.getPage(), getAdapterPosition(), element
-                        .getKolProfileUrl());
+                viewListener.onGoToKolProfile(element.getPage(),
+                        getAdapterPosition(),
+                        String.valueOf(element.getUserId()));
             }
         });
 
@@ -165,8 +166,9 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             @Override
             public void onClick(View v) {
                 UnifyTracking.eventKolContentGoToProfilePage(element.isFollowed(), element.getTagsType());
-                viewListener.onGoToKolProfile(element.getPage(), getAdapterPosition(), element
-                        .getKolProfileUrl());
+                viewListener.onGoToKolProfile(element.getPage(),
+                        getAdapterPosition(),
+                        String.valueOf(element.getUserId()));
             }
         });
 

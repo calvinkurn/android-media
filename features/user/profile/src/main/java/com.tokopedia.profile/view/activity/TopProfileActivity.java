@@ -1,5 +1,6 @@
 package com.tokopedia.profile.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -58,6 +59,7 @@ import static com.tokopedia.profile.analytics.TopProfileAnalytics.Event.EVENT_CL
 public class TopProfileActivity extends BaseSimpleActivity
         implements TopProfileActivityListener.View {
 
+    public static final String EXTRA_IS_FOLLOWING = "is_following";
     private static final String EXTRA_PARAM_USER_ID = "user_id";
     private static final String TITLE_PROFILE = "Info Akun";
     private static final String TITLE_POST = "Post";
@@ -335,6 +337,11 @@ public class TopProfileActivity extends BaseSimpleActivity
 
         if (!topProfileViewModel.isFollowed()) enableFollowButton();
         else disableFollowButton();
+
+        Intent intent = new Intent();
+        intent.putExtras(getIntent().getExtras());
+        intent.putExtra(EXTRA_IS_FOLLOWING, topProfileViewModel.isFollowed());
+        this.setResult(Activity.RESULT_OK, intent);
     }
 
     @Override

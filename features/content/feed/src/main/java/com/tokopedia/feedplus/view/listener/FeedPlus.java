@@ -25,7 +25,7 @@ public interface FeedPlus {
         void finishLoadingProgress();
 
         interface Kol {
-            void onGoToKolProfile(int page, int rowNumber, String url);
+            void onGoToKolProfile(int page, int rowNumber, String userId);
 
             void onOpenKolTooltip(int page, int rowNumber, String url);
 
