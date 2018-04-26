@@ -90,9 +90,10 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         }
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(type)
-                .setId(url)
+                .setId(getView().getReferralCodeFromTextView())
                 .setName(activity.getString(R.string.app_share_title))
                 .setTextContent(contents)
+                .setProductUrl(url)
                 .build();
         activity.startActivity(ShareActivity.createIntent(activity, shareData));
         TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_share_screen_name));
