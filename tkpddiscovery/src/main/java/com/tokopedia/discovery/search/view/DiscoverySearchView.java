@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -41,8 +42,14 @@ import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -102,6 +109,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private CompositeSubscription compositeSubscription;
     private Subscription querySubscription;
     private QueryListener queryListener;
+    private ShowCaseDialog showCaseDialog;
 
     private interface QueryListener {
         void onQueryChanged(String query);
@@ -264,6 +272,12 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         showImageSearch(true);
 
         initSearchView();
+
+        /*if (isAllowImageSearch()) {
+            mImageSearchButton.setDrawingCacheEnabled(true);
+            mImageSearchButton.buildDrawingCache();
+            startShowCase();
+        }*/
         mSuggestionView.setVisibility(GONE);
         setAnimationDuration(AnimationUtil.ANIMATION_DURATION_MEDIUM);
     }
@@ -312,6 +326,53 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                 }
             }
         });
+    }
+
+    private void startShowCase() {
+        final String showCaseTag = ((Activity) mContext).getClass().getName();
+        if (ShowCasePreference.hasShown(mContext, showCaseTag)) {
+            return;
+        }
+        if (showCaseDialog != null) {
+            return;
+        }
+        showCaseDialog = createShowCase();
+        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+            @Override
+            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                return false;
+            }
+        });
+
+        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+        showCaseObjectList.add(new ShowCaseObject(
+                mImageSearchButton,
+                "Image Search",
+                "Now you can find your favorite products using Image Search feature. ",
+                ShowCaseContentPosition.UNDEFINED,
+                R.color.tkpd_main_green));
+        showCaseDialog.show(((Activity) mContext), showCaseTag, showCaseObjectList);
+    }
+
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.view_showcase)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .arrowWidth(R.dimen.arrow_width_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .textSizeRes(R.dimen.fontvs)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .prevStringRes(R.string.navigate_back)
+                .nextStringRes(R.string.next)
+                .finishStringRes(R.string.title_done)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .useSkipWord(false)
+                .build();
     }
 
     private final OnClickListener mOnClickListener = new OnClickListener() {
@@ -479,6 +540,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     public void setImageSearch(boolean imageSearch) {
         allowImageSearch = imageSearch;
+    }
+
+    public boolean isAllowImageSearch() {
+        return allowImageSearch;
     }
 
     //Public Methods
