@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -16,7 +17,10 @@ import android.webkit.URLUtil;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
+import com.tokopedia.imagepicker.editor.adapter.TabLayoutImageEditorAdapter;
 import com.tokopedia.imagepicker.editor.presenter.ImageDownloadPresenter;
+import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.adapter.TabLayoutImagePickerAdapter;
 
 import java.util.ArrayList;
 
@@ -28,12 +32,19 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
     public static final String EXTRA_MIN_RESOLUTION = "MIN_IMG_RESOLUTION";
+    public static final String EXTRA_EDIT_ACTION_TYPE = "EDIT_ACTION_TYPE";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
     public static final String SAVED_FINAL_PATHS = "SAVED_CROPPED_PATHS";
     public static final String SAVED_LOCAL_IMAGE_PATH = "RES_PATH";
 
     public static final String EDIT_RESULT_PATHS = "result_paths";
+
+
+    private ArrayList<String> extraImageUrls;
+    private int minResolution;
+    private @ImagePickerBuilder.ImageEditActionTypeDef
+    int[] imageEditActionType;
 
     private ArrayList<String> localImagePaths;
     private ArrayList<String> finalImagePaths;
@@ -42,26 +53,26 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
     private View vgProgressBar;
     private ImageDownloadPresenter imageDownloadPresenter;
-    private ArrayList<String> extraImageUrls;
+
     private View vgContentContainer;
     private ViewPager viewPager;
 
-    private View btnDone;
-
     private ImageEditorViewPagerAdapter imageEditorViewPagerAdapter;
-    private int minResolution;
 
-    public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution) {
+    public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
+                                   @ImagePickerBuilder.ImageEditActionTypeDef int[] imageEditActionType) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
         intent.putExtra(EXTRA_MIN_RESOLUTION, minResolution);
+        intent.putExtra(EXTRA_EDIT_ACTION_TYPE, imageEditActionType);
         return intent;
     }
 
-    public static Intent getIntent(Context context, String imageUrl, int minResolution) {
+    public static Intent getIntent(Context context, String imageUrl, int minResolution,
+                                   @ImagePickerBuilder.ImageEditActionTypeDef int[] imageEditActionType) {
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(imageUrl);
-        return getIntent(context, imageUrls, minResolution);
+        return getIntent(context, imageUrls, minResolution, imageEditActionType);
     }
 
     @Override
@@ -75,7 +86,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         super.onCreate(savedInstanceState);
 
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (getSupportActionBar()!= null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
@@ -88,10 +99,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         }
 
         minResolution = intent.getIntExtra(EXTRA_MIN_RESOLUTION, 0);
+        imageEditActionType = intent.getIntArrayExtra(EXTRA_EDIT_ACTION_TYPE);
 
         vgProgressBar = findViewById(R.id.vg_download_progress_bar);
         vgContentContainer = findViewById(R.id.vg_content_container);
-        btnDone = findViewById(R.id.btn_done);
+        View btnDone = findViewById(R.id.btn_done);
         hideProgressDialog();
         hideContentView();
 
@@ -107,6 +119,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             finalImagePaths = savedInstanceState.getStringArrayList(SAVED_FINAL_PATHS);
         }
 
+        setupTabLayout();
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,7 +128,41 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         });
     }
 
-    private void finishEditImage(){
+    private void setupTabLayout() {
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        final TabLayoutImageEditorAdapter tabLayoutImageEditorAdapter =
+                new TabLayoutImageEditorAdapter(tabLayout, this, imageEditActionType);
+        tabLayoutImageEditorAdapter.notifyDataSetChanged();
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                //TODO, hide the tab, replace by detail action
+                ImageEditorActivity.this.onTabSelected(position);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        tabLayoutImageEditorAdapter.unselectTab(tabLayout.getTabAt(0));
+        if (tabLayout.getTabCount() <= 1) {
+            tabLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void onTabSelected(int position){
+        //TODO cehck the actiondef
+        // TODO enabled the image zoom if crop;
+    }
+
+    private void finishEditImage() {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(EDIT_RESULT_PATHS, finalImagePaths);
         setResult(Activity.RESULT_OK, intent);

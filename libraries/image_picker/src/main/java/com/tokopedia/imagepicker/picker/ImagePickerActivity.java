@@ -302,7 +302,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     private void onSingleImagePicked(String imageUrlOrPath) {
         if (imagePickerBuilder.isContinueToEditAfterPick()) {
-            Intent intent = ImageEditorActivity.getIntent(this, imageUrlOrPath);
+            Intent intent = ImageEditorActivity.getIntent(this, imageUrlOrPath,
+                    imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType());
             startActivityForResult(intent, REQUEST_CODE_EDITOR);
         } else {
             onFinishWithSingleImage(imageUrlOrPath);

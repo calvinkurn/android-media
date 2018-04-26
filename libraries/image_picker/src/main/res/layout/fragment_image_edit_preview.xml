@@ -28,16 +28,18 @@
                 app:nocropper__grid_thickness="0.8dp"
                 app:nocropper__padding_color="@android:color/transparent" />
 
-            <!--<android.support.v7.widget.AppCompatImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/snap_button"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
                 android:layout_gravity="start|bottom"
                 android:layout_margin="@dimen/dp_16"
-                android:background="@drawable/circle_grey"
+                android:background="@drawable/circle_trans_white"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
-                app:srcCompat="@drawable/ic_crop_free_black_24" />-->
+                app:srcCompat="@drawable/ic_snap"
+                android:visibility="gone"
+                tools:visibility="visible"/>
 
             <ProgressBar
                 android:id="@+id/progressbar"

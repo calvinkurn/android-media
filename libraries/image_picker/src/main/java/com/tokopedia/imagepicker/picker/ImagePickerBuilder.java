@@ -7,6 +7,9 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_1_1;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_4_5;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_5_4;
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP;
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_ROTATE;
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_WATERMARK;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
@@ -24,22 +27,29 @@ public enum ImagePickerBuilder {
             ImageSelectionTypeDef.TYPE_SINGLE,
             300,
             TYPE_1_1,
-            true);
+            true,
+            new int[]{TYPE_CROP, TYPE_ROTATE, TYPE_WATERMARK});
 
-    private @ImagePickerTabTypeDef
-    int[] tabTypeDef;
-    private @GalleryType
-    int galleryType;
+    private @ImagePickerTabTypeDef int[] tabTypeDef;
+    private @GalleryType int galleryType;
     private int minResolution;
     private @ExpectedImageRatioDef int expectedImageRatio;
     private @ImageSelectionTypeDef int imageSelectionType;
     private boolean continueToEditAfterPick;
+    private @ImageEditActionTypeDef int[] imageEditActionType;
 
     @IntDef({TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM})
     public @interface ImagePickerTabTypeDef {
         int TYPE_GALLERY = 1;
         int TYPE_CAMERA = 2;
         int TYPE_INSTAGRAM = 3;
+    }
+
+    @IntDef({TYPE_CROP, TYPE_ROTATE, TYPE_WATERMARK})
+    public @interface ImageEditActionTypeDef {
+        int TYPE_CROP = 1;
+        int TYPE_ROTATE = 2;
+        int TYPE_WATERMARK = 3;
     }
 
     @IntDef({TYPE_SINGLE, TYPE_MULTIPLE_NO_PREVIEW, TYPE_MULTIPLE_WITH_PREVIEW})
@@ -74,9 +84,11 @@ public enum ImagePickerBuilder {
                                @ImageSelectionTypeDef int selectionType ,
                                int minResolution,
                                @ExpectedImageRatioDef int expectedImageRatio,
-                               boolean continueToEditAfterPick) {
+                               boolean continueToEditAfterPick,
+                               @ImageEditActionTypeDef int[] imageEditActionType) {
         this(imagePickerTabTypeDef, galleryType, selectionType, minResolution, expectedImageRatio);
         this.continueToEditAfterPick = continueToEditAfterPick;
+        this.imageEditActionType = imageEditActionType;
     }
 
     public int[] getTabTypeDef() {
@@ -127,5 +139,9 @@ public enum ImagePickerBuilder {
 
     public boolean isContinueToEditAfterPick() {
         return continueToEditAfterPick;
+    }
+
+    public int[] getImageEditActionType() {
+        return imageEditActionType;
     }
 }

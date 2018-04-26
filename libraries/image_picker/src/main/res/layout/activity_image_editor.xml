@@ -40,43 +40,38 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager
-                android:id="@+id/view_pager"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1">
+                <com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager
+                    android:id="@+id/view_pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_4"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/cover_shadow_up" />
+            </FrameLayout>
 
-            <LinearLayout
-                android:id="@+id/vg_action_edit"
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_16">
-                <ImageView
-                    android:id="@+id/ic_crop"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/circle_red"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16" />
+                app:tabMode="fixed"
+                app:tabGravity="fill"
+                app:tabIndicatorColor="@null"
+                app:tabMinWidth="@dimen/tab_min_width"
+                app:tabTextColor="@color/font_black_primary_70"
+                app:tabSelectedTextColor="@color/font_black_primary_70"
+                android:clipToPadding="false"
+                android:clipChildren="false"
+                app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget">
+                <!--will be added programmatically at ImageEditorActivity-->
 
-                <ImageView
-                    android:id="@+id/ic_rotate"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/circle_red"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"/>
-
-                <ImageView
-                    android:id="@+id/ic_watermark"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/circle_red"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"/>
-            </LinearLayout>
+            </android.support.design.widget.TabLayout>
 
         </LinearLayout>
 

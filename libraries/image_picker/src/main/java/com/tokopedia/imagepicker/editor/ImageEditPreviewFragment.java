@@ -1,9 +1,11 @@
 package com.tokopedia.imagepicker.editor;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +25,14 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     public static final String ARG_ORI_IMAGE_PATH = "arg_ori_img_path";
     public static final String ARG_EDITTED_IMAGE_PATH = "arg_edit_img_path";
+    public static final String ARG_MIN_RESOLUTION = "arg_min_resolution";
 
     private CropperView cropperView;
 
     private String oriImagePath;
     private String edittedImagePath;
     private int rotationCount = 0;
+    private int minResolution = 0;
 
     private ImageEditPreviewPresenter imageEditPreviewPresenter;
     private View progressBar;
@@ -38,6 +42,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         Bundle args = new Bundle();
         args.putString(ARG_ORI_IMAGE_PATH, oriImagePath);
         args.putString(ARG_EDITTED_IMAGE_PATH, edittedImagePath);
+        args.putInt(ARG_MIN_RESOLUTION, minResolution);
         ImageEditPreviewFragment fragment = new ImageEditPreviewFragment();
         fragment.setArguments(args);
         return fragment;
@@ -49,10 +54,11 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         View view = inflater.inflate(R.layout.fragment_image_edit_preview, container, false);
         cropperView = view.findViewById(R.id.cropper_view);
         progressBar = view.findViewById(R.id.progressbar);
-//        snapButton = view.findViewById(R.id.snap_button);
+        snapButton = view.findViewById(R.id.snap_button);
 
         Bundle bundle = getArguments();
         oriImagePath = bundle.getString(ARG_ORI_IMAGE_PATH);
+        minResolution = bundle.getInt(ARG_MIN_RESOLUTION);
 
         if (savedInstanceState == null) {
             edittedImagePath = getArguments().getString(ARG_EDITTED_IMAGE_PATH);
@@ -60,12 +66,12 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             edittedImagePath = savedInstanceState.getString(ARG_EDITTED_IMAGE_PATH);
         }
 
-//        snapButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                cropperView.toggleSnap();
-//            }
-//        });
+        snapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cropperView.toggleSnap();
+            }
+        });
         return view;
     }
 
@@ -80,6 +86,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         imageEditPreviewPresenter = new ImageEditPreviewPresenter();
         imageEditPreviewPresenter.attachView(this);
         showPreviewLoading();
+
         imageEditPreviewPresenter.convertImagePathToPreviewBitmap(edittedImagePath);
     }
 
@@ -90,38 +97,36 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     @Override
-    public void onSuccessConvertPathToPreviewBitmap(Bitmap bitmap, float expectedPreviewWidth) {
+    public void onSuccessConvertPathToPreviewBitmap(ImageEditPreviewPresenter.BitmapPreviewResult bitmapPreviewResult, float expectedPreviewWidth) {
         hidePreviewLoading();
 
-        //TODO setmax zoom to allow minresolution
-        cropperView.setImageBitmap(bitmap);
-        if (cropperView.getWidth() != 0) {
-            cropperView.setMaxZoom(cropperView.getWidth() * 2 / expectedPreviewWidth);
-        } else {
-            ViewTreeObserver vto = cropperView.getViewTreeObserver();
-            vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    cropperView.getViewTreeObserver().removeOnPreDrawListener(this);
-                    cropperView.setMaxZoom(cropperView.getWidth() * 2 / 1280f);
-                    return true;
-                }
-            });
+        Bitmap previewBitmap = bitmapPreviewResult.previewBitmap;
+
+        float maxZoomResolution = -1;
+        if (minResolution > 0) {
+            int originalResolution = Math.min(bitmapPreviewResult.originalWidth, bitmapPreviewResult.originalHeight);
+            maxZoomResolution = originalResolution / minResolution;
         }
+        float defaultMaxZoom = cropperView.getWidth() * 2 / expectedPreviewWidth;
+
+        float maxZoom = Math.max(defaultMaxZoom, maxZoomResolution);
+        cropperView.setMaxZoom(maxZoom > 1 ? maxZoom : 1);
+
+        cropperView.setImageBitmap(previewBitmap);
     }
 
-    private void showPreviewLoading(){
+    private void showPreviewLoading() {
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    private void hidePreviewLoading(){
+    private void hidePreviewLoading() {
         progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (imageEditPreviewPresenter!= null) {
+        if (imageEditPreviewPresenter != null) {
             imageEditPreviewPresenter.detachView();
         }
     }
