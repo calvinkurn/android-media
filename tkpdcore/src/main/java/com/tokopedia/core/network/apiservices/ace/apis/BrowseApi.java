@@ -69,6 +69,7 @@ public interface BrowseApi {
     String DEVICE = "device";
     String START = "start";
     String ROWS = "rows";
+    String IMAGE = "image";
     String SC = "sc"; //  (category id)
     String DEFAULT_SC = "default_sc"; //  (category id)
     String FLOC = "floc"; // (location id)
@@ -99,6 +100,8 @@ public interface BrowseApi {
     String RETURNABLES = "returnables";
     String HOT_ID = "hot_id";
     String REFINED = "rf";
+    String PAGE = "page";
+    String PAGE_SIZE = "page_size";
 
     /**
      * @param sc
