@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.adapter.LabelsAdapter;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignProductViewModel;
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 /**
  * Created by stevenfredian on 5/18/17.
  */
+
 public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialStoreCampaignAdapter.ViewHolder> {
 
     private static final String DEFAULT_EMPTY_PRICE = "Rp 0";

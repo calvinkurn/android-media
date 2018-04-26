@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
-import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.feedplus.R;
 
 /**
  * @author by nisie on 10/27/17.

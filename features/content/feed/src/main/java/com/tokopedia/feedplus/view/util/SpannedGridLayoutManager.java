@@ -29,7 +29,7 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.feedplus.R;
 
 import java.util.ArrayList;
 import java.util.List;

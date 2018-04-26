@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 
 import com.tokopedia.core.widgets.ShareItem;
-import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.feedplus.R;
 
 import java.util.ArrayList;
 
@@ -28,7 +28,7 @@ public class ShareFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(com.tokopedia.tkpd.tkpdfeed.R.layout.sheet_feed_grid_item, parent, false);
+                .inflate(com.tokopedia.feedplus.R.layout.sheet_feed_grid_item, parent, false);
         return new ShareFeedViewHolder(view);
     }
 

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.feedplus.view.fragment.ReactNativeContentDetailFragment;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;

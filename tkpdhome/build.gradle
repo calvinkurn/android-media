@@ -13,6 +13,7 @@ dependencies {
     compile project(rootProject.ext.libraries.useCase)
     compile project(rootProject.ext.libraries.abstraction)
     compile project(rootProject.ext.features.gamification)
+    compile project(rootProject.ext.features.feed)
 
     compile(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
@@ -40,5 +41,4 @@ dependencies {
 
     compile rootProject.ext.debugToolsDependencies.stetho
     compile project(':tkpddigital')
-    compile project(':tkpdfeed')
 }

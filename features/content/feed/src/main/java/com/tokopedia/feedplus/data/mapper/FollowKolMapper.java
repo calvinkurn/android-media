@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.tkpdfeed.feeds.FollowKol;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.model.FollowKolDomain;
 
 import rx.functions.Func1;

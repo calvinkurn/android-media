@@ -19,7 +19,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.util.TkpdWebViewClient;
-import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.activity.BlogWebViewActivity;
 
 import butterknife.BindView;

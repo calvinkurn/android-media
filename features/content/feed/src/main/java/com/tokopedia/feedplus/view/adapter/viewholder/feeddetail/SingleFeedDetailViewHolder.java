@@ -4,7 +4,7 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 

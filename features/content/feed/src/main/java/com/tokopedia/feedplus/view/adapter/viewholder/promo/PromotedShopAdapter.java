@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.customview.RoundedCornerImageView;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 

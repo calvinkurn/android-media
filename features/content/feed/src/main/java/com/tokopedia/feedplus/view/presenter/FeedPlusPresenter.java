@@ -6,7 +6,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.usecase.CheckNewFeedUseCase;
 import com.tokopedia.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;

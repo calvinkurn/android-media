@@ -14,7 +14,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;

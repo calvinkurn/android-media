@@ -217,7 +217,7 @@ ext {
     features = [
             loyalty         : ":tkpdloyalty",
             ride            : ":tkpdride",
-            feed            : ":tkpdfeed",
+            feed            : ":features:content:feed",
             digital         : ":tkpddigital",
             core            : ":tkpdcore",
             inbox           : ":tkpdinbox",

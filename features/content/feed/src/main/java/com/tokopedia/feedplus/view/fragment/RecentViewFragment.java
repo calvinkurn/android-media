@@ -16,13 +16,13 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.feedplus.view.listener.RecentView;
-import com.tokopedia.feedplus.view.listener.WishlistListener;
+import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.adapter.RecentViewDetailAdapter;
 import com.tokopedia.feedplus.view.adapter.typefactory.recentview.RecentViewTypeFactory;
 import com.tokopedia.feedplus.view.adapter.typefactory.recentview.RecentViewTypeFactoryImpl;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
+import com.tokopedia.feedplus.view.listener.RecentView;
+import com.tokopedia.feedplus.view.listener.WishlistListener;
 import com.tokopedia.feedplus.view.presenter.RecentViewPresenter;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 

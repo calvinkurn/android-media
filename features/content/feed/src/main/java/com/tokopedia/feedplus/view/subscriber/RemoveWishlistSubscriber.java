@@ -1,7 +1,7 @@
 package com.tokopedia.feedplus.view.subscriber;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.model.wishlist.RemoveWishlistDomain;
 import com.tokopedia.feedplus.view.listener.WishlistListener;
 

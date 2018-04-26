@@ -9,7 +9,8 @@ import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.feedplus.R;
+
 
 /**
  * Created by stevenfredian on 5/29/17.
