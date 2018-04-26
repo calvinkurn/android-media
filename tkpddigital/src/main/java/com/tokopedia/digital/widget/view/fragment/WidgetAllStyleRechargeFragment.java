@@ -408,15 +408,19 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     }
 
     private void handleCallBackProductChooser(Product product) {
-        digitalProductView.renderUpdateProductSelected(product);
+        if (digitalProductView != null) {
+            digitalProductView.renderUpdateProductSelected(product);
+        }
     }
 
     private void handleCallBackOperatorChooser(Operator operator) {
-        digitalProductView.renderUpdateOperatorSelected(operator);
+        if (digitalProductView != null)
+            digitalProductView.renderUpdateOperatorSelected(operator);
     }
 
     private void renderContactDataToClientNumber(ContactData contactData) {
-        digitalProductView.renderClientNumber(contactData.getContactNumber());
+        if (digitalProductView != null)
+            digitalProductView.renderClientNumber(contactData.getContactNumber());
     }
 
     @Override
