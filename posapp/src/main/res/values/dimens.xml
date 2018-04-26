@@ -15,4 +15,8 @@
     <dimen name="posapp_row_size_table">48dp</dimen>
     <dimen name="button_height">58dp</dimen>
     <dimen name="gradient_white_pdp">32dp</dimen>
+
+    <dimen name="switch_track_radius">13dp</dimen>
+    <dimen name="switch_track_height">26dp</dimen>
+    <dimen name="switch_tumb_size">26dp</dimen>
 </resources>

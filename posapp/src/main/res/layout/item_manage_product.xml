@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/new_margin_med"
-    android:orientation="horizontal"
-    android:weightSum="9.5">
+    android:orientation="horizontal">
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -18,7 +17,9 @@
         <ImageView
             android:id="@+id/image_thumbnail"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"/>
     </LinearLayout>
 
     <TextView
@@ -31,31 +32,53 @@
         android:paddingRight="@dimen/new_margin_small"
         style="@style/TextView.Small.Bold"
         tools:text="Samsung Galaxy A8 2018 Gold Garansi Resmi Samsung"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="0.5"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="@dimen/new_margin_small"
+        style="@style/TextView.Small"
+        android:text="@string/currency_idr"/>
+
     <TextView
         android:id="@+id/edit_online_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="2"
+        android:layout_weight="1.5"
         android:background="@drawable/bg_grey100_rounded3_grey350"
         android:gravity="center"
         android:padding="@dimen/new_margin_small"
         style="@style/TextView.Small.BlackDisabled"
         tools:text="100000000"/>
+
     <View android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_weight="0.5" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="0.5"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="@dimen/new_margin_small"
+        style="@style/TextView.Small"
+        android:text="@string/currency_idr"/>
     <TextView
         android:id="@+id/edit_outlet_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="2"
+        android:layout_weight="1.5"
         android:background="@drawable/bg_white_rounded3_grey350"
         android:gravity="center"
         android:padding="@dimen/new_margin_small"
         style="@style/TextView.Small"
-        tools:text="100000000"/>
+        android:text="100000000"/>
     <ImageView
         android:id="@+id/button_edit"
         app:srcCompat="@drawable/ic_edit_green"
@@ -63,11 +86,27 @@
         android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
-    <android.support.v7.widget.SwitchCompat
-        android:id="@+id/switch_status"
-        android:layout_width="0dp"
+
+    <LinearLayout
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_weight="1.5"
         android:layout_gravity="center"
-        android:layout_marginLeft="-8dp"
-        android:layout_weight="1"/>
+        android:gravity="center">
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            style="@style/SwitchStyle" />
+        <TextView
+            android:id="@+id/text_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/new_margin_small"
+            style="@style/TextView.Micro" />
+    </LinearLayout>
 </LinearLayout>
