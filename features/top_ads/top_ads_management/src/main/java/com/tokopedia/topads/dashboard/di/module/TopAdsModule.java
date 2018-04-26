@@ -4,14 +4,14 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
@@ -46,14 +46,14 @@ public class TopAdsModule {
 
     @TopAdsScope
     @Provides
-    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        } else {
-            logging.setLevel(HttpLoggingInterceptor.Level.NONE);
-        }
-        return logging;
+    public ThreadExecutor provideThreadExecutor(JobExecutor jobExecutor) {
+        return jobExecutor;
+    }
+
+    @TopAdsScope
+    @Provides
+    public PostExecutionThread providePostExecutionThread(UIThread uiThread) {
+        return uiThread;
     }
 
     @TopAdsScope
@@ -114,7 +114,7 @@ public class TopAdsModule {
 
     @TopAdsScope
     @Provides
-    public TopAdsOldManagementApi provideTopAdsOldManagementApi(@TopAdsQualifier Retrofit retrofit){
+    public TopAdsOldManagementApi provideTopAdsOldManagementApi(@TopAdsManagementQualifier Retrofit retrofit){
         return retrofit.create(TopAdsOldManagementApi.class);
     }
 
@@ -124,31 +124,15 @@ public class TopAdsModule {
         return retrofit.create(TopAdsManagementApi.class);
     }
 
-    @TopAdsScope
+    /*@TopAdsScope
     @Provides
     public ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource){
         return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
-    }
+    }*/
 
     @TopAdsScope
     @Provides
     public ShopApi provideShopApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(ShopApi.class);
-    }
-
-    @TopAdsScope
-    @Provides
-    UserSession provideUserSession(AbstractionRouter abstractionRouter){
-        return abstractionRouter.getSession();
-    }
-
-    @TopAdsScope
-    @Provides
-    AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context){
-        if(context instanceof AbstractionRouter){
-            return ((AbstractionRouter)context);
-        }else{
-            return null;
-        }
     }
 }

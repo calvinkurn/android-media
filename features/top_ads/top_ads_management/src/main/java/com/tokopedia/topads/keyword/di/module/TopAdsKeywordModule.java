@@ -2,13 +2,12 @@ package com.tokopedia.topads.keyword.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.di.qualifier.TomeQualifier;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
+//import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
+import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
@@ -34,22 +33,22 @@ public class TopAdsKeywordModule {
 
     @TopAdsKeywordScope
     @Provides
-    KeywordApi provideKeywordApi(@TopAdsQualifier Retrofit retrofit){
+    KeywordApi provideKeywordApi(@TopAdsManagementQualifier Retrofit retrofit){
         return retrofit.create(KeywordApi.class);
     }
 
     @TopAdsKeywordScope
     @Provides
     TopAdsKeywordRepository provideTopAdsKeywordRepository(
-            KeywordDashboardDataSouce keywordDashboardDataSouce,
-            ShopInfoRepository shopInfoRepository) {
+            KeywordDashboardDataSouce keywordDashboardDataSouce/*,
+            ShopInfoRepository shopInfoRepository*/) {
         return new TopAdsKeywordRepositoryImpl(
-                keywordDashboardDataSouce, shopInfoRepository);
+                keywordDashboardDataSouce/*, shopInfoRepository*/);
     }
 
     @TopAdsKeywordScope
     @Provides
-    TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit) {
+    TomeProductApi provideTomeApi(/*@TomeQualifier*/ @TopAdsManagementQualifier Retrofit retrofit) {
         return retrofit.create(TomeProductApi.class);
     }
 

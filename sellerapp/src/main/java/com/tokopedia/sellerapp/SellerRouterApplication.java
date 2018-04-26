@@ -149,6 +149,7 @@ import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -230,7 +231,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public TopAdsComponent getTopAdsComponent() {
         if (topAdsComponent == null) {
-            topAdsComponent = daggerTopAdsBuilder.appComponent(getApplicationComponent()).build();
+            TopAdsComponentInstance.getComponent(this);
         }
         return topAdsComponent;
     }

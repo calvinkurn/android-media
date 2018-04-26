@@ -7,8 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -30,10 +28,10 @@ import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagem
 import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsOldStatisticFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticAvgFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticConversionFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticCtrFragment;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticImprFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticKlikFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticSpentFragment;
@@ -110,8 +108,8 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
     public View getDateLabelView() {
         Fragment fragment = getCurrentFragment();
-        if (fragment != null && fragment.isVisible() && fragment instanceof TopAdsStatisticFragment) {
-            return ((TopAdsStatisticFragment) fragment).getDateLabelView();
+        if (fragment != null && fragment.isVisible() && fragment instanceof TopAdsOldStatisticFragment) {
+            return ((TopAdsOldStatisticFragment) fragment).getDateLabelView();
         } else {
             return null;
         }

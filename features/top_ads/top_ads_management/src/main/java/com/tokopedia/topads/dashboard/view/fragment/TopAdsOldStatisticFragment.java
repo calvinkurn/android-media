@@ -40,7 +40,8 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsStatisticFragment extends TopAdsBaseDatePickerFragment<TopAdsStatisticPresenter> implements TopAdsStatisticViewListener {
+@Deprecated
+public abstract class TopAdsOldStatisticFragment extends TopAdsBaseDatePickerFragment<TopAdsStatisticPresenter> implements TopAdsStatisticViewListener {
 
     TextView contentTitleGraph;
     LineChartView contentGraph;
@@ -66,7 +67,7 @@ public abstract class TopAdsStatisticFragment extends TopAdsBaseDatePickerFragme
             dateLabelView.setDate(startDate, endDate);
     }
 
-    public TopAdsStatisticFragment() {
+    public TopAdsOldStatisticFragment() {
         // Required empty public constructor
     }
 
@@ -164,9 +165,9 @@ public abstract class TopAdsStatisticFragment extends TopAdsBaseDatePickerFragme
                     .buildChart(contentGraph);
         } catch (Exception e) {
             if (e != null && e.getMessage() != null) {
-                Log.e("TopAdsStatisticFragment", e.getMessage());
+                Log.e("TopAdsOldStatisticFragment", e.getMessage());
             } else {
-                Log.e("TopAdsStatisticFragment", "Null Pointer");
+                Log.e("TopAdsOldStatisticFragment", "Null Pointer");
             }
         }
     }
@@ -195,7 +196,7 @@ public abstract class TopAdsStatisticFragment extends TopAdsBaseDatePickerFragme
 
     @Override
     protected void initialVar() {
-        this.cells = topAdsStatisticActivityViewListener.getDataCell();
+        //this.cells = topAdsStatisticActivityViewListener.getDataCell();
         mLabels = generateLabels();
         mValues = generateValues();
         mLabelDisplay = generateLabelDisplay();

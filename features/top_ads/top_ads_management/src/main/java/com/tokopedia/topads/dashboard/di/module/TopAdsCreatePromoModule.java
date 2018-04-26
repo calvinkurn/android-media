@@ -2,11 +2,12 @@ package com.tokopedia.topads.dashboard.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.product.apis.PromoTopAdsApi;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
+import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
@@ -154,7 +155,7 @@ public class TopAdsCreatePromoModule {
 
     @TopAdsDashboardScope
     @Provides
-    TopAdsOldManagementApi provideTopAdsManagementApi(@TopAdsQualifier Retrofit retrofit) {
+    TopAdsOldManagementApi provideTopAdsManagementApi(@TopAdsManagementQualifier Retrofit retrofit) {
         return retrofit.create(TopAdsOldManagementApi.class);
     }
 
@@ -179,7 +180,7 @@ public class TopAdsCreatePromoModule {
 
     @TopAdsDashboardScope
     @Provides
-    public PromoTopAdsApi providePromoTopAdsApi(@TopAdsQualifier Retrofit retrofit){
+    public PromoTopAdsApi providePromoTopAdsApi(@TopAdsManagementQualifier Retrofit retrofit){
         return retrofit.create(PromoTopAdsApi.class);
     }
 

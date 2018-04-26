@@ -22,27 +22,28 @@ import rx.functions.Func1;
 
 public class TopAdsGetSuggestionUseCase extends UseCase<GetSuggestionResponse> {
     private final TopAdsGroupAdsRepository topAdsGroupAdsRepository;
-    private ShopInfoRepository shopInfoRepository;
+    //private ShopInfoRepository shopInfoRepository;
 
     @Inject
     public TopAdsGetSuggestionUseCase(ThreadExecutor threadExecutor,
                                         PostExecutionThread postExecutionThread,
-                                        TopAdsGroupAdsRepository topAdsGroupAdsRepository,
-                                        ShopInfoRepository shopInfoRepository
+                                        TopAdsGroupAdsRepository topAdsGroupAdsRepository
+                                        //ShopInfoRepository shopInfoRepository
                                       ) {
         super(threadExecutor, postExecutionThread);
         this.topAdsGroupAdsRepository = topAdsGroupAdsRepository;
-        this.shopInfoRepository = shopInfoRepository;
+        //this.shopInfoRepository = shopInfoRepository;
     }
 
     @Override
     public Observable<GetSuggestionResponse> createObservable(final RequestParams requestParams) {
-        return shopInfoRepository.getShopInfo().flatMap(new Func1<ShopModel, Observable<GetSuggestionResponse>>() {
+        return null;
+        /*return shopInfoRepository.getShopInfo().flatMap(new Func1<ShopModel, Observable<GetSuggestionResponse>>() {
             @Override
             public Observable<GetSuggestionResponse> call(ShopModel shopModel) {
                 return topAdsGroupAdsRepository.getSuggestion((GetSuggestionBody) requestParams.getObject(TopAdsNetworkConstant.PARAM_SUGGESTION), shopModel.getInfo().getShopId());
             }
-        });
+        });*/
     }
 
     public static RequestParams createRequestParams(GetSuggestionBody getSuggestionBody){
