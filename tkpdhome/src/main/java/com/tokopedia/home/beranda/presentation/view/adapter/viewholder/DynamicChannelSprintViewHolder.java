@@ -43,6 +43,7 @@ import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by henrypriyono on 31/01/18.
@@ -52,6 +53,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     @LayoutRes
     public static final int LAYOUT = R.layout.home_channel_3_image;
     private static final String TAG = DynamicChannelSprintViewHolder.class.getSimpleName();
+    public static final String ATTRIBUTION = "attribution";
     private TextView homeChannelTitle;
     private TextView seeAllButton;
     private HomeCategoryListener listener;
@@ -170,13 +172,18 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                         @Override
                         public void onClick(View view) {
                             if (isSprintSale(channel)) {
-                                HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(position, countDownView.getCurrentCountDown()));
+                                Map<String, Object> evenMap = channel.getEnhanceClickSprintSaleHomePage(position, countDownView.getCurrentCountDown());
+                                HomePageTracking.eventEnhancedClickSprintSaleProduct(evenMap);
+                                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
+                                        channel.getHomeAttribution(position + 1, String.valueOf(evenMap.get(ATTRIBUTION)))
+                                );
                             } else {
-                                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(grid, position + 1));
+                                Map<String, Object> evenMap = channel.getEnhanceClickDynamicChannelHomePage(grid, position + 1);
+                                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(evenMap);
+                                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
+                                        channel.getHomeAttribution(position + 1, String.valueOf(evenMap.get(ATTRIBUTION)))
+                                );
                             }
-                            listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
-                                    channel.getHomeAttribution(position + 1, grid.getAttribution())
-                            );
                         }
                     });
                 }
