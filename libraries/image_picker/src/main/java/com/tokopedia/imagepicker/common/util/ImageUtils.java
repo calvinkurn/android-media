@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker;
+package com.tokopedia.imagepicker.common.util;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;

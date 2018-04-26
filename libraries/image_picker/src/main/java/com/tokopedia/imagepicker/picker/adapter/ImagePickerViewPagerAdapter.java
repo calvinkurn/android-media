@@ -35,7 +35,7 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
             case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY:
                 return ImagePickerGalleryFragment.newInstance(
                         imagePickerBuilder.getGalleryType(),
-                        imagePickerBuilder.supportMultipleSelection(),
+                        imagePickerBuilder.supportMultipleSelection() ,
                         imagePickerBuilder.getMinResolution());
             case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA:
                 Configuration.Builder builder = new Configuration.Builder();

@@ -12,6 +12,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -19,10 +20,12 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.ImageView;
 
+import com.tokopedia.imagepicker.R;
+
 /**
  * Created by Jay Rambhia on 10/29/2015.
  */
-public class CropperImageView extends ImageView {
+public class CropperImageView extends AppCompatImageView {
 
     private static final String TAG = "CropperImageView";
 
@@ -77,12 +80,6 @@ public class CropperImageView extends ImageView {
         init(context, attrs);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public CropperImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs);
-    }
-
     public void setDEBUG(boolean DEBUG) {
         this.DEBUG = DEBUG;
     }
@@ -90,11 +87,11 @@ public class CropperImageView extends ImageView {
     private void init(Context context, AttributeSet attrs) {
 
         if (attrs != null) {
-            TypedArray mTypedArray = context.obtainStyledAttributes(attrs, R.styleable.nocropper__CropperView);
+            TypedArray mTypedArray = context.obtainStyledAttributes(attrs, R.styleable.CropperImageView);
             if (mTypedArray != null) {
-                mPaintColor = mTypedArray.getColor(R.styleable.nocropper__CropperView_nocropper__padding_color, mPaintColor);
-                mAddPaddingToMakeSquare = mTypedArray.getBoolean(R.styleable.nocropper__CropperView_nocropper__add_padding_to_make_square, true);
-                initWithFitToCenter = mTypedArray.getBoolean(R.styleable.nocropper__CropperView_nocropper__fit_to_center, false);
+                mPaintColor = mTypedArray.getColor(R.styleable.CropperImageView_nocropper__padding_color, mPaintColor);
+                mAddPaddingToMakeSquare = mTypedArray.getBoolean(R.styleable.CropperImageView_nocropper__add_padding_to_make_square, true);
+                initWithFitToCenter = mTypedArray.getBoolean(R.styleable.CropperImageView_nocropper__fit_to_center, false);
                 mTypedArray.recycle();
             }
         }
