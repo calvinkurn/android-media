@@ -177,7 +177,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
                             } else {
                                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(grid, position + 1));
-                                String attr = channel.getHomeAttribution(position, grid.getAttribution());
+                                String attr = channel.getHomeAttribution(position + 1, grid.getAttribution());
                                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
                             }
                         }
