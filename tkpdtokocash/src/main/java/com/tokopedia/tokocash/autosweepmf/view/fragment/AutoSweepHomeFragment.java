@@ -28,7 +28,7 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
-import com.tokopedia.core.home.SimpleWebViewActivity;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -400,7 +400,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewActivity.getIntent(getActivityContext(), url);
+        Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivityContext(), url);
         startActivity(intent);
     }
 
