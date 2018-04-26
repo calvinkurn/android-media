@@ -173,7 +173,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private Observable<Boolean> replyIsTyping;
     private int mode;
     private View notifier;
-    private LinearLayoutManager templateLayoutManager;
     private String title, avatarImage;
 
     private RemoteConfig remoteConfig;
@@ -569,7 +568,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
-        templateLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager
+        LinearLayoutManager templateLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .HORIZONTAL, false);
 
         recyclerView.setLayoutManager(layoutManager);
@@ -774,7 +773,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         }
     }
 
-    public void onSuccessSendReply(final WebSocketResponse response) {
+    public void addIncomingMessage(final WebSocketResponse response) {
         if (getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -831,7 +830,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void scrollToBottomWithCheck() {
         int index = layoutManager.findFirstCompletelyVisibleItemPosition();
         if (index < 3) {
-            recyclerView.scrollToPosition(0);
+            scrollToBottom();
         }
     }
 
@@ -910,7 +909,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         item.setDummy(true);
         item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
         adapter.addReply(item);
-        recyclerView.scrollToPosition(0);
+        scrollToBottom();
     }
 
 
@@ -922,7 +921,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         item.setDummy(true);
         item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
         adapter.addReply(item);
-        recyclerView.scrollToPosition(0);
+        scrollToBottom();
     }
 
     private MyChatViewModel addAttachImageBalloonToChatList(ImageUpload imageUpload) {
@@ -938,7 +937,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         item.setDummy(true);
         item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
         adapter.addReply(item);
-        recyclerView.scrollToPosition(0);
+        scrollToBottom();
 
         return item;
     }
@@ -1009,7 +1008,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         public void run() {
                             adapter.showTyping();
                             if (layoutManager.findFirstCompletelyVisibleItemPosition() < 2) {
-                                layoutManager.scrollToPosition(0);
+                                scrollToBottom();
                             }
                         }
                     });
@@ -1025,7 +1024,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             if (adapter.isTyping()) {
                                 adapter.removeTyping();
                                 if (layoutManager.findFirstCompletelyVisibleItemPosition() < 2) {
-                                    layoutManager.scrollToPosition(0);
+                                    scrollToBottom();
                                 }
                             }
                         }
@@ -1036,7 +1035,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 adapter.setReadStatus(response);
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE:
-                onSuccessSendReply(response);
+                addIncomingMessage(response);
                 break;
             default:
                 break;
@@ -1096,7 +1095,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+                scrollToBottom();
                 presenter.sendMessageWithApi();
                 UnifyTracking.sendChat(TopChatAnalytics.Category.CHAT_DETAIL,
                         TopChatAnalytics.Action.CHAT_DETAIL_SEND,
@@ -1109,7 +1108,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+                scrollToBottom();
                 presenter.sendMessageWithWebsocket();
                 UnifyTracking.sendChat(TopChatAnalytics.Category.CHAT_DETAIL,
                         TopChatAnalytics.Action.CHAT_DETAIL_SEND,
@@ -1230,7 +1229,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         invoiceToSend.setMsg("");
         invoiceToSend.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
         adapter.addReply(invoiceToSend);
-        recyclerView.scrollToPosition(adapter.getList().size() - 1);
+        scrollToBottom();
     }
 
     public void attachProductRetrieved(ArrayList<ResultProduct> resultProducts) {
@@ -1269,7 +1268,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         item.setMsg("");
         item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
         adapter.addReply(item);
-        recyclerView.scrollToPosition(adapter.getList().size() - 1);
+        scrollToBottom();
     }
 
     public void onBackPressed() {

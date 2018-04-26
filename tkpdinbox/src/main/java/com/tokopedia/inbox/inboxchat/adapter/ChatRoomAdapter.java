@@ -46,8 +46,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private LoadingModel loadingModel;
     private TimeMachineChatModel timeMachineChatModel;
     private TypingChatModel typingModel;
-    private boolean isTyping;
-
     public ChatRoomAdapter(ChatRoomTypeFactory typeFactory) {
         this.list = new ArrayList<>();
         this.typeFactory = typeFactory;
@@ -250,13 +248,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void showTyping() {
-        this.isTyping = true;
         this.list.add(0, typingModel);
         notifyItemInserted(0);
     }
 
     public void removeTyping() {
-        this.isTyping = false;
         this.list.remove(typingModel);
         notifyItemRemoved(0);
     }
@@ -316,7 +312,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public boolean isTyping() {
-        return isTyping;
+        return list.contains(typingModel);
     }
 
     public void showRetryFor(MyChatViewModel model, boolean b) {
