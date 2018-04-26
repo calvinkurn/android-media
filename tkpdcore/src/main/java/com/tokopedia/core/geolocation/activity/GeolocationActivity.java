@@ -1,6 +1,7 @@
 package com.tokopedia.core.geolocation.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -61,13 +62,6 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     }
 
     @Override
-    public void replaceFragment(Fragment fragment, String tag) {
-        getFragmentManager().beginTransaction()
-                .replace(R.id.container, fragment, tag)
-                .commit();
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gojek);
@@ -118,7 +112,16 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        presenter.replaceFragment(this, bundleData);
+        if(getFragmentManager().findFragmentByTag(
+                GoogleMapFragment.class.getSimpleName()
+        ) != null) {
+            getFragmentManager()
+                    .findFragmentByTag(
+                            GoogleMapFragment.class.getSimpleName()
+                    ).onActivityResult(requestCode, resultCode, new Intent());
+        }
+
+        //presenter.replaceFragment(this, bundleData);
     }
 
     @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)

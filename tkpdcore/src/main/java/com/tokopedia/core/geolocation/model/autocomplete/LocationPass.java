@@ -8,12 +8,12 @@ import android.os.Parcelable;
  */
 public class LocationPass implements Parcelable {
 
-    private String latitude;
-    private String longitude;
-    private String manualAddress;
-    private String generatedAddress;
-    private String cityName;
-    private String districtName;
+    private String latitude = "";
+    private String longitude = "";
+    private String manualAddress = "";
+    private String generatedAddress = "";
+    private String cityName = "";
+    private String districtName = "";
 
     protected LocationPass(Parcel in) {
         latitude = in.readString();

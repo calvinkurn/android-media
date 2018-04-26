@@ -33,4 +33,5 @@ public class SellerAppBaseUrl {
     public static final String PATH_MITRA_TOPPERS = "mitra-toppers/";
     public static final String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com";
     public static final String TOP_PAY_DOMAIN = "https://pay.tokopedia.id";
+    public static final String HOME_DATA_BASE_URL = "https://gql.tokopedia.com/";
 }
