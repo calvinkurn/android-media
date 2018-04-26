@@ -13,6 +13,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -216,6 +217,8 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
             } else {
                 mTextWarningMessage.setText(Html.fromHtml(data.getContent()));
             }
+            //For supporting html anchor tag
+            mTextWarningMessage.setMovementMethod(LinkMovementMethod.getInstance());
         } else {
             mContainerWarning.setVisibility(View.GONE);
         }
