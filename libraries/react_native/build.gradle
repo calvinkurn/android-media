@@ -4,6 +4,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 
 dependencies {
     compile project(rootProject.ext.features.core)
+    compile project(rootProject.ext.libraries.fingerprint)
     compile rootProject.ext.miscDependencies.dagger
     compile rootProject.ext.miscDependencies.reactNative
     compile rootProject.ext.miscDependencies.codePushReactNative

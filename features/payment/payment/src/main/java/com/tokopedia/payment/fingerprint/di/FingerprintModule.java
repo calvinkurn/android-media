@@ -3,6 +3,7 @@ package com.tokopedia.payment.fingerprint.di;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.payment.fingerprint.data.AccountFingerprintApi;
 import com.tokopedia.payment.fingerprint.data.FingerprintApi;
 import com.tokopedia.payment.fingerprint.data.FingerprintDataSourceCloud;
@@ -84,6 +85,7 @@ public class FingerprintModule {
     public OkHttpClient provideOkHttpClient(TkpdAuthInterceptor tkpdAuthInterceptor, HttpLoggingInterceptor httpLoggingInterceptor){
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(new FingerprintInterceptor())
                 .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
         if(GlobalConfig.isAllowDebuggingTools()){
