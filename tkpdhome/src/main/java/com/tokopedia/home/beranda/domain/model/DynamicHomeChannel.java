@@ -251,7 +251,7 @@ public class DynamicHomeChannel {
                                     )
                             )
                     ),
-                    "attribution", getHomeAttribution(position + 1, "")
+                    "attribution", getHomeAttribution(position + 1, getGrids()[position].getId())
             );
         }
 
