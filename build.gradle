@@ -10,8 +10,8 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
     dependencies {
-        classpath 'com.uber:okbuck:0.34.1'
-        classpath 'com.android.tools.build:gradle:3.1.2'
+        classpath 'com.uber:okbuck:0.37.2'
+        classpath 'com.android.tools.build:gradle:3.1.1'
         classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.0.1") {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
@@ -79,6 +79,10 @@ okbuck {
     test {
         espresso = true
         robolectric = true
+    }
+
+    lint {
+        disabled = true
     }
 
     wrapper {
