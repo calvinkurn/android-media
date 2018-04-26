@@ -711,6 +711,7 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
 
     private void applyFilter() {
         loadingView.setVisibility(View.VISIBLE);
+        buttonFinish.setText("");
         HashMap<String, String> selectedFilter = generateSelectedFilterMap();
         callback.onApplyFilter(selectedFilter);
     }

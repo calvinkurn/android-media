@@ -35,7 +35,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class CategoryActivity extends DiscoveryActivity implements CategoryContract.View, BottomSheetListener {
+public class CategoryActivity extends DiscoveryActivity implements CategoryContract.View {
 
     private static final String EXTRA_CATEGORY_HEADER_VIEW_MODEL = "CATEGORY_HADES_MODEL";
     private static final String EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION";
@@ -272,31 +272,6 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             setResult(CategoryNavigationActivity.DESTROY_INTERMEDIARY);
             finish();
         }
-    }
-
-    @Override
-    public void loadFilterItems(ArrayList<Filter> filters) {
-
-    }
-
-    @Override
-    public void setFilterResultCount(String formattedResultCount) {
-
-    }
-
-    @Override
-    public void closeFilterBottomSheet() {
-
-    }
-
-    @Override
-    public boolean isBottomSheetShown() {
-        return false;
-    }
-
-    @Override
-    public void launchFilterBottomSheet() {
-
     }
 
     @Override

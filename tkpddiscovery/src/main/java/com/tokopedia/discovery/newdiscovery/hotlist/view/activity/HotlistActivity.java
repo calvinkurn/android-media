@@ -28,7 +28,7 @@ import javax.inject.Inject;
  */
 
 public class HotlistActivity extends DiscoveryActivity
-        implements HotlistContract.View, BottomSheetListener {
+        implements HotlistContract.View {
 
     private static final String EXTRA_HOTLIST_PARAM_URL = "HOTLIST_URL";
     private static final String EXTRA_HOTLIST_PARAM_QUERY = "EXTRA_HOTLIST_PARAM_QUERY";
@@ -113,31 +113,6 @@ public class HotlistActivity extends DiscoveryActivity
                 .appComponent(getComponent())
                 .build();
         hotlistComponent.inject(this);
-    }
-
-    @Override
-    public void loadFilterItems(ArrayList<Filter> filters) {
-
-    }
-
-    @Override
-    public void setFilterResultCount(String formattedResultCount) {
-
-    }
-
-    @Override
-    public void closeFilterBottomSheet() {
-
-    }
-
-    @Override
-    public boolean isBottomSheetShown() {
-        return false;
-    }
-
-    @Override
-    public void launchFilterBottomSheet() {
-
     }
 
     @Override

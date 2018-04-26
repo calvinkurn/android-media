@@ -261,6 +261,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
         public static final String MAINAPP_FLIGHT_TRANSACTION_MENU = "mainapp_flight_transaction_menu";
         public static final String SHOW_IMAGE_SEARCH = "enable_image_search";
+        public static final String ENABLE_BOTTOM_SHEET_FILTER = "enable_bottom_sheet_filter";
     }
 
 }

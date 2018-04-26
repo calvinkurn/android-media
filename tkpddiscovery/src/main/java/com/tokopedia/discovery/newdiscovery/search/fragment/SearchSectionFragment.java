@@ -24,7 +24,10 @@ import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
@@ -80,6 +83,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private HashMap<String, String> selectedFilter;
     private FilterFlagSelectedModel flagFilterHelper;
     private boolean isGettingDynamicFilter;
+    private boolean isUsingBottomSheetFilter;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -156,11 +160,17 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         super.onAttach(context);
         if (context instanceof BottomNavigationListener) {
             this.bottomNavigationListener = (BottomNavigationListener) context;
+        }
+        if (context instanceof BottomSheetListener) {
             this.bottomSheetListener = (BottomSheetListener) context;
         }
         if (context instanceof RedirectionListener) {
             this.redirectionListener = (RedirectionListener) context;
         }
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        isUsingBottomSheetFilter = remoteConfig.getBoolean(
+                TkpdCache.RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER,
+                false);
     }
 
     @Override
@@ -185,7 +195,9 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected void showBottomBarNavigation(boolean show) {
-        boolean isBottomSheetShown = bottomSheetListener.isBottomSheetShown();
+        boolean isBottomSheetShown = bottomSheetListener != null
+                && bottomSheetListener.isBottomSheetShown();
+
         if (show && isBottomSheetShown) {
             return;
         }
@@ -384,12 +396,29 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected void openFilterActivity() {
-        if (isFilterDataAvailable()) {
-            bottomSheetListener.loadFilterItems(getFilters());
-            bottomSheetListener.launchFilterBottomSheet();
-        } else {
+        if (!isFilterDataAvailable()) {
             NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_filter_data_not_ready));
+            return;
         }
+
+        if (bottomSheetListener != null && isUsingBottomSheetFilter) {
+            openBottomSheetFilter();
+        } else {
+            openFilterPage();
+        }
+    }
+
+    private void openBottomSheetFilter() {
+        bottomSheetListener.loadFilterItems(getFilters());
+        bottomSheetListener.launchFilterBottomSheet();
+    }
+
+    private void openFilterPage() {
+        Intent intent = RevampedDynamicFilterActivity.createInstance(
+                getActivity(), getScreenName(), getFlagFilterHelper()
+        );
+        startActivityForResult(intent, getFilterRequestCode());
+        getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
     }
 
     protected boolean isFilterDataAvailable() {
@@ -522,14 +551,16 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     @Override
     public void setTotalSearchResultCount(String formattedResultCount) {
-        bottomSheetListener.setFilterResultCount(formattedResultCount);
+        if (bottomSheetListener != null) {
+            bottomSheetListener.setFilterResultCount(formattedResultCount);
+        }
     }
 
     protected RecyclerView.OnScrollListener getRecyclerViewBottomSheetScrollListener() {
         return new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING && bottomSheetListener != null) {
                     bottomSheetListener.closeFilterBottomSheet();
                 }
             }
