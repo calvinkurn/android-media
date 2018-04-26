@@ -87,7 +87,7 @@ public class MoveToSaldoFragment extends BaseDaggerFragment implements MoveToSal
                 new WalletToDepositData.Builder()
                         .subTitle(getString(R.string.tokocash_title_confirmation_move_saldo))
                         .title(getTitlePageFromPassData())
-                        .nominalFormatted(statePassData.getAmountFormatted())
+                        .nominalFormatted(statePassData.getParams().getAmountFormatted())
                         .titleButtonNegative(getString(R.string.button_label_cancel))
                         .titleButtonPositive(getString(R.string.tokocash_button_move_saldo))
                         .build());
