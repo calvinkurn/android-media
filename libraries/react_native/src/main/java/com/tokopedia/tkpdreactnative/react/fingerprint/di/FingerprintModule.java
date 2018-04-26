@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.tkpdreactnative.react.common.data.PreferenceRepository;
 import com.tokopedia.tkpdreactnative.react.common.data.PreferenceRepositoryImpl;
 import com.tokopedia.tkpdreactnative.react.common.data.source.DataSourcePreference;
@@ -132,9 +132,9 @@ public class FingerprintModule {
 
     @FingerprintScope
     @Provides
-    public OkHttpClient provideOkHttpClient(TkpdAuthInterceptor tkpdAuthInterceptor, HttpLoggingInterceptor httpLoggingInterceptor){
+    public OkHttpClient provideOkHttpClient(HttpLoggingInterceptor httpLoggingInterceptor){
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(new TkpdAuthInterceptor())
                 .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
         if(GlobalConfig.isAllowDebuggingTools()){

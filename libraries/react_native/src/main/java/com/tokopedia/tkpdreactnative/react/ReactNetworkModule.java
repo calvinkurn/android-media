@@ -1,7 +1,5 @@
 package com.tokopedia.tkpdreactnative.react;
 
-import android.widget.Toast;
-
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -13,8 +11,8 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpdreactnative.react.di.DaggerReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeNetworkComponent;
-import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkingConfiguration;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkRepository;
+import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkingConfiguration;
 import com.tokopedia.tkpdreactnative.react.domain.UnifyReactNetworkRepository;
 
 import org.json.JSONException;
@@ -27,7 +25,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -56,6 +53,27 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         } else {
             throw new RuntimeException("Current context unsupported");
         }
+    }
+
+    private static TKPDMapParam<String, String> convertStringRequestToHashMap(String request) {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        try {
+            JSONObject jsonObject = new JSONObject(request);
+            Iterator<String> iter = jsonObject.keys();
+            while (iter.hasNext()) {
+                String key = iter.next();
+                try {
+                    Object value = jsonObject.get(key);
+                    params.put(key, value.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return params;
     }
 
     @Override
@@ -99,38 +117,38 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void request(ReadableMap readableMap, final Promise promise) {
-        HashMap<String, Object> maps = readableMap.toHashMap();
-        ReactNetworkingConfiguration.Builder builder = new ReactNetworkingConfiguration.Builder();
-        for (Map.Entry<String, Object> map : maps.entrySet()) {
-            switch (map.getKey()) {
-                case ReactConst.Networking.URL:
-                    builder.setUrl(String.valueOf(map.getValue()));
-                    break;
-                case ReactConst.Networking.METHOD:
-                    builder.setMethod(String.valueOf(map.getValue()));
-                    break;
-                case ReactConst.Networking.ENCODING:
-                    builder.setEncoding(String.valueOf(map.getValue()));
-                    break;
-                case ReactConst.Networking.AUTHORIZATIONMODE:
-                    builder.setAuthorizationMode(String.valueOf(map.getValue()));
-                    break;
-                case ReactConst.Networking.HEADERS:
-                    if (map.getValue() instanceof HashMap) {
-                        builder.setHeaders((HashMap<String, Object>) map.getValue());
-                    }
-                    break;
-                case ReactConst.Networking.PARAMS:
-                    if (map.getValue() instanceof HashMap) {
-                        builder.setParams((HashMap<String, Object>) map.getValue());
-                    }
-                    break;
-
-            }
-        }
-        ReactNetworkingConfiguration configuration = builder.build();
-
         try {
+            HashMap<String, Object> maps = readableMap.toHashMap();
+            ReactNetworkingConfiguration.Builder builder = new ReactNetworkingConfiguration.Builder();
+            for (Map.Entry<String, Object> map : maps.entrySet()) {
+                switch (map.getKey()) {
+                    case ReactConst.Networking.URL:
+                        builder.setUrl(String.valueOf(map.getValue()));
+                        break;
+                    case ReactConst.Networking.METHOD:
+                        builder.setMethod(String.valueOf(map.getValue()));
+                        break;
+                    case ReactConst.Networking.ENCODING:
+                        builder.setEncoding(String.valueOf(map.getValue()));
+                        break;
+                    case ReactConst.Networking.AUTHORIZATIONMODE:
+                        builder.setAuthorizationMode(String.valueOf(map.getValue()));
+                        break;
+                    case ReactConst.Networking.HEADERS:
+                        if (map.getValue() instanceof HashMap) {
+                            builder.setHeaders((HashMap<String, Object>) map.getValue());
+                        }
+                        break;
+                    case ReactConst.Networking.PARAMS:
+                        if (map.getValue() instanceof HashMap) {
+                            builder.setParams((HashMap<String, Object>) map.getValue());
+                        }
+                        break;
+
+                }
+            }
+            ReactNetworkingConfiguration configuration = builder.build();
+
             compositeSubscription.add(unifyReactNetworkRepository.request(configuration)
                     .subscribeOn(Schedulers.newThread())
                     .subscribe(new Subscriber<String>() {
@@ -157,27 +175,6 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             promise.reject(e);
         }
-    }
-
-    private static TKPDMapParam<String, String> convertStringRequestToHashMap(String request) {
-        TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        try {
-            JSONObject jsonObject = new JSONObject(request);
-            Iterator<String> iter = jsonObject.keys();
-            while (iter.hasNext()) {
-                String key = iter.next();
-                try {
-                    Object value = jsonObject.get(key);
-                    params.put(key, value.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return params;
     }
 
 }

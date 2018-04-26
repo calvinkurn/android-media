@@ -1,8 +1,8 @@
 package com.tokopedia.payment.fingerprint.domain;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint;
 import com.tokopedia.payment.fingerprint.domain.FingerprintRepository;
 import com.tokopedia.usecase.RequestParams;

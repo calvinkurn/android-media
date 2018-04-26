@@ -24,6 +24,8 @@ public interface ShakeDetectContract {
 
         void showErrorNetwork(String message);
 
+        void showMessage(String message);
+
         void setResult(int resultCode,Intent data);
 
     }

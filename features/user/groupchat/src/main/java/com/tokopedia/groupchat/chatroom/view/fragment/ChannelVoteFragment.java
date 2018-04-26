@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -244,8 +245,10 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         voteInfoLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
-                        (getActivity(), voteInfoViewModel.getVoteInfoUrl());
+                if(!TextUtils.isEmpty(voteInfoViewModel.getVoteInfoUrl())) {
+                    ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
+                            (getActivity(), voteInfoViewModel.getVoteInfoUrl());
+                }
             }
         });
 
@@ -273,6 +276,14 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 iconVote.setImageResource(R.drawable.ic_timer_inactive);
             }
             voteAdapter.updateStatistic();
+            if (voteInfoViewModel != null) {
+                voteInfoViewModel.setStatusId(VoteInfoViewModel.STATUS_FINISH);
+
+                if (getActivity() instanceof GroupChatContract.View) {
+                    ((GroupChatContract.View) getActivity()).updateVoteViewModel(
+                            voteInfoViewModel, "");
+                }
+            }
         }
     }
 
