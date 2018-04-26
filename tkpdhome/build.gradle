@@ -23,24 +23,29 @@ dependencies {
         transitive = true
     }
     implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.feed)
+
+    implementation project(rootProject.ext.features.gamification)
+    implementation project(rootProject.ext.features.digital)
+    implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.features.topAdsSdk)
 
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.features.feed)
-    implementation project(rootProject.ext.features.gamification)
-    implementation project(rootProject.ext.features.digital)
     implementation project(rootProject.ext.libraries.cacheApi)
+
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation project(rootProject.ext.features.loyalty)
     implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.playServicesDependencies.maps
+
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
-    implementation rootProject.ext.playServicesDependencies.maps
+
     implementation rootProject.ext.viewDependencies.appIntro
-    implementation project(rootProject.ext.features.topAdsSdk)
+
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.multiDex
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
@@ -55,25 +60,14 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testImplementation rootProject.ext.testDependencies.mockitorCore
-    testImplementation 'junit:junit:4.12'
-
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    implementation rootProject.ext.supportLibDependencies.supportV4
     annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
-
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.debugToolsDependencies.stetho
 }

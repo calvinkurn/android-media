@@ -1,7 +1,10 @@
 apply plugin: 'com.android.application'
-if (!project.hasProperty("disable-performance-plugin")) { apply plugin: 'com.google.firebase.firebase-perf' }
 apply plugin: 'io.fabric'
 apply plugin: 'com.jakewharton.butterknife'
+
+if (!project.hasProperty("disable-performance-plugin")) {
+    apply plugin: 'com.google.firebase.firebase-perf'
+}
 
 
 def getDpiId(String density) {
@@ -260,14 +263,12 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation (project(rootProject.ext.features.core)){
-        exclude module: ":YouTubeAndroidPlayerApi"
+        exclude module: rootProject.ext.libraries.youtubeApi
     }
     implementation project(rootProject.ext.features.ride)
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.kol)
-    implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.features.shopPage)
-    implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.groupchat)
     implementation project(rootProject.ext.features.event)
@@ -275,52 +276,38 @@ dependencies {
     implementation project(rootProject.ext.features.tokoCash)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.feed)
-    implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.features.inbox)
-    implementation (project(rootProject.ext.features.productDetail)){
-        exclude module: ":YouTubeAndroidPlayerApi"
-    }
-    implementation (project(rootProject.ext.features.discovery)){
-        exclude module: ":YouTubeAndroidPlayerApi"
-    }
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transaction)
     implementation project(rootProject.ext.features.seller)
-    implementation project(":YouTubeAndroidPlayerApi")
+    implementation (project(rootProject.ext.features.productDetail)){
+        exclude module: rootProject.ext.libraries.youtubeApi
+    }
+    implementation (project(rootProject.ext.features.discovery)){
+        exclude module: rootProject.ext.libraries.youtubeApi
+    }
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.reputationCommon)
 
-    // this is transitive from above
+    implementation project(rootProject.ext.libraries.pushNotif)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.reactNative)
+    implementation project(rootProject.ext.libraries.youtubeApi)
+    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.useCase)
+
     implementation rootProject.ext.tkpdDependencies.shopCommon
-    implementation 'com.sendbird.sdk:sendbird-android-sdk:3.0.49'
-
-//    implementation rootProject.ext.tkpdDependencies.transaction
-//    implementation rootProject.ext.tkpdDependencies.loyalty
-//    implementation rootProject.ext.tkpdDependencies.seller
-//    implementation rootProject.ext.tkpdDependencies.reputation
-//    implementation rootProject.ext.tkpdDependencies.flight
-//    implementation rootProject.ext.tkpdDependencies.inbox
-//    implementation rootProject.ext.tkpdDependencies.tkpdpdp
-//    implementation rootProject.ext.tkpdDependencies.session
-//    implementation rootProject.ext.tkpdDependencies.discovery
-
-//    implementation rootProject.ext.tkpdDependencies.reactNative
-//    implementation rootProject.ext.tkpdDependencies.tokocash
-//    implementation rootProject.ext.tkpdDependencies.core
-//    implementation rootProject.ext.tkpdDependencies.feed
-//    implementation rootProject.ext.tkpdDependencies.ride
-//    implementation rootProject.ext.tkpdDependencies.digital
-//    implementation rootProject.ext.tkpdDependencies.events
-//    implementation rootProject.ext.tkpdDependencies.groupchat
-//    implementation rootProject.ext.tkpdDependencies.home
-//    implementation rootProject.ext.tkpdDependencies.applink
-//    implementation rootProject.ext.tkpdDependencies.shopPage
-//    implementation rootProject.ext.tkpdDependencies.gamification
-//    implementation rootProject.ext.tkpdDependencies.kol
-//    implementation rootProject.ext.tkpdDependencies.pushNotif
 
     implementation rootProject.ext.playServicesDependencies.remoteConfig
+    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.perfMon
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -328,23 +315,12 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation project(rootProject.ext.libraries.cacheApi)
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.useCase)
-    implementation project(rootProject.ext.features.payment)
-    implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.reputationCommon)
-
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.cardViewV7
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
-
-    implementation rootProject.ext.playServicesDependencies.firebase
-    implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.converterGson
@@ -357,19 +333,6 @@ dependencies {
     implementation (rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
-
-    implementation rootProject.ext.playServicesDependencies.perfMon
-
-
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-
-    implementation rootProject.ext.miscDependencies.parcelerApi
-    annotationProcessor rootProject.ext.miscDependencies.parceler
-    implementation rootProject.ext.miscDependencies.chips
-    implementation rootProject.ext.miscDependencies.rxAndroid
-    implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.reactNative
     implementation (rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
@@ -377,38 +340,43 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    implementation rootProject.ext.miscDependencies.sendBird
+    implementation rootProject.ext.miscDependencies.chips
+    implementation rootProject.ext.miscDependencies.rxAndroid
+    implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.reactNative
+    implementation rootProject.ext.miscDependencies.parcelerApi
+    annotationProcessor rootProject.ext.miscDependencies.parceler
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.rxJavaMath
-
-
-    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile rootProject.ext.testDependencies.mockitorCore
-    testCompile rootProject.ext.testDependencies.junit
-
     implementation rootProject.ext.miscDependencies.scannerZxing
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation(rootProject.ext.miscDependencies.trueCaller) {
+        exclude group: 'com.android.support'
+    }
+
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
-    implementation rootProject.ext.miscDependencies.multiDex
-
-    implementation(rootProject.ext.miscDependencies.trueCaller) {
-        exclude group: 'com.android.support'
-    }
-
     //[START] test and androidTest dependencies
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.miscDependencies.rxJava
+
     androidTestImplementation rootProject.ext.miscDependencies.rxJava
     androidTestImplementation rootProject.ext.testDependencies.uiautomator
     androidTestImplementation rootProject.ext.testDependencies.spoon
@@ -436,6 +404,7 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.dexMakerMockito) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
+
     // Cloud testing
     androidTestImplementation (name:'cloudtestingscreenshotter_lib', ext:'aar')
 
@@ -445,7 +414,6 @@ dependencies {
 
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
-
     //[END] test and androidTest dependencies
 }
 

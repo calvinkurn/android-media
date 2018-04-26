@@ -1,4 +1,10 @@
 ext {
+
+    compileSdkVersion = 27
+    minSdkVersion = 16
+    targetSdkVersion = 27
+    buildToolsVersion = "27.0.3"
+
     supportLibraryVersion = '26.0.2'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '8.4.0'
@@ -8,6 +14,14 @@ ext {
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.4.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
+    espressoVersion = "2.2.2"
+    runnerVersion = "0.5"
+    rulesVersion = "0.5"
+    apolloVersion = '0.3.0'
+    lottieVersion = '2.0.0-rc1'
+    reactNativeVersion = '0.51.0'
+    alibabaCoreLibVersion = '3.2.8'
+
     tkpdUseCaseVersion = '2.22'
     tkpdAbstractionVersion = '2.22'
     tkpdCacheApiVersion = '2.22'
@@ -34,17 +48,12 @@ ext {
     tkpdShopVersion = '2.22'
     tkpdKolVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
-    compileSdkVersion = 27
-    minSdkVersion = 16
-    targetSdkVersion = 27
-    buildToolsVersion = "27.0.3"
-    espressoVersion = "2.2.2"
-    runnerVersion = "0.5"
-    rulesVersion = "0.5"
-    apolloVersion = '0.3.0'
-    lottieVersion = '2.0.0-rc1'
-    reactNativeVersion = '0.51.0'
-    alibabaCoreLibVersion = '3.2.8'
+    tkpdGamificationVersion = '2.22'
+    tkpdGoldMerchantVersion = '2.22'
+    tkpdEventsVersion = '2.22'
+    tkpdTokocashVersion = '2.22'
+    tkpdWishlistVersion = '2.22'
+    tkpdHomeVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -131,7 +140,6 @@ ext {
             apolloRuntime       : "com.apollographql.apollo:apollo-runtime:$apolloVersion",
             apolloRxSupport     : "com.apollographql.apollo:apollo-rx-support:$apolloVersion",
             apolloRx2Support    : "com.apollographql.apollo:apollo-rx2-support:$apolloVersion",
-
     ]
 
     miscDependencies = [
@@ -157,7 +165,8 @@ ext {
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.4.1",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
-            codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3"
+            codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3",
+            sendBird              : "com.sendbird.sdk:sendbird-android-sdk:3.0.49"
     ]
 
     testDependencies = [
@@ -186,40 +195,40 @@ ext {
     ]
 
     tkpdDependencies = [
-            usecase    : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
-            abstraction: "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
-            core       : "com.tokopedia.core:core:${tkpdCoreVersion}",
-            cacheapi   : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
-            applink    : "com.tokopedia.applink:applink:${tkpdApplinkVersion}",
-            inbox      : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
-            session    : "com.tokopedia.session:session:${tkpdSessionVersion}",
-            transaction: "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
-            discovery  : "com.tokopedia.discovery:discovery:${tkpdDiscoveryVersion}",
-            seller     : "com.tokopedia.seller:seller:${tkpdSellerVersion}",
-            digital    : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
-            topads     : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
-            payment    : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
-            tkpdpdp    : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}",
-            design     : "com.tokopedia.design:design:${tkpdDesignVersion}",
-            feed       : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
-            ride       : "com.tokopedia.ride:ride:${tkpdRideVersion}",
-            reactNative: "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
-            loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
-            home : "com.tokopedia.home:home:${tkpdReputationVersion}",
-            flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
-            flightNoOp : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
-            reputation : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
-            reputationCommon : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
-            wishListCommon : "com.tokopedia.wishlist:wishlist-common:${tkpdReputationVersion}",
-            tokocash : "com.tokopedia.tokocash:tokocash:${tkpdReputationVersion}",
-            events      : "com.tokopedia.events:events:${tkpdReputationVersion}",
-            groupchat      : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
-            shopCommon  : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",
-            goldMerchantCommon: "com.tokopedia.gm:gold_merchant-common:${tkpdShopVersion}",
-            shopPage: "com.tokopedia.shop:shop-page:${tkpdShopVersion}",
-            kol: "com.tokopedia.kol:kol:${tkpdKolVersion}",
-            pushNotif: "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
-            gamification : "com.tokopedia.gamification:gamification:${tkpdReputationVersion}"
+            usecase             : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
+            abstraction         : "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
+            core                : "com.tokopedia.core:core:${tkpdCoreVersion}",
+            cacheapi            : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
+            applink             : "com.tokopedia.applink:applink:${tkpdApplinkVersion}",
+            inbox               : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
+            session             : "com.tokopedia.session:session:${tkpdSessionVersion}",
+            transaction         : "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
+            discovery           : "com.tokopedia.discovery:discovery:${tkpdDiscoveryVersion}",
+            seller              : "com.tokopedia.seller:seller:${tkpdSellerVersion}",
+            digital             : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
+            topads              : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
+            payment             : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
+            tkpdpdp             : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}",
+            design              : "com.tokopedia.design:design:${tkpdDesignVersion}",
+            feed                : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
+            ride                : "com.tokopedia.ride:ride:${tkpdRideVersion}",
+            reactNative         : "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
+            loyalty             : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
+            home                : "com.tokopedia.home:home:${tkpdHomeVersion}",
+            flight              : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
+            flightNoOp          : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
+            reputation          : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
+            reputationCommon    : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
+            wishListCommon      : "com.tokopedia.wishlist:wishlist-common:${tkpdWishlistVersion}",
+            tokocash            : "com.tokopedia.tokocash:tokocash:${tkpdReputationVersion}",
+            events              : "com.tokopedia.events:events:${tkpdTokocashVersion}",
+            groupchat           : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
+            shopCommon          : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",
+            goldMerchantCommon  : "com.tokopedia.gm:gold_merchant-common:${tkpdGoldMerchantVersion}",
+            shopPage            : "com.tokopedia.shop:shop-page:${tkpdShopVersion}",
+            kol                 : "com.tokopedia.kol:kol:${tkpdKolVersion}",
+            pushNotif           : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
+            gamification        : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}"
     ]
 
     tkpdLibDependencies = [
@@ -272,7 +281,8 @@ ext {
             pushNotif       : ":libraries:push_notification",
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
-            useCase         : ":libraries:use_case"
+            useCase         : ":libraries:use_case",
+            youtubeApi      : ":libraries:YouTubeAndroidPlayerApi"
     ]
 
 }

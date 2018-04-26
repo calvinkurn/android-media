@@ -12,7 +12,6 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
-
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.cacheApi)
 
@@ -21,29 +20,18 @@ dependencies {
     implementation project(rootProject.ext.features.reputationCommon)
     implementation rootProject.ext.tkpdDependencies.wishListCommon
 
-    implementation rootProject.ext.supportLibDependencies.appCompactV7
-    implementation rootProject.ext.supportLibDependencies.design
-    implementation rootProject.ext.supportLibDependencies.cardViewV7
-
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-
-    implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    testImplementation rootProject.ext.testDependencies.junit
-    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
 
 apply from: '../../../publish_local.gradle'

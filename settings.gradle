@@ -19,7 +19,7 @@ buildCache {
 apply from: "features/settings-features.gradle"
 apply from: "libraries/settings-libraries.gradle"
 
-include 'customerapp', ':YouTubeAndroidPlayerApi'
+include 'customerapp'
 include 'tkpdhome'
 include 'tkpdloyalty'
 include 'tkpdride'

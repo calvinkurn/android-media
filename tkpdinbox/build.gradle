@@ -25,29 +25,26 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation project(rootProject.ext.features.core)
+
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.cacheApi)
-
     implementation project(rootProject.ext.libraries.useCase)
+
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
 
-    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
-    implementation rootProject.ext.supportLibDependencies.design
-    implementation rootProject.ext.supportLibDependencies.cardViewV7
-
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
@@ -62,23 +59,15 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
-
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler
-    implementation rootProject.ext.supportLibDependencies.supportV13
     implementation rootProject.ext.miscDependencies.scannerZxing
 
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.viewDependencies.appIntro
 
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    testImplementation 'junit:junit:4.12'
+
+    implementation rootProject.ext.viewDependencies.appIntro
 }
 
 apply from: '../publish_local.gradle'

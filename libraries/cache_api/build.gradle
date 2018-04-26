@@ -20,23 +20,11 @@ project.ext {
 }
 
 dependencies {
-
     implementation project(rootProject.ext.libraries.useCase)
-
-    implementation rootProject.ext.networkDependencies.retrofit
-
-    implementation rootProject.ext.miscDependencies.rxAndroid
-    implementation rootProject.ext.miscDependencies.rxJava
-    implementation rootProject.ext.testDependencies.androidAnnotation
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
-
-    testImplementation rootProject.ext.testDependencies.junit
-    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
 }
 
 apply from: '../../publish_local.gradle'

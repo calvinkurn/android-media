@@ -19,9 +19,6 @@ project.ext {
 }
 
 dependencies {
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.abstraction)
@@ -30,6 +27,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.playServicesDependencies.places
     implementation rootProject.ext.playServicesDependencies.maps
+
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
@@ -37,31 +35,25 @@ dependencies {
     }
     implementation rootProject.ext.viewDependencies.appIntro
 
-    implementation rootProject.ext.supportLibDependencies.design
-    implementation rootProject.ext.supportLibDependencies.cardViewV7
-
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
-
     implementation rootProject.ext.miscDependencies.slidinguppanel
     implementation rootProject.ext.playServicesDependencies.mapsUtils
-    testImplementation rootProject.ext.testDependencies.junit
 }
 
 apply from: '../publish_local.gradle'
