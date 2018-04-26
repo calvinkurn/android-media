@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -16,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.tkpd.tkpdcontactus.common.customview.ShadowTransformer;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.ContactUsArticleResponse;
@@ -76,7 +80,25 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
         ShadowTransformer shadowTransformer = new ShadowTransformer(orderListViewpager, cardAdapter);
         orderListViewpager.setPageTransformer(false, shadowTransformer);
         orderListViewpager.setOffscreenPageLimit(3);
+        setHasOptionsMenu(true);
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.contactus_menu_home,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R2.id.action_inbox:
+                startActivity(InboxRouter.getContactUsActivityIntent(getContext()));
+                return false;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
