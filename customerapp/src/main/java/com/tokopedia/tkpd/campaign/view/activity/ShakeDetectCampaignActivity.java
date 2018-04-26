@@ -97,20 +97,12 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         presenter.onShakeDetect();
     }
 
-<<<<<<< HEAD
 
     public static Intent getShakeDetectCampaignActivity(Context context, boolean isLongShake) {
         Intent i = new Intent(context, ShakeDetectCampaignActivity.class);
         i.putExtra(KEY_LONG_SHAKE, isLongShake);
         return i;
-=======
-    @Override
-    public void setContentView(int layoutResID) {
-    }
 
-    public static Intent getShakeDetectCampaignActivity(Context context) {
-        return new Intent(context, ShakeDetectCampaignActivity.class);
->>>>>>> origin/F_Shake_Shake_API_RESPONSE_SYNC
     }
 
     @Override
@@ -196,8 +188,4 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         presenter.onActivityResult(requestCode, resultCode, data);
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/F_Shake_Shake_API_RESPONSE_SYNC
 }
