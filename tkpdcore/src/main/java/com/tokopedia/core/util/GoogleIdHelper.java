@@ -40,6 +40,9 @@ public class GoogleIdHelper {
                         } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
                             e.printStackTrace();
                         }
+                        if (adInfo == null) {
+                            return "";
+                        }
                         return adInfo.getId();
                     }
                 }).onErrorReturn(new Func1<Throwable, String>() {
