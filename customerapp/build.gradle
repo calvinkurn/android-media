@@ -84,7 +84,7 @@ buildscript {
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
-        classpath 'io.hansel.preprocessor:preprocessor:6.0.1'
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 

@@ -16,7 +16,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
-        classpath 'io.hansel.preprocessor:preprocessor:6.0.1'
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
