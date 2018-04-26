@@ -23,57 +23,61 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
-            android:layout_marginBottom="@dimen/new_margin_med"
-            style="@style/TextView.Title"
+            android:layout_marginBottom="@dimen/new_margin_sm"
+            style="@style/TextView.TitleBig"
             tools:text="Samsung Galaxy A8 2018 Gold Garansi Resmi Samsung"/>
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/layout_online_price"
+        <TextView
+            android:id="@+id/title_online_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/product_online_price_label"
+            android:layout_marginBottom="@dimen/new_margin_small"
             android:layout_below="@id/text_product_name"
+            style="@style/TextView.TitleBig.Bold" />
+
+        <com.tokopedia.seller.common.widget.PrefixEditText
+            android:id="@+id/edit_online_price"
+            style="@style/EditText.Currency"
+            android:layout_width="match_parent"
+            android:enabled="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:cursorVisible="false"
+            app:prefix="@string/currency_symbol_idr"
+            tools:text="12312321312312312312312312321312312"
+            android:layout_below="@id/title_online_price"
             android:layout_marginBottom="@dimen/new_margin_med"
-            android:hint="@string/product_online_price_label"
-            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-            style="@style/TextInputLayout">
+            android:background="@drawable/bg_grey100_rounded3_grey350"
+            android:layout_height="60dp"
+            android:padding="@dimen/posapp_padding_m"/>
 
-            <com.tokopedia.seller.common.widget.PrefixEditText
-                android:id="@+id/edit_online_price"
-                style="@style/EditText.Currency"
-                android:layout_width="match_parent"
-                android:enabled="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:cursorVisible="false"
-                app:prefix="@string/currency_symbol_idr"
-                tools:text="12312321312312312312312312321312312" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/layout_outlet_price"
+        <TextView
+            android:id="@+id/title_outlet_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/layout_online_price"
+            android:text="@string/product_outlet_price_label"
+            android:layout_marginBottom="@dimen/new_margin_small"
+            android:layout_below="@id/edit_online_price"
+            style="@style/TextView.TitleBig.Bold" />
+
+        <com.tokopedia.seller.common.widget.PrefixEditText
+            android:id="@+id/edit_outlet_price"
+            style="@style/EditText.Currency"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:prefix="@string/currency_symbol_idr"
+            tools:text="12312321312312312312312312321312312"
+            android:background="@drawable/bg_white_rounded3_grey350"
+            android:layout_below="@id/title_outlet_price"
             android:layout_marginBottom="@dimen/new_margin_med"
-            android:hint="@string/product_outlet_price_label"
-            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-            style="@style/TextInputLayout">
-
-            <com.tokopedia.seller.common.widget.PrefixEditText
-                android:id="@+id/edit_outlet_price"
-                style="@style/EditText.Currency"
-                android:layout_width="match_parent"
-                app:prefix="@string/currency_symbol_idr"
-                tools:text="12312321312312312312312312321312312" />
-
-        </android.support.design.widget.TextInputLayout>
+            android:padding="@dimen/posapp_padding_m"/>
 
         <Button
             android:id="@+id/button_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/layout_outlet_price"
+            android:layout_below="@id/edit_outlet_price"
             android:layout_toLeftOf="@+id/button_save"
             android:text="@string/edit_product_cancel"
             style="@style/PosButton.Submit.Dialog"/>
@@ -81,7 +85,7 @@
             android:id="@+id/button_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/layout_outlet_price"
+            android:layout_below="@id/edit_outlet_price"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:text="@string/edit_product_save"

@@ -22,6 +22,7 @@ public class ProductManagementViewHolder extends AbstractViewHolder<ProductViewM
     private TextView textProductName;
     private TextView editOnlinePrice;
     private TextView editOutletPrice;
+    private TextView textStatus;
     private ImageView buttonEdit;
     private SwitchCompat switchStatus;
     private ProductManagementTypeFactory.Listener listener;
@@ -32,6 +33,7 @@ public class ProductManagementViewHolder extends AbstractViewHolder<ProductViewM
         textProductName = view.findViewById(R.id.text_product_name);
         editOnlinePrice = view.findViewById(R.id.edit_online_price);
         editOutletPrice = view.findViewById(R.id.edit_outlet_price);
+        textStatus = view.findViewById(R.id.text_status);
         buttonEdit = view.findViewById(R.id.button_edit);
         switchStatus = view.findViewById(R.id.switch_status);
         this.listener = listener;
@@ -48,8 +50,10 @@ public class ProductManagementViewHolder extends AbstractViewHolder<ProductViewM
         if (element.getStatus() == ProductConstant.Status.LOCAL_PRICE_SHOW
                 || element.getStatus() == ProductConstant.Status.ONLINE_PRICE_SHOW) {
             switchStatus.setChecked(true);
+            textStatus.setText(getString(R.string.hide));
         } else {
             switchStatus.setChecked(false);
+            textStatus.setText(getString(R.string.show));
         }
         switchStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

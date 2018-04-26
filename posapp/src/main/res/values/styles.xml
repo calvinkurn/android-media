@@ -28,4 +28,10 @@
         <item name="android:textColor">@color/tkpd_main_green</item>
         <item name="android:textSize">@dimen/font_title_big</item>
     </style>
+
+    <style name="SwitchStyle" >
+        <item name="android:thumb">@drawable/switch_thumb_selector</item>
+        <item name="track">@drawable/switch_track</item>
+        <item name="trackTint">@drawable/switch_color</item>
+    </style>
 </resources>
