@@ -109,7 +109,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         HomePageTracking.eventEnhancedClickSprintSaleProduct(evenMap);
 
         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
-                channels.getHomeAttribution(pos + 1, String.valueOf(evenMap.get(ATTRIBUTION))));
+                String.valueOf(evenMap.get(ATTRIBUTION)));
     }
 
     @Override
