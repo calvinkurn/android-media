@@ -15,6 +15,8 @@ public interface EventsUrl {
     String EVENT_DETAIL = "v1/api/p/";
     String EVENT_VALIDATE = "/v1/api/event/validate-selection";
     String EVENTS_LIKES = "/v1/api/rating";
+    String EVENT_INIT_COUPON = "/v1/api/expresscart/init";
+    String EVENT_GET_USER_LIKES = "/v1/api/rating/user";
     String EVENT_SEAT_LAYOUT = "/v1/api/seat-layout/category/{category_id}/product/{product_id}/schedule/{schedule_id}/group/{group_id}/package/{package_id}";
 
 

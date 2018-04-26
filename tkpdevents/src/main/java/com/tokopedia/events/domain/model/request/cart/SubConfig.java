@@ -1,8 +1,11 @@
 package com.tokopedia.events.domain.model.request.cart;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class SubConfig{
+public class SubConfig implements Parcelable {
 
 	@SerializedName("name")
 	private String name;
@@ -22,4 +25,33 @@ public class SubConfig{
 			"name = '" + name + '\'' + 
 			"}";
 		}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(this.name);
+	}
+
+	public SubConfig() {
+	}
+
+	protected SubConfig(Parcel in) {
+		this.name = in.readString();
+	}
+
+	public static final Parcelable.Creator<SubConfig> CREATOR = new Parcelable.Creator<SubConfig>() {
+		@Override
+		public SubConfig createFromParcel(Parcel source) {
+			return new SubConfig(source);
+		}
+
+		@Override
+		public SubConfig[] newArray(int size) {
+			return new SubConfig[size];
+		}
+	};
 }

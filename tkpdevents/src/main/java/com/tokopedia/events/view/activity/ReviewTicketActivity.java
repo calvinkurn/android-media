@@ -6,11 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.text.method.ArrowKeyMovementMethod;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -36,6 +33,7 @@ import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 
 import java.util.List;
 
@@ -75,14 +73,8 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     TextView buttonTextview;
     @BindView(R2.id.base_fare_break)
     TextView baseFareBreak;
-    @BindView(R2.id.update_promo)
-    TextView updatePromo;
-    @BindView(R2.id.ed_promo)
-    EditText edPromo;
     @BindView(R2.id.btn_go_to_payment)
     View btnGoToPayment;
-    @BindView(R2.id.promo_checkbox)
-    CheckBox promoCheckbox;
     @BindView(R2.id.ed_promo_layout)
     View edPromoLayout;
     @BindView(R2.id.progress_bar_layout)
@@ -133,6 +125,8 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     View selectedSeatLayout;
     @BindView(R2.id.seat_numbers)
     TextView seatNumbers;
+    @BindView(R2.id.goto_promo)
+    View gotoPromo;
 
     EventComponent eventComponent;
     @Inject
@@ -157,31 +151,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
         mPresenter.attachView(this);
 
-        promoCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                if (isChecked) {
-                    edPromoLayout.setVisibility(View.VISIBLE);
-                    edPromo.setTextIsSelectable(false);
-                    edPromo.setFocusable(true);
-                    edPromo.setFocusableInTouchMode(true);
-                    edPromo.setClickable(true);
-                    edPromo.setLongClickable(true);
-                    edPromo.setMovementMethod(ArrowKeyMovementMethod.getInstance());
-                    edPromo.setText(edPromo.getText(), TextView.BufferType.SPANNABLE);
-                    edPromo.requestFocus();
-                    im.showSoftInput(edPromo, 0);
-                    scrollView.smoothScrollTo(0, edPromoLayout.getBottom());
-                } else {
-                    edPromoLayout.setVisibility(View.GONE);
-                    edPromo.setText("");
-                    mPresenter.updatePromoCode("");
-                    im.hideSoftInputFromWindow(edPromo.getWindowToken(), 0);
-                }
-            }
-        });
         appBar.setTitle(R.string.review_title);
         setSupportActionBar(appBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -195,6 +164,8 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         tvTelephone.setEnabled(false);
         tvTelephone.setTextIsSelectable(false);
         tvTelephone.setFocusable(false);
+
+        mPresenter.getProfile();
     }
 
     @Override
@@ -254,7 +225,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             seatNumbers.setText(builder.toString());
             selectedSeatLayout.setVisibility(View.VISIBLE);
         }
-        hideProgressBar();
     }
 
     @Override
@@ -332,17 +302,19 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         tvPromoSuccessMsg.setText(text);
         tvPromoSuccessMsg.setTextColor(color);
         tvPromoSuccessMsg.setVisibility(View.VISIBLE);
+        batal.setVisibility(View.VISIBLE);
+        edPromoLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showCashbackMessage(String text) {
         tvPromoCashbackMsg.setText(text);
         tvPromoCashbackMsg.setVisibility(View.VISIBLE);
-        batal.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideSuccessMessage() {
+        edPromoLayout.setVisibility(View.GONE);
         tvPromoSuccessMsg.setVisibility(View.GONE);
         tvPromoCashbackMsg.setVisibility(View.GONE);
         batal.setVisibility(View.GONE);
@@ -386,11 +358,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         mPresenter.updateEmail(tvEmailID.getText().toString());
         mPresenter.updateNumber(tvTelephone.getText().toString());
         mPresenter.proceedToPayment();
-    }
-
-    @OnClick(R2.id.update_promo)
-    void clickUpdatePromo() {
-        mPresenter.updatePromoCode(edPromo.getText().toString());
     }
 
     @OnClick(R2.id.update_email)
@@ -460,7 +427,8 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
     @OnClick({R2.id.info_email,
             R2.id.info_moreinfo,
-            R2.id.button_dismisstooltip})
+            R2.id.button_dismisstooltip,
+            R2.id.goto_promo})
     void onClickInfoIcon(View view) {
         if (view.getId() == R.id.info_email) {
             mPresenter.clickEmailIcon();
@@ -468,6 +436,8 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             mPresenter.clickMoreinfoIcon();
         } else if (view.getId() == R.id.button_dismisstooltip) {
             mPresenter.clickDismissTooltip();
+        } else if (view.getId() == R.id.goto_promo) {
+            mPresenter.clickGoToPromo();
         }
     }
 
@@ -497,6 +467,20 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
                 default:
                     break;
             }
+        } else if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
+            hideProgressBar();
+            switch (resultCode) {
+                case LoyaltyActivity.COUPON_RESULT_CODE:
+                    mPresenter.updatePromoCode(data.getExtras().getString(LoyaltyActivity.COUPON_CODE));
+                    showPromoSuccessMessage(data.getExtras().getString(LoyaltyActivity.COUPON_MESSAGE), getResources().getColor(R.color.green_nob));
+                    break;
+                case LoyaltyActivity.VOUCHER_RESULT_CODE:
+                    mPresenter.updatePromoCode(data.getExtras().getString(LoyaltyActivity.VOUCHER_CODE));
+                    showPromoSuccessMessage(data.getExtras().getString(LoyaltyActivity.VOUCHER_MESSAGE), getResources().getColor(R.color.green_nob));
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -518,7 +502,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.getProfile();
     }
 
     public void setHolder(int resID, String label, ImageTextViewHolder holder) {

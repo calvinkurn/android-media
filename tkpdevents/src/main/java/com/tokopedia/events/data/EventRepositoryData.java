@@ -6,17 +6,20 @@ import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.LikeUpdateResponse;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
+import com.tokopedia.events.data.entity.response.UserLikesResponse;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.EventRepository;
+import com.tokopedia.events.domain.model.CouponModel;
 import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.domain.model.EventLocationDomain;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -106,6 +109,26 @@ public class EventRepositoryData implements EventRepository {
     }
 
     @Override
+    public Observable<CouponModel> postCouponInit(JsonObject requestBody) {
+        return eventsDataStoreFactory
+                .createCloudDataStore()
+                .postCouponInit(requestBody).map(new Func1<VerifyCartResponse, CouponModel>() {
+                    @Override
+                    public CouponModel call(VerifyCartResponse verifyCartResponse) {
+                        CouponModel result = new CouponModel();
+                        result.setPromocode(verifyCartResponse.getCart().getPromocode());
+                        result.setPromocodeCashback(verifyCartResponse.getCart().getPromocodeCashback());
+                        result.setPromocodeDiscount(verifyCartResponse.getCart().getPromocodeDiscount());
+                        result.setPromocodeFailureMessage(verifyCartResponse.getCart().getPromocodeFailureMessage());
+                        result.setPromocodeSuccessMessage(verifyCartResponse.getCart().getPromocodeSuccessMessage());
+                        result.setPromocodeStatus(verifyCartResponse.getCart().getPromocodeStatus());
+                        result.setPromocodeIsCoupon(verifyCartResponse.getCart().isPromocodeIsCoupon());
+                        return result;
+                    }
+                });
+    }
+
+    @Override
     public Observable<CheckoutResponse> checkoutCart(JsonObject requestBody) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
@@ -140,7 +163,24 @@ public class EventRepositoryData implements EventRepository {
                         LikeUpdateResultDomain likeUpdateResultDomain = new LikeUpdateResultDomain();
                         likeUpdateResultDomain.setMessage(likeUpdateResponse.getMessage());
                         likeUpdateResultDomain.setStatus(likeUpdateResponse.getStatus());
+                        likeUpdateResultDomain.setLiked(likeUpdateResponse.isLiked());
                         return likeUpdateResultDomain;
+                    }
+                });
+    }
+
+    @Override
+    public Observable<List<Integer>> getUserLikes() {
+        return eventsDataStoreFactory
+                .createCloudDataStore().getUserLikes()
+                .map(new Func1<List<UserLikesResponse>, List<Integer>>() {
+                    @Override
+                    public List<Integer> call(List<UserLikesResponse> userLikesResponses) {
+                        List<Integer> likedProductIds = new ArrayList<>();
+                        for (UserLikesResponse response : userLikesResponses) {
+                            likedProductIds.add(response.getProductId());
+                        }
+                        return likedProductIds;
                     }
                 });
     }

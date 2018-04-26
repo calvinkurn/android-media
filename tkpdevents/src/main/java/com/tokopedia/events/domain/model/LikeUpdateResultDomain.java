@@ -1,5 +1,7 @@
 package com.tokopedia.events.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by pranaymohapatra on 04/04/18.
  */
@@ -7,6 +9,15 @@ package com.tokopedia.events.domain.model;
 public class LikeUpdateResultDomain {
     String message;
     int status;
+    private boolean isLiked;
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
+    }
 
     public String getMessage() {
         return message;

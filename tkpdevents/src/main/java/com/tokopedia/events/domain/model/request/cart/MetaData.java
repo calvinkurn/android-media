@@ -1,9 +1,13 @@
 package com.tokopedia.events.domain.model.request.cart;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class MetaData{
+public class MetaData implements Parcelable {
 
 	@SerializedName("entity_product_id")
 	private int entityProductId;
@@ -227,4 +231,71 @@ public class MetaData{
 			",total_ticket_count = '" + totalTicketCount + '\'' + 
 			"}";
 		}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeInt(this.entityProductId);
+		dest.writeString(this.entityEndTime);
+		dest.writeString(this.entityStartTime);
+		dest.writeInt(this.entityCategoryId);
+		dest.writeString(this.citySearched);
+		dest.writeList(this.taxPerQuantity);
+		dest.writeInt(this.totalOtherCharges);
+		dest.writeList(this.entityPassengers);
+		dest.writeInt(this.totalTicketPrice);
+		dest.writeString(this.entityCategoryName);
+		dest.writeInt(this.entityGroupId);
+		dest.writeList(this.otherCharges);
+		dest.writeParcelable(this.entityAddress, flags);
+		dest.writeInt(this.totalTaxAmount);
+		dest.writeString(this.entityImage);
+		dest.writeInt(this.entityScheduleId);
+		dest.writeList(this.entityPackages);
+		dest.writeInt(this.totalTicketCount);
+	}
+
+	public MetaData() {
+	}
+
+	protected MetaData(Parcel in) {
+		this.entityProductId = in.readInt();
+		this.entityEndTime = in.readString();
+		this.entityStartTime = in.readString();
+		this.entityCategoryId = in.readInt();
+		this.citySearched = in.readString();
+		this.taxPerQuantity = new ArrayList<TaxPerQuantityItem>();
+		in.readList(this.taxPerQuantity, TaxPerQuantityItem.class.getClassLoader());
+		this.totalOtherCharges = in.readInt();
+		this.entityPassengers = new ArrayList<EntityPassengerItem>();
+		in.readList(this.entityPassengers, EntityPassengerItem.class.getClassLoader());
+		this.totalTicketPrice = in.readInt();
+		this.entityCategoryName = in.readString();
+		this.entityGroupId = in.readInt();
+		this.otherCharges = new ArrayList<OtherChargesItem>();
+		in.readList(this.otherCharges, OtherChargesItem.class.getClassLoader());
+		this.entityAddress = in.readParcelable(EntityAddress.class.getClassLoader());
+		this.totalTaxAmount = in.readInt();
+		this.entityImage = in.readString();
+		this.entityScheduleId = in.readInt();
+		this.entityPackages = new ArrayList<EntityPackageItem>();
+		in.readList(this.entityPackages, EntityPackageItem.class.getClassLoader());
+		this.totalTicketCount = in.readInt();
+	}
+
+	public static final Parcelable.Creator<MetaData> CREATOR = new Parcelable.Creator<MetaData>() {
+		@Override
+		public MetaData createFromParcel(Parcel source) {
+			return new MetaData(source);
+		}
+
+		@Override
+		public MetaData[] newArray(int size) {
+			return new MetaData[size];
+		}
+	};
 }

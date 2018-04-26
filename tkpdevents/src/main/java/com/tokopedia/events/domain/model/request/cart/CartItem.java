@@ -1,8 +1,11 @@
 package com.tokopedia.events.domain.model.request.cart;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class CartItem {
+public class CartItem implements Parcelable {
 
 	@SerializedName("quantity")
 	private int quantity;
@@ -58,4 +61,39 @@ public class CartItem {
 			",meta_data = '" + metaData + '\'' + 
 			"}";
 		}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeInt(this.quantity);
+		dest.writeParcelable(this.configuration, flags);
+		dest.writeInt(this.productId);
+		dest.writeParcelable(this.metaData, flags);
+	}
+
+	public CartItem() {
+	}
+
+	protected CartItem(Parcel in) {
+		this.quantity = in.readInt();
+		this.configuration = in.readParcelable(Configuration.class.getClassLoader());
+		this.productId = in.readInt();
+		this.metaData = in.readParcelable(MetaData.class.getClassLoader());
+	}
+
+	public static final Parcelable.Creator<CartItem> CREATOR = new Parcelable.Creator<CartItem>() {
+		@Override
+		public CartItem createFromParcel(Parcel source) {
+			return new CartItem(source);
+		}
+
+		@Override
+		public CartItem[] newArray(int size) {
+			return new CartItem[size];
+		}
+	};
 }

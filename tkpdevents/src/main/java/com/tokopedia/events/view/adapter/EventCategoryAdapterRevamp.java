@@ -14,6 +14,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
+import com.tokopedia.events.view.activity.EventsHomeActivity;
+import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -28,14 +30,22 @@ import butterknife.OnClick;
  * Created by pranaymohapatra on 02/04/18.
  */
 
-public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCategoryAdapterRevamp.ViewHolder> {
+public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCategoryAdapterRevamp.ViewHolder> implements EventsContract.AdapterCallbacks {
 
     private List<CategoryItemsViewModel> categoryItems;
     private Context context;
+    private int redColor;
 
     public EventCategoryAdapterRevamp(Context context, List<CategoryItemsViewModel> categoryItems) {
         this.context = context;
         this.categoryItems = categoryItems;
+        ((EventsHomeActivity) context).mPresenter.setupCallback(this);
+        redColor = context.getResources().getColor(R.color.red_1);
+    }
+
+    @Override
+    public void notifyDatasetChanged(int position) {
+        notifyItemChanged(position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -90,8 +100,18 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 tvDisplayTag.setVisibility(View.GONE);
             }
 
+            if (data.getOfferText() != null && data.getOfferText().length() > 2) {
+                tv3SoldCnt.setText(data.getOfferText());
+                tv3SoldCnt.setVisibility(View.VISIBLE);
+            } else {
+                tv3SoldCnt.setVisibility(View.GONE);
+            }
             tvAddToWishlist.setText(String.valueOf(data.getLikes()));
-            tvEventShare.setText(String.valueOf(data.getLikes()));
+            if (data.isLiked()) {
+                tvAddToWishlist.setTextColor(redColor);
+                tvAddToWishlist.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist_red,
+                        0, 0, 0);
+            }
 
             ImageHandler.loadImageCover2(eventImage, categoryItems.get(position).getThumbnailApp());
 
@@ -108,6 +128,16 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(index));
             context.startActivity(detailsIntent);
+        }
+
+        @OnClick(R2.id.tv_add_to_wishlist)
+        public void toggleLike() {
+            ((EventsHomeActivity) context).mPresenter.setEventLike(categoryItems.get(index), index);
+        }
+
+        @OnClick(R2.id.tv_event_share)
+        public void shareEvent() {
+            ((EventsHomeActivity) context).mPresenter.shareEvent(categoryItems.get(index));
         }
 
         public int getIndex() {

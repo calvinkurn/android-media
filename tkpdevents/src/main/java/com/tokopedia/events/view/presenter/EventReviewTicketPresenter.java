@@ -19,6 +19,7 @@ import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.EntityPackagesItem;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
+import com.tokopedia.events.domain.model.CouponModel;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
 import com.tokopedia.events.domain.model.request.cart.CartItems;
 import com.tokopedia.events.domain.model.request.cart.Configuration;
@@ -28,11 +29,14 @@ import com.tokopedia.events.domain.model.request.cart.EntityPassengerItem;
 import com.tokopedia.events.domain.model.request.cart.MetaData;
 import com.tokopedia.events.domain.model.request.cart.OtherChargesItem;
 import com.tokopedia.events.domain.model.request.cart.TaxPerQuantityItem;
+import com.tokopedia.events.domain.postusecase.PostInitCouponUseCase;
 import com.tokopedia.events.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
+import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +60,7 @@ public class EventReviewTicketPresenter
     private PackageViewModel checkoutData;
     private PostVerifyCartUseCase postVerifyCartUseCase;
     private PostPaymentUseCase postPaymentUseCase;
+    private PostInitCouponUseCase postInitCouponUseCase;
     private ProfileUseCase profileUseCase;
     private ProfileModel profileModel;
     private String promocode;
@@ -69,10 +74,13 @@ public class EventReviewTicketPresenter
     private String INVALID_EMAIL = "Invalid Email";
 
     @Inject
-    public EventReviewTicketPresenter(PostVerifyCartUseCase usecase, PostPaymentUseCase payment, ProfileUseCase profileUseCase) {
+    public EventReviewTicketPresenter(PostVerifyCartUseCase usecase, PostPaymentUseCase payment,
+                                      ProfileUseCase profileUseCase,
+                                      PostInitCouponUseCase couponUseCase) {
         this.postVerifyCartUseCase = usecase;
         this.postPaymentUseCase = payment;
         this.profileUseCase = profileUseCase;
+        this.postInitCouponUseCase = couponUseCase;
     }
 
     @Override
@@ -94,14 +102,7 @@ public class EventReviewTicketPresenter
     @Override
     public void updatePromoCode(String code) {
         this.promocode = code;
-        if (code.length() > 0 && code.length() <= 3)
-            getView().showPromoSuccessMessage(getView().getActivity().getString(R.string.promocode_minimum_lenght_warning),
-                    getView().getActivity().getResources().getColor(R.color.red_a700));
-        else if (code.length() > 3) {
-            getView().hideSuccessMessage();
-            isPromoCodeCase = true;
-            verifyCart();
-        } else {
+        if (code.length() == 0) {
             getView().hideSuccessMessage();
         }
     }
@@ -155,6 +156,7 @@ public class EventReviewTicketPresenter
                 number = profileModel.getProfileData().getUserInfo().getUserPhone();
                 getView().setEmailID(profileModel.getProfileData().getUserInfo().getUserEmail());
                 getView().setPhoneNumber(number);
+                autoApplyCoupon();
                 getView().hideProgressBar();
             }
         });
@@ -173,6 +175,21 @@ public class EventReviewTicketPresenter
     @Override
     public void clickDismissTooltip() {
         getView().hideTooltip();
+    }
+
+    @Override
+    public void clickGoToPromo() {
+        getView().showProgressBar();
+        goToLoyaltyActivity();
+    }
+
+    private void goToLoyaltyActivity() {
+        JsonObject requestBody = convertPackageToCartItem(checkoutData);
+        Intent loyaltyIntent = LoyaltyActivity.newInstanceCouponActive(getView().getActivity(), "events", "events");
+        loyaltyIntent.putExtra(Utils.Constants.CHECKOUTDATA, requestBody.toString());
+        loyaltyIntent.putExtra(LoyaltyActivity.EXTRA_PRODUCTID, checkoutData.getDigitalProductID());
+        loyaltyIntent.putExtra(LoyaltyActivity.EXTRA_CATEGORYID, checkoutData.getDigitalCategoryID());
+        getView().navigateToActivityRequest(loyaltyIntent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
     }
 
     private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
@@ -292,7 +309,7 @@ public class EventReviewTicketPresenter
     public void verifyCart() {
         getView().showProgressBar();
         final RequestParams params = RequestParams.create();
-        params.putObject("checkoutdata", convertPackageToCartItem(checkoutData));
+        params.putObject(Utils.Constants.CHECKOUTDATA, convertPackageToCartItem(checkoutData));
         params.putBoolean("ispromocodecase", !isPromoCodeCase);
         postVerifyCartUseCase.execute(params, new Subscriber<VerifyCartResponse>() {
             @Override
@@ -349,7 +366,6 @@ public class EventReviewTicketPresenter
                             getView().hideProgressBar();
                             getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),
                                     getView().getActivity().getResources().getColor(R.color.black_54));
-                            getView().showCashbackMessage(successMsg);
                         }
                     }
                 }
@@ -429,6 +445,43 @@ public class EventReviewTicketPresenter
             if (form.getTitle().equals(key))
                 form.setValue(value);
         }
+    }
+
+    private void autoApplyCoupon() {
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putObject(Utils.Constants.CHECKOUTDATA, convertPackageToCartItem(checkoutData));
+        postInitCouponUseCase.execute(requestParams, new Subscriber<CouponModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().showMessage(getView().getActivity().getResources().getString(R.string.autocoupon_fail));
+            }
+
+            @Override
+            public void onNext(CouponModel couponModel) {
+                String errorMsg = couponModel.getPromocodeFailureMessage();
+                if (errorMsg != null &&
+                        errorMsg.length() > 0) {
+                    getView().hideProgressBar();
+                    getView().hideSuccessMessage();
+                    getView().showPromoSuccessMessage(errorMsg,
+                            getView().getActivity().getResources().getColor(R.color.red_a700));
+                    promocode = "";
+                } else {
+                    String successMsg = couponModel.getPromocodeSuccessMessage();
+                    if (successMsg != null && successMsg.length() > 0) {
+                        getView().hideProgressBar();
+                        getView().showPromoSuccessMessage(successMsg,
+                                getView().getActivity().getResources().getColor(R.color.green_nob));
+                        promocode = couponModel.getPromocode();
+                    }
+                }
+            }
+        });
     }
 
 

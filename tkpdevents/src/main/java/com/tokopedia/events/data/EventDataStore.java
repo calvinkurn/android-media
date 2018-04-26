@@ -7,6 +7,7 @@ import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
 import com.tokopedia.events.data.entity.response.LikeUpdateResponse;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
+import com.tokopedia.events.data.entity.response.UserLikesResponse;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
@@ -39,6 +40,8 @@ public interface EventDataStore {
 
     Observable<VerifyCartResponse> verifyCart(JsonObject requestBody, boolean flag);
 
+    Observable<VerifyCartResponse> postCouponInit(JsonObject requestBody);
+
     Observable<CheckoutResponse> checkoutCart(JsonObject requestBody);
 
     Observable<SeatLayoutResponse> getSeatLayout(int category_id,
@@ -50,4 +53,6 @@ public interface EventDataStore {
     Observable<List<SeatLayoutItem>> getEventSeatLayout(String url);
 
     Observable<LikeUpdateResponse> updateLikes(JsonObject requestBody);
+
+    Observable<List<UserLikesResponse>> getUserLikes();
 }

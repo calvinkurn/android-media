@@ -38,6 +38,8 @@ public class EventsContract {
 
         void showSearchButton();
 
+        void showLoginSnackbar(String message);
+
     }
 
     public interface Presenter extends CustomerPresenter<View> {
@@ -54,9 +56,19 @@ public class EventsContract {
 
         void showEventDetails(CategoryItemsViewModel model);
 
-        void setEventLike(CategoryItemsViewModel model);
+        void setEventLike(CategoryItemsViewModel model, int position);
 
         void shareEvent(CategoryItemsViewModel model);
 
+        void onActivityResult(int requestCode);
+
+        void onClickEventCalendar();
+
+        void setupCallback(AdapterCallbacks callbacks);
+
+    }
+
+    public interface AdapterCallbacks {
+        void notifyDatasetChanged(int position);
     }
 }

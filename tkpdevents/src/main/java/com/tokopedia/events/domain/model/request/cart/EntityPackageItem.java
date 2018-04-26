@@ -1,10 +1,13 @@
 package com.tokopedia.events.domain.model.request.cart;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class EntityPackageItem {
+public class EntityPackageItem implements Parcelable {
 
     @SerializedName("price_per_seat")
     private int pricePerSeat;
@@ -180,4 +183,61 @@ public class EntityPackageItem {
                         ",schedule_id = '" + scheduleId + '\'' +
                         "}";
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.pricePerSeat);
+        dest.writeStringList(this.seatRowId);
+        dest.writeInt(this.quantity);
+        dest.writeInt(this.groupId);
+        dest.writeStringList(this.seatId);
+        dest.writeStringList(this.seatPhysicalRowId);
+        dest.writeString(this.areaId);
+        dest.writeStringList(this.actualSeatNos);
+        dest.writeString(this.providerGroupId);
+        dest.writeStringList(this.areaCode);
+        dest.writeInt(this.productId);
+        dest.writeString(this.description);
+        dest.writeString(this.sessionId);
+        dest.writeInt(this.packageId);
+        dest.writeInt(this.scheduleId);
+    }
+
+    public EntityPackageItem() {
+    }
+
+    protected EntityPackageItem(Parcel in) {
+        this.pricePerSeat = in.readInt();
+        this.seatRowId = in.createStringArrayList();
+        this.quantity = in.readInt();
+        this.groupId = in.readInt();
+        this.seatId = in.createStringArrayList();
+        this.seatPhysicalRowId = in.createStringArrayList();
+        this.areaId = in.readString();
+        this.actualSeatNos = in.createStringArrayList();
+        this.providerGroupId = in.readString();
+        this.areaCode = in.createStringArrayList();
+        this.productId = in.readInt();
+        this.description = in.readString();
+        this.sessionId = in.readString();
+        this.packageId = in.readInt();
+        this.scheduleId = in.readInt();
+    }
+
+    public static final Parcelable.Creator<EntityPackageItem> CREATOR = new Parcelable.Creator<EntityPackageItem>() {
+        @Override
+        public EntityPackageItem createFromParcel(Parcel source) {
+            return new EntityPackageItem(source);
+        }
+
+        @Override
+        public EntityPackageItem[] newArray(int size) {
+            return new EntityPackageItem[size];
+        }
+    };
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.text.Layout;
@@ -19,10 +20,12 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
@@ -41,7 +44,6 @@ import com.tokopedia.events.view.utils.CirclePageIndicator;
 import com.tokopedia.events.view.utils.ShadowTransformer;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
-import com.tokopedia.events.view.viewmodel.EventLocationViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +52,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static com.tokopedia.events.view.utils.Utils.Constants.EXTRA_SECTION;
+import static com.tokopedia.events.view.utils.Utils.Constants.TOP;
 
 /**
  * Created by ashwanityagi on 02/11/17.
@@ -95,11 +101,7 @@ public class EventsHomeActivity extends TActivity
     private int mBannnerPos;
     private int defaultViewPagerPos;
     private String defaultSection;
-    private final static String THEMEPARK = "themepark";
-    private final static String TOP = "top";
 
-
-    public final static String EXTRA_SECTION = "extra_section";
 
     private SlidingImageAdapter adapter;
 
@@ -114,7 +116,7 @@ public class EventsHomeActivity extends TActivity
         if (Constants.Applinks.EVENTS.equals(deepLink)) {
             destination.putExtra(EXTRA_SECTION, TOP);
         } else if (Constants.Applinks.EVENTS_HIBURAN.equals(deepLink)) {
-            destination.putExtra(EXTRA_SECTION, THEMEPARK);
+            destination.putExtra(EXTRA_SECTION, Utils.Constants.THEMEPARK);
         }
         return destination;
     }
@@ -197,8 +199,22 @@ public class EventsHomeActivity extends TActivity
     }
 
     @Override
-    public void showMessage(String message) {
+    public void showLoginSnackbar(String message) {
+        Snackbar snackbar = Snackbar.make(getRootView(), message, Snackbar.LENGTH_LONG).setAction(getResources().getString(R.string.title_activity_login), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showProgressBar();
+                Intent intent = ((TkpdCoreRouter) getApplication()).
+                        getLoginIntent(getActivity());
+                navigateToActivityRequest(intent, 1099);
+            }
+        });
+        snackbar.show();
+    }
 
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -225,24 +241,6 @@ public class EventsHomeActivity extends TActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        switch (requestCode) {
-            case REQUEST_CODE_EVENTLOCATIONACTIVITY:
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    EventLocationViewModel eventLocationViewModel = (EventLocationViewModel) data.getParcelableExtra(EventLocationActivity.EXTRA_CALLBACK_LOCATION);
-                    mPresenter.getEventsListByLocation(eventLocationViewModel.getSearchName());
-                }
-
-                break;
-            case REQUEST_CODE_EVENTSEARCHACTIVITY:
-                break;
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -329,5 +327,15 @@ public class EventsHomeActivity extends TActivity
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @OnClick(R2.id.tv_addtocalendar)
+    void onClickCalendar() {
+        mPresenter.onClickEventCalendar();
     }
 }

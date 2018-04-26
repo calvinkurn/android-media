@@ -68,6 +68,8 @@
     <string name="ubah_lokasi">Ubah Lokasi</string>
     <string name="promocode_minimum_lenght_warning">Masukkan minimal 4 karakter</string>
     <string name="please_enter_email">Mohon isi e-mail Anda</string>
+    <string name="autocoupon_fail">Tidak dapat menerapkan kupon</string>
+    <string name="check_this_out">Hei, periksa: %1$s</string>
 
     <!-- need to changed -->
 

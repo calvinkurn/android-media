@@ -6,6 +6,7 @@ import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
 import com.tokopedia.events.data.entity.response.LikeUpdateResponse;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
+import com.tokopedia.events.data.entity.response.UserLikesResponse;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
@@ -52,6 +53,10 @@ public interface EventsApi {
     @Headers({"Content-Type: application/json"})
     Observable<VerifyCartResponse> postCartVerify(@Body JsonObject requestBody, @Query("book") boolean value);
 
+    @POST(EventsUrl.EVENT_INIT_COUPON)
+    @Headers({"Content-Type: application/json"})
+    Observable<VerifyCartResponse> postCouponInit(@Body JsonObject requestBody);
+
     @POST(EventsUrl.EVENT_VALIDATE)
     @Headers({"Content-Type: application/json"})
     Observable<ValidateResponse> validateShow(@Body JsonObject requestBody);
@@ -69,6 +74,9 @@ public interface EventsApi {
 
     @GET()
     Observable<List<SeatLayoutItem>> getEventSeatLayout(@Url String url);
+
+    @GET(EventsUrl.EVENT_GET_USER_LIKES)
+    Observable<List<UserLikesResponse>> getUserLikesProduct();
 
     @POST(EventsUrl.EVENTS_LIKES)
     @Headers({"Content-Type: application/json"})

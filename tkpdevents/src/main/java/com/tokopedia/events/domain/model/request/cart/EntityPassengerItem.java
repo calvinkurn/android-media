@@ -1,8 +1,11 @@
 package com.tokopedia.events.domain.model.request.cart;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class EntityPassengerItem {
+public class EntityPassengerItem implements Parcelable {
 
 	@SerializedName("error_message")
 	private String errorMessage;
@@ -118,4 +121,49 @@ public class EntityPassengerItem {
 			",required = '" + required + '\'' + 
 			"}";
 		}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(this.errorMessage);
+		dest.writeInt(this.productId);
+		dest.writeString(this.name);
+		dest.writeInt(this.id);
+		dest.writeString(this.elementType);
+		dest.writeString(this.title);
+		dest.writeString(this.value);
+		dest.writeString(this.validatorRegex);
+		dest.writeString(this.required);
+	}
+
+	public EntityPassengerItem() {
+	}
+
+	protected EntityPassengerItem(Parcel in) {
+		this.errorMessage = in.readString();
+		this.productId = in.readInt();
+		this.name = in.readString();
+		this.id = in.readInt();
+		this.elementType = in.readString();
+		this.title = in.readString();
+		this.value = in.readString();
+		this.validatorRegex = in.readString();
+		this.required = in.readString();
+	}
+
+	public static final Parcelable.Creator<EntityPassengerItem> CREATOR = new Parcelable.Creator<EntityPassengerItem>() {
+		@Override
+		public EntityPassengerItem createFromParcel(Parcel source) {
+			return new EntityPassengerItem(source);
+		}
+
+		@Override
+		public EntityPassengerItem[] newArray(int size) {
+			return new EntityPassengerItem[size];
+		}
+	};
 }

@@ -10,6 +10,8 @@ import com.tokopedia.events.domain.model.request.likes.LikeUpdateModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -20,6 +22,7 @@ public class PostUpdateEventLikesUseCase extends UseCase<LikeUpdateResultDomain>
 
     EventRepository mRepository;
 
+    @Inject
     public PostUpdateEventLikesUseCase(EventRepository eventRepository) {
         this.mRepository = eventRepository;
     }

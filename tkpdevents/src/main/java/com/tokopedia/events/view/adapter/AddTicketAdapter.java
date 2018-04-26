@@ -98,19 +98,17 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             this.holderViewModel = viewModel;
             this.index = position;
             tvTicketName.setText(viewModel.getDisplayName());
-//            tvTicketMaxprice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(viewModel.getMrp()));
-            if (viewModel.getDescription() != null && viewModel.getDescription().length() > 3)
+            if (viewModel.getDescription() != null && viewModel.getDescription().length() > 3) {
                 tickeyDescriptionText.setText(viewModel.getDescription());
-            else
+                tickeyDescriptionText.setVisibility(View.VISIBLE);
+            } else
                 tickeyDescriptionText.setVisibility(View.GONE);
             ticketSalePrice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(viewModel.getSalesPrice()));
             tvTicketCnt.setText(String.valueOf(viewModel.getSelectedQuantity()));
             if (holderViewModel.getSelectedQuantity() > 0) {
-                //btnDecrement.setAlpha(1.0f);
                 btnDecrement.setBackgroundResource(R.drawable.minus_button_layerlist_green);
                 btnDecrement.setClickable(true);
             } else {
-                //btnDecrement.setAlpha(0.2f);
                 btnDecrement.setBackgroundResource(R.drawable.minus_button_layerlist_grey);
                 btnDecrement.setClickable(false);
             }
@@ -147,15 +145,12 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         void onClickDecrement() {
             mPresenter.removeTickets();
             if (holderViewModel.getSelectedQuantity() > 0) {
-                //btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.green_nob));
                 btnDecrement.setBackgroundResource(R.drawable.minus_button_layerlist_green);
                 btnDecrement.setClickable(true);
             } else {
-                //btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.grey_button));
                 btnDecrement.setBackgroundResource(R.drawable.minus_button_layerlist_grey);
                 btnDecrement.setClickable(false);
             }
-            //notifyItemChanged(index,holderViewModel);
         }
 
         public void setTvTicketCnt(int count) {

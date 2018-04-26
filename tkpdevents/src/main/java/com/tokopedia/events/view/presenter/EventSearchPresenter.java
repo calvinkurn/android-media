@@ -47,6 +47,7 @@ public class EventSearchPresenter
     private String highlight;
     private boolean isLoading;
     private boolean isLastPage;
+    private boolean isEventCalendar;
     private final int PAGE_SIZE = 20;
     RequestParams searchNextParams = RequestParams.create();
 
@@ -62,7 +63,7 @@ public class EventSearchPresenter
         highlight = searchText;
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(getSearchEventsListRequestUseCase.TAG, searchText);
-
+        getView().showProgressBar();
         getSearchEventsListRequestUseCase.execute(requestParams, new Subscriber<SearchDomainModel>() {
             @Override
             public void onCompleted() {
@@ -71,6 +72,7 @@ public class EventSearchPresenter
 
             @Override
             public void onError(Throwable e) {
+                getView().hideProgressBar();
                 CommonUtils.dumper("enter error");
                 e.printStackTrace();
             }
@@ -79,6 +81,7 @@ public class EventSearchPresenter
             public void onNext(SearchDomainModel searchDomainModel) {
                 getView().setSuggestions(processSearchResponse(searchDomainModel), highlight);
                 checkIfToLoad(getView().getLayoutManager());
+                getView().hideProgressBar();
                 CommonUtils.dumper("enter onNext");
             }
         });
@@ -86,8 +89,14 @@ public class EventSearchPresenter
 
     @Override
     public void initialize() {
-        mTopEvents = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPEVENTS");
-        getView().setTopEvents(mTopEvents);
+        isEventCalendar = getView().getActivity().getIntent().
+                getBooleanExtra(Utils.Constants.EXTRA_EVENT_CALENDAR, false);
+        if (isEventCalendar) {
+            searchSubmitted("");
+        } else {
+            mTopEvents = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPEVENTS");
+            getView().setTopEvents(mTopEvents);
+        }
     }
 
     @Override
@@ -230,7 +239,7 @@ public class EventSearchPresenter
         mSearchData = searchDomainModel;
         String nexturl = mSearchData.getPage().getUriNext();
         if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
-            searchNextParams.putString("nexturl",nexturl);
+            searchNextParams.putString("nexturl", nexturl);
             isLastPage = false;
         } else {
             isLastPage = true;

@@ -213,6 +213,7 @@ import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
+import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
@@ -1621,7 +1622,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void generateBranchLink(String channelId, String title, String contentMessage, String
             imgUrl, String
-                                           shareUrl, Activity activity, final ShareListener
+            shareUrl, Activity activity, final ShareListener
                                            listener) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setId(channelId)

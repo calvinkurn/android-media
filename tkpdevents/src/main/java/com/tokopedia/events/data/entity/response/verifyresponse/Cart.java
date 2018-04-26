@@ -1,182 +1,194 @@
 package com.tokopedia.events.data.entity.response.verifyresponse;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class Cart{
+import java.util.List;
 
-	@SerializedName("total_price")
-	private int totalPrice;
+public class Cart {
 
-	@SerializedName("promocode_success_message")
-	private String promocodeSuccessMessage;
+    @SerializedName("total_price")
+    private int totalPrice;
 
-	@SerializedName("cart_items")
-	private List<CartItemsItem> cartItems;
+    @SerializedName("promocode_success_message")
+    private String promocodeSuccessMessage;
 
-	@SerializedName("promocode_failure_message")
-	private String promocodeFailureMessage;
+    @SerializedName("cart_items")
+    private List<CartItemsItem> cartItems;
 
-	@SerializedName("count")
-	private int count;
+    @SerializedName("promocode_failure_message")
+    private String promocodeFailureMessage;
 
-	@SerializedName("total_conv_fee")
-	private int totalConvFee;
+    @SerializedName("count")
+    private int count;
 
-	@SerializedName("promocode")
-	private String promocode;
+    @SerializedName("total_conv_fee")
+    private int totalConvFee;
 
-	@SerializedName("error")
-	private String error;
+    @SerializedName("promocode")
+    private String promocode;
 
-	@SerializedName("promocode_status")
-	private String promocodeStatus;
+    @SerializedName("error")
+    private String error;
 
-	@SerializedName("promocode_cashback")
-	private int promocodeCashback;
+    @SerializedName("promocode_status")
+    private String promocodeStatus;
 
-	@SerializedName("promocode_discount")
-	private int promocodeDiscount;
+    @SerializedName("promocode_cashback")
+    private int promocodeCashback;
 
-	@SerializedName("error_code")
-	private String errorCode;
+    @SerializedName("promocode_discount")
+    private int promocodeDiscount;
 
-	@SerializedName("grand_total")
-	private int grandTotal;
+    @SerializedName("promocode_is_coupon")
+    private boolean promocodeIsCoupon;
 
-	@SerializedName("user")
-	private User user;
+    @SerializedName("error_code")
+    private String errorCode;
 
-	public void setTotalPrice(int totalPrice){
-		this.totalPrice = totalPrice;
-	}
+    @SerializedName("grand_total")
+    private int grandTotal;
 
-	public int getTotalPrice(){
-		return totalPrice;
-	}
+    @SerializedName("user")
+    private User user;
 
-	public void setPromocodeSuccessMessage(String promocodeSuccessMessage){
-		this.promocodeSuccessMessage = promocodeSuccessMessage;
-	}
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 
-	public String getPromocodeSuccessMessage(){
-		return promocodeSuccessMessage;
-	}
+    public int getTotalPrice() {
+        return totalPrice;
+    }
 
-	public void setCartItems(List<CartItemsItem> cartItems){
-		this.cartItems = cartItems;
-	}
+    public void setPromocodeSuccessMessage(String promocodeSuccessMessage) {
+        this.promocodeSuccessMessage = promocodeSuccessMessage;
+    }
 
-	public List<CartItemsItem> getCartItems(){
-		return cartItems;
-	}
+    public String getPromocodeSuccessMessage() {
+        return promocodeSuccessMessage;
+    }
 
-	public void setPromocodeFailureMessage(String promocodeFailureMessage){
-		this.promocodeFailureMessage = promocodeFailureMessage;
-	}
+    public void setCartItems(List<CartItemsItem> cartItems) {
+        this.cartItems = cartItems;
+    }
 
-	public String getPromocodeFailureMessage(){
-		return promocodeFailureMessage;
-	}
+    public List<CartItemsItem> getCartItems() {
+        return cartItems;
+    }
 
-	public void setCount(int count){
-		this.count = count;
-	}
+    public void setPromocodeFailureMessage(String promocodeFailureMessage) {
+        this.promocodeFailureMessage = promocodeFailureMessage;
+    }
 
-	public int getCount(){
-		return count;
-	}
+    public String getPromocodeFailureMessage() {
+        return promocodeFailureMessage;
+    }
 
-	public void setTotalConvFee(int totalConvFee){
-		this.totalConvFee = totalConvFee;
-	}
+    public void setCount(int count) {
+        this.count = count;
+    }
 
-	public int getTotalConvFee(){
-		return totalConvFee;
-	}
+    public int getCount() {
+        return count;
+    }
 
-	public void setPromocode(String promocode){
-		this.promocode = promocode;
-	}
+    public void setTotalConvFee(int totalConvFee) {
+        this.totalConvFee = totalConvFee;
+    }
 
-	public String getPromocode(){
-		return promocode;
-	}
+    public int getTotalConvFee() {
+        return totalConvFee;
+    }
 
-	public void setError(String error){
-		this.error = error;
-	}
+    public void setPromocode(String promocode) {
+        this.promocode = promocode;
+    }
 
-	public String getError(){
-		return error;
-	}
+    public String getPromocode() {
+        return promocode;
+    }
 
-	public void setPromocodeStatus(String promocodeStatus){
-		this.promocodeStatus = promocodeStatus;
-	}
+    public void setError(String error) {
+        this.error = error;
+    }
 
-	public String getPromocodeStatus(){
-		return promocodeStatus;
-	}
+    public String getError() {
+        return error;
+    }
 
-	public void setPromocodeCashback(int promocodeCashback){
-		this.promocodeCashback = promocodeCashback;
-	}
+    public void setPromocodeStatus(String promocodeStatus) {
+        this.promocodeStatus = promocodeStatus;
+    }
 
-	public int getPromocodeCashback(){
-		return promocodeCashback;
-	}
+    public String getPromocodeStatus() {
+        return promocodeStatus;
+    }
 
-	public void setPromocodeDiscount(int promocodeDiscount){
-		this.promocodeDiscount = promocodeDiscount;
-	}
+    public void setPromocodeCashback(int promocodeCashback) {
+        this.promocodeCashback = promocodeCashback;
+    }
 
-	public int getPromocodeDiscount(){
-		return promocodeDiscount;
-	}
+    public int getPromocodeCashback() {
+        return promocodeCashback;
+    }
 
-	public void setErrorCode(String errorCode){
-		this.errorCode = errorCode;
-	}
+    public void setPromocodeDiscount(int promocodeDiscount) {
+        this.promocodeDiscount = promocodeDiscount;
+    }
 
-	public String getErrorCode(){
-		return errorCode;
-	}
+    public boolean isPromocodeIsCoupon() {
+        return promocodeIsCoupon;
+    }
 
-	public void setGrandTotal(int grandTotal){
-		this.grandTotal = grandTotal;
-	}
+    public void setPromocodeIsCoupon(boolean promocodeIsCoupon) {
+        this.promocodeIsCoupon = promocodeIsCoupon;
+    }
 
-	public int getGrandTotal(){
-		return grandTotal;
-	}
+    public int getPromocodeDiscount() {
+        return promocodeDiscount;
+    }
 
-	public void setUser(User user){
-		this.user = user;
-	}
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
 
-	public User getUser(){
-		return user;
-	}
+    public String getErrorCode() {
+        return errorCode;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"Cart{" + 
-			"total_price = '" + totalPrice + '\'' + 
-			",promocode_success_message = '" + promocodeSuccessMessage + '\'' + 
-			",cart_items = '" + cartItems + '\'' + 
-			",promocode_failure_message = '" + promocodeFailureMessage + '\'' + 
-			",count = '" + count + '\'' + 
-			",total_conv_fee = '" + totalConvFee + '\'' + 
-			",promocode = '" + promocode + '\'' + 
-			",error = '" + error + '\'' + 
-			",promocode_status = '" + promocodeStatus + '\'' + 
-			",promocode_cashback = '" + promocodeCashback + '\'' + 
-			",promocode_discount = '" + promocodeDiscount + '\'' + 
-			",error_code = '" + errorCode + '\'' + 
-			",grand_total = '" + grandTotal + '\'' + 
-			",user = '" + user + '\'' + 
-			"}";
-		}
+    public void setGrandTotal(int grandTotal) {
+        this.grandTotal = grandTotal;
+    }
+
+    public int getGrandTotal() {
+        return grandTotal;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "Cart{" +
+                        "total_price = '" + totalPrice + '\'' +
+                        ",promocode_success_message = '" + promocodeSuccessMessage + '\'' +
+                        ",cart_items = '" + cartItems + '\'' +
+                        ",promocode_failure_message = '" + promocodeFailureMessage + '\'' +
+                        ",count = '" + count + '\'' +
+                        ",total_conv_fee = '" + totalConvFee + '\'' +
+                        ",promocode = '" + promocode + '\'' +
+                        ",error = '" + error + '\'' +
+                        ",promocode_status = '" + promocodeStatus + '\'' +
+                        ",promocode_cashback = '" + promocodeCashback + '\'' +
+                        ",promocode_discount = '" + promocodeDiscount + '\'' +
+                        ",error_code = '" + errorCode + '\'' +
+                        ",grand_total = '" + grandTotal + '\'' +
+                        ",user = '" + user + '\'' +
+                        "}";
+    }
 }

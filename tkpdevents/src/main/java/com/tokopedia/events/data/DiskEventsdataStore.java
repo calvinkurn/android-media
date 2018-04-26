@@ -7,6 +7,7 @@ import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
 import com.tokopedia.events.data.entity.response.LikeUpdateResponse;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
+import com.tokopedia.events.data.entity.response.UserLikesResponse;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
@@ -64,6 +65,11 @@ public class DiskEventsdataStore implements EventDataStore {
     }
 
     @Override
+    public Observable<VerifyCartResponse> postCouponInit(JsonObject requestBody) {
+        return null;
+    }
+
+    @Override
     public Observable<CheckoutResponse> checkoutCart(JsonObject requestBody) {
         return null;
     }
@@ -84,6 +90,11 @@ public class DiskEventsdataStore implements EventDataStore {
 
     @Override
     public Observable<LikeUpdateResponse> updateLikes(JsonObject requestBody) {
+        return null;
+    }
+
+    @Override
+    public Observable<List<UserLikesResponse>> getUserLikes() {
         return null;
     }
 

@@ -11,6 +11,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.EventRepository;
 import com.tokopedia.events.domain.model.request.cart.CartItems;
+import com.tokopedia.events.view.utils.Utils;
 
 import javax.inject.Inject;
 
@@ -32,7 +33,7 @@ public class PostVerifyCartUseCase extends UseCase<VerifyCartResponse> {
 
     @Override
     public Observable<VerifyCartResponse> createObservable(RequestParams requestParams) {
-        JsonObject requestBody = (JsonObject) requestParams.getObject("checkoutdata");
+        JsonObject requestBody = (JsonObject) requestParams.getObject(Utils.Constants.CHECKOUTDATA);
         boolean flag = requestParams.getBoolean("ispromocodecase", false);
         return eventRepository.verifyCard(requestBody, flag);
     }

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.events.R;
+import com.tokopedia.events.data.entity.response.Schedule;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventsItemDomain;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -90,6 +91,7 @@ public class Utils {
                 CategoryItemsViewModel.setIsTop(categoryEntity.getIsTop());
                 CategoryItemsViewModel.setHasSeatLayout(categoryEntity.getHasSeatLayout());
                 CategoryItemsViewModel.setUrl(categoryEntity.getUrl());
+                CategoryItemsViewModel.setSeoUrl(categoryEntity.getSeoUrl());
                 CategoryItemsViewModel.setLikes(categoryEntity.getLikes());
                 categoryItemsViewModelList.add(CategoryItemsViewModel);
             }
@@ -259,5 +261,17 @@ public class Utils {
             e.printStackTrace();
         }
 
+    }
+
+    public static class Constants{
+        public final static String EXTRA_EVENT_CALENDAR= "EVENTCALENDAR";
+        public final static String THEMEPARK = "hiburan";
+        public final static String TOP = "top";
+        public final static String EXTRA_SECTION = "extra_section";
+        public final static String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
+        public final static String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
+        public final static String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
+        public final static String TOP_EVENTS = "TOP EVENTS";
+        public final static String CHECKOUTDATA = "checkoutdata";
     }
 }

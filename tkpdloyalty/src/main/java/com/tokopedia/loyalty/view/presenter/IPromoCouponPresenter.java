@@ -1,5 +1,6 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.loyalty.view.data.CouponData;
 
 /**
@@ -13,6 +14,8 @@ public interface IPromoCouponPresenter {
     String CATEGORY_ID = "category_id";
 
     void processGetCouponList(String platform);
+
+    void processGetEventCouponList(int categoryId, int productId);
 
     void processPostCouponValidateRedeem();
 
@@ -29,6 +32,8 @@ public interface IPromoCouponPresenter {
     void submitVoucher(CouponData couponData);
 
     void submitDigitalVoucher(CouponData couponData, String categoryId);
+
+    void submitEventVoucher(CouponData couponData, JsonObject requestBody, boolean flag);
 
     void detachView();
 

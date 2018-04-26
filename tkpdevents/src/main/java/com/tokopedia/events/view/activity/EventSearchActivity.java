@@ -18,12 +18,11 @@ import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
-import com.tokopedia.events.view.adapter.EventCategoryAdapter;
 import com.tokopedia.events.view.adapter.TopEventsSuggestionsAdapter;
 import com.tokopedia.events.view.contractor.EventSearchContract;
 import com.tokopedia.events.view.customview.SearchInputView;
 import com.tokopedia.events.view.presenter.EventSearchPresenter;
-import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
 
 import java.util.List;
@@ -65,6 +64,7 @@ public class EventSearchActivity extends TActivity implements
     LinearLayoutManager layoutManager;
 
     Unbinder unbinder;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +145,7 @@ public class EventSearchActivity extends TActivity implements
             rvTopEventSuggestions.setLayoutManager(layoutManager);
             rvTopEventSuggestions.setAdapter(adapter);
             rvTopEventSuggestions.removeOnScrollListener(rvOnScrollListener);
-            tvTopevents.setText("TOP EVENTS");
+            tvTopevents.setText(Utils.Constants.TOP_EVENTS);
             tvTopevents.setVisibility(View.VISIBLE);
             rvTopEventSuggestions.setVisibility(View.VISIBLE);
             rvSearchResults.setVisibility(View.GONE);

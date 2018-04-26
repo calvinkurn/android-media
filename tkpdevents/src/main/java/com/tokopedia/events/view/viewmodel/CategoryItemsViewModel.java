@@ -75,6 +75,7 @@ public class CategoryItemsViewModel implements Parcelable {
     private Boolean dateRange;
     private String cityName;
     private int likes;
+    boolean isLiked;
     private Object schedules;
     private Object forms;
 
@@ -495,6 +496,14 @@ public class CategoryItemsViewModel implements Parcelable {
 
     public void setIsTop(int isTop) {
         this.isTop = isTop;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 
     public int getUsePdf() {

@@ -163,7 +163,6 @@ public class EventBookTicketPresenter
                     getLoginIntent(getView().getActivity());
             getView().navigateToActivityRequest(intent, getView().getRequestCode());
         } else {
-            getView().hideProgressBar();
             if (hasSeatLayout == 1)
                 getSeatSelectionDetails();
             else

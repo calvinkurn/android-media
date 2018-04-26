@@ -7,6 +7,7 @@ import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
 import com.tokopedia.events.data.entity.response.LikeUpdateResponse;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
+import com.tokopedia.events.data.entity.response.UserLikesResponse;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
@@ -26,8 +27,8 @@ public class CloudEventsDataStore implements EventDataStore {
 
     private final EventsApi eventsApi;
 
-    public CloudEventsDataStore(EventsApi eventsApi){
-        this.eventsApi=eventsApi;
+    public CloudEventsDataStore(EventsApi eventsApi) {
+        this.eventsApi = eventsApi;
     }
 
 
@@ -68,7 +69,12 @@ public class CloudEventsDataStore implements EventDataStore {
 
     @Override
     public Observable<VerifyCartResponse> verifyCart(JsonObject requestBody, boolean flag) {
-        return eventsApi.postCartVerify(requestBody,flag);
+        return eventsApi.postCartVerify(requestBody, flag);
+    }
+
+    @Override
+    public Observable<VerifyCartResponse> postCouponInit(JsonObject requestBody) {
+        return eventsApi.postCouponInit(requestBody);
     }
 
     @Override
@@ -82,7 +88,7 @@ public class CloudEventsDataStore implements EventDataStore {
                                                         int schedule_id,
                                                         int group_id,
                                                         int package_id) {
-        return eventsApi.getSeatLayout(category_id,product_id,schedule_id,group_id,package_id);
+        return eventsApi.getSeatLayout(category_id, product_id, schedule_id, group_id, package_id);
     }
 
     @Override
@@ -93,6 +99,11 @@ public class CloudEventsDataStore implements EventDataStore {
     @Override
     public Observable<LikeUpdateResponse> updateLikes(JsonObject requestBody) {
         return eventsApi.updateLikes(requestBody);
+    }
+
+    @Override
+    public Observable<List<UserLikesResponse>> getUserLikes() {
+        return eventsApi.getUserLikesProduct();
     }
 
 
