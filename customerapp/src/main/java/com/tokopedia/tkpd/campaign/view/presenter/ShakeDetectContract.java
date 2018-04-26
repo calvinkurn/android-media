@@ -28,6 +28,9 @@ public interface ShakeDetectContract {
 
         void setResult(int resultCode,Intent data);
 
+        void updateTimer(Long l);
+
+        boolean isLongShakeTriggered();
     }
 
     public interface Presenter extends CustomerPresenter<View>{
@@ -35,5 +38,7 @@ public interface ShakeDetectContract {
         public void onDestroyView();
         public void onRetryClick();
         public void onActivityResult(int requestCode, int resultCode, Intent data);
+
+        void onCancelClick();
     }
 }

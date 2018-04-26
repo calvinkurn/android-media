@@ -34,15 +34,18 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     private Context mContext;
     private RemoteConfig remoteConfig;
     private SensorManager sensorManager;
-    public static String ACTION_SHAKE_SHAKE_SYNCED = "com.tkpd.action.shake.shake";
-
+    public static final String ACTION_SHAKE_SHAKE_SYNCED = "com.tkpd.action.shake.shake";
     public static final String FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY = "app_shake_feature_enabled";
     public static final String FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY = "audio_campaign_is_audio";
 
     public static final int MESSAGE_ENABLE_SHAKE = 1;
     public static final int MESSAGE_DISABLE_SHAKE = 2;
-
-    public static final int SHAKE_SHAKE_WAIT_FOR_SECOND = 5000;
+    public static final int MESSAGE_SHAKE_START = 3;
+    public static final int MESSAGE_SHAKE_END = 4;
+    public static final int MESSAGE_SHAKE_SHAKE_CONTINUE_LONG = 5;
+    public static final int SHAKE_SHAKE_END_TIME_MS = 500;
+    public static final int SHAKE_SHAKE_WAIT_FOR_SECOND = 1000;
+    public static final int SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND = 3000;
     private boolean  isShakeShakeEnable = true;
 
     public static String sTopActivity = null;
@@ -98,25 +101,36 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     @Override
     public void hearShake() {
         sTopActivity = mOpenedActivity;
-        if(mShakeEnabler.hasMessages(MESSAGE_ENABLE_SHAKE)) {
+        /*if(mShakeEnabler.hasMessages(MESSAGE_ENABLE_SHAKE)) {
             mShakeEnabler.removeMessages(MESSAGE_ENABLE_SHAKE);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);
+        }*/
+        if(mShakeEnabler.hasMessages(MESSAGE_SHAKE_END)) {
+            mShakeEnabler.removeMessages(MESSAGE_SHAKE_END);
+            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
+            return;
         }
 
         if (isShakeShakeEnable && isShakeShakeEnable()) {
-            mShakeEnabler.sendEmptyMessage(MESSAGE_DISABLE_SHAKE);
-            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);
-            Intent intent = null;
-            if (!isAudioShakeEnable()) {
-                intent = ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(mContext);
-            } else if(false) { // feature under development
-                intent = ShakeShakeAudioCampaignActivity.getCapturedAudioCampaignActivity(mContext);
-            }
-            if(intent != null) {
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
-                mContext.registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
-            }
+           /* mShakeEnabler.sendEmptyMessage(MESSAGE_DISABLE_SHAKE);
+            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);*/
+            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
+            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG,SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND);
+
+        }
+    }
+
+    public void startShake(boolean isLongShake) {
+           Intent intent = null;
+        if (!isAudioShakeEnable()) {
+            intent = ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(mContext,isLongShake);
+        } else if(false) { // feature under development
+            intent = ShakeShakeAudioCampaignActivity.getCapturedAudioCampaignActivity(mContext);
+        }
+        if(intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+            mContext.registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
         }
     }
 
@@ -128,6 +142,14 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                    break;
                case MESSAGE_DISABLE_SHAKE:
                    isShakeShakeEnable = false;
+                   break;
+               case MESSAGE_SHAKE_END:
+                   mShakeEnabler.removeMessages(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG);
+                   startShake(false);
+                   break;
+               case MESSAGE_SHAKE_SHAKE_CONTINUE_LONG:
+                   mShakeEnabler.removeMessages(MESSAGE_SHAKE_END);
+                   startShake(true);
                    break;
            }
         }
@@ -141,11 +163,23 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            if (intent.getBooleanExtra("isSuccess", false)) {
-                final Intent intent1 = new Intent(Intent.ACTION_VIEW);
-                if (intent.getStringExtra("data") != null) {
-                    Uri uri = Uri.parse("" + intent.getStringExtra("data"));
-                    intent1.setData(uri);
+            if(intent.getAction() == ACTION_SHAKE_SHAKE_SYNCED) {
+                if (intent.getBooleanExtra("isSuccess", false)) {
+                    final Intent intent1 = new Intent(Intent.ACTION_VIEW);
+                    if (intent.getStringExtra("data") != null) {
+                        Uri uri = Uri.parse("" + intent.getStringExtra("data"));
+                        intent1.setData(uri);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent1);
+                            }
+                        }, 500);
+                    }
+                } else if (intent.getBooleanExtra("needLogin", false)) {
+                    final Intent intent1 = ((TkpdCoreRouter) MainApplication.getAppContext())
+                            .getLoginIntent(context);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -154,16 +188,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                         }
                     }, 500);
                 }
-            }else if(intent.getBooleanExtra("needLogin",false)) {
-                final Intent intent1 = ((TkpdCoreRouter) MainApplication.getAppContext())
-                        .getLoginIntent(context);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent1);
-                    }
-                },500);
             }
             deinit();
         }
