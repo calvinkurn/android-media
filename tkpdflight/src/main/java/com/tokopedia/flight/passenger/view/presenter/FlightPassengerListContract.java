@@ -53,5 +53,7 @@ public interface FlightPassengerListContract {
         void deletePassenger(String passengerId);
 
         void onSuccessUpdatePassengerData();
+
+        void getSavedPassengerList();
     }
 }

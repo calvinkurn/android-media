@@ -264,6 +264,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(homeFragmentBroadcastReceiver);
+        presenter.onDestroy();
         presenter.detachView();
         recyclerView.setAdapter(null);
         adapter = null;
@@ -278,9 +279,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.post(new Runnable() {
             @Override
             public void run() {
-                presenter.getHomeData();
-                presenter.getHeaderData(true);
-                loadEggData();
+                if (presenter != null) {
+                    presenter.getHomeData();
+                    presenter.getHeaderData(true);
+                }
             }
         });
         refreshLayout.setOnRefreshListener(this);
@@ -522,9 +524,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onRefresh() {
         removeNetworkError();
-        resetFeedState();
-        presenter.getHomeData();
-        presenter.getHeaderData(false);
+        if (presenter != null) {
+            resetFeedState();
+            presenter.getHomeData();
+            presenter.getHeaderData(false);
+        }
         loadEggData();
     }
 
@@ -537,7 +541,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCountDownFinished() {
-        presenter.updateHomeData();
+        if (presenter != null) {
+            presenter.updateHomeData();
+        }
     }
 
     @Override
@@ -714,9 +720,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onShowRetryGetFeed() {
-        adapter.hideLoading();
-        adapter.showRetry();
-        adapter.notifyDataSetChanged();
+        if(adapter != null ) {
+            adapter.hideLoading();
+            adapter.showRetry();
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override

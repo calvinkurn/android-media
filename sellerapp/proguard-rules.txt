@@ -341,3 +341,7 @@
 
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**
+
+-dontwarn com.clevertap.android.sdk.**
+-dontwarn com.segment.analytics.**
+

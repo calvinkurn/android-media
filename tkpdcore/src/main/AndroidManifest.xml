@@ -43,7 +43,7 @@
     <uses-permission
         android:name="android.permission.RECORD_AUDIO"
         tools:node="remove" />
-    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
 
     <permission
         android:name="${applicationId}.permission.C2D_MESSAGE"
@@ -89,8 +89,13 @@
         <meta-data
             android:name="io.branch.sdk.BranchKey"
             android:value="@string/BRANCH_SDK_KEY" />
-        <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_nabIaHb4sQdBUygwSl7EYdjoqDmDsjRN" />
-        <meta-data android:name="io.branch.sdk.TestMode" android:value="true" /> <!-- Set to true to use Branch_Test_Key -->
+        <meta-data
+            android:name="HANSEL_APP_ID"
+            android:value="JM8LWF8S5B951JQOAZAFRNX14"/>
+        <meta-data
+            android:name="HANSEL_APP_KEY"
+            android:value="8CDH74MC9EZLPFIHNNJPT39ERKS5BODETYX2LBFQ83ECSV86WY"/>
+
         <!-- <meta-data -->
         <!-- android:name="com.google.android.gms.version" -->
         <!-- android:value="@integer/google_play_services_version" /> -->
@@ -343,14 +348,6 @@
         <activity
             android:name=".manage.people.address.activity.ManagePeopleAddressActivity"
             android:label="@string/title_activity_manage_people_address"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".people.activity.PeopleInfoDrawerActivity"
-            android:label="@string/title_activity_people"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".people.activity.PeopleInfoNoDrawerActivity"
-            android:label="@string/title_activity_people"
             android:screenOrientation="portrait" />
         <activity
             android:name=".manage.people.password.activity.ManagePasswordActivity"
