@@ -151,6 +151,9 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
         chatRoomViewModel.setChatList(list);
         chatRoomViewModel.setHasNext(data.isHasNext());
         chatRoomViewModel.setTextAreaReply(data.getTextAreaReply());
+        if(data.getContacts().size() > 0) {
+            chatRoomViewModel.setShopId(data.getContacts().get(0).getShopId());
+        }
         setOpponentViewModel(chatRoomViewModel, data.getContacts());
         return chatRoomViewModel;
     }

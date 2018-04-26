@@ -173,6 +173,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 }
                 getView().updateTimer(l +1);
 
+
+
             }
         });
     }

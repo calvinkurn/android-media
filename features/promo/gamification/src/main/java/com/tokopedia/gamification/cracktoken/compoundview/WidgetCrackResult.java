@@ -259,8 +259,8 @@ public class WidgetCrackResult extends RelativeLayout {
                     listener.onClickCloseButtonWhenError();
                 } else {
                     listener.onClickCloseButton();
-                    listener.onTrackingCloseRewardButton(crackResult);
                 }
+                listener.onTrackingCloseRewardButton(crackResult);
             }
         });
     }

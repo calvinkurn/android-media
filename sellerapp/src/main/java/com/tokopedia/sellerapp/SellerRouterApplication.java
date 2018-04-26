@@ -507,6 +507,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void sendScreenName(String screenName) {
+        ScreenTracking.screen(screenName);
+    }
+
+    @Override
     public void gotToProductDetail(Context context) {
         Intent intent = ProductInfoActivity.createInstance(context);
         context.startActivity(intent);
