@@ -45,8 +45,6 @@ import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.PostQrPaymentUseCase;
 
-import javax.inject.Named;
-
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Interceptor;
@@ -56,8 +54,6 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.tokopedia.core.network.constants.TkpdBaseURL.WEB_DOMAIN;
-import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.DI_AUTO_SWEEP_OKHTTP_CLIENT;
-import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.DI_AUTO_SWEEP_RETROFIT;
 
 
 /**
@@ -233,30 +229,23 @@ public class TokoCashModule {
     }
 
     @Provides
-    @TokoCashScope
-    InputFilter[] provideInputFilterForAutoSweepLimit(SetAutoSweepLimitPresenter presenter) {
-        return new InputFilter[]{new InputFilterMinMax(0, presenter.getAutoSweepMaxLimit())};
-    }
-
-    @Provides
-    @Named(DI_AUTO_SWEEP_RETROFIT)
-    Retrofit provideRetrofitAutoSweep(Retrofit.Builder retrofitBuilder, @Named(DI_AUTO_SWEEP_OKHTTP_CLIENT) OkHttpClient okHttpClient) {
+    @RetrofitAutoSweepQualifier
+    Retrofit provideRetrofitAutoSweep(Retrofit.Builder retrofitBuilder,
+                                      @OkHttpWalletQualifier OkHttpClient okHttpClient, Gson gson) {
         return retrofitBuilder.baseUrl(WEB_DOMAIN)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
                 .build();
     }
 
     @Provides
-    @Named(DI_AUTO_SWEEP_OKHTTP_CLIENT)
-    OkHttpClient provideOkHttpClientHttp(WalletAuthInterceptor authInterceptor) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(authInterceptor)
-                .build();
-    }
-
-    @Provides
-    AutoSweepApi provideAutoSweepApi(@Named(DI_AUTO_SWEEP_RETROFIT) Retrofit retrofit) {
+    AutoSweepApi provideAutoSweepApi(@RetrofitAutoSweepQualifier Retrofit retrofit) {
         return retrofit.create(AutoSweepApi.class);
     }
 
+    @Provides
+    InputFilter[] provideInputFilterForAutoSweepLimit(SetAutoSweepLimitPresenter presenter) {
+        return new InputFilter[]{new InputFilterMinMax(0, presenter.getAutoSweepMaxLimit())};
+    }
 }
