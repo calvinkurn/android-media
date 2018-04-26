@@ -76,6 +76,8 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
     private OptionSearchFilter searchFilter;
     private TextView buttonReset;
     private View buttonClose;
+    private TextView buttonFinish;
+    private View loadingView;
     private View bottomSheetLayout;
     private BottomSheetBehavior bottomSheetBehavior;
     private View rootView;
@@ -133,6 +135,8 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
         filterDetailSidebar = (AlphabeticalSideBar) rootView.findViewById( R.id.filter_detail_sidebar );
         filterDetailEmptySearchResultView = (EmptySearchResultView) rootView.findViewById( R.id.filter_detail_empty_search_result_view );
         filterResultCountText = rootView.findViewById(R.id.filter_result_count);
+        buttonFinish = (TextView) rootView.findViewById(R.id.button_finish);
+        loadingView = rootView.findViewById(R.id.filterProgressBar);
     }
 
     public void setCallback(Callback callback) {
@@ -156,6 +160,8 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
 
     public void setFilterResultCount(String formattedResultCount) {
         filterResultCountText.setText(String.format(getContext().getString(R.string.result_count_template_text), formattedResultCount));
+        buttonFinish.setText(String.format(getContext().getString(R.string.bottom_sheet_filter_finish_button_template_text), formattedResultCount));
+        loadingView.setVisibility(View.GONE);
     }
 
     public void closeView() {
@@ -523,6 +529,12 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
                 closeView();
             }
         });
+        buttonFinish.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeView();
+            }
+        });
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -698,6 +710,7 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
     }
 
     private void applyFilter() {
+        loadingView.setVisibility(View.VISIBLE);
         HashMap<String, String> selectedFilter = generateSelectedFilterMap();
         callback.onApplyFilter(selectedFilter);
     }

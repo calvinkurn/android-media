@@ -61,7 +61,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/dynamic_filter_recycler_view"
@@ -73,6 +74,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@drawable/top_bar_shadow" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/button_finish"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dynamic_filter_apply_button_height"
+                android:gravity="center"
+                android:background="@color/medium_green"
+                style="@style/TextView.Small.WhitePrimary.Bold"
+                />
+
+            <ProgressBar
+                android:id="@+id/filterProgressBar"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/white"
+                android:visibility="gone"
+                android:layout_centerInParent="true" />
 
         </RelativeLayout>
 
