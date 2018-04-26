@@ -174,14 +174,12 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                             if (isSprintSale(channel)) {
                                 Map<String, Object> evenMap = channel.getEnhanceClickSprintSaleHomePage(position, countDownView.getCurrentCountDown());
                                 HomePageTracking.eventEnhancedClickSprintSaleProduct(evenMap);
-                                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
-                                        channel.getHomeAttribution(position + 1, String.valueOf(evenMap.get(ATTRIBUTION)))
+                                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),String.valueOf(evenMap.get(ATTRIBUTION))
                                 );
                             } else {
                                 Map<String, Object> evenMap = channel.getEnhanceClickDynamicChannelHomePage(grid, position + 1);
                                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(evenMap);
-                                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
-                                        channel.getHomeAttribution(position + 1, String.valueOf(evenMap.get(ATTRIBUTION)))
+                                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), String.valueOf(evenMap.get(ATTRIBUTION))
                                 );
                             }
                         }
