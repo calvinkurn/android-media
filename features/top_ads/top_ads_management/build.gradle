@@ -1,24 +1,56 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
+project.ext {
+    artifactId = 'top_ads_management'
+    groupId = 'com.tokopedia.topads'
+    versionName = "2.22"
+    artifactName ="top_ads_management-release"
+}
+
 dependencies {
-    compile project(rootProject.ext.features.seller)
+//    implementation project(rootProject.ext.features.seller)
 
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.tkpdDependencies.seller
+    implementation rootProject.ext.tkpdDependencies.core
+    implementation rootProject.ext.tkpdDependencies.usecase
+    implementation rootProject.ext.tkpdDependencies.design
+    implementation rootProject.ext.tkpdDependencies.abstraction
+    implementation rootProject.ext.tkpdDependencies.cacheapi
+    implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.miscDependencies.rxJavaComputation
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
+        exclude group: "com.android.support"
+    }
+    implementation (rootProject.ext.miscDependencies.imagecropper){
+        exclude group: "com.android.support"
+    }
+    implementation rootProject.ext.viewDependencies.appIntro
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.miscDependencies.scannerZxing
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    compile rootProject.ext.miscDependencies.chips
-    compile(rootProject.ext.tkpdLibDependencies.showcase) {
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.miscDependencies.chips
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
 
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    testCompile rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.junit
 }
+
+apply from: '../../../publish_local.gradle'

@@ -1,30 +1,71 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
-apt {
-    arguments {
-        targetModuleName 'TkpdGM'
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'TkpdGM']
+            }
+        }
     }
+}
+
+project.ext {
+    artifactId = 'gold_merchant'
+    groupId = 'com.tokopedia.gm'
+    versionName = "2.22"
+    artifactName ="gold_merchant-release"
 }
 
 dependencies {
 
-    compile project(rootProject.ext.features.seller)
+//    implementation project(rootProject.ext.features.seller)
 
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.tkpdDependencies.seller
+    implementation rootProject.ext.tkpdDependencies.abstraction
+    implementation rootProject.ext.tkpdDependencies.cacheapi
+    implementation rootProject.ext.tkpdDependencies.usecase
+    implementation rootProject.ext.tkpdDependencies.core
+    implementation rootProject.ext.tkpdDependencies.design
+    implementation rootProject.ext.tkpdDependencies.payment
+    implementation rootProject.ext.tkpdDependencies.goldMerchantCommon
+    implementation rootProject.ext.miscDependencies.scannerZxing
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation (rootProject.ext.miscDependencies.imagecropper){
+        exclude group: "com.android.support"
+    }
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
 
-    apt rootProject.ext.dbDependencies.dbFlowProcessor
-    compile rootProject.ext.dbDependencies.dbFlowCore
-    compile rootProject.ext.dbDependencies.dbFlow
+    implementation rootProject.ext.viewDependencies.appIntro
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
 
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
+        exclude group: "com.android.support"
+    }
 
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    testCompile rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.junit
 }
+
+apply from: '../../../publish_local.gradle'

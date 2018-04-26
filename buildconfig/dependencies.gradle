@@ -54,6 +54,7 @@ ext {
     tkpdTokocashVersion = '2.22'
     tkpdWishlistVersion = '2.22'
     tkpdHomeVersion = '2.22'
+    tkpdMitraToppersVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -228,7 +229,10 @@ ext {
             shopPage            : "com.tokopedia.shop:shop-page:${tkpdShopVersion}",
             kol                 : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             pushNotif           : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
-            gamification        : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}"
+            gamification        : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
+            mitraToppers        : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
+            goldMerchant        : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
+            topAdsManagement    : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}"
     ]
 
     tkpdLibDependencies = [
@@ -271,7 +275,6 @@ ext {
             kol             : ":features:content:kol",
             groupchat       : ":features:user:groupchat",
             gamification    : ":features:promo:gamification"
-
     ]
 
     libraries = [
