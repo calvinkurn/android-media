@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:clipToPadding="false"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
@@ -27,7 +28,7 @@
         android:id="@+id/btn_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Done"/>
+        android:text="Done" />
 
     <FrameLayout
         android:id="@+id/container"
@@ -40,38 +41,67 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <FrameLayout
+            <com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager
+                android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
-                <com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager
-                    android:id="@+id/view_pager"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_4"
-                    android:layout_gravity="bottom"
-                    android:background="@drawable/cover_shadow_up" />
+                android:layout_weight="1"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@drawable/bg_line_separator"/>
+
+            <FrameLayout
+                android:id="@+id/vg_editor_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                tools:visibility="visible">
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_height="@dimen/dp_72">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+                        <!-- layout in programmatically -->
+                    </LinearLayout>
+
+                </HorizontalScrollView>
             </FrameLayout>
 
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tab_layout"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabMode="fixed"
-                app:tabGravity="fill"
-                app:tabIndicatorColor="@null"
-                app:tabMinWidth="@dimen/tab_min_width"
-                app:tabTextColor="@color/font_black_primary_70"
-                app:tabSelectedTextColor="@color/font_black_primary_70"
-                android:clipToPadding="false"
-                android:clipChildren="false"
-                app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget">
-                <!--will be added programmatically at ImageEditorActivity-->
+                android:layout_height="@dimen/dp_1"
+                android:background="@drawable/bg_line_separator"/>
 
-            </android.support.design.widget.TabLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_72">
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tab_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    app:tabGravity="fill"
+                    app:tabIndicatorColor="@null"
+                    app:tabMinWidth="@dimen/tab_min_width"
+                    app:tabMode="fixed"
+                    app:tabSelectedTextColor="@color/font_black_primary_70"
+                    app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+                    app:tabTextColor="@color/font_black_primary_70">
+                    <!--will be added programmatically at ImageEditorActivity-->
+
+                </android.support.design.widget.TabLayout>
+
+            </FrameLayout>
 
         </LinearLayout>
 

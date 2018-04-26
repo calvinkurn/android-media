@@ -1,15 +1,12 @@
 package com.tokopedia.imagepicker.editor;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -97,20 +94,21 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     @Override
-    public void onSuccessConvertPathToPreviewBitmap(ImageEditPreviewPresenter.BitmapPreviewResult bitmapPreviewResult, float expectedPreviewWidth) {
+    public void onSuccessConvertPathToPreviewBitmap(ImageEditPreviewPresenter.BitmapPreviewResult bitmapPreviewResult) {
         hidePreviewLoading();
 
         Bitmap previewBitmap = bitmapPreviewResult.previewBitmap;
 
-        float maxZoomResolution = -1;
-        if (minResolution > 0) {
-            int originalResolution = Math.min(bitmapPreviewResult.originalWidth, bitmapPreviewResult.originalHeight);
-            maxZoomResolution = originalResolution / minResolution;
-        }
-        float defaultMaxZoom = cropperView.getWidth() * 2 / expectedPreviewWidth;
-
-        float maxZoom = Math.max(defaultMaxZoom, maxZoomResolution);
-        cropperView.setMaxZoom(maxZoom > 1 ? maxZoom : 1);
+//        float maxZoomResolution = -1;
+//        if (minResolution > 0) {
+//            int originalResolution = Math.min(bitmapPreviewResult.originalWidth, bitmapPreviewResult.originalHeight);
+//            maxZoomResolution = (float) originalResolution / minResolution;
+//        }
+//        float defaultMaxZoom = cropperView.getWidth() * 2 / bitmapPreviewResult.previewWidth;
+//
+//        float maxZoom = Math.min(defaultMaxZoom, maxZoomResolution);
+//        cropperView.setMaxZoom(maxZoom > 1 ? maxZoom : 1);
+        cropperView.setMaxZoom(3);
 
         cropperView.setImageBitmap(previewBitmap);
     }

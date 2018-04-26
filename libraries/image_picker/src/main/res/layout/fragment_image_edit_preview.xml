@@ -21,12 +21,12 @@
                 android:id="@+id/cropper_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
+                android:background="@android:color/white"
                 app:nocropper__fit_to_center="true"
                 app:nocropper__grid_color="@color/white_65"
                 app:nocropper__grid_opacity="0.8"
                 app:nocropper__grid_thickness="0.8dp"
-                app:nocropper__padding_color="@android:color/transparent" />
+                app:nocropper__padding_color="@android:color/white" />
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/snap_button"

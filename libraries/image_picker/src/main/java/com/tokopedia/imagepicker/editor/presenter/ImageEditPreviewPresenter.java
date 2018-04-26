@@ -28,7 +28,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
     public interface ImageEditPreviewView extends CustomerView {
         Context getContext();
         void onErrorConvertPathToPreviewBitmap(Throwable e);
-        void onSuccessConvertPathToPreviewBitmap(BitmapPreviewResult bitmapPreviewResult, float expectedPreviewWidth);
+        void onSuccessConvertPathToPreviewBitmap(BitmapPreviewResult bitmapPreviewResult);
     }
 
     public void detachView(){
@@ -42,6 +42,8 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         public Bitmap previewBitmap;
         public int originalWidth;
         public int originalHeight;
+        public float scaleToPreview;
+        public float previewWidth;
     }
 
     public void convertImagePathToPreviewBitmap(String imagePath){
@@ -55,9 +57,9 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                                 int originalHeight = previewBitmap.getHeight();
 
                                 int maxBitmapWidthOrHeight = Math.max(originalWidth, originalHeight);
-
+                                float scaleToPreview = 1;
                                 if (maxBitmapWidthOrHeight > expectedPreviewWidth){
-                                    float scaleToPreview = (float) maxBitmapWidthOrHeight / expectedPreviewWidth;
+                                    scaleToPreview = (float) maxBitmapWidthOrHeight / expectedPreviewWidth;
                                     previewBitmap = Bitmap.createScaledBitmap(previewBitmap, (int) (previewBitmap.getWidth() / scaleToPreview),
                                             (int) (previewBitmap.getHeight() / scaleToPreview), true);
                                 }
@@ -65,6 +67,8 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                                 bitmapPreviewResult.previewBitmap = previewBitmap;
                                 bitmapPreviewResult.originalWidth = originalWidth;
                                 bitmapPreviewResult.originalHeight = originalHeight;
+                                bitmapPreviewResult.scaleToPreview = scaleToPreview;
+                                bitmapPreviewResult.previewWidth = Math.min(maxBitmapWidthOrHeight, expectedPreviewWidth);
                                 return bitmapPreviewResult;
                             }
                         })
@@ -86,7 +90,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
 
                                @Override
                                public void onNext(BitmapPreviewResult bitmapPreviewResult) {
-                                   getView().onSuccessConvertPathToPreviewBitmap(bitmapPreviewResult, expectedPreviewWidth);
+                                   getView().onSuccessConvertPathToPreviewBitmap(bitmapPreviewResult);
                                }
                            }
                 );

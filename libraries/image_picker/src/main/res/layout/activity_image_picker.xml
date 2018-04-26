@@ -57,26 +57,30 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_4"
-            android:layout_gravity="bottom"
-            android:background="@drawable/cover_shadow_up" />
+
     </android.support.design.widget.CoordinatorLayout>
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tab_layout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabMode="fixed"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@null"
-        app:tabMinWidth="@dimen/tab_min_width"
-        android:clipToPadding="false"
-        android:clipChildren="false"
-        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget">
-        <!--will be added programmatically at ImagePickerActivity-->
+        android:orientation="vertical"
+        android:divider="@drawable/bg_line_separator"
+        android:showDividers="beginning">
 
-    </android.support.design.widget.TabLayout>
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@null"
+            app:tabMinWidth="@dimen/tab_min_width"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget">
+            <!--will be added programmatically at ImagePickerActivity-->
+
+        </android.support.design.widget.TabLayout>
+    </LinearLayout>
 
 </LinearLayout>
