@@ -208,13 +208,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     @Override
-    public String getScreenName() {
-        return AppScreen.SCREEN_INDEX_HOME;
-    }
-
-    @Override
     protected void sendScreenAnalytics() {
-        IndexScreenTracking.sendScreen(this, this);
     }
 
     @Override
