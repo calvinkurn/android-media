@@ -508,8 +508,9 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         tvErrorGeoLocation.setVisibility(View.GONE);
         ShipmentPackage shipmentPackage = (ShipmentPackage) spShipmentPackage.getSelectedItem();
         if (shipmentPackage.getShowMap() == 1 && (
-                locationPass.getLatitude().equalsIgnoreCase("") ||
-                        locationPass.getLongitude().equalsIgnoreCase(""))) {
+                locationPass == null
+                        ||locationPass.getLatitude().equalsIgnoreCase("")
+                        || locationPass.getLongitude().equalsIgnoreCase(""))) {
             tvErrorGeoLocation.setVisibility(View.VISIBLE);
             showSnackbar(getString(com.tokopedia.transaction.R.string.shipment_data_not_complete));
             return true;
