@@ -1,5 +1,7 @@
 package com.tokopedia.imageuploader.data.source;
 
+import android.net.Uri;
+
 import com.tokopedia.imageuploader.data.source.api.ImageUploadApi;
 
 import java.util.Map;
@@ -28,6 +30,8 @@ public class UploadImageDataSourceCloud {
     }
 
     public Observable<String> uploadImage(Map<String, RequestBody> params, String urlUploadImage) {
+        Uri uri = Uri.parse(urlUploadImage);
+        retrofitBuilder.baseUrl(uri.getScheme() + "://" + uri.getHost() + "/");
         Retrofit retrofit = retrofitBuilder.client(okHttpClient).build();
         return retrofit.create(ImageUploadApi.class)
                 .uploadImage(urlUploadImage, params)

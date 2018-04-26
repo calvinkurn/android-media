@@ -44,9 +44,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class ImageUploaderModule {
     private static final String GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
-    private static final int NET_READ_TIMEOUT = 60;
-    private static final int NET_WRITE_TIMEOUT = 60;
-    private static final int NET_CONNECT_TIMEOUT = 60;
+    private static final int NET_READ_TIMEOUT = 50;
+    private static final int NET_WRITE_TIMEOUT = 50;
+    private static final int NET_CONNECT_TIMEOUT = 50;
     private static final int NET_RETRY = 1;
     private static String LIVE_DOMAIN = "https://ws.tokopedia.com/";
 
@@ -55,7 +55,7 @@ public class ImageUploaderModule {
     @Provides
     public OkHttpClient provideOkHttpClient(@ImageUploaderQualifier TkpdAuthInterceptor tkpdAuthInterceptor,
                                             @ImageUploaderQualifier OkHttpRetryPolicy retryPolicy,
-                                            @ImageUploaderQualifier Interceptor chuckInterceptor,
+                                            @ImageUploaderChuckQualifier Interceptor chuckInterceptor,
                                             @ImageUploaderQualifier HttpLoggingInterceptor loggingInterceptor,
                                             @ImageUploaderQualifier ErrorResponseInterceptor errorHandlerInterceptor,
                                             @ImageUploaderQualifier CacheApiInterceptor cacheApiInterceptor) {
@@ -117,10 +117,10 @@ public class ImageUploaderModule {
         if (context instanceof ImageUploaderRouter) {
             return ((ImageUploaderRouter) context).getChuckInterceptor();
         }
-        return null;
+        throw new RuntimeException("App should implement " + ImageUploaderRouter.class.getSimpleName());
     }
 
-    @ImageUploaderChuckQualifier
+    @ImageUploaderQualifier
     @Provides
     public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -147,7 +147,7 @@ public class ImageUploaderModule {
     @ImageUploaderQualifier
     @Provides
     public Retrofit provideWsV4RetrofitWithErrorHandler(@ImageUploaderQualifier OkHttpClient okHttpClient,
-                                                        Retrofit.Builder retrofitBuilder) {
+                                                        @ImageUploaderQualifier Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(LIVE_DOMAIN).client(okHttpClient).build();
     }
 
@@ -164,22 +164,22 @@ public class ImageUploaderModule {
         return new GenerateHostCloud(generateHostApi, userSession);
     }
 
-
-    @Provides
     @ImageUploaderQualifier
-    GenerateHostDataSource provideGenerateHostDataSource(GenerateHostCloud generateHostCloud) {
+    @Provides
+    GenerateHostDataSource provideGenerateHostDataSource(@ImageUploaderQualifier GenerateHostCloud generateHostCloud) {
         return new GenerateHostDataSource(generateHostCloud);
     }
 
+
     @Provides
     @ImageUploaderQualifier
-    GenerateHostRepository provideGenerateHostRepository(GenerateHostDataSource generateHostDataSource) {
+    GenerateHostRepository provideGenerateHostRepository(@ImageUploaderQualifier GenerateHostDataSource generateHostDataSource) {
         return new GenerateHostRepositoryImpl(generateHostDataSource);
     }
 
     @Provides
     @ImageUploaderQualifier
-    UploadImageDataSourceCloud provideUploadImageDataSourceCloud(Retrofit.Builder retrofit, @ImageUploaderQualifier OkHttpClient okHttpClient) {
+    UploadImageDataSourceCloud provideUploadImageDataSourceCloud(@ImageUploaderQualifier Retrofit.Builder retrofit, @ImageUploaderQualifier OkHttpClient okHttpClient) {
         return new UploadImageDataSourceCloud(retrofit, okHttpClient);
     }
 

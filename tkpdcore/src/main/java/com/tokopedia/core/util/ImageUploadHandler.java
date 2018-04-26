@@ -78,6 +78,13 @@ public class ImageUploadHandler {
         return model.cameraFileLoc;
     }
 
+    public Intent getCameraIntent() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, getOutputMediaFileUri());
+        return intent;
+    }
+
+
     private void startActivity(Intent intent, int code) {
         if (activity != null)
             activity.startActivityForResult(intent, code);
@@ -168,5 +175,7 @@ public class ImageUploadHandler {
         tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, 70, bao);
         return bao.toByteArray();
     }
+
+
 
 }

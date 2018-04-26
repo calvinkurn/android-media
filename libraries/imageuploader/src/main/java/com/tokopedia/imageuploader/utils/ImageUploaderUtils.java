@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 public class ImageUploaderUtils {
     private UserSession userSession;
@@ -15,7 +16,7 @@ public class ImageUploaderUtils {
 
     public String getDeviceTime() {
         if (deviceTime == null || deviceTime.length() > 0) {
-            deviceTime = String.valueOf((System.currentTimeMillis() / 1000L));
+            deviceTime = String.valueOf((new Date().getTime()) / 1000);
         }
         return deviceTime;
     }
