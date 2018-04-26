@@ -13,10 +13,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.adapter.InnerProductListAdapter;
-import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter.ActionListener;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressItem;
@@ -28,7 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Aghny A. Putra on 02/03/18
+ * Original @author Aghny A. Putra on 02/03/18
+ * Modified by Irfan
  */
 
 public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder {
@@ -48,12 +47,16 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         mActionListener = actionListener;
     }
 
-    public void bindViewHolder(ShipmentSingleAddressItem shipmentSingleAddressItem,
+    @Override
+    public void bindViewHolder(ShipmentItem shipmentItem,
                                RecipientAddressModel recipientAddressModel,
                                ArrayList<ShowCaseObject> showCaseObjectList) {
 
         mIsAllCartItemShown = false;
         mIsCostDetailShown = false;
+        addressLayout.setVisibility(View.GONE);
+
+        ShipmentSingleAddressItem shipmentSingleAddressItem = (ShipmentSingleAddressItem) shipmentItem;
 
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentSingleAddressItem.getCartItemModels());
 
@@ -86,7 +89,8 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         tvFreeReturnLabel.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
         tvPreOrder.setVisibility(cartItemModel.isPreOrder() ? View.VISIBLE : View.GONE);
         tvCashback.setVisibility(cartItemModel.isCashback() ? View.VISIBLE : View.GONE);
-        tvCashback.setText(cartItemModel.getCashback());
+        String cashback = tvCashback.getContext().getString(R.string.label_cashback) + " " + cartItemModel.getCashback();
+        tvCashback.setText(cashback);
     }
 
     private void bindOtherCartItems(List<CartItemModel> cartItemModelList) {
@@ -120,27 +124,21 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
     }
 
     private void bindCostDetail(ShipmentSingleAddressItem shipmentSingleAddressItem) {
-        int totalItemPrice = 0;
-        int totalItem = 0;
-        double totalWeight = 0;
-        for (CartItemModel cartItemModel : shipmentSingleAddressItem.getCartItemModels()) {
-            totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
-            totalItem += cartItemModel.getQuantity();
-            totalWeight += cartItemModel.getWeight();
-        }
         rlCartSubTotal.setVisibility(View.VISIBLE);
         rlShipmentCost.setVisibility(mIsCostDetailShown ? View.VISIBLE : View.GONE);
-
         tvShopName.setText(shipmentSingleAddressItem.getShopName());
 
-        tvTotalItemPrice.setText(getPriceFormat((int) totalItemPrice));
-        tvTotalItem.setText(getTotalItemLabel(totalItem));
-        tvShippingFee.setText(getTotalWeightLabel(totalWeight, shipmentSingleAddressItem.getWeightUnit()));
-
+        int totalItem = 0;
+        double totalWeight = 0;
         int shippingPrice = 0;
         int insurancePrice = 0;
         int additionalPrice = 0;
         int subTotalPrice = 0;
+        int totalItemPrice = 0;
+
+        String tvShippingFeeLabel = tvShippingFee.getContext().getString(R.string.label_delivery_price);
+        String tvTotalItemLabel = tvTotalItem.getContext().getString(R.string.label_item_count_without_format);
+
         if (shipmentSingleAddressItem.getSelectedShipmentDetailData() != null &&
                 shipmentSingleAddressItem.getSelectedShipmentDetailData().getSelectedCourier() != null) {
             shippingPrice = shipmentSingleAddressItem.getSelectedShipmentDetailData().getSelectedCourier()
@@ -150,10 +148,20 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
                         .getSelectedCourier().getInsurancePrice();
             }
             subTotalPrice = shippingPrice + insurancePrice + additionalPrice + totalItemPrice;
+            tvShippingFeeLabel = getTotalWeightLabel(totalWeight, shipmentSingleAddressItem.getWeightUnit());
+            tvTotalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
+            for (CartItemModel cartItemModel : shipmentSingleAddressItem.getCartItemModels()) {
+                totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
+                totalItem += cartItemModel.getQuantity();
+                totalWeight += cartItemModel.getWeight();
+            }
         }
+        tvTotalItemPrice.setText(getPriceFormat(totalItemPrice));
+        tvTotalItem.setText(tvTotalItemLabel);
+        tvShippingFee.setText(tvShippingFeeLabel);
         tvSubTotalPrice.setText(getPriceFormat(subTotalPrice));
-        tvShippingFee.setText(getPriceFormat(shippingPrice));
-        tvInsuranceFee.setText(getPriceFormat(insurancePrice));
+        tvShippingFeePrice.setText(getPriceFormat(shippingPrice));
+        tvInsuranceFeePrice.setText(getPriceFormat(insurancePrice));
         rlCartSubTotal.setOnClickListener(costDetailOptionListener());
     }
 
@@ -192,10 +200,6 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         return cartItemModel.isCashback()
                 || cartItemModel.isFreeReturn()
                 || cartItemModel.isPreOrder();
-    }
-
-    private String getTotalItemLabel(int totalItem) {
-        return String.format("Jumlah Barang (%s Item)", totalItem);
     }
 
     private String getTotalWeightLabel(double weight, int weightUnit) {

@@ -42,6 +42,7 @@ import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
+import com.tokopedia.checkout.view.view.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -496,6 +497,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData) {
+        Intent intent = ShipmentActivity.createInstance(getActivity(), shipmentAddressFormData,
+                promoCodeAppliedData, cartListData.getCartPromoSuggestion()
+        );
+        startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
+/*
         if (shipmentAddressFormData.isMultiple()) {
             Intent intent = CartShipmentActivity.createInstanceMultipleAddress(
                     getActivity(), shipmentAddressFormData, this.promoCodeAppliedData,
@@ -509,6 +515,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             );
             startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
         }
+*/
     }
 
     @Override

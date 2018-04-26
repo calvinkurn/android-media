@@ -9,7 +9,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
+import com.tokopedia.showcase.ShowCaseObject;
+
+import java.util.ArrayList;
 
 public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -95,7 +100,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
         tvPreOrder = itemView.findViewById(R.id.tv_pre_order);
         tvCashback = itemView.findViewById(R.id.tv_cashback);
-        rlProductPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
+        rlProductPoliciesLayout = itemView.findViewById(R.id.layout_policy);
         tvTextProductWeight = itemView.findViewById(R.id.tv_text_product_weight);
         tvProductWeight = itemView.findViewById(R.id.tv_product_weight);
         tvProductTotalItem = itemView.findViewById(R.id.tv_product_total_item);
@@ -136,5 +141,9 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvPromoPrice = itemView.findViewById(R.id.tv_promo_price);
         rlShipmentCost = itemView.findViewById(R.id.rl_shipment_cost);
     }
+
+    protected abstract void bindViewHolder(ShipmentItem shipmentSingleAddressItem,
+                                           RecipientAddressModel recipientAddressModel,
+                                           ArrayList<ShowCaseObject> showCaseObjectList);
 
 }

@@ -17,17 +17,25 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.checkout.data.entity.request.DataCheckoutRequest;
+import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
+import com.tokopedia.checkout.view.view.shipment.converter.RatesDataConverter;
+import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataConverter;
+import com.tokopedia.checkout.view.view.shipment.di.DaggerShipmentComponent;
+import com.tokopedia.checkout.view.view.shipment.di.ShipmentComponent;
+import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
+import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
@@ -35,18 +43,26 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_POSITION;
+import static com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
+import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_DATA_STORE;
+
 /**
  * @author Irfan Khoirul on 23/04/18.
+ * Originaly authored by Aghny, Angga, Kris
  */
 
 public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
         ShipmentAdapterActionListener {
 
+    private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
+    private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     public static final int RESULT_CODE_CANCEL_SHIPMENT_PAYMENT = 4;
     public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
@@ -61,15 +77,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private TkpdProgressDialog progressDialogNormal;
 
+    private List<ShipmentItem> shipmentItems;
+    private RecipientAddressModel recipientAddressModel;
     private PromoCodeAppliedData promoCodeAppliedData;
     private CartPromoSuggestion cartPromoSuggestion;
     private List<DataCheckoutRequest> mCheckoutRequestData;
     private CheckoutData checkoutData;
 
-//    @Inject
+    @Inject
     ShipmentAdapter shipmentAdapter;
-//    @Inject
+    @Inject
     ShipmentPresenter shipmentPresenter;
+    @Inject
+    ShipmentDataConverter shipmentDataConverter;
+    @Inject
+    RatesDataConverter ratesDataConverter;
 
     public static ShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
                                                PromoCodeAppliedData promoCodeAppliedData,
@@ -86,7 +108,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     protected void initInjector() {
-
+        ShipmentComponent component = DaggerShipmentComponent.builder()
+                .shipmentModule(new ShipmentModule(this))
+                .build();
+        component.inject(this);
     }
 
     @Override
@@ -123,10 +148,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     protected void setupArguments(Bundle arguments) {
         CartShipmentAddressFormData cartShipmentAddressFormData
                 = arguments.getParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA);
+        if (cartShipmentAddressFormData != null) {
+            if (!cartShipmentAddressFormData.isMultiple()) {
+                recipientAddressModel = shipmentDataConverter.getRecipientAddressModel(cartShipmentAddressFormData);
+            }
+            shipmentItems = shipmentDataConverter.getShipmentItems(cartShipmentAddressFormData);
+        }
 
-//        singleShipmentData = mCartShipmentAddressFormDataConverter.convert(
-//                cartShipmentAddressFormData
-//        );
         promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
         cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
     }
@@ -145,8 +173,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         tvPromoMessage = view.findViewById(R.id.tv_promo_message);
         cvBottomLayout = view.findViewById(R.id.bottom_layout);
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-
-        shipmentAdapter = new ShipmentAdapter(this);
     }
 
     @Override
@@ -185,8 +211,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             cartPromoSuggestion.setVisible(false);
         }
         shipmentAdapter.addPromoSuggestionData(cartPromoSuggestion);
-//        shipmentAdapter.addAddressShipmentData(singleShipmentData.getRecipientAddress());
-//        shipmentAdapter.addCartItemDataList(singleShipmentData.getCartItem());
+        if (recipientAddressModel != null) {
+            shipmentAdapter.addAddressShipmentData(recipientAddressModel);
+        }
+        shipmentAdapter.addCartItemDataList(shipmentItems);
 //        shipmentAdapter.addShipmentCostData(singleShipmentData.getShipmentCost());
     }
 
@@ -315,6 +343,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    private void onResultFromRequestCodeCourierOptions(int requestCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CHOOSE_PICKUP_POINT:
+                Store pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
+//                shipmentAdapter.setPickupPoint(pickupBooth);
+                break;
+            case REQUEST_CODE_SHIPMENT_DETAIL:
+                ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
+                int position = data.getIntExtra(EXTRA_POSITION, 0);
+//                shipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
+            default:
+                break;
+        }
+    }
+
 
     // Adapter Listener
 
@@ -325,6 +368,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChooseShipment(int position, ShipmentItem shipmentItem, RecipientAddressModel recipientAddressModel) {
+        ShipmentDetailData shipmentDetailData;
+        if (shipmentItem.getSelectedShipmentDetailData() != null) {
+            shipmentDetailData = shipmentItem.getSelectedShipmentDetailData();
+        } else {
+            ShipmentRatesDataMapper shipmentRatesDataMapper = new ShipmentRatesDataMapper();
+
+            shipmentDetailData = ratesDataConverter.getShipmentDetailData(shipmentItem,
+                    recipientAddressModel);
+        }
+
+        Intent intent = ShipmentDetailActivity.createInstance(getActivity(), shipmentDetailData,
+                position);
+        startActivityForResult(intent, REQUEST_CODE_SHIPMENT_DETAIL);
 
     }
 

@@ -41,6 +41,8 @@
     <string name="default_quantity">1</string>
     <string name="label_shipment_counter">Pengiriman #</string>
     <string name="label_item_count">Jumlah</string>
+    <string name="label_item_count_with_format">Jumlah Barang (%d Item)</string>
+    <string name="label_item_count_without_format">Jumlah Barang</string>
     <string name="label_error_choose_address">Pilih alamat pengiriman</string>
     <string name="label_choose_address">Pilih Alamat</string>
     <string name="label_shipment">Pengiriman</string>
@@ -96,5 +98,6 @@
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
     <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="message_payment_succeded_transaction_module">Pembayaran berhasil</string>
+    <string name="label_cashback">Cashback</string>
 
 </resources>

@@ -71,7 +71,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         mTvFreeReturnLabel.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);
         mTvPreOrder.setVisibility(cartItem.isPreOrder() ? View.VISIBLE : View.GONE);
         mTvCashback.setVisibility(cartItem.isCashback() ? View.VISIBLE : View.GONE);
-        mTvCashback.setText(cartItem.getCashback());
+        String cashback = mTvCashback.getContext().getString(R.string.label_cashback) + " " + cartItem.getCashback();
+        mTvCashback.setText(cashback);
     }
 
     private boolean isPoliciesVisible(CartItemModel cartItem) {

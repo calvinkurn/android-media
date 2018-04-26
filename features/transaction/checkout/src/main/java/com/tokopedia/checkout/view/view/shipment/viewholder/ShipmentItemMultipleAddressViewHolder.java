@@ -2,15 +2,13 @@ package com.tokopedia.checkout.view.view.shipment.viewholder;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressItem;
-import com.tokopedia.design.pickuppoint.PickupPointLayout;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
+import com.tokopedia.showcase.ShowCaseObject;
+
+import java.util.ArrayList;
 
 public class ShipmentItemMultipleAddressViewHolder extends ShipmentItemViewHolder {
 
@@ -25,7 +23,9 @@ public class ShipmentItemMultipleAddressViewHolder extends ShipmentItemViewHolde
         mActionListener = actionListener;
     }
 
-    public void bindViewHolder(ShipmentMultipleAddressItem shipmentMultipleAddressItem){
+    public void bindViewHolder(ShipmentItem shipmentSingleAddressItem,
+                               RecipientAddressModel recipientAddressModel,
+                               ArrayList<ShowCaseObject> showCaseObjectList){
         // TODO : BIND HERE
         tvAddressName.setText("");
         tvRecipientName.setText("");

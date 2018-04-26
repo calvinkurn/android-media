@@ -14,10 +14,10 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
-import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentItemMultipleAddressViewHolder;
-import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentCostViewHolder;
+import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentItemMultipleAddressViewHolder;
 import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentItemSingleAddressViewHolder;
+import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressItem;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressItem;
@@ -47,9 +47,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private static final int ITEM_VIEW_RECIPIENT_ADDRESS = R.layout.view_item_shipment_recipient_address;
     private static final int ITEM_VIEW_SHIPMENT_COST = R.layout.view_item_shipment_cost_details;
-    private static final int ITEM_VIEW_CART = R.layout.item_shipment;
-    private static final int ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS = 1;
-    private static final int ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS = 2;
+    private static final int ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS = R.layout.item_shipment_single;
+    private static final int ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS = R.layout.item_shipment_multiple;
 
     private ArrayList<ShowCaseObject> showCaseObjectList;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
@@ -115,7 +114,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
             ((CartVoucherPromoViewHolder) holder).bindData((CartItemPromoHolderData) data, position);
-            setShowCase(holder.itemView.getContext());
+//            setShowCase(holder.itemView.getContext());
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             ((CartPromoSuggestionViewHolder) holder).bindData((CartPromoSuggestion) data, position);
         } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
@@ -127,7 +126,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentItemSingleAddressViewHolder) holder).bindViewHolder(
                     (ShipmentSingleAddressItem) data, recipientAddressModel, showCaseObjectList);
         } else if (viewType == ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS) {
-            ((ShipmentItemMultipleAddressViewHolder) holder).bindViewHolder((ShipmentMultipleAddressItem) data);
+            ((ShipmentItemMultipleAddressViewHolder) holder).bindViewHolder(
+                    (ShipmentMultipleAddressItem) data, recipientAddressModel, showCaseObjectList);
         }
     }
 
