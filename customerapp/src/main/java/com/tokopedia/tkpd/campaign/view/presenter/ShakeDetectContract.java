@@ -31,6 +31,7 @@ public interface ShakeDetectContract {
         void updateTimer(Long l);
 
         boolean isLongShakeTriggered();
+        void setInvisibleCounter();
     }
 
     public interface Presenter extends CustomerPresenter<View>{

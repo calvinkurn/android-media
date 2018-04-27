@@ -72,14 +72,23 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
     }
 
-
+    volatile boolean secondShakeHappen = false;
     @Override
     public void onShakeDetect() {
         if (!isFirstShake && isDoubleShakeShakeEnable() && !getView().isLongShakeTriggered()) {
             isFirstShake = true;
             waitForSecondShake();
+
         } else {
-            isFirstShake = false;
+            if(shakeUseCase != null)
+                Log.e("shake_shake","unsubscripbe called");
+                shakeUseCase.unsubscribe();
+            if(isFirstShake) {
+                isFirstShake = false;
+                secondShakeHappen = true;
+            }
+            Log.e("shake_shake","unsubscripbe called outer");
+            getView().setInvisibleCounter();
             RequestParams requestParams = RequestParams.create();
             requestParams.putString(IS_AUDIO, "false");
             if (ShakeDetectManager.sTopActivity != null) {
@@ -167,7 +176,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
             @Override
             public void onNext(Long l) {
-                if(l==SHAKE_SHAKE_WAIT_TIME_SEC) {
+                if(l==SHAKE_SHAKE_WAIT_TIME_SEC && !secondShakeHappen) {
+                    Log.e("shake_shake","tier finish unsubscripbe called outer");
                     finishShake();
                     return;
                 }
@@ -179,9 +189,13 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
         });
     }
     void finishShake() {
-        subscription.unsubscribe();
+        Log.e("shake_shake","fihnish called called outer");
+        if(subscription != null)
+            subscription.unsubscribe();
+        getView().setInvisibleCounter();
         isFirstShake = false;
-        shakeUseCase.unsubscribe();
+        if(shakeUseCase != null)
+            shakeUseCase.unsubscribe();
         getView().finish();
     }
 
