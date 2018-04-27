@@ -40,8 +40,6 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     private TextView nameTxt;
     private TextView descriptionTxt;
     private LinearLayout badgeContainer;
-    private ImageView image1, image2;
-    private LinearLayout productContainer;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
 
     public BannerShopViewHolder(View itemView, final TopAdsBannerClickListener topAdsBannerClickListener) {
@@ -53,9 +51,6 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
         nameTxt = (TextView) itemView.findViewById(R.id.shop_name);
         descriptionTxt = (TextView) itemView.findViewById(R.id.description);
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
-        image1 = itemView.findViewById(R.id.image1);
-        image2 = itemView.findViewById(R.id.image2);
-        productContainer = itemView.findViewById(R.id.product_image_container);
     }
 
     @Override
@@ -87,46 +82,6 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                 }
             } else {
                 badgeContainer.setVisibility(View.GONE);
-            }
-            if(cpm.getCpmShop() !=null && cpm.getCpmShop().getProducts().size() > 0){
-                final List<Product> productList = cpm.getCpmShop().getProducts();
-                descriptionTxt.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(topAdsBannerClickListener!=null) {
-                            topAdsBannerClickListener.onBannerAdsClicked(element.getAppLink());
-                            new ImpresionTask().execute(element.getAdsClickUrl());
-                        }
-                    }
-                });
-                if(productList.get(0) != null) {
-                    final Product product = productList.get(0);
-                    Glide.with(context).load(product.getImageProduct().getImageUrl()).into(image1);
-                    image1.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if(topAdsBannerClickListener!=null) {
-                                topAdsBannerClickListener.onBannerAdsClicked(product.getApplinks());
-                            }
-                        }
-                    });
-                }
-                if(productList.size() > 1){
-                    final Product product = productList.get(1);
-                    ((CardView) image2.getParent()).setVisibility(View.VISIBLE);
-                    Glide.with(context).load(productList.get(1).getImageProduct().getImageUrl()).into(image2);
-                    image2.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if(topAdsBannerClickListener!=null) {
-                                topAdsBannerClickListener.onBannerAdsClicked(product.getApplinks());
-                            }
-                        }
-                    });
-                    ((LinearLayout.LayoutParams) productContainer.getLayoutParams()).setMargins(0,0,0,0);
-                }
-            } else {
-                productContainer.setVisibility(View.GONE);
             }
         }
     }

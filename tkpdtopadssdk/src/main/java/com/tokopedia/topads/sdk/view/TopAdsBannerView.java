@@ -86,8 +86,11 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     private void createViewCpmShop(Context context, final CpmData.Cpm cpm, String appLink, String adsClickUrl) {
         if (activityIsFinishing(context))
             return;
+
+        final ArrayList<ImageView> indicatorItems = new ArrayList<>();
         inflate(getContext(), R.layout.layout_ads_banner_shop_pager, this);
         RecyclerView recyclerView = findViewById(R.id.list);
+        LinearLayout indicatorContainer = findViewById(R.id.indicator);
         bannerAdsAdapter = new BannerAdsAdapter(new BannerAdsAdapterTypeFactory(topAdsBannerClickListener));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(bannerAdsAdapter);
@@ -101,6 +104,31 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             }
             bannerAdsAdapter.setList(items);
         }
+        for (int i = 0; i < 2; i++) {
+            ImageView pointView = new ImageView(getContext());
+            if (i == 0) {
+                pointView.setImageResource(R.drawable.dot_green);
+            } else {
+                pointView.setImageResource(R.drawable.dot_grey);
+            }
+            indicatorItems.add(pointView);
+            indicatorContainer.addView(pointView);
+        }
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int currentPosition =
+                        ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+                for (int i = 0; i < indicatorItems.size(); i++) {
+                    if (currentPosition != i) {
+                        indicatorItems.get(i).setImageResource(R.drawable.dot_grey);
+                    } else {
+                        indicatorItems.get(i).setImageResource(R.drawable.dot_green);
+                    }
+                }
+            }
+        });
     }
 
     private boolean activityIsFinishing(Context context) {

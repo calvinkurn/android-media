@@ -12,8 +12,8 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_4"
         android:paddingRight="@dimen/dp_10">
 
         <android.support.v7.widget.RecyclerView
@@ -32,8 +32,8 @@
             android:paddingTop="@dimen/dp_5"
             android:paddingBottom="@dimen/dp_5"
             android:layout_margin="5dp"
-            android:background="@drawable/bg_outline_grey"
-            android:textSize="12sp"
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="11sp"
             android:text="@string/kunjungi_toko"/>
 
     </LinearLayout>
