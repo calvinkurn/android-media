@@ -30,6 +30,19 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
         this.flightCancellationRequestUseCase = flightCancellationRequestUseCase;
     }
 
+    @Override
+    public void onViewCreated() {
+        FlightCancellationWrapperViewModel flightCancellationWrapperViewModel = getView().getCancellationWrapperViewModel();
+
+        for (FlightCancellationViewModel item : flightCancellationWrapperViewModel.getGetCancellations()) {
+            if (item.getPassengerViewModelList() == null || item.getPassengerViewModelList().size() == 0) {
+                flightCancellationWrapperViewModel.getGetCancellations().remove(item);
+            }
+        }
+
+        getView().setCancellationWrapperViewModel(flightCancellationWrapperViewModel);
+    }
+
     @SuppressWarnings("ConstantConditions")
     @Override
     public void requestCancellation() {

@@ -22,12 +22,16 @@ public interface FlightCancellationReviewContract {
 
         FlightCancellationWrapperViewModel getCancellationWrapperViewModel();
 
+        void setCancellationWrapperViewModel(FlightCancellationWrapperViewModel viewModel);
+
         void showCancellationError(Throwable throwable);
     }
 
     interface Presenter {
 
         void requestCancellation();
+
+        void onViewCreated();
 
     }
 }

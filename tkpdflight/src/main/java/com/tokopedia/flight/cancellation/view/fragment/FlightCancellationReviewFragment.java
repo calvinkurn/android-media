@@ -121,8 +121,9 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         invoiceId = getArguments().getString(EXTRA_INVOICE_ID);
         flightCancellationPassData = getArguments().getParcelable(EXTRA_CANCEL_JOURNEY);
 
-        renderView();
         presenter.attachView(this);
+        presenter.onViewCreated();
+        renderView();
     }
 
     @Override
@@ -185,6 +186,11 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     @Override
     public FlightCancellationWrapperViewModel getCancellationWrapperViewModel() {
         return flightCancellationPassData;
+    }
+
+    @Override
+    public void setCancellationWrapperViewModel(FlightCancellationWrapperViewModel viewModel) {
+        this.flightCancellationPassData = viewModel;
     }
 
     @Override
