@@ -95,7 +95,6 @@
         <meta-data
             android:name="HANSEL_APP_KEY"
             android:value="8CDH74MC9EZLPFIHNNJPT39ERKS5BODETYX2LBFQ83ECSV86WY"/>
-
         <!-- <meta-data -->
         <!-- android:name="com.google.android.gms.version" -->
         <!-- android:value="@integer/google_play_services_version" /> -->
