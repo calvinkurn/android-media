@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,16 @@ import javax.inject.Inject;
  */
 
 public class KolPostFragment extends BaseDaggerFragment implements KolPostListener.View {
+
+    public static final String PARAM_IS_LIKED = "is_liked";
+    public static final String PARAM_TOTAL_LIKES = "total_likes";
+    public static final String PARAM_TOTAL_COMMENTS = "total_comments";
+
+    public static final int IS_LIKE_TRUE = 1;
+    public static final int IS_LIKE_FALSE = 0;
+
     private static final String PARAM_USER_ID = "user_id";
+    private static final String PARAM_POST_ID = "post_id";
     private static final int KOL_COMMENT_CODE = 13;
     private static final int LOAD_MORE_THRESHOLD = 2;
 
@@ -54,12 +64,25 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     private KolRouter kolRouter;
     private String userId;
     private boolean canLoadMore = true;
+    private Intent resultIntent;
 
     public static KolPostFragment newInstance(String userId) {
         KolPostFragment fragment = new KolPostFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_USER_ID, userId);
         fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static KolPostFragment newInstanceFromFeed(String userId,
+                                                      int postId,
+                                                      Intent resultIntent,
+                                                      Bundle bundle) {
+        KolPostFragment fragment = new KolPostFragment();
+        bundle.putString(PARAM_USER_ID, userId);
+        bundle.putInt(PARAM_POST_ID, postId);
+        fragment.setArguments(bundle);
+        fragment.setResultIntent(resultIntent);
         return fragment;
     }
 
@@ -264,6 +287,25 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
                 kolPostViewModel.setTotalLike(kolPostViewModel.getTotalLike() - 1);
             }
             adapter.notifyItemChanged(rowNumber);
+
+            Log.d("milhamj", "argument" + getArguments().getInt(PARAM_POST_ID, -1)
+                    + " contentid " + kolPostViewModel.getContentId()
+                    + " postid " + kolPostViewModel.getId());
+
+            if (getActivity() != null &&
+                    getArguments() != null &&
+                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
+
+                if (resultIntent == null) {
+                    resultIntent = new Intent();
+                    resultIntent.putExtras(getArguments());
+                }
+                resultIntent.putExtra(
+                        PARAM_IS_LIKED,
+                        kolPostViewModel.isLiked() ? IS_LIKE_TRUE : IS_LIKE_FALSE);
+                resultIntent.putExtra(PARAM_TOTAL_LIKES, kolPostViewModel.getTotalLike());
+                getActivity().setResult(Activity.RESULT_OK, resultIntent);
+            }
         }
     }
 
@@ -289,7 +331,27 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
                 kolPostViewModel.setTotalComment(
                         kolPostViewModel.getTotalComment() + totalNewComment);
                 adapter.notifyItemChanged(rowNumber);
+
+                Log.d("milhamj", "argument" + getArguments().getInt(PARAM_POST_ID, -1)
+                        + " contentid " + kolPostViewModel.getContentId()
+                        + " postid " + kolPostViewModel.getId());
+
+                if (getActivity() != null &&
+                        getArguments() != null &&
+                        getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
+
+                    if (resultIntent == null) {
+                        resultIntent = new Intent();
+                        resultIntent.putExtras(getArguments());
+                    }
+                    resultIntent.putExtra(PARAM_TOTAL_COMMENTS, kolPostViewModel.getTotalComment());
+                    getActivity().setResult(Activity.RESULT_OK, resultIntent);
+                }
             }
         }
+    }
+
+    public void setResultIntent(Intent resultIntent) {
+        this.resultIntent = resultIntent;
     }
 }

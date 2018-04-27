@@ -90,6 +90,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE;
+import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED;
+import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS;
+import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES;
+
 /**
  * @author by nisie on 5/15/17.
  */
@@ -721,6 +726,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             data.getIntExtra(ARGS_ROW_NUMBER, -1),
                             data.getBooleanExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, false)
                     );
+
+                    updatePostState(
+                            data.getIntExtra(ARGS_ROW_NUMBER, -1),
+                            data.getIntExtra(PARAM_IS_LIKED, -1),
+                            data.getIntExtra(PARAM_TOTAL_LIKES, -1),
+                            data.getIntExtra(PARAM_TOTAL_COMMENTS, -1)
+                    );
                 }
                 break;
             default:
@@ -947,8 +959,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToKolProfile(int page, int rowNumber, String userId) {
-        Intent profileIntent = TopProfileActivity.newInstance(getContext(), userId)
+    public void onGoToKolProfile(int page, int rowNumber, String userId, int postId) {
+        Intent profileIntent = TopProfileActivity.newInstanceFromFeed(getContext(), userId, postId)
                 .putExtra(ARGS_ROW_NUMBER, rowNumber);
         startActivityForResult(profileIntent, OPEN_KOL_PROFILE);
     }
@@ -1074,10 +1086,29 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessFollowUnfollowFromProfile(int rowNumber, boolean isFollowing) {
-        if (adapter.getlist().get(rowNumber) instanceof KolViewModel) {
+        if (rowNumber != -1 && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
             KolViewModel kolViewModel = (KolViewModel) adapter.getlist().get(rowNumber);
             kolViewModel.setFollowed(isFollowing);
             kolViewModel.setTemporarilyFollowed(isFollowing);
+            adapter.notifyItemChanged(rowNumber);
+        }
+    }
+
+    private void updatePostState(int rowNumber, int isLiked, int totalLike, int totalComment) {
+        if (rowNumber != -1 && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
+            KolViewModel kolViewModel = (KolViewModel) adapter.getlist().get(rowNumber);
+
+            if (isLiked != -1) {
+                kolViewModel.setLiked(isLiked == IS_LIKE_TRUE);
+            }
+
+            if (totalLike != -1) {
+                kolViewModel.setTotalLike(totalLike);
+            }
+
+            if (totalComment != -1) {
+                kolViewModel.setTotalComment(totalComment);
+            }
             adapter.notifyItemChanged(rowNumber);
         }
     }

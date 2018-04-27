@@ -8,6 +8,8 @@ import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
  */
 
 public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
+    public final static int DEFAULT_ID = -1;
+
     private final String tagsType;
     private final String contentLink;
     private final int userId;

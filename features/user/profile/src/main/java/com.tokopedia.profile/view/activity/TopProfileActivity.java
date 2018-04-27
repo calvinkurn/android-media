@@ -61,6 +61,7 @@ public class TopProfileActivity extends BaseSimpleActivity
 
     public static final String EXTRA_IS_FOLLOWING = "is_following";
     private static final String EXTRA_PARAM_USER_ID = "user_id";
+    private static final String EXTRA_PARAM_POST_ID = "post_id";
     private static final String TITLE_PROFILE = "Info Akun";
     private static final String TITLE_POST = "Post";
     private static final String ZERO = "0";
@@ -106,6 +107,7 @@ public class TopProfileActivity extends BaseSimpleActivity
     private String userId;
     private TopProfileViewModel topProfileViewModel;
     private TopProfileFragment profileFragment;
+    private Intent resultIntent = new Intent();
 
     @DeepLink(ApplinkConst.PROFILE)
     public static Intent getCallingTopProfile(Context context, Bundle bundle) {
@@ -120,9 +122,15 @@ public class TopProfileActivity extends BaseSimpleActivity
         return intent;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public static Intent newInstanceFromFeed(@NonNull Context context,
+                                             @NonNull String userId,
+                                             int postId) {
+        Intent intent = new Intent(context, TopProfileActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_PARAM_USER_ID, userId);
+        bundle.putInt(EXTRA_PARAM_POST_ID, postId);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     @Override
@@ -170,6 +178,8 @@ public class TopProfileActivity extends BaseSimpleActivity
             if (TextUtils.isEmpty(userId)) {
                 throw new IllegalStateException("usedId can not be empty/null!");
             }
+
+            resultIntent.putExtras(getIntent().getExtras());
         }
     }
 
@@ -338,10 +348,10 @@ public class TopProfileActivity extends BaseSimpleActivity
         if (!topProfileViewModel.isFollowed()) enableFollowButton();
         else disableFollowButton();
 
-        Intent intent = new Intent();
-        intent.putExtras(getIntent().getExtras());
-        intent.putExtra(EXTRA_IS_FOLLOWING, topProfileViewModel.isFollowed());
-        this.setResult(Activity.RESULT_OK, intent);
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            resultIntent.putExtra(EXTRA_IS_FOLLOWING, topProfileViewModel.isFollowed());
+            this.setResult(Activity.RESULT_OK, resultIntent);
+        }
     }
 
     @Override
@@ -380,8 +390,20 @@ public class TopProfileActivity extends BaseSimpleActivity
         if (topProfileViewModel.isKol()
                 && !GlobalConfig.isSellerApp()
                 && getApplicationContext() instanceof ProfileModuleRouter) {
+
+            Bundle bundle = null;
+            int postId = -1;
+            if (getIntent() != null && getIntent().getExtras() != null) {
+                bundle = getIntent().getExtras();
+                postId = getIntent().getExtras().getInt(EXTRA_PARAM_POST_ID, -1);
+            }
+
             BaseDaggerFragment kolPostFragment =
-                    ((ProfileModuleRouter) getApplicationContext()).getKolPostFragment(userId);
+                    ((ProfileModuleRouter) getApplicationContext()).getKolPostFragment(
+                            userId,
+                            postId,
+                            resultIntent,
+                            bundle);
             topProfileSectionItemList.add(
                     new TopProfileSectionItem(TITLE_POST, kolPostFragment));
         }
