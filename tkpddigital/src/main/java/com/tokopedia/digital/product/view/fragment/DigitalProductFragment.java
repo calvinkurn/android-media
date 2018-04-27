@@ -45,7 +45,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -785,8 +784,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             Intent intent = router.getPromoDetailIntent(context, linkSegment.get(1));
             startActivity(intent);
         } else if (linkSegment.size() == 1) {
-            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-            if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST, true)) {
+            FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
+            boolean remoteConfigEnable = remoteConfig.getBoolean(
+                    TkpdCache.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
+            );
+            if (remoteConfigEnable) {
                 Intent intent = router.getPromoListIntent(getActivity());
                 startActivity(intent);
             } else {
