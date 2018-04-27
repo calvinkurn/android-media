@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'com.neenbedankt.android-apt'
 
 
 dependencies {
@@ -12,4 +13,10 @@ dependencies {
     compile rootProject.ext.networkDependencies.retrofit
     compile rootProject.ext.networkDependencies.adapterRxJava
     compile rootProject.ext.networkDependencies.loggingInterceptor
+
+    compile project(rootProject.ext.libraries.config)
+    compile project(rootProject.ext.libraries.userSession)
+
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
 }

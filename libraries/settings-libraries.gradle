@@ -3,4 +3,6 @@ include "libraries:push_notification"
 include "libraries:applink"
 include "libraries:cache_api"
 include "libraries:use_case"
-include 'libraries:network'
+include "libraries:user_session"
+include "libraries:global_config"
+include "libraries:network"
