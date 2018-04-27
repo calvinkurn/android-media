@@ -71,13 +71,11 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-//        outState.putString(AddNameActivity.PARAM_PHONE, phoneNumber);
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-//        phoneNumber = savedInstanceState.getString(AddNameActivity.PARAM_PHONE)
     }
 
     @Override
