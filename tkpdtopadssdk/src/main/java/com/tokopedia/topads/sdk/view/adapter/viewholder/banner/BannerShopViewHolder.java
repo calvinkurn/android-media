@@ -40,6 +40,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     private TextView nameTxt;
     private TextView descriptionTxt;
     private LinearLayout badgeContainer;
+    public TextView visitShop;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
 
     public BannerShopViewHolder(View itemView, final TopAdsBannerClickListener topAdsBannerClickListener) {
@@ -51,6 +52,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
         nameTxt = (TextView) itemView.findViewById(R.id.shop_name);
         descriptionTxt = (TextView) itemView.findViewById(R.id.description);
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
+        visitShop = itemView.findViewById(R.id.visit_btn);
     }
 
     @Override
@@ -66,10 +68,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
             });
             promotedTxt.setText(cpm.getPromotedText());
             nameTxt.setText(TopAdsBannerView.escapeHTML(cpm.getName()));
-
-            String desc = String.format("%s %s", TopAdsBannerView.escapeHTML(cpm.getDecription()), cpm.getCta());
-            TopAdsBannerView.setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
-
+            descriptionTxt.setText(TopAdsBannerView.escapeHTML(cpm.getDecription()));
             if (cpm.getBadges().size() > 0) {
                 badgeContainer.removeAllViews();
                 badgeContainer.setVisibility(View.VISIBLE);
@@ -83,6 +82,15 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
             } else {
                 badgeContainer.setVisibility(View.GONE);
             }
+            visitShop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(topAdsBannerClickListener!=null) {
+                        topAdsBannerClickListener.onBannerAdsClicked(element.getAppLink());
+                        new ImpresionTask().execute(element.getAdsClickUrl());
+                    }
+                }
+            });
         }
     }
 }

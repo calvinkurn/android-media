@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/dp_72"
     android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="vertical">
@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingBottom="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_10"
         android:paddingLeft="@dimen/dp_10"
         android:paddingTop="@dimen/dp_4">
 
@@ -42,7 +42,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
@@ -88,13 +87,14 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/visit_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_11"
             android:textColor="@color/tkpd_main_green"
             android:gravity="center_vertical|right"
             android:layout_marginRight="@dimen/dp_10"
-            android:text="Kunjungi Toko"/>
+            android:text="@string/kunjungi_toko"/>
 
     </LinearLayout>
 
