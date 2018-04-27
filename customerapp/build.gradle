@@ -90,7 +90,7 @@ android {
 
     project.ext {
         defaultVersionCode = 221001101;
-        defaultVersionName = "2.21";
+        defaultVersionName = "2.21.varis";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
