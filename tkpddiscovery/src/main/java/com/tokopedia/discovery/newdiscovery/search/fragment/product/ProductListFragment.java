@@ -869,31 +869,28 @@ public class ProductListFragment extends SearchSectionFragment
         return optionList;
     }
 
-    /*
     @Override
-    protected void openFilterActivity() {
-        if (isFilterDataAvailable()) {
-            String preFilteredSc = getSearchParameter().getDepartmentId();
-            if (!TextUtils.isEmpty(preFilteredSc)) {
-                addPreFilteredCategory(preFilteredSc);
-            }
-            Intent intent = RevampedDynamicFilterActivity.createInstance(
-                    getActivity(), getScreenNameId(), getFlagFilterHelper()
-            );
-            startActivityForResult(intent, getFilterRequestCode());
-            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
-            ((SearchActivity) getActivity()).launchFilterBottomSheet();
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_filter_data_not_ready));
-        }
-    }*/
+    protected void openBottomSheetFilter() {
+        addPreFilteredCategory();
+        super.openBottomSheetFilter();
+    }
 
-    private void addPreFilteredCategory(String categoryId) {
+    @Override
+    protected void openFilterPage() {
+        addPreFilteredCategory();
+        super.openFilterPage();
+    }
+
+    private void addPreFilteredCategory() {
+        String preFilteredSc = getSearchParameter().getDepartmentId();
+        if (TextUtils.isEmpty(preFilteredSc)) {
+            return;
+        }
         if (getFlagFilterHelper() == null) {
             setFlagFilterHelper(new FilterFlagSelectedModel());
             getFlagFilterHelper().setSavedCheckedState(new HashMap<String, Boolean>());
             getFlagFilterHelper().setSavedTextInput(new HashMap<String, String>());
-            PreFilterHelper.addPreFilteredCategory(getFilters(), getFlagFilterHelper(), categoryId);
+            PreFilterHelper.addPreFilteredCategory(getFilters(), getFlagFilterHelper(), preFilteredSc);
         }
     }
 

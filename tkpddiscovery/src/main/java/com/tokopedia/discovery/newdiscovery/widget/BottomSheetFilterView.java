@@ -31,6 +31,7 @@ import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapt
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.BottomSheetDynamicFilterTypeFactoryImpl;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactoryImpl;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
@@ -400,7 +401,20 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
         }
     }
 
-    public void loadFilterItems(List<Filter> filterList) {
+    public void loadFilterItems(List<Filter> filterList, FilterFlagSelectedModel filterFlagSelectedModel) {
+        updateFilterInputData(filterFlagSelectedModel);
+        loadFilterData(filterList);
+    }
+
+    private void updateFilterInputData(FilterFlagSelectedModel model) {
+        savedCheckedState = model.getSavedCheckedState();
+        savedTextInput = model.getSavedTextInput();
+        selectedCategoryId = model.getCategoryId();
+        selectedCategoryName = model.getSelectedCategoryName();
+        selectedCategoryRootId = model.getSelectedCategoryRootId();
+    }
+
+    private void loadFilterData(List<Filter> filterList) {
         List<Filter> list = new ArrayList<>();
         list.addAll(filterList);
         removeCategoryFilter(list);
@@ -713,11 +727,22 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
         loadingView.setVisibility(View.VISIBLE);
         buttonFinish.setText("");
         HashMap<String, String> selectedFilter = generateSelectedFilterMap();
-        callback.onApplyFilter(selectedFilter);
+        callback.onApplyFilter(selectedFilter, getFilterFlagSelected());
+    }
+
+    private FilterFlagSelectedModel getFilterFlagSelected() {
+        FilterFlagSelectedModel model = new FilterFlagSelectedModel();
+        model.setSavedCheckedState(savedCheckedState);
+        model.setSavedTextInput(savedTextInput);
+        model.setCategoryId(selectedCategoryId);
+        model.setSelectedCategoryRootId(selectedCategoryRootId);
+        model.setSelectedCategoryName(selectedCategoryName);
+        return model;
     }
 
     public interface Callback {
-        void onApplyFilter(HashMap<String, String> selectedFilter);
+        void onApplyFilter(HashMap<String, String> selectedFilter,
+                           FilterFlagSelectedModel filterFlagSelectedModel);
         void onShow();
         void onHide();
         boolean isSearchShown();

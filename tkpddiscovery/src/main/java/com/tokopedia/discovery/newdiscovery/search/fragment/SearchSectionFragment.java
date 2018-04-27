@@ -378,7 +378,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         this.selectedFilter = selectedFilter;
     }
 
-    protected void setFlagFilterHelper(FilterFlagSelectedModel flagFilterHelper) {
+    public void setFlagFilterHelper(FilterFlagSelectedModel flagFilterHelper) {
         this.flagFilterHelper = flagFilterHelper;
     }
 
@@ -408,12 +408,12 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         }
     }
 
-    private void openBottomSheetFilter() {
-        bottomSheetListener.loadFilterItems(getFilters());
+    protected void openBottomSheetFilter() {
+        bottomSheetListener.loadFilterItems(getFilters(), getFlagFilterHelper());
         bottomSheetListener.launchFilterBottomSheet();
     }
 
-    private void openFilterPage() {
+    protected void openFilterPage() {
         Intent intent = RevampedDynamicFilterActivity.createInstance(
                 getActivity(), getScreenName(), getFlagFilterHelper()
         );

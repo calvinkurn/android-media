@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
 import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 
 import java.util.ArrayList;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
  */
 
 public interface BottomSheetListener {
-    void loadFilterItems(ArrayList<Filter> filters);
+    void loadFilterItems(ArrayList<Filter> filters, FilterFlagSelectedModel filterFlagSelectedModel);
 
     void setFilterResultCount(String formattedResultCount);
 

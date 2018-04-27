@@ -33,6 +33,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 
 import java.util.ArrayList;
@@ -357,8 +358,9 @@ public class SearchActivity extends DiscoveryActivity
     private void initBottomSheetListener() {
         bottomSheetFilterView.setCallback(new BottomSheetFilterView.Callback() {
             @Override
-            public void onApplyFilter(HashMap<String, String> selectedFilter) {
-                applyFilter(selectedFilter);
+            public void onApplyFilter(HashMap<String, String> selectedFilter,
+                                      FilterFlagSelectedModel filterFlagSelectedModel) {
+                applyFilter(selectedFilter, filterFlagSelectedModel);
             }
 
             @Override
@@ -404,11 +406,14 @@ public class SearchActivity extends DiscoveryActivity
         super.onDestroy();
     }
 
-    private void applyFilter(HashMap<String, String> selectedFilter) {
+    private void applyFilter(HashMap<String, String> selectedFilter,
+                             FilterFlagSelectedModel filterFlagSelectedModel) {
+
         SearchSectionFragment selectedFragment
                 = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
 
         selectedFragment.setSelectedFilter(selectedFilter);
+        selectedFragment.setFlagFilterHelper(filterFlagSelectedModel);
         selectedFragment.clearDataFilterSort();
         selectedFragment.reloadData();
     }
@@ -427,8 +432,8 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     @Override
-    public void loadFilterItems(ArrayList<Filter> filters) {
-        bottomSheetFilterView.loadFilterItems(filters);
+    public void loadFilterItems(ArrayList<Filter> filters, FilterFlagSelectedModel filterFlagSelectedModel) {
+        bottomSheetFilterView.loadFilterItems(filters, filterFlagSelectedModel);
     }
 
     @Override
