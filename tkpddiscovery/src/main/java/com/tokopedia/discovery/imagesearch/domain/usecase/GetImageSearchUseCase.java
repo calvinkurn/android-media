@@ -156,10 +156,10 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
     private void enrichWithWishListData(SearchResultModel searchResultModel,
                                         Response<WishlistCheckResult> wishlistCheckResultResponse) {
 
-        List<String> wishlistedIdList = wishlistCheckResultResponse.body().getCheckResultIds().getIds();
+        List<String> wishListedIdList = wishlistCheckResultResponse.body().getCheckResultIds().getIds();
 
         for (ProductModel productModel : searchResultModel.getProductList()) {
-            productModel.setWishlisted(wishlistedIdList.contains(productModel.getProductID()));
+            productModel.setWishlisted(wishListedIdList.contains(productModel.getProductID()));
         }
     }
 
