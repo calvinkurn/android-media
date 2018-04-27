@@ -6,6 +6,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.keyword.data.repository.TopAdsKeywordRepositoryImpl;
 import com.tokopedia.topads.keyword.data.source.KeywordDashboardDataSouce;
 import com.tokopedia.topads.keyword.data.source.cloud.api.KeywordApi;
@@ -35,19 +36,19 @@ public class TopAdsKeywordEditDetailModule {
 
     @TopAdsKeywordScope
     @Provides
-    TopAdsKeywordRepository provideTopAdsKeywordRepository(KeywordDashboardDataSouce keywordDashboardDataSouce, ShopInfoRepository shopInfoRepository){
-        return new TopAdsKeywordRepositoryImpl(keywordDashboardDataSouce, shopInfoRepository);
+    TopAdsKeywordRepository provideTopAdsKeywordRepository(KeywordDashboardDataSouce keywordDashboardDataSouce/*, ShopInfoRepository shopInfoRepository*/){
+        return new TopAdsKeywordRepositoryImpl(keywordDashboardDataSouce/*, shopInfoRepository*/);
     }
 
     @TopAdsKeywordScope
     @Provides
-    TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit){
+    TomeProductApi provideTomeApi(/*@TomeQualifier*/@TopAdsManagementQualifier Retrofit retrofit){
         return retrofit.create(TomeProductApi.class);
     }
 
     @TopAdsKeywordScope
     @Provides
-    KeywordApi provideKeywordApi(@TopAdsQualifier Retrofit retrofit){
+    KeywordApi provideKeywordApi(@TopAdsManagementQualifier Retrofit retrofit){
         return retrofit.create(KeywordApi.class);
     }
 

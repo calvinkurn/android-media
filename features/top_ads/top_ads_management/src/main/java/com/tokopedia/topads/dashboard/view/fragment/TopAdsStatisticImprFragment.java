@@ -10,7 +10,7 @@ import com.tokopedia.topads.dashboard.data.model.data.Cell;
  * Created by zulfikarrahman on 1/6/17.
  */
 
-public class TopAdsStatisticImprFragment extends TopAdsStatisticFragment {
+public class TopAdsStatisticImprFragment extends TopAdsDashboardStatisticFragment {
 
     public static Fragment createInstance() {
         Fragment fragment = new TopAdsStatisticImprFragment();

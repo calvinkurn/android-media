@@ -1,20 +1,27 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import android.util.Log;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.topads.common.data.model.DataDeposit;
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositUseCase;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsStatisticsType;
+import com.tokopedia.topads.dashboard.data.model.data.Cell;
 import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetStatisticsUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsPopulateTotalAdsUseCase;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -31,20 +38,27 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
     private final GetShopInfoUseCase getShopInfoUseCase;
     private final TopAdsDatePickerInteractor topAdsDatePickerInteractor;
     private final TopAdsPopulateTotalAdsUseCase topAdsPopulateTotalAdsUseCase;
+    private final TopAdsGetStatisticsUseCase topAdsGetStatisticsUseCase;
+    private final UserSession userSession;
 
     @Inject
     public TopAdsDashboardPresenter(TopAdsGetShopDepositUseCase topAdsGetShopDepositUseCase,
                                     GetShopInfoUseCase getShopInfoUseCase,
                                     TopAdsDatePickerInteractor topAdsDatePickerInteractor,
-                                    TopAdsPopulateTotalAdsUseCase topAdsPopulateTotalAdsUseCase) {
+                                    TopAdsPopulateTotalAdsUseCase topAdsPopulateTotalAdsUseCase,
+                                    TopAdsGetStatisticsUseCase topAdsGetStatisticsUseCase,
+                                    UserSession userSession) {
         this.topAdsGetShopDepositUseCase = topAdsGetShopDepositUseCase;
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.topAdsDatePickerInteractor = topAdsDatePickerInteractor;
         this.topAdsPopulateTotalAdsUseCase = topAdsPopulateTotalAdsUseCase;
+        this.topAdsGetStatisticsUseCase = topAdsGetStatisticsUseCase;
+        this.userSession = userSession;
     }
 
-    public void getShopDeposit(String shopId){
-        topAdsGetShopDepositUseCase.execute(TopAdsGetShopDepositUseCase.createParams(shopId), new Subscriber<DataDeposit>() {
+    public void getShopDeposit(){
+        topAdsGetShopDepositUseCase.execute(TopAdsGetShopDepositUseCase.createParams(userSession.getShopId()),
+                new Subscriber<DataDeposit>() {
             @Override
             public void onCompleted() {
 
@@ -66,8 +80,8 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
         });
     }
 
-    public void getShopInfo(String shopId) {
-        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), new Subscriber<ShopInfo>() {
+    public void getShopInfo() {
+        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(userSession.getShopId()), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {
 
@@ -140,8 +154,9 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
         topAdsDatePickerInteractor.saveSelectionDatePicker(selectionType, lastSelection);
     }
 
-    public void populateTotalAds(String shopId) {
-        topAdsPopulateTotalAdsUseCase.execute(TopAdsPopulateTotalAdsUseCase.createRequestParams(shopId), new Subscriber<TotalAd>() {
+    public void populateTotalAds() {
+        topAdsPopulateTotalAdsUseCase.execute(TopAdsPopulateTotalAdsUseCase.createRequestParams(userSession.getShopId()),
+                new Subscriber<TotalAd>() {
             @Override
             public void onCompleted() {
 
@@ -158,6 +173,31 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
             public void onNext(TotalAd totalAd) {
                 if (isViewAttached()){
                     getView().onSuccessPopulateTotalAds(totalAd);
+                }
+            }
+        });
+    }
+
+    public void getTopAdsStatistic(Date startDate, Date endDate, @TopAdsStatisticsType int selectedStatisticType) {
+        Log.e(getClass().getSimpleName(), "presenter called statistics");
+        topAdsGetStatisticsUseCase.execute(TopAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
+                selectedStatisticType, userSession.getShopId()), new Subscriber<List<Cell>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()){
+                    getView().onErrorGetStatisticsInfo(e);
+                }
+            }
+
+            @Override
+            public void onNext(List<Cell> cells) {
+                if (isViewAttached()){
+                    getView().onSuccesGetStatisticsInfo(cells);
                 }
             }
         });

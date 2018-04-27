@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.data.factory;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailShopMapper;
 import com.tokopedia.topads.dashboard.data.source.cloud.TopAdsShopAdsDataSource;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;

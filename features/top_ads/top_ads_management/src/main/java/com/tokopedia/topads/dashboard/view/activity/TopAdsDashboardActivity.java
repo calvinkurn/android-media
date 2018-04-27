@@ -10,6 +10,7 @@ import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardFragment;
@@ -84,6 +85,6 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
 
     @Override
     public TopAdsComponent getComponent() {
-        return ((TopAdsModuleRouter) getApplication()).getTopAdsComponent();
+        return TopAdsComponentInstance.getComponent(getApplication());
     }
 }
