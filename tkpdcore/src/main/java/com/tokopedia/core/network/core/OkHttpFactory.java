@@ -264,7 +264,7 @@ public class OkHttpFactory {
                                                      CacheApiInterceptor cacheApiInterceptor) {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
-                /*.addInterceptor(cacheApiInterceptor)*/
+                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
@@ -327,7 +327,7 @@ public class OkHttpFactory {
                 .addInterceptor(bearerWithAuthInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdBaseInterceptor)
-                /*.addInterceptor(cacheApiInterceptor)*/
+                .addInterceptor(cacheApiInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
