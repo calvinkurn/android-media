@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -342,12 +341,15 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             }
         });
 
+        String onBoardTitle = mContext.getResources().getString(R.string.on_board_title);
+        String onBoardDesc = mContext.getResources().getString(R.string.on_board_desc);
+
         mImageSearchButton.setWillNotCacheDrawing(false);
         ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
         showCaseObjectList.add(new ShowCaseObject(
                 mImageSearchButton,
-                "Image Search",
-                "Now you can find your favorite products using Image Search feature. ",
+                onBoardTitle,
+                onBoardDesc,
                 ShowCaseContentPosition.UNDEFINED,
                 R.color.tkpd_main_green));
         showCaseDialog.show(((Activity) mContext), showCaseTag, showCaseObjectList);
