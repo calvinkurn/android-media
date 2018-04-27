@@ -161,6 +161,13 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
                 }).create().show();
     }
 
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+    }
+
     @Override
     public void showErrorNetwork(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();

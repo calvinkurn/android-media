@@ -4,6 +4,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,6 +93,7 @@ public class ShakeDetector implements SensorEventListener {
     queue.add(timestamp, accelerating);
     if (queue.isShaking()) {
       queue.clear();
+      Log.e("shake_shake","shaking");
       if(listener != null) {
         listener.hearShake();
       }

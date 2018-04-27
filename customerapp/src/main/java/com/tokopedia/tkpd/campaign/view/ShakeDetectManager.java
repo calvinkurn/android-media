@@ -8,6 +8,7 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -39,7 +40,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     public static final int MESSAGE_SHAKE_START = 3;
     public static final int MESSAGE_SHAKE_END = 4;
     public static final int MESSAGE_SHAKE_SHAKE_CONTINUE_LONG = 5;
-    public static final int SHAKE_SHAKE_END_TIME_MS = 500;
+    public static final int SHAKE_SHAKE_END_TIME_MS = 800;
     public static final int SHAKE_SHAKE_WAIT_FOR_SECOND = 1000;
     public static final int SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND = 3000;
     private boolean  isShakeShakeEnable = true;
@@ -64,6 +65,8 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     public void unregisterShake() {
+        mShakeEnabler.removeMessages(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG);
+        mShakeEnabler.removeMessages(MESSAGE_SHAKE_END);
         sd.unregisterListener(this);
         sd.stop();
     }
@@ -104,6 +107,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         if(mShakeEnabler.hasMessages(MESSAGE_SHAKE_END)) {
             mShakeEnabler.removeMessages(MESSAGE_SHAKE_END);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
+            Log.e("shake_shake","sending end shake 1");
             return;
         }
 
@@ -111,7 +115,9 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
            /* mShakeEnabler.sendEmptyMessage(MESSAGE_DISABLE_SHAKE);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);*/
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
+            Log.e("shake_shake","sending end shake 2");
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG,SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND);
+            Log.e("shake_shake","sending end shake 3");
 
         }
     }
@@ -140,11 +146,13 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                    isShakeShakeEnable = false;
                    break;
                case MESSAGE_SHAKE_END:
-                   mShakeEnabler.removeMessages(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG);
-                   startShake(false);
+                   if(mShakeEnabler.hasMessages(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG)) {
+                       mShakeEnabler.removeMessages(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG);
+                       startShake(false);
+                       Log.e("shake_shake","sending end shake 0");
+                   }
                    break;
                case MESSAGE_SHAKE_SHAKE_CONTINUE_LONG:
-                   mShakeEnabler.removeMessages(MESSAGE_SHAKE_END);
                    startShake(true);
                    break;
            }
