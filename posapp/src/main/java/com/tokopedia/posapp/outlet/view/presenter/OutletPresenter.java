@@ -7,6 +7,8 @@ import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
+import rx.subscriptions.CompositeSubscription;
+
 /**
  * Created by okasurya on 7/31/17.
  */
@@ -35,6 +37,7 @@ public class OutletPresenter implements Outlet.Presenter {
     @Override
     public void detachView() {
         this.view = null;
+        getOutletUseCase.unsubscribe();
     }
 
     @Override

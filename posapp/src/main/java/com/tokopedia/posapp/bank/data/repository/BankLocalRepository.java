@@ -29,6 +29,11 @@ public class BankLocalRepository implements BankRepository {
     }
 
     @Override
+    public Observable<List<BankDomain>> getBins() {
+        return null;
+    }
+
+    @Override
     public Observable<BankSavedResult> save(BankInstallmentDomain data) {
         return bankLocalSource.storeBankToCache(data);
     }

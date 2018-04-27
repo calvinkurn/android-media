@@ -15,5 +15,7 @@ import rx.Observable;
 public interface BankRepository {
     Observable<List<BankDomain>> getBankInstallment();
 
+    Observable<List<BankDomain>> getBins();
+
     Observable<BankSavedResult> save(BankInstallmentDomain data);
 }

@@ -1,9 +1,12 @@
 package com.tokopedia.posapp.bank.data.repository;
 
+import com.tokopedia.posapp.bank.data.pojo.CCBinResponse;
 import com.tokopedia.posapp.bank.data.source.cloud.BankCloudSource;
 import com.tokopedia.posapp.bank.domain.model.BankDomain;
 import com.tokopedia.posapp.bank.domain.model.BankInstallmentDomain;
 import com.tokopedia.posapp.bank.domain.model.BankSavedResult;
+import com.tokopedia.posapp.base.data.pojo.ListResponse;
+import com.tokopedia.posapp.base.data.pojo.PosResponse;
 
 import java.util.List;
 
@@ -26,6 +29,11 @@ public class BankCloudRepository implements BankRepository {
     @Override
     public Observable<List<BankDomain>> getBankInstallment() {
         return bankCloudSource.getBankInstallment();
+    }
+
+    @Override
+    public Observable<List<BankDomain>> getBins() {
+        return bankCloudSource.getBins();
     }
 
     @Override

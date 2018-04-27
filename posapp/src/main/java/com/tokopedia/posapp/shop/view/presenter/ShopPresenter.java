@@ -35,7 +35,8 @@ public class ShopPresenter implements Shop.Presenter {
 
     @Override
     public void detachView() {
-
+        this.view = null;
+        shopUseCase.unsubscribe();
     }
 
     @Override

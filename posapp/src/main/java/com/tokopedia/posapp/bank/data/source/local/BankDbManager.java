@@ -178,8 +178,10 @@ public class BankDbManager extends PosDbOperation<BankDomain, BankDb> {
 
     private void saveBinDb(List<String> bins, BankDb bankDb) {
         Delete.table(BinDb.class, BinDb_Table.bankId.eq(bankDb.getBankId()));
-        for(String bin : bins) {
-            getBinDb(bin, bankDb).save();
+        if(bins != null) {
+            for (String bin : bins) {
+                getBinDb(bin, bankDb).save();
+            }
         }
     }
 
@@ -193,8 +195,10 @@ public class BankDbManager extends PosDbOperation<BankDomain, BankDb> {
 
     private void saveBinInstallment(List<String> binInstallments, BankDb bankDb) {
         Delete.table(BinInstallmentDb.class, BinInstallmentDb_Table.bankId.eq(bankDb.getBankId()));
-        for(String binInstallment: binInstallments) {
-            getBinInstallmentDb(binInstallment, bankDb).save();
+        if(binInstallments != null) {
+            for (String binInstallment : binInstallments) {
+                getBinInstallmentDb(binInstallment, bankDb).save();
+            }
         }
     }
 
