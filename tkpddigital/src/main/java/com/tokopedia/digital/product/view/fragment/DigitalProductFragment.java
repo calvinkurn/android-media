@@ -44,6 +44,8 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -768,7 +770,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             if (deeplinkType == DeepLinkChecker.PROMO) {
                 Uri uriData = Uri.parse(bannerData.getLink());
                 List<String> linkSegment = uriData.getPathSegments();
-                openPromo(linkSegment);
+                openPromo(bannerData.getLink(), linkSegment);
             } else {
                 navigateToActivity(DigitalWebActivity.newInstance(
                         getActivity(), bannerData.getLink())
@@ -777,14 +779,21 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         }
     }
 
-    private void openPromo(List<String> linkSegment) {
+    private void openPromo(String url, List<String> linkSegment) {
         IDigitalModuleRouter router = ((IDigitalModuleRouter) getActivity().getApplication());
         if (linkSegment.size() == 2) {
             Intent intent = router.getPromoDetailIntent(context, linkSegment.get(1));
             startActivity(intent);
         } else if (linkSegment.size() == 1) {
-            Intent intent = router.getPromoListIntent(getActivity());
-            startActivity(intent);
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+            if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST, true)) {
+                Intent intent = router.getPromoListIntent(getActivity());
+                startActivity(intent);
+            } else {
+                navigateToActivity(DigitalWebActivity.newInstance(
+                        getActivity(), url)
+                );
+            }
         }
     }
 
