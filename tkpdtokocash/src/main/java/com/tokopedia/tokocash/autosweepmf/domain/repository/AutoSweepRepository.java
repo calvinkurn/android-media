@@ -6,6 +6,9 @@ import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimit;
 
 import rx.Observable;
 
+/**
+ * Data repository interface, It should be implemented by data layer
+ */
 public interface AutoSweepRepository {
     Observable<AutoSweepDetail> getAutoSweepDetail();
 

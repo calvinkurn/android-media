@@ -12,6 +12,9 @@ import rx.Observable;
 
 import static com.tokopedia.core.network.constants.TkpdBaseURL.AutoSweep.API_AUTO_SWEEP_HOME;
 
+/**
+ * Retrofit interface for autosweepmf apis
+ */
 public interface AutoSweepApi {
     @GET(API_AUTO_SWEEP_HOME)
     Observable<Response<ResponseAutoSweepDetail>> getAutoSweepDetail();

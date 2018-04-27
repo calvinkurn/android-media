@@ -136,12 +136,10 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
                 .setImg(R.drawable.activate_ic_activated)
                 .build());
 
-        /*Adding auto weep fragment on successful retrieval of tokocash balance*/
-        //TODO Impl require for hide/show based on config values inside server response (Pending from server side)
+        //Adding auto sweep fragment on successful retrieval of tokocash balance
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_AVAILABLE_TOKOCASH, balanceTokoCash.getBalance());
         addAutoSweepFragment(bundle);
-
     }
 
     private BalanceTokoCashView.ActionListener getBalanceListener() {

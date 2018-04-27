@@ -71,10 +71,6 @@
             android:name=".autosweepmf.view.activity.SetAutoSweepLimitActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.PopupTransparent" />
-        <activity
-            android:name=".autosweepmf.view.activity.HelpActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.PopupTransparent" />
     </application>
 
 </manifest>

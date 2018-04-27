@@ -3,6 +3,7 @@ package com.tokopedia.tokocash.autosweepmf.data.mapper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.tokocash.autosweepmf.data.CommonConstant;
 import com.tokopedia.tokocash.autosweepmf.data.model.ResponseAutoSweepDetail;
 import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepDetail;
 
@@ -25,7 +26,7 @@ public class AutoSweepDetailMapper {
             domain.setDashboardLink(data.getData().getDashboardLink());
             domain.setMfInfoLink(data.getData().getMfInfoLink());
 
-            if (data.getData().getShowAutoSweep() == 1) {
+            if (data.getData().getShowAutoSweep() == CommonConstant.TRUE_INT) {
                 domain.setEnable(true);
             } else {
                 domain.setEnable(false);

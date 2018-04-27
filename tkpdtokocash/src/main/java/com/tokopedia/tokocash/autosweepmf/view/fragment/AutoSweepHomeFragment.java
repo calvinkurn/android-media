@@ -22,7 +22,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -54,9 +53,6 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
 
     private static final int AUTO_SWEEP_INACTIVE = 0;
     private static final int AUTO_SWEEP_ACTIVE = 1;
-    private static final int MF_ACTIVE = 1;
-    private static final int MF_INACTIVE = 0;
-    private static final int MF_ON_HOLD = 2;
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
@@ -68,7 +64,6 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
     private TextView mTextWaningTitle, mTextWarningMessage, mTextError;
     private SwitchCompat mSwitchAutoSweep;
     private ViewFlipper mContainerMain;
-    private int mAccountStatus = -1;
     private int mAutoSweepStatus = -1;
     private long mValueAutoSweepLimit = -1;
     private BottomSheetView mToolTip;
@@ -134,11 +129,6 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
         mContainerMain.setDisplayedChild(CONTAINER_DATA);
     }
 
-    @Override
-    public void showToast(@NonNull String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
     /**
      * mutualfund_account_status
      * 0=> user do not have mutual fund mutualfund_account
@@ -163,7 +153,6 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
         }
 
         getView().setVisibility(View.VISIBLE);
-        mAccountStatus = data.getAccountStatus();
 
         if (data.getAutoSweepStatus() == AUTO_SWEEP_ACTIVE) {
             onAutoSweepActive();
@@ -174,13 +163,10 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
         //init dashboard url
         if (URLUtil.isValidUrl(data.getDashboardLink())) {
             WEB_LINK_MF_DASHBOARD = data.getDashboardLink();
-        }//init dashboard url
-        if (URLUtil.isValidUrl(data.getDashboardLink())) {
-            WEB_LINK_MF_DASHBOARD = data.getDashboardLink();
         }
 
         //init MF auto sweep url
-        if (URLUtil.isValidUrl(data.getDashboardLink())) {
+        if (URLUtil.isValidUrl(data.getMfInfoLink())) {
             MF_INFO_LINK = data.getMfInfoLink();
         }
 
@@ -245,55 +231,6 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
     @Override
     public void onErrorAutoSweepDetail(@NonNull String error) {
         showError(error);
-    }
-
-    @Override
-    public void onAccountHold(AutoSweepDetail data) {
-        mAccountStatus = MF_ON_HOLD;
-        mTextDescription.setVisibility(View.GONE);
-
-        if (data.getAmountLimit() > 0) {
-            mTextLimitTokocash.setVisibility(View.VISIBLE);
-            mTextLimitTokocashValue.setVisibility(View.VISIBLE);
-            mTextLimitTokocashValue.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat((int)
-                    data.getAmountLimit(), false));
-        } else {
-            mTextLimitTokocash.setVisibility(View.GONE);
-            mTextLimitTokocashValue.setVisibility(View.GONE);
-        }
-
-        if (data.getTitle() != null
-                && !data.getTitle().isEmpty()) {
-            mContainerWarning.setVisibility(View.VISIBLE);
-            mTextWaningTitle.setText(data.getTitle());
-            mTextWarningMessage.setText(data.getContent());
-        }
-    }
-
-    @Override
-    public void onAccountInActive() {
-        mAccountStatus = MF_INACTIVE;
-        mTextDescription.setVisibility(View.VISIBLE);
-        mTextLimitTokocash.setVisibility(View.GONE);
-        mTextLimitTokocashValue.setVisibility(View.GONE);
-        mContainerWarning.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onAccountActive(@NonNull AutoSweepDetail data) {
-        mAccountStatus = MF_ACTIVE;
-        mTextDescription.setVisibility(View.GONE);
-        mContainerWarning.setVisibility(View.GONE);
-
-        if (data.getAmountLimit() > 0) {
-            mTextLimitTokocash.setVisibility(View.VISIBLE);
-            mTextLimitTokocashValue.setVisibility(View.VISIBLE);
-            mTextLimitTokocashValue.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat((int)
-                    data.getAmountLimit(), false));
-        } else {
-            mTextLimitTokocash.setVisibility(View.GONE);
-            mTextLimitTokocashValue.setVisibility(View.GONE);
-        }
     }
 
     @Override

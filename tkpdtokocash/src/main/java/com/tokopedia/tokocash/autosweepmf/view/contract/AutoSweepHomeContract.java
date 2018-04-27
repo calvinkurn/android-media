@@ -20,17 +20,9 @@ public interface AutoSweepHomeContract {
 
         void navigateToLimitPage();
 
-        void showToast(String message);
-
         void onSuccessAutoSweepDetail(AutoSweepDetail data);
 
         void onErrorAutoSweepDetail(String error);
-
-        void onAccountHold(AutoSweepDetail data);
-
-        void onAccountInActive();
-
-        void onAccountActive(AutoSweepDetail data);
 
         void onAutoSweepActive();
 

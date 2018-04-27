@@ -99,11 +99,12 @@ public class SetAutoSweepLimitPresenter extends BaseDaggerPresenter<SetAutoSweep
         JsonObject outerNode = new JsonObject();
 
         if (isEnable) {
-            outerNode.addProperty(CommonConstant.ApiKeys.KEY_AUTO_SWEEP, 1);
-            outerNode.addProperty(CommonConstant.ApiKeys.KEY_AMOUNT_LIMIT, amount);
+            outerNode.addProperty(CommonConstant.ApiKeys.KEY_AUTO_SWEEP, CommonConstant.TRUE_INT);
         } else {
-            outerNode.addProperty(CommonConstant.ApiKeys.KEY_AUTO_SWEEP, 0);
+            outerNode.addProperty(CommonConstant.ApiKeys.KEY_AUTO_SWEEP, CommonConstant.FALSE_INT);
         }
+
+        outerNode.addProperty(CommonConstant.ApiKeys.KEY_AMOUNT_LIMIT, amount);
 
         return outerNode;
     }

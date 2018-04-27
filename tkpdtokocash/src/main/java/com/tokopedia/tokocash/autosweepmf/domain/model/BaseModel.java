@@ -1,5 +1,8 @@
 package com.tokopedia.tokocash.autosweepmf.domain.model;
 
+/**
+ * Base model class for all sub model
+ */
 public class BaseModel {
     protected String message;
     protected String error;

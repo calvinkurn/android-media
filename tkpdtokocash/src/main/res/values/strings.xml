@@ -103,9 +103,6 @@
     <string name="mf_title_autosweep_help">Autosweep ke Reksa Dana</string>
     <string name="mf_titile_mf_account_in_process">Aplikasi Reksa Dana Anda Dalam Proses</string>
     <string name="mf_title_tokocash_limit">Batasi Dana TokoCash Anda</string>
-    <string name="mf_message_mutual_fund_not_listed"><![CDATA[Autosweep dapat diaktifkan. Namun order Reksa Dana Anda akan diproses setelah pendaftaran diterima. Batas pendaftaran hingga <b>7 hari sejak   Autosweep aktif / pembelian Reksa Dana  pertama Anda.</b> Jika tidak mendaftar, autosweep akan di nonaktifkan dan dana dikembalikan ke TokoCash.]]></string>
-    <string name="mf_message_mf_account_in_process">Anda tetap dapat mengaktifkan Autosweep, namun order Reksa Dana Anda akan diproses setelah Anda pendaftaran Reksa Dana Anda diterima.</string>
-    <string name="mf_message_mf_account_inactive">Anda dapat menentukan limit TokoCash Anda, dan kelebihan dana dari limit tersebut akan secara otomatis ter-autosweep ke Reksa Dana.</string>
     <string name="mf_message_success">Sukses mengirimkan</string>
     <string name="mf_message_access_fund">Kelebihan dana dari limit TokoCash akan otomatis di autosweep ke Reksa Dana</string>
     <string name="mf_label_limit_tokocash">Limit TokoCash</string>

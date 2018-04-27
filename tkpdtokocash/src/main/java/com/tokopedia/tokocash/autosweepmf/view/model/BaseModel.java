@@ -1,7 +1,7 @@
 package com.tokopedia.tokocash.autosweepmf.view.model;
 
 /**
- * Base class for all model object
+ * Base model class for all sub model
  */
 public class BaseModel {
     protected String message;

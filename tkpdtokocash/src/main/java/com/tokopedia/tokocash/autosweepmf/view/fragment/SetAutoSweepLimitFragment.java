@@ -35,7 +35,7 @@ import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.AUTO_S
 import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.AUTO_SWEEP_SEEK_BAR_STEPS;
 
 /**
- * Autosweep limit set/reset screen, once scucessful reset limit it will also fire a broadcasts message for current auto sweep status
+ * Autosweep limit set/reset screen, once scuccessful reset limit it will also fire a broadcasts message for current auto sweep status
  */
 public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements SetAutoSweepLimitContract.View, View.OnClickListener {
 

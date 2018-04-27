@@ -1,5 +1,8 @@
 package com.tokopedia.tokocash.autosweepmf.data.model;
 
+/**
+ * Base model class for all server response
+ */
 public class ResponseContainer {
     protected String message;
     protected String error;

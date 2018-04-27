@@ -42,7 +42,6 @@
         android:paddingLeft="@dimen/mf_padding_medium"
         android:paddingRight="@dimen/mf_padding_medium"
         android:paddingStart="@dimen/mf_padding_medium"
-        android:text="@string/mf_message_mf_account_inactive"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/text_title_mutual_fund" />
 

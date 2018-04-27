@@ -3,7 +3,7 @@ package com.tokopedia.tokocash.di;
 import javax.inject.Qualifier;
 
 /**
- * Created by nabillasabbaha on 1/17/18.
+ * Scope Qualifier for auto sweep feature
  */
 @Qualifier
 public @interface RetrofitAutoSweepQualifier {

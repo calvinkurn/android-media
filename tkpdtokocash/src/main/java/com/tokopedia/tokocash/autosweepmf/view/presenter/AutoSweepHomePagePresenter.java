@@ -22,6 +22,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.SUCCESS_CODE;
+
 public class AutoSweepHomePagePresenter extends BaseDaggerPresenter<AutoSweepHomeContract.View>
         implements AutoSweepHomeContract.Presenter {
     private GetAutoSweepDetailUseCase mGetAutoSweepDetailUseCase;
@@ -71,7 +73,7 @@ public class AutoSweepHomePagePresenter extends BaseDaggerPresenter<AutoSweepHom
                     @Override
                     public void onNext(AutoSweepDetail data) {
                         getView().hideLoading();
-                        if (data.getCode() == 200000) {
+                        if (data.getCode() == SUCCESS_CODE) {
                             getView().onSuccessAutoSweepDetail(data);
                         } else {
                             getView().onErrorAutoSweepDetail(data.getMessage());
@@ -108,7 +110,7 @@ public class AutoSweepHomePagePresenter extends BaseDaggerPresenter<AutoSweepHom
                     @Override
                     public void onNext(AutoSweepLimit data) {
                         getView().hideLoading();
-                        if (data.getCode() == 200000) {
+                        if (data.getCode() == SUCCESS_CODE) {
                             getView().onSuccessAutoSweepStatus(data);
                         } else {
                             getView().onErrorAutoSweepStatus(data.getMessage());
@@ -120,17 +122,18 @@ public class AutoSweepHomePagePresenter extends BaseDaggerPresenter<AutoSweepHom
 
     /**
      * Payload creator utility method for auto sweep detail api
+     *
      * @param isEnable - Auto sweep status
-     * @param amount - Auto sweep limit (Min CommonConstant.AUTO_SWEEP_MF_MIN_LIMIT)
+     * @param amount   - Auto sweep limit (Min CommonConstant.AUTO_SWEEP_MF_MIN_LIMIT)
      * @return Payload JSON object
      */
     private JsonObject getPayload(boolean isEnable, int amount) {
         JsonObject outerNode = new JsonObject();
 
         if (isEnable) {
-            outerNode.addProperty(CommonConstant.ApiKeys.KEY_AUTO_SWEEP, 1);
+            outerNode.addProperty(CommonConstant.ApiKeys.KEY_AUTO_SWEEP, CommonConstant.TRUE_INT);
         } else {
-            outerNode.addProperty(CommonConstant.ApiKeys.KEY_AUTO_SWEEP, 0);
+            outerNode.addProperty(CommonConstant.ApiKeys.KEY_AUTO_SWEEP, CommonConstant.FALSE_INT);
         }
 
         outerNode.addProperty(CommonConstant.ApiKeys.KEY_AMOUNT_LIMIT, amount);
