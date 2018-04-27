@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">fingerprint</string>
+    <string name="fingerprint_label_desc_default">Posisikan permukaan sidik jari anda dengan tepat dan pastikan sensor berfungsi</string>
+    <string name="fingerprint_label_scan_your_fingerprint">Scan Sidik Jari Anda Sekarang</string>
+</resources>

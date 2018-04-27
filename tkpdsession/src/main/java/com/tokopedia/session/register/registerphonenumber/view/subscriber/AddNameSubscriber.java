@@ -1,7 +1,7 @@
 package com.tokopedia.session.register.registerphonenumber.view.subscriber;
 
 import com.tokopedia.network.ErrorHandler;
-import com.tokopedia.session.register.registerphonenumber.view.listener.RegisterPhoneNumber;
+import com.tokopedia.session.register.registerphonenumber.view.listener.AddNameListener;
 import com.tokopedia.session.register.registerphonenumber.view.viewmodel.LoginRegisterPhoneNumberModel;
 
 import rx.Subscriber;
@@ -10,10 +10,10 @@ import rx.Subscriber;
  * @author by yfsx on 07/03/18.
  */
 
-public class RegisterPhoneNumberSubscriber extends Subscriber<LoginRegisterPhoneNumberModel> {
-    private RegisterPhoneNumber.View mainView;
+public class AddNameSubscriber extends Subscriber<LoginRegisterPhoneNumberModel> {
+    private AddNameListener.View mainView;
 
-    public RegisterPhoneNumberSubscriber(RegisterPhoneNumber.View mainView) {
+    public AddNameSubscriber(AddNameListener.View mainView) {
         this.mainView = mainView;
     }
 
@@ -25,13 +25,13 @@ public class RegisterPhoneNumberSubscriber extends Subscriber<LoginRegisterPhone
     @Override
     public void onError(Throwable throwable) {
         mainView.dismissLoading();
-        mainView.showErrorRegisterPhoneNumber(ErrorHandler.getErrorMessage(throwable));
+        mainView.onErrorRegister(ErrorHandler.getErrorMessage(throwable));
 
     }
 
     @Override
     public void onNext(LoginRegisterPhoneNumberModel registerPhoneNumberModel) {
         mainView.dismissLoading();
-        mainView.showSuccessRegisterPhoneNumber(registerPhoneNumberModel);
+        mainView.onSuccessRegister(registerPhoneNumberModel);
     }
 }
