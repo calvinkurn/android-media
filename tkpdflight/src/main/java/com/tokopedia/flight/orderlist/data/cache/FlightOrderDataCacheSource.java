@@ -39,16 +39,6 @@ public class FlightOrderDataCacheSource {
         return Observable.just(true);
     }
 
-    public void saveCache(List<OrderEntity> orderEntities) {
-        cacheManager.delete(FLIGHT_DETAIL_CACHE_KEY);
-
-        Type type = new TypeToken<List<OrderEntity>>(){}.getType();
-
-        cacheManager.save(FLIGHT_DETAIL_CACHE_KEY,
-                CacheUtil.convertListModelToString(orderEntities, type),
-                FLIGHT_DETAIL_CACHE_TIMEOUT);
-    }
-
     public void saveCache(OrderEntity orderEntity) {
         cacheManager.delete(FLIGHT_DETAIL_CACHE_KEY);
 

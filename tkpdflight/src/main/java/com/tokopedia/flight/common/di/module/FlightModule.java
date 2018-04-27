@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -71,18 +70,9 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public FlightModuleRouter provideFlightModuleRouter(@ApplicationContext Context context){
+    public FlightModuleRouter provideFlightModuleRouter(@ApplicationContext Context context) {
         if (context instanceof FlightModuleRouter) {
             return ((FlightModuleRouter) context);
-        }
-        throw new RuntimeException("App should implement " + FlightModuleRouter.class.getSimpleName());
-    }
-
-    @FlightScope
-    @Provides
-    public CacheManager provideCacheManager(@ApplicationContext Context context) {
-        if (context instanceof AbstractionRouter) {
-            return ((AbstractionRouter) context).getGlobalCacheManager();
         }
         throw new RuntimeException("App should implement " + FlightModuleRouter.class.getSimpleName());
     }
