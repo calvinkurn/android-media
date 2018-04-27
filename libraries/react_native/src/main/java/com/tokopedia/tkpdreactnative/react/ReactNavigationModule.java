@@ -22,6 +22,7 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerprintDialogConfirmation;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.SingleAuthPaymentDialog;
+import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 
 import java.util.HashMap;
 
@@ -49,7 +50,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
 
     @ReactMethod
     public void navigate(String appLinks, String extra) {
-        if(!extra.isEmpty()) {
+        if (!extra.isEmpty()) {
             ((TkpdCoreRouter) context.getApplicationContext())
                     .actionApplink(this.getCurrentActivity(), appLinks, extra);
         } else {
@@ -84,9 +85,9 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
 
 
     @ReactMethod
-    public void getCurrentDeviceId(Promise promise){
-        if(context.getApplicationContext() instanceof AbstractionRouter) {
-            promise.resolve( ((AbstractionRouter) context.getApplicationContext()).getSession().getDeviceId() );
+    public void getCurrentDeviceId(Promise promise) {
+        if (context.getApplicationContext() instanceof AbstractionRouter) {
+            promise.resolve(((AbstractionRouter) context.getApplicationContext()).getSession().getDeviceId());
         }
     }
 
@@ -106,7 +107,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     }
 
     @ReactMethod
-    public void goToRBAInfo(){
+    public void goToRBAInfo() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -126,7 +127,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     }
 
     @ReactMethod
-    public void goToRBAThanks(){
+    public void goToRBAThanks() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -137,19 +138,23 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     }
 
     @ReactMethod
-    public void goToFingerprintThanks(final String transactionId){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                FingerprintDialogConfirmation dialogPreferenceHide = new FingerprintDialogConfirmation(getCurrentActivity(), Dialog.Type.PROMINANCE, transactionId, ReactNavigationModule.this);
-                dialogPreferenceHide.show();
+    public void goToFingerprintThanks(final String transactionId) {
+        if (getCurrentActivity().getApplication() instanceof ReactNativeRouter) {
+            if (((ReactNativeRouter) getCurrentActivity().getApplication()).getEnableFingerprintPayment()) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FingerprintDialogConfirmation dialogPreferenceHide = new FingerprintDialogConfirmation(getCurrentActivity(), Dialog.Type.PROMINANCE, transactionId, ReactNavigationModule.this);
+                        dialogPreferenceHide.show();
+                    }
+                });
             }
-        });
+        }
     }
 
     @ReactMethod
     public void getFlavor(Promise promise) {
-        if (getCurrentActivity() != null && getCurrentActivity().getApplication() instanceof TkpdCoreRouter){
+        if (getCurrentActivity() != null && getCurrentActivity().getApplication() instanceof TkpdCoreRouter) {
             promise.resolve(((TkpdCoreRouter) getCurrentActivity().getApplication()).getFlavor());
         } else {
             promise.resolve("");
@@ -166,10 +171,10 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     public void getGraphQLRequestHeader(Promise promise) {
         promise.resolve(AuthUtil.getHeaderRequestReactNative(context));
     }
-  
+
     @ReactMethod
     public void finish() {
-        if(getCurrentActivity() != null) {
+        if (getCurrentActivity() != null) {
             getCurrentActivity().finish();
         }
     }
@@ -183,7 +188,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
 
     @Override
     public void hideProgressDialog() {
-        if(progressDialog != null && progressDialog.isShowing()) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }
