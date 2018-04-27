@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.events.R;
-import com.tokopedia.events.data.entity.response.Schedule;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventsItemDomain;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -92,7 +91,7 @@ public class Utils {
                 CategoryItemsViewModel.setHasSeatLayout(categoryEntity.getHasSeatLayout());
                 CategoryItemsViewModel.setUrl(categoryEntity.getUrl());
                 CategoryItemsViewModel.setSeoUrl(categoryEntity.getSeoUrl());
-                CategoryItemsViewModel.setLikes(categoryEntity.getLikes());
+                CategoryItemsViewModel.setMinLikes(categoryEntity.getLikes());
                 categoryItemsViewModelList.add(CategoryItemsViewModel);
             }
         }
@@ -263,8 +262,8 @@ public class Utils {
 
     }
 
-    public static class Constants{
-        public final static String EXTRA_EVENT_CALENDAR= "EVENTCALENDAR";
+    public static class Constants {
+        public final static String EXTRA_EVENT_CALENDAR = "EVENTCALENDAR";
         public final static String THEMEPARK = "hiburan";
         public final static String TOP = "top";
         public final static String EXTRA_SECTION = "extra_section";

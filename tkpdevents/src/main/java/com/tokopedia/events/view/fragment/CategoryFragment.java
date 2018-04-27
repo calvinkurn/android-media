@@ -25,10 +25,6 @@ import butterknife.ButterKnife;
 
 public class CategoryFragment extends TkpdBaseV4Fragment {
 
-    @BindView(R2.id.txt_category_title)
-    TextView categoryTitle;
-    @BindView(R2.id.txt_show_all)
-    TextView showAll;
     @BindView(R2.id.recyclerview_event)
     RecyclerView recyclerview;
 

@@ -195,9 +195,9 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                         public void onNext(LikeUpdateResultDomain likeUpdateResultDomain) {
                             Log.d("UPDATEEVENTLIKE", "onNext");
                             if (likeUpdateResultDomain.isLiked() && model.isLiked()) {
-                                model.setLikes(model.getLikes() + 1);
+                                model.setLikes();
                             } else if (!likeUpdateResultDomain.isLiked() && !model.isLiked()) {
-                                model.setLikes(model.getLikes() - 1);
+                                model.setLikes();
                             }
                             for (AdapterCallbacks callbacks : adapterCallbacks)
                                 callbacks.notifyDatasetChanged(position);
@@ -268,8 +268,10 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                     for (Integer id : integers) {
                         for (CategoryViewModel category : categoryViewModels) {
                             for (CategoryItemsViewModel itemsViewModel : category.getItems()) {
-                                if (itemsViewModel.getId() == id)
+                                if (itemsViewModel.getId() == id) {
                                     itemsViewModel.setLiked(true);
+                                    itemsViewModel.setWasLiked(true);
+                                }
                             }
                         }
                     }

@@ -38,7 +38,6 @@ import com.tokopedia.events.view.adapter.CardPagerAdapter;
 import com.tokopedia.events.view.adapter.CategoryFragmentPagerAdapter;
 import com.tokopedia.events.view.adapter.SlidingImageAdapter;
 import com.tokopedia.events.view.contractor.EventsContract;
-import com.tokopedia.events.view.customview.EventCategoryView;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
 import com.tokopedia.events.view.utils.CirclePageIndicator;
 import com.tokopedia.events.view.utils.ShadowTransformer;
@@ -245,7 +244,6 @@ public class EventsHomeActivity extends TActivity
 
     @Override
     public void renderCategoryList(List<CategoryViewModel> categoryList) {
-        ArrayList<EventCategoryView> eventCategoryViews = new ArrayList<>();
         for (CategoryViewModel categoryViewModel : categoryList) {
             if (categoryViewModel.getItems() == null || categoryViewModel.getItems().size() == 0) {
             } else {

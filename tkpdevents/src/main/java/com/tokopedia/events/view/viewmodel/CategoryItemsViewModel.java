@@ -75,11 +75,22 @@ public class CategoryItemsViewModel implements Parcelable {
     private Boolean dateRange;
     private String cityName;
     private int likes;
-    boolean isLiked;
+    private boolean isLiked;
+    private boolean wasLiked;
     private Object schedules;
     private Object forms;
+    private int minLikes;
 
     public CategoryItemsViewModel() {
+    }
+
+    public void setMinLikes(int minLikes) {
+        this.minLikes = minLikes;
+        likes = minLikes;
+    }
+
+    public void setWasLiked(boolean wasLiked) {
+        this.wasLiked = wasLiked;
     }
 
     public int getId() {
@@ -262,8 +273,18 @@ public class CategoryItemsViewModel implements Parcelable {
         return likes;
     }
 
-    public void setLikes(int likes) {
-        this.likes = likes;
+    public void setLikes() {
+        if (isLiked) {
+            if (!wasLiked)
+                this.likes = minLikes + 1;
+            else
+                this.likes = minLikes;
+        } else {
+            if (!wasLiked)
+                this.likes = minLikes;
+            else
+                this.likes = minLikes - 1;
+        }
     }
 
     public String getOfferText() {
