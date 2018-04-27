@@ -3,9 +3,11 @@ package com.tokopedia.flight.orderlist.data.cache;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -19,25 +21,13 @@ import rx.Observable;
 public class FlightOrderDataCacheSource {
 
     private static long FLIGHT_DETAIL_CACHE_TIMEOUT = TimeUnit.MINUTES.toSeconds(10);
-    private static String FLIGHT_DETAIL_CACHE_KEY = "FLIGHT_DETAIL_CACHE";
+    private static String FLIGHT_DETAIL_CACHE_KEY = "FLIGHT_ORDER_CACHE";
 
     private CacheManager cacheManager;
 
     @Inject
     public FlightOrderDataCacheSource(CacheManager cacheManager) {
         this.cacheManager = cacheManager;
-    }
-
-    public Observable<Boolean> saveCache(FlightOrder flightOrder) {
-        cacheManager.delete(FLIGHT_DETAIL_CACHE_KEY);
-
-        Type type = new TypeToken<FlightOrder>(){}.getType();
-
-        cacheManager.save(FLIGHT_DETAIL_CACHE_KEY,
-                CacheUtil.convertModelToString(flightOrder, type),
-                FLIGHT_DETAIL_CACHE_TIMEOUT);
-
-        return Observable.just(true);
     }
 
     public Observable<Boolean> isExpired() {
@@ -47,5 +37,25 @@ public class FlightOrderDataCacheSource {
     public Observable<Boolean> deleteCache() {
         cacheManager.delete(FLIGHT_DETAIL_CACHE_KEY);
         return Observable.just(true);
+    }
+
+    public void saveCache(List<OrderEntity> orderEntities) {
+        cacheManager.delete(FLIGHT_DETAIL_CACHE_KEY);
+
+        Type type = new TypeToken<List<OrderEntity>>(){}.getType();
+
+        cacheManager.save(FLIGHT_DETAIL_CACHE_KEY,
+                CacheUtil.convertModelToString(orderEntities, type),
+                FLIGHT_DETAIL_CACHE_TIMEOUT);
+    }
+
+    public void saveCache(OrderEntity orderEntity) {
+        cacheManager.delete(FLIGHT_DETAIL_CACHE_KEY);
+
+        Type type = new TypeToken<OrderEntity>(){}.getType();
+
+        cacheManager.save(FLIGHT_DETAIL_CACHE_KEY,
+                CacheUtil.convertModelToString(orderEntity, type),
+                FLIGHT_DETAIL_CACHE_TIMEOUT);
     }
 }
