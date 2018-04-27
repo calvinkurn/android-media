@@ -430,7 +430,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 new com.tokopedia.core.analytics.nishikino.model.Product();
         product.setProductName(productCartPass.getProductName());
         product.setProductID(productCartPass.getProductId());
-        product.setPrice(CurrencyFormatHelper.convertRupiahToInt(productCartPass.getPrice()));
+        product.setPrice(productCartPass.getPrice());
         product.setBrand(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
         product.setCategory(TextUtils.isEmpty(categoryLevelStr)
                 ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
