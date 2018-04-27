@@ -56,11 +56,7 @@
             android:name="com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity"
             android:label="@string/tokocash"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name="com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity"
-            android:label="@string/title_verify"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+
         <activity
             android:name="com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity"
             android:label="@string/profile_completion_title"
@@ -84,12 +80,6 @@
             android:label=""
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
-
-        <activity
-            android:name="com.tokopedia.otp.cotp.view.activity.VerificationActivity"
-            android:label="@string/title_verify"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name=".login.loginemail.view.activity.LoginActivity"

@@ -266,6 +266,8 @@ dependencies {
     compile project(rootProject.ext.libraries.pushNotif)
     compile project(rootProject.ext.libraries.applink)
     compile project(rootProject.ext.features.gamification)
+    compile project(rootProject.ext.features.otp)
+
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

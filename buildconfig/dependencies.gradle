@@ -244,8 +244,8 @@ ext {
             home            : ":tkpdhome",
             kol             : ":features:content:kol",
             groupchat       : ":features:user:groupchat",
-            gamification    : ":features:promo:gamification"
-
+            gamification    : ":features:promo:gamification",
+            otp             : ":features:user:otp"
     ]
 
     libraries = [

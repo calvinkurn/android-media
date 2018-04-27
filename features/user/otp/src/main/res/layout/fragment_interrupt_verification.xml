@@ -21,23 +21,22 @@
                 android:layout_width="@dimen/verification_icon"
                 android:layout_height="@dimen/verification_icon"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_30"
-                tools:src="@drawable/ic_14_google"/>
+                android:layout_marginTop="@dimen/dp_30"/>
 
             <TextView
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="@dimen/padding_activity"
-                android:layout_marginRight="@dimen/padding_activity"
+                android:layout_marginLeft="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_24"
                 android:layout_marginTop="@dimen/dp_15"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="6sp"
                 android:text="@string/verification_for_security"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/text_size_l_medium"
+                android:textColor="@color/font_black_primary_70"
+                android:textSize="@dimen/sp_16"
                 android:textStyle="bold"
                 />
 
@@ -46,14 +45,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="@dimen/padding_activity"
-                android:layout_marginRight="@dimen/padding_activity"
+                android:layout_marginLeft="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_24"
                 android:layout_marginTop="@dimen/dp_10"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="5sp"
-                android:textColor="@color/black_54"
-                android:textSize="@dimen/text_size_medium"
+                android:textColor="@color/font_black_secondary_54"
+                android:textSize="@dimen/sp_14"
                 android:textStyle="normal"
                 tools:text="Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui SMS ke **** - **** - *041."
                 />
@@ -61,17 +60,16 @@
             <TextView
                 android:id="@+id/request_otp_button"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/btn_height"
+                android:layout_height="@dimen/dp_44"
                 android:layout_marginLeft="42dp"
                 android:layout_marginRight="42dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/green_button_rounded_unify"
+                android:background="@drawable/green_button_otp"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_s_medium"
+                android:textSize="@dimen/sp_13"
                 android:textStyle="bold"
-                tools:text="@string/button_verify"
                 />
 
             <TextView
@@ -85,7 +83,7 @@
                 android:lineSpacingExtra="6sp"
                 android:padding="@dimen/dp_10"
                 android:text="@string/login_with_other_method"
-                android:textColor="@color/medium_green"
+                android:textColor="@color/tkpd_main_green"
                 android:textSize="12sp"
                 android:textStyle="normal"
                 />
