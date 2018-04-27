@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationGetCancelablePassengerUseCase;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationContract;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 
@@ -106,23 +107,22 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
     }
 
     private void transformJourneyToCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList) {
-        int index = 0;
         List<FlightCancellationViewModel> selectedViewModel = new ArrayList<>();
         List<FlightCancellationViewModel> cancellationModelList = new ArrayList<>();
 
         for (FlightCancellationViewModel item : flightCancellationViewModelList) {
-            if (getView().getFlightCancellationJourney().size() > index) {
-                FlightCancellationViewModel flightCancellationViewModel = new FlightCancellationViewModel();
-                flightCancellationViewModel.setFlightCancellationJourney(getView().getFlightCancellationJourney().get(index));
-                flightCancellationViewModel.setPassengerViewModelList(transformPassengerList(item.getPassengerViewModelList()));
-                cancellationModelList.add(flightCancellationViewModel);
+            for (FlightCancellationJourney journeyItem : getView().getFlightCancellationJourney()) {
+                if (item.getFlightCancellationJourney().getJourneyId().equals(journeyItem.getJourneyId())) {
+                    FlightCancellationViewModel flightCancellationViewModel = new FlightCancellationViewModel();
+                    flightCancellationViewModel.setFlightCancellationJourney(journeyItem);
+                    flightCancellationViewModel.setPassengerViewModelList(transformPassengerList(item.getPassengerViewModelList()));
+                    cancellationModelList.add(flightCancellationViewModel);
 
-                FlightCancellationViewModel cancellationForSelectedViewModelList = new FlightCancellationViewModel();
-                cancellationForSelectedViewModelList.setFlightCancellationJourney(getView().getFlightCancellationJourney().get(index));
-                cancellationForSelectedViewModelList.setPassengerViewModelList(new ArrayList<FlightCancellationPassengerViewModel>());
-                selectedViewModel.add(cancellationForSelectedViewModelList);
-
-                index++;
+                    FlightCancellationViewModel cancellationForSelectedViewModelList = new FlightCancellationViewModel();
+                    cancellationForSelectedViewModelList.setFlightCancellationJourney(journeyItem);
+                    cancellationForSelectedViewModelList.setPassengerViewModelList(new ArrayList<FlightCancellationPassengerViewModel>());
+                    selectedViewModel.add(cancellationForSelectedViewModelList);
+                }
             }
         }
 
