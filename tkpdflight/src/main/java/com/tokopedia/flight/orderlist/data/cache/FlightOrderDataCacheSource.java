@@ -45,7 +45,7 @@ public class FlightOrderDataCacheSource {
         Type type = new TypeToken<List<OrderEntity>>(){}.getType();
 
         cacheManager.save(FLIGHT_DETAIL_CACHE_KEY,
-                CacheUtil.convertModelToString(orderEntities, type),
+                CacheUtil.convertListModelToString(orderEntities, type),
                 FLIGHT_DETAIL_CACHE_TIMEOUT);
     }
 
