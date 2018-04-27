@@ -60,6 +60,9 @@ public class TopProfileActivity extends BaseSimpleActivity
         implements TopProfileActivityListener.View {
 
     public static final String EXTRA_IS_FOLLOWING = "is_following";
+    public static final int IS_FOLLOWING_TRUE = 1;
+    public static final int IS_FOLLOWING_FALSE = 0;
+
     private static final String EXTRA_PARAM_USER_ID = "user_id";
     private static final String EXTRA_PARAM_POST_ID = "post_id";
     private static final String TITLE_PROFILE = "Info Akun";
@@ -349,7 +352,9 @@ public class TopProfileActivity extends BaseSimpleActivity
         else disableFollowButton();
 
         if (getIntent() != null && getIntent().getExtras() != null) {
-            resultIntent.putExtra(EXTRA_IS_FOLLOWING, topProfileViewModel.isFollowed());
+            resultIntent.putExtra(
+                    EXTRA_IS_FOLLOWING,
+                    topProfileViewModel.isFollowed() ? IS_FOLLOWING_TRUE : IS_FOLLOWING_FALSE);
             this.setResult(Activity.RESULT_OK, resultIntent);
         }
     }

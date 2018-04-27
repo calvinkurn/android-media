@@ -94,6 +94,7 @@ import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LI
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES;
+import static com.tokopedia.profile.view.activity.TopProfileActivity.IS_FOLLOWING_TRUE;
 
 /**
  * @author by nisie on 5/15/17.
@@ -724,7 +725,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 if (resultCode == Activity.RESULT_OK) {
                     onSuccessFollowUnfollowFromProfile(
                             data.getIntExtra(ARGS_ROW_NUMBER, -1),
-                            data.getBooleanExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, false)
+                            data.getIntExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, -1)
                     );
 
                     updatePostState(
@@ -1085,11 +1086,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private void onSuccessFollowUnfollowFromProfile(int rowNumber, boolean isFollowing) {
+    private void onSuccessFollowUnfollowFromProfile(int rowNumber, int isFollowing) {
         if (rowNumber != -1 && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
             KolViewModel kolViewModel = (KolViewModel) adapter.getlist().get(rowNumber);
-            kolViewModel.setFollowed(isFollowing);
-            kolViewModel.setTemporarilyFollowed(isFollowing);
+
+            if (isFollowing != -1) {
+                kolViewModel.setFollowed(isFollowing == IS_FOLLOWING_TRUE);
+                kolViewModel.setTemporarilyFollowed(isFollowing == IS_FOLLOWING_TRUE);
+            }
             adapter.notifyItemChanged(rowNumber);
         }
     }
