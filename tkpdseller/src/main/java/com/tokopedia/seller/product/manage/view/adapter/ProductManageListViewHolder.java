@@ -146,7 +146,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         } else {
             textViewVariant.setVisibility(View.GONE);
         }
-        if (statusUnderSupervision || isProductVariant) {
+        if (statusUnderSupervision) {
             checkBoxProduct.setEnabled(false);
         } else {
             checkBoxProduct.setEnabled(true);

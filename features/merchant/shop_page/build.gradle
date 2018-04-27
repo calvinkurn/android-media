@@ -18,6 +18,7 @@ buildscript {
 }
 
 
+
 dependencies {
     compile project(rootProject.ext.libraries.useCase)
     compile project(rootProject.ext.libraries.abstraction)

@@ -94,7 +94,6 @@ import java.util.List;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /**
@@ -111,6 +110,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
         UserSession userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
+
         String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
         Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
         Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
@@ -119,7 +119,8 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (userSession.isLoggedIn()) {
+        if (userSession.isLoggedIn()
+                && ((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
             taskStackBuilder.addNextIntent(parentIntent);
         }
         taskStackBuilder.addNextIntent(detailsIntent);
@@ -129,18 +130,16 @@ public class GroupChatActivity extends BaseSimpleActivity
     @DeepLink(ApplinkConstant.GROUPCHAT_LIST)
     public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
         UserSession userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
-        String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
         Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
-        Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
         Intent parentIntent = ((GroupChatModuleRouter) context.getApplicationContext())
                 .getInboxChannelsIntent(context);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (userSession.isLoggedIn()) {
+        if (userSession.isLoggedIn()
+                && ((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
             taskStackBuilder.addNextIntent(parentIntent);
         }
-        taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;
     }
 
@@ -155,7 +154,8 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (userSession.isLoggedIn()) {
+        if (userSession.isLoggedIn()
+                && ((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
             taskStackBuilder.addNextIntent(parentIntent);
         }
         taskStackBuilder.addNextIntent(detailsIntent);
@@ -685,6 +685,9 @@ public class GroupChatActivity extends BaseSimpleActivity
             if (!TextUtils.isEmpty(channelInfoViewModel.getAdsImageUrl())) {
                 trackAdsEE(channelInfoViewModel);
             }
+            if (getApplication() instanceof AbstractionRouter) {
+                userSession = ((AbstractionRouter) getApplication()).getSession();
+            }
             presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                     userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken());
 
@@ -794,7 +797,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (tabs != null
                 && tabAdapter != null
                 && hasVoteTab()) {
-            View view = ToolTipUtils.setToolTip(this, R.layout.tooltip, this);
+            View view = ToolTipUtils.setToolTip(this, R.layout.tooltip_vote, this);
             TextView temp = view.findViewById(R.id.text);
             MethodChecker.setBackground(temp, MethodChecker.getDrawable(this, R.drawable.ic_combined_shape));
             View anchorView = tabs.getChildAt(CHANNEL_VOTE_FRAGMENT);
@@ -975,6 +978,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else if (currentFragmentIsInfo()) {
             populateChannelInfoFragment();
         }
+        setGreenIndicator(channelInfoViewModel.getVoteInfoViewModel());
     }
 
     private void refreshTab() {
@@ -1314,6 +1318,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onUserBanned(User user) {
+        hideLoading();
         if (user != null
                 && !TextUtils.isEmpty(user.getUserId())
                 && userSession.getUserId().equals(user.getUserId())) {

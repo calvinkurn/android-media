@@ -57,7 +57,7 @@
     <TextView
         android:id="@+id/btn_continue"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/layout_50"
         android:text="@string/button_continue"
         android:textColor="@color/white"
         android:textAllCaps="false"

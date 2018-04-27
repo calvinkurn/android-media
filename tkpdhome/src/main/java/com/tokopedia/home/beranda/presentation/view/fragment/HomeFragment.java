@@ -29,6 +29,7 @@ import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
@@ -75,6 +76,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerW
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
@@ -93,7 +95,7 @@ import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant
  */
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
-        TokoCashUpdateListener, HomeFeedListener {
+        TokoCashUpdateListener, HomeFeedListener, CountDownView.CountDownListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
@@ -263,6 +265,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(homeFragmentBroadcastReceiver);
+        presenter.onDestroy();
         presenter.detachView();
         recyclerView.setAdapter(null);
         adapter = null;
@@ -277,9 +280,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.post(new Runnable() {
             @Override
             public void run() {
-                presenter.getHomeData();
-                presenter.getHeaderData(true);
-                loadEggData();
+                if (presenter != null) {
+                    presenter.getHomeData();
+                    presenter.getHeaderData(true);
+                }
             }
         });
         refreshLayout.setOnRefreshListener(this);
@@ -352,7 +356,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getItemAnimator().setChangeDuration(0);
-        HomeAdapterFactory adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this);
+        HomeAdapterFactory adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this, this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
     }
@@ -486,12 +490,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onPromoClick(int position, BannerSlidesModel slidesModel) {
-        String promoAttribution = String.format("1 - sliderBanner - %d - %s", position, slidesModel.getCreativeName());
+    public void onPromoClick(int position, BannerSlidesModel slidesModel, String attribution) {
         if (getActivity() != null
                 && getActivity().getApplicationContext() instanceof TkpdCoreRouter
                 && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
-            openApplink(slidesModel.getApplink(), promoAttribution);
+            openApplink(slidesModel.getApplink(), attribution);
         } else {
             openWebViewURL(slidesModel.getRedirectUrl(), getContext());
         }
@@ -521,9 +524,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onRefresh() {
         removeNetworkError();
-        resetFeedState();
-        presenter.getHomeData();
-        presenter.getHeaderData(false);
+        if (presenter != null) {
+            resetFeedState();
+            presenter.getHomeData();
+            presenter.getHeaderData(false);
+        }
         loadEggData();
     }
 
@@ -531,6 +536,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         presenter.resetPageFeed();
         if (getContext() != null && SessionHandler.isV4Login(getContext()) && feedLoadMoreTriggerListener != null) {
             feedLoadMoreTriggerListener.resetState();
+        }
+    }
+
+    @Override
+    public void onCountDownFinished() {
+        if (presenter != null) {
+            presenter.updateHomeData();
         }
     }
 
@@ -708,9 +720,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onShowRetryGetFeed() {
-        adapter.hideLoading();
-        adapter.showRetry();
-        adapter.notifyDataSetChanged();
+        if(adapter != null ) {
+            adapter.hideLoading();
+            adapter.showRetry();
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
