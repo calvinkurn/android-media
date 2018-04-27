@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.editor.widget;
+package com.tokopedia.imagepicker.editor.widgetcroplegacy;
 
 public enum CropState {
     STARTED,

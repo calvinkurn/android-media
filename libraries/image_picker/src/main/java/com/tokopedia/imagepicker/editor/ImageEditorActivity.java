@@ -6,21 +6,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.editor.adapter.ImageEditorEditActionAdapter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
-import com.tokopedia.imagepicker.editor.adapter.TabLayoutImageEditorAdapter;
 import com.tokopedia.imagepicker.editor.presenter.ImageDownloadPresenter;
 import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.adapter.TabLayoutImagePickerAdapter;
 
 import java.util.ArrayList;
 
@@ -28,7 +27,7 @@ import java.util.ArrayList;
  * Created by Hendry on 9/25/2017.
  */
 
-public class ImageEditorActivity extends BaseSimpleActivity implements ImageDownloadPresenter.ImageDownloadView {
+public class ImageEditorActivity extends BaseSimpleActivity implements ImageDownloadPresenter.ImageDownloadView, ImageEditorEditActionAdapter.OnImageEditorEditActionAdapterListener {
 
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
     public static final String EXTRA_MIN_RESOLUTION = "MIN_IMG_RESOLUTION";
@@ -82,13 +81,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
 
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
@@ -103,7 +96,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
         vgProgressBar = findViewById(R.id.vg_download_progress_bar);
         vgContentContainer = findViewById(R.id.vg_content_container);
-        View btnDone = findViewById(R.id.btn_done);
         hideProgressDialog();
         hideContentView();
 
@@ -119,45 +111,19 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             finalImagePaths = savedInstanceState.getStringArrayList(SAVED_FINAL_PATHS);
         }
 
-        setupTabLayout();
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finishEditImage();
-            }
-        });
+        setupEditMainLayout();
     }
 
-    private void setupTabLayout() {
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        final TabLayoutImageEditorAdapter tabLayoutImageEditorAdapter =
-                new TabLayoutImageEditorAdapter(tabLayout, this, imageEditActionType);
-        tabLayoutImageEditorAdapter.notifyDataSetChanged();
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                int position = tab.getPosition();
-                //TODO, hide the tab, replace by detail action
-                ImageEditorActivity.this.onTabSelected(position);
-            }
+    private void setupEditMainLayout() {
+        ViewGroup viewGroupMainContent = findViewById(R.id.vg_editor_main_content);
+        ImageEditorEditActionAdapter imageEditorEditActionAdapter =
+                new ImageEditorEditActionAdapter(viewGroupMainContent, this, imageEditActionType, this);
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-        tabLayoutImageEditorAdapter.unselectTab(tabLayout.getTabAt(0));
-        if (tabLayout.getTabCount() <= 1) {
-            tabLayout.setVisibility(View.GONE);
-        }
+        imageEditorEditActionAdapter.notifyDataSetChanged();
     }
 
-    private void onTabSelected(int position){
+    @Override
+    public void onEditActionClicked(@ImagePickerBuilder.ImageEditActionTypeDef int actionEditType) {
         //TODO cehck the actiondef
         // TODO enabled the image zoom if crop;
     }
@@ -351,4 +317,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     protected Fragment getNewFragment() {
         return null;
     }
+
+
 }

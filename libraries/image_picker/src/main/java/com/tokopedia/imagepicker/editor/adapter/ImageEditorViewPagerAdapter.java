@@ -1,6 +1,5 @@
 package com.tokopedia.imagepicker.editor.adapter;
 
-import android.annotation.SuppressLint;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -8,12 +7,7 @@ import android.support.v4.util.SparseArrayCompat;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 
-import com.github.florent37.camerafragment.configuration.Configuration;
-import com.tokopedia.imagepicker.editor.ImageEditPreviewFragment;
-import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
-import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
-import com.tokopedia.imagepicker.picker.instagram.ImagePickerInstagramFragment;
+import com.tokopedia.imagepicker.editor.ImageEditPreviewLegacyFragment;
 
 import java.util.ArrayList;
 
@@ -45,7 +39,7 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
         if (TextUtils.isEmpty(localImagePath)) {
             localImagePath = oriImagePath;
         }
-        return ImageEditPreviewFragment.newInstance(oriImagePath, localImagePath, minResolution);
+        return ImageEditPreviewLegacyFragment.newInstance(oriImagePath, localImagePath, minResolution);
     }
 
     @Override

@@ -19,7 +19,7 @@ import com.tokopedia.imagepicker.editor.widgetcroplegacy.CropperView;
  * Created by hendry on 25/04/18.
  */
 
-public class ImageEditPreviewFragment extends Fragment implements ImageEditPreviewPresenter.ImageEditPreviewView {
+public class ImageEditPreviewLegacyFragment extends Fragment implements ImageEditPreviewPresenter.ImageEditPreviewView {
 
     public static final String ARG_ORI_IMAGE_PATH = "arg_ori_img_path";
     public static final String ARG_EDITTED_IMAGE_PATH = "arg_edit_img_path";
@@ -36,12 +36,12 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private View progressBar;
     private View snapButton;
 
-    public static ImageEditPreviewFragment newInstance(String oriImagePath, String edittedImagePath, int minResolution) {
+    public static ImageEditPreviewLegacyFragment newInstance(String oriImagePath, String edittedImagePath, int minResolution) {
         Bundle args = new Bundle();
         args.putString(ARG_ORI_IMAGE_PATH, oriImagePath);
         args.putString(ARG_EDITTED_IMAGE_PATH, edittedImagePath);
         args.putInt(ARG_MIN_RESOLUTION, minResolution);
-        ImageEditPreviewFragment fragment = new ImageEditPreviewFragment();
+        ImageEditPreviewLegacyFragment fragment = new ImageEditPreviewLegacyFragment();
         fragment.setArguments(args);
         return fragment;
     }

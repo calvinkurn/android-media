@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.editor.widget;
+package com.tokopedia.imagepicker.editor.widgetcroplegacy;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -111,6 +111,10 @@ public class CropperView extends FrameLayout {
 
     public void setMaxZoom(float zoom) {
         mImageView.setMaxZoom(zoom);
+    }
+
+    public CropperImageView getImageView() {
+        return mImageView;
     }
 
     /**

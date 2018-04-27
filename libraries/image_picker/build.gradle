@@ -19,4 +19,8 @@ dependencies {
 //    compile project(rootProject.ext.libraries.applink)
 
     compile 'com.github.florent37:camerafragment:1.0.9'
+
+    compile ('com.github.yalantis:ucrop:2.2.2'){
+        exclude group: 'com.android.support'
+    }
 }

@@ -1,8 +1,7 @@
-package com.tokopedia.imagepicker.editor.widget;
+package com.tokopedia.imagepicker.editor.widgetcroplegacy;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -11,14 +10,12 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.widget.ImageView;
 
 import com.tokopedia.imagepicker.R;
 
@@ -64,6 +61,8 @@ public class CropperImageView extends AppCompatImageView {
     private boolean gestureEnabled = true;
 
     private boolean initWithFitToCenter = false;
+
+    private int counterAnimation = 0;
 
     public CropperImageView(Context context) {
         super(context);
@@ -216,7 +215,7 @@ public class CropperImageView extends AppCompatImageView {
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
 
-                if(mGestureCallback != null) {
+                if (mGestureCallback != null) {
                     mGestureCallback.onGestureCompleted();
                 }
 
@@ -293,7 +292,7 @@ public class CropperImageView extends AppCompatImageView {
         }
 
         int min_dimen = Math.min(width, height);
-        float scaleFactor = (float)min_dimen/(float)frameDimen;
+        float scaleFactor = (float) min_dimen / (float) frameDimen;
 
         Matrix matrix = new Matrix();
         matrix.setScale(1f / scaleFactor, 1f / scaleFactor);
@@ -325,7 +324,7 @@ public class CropperImageView extends AppCompatImageView {
         }
 
         int min_dimen = Math.max(width, height);
-        float scaleFactor = (float)min_dimen/(float)frameDimen;
+        float scaleFactor = (float) min_dimen / (float) frameDimen;
 
         Matrix matrix = new Matrix();
         matrix.setScale(1f / scaleFactor, 1f / scaleFactor);
@@ -383,8 +382,8 @@ public class CropperImageView extends AppCompatImageView {
                 Log.i(TAG, "set scale to min zoom: " + mMinZoom);
             }
 
-            float xx = getWidth()/2 - mMinZoom * drawable.getIntrinsicWidth()/2;
-            float yy = getHeight()/2 - mMinZoom * drawable.getIntrinsicHeight()/2;
+            float xx = getWidth() / 2 - mMinZoom * drawable.getIntrinsicWidth() / 2;
+            float yy = getHeight() / 2 - mMinZoom * drawable.getIntrinsicHeight() / 2;
 
             if (drawable.getIntrinsicHeight() > drawable.getIntrinsicWidth()) {
                 if (ty >= 0) {
@@ -396,7 +395,7 @@ public class CropperImageView extends AppCompatImageView {
                     // We translate P1 to origin (x, mFocusY) -> (x, 0)
                     // Apply zoom on origin -> (minzoom/scale)
                     // Translate origin to P1
-                    yy = (ty - mFocusY) * (mMinZoom/scaleY) + mFocusY;
+                    yy = (ty - mFocusY) * (mMinZoom / scaleY) + mFocusY;
                 }
             } else {
                 if (tx >= 0) {
@@ -408,7 +407,7 @@ public class CropperImageView extends AppCompatImageView {
                     // We translate P1 to origin (mFocusX, y) -> (0, y)
                     // Apply zoom on origin -> (minzoom/scale)
                     // Translate origin to P1
-                    xx = (tx - mFocusX) * (mMinZoom/scaleX) + mFocusX;
+                    xx = (tx - mFocusX) * (mMinZoom / scaleX) + mFocusX;
                 }
             }
 
@@ -436,8 +435,8 @@ public class CropperImageView extends AppCompatImageView {
             float xTranslate;
             float yTranslate;
 
-            if(h <= w) {
-                yTranslate = getHeight()/2 - scaleX * h/2;
+            if (h <= w) {
+                yTranslate = getHeight() / 2 - scaleX * h / 2;
 
                 if (tx >= 0) {
                     xTranslate = 0;
@@ -451,9 +450,9 @@ public class CropperImageView extends AppCompatImageView {
                 }
 
             } else {
-                xTranslate = getWidth()/2 - scaleX * w/2;
+                xTranslate = getWidth() / 2 - scaleX * w / 2;
 
-                if(ty >= 0) {
+                if (ty >= 0) {
                     yTranslate = 0;
                 } else {
                     float yDiff = getHeight() - (scaleY) * drawable.getIntrinsicHeight();
@@ -485,7 +484,7 @@ public class CropperImageView extends AppCompatImageView {
 
         } else if (isMaxZoomSet && scaleX > mMaxZoom) {
 
-            if(DEBUG) {
+            if (DEBUG) {
                 Log.i(TAG, "set to max zoom");
                 Log.i(TAG, "isMaxZoomSet: " + isMaxZoomSet);
             }
@@ -693,7 +692,7 @@ public class CropperImageView extends AppCompatImageView {
             return CropInfo.cropCompleteBitmap(mBitmap, mAddPaddingToMakeSquare, horizontalPadding, verticalPadding, mPaintColor);
         }
 
-        float cropY = - yTrans / scale;
+        float cropY = -yTrans / scale;
         float Y = getHeight() / scale;
         float cropX = -xTrans / scale;
         float X = getWidth() / scale;
@@ -710,7 +709,7 @@ public class CropperImageView extends AppCompatImageView {
             if (DEBUG) {
                 Log.i(TAG, "readjust cropY to: " + cropY);
             }
-        }  else if (cropY < 0) {
+        } else if (cropY < 0) {
             cropY = 0;
             if (DEBUG) {
                 Log.i(TAG, "readjust cropY to: " + cropY);
@@ -739,21 +738,21 @@ public class CropperImageView extends AppCompatImageView {
             // Height is greater than width.
             if (xTrans >= 0) {
                 // Image is zoomed. Crop from height
-                rect = new Rect(0, (int)cropY, mBitmap.getWidth(), (int)(Y + cropY));
+                rect = new Rect(0, (int) cropY, mBitmap.getWidth(), (int) (Y + cropY));
                 horizontalPadding = (int) ((Y - mBitmap.getWidth()) / 2);
             } else {
                 // Crop from width and height both
-                rect = new Rect((int)cropX, (int)cropY, (int)(cropX + X), (int)(cropY + Y));
+                rect = new Rect((int) cropX, (int) cropY, (int) (cropX + X), (int) (cropY + Y));
                 isPaddingRequired = false;
             }
         } else {
             if (yTrans >= 0) {
                 // Image is zoomed. Crop from width and add padding to make square
-                rect = new Rect((int)cropX, 0, (int)(cropX + X), mBitmap.getHeight());
+                rect = new Rect((int) cropX, 0, (int) (cropX + X), mBitmap.getHeight());
                 verticalPadding = (int) ((X - mBitmap.getHeight()) / 2);
             } else {
                 // Crop from width and height both.
-                rect = new Rect((int)cropX, (int)cropY, (int)(cropX + X), (int)(cropY + Y));
+                rect = new Rect((int) cropX, (int) cropY, (int) (cropX + X), (int) (cropY + Y));
                 isPaddingRequired = false;
             }
         }
@@ -897,6 +896,7 @@ public class CropperImageView extends AppCompatImageView {
 
     public interface GestureCallback {
         void onGestureStarted();
+
         void onGestureCompleted();
     }
 
@@ -910,7 +910,7 @@ public class CropperImageView extends AppCompatImageView {
                 Matrix matrix = getImageMatrix();
                 matrix.reset();
 
-                Integer value = (Integer)animation.getAnimatedValue();
+                Integer value = (Integer) animation.getAnimatedValue();
 
                 matrix.postScale((scaleEnd - scaleStart) * value / 20f + scaleStart,
                         (scaleEnd - scaleStart) * value / 20f + scaleStart);
@@ -948,6 +948,7 @@ public class CropperImageView extends AppCompatImageView {
     }
 
     private void animateAdjustment(final float xDiff, final float yDiff) {
+
         ValueAnimator animator = ValueAnimator.ofInt(0, 20);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -956,6 +957,7 @@ public class CropperImageView extends AppCompatImageView {
                 matrix.postTranslate(xDiff / 20, yDiff / 20);
                 setImageMatrix(matrix);
                 invalidate();
+                counterAnimation++;
             }
         });
 
@@ -963,11 +965,21 @@ public class CropperImageView extends AppCompatImageView {
             @Override
             public void onAnimationStart(Animator animation) {
                 isAdjusting = true;
+                counterAnimation = 0;
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 isAdjusting = false;
+                int missingCounter = 20 - counterAnimation;
+                if (missingCounter > 0) {
+                    Matrix matrix = getImageMatrix();
+                    matrix.postTranslate( missingCounter * xDiff / 20, missingCounter *yDiff / 20);
+                    setImageMatrix(matrix);
+                    invalidate();
+                    counterAnimation++;
+                }
+                counterAnimation = 0;
             }
 
             @Override
@@ -1002,7 +1014,7 @@ public class CropperImageView extends AppCompatImageView {
                 }
 
                 double expScale = Math.pow(mMaxZoom / scale, 1 / 20f);
-                matrix.postScale((float)expScale, (float)expScale, mFocusX, mFocusY);
+                matrix.postScale((float) expScale, (float) expScale, mFocusX, mFocusY);
                 setImageMatrix(matrix);
                 invalidate();
             }

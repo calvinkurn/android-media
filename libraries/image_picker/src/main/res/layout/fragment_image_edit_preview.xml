@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="top"
         android:showDividers="beginning|end"
         android:divider="@drawable/bg_line_separator">
         <FrameLayout
@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white">
 
-            <com.tokopedia.imagepicker.editor.widget.CropperView
+            <com.tokopedia.imagepicker.editor.widgetcroplegacy.CropperView
                 android:id="@+id/cropper_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

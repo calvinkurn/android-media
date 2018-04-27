@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:clipToPadding="false"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
@@ -21,14 +21,20 @@
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
             app:subtitleTextAppearance="?subtitleTextAppearance"
-            app:titleTextAppearance="?titleTextAppearance" />
-    </android.support.design.widget.AppBarLayout>
+            app:titleTextAppearance="?titleTextAppearance">
 
-    <Button
-        android:id="@+id/btn_done"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Done" />
+            <TextView
+                android:id="@+id/tv_done"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                style="@style/TextView.Title.Green"
+                android:text="@string/label_done"
+                android:padding="@dimen/dp_8"
+                android:background="?attr/selectableItemBackground"/>
+
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
         android:id="@+id/container"
@@ -45,63 +51,113 @@
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:background="@drawable/bg_line_separator"/>
+                android:layout_weight="1" />
 
             <FrameLayout
-                android:id="@+id/vg_editor_detail"
+                android:id="@+id/vg_footer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
-                tools:visibility="visible">
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_height="@dimen/dp_72">
+                android:layout_height="@dimen/editor_footer_height">
 
-                    <LinearLayout
+                <LinearLayout
+                    android:id="@+id/vg_editor_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/editor_footer_height"
+                    android:orientation="vertical"
+                    android:visibility="visible"
+                    tools:visibility="visible">
+
+                    <HorizontalScrollView
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/editor_main_height"
+                        android:layout_gravity="center_horizontal"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:paddingLeft="@dimen/dp_16"
+                        android:paddingRight="@dimen/dp_16">
+
+                        <LinearLayout
+                            android:id="@+id/vg_editor_main_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:clipChildren="false"
+                            android:clipToPadding="false"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+                            <!-- layout in programmatically -->
+
+                            <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:text="budi fewge  fe few few     "/>-->
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+
+                    <HorizontalScrollView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-                        <!-- layout in programmatically -->
-                    </LinearLayout>
+                        android:layout_gravity="center">
 
-                </HorizontalScrollView>
+                        <LinearLayout
+                            android:id="@+id/vg_editor_preview_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+                            <!-- layout in programmatically -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dp_12"
+                                android:layout_marginRight="@dimen/dp_12"
+                                android:text="Preview Test" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dp_12"
+                                android:layout_marginRight="@dimen/dp_12"
+                                android:text="Preview Test" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dp_12"
+                                android:layout_marginRight="@dimen/dp_12"
+                                android:text="Preview Test" />
+
+                            <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:text="budi fewge  fe few few     "/>-->
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+                </LinearLayout>
             </FrameLayout>
 
+            <!--<FrameLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/dp_72">-->
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:background="@drawable/bg_line_separator"/>
+            <!--<android.support.design.widget.TabLayout-->
+            <!--android:id="@+id/tab_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:clipChildren="false"-->
+            <!--android:clipToPadding="false"-->
+            <!--app:tabGravity="fill"-->
+            <!--app:tabIndicatorColor="@null"-->
+            <!--app:tabMinWidth="@dimen/tab_min_width"-->
+            <!--app:tabMode="fixed"-->
+            <!--app:tabSelectedTextColor="@color/font_black_primary_70"-->
+            <!--app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"-->
+            <!--app:tabTextColor="@color/font_black_primary_70">-->
+            <!--&lt;!&ndash;will be added programmatically at ImageEditorActivity&ndash;&gt;-->
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_72">
+            <!--</android.support.design.widget.TabLayout>-->
 
-                <android.support.design.widget.TabLayout
-                    android:id="@+id/tab_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    app:tabGravity="fill"
-                    app:tabIndicatorColor="@null"
-                    app:tabMinWidth="@dimen/tab_min_width"
-                    app:tabMode="fixed"
-                    app:tabSelectedTextColor="@color/font_black_primary_70"
-                    app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-                    app:tabTextColor="@color/font_black_primary_70">
-                    <!--will be added programmatically at ImageEditorActivity-->
-
-                </android.support.design.widget.TabLayout>
-
-            </FrameLayout>
+            <!--</FrameLayout>-->
 
         </LinearLayout>
 
