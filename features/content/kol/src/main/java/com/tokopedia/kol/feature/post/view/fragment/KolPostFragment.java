@@ -318,26 +318,25 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
-        if (rowNumber != -1) {
-            if (adapter.getList().get(rowNumber) != null
-                    && adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
-                KolPostViewModel kolPostViewModel =
-                        ((KolPostViewModel) adapter.getList().get(rowNumber));
-                kolPostViewModel.setTotalComment(
-                        kolPostViewModel.getTotalComment() + totalNewComment);
-                adapter.notifyItemChanged(rowNumber);
+        if (rowNumber != -1 &&
+                adapter.getList().get(rowNumber) != null &&
+                adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolPostViewModel =
+                    ((KolPostViewModel) adapter.getList().get(rowNumber));
+            kolPostViewModel.setTotalComment(
+                    kolPostViewModel.getTotalComment() + totalNewComment);
+            adapter.notifyItemChanged(rowNumber);
 
-                if (getActivity() != null &&
-                        getArguments() != null &&
-                        getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
+            if (getActivity() != null &&
+                    getArguments() != null &&
+                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
 
-                    if (resultIntent == null) {
-                        resultIntent = new Intent();
-                        resultIntent.putExtras(getArguments());
-                    }
-                    resultIntent.putExtra(PARAM_TOTAL_COMMENTS, kolPostViewModel.getTotalComment());
-                    getActivity().setResult(Activity.RESULT_OK, resultIntent);
+                if (resultIntent == null) {
+                    resultIntent = new Intent();
+                    resultIntent.putExtras(getArguments());
                 }
+                resultIntent.putExtra(PARAM_TOTAL_COMMENTS, kolPostViewModel.getTotalComment());
+                getActivity().setResult(Activity.RESULT_OK, resultIntent);
             }
         }
     }
