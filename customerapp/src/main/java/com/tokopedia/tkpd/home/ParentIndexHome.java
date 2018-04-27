@@ -46,7 +46,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
@@ -112,7 +111,7 @@ import rx.subscriptions.CompositeSubscription;
  * modified by meta on 24/01/2018, implement bottom navigation menu
  */
 public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener,
-        GetUserInfoListener, HasComponent,InAppManager.InAppMessageListener {
+        GetUserInfoListener, HasComponent, InAppManager.InAppMessageListener {
 
     public static final int INIT_STATE_FRAGMENT_HOME = 0;
     public static final int INIT_STATE_FRAGMENT_FEED = 1;
@@ -147,7 +146,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private boolean exit = false;
 
     private BroadcastReceiver hockeyBroadcastReceiver;
-    private NudgeView nudgeView ;
+    private NudgeView nudgeView;
 
     @DeepLink(Constants.Applinks.HOME)
     public static TaskStackBuilder getApplinkCallingIntent(Context context, Bundle extras) {
@@ -209,6 +208,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     protected void sendScreenAnalytics() {
+        IndexScreenTracking.sendScreen(this, this);
     }
 
     @Override
@@ -432,11 +432,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                if (tab.getPosition() == INIT_STATE_FRAGMENT_HOME ||tab.getPosition() == INIT_STATE_FRAGMENT_FEED) {
+                if (tab.getPosition() == INIT_STATE_FRAGMENT_HOME || tab.getPosition() == INIT_STATE_FRAGMENT_FEED) {
                     Fragment fragment = (Fragment) mViewPager.getAdapter().instantiateItem(mViewPager, mViewPager.getCurrentItem());
                     if (fragment != null) {
                         if (fragment instanceof FeedPlusFragment)
@@ -458,7 +459,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         inflateView(R.layout.activity_index_home_4);
         mViewPager = findViewById(R.id.index_page);
         tabs = findViewById(R.id.tab);
-        nudgeView = (NudgeView)findViewById(R.id.nudge);
+        nudgeView = (NudgeView) findViewById(R.id.nudge);
     }
 
     public ChangeTabListener changeTabListener() {
