@@ -242,6 +242,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 );
             }
         } else {
+            Log.d("CategoryData", categoryData.toString());
+
             view.renderErrorStyleNotSupportedProductDigitalData(
                     view.getStringFromResource(
                             R.string.message_error_digital_category_style_not_supported

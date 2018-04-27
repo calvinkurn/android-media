@@ -382,4 +382,28 @@ public class CategoryData implements Parcelable {
             return new CategoryData(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "CategoryData{" +
+                "categoryId='" + categoryId + '\'' +
+                ", categoryType='" + categoryType + '\'' +
+                ", titleText='" + titleText + '\'' +
+                ", name='" + name + '\'' +
+                ", icon='" + icon + '\'' +
+                ", iconUrl='" + iconUrl + '\'' +
+                ", teaser=" + teaser +
+                ", isNew=" + isNew +
+                ", instantCheckout=" + instantCheckout +
+                ", slug='" + slug + '\'' +
+                ", defaultOperatorId='" + defaultOperatorId + '\'' +
+                ", operatorStyle='" + operatorStyle + '\'' +
+                ", operatorLabel='" + operatorLabel + '\'' +
+                ", clientNumberList=" + clientNumberList +
+                ", operatorList=" + operatorList +
+                ", bannerDataListIncluded=" + bannerDataListIncluded +
+                ", otherBannerDataListIncluded=" + otherBannerDataListIncluded +
+                '}';
+    }
+
 }
