@@ -69,7 +69,7 @@ public class ImageSearchActiviy extends DiscoveryActivity
             setLastQuerySearchView(productViewModel.getQuery());
             loadSection(productViewModel);
 
-            setToolbarTitle("Image Search");
+            setToolbarTitle(getString(R.string.image_search_title));
         } else if (!TextUtils.isEmpty(searchQuery)) {
             onProductQuerySubmit(searchQuery);
         } else {

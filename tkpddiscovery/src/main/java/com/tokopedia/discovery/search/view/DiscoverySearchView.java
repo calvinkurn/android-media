@@ -109,6 +109,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private Subscription querySubscription;
     private QueryListener queryListener;
     private ShowCaseDialog showCaseDialog;
+    private RemoteConfig remoteConfig;
 
     private interface QueryListener {
         void onQueryChanged(String query);
@@ -263,7 +264,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mImageSearchButton.setOnClickListener(mOnClickListener);
         allowVoiceSearch = true;
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         setImageSearch(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
                 false));
 
@@ -341,15 +342,17 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             }
         });
 
-        String onBoardTitle = mContext.getResources().getString(R.string.on_board_title);
-        String onBoardDesc = mContext.getResources().getString(R.string.on_board_desc);
+        if (remoteConfig == null) {
+            remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        }
 
         mImageSearchButton.setWillNotCacheDrawing(false);
         ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
         showCaseObjectList.add(new ShowCaseObject(
                 mImageSearchButton,
-                onBoardTitle,
-                onBoardDesc,
+                mContext.getResources().getString(R.string.on_board_title),
+                remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
+                        mContext.getResources().getString(R.string.on_board_desc)),
                 ShowCaseContentPosition.UNDEFINED,
                 R.color.tkpd_main_green));
         showCaseDialog.show(((Activity) mContext), showCaseTag, showCaseObjectList);
