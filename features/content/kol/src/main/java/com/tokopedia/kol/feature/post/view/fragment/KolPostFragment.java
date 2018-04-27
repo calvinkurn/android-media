@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -288,10 +287,6 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
             }
             adapter.notifyItemChanged(rowNumber);
 
-            Log.d("milhamj", "argument" + getArguments().getInt(PARAM_POST_ID, -1)
-                    + " contentid " + kolPostViewModel.getContentId()
-                    + " postid " + kolPostViewModel.getId());
-
             if (getActivity() != null &&
                     getArguments() != null &&
                     getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
@@ -331,10 +326,6 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
                 kolPostViewModel.setTotalComment(
                         kolPostViewModel.getTotalComment() + totalNewComment);
                 adapter.notifyItemChanged(rowNumber);
-
-                Log.d("milhamj", "argument" + getArguments().getInt(PARAM_POST_ID, -1)
-                        + " contentid " + kolPostViewModel.getContentId()
-                        + " postid " + kolPostViewModel.getId());
 
                 if (getActivity() != null &&
                         getArguments() != null &&
