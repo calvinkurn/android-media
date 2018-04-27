@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -22,6 +23,7 @@ import com.tokopedia.events.view.activity.EventSearchActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.contractor.EventsContract.AdapterCallbacks;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
@@ -89,6 +91,9 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     public void startBannerSlide(TouchViewPager viewPager) {
         this.mTouchViewPager = viewPager;
         currentPage = viewPager.getCurrentItem();
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage).getTitle() +
+                " - " + currentPage);
+        carousel.getItems().get(currentPage).setTrack(true);
         try {
             totalPages = viewPager.getAdapter().getCount();
         } catch (Exception e) {
@@ -123,6 +128,11 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     @Override
     public void onBannerSlide(int page) {
         currentPage = page;
+        if (!carousel.getItems().get(currentPage).isTrack()) {
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage).getTitle() +
+                    " - " + currentPage);
+            carousel.getItems().get(currentPage).setTrack(true);
+        }
     }
 
     @Override
@@ -134,15 +144,20 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             searchIntent.putParcelableArrayListExtra("TOPEVENTS", searchViewModelList);
             getView().navigateToActivityRequest(searchIntent,
                     EventsHomeActivity.REQUEST_CODE_EVENTSEARCHACTIVITY);
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_SEARCH, "");
             return true;
         } else if (id == R.id.action_promo) {
             startGeneralWebView(PROMOURL);
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_PROMO, "");
             return true;
         } else if (id == R.id.action_booked_history) {
             startGeneralWebView(TRANSATIONSURL);
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_DAFTAR_TRANSAKSI, "");
             return true;
         } else if (id == R.id.action_faq) {
             startGeneralWebView(FAQURL);
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BANTUAN, "");
+
             return true;
         } else {
             getView().getActivity().onBackPressed();
@@ -358,6 +373,8 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             intent.putExtra("homedata", categoryItemsViewModel);
             getView().getActivity().startActivity(intent);
         }
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_CLICK,
+                categoryItemsViewModel.getTitle() + "-" + String.valueOf(currentPage));
     }
 
     private void getCarousel(List<CategoryViewModel> categoryViewModels) {
@@ -374,6 +391,12 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             ((TkpdCoreRouter) getView().getActivity().getApplication())
                     .actionOpenGeneralWebView(getView().getActivity(), url);
         }
+    }
+
+
+    @Override
+    public String getSCREEN_NAME() {
+        return EventsGAConst.EVENTS_HOMEPAGE;
     }
 
 

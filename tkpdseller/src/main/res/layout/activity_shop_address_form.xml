@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/dp_10">
 
         <LinearLayout
             android:id="@+id/mainView"
@@ -20,10 +20,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:background="@drawable/cards_ui_2"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_small">
+                android:padding="@dimen/dp_10">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
                     android:id="@+id/address_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_med"
+                    android:layout_marginBottom="@dimen/dp_20"
                     android:inputType="text" />
 
                 <TextView
@@ -64,10 +64,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:background="@drawable/cards_ui_2"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_small">
+                android:padding="@dimen/dp_10">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -80,7 +80,7 @@
                     android:id="@+id/provinsi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/dp_10"
                     android:inputType="text" />
 
                 <TextView
@@ -102,7 +102,7 @@
                     android:id="@+id/regency"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/dp_10"
                     android:inputType="text" />
 
                 <TextView
@@ -144,7 +144,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/cards_ui_2"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_small">
+                android:padding="@dimen/dp_10">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -157,7 +157,7 @@
                     android:id="@+id/post_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_med"
+                    android:layout_marginBottom="@dimen/dp_20"
                     android:inputType="number"
                     android:maxLength="10" />
 
@@ -172,7 +172,7 @@
                     android:id="@+id/shop_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_med"
+                    android:layout_marginBottom="@dimen/dp_20"
                     android:lines="1" />
 
                 <TextView
@@ -186,7 +186,7 @@
                     android:id="@+id/shop_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_med"
+                    android:layout_marginBottom="@dimen/dp_20"
                     android:inputType="number" />
 
                 <TextView
@@ -209,7 +209,7 @@
                 android:id="@+id/btn_save"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_height"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/button_buy_from_cart"
                 android:gravity="center"
                 android:text="@string/title_save"

@@ -1,5 +1,6 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.google.gson.JsonObject;
@@ -15,4 +16,6 @@ public interface IPromoCodePresenter {
     void processCheckDigitalPromoCode(Context context, String voucherId, String categoryId);
 
     void processCheckEventPromoCode(String voucherId,JsonObject requestBody, boolean flag);
+
+    void processCheckFlightPromoCode(Activity activity, String voucherCode, String cartId);
 }

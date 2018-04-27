@@ -1,11 +1,11 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
     compile project(rootProject.ext.features.core)
     compile project(rootProject.ext.libraries.design)
-    compile project(rootProject.ext.features.useCase)
+    compile project(rootProject.ext.libraries.useCase)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

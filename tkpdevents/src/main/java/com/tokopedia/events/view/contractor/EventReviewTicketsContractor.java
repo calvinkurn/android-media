@@ -78,5 +78,7 @@ public class EventReviewTicketsContractor {
         void clickDismissTooltip();
 
         void clickGoToPromo();
+
+        public String getSCREEN_NAME();
     }
 }

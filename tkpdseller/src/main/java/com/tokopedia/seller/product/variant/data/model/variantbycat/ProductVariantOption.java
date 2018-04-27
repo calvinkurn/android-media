@@ -6,18 +6,19 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.base.view.adapter.ItemIdType;
+import com.tokopedia.seller.base.view.adapter.ItemPickerType;
 
 /**
  * Created by hendry on 8/14/2017.
  */
 
-public class ProductVariantOption implements Parcelable, ItemIdType {
+public class ProductVariantOption implements Parcelable, ItemIdType, ItemPickerType {
 
     public static final int TYPE = 199349;
 
     @SerializedName("value_id")
     @Expose
-    private long valueId;
+    private int valueId;
     @SerializedName("value")
     @Expose
     private String value;
@@ -28,11 +29,23 @@ public class ProductVariantOption implements Parcelable, ItemIdType {
     @Expose
     private String icon;
 
+    public ProductVariantOption(int id, String value, String hex, String icon){
+        this.valueId = id;
+        this.value = value;
+        this.hexCode = hex;
+        this.icon = icon;
+    }
+
     public String getId() {
         return String.valueOf(valueId);
     }
 
-    public long getValueId() {
+    @Override
+    public String getItemId() {
+        return value;
+    }
+
+    public int getValueId() {
         return valueId;
     }
 
@@ -44,8 +57,19 @@ public class ProductVariantOption implements Parcelable, ItemIdType {
         return hexCode;
     }
 
+    // this is for alias for picker type
+    @Override
+    public String getTitle() {
+        return value;
+    }
+
     public String getIcon() {
         return icon;
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 
     @Override
@@ -55,20 +79,20 @@ public class ProductVariantOption implements Parcelable, ItemIdType {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.valueId);
+        dest.writeInt(this.valueId);
         dest.writeString(this.value);
         dest.writeString(this.hexCode);
         dest.writeString(this.icon);
     }
 
     protected ProductVariantOption(Parcel in) {
-        this.valueId = (Long) in.readValue(Integer.class.getClassLoader());
+        this.valueId = in.readInt();
         this.value = in.readString();
         this.hexCode = in.readString();
         this.icon = in.readString();
     }
 
-    public static final Parcelable.Creator<ProductVariantOption> CREATOR = new Parcelable.Creator<ProductVariantOption>() {
+    public static final Creator<ProductVariantOption> CREATOR = new Creator<ProductVariantOption>() {
         @Override
         public ProductVariantOption createFromParcel(Parcel source) {
             return new ProductVariantOption(source);
@@ -79,9 +103,4 @@ public class ProductVariantOption implements Parcelable, ItemIdType {
             return new ProductVariantOption[size];
         }
     };
-
-    @Override
-    public int getType() {
-        return TYPE;
-    }
 }

@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Respon Sedang"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:layout_marginTop="@dimen/padding_vs"
                 android:textColor="@color/tkpd_dark_gray"
                 android:paddingLeft="@dimen/padding_vs"

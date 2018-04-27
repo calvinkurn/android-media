@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.widget.TouchViewPager;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -38,10 +39,14 @@ import com.tokopedia.events.view.adapter.CardPagerAdapter;
 import com.tokopedia.events.view.adapter.CategoryFragmentPagerAdapter;
 import com.tokopedia.events.view.adapter.SlidingImageAdapter;
 import com.tokopedia.events.view.contractor.EventsContract;
+import com.tokopedia.events.view.customview.EventCategoryView;
+import com.tokopedia.events.view.fragment.CategoryFragment;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
 import com.tokopedia.events.view.utils.CirclePageIndicator;
 import com.tokopedia.events.view.utils.ShadowTransformer;
 import com.tokopedia.events.view.utils.Utils;
+import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.utils.IFragmentLifecycleCallback;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 
 import java.util.ArrayList;
@@ -70,7 +75,6 @@ public class EventsHomeActivity extends TActivity
 
     private Menu mMenu;
 
-
     EventComponent eventComponent;
     @Inject
     public EventHomePresenter mPresenter;
@@ -98,11 +102,16 @@ public class EventsHomeActivity extends TActivity
 
 
     private int mBannnerPos;
-    private int defaultViewPagerPos;
+    private int defaultViewPagerPos = -1;
     private String defaultSection;
+    private final static String THEMEPARK = "hiburan";
+    private final static String TOP = "top";
 
+
+    public final static String EXTRA_SECTION = "extra_section";
 
     private SlidingImageAdapter adapter;
+    private CategoryFragmentPagerAdapter categoryTabsPagerAdapter;
 
     @DeepLink({Constants.Applinks.EVENTS, Constants.Applinks.EVENTS_HIBURAN})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
@@ -278,19 +287,27 @@ public class EventsHomeActivity extends TActivity
                         }
                     });
                 }
-                if (defaultSection.equalsIgnoreCase(categoryViewModel.getName()))
-                    defaultViewPagerPos = categoryList.indexOf(categoryViewModel);
-                else
-                    defaultViewPagerPos = 0;
+                if (defaultViewPagerPos <= 0) {
+                    if (defaultSection.equalsIgnoreCase(categoryViewModel.getName()))
+                        defaultViewPagerPos = categoryList.indexOf(categoryViewModel);
+                    else
+                        defaultViewPagerPos = 0;
+                }
             }
         }
 
-        CategoryFragmentPagerAdapter categoryTabsPagerAdapter =
+        categoryTabsPagerAdapter =
                 new CategoryFragmentPagerAdapter(getSupportFragmentManager(), categoryList);
         categoryViewPager.setAdapter(categoryTabsPagerAdapter);
+        setCategoryViewPagerListener();
         tabs.setupWithViewPager(categoryViewPager);
         categoryViewPager.setCurrentItem(defaultViewPagerPos);
         categoryViewPager.setSaveFromParentEnabled(false);
+        indicatorLayout.setVisibility(View.VISIBLE);
+        if (defaultViewPagerPos == 0) {
+            IFragmentLifecycleCallback fragmentToShow = (CategoryFragment) categoryTabsPagerAdapter.getItem(defaultViewPagerPos);
+            fragmentToShow.fragmentResume();
+        }
     }
 
 
@@ -317,9 +334,51 @@ public class EventsHomeActivity extends TActivity
         viewPager.setAdapter(adapter);
     }
 
+    private void setCategoryViewPagerListener() {
+        categoryViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            int currentPosition = 0;
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int newPosition) {
+
+                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_TAB, categoryViewPager.getAdapter().getPageTitle(newPosition) + "-"
+                        + String.valueOf(newPosition));
+
+                IFragmentLifecycleCallback fragmentToShow = (CategoryFragment) categoryTabsPagerAdapter.getItem(newPosition);
+                fragmentToShow.fragmentResume();
+
+                IFragmentLifecycleCallback fragmentToHide = (CategoryFragment) categoryTabsPagerAdapter.getItem(currentPosition);
+                fragmentToHide.fragmentPause();
+
+                currentPosition = newPosition;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+    }
+
+    @Override
+    public String getScreenName() {
+        return mPresenter.getSCREEN_NAME();
     }
 
     @Override

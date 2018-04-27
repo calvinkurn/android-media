@@ -42,4 +42,9 @@ dependencies {
     compile 'at.blogc:expandabletextview:1.0.5'
     compile project(rootProject.ext.features.payment)
     compile project(path: ':tkpdloyalty')
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.testDependencies.junit
 }

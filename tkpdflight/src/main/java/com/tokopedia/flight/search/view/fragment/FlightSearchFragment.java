@@ -324,7 +324,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void addToolbarElevation() {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(getResources().getDimension(R.dimen.toolbar_elevation));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(getResources().getDimension(R.dimen.dp_4));
     }
 
     @Override
@@ -685,16 +685,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     public void setSelectedSortItem(int itemId) {
         selectedSortOption = itemId;
         setUIMarkSort();
-    }
-
-    @Override
-    public void showSortRouteLoading() {
-        showLoading();
-    }
-
-    @Override
-    public void hideSortRouteLoading() {
-        hideLoading();
     }
 
     @Override

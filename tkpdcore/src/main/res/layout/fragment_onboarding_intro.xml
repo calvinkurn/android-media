@@ -51,7 +51,7 @@
         android:layout_marginLeft="@dimen/margin_large"
         android:layout_marginRight="@dimen/margin_large"
         android:gravity="center"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/sp_14" />
 
 
 

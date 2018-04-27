@@ -3,14 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/padding_med">
+    android:padding="@dimen/dp_20">
 
     <TextView
         android:id="@+id/country_name"
-        android:layout_marginRight="@dimen/margin_vs"
         style="@style/TextView.Small"
+        android:layout_marginRight="@dimen/dp_5"
         tools:text="Indonesia" />
 
     <TextView

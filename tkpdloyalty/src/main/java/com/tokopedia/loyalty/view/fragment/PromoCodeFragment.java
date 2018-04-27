@@ -32,6 +32,8 @@ import javax.inject.Inject;
 
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EVENT_STRING;
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CART_ID;
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.FLIGHT_STRING;
 
 /**
  * @author anggaprasetiyo on 24/11/17.
@@ -109,6 +111,12 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                     voucherCodeField,
                     voucherCodeFieldHolder)
             );
+        else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(FLIGHT_STRING)){
+            submitVoucherButton.setOnClickListener(onSubmitFlightVoucher(
+                    voucherCodeField,
+                    voucherCodeFieldHolder)
+            );
+        }
         else if (getArguments().getString(PLATFORM_KEY).equals(EVENT_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitEventVoucher(voucherCodeField,
                     voucherCodeFieldHolder));
@@ -118,6 +126,23 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                 voucherCodeFieldHolder)
         );
 
+    }
+
+    private View.OnClickListener onSubmitFlightVoucher(final EditText voucherCodeField, final TextInputLayout textHolder) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                voucherCodeFieldHolder.setError(null);
+                if(voucherCodeField.getText().toString().isEmpty()) {
+                    textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
+                } else
+                    dPresenter.processCheckFlightPromoCode(
+                            getActivity(),
+                            voucherCodeField.getText().toString(),
+                            getArguments().getString(EXTRA_CART_ID)
+                            );
+            }
+        };
     }
 
     private View.OnClickListener onSubmitMarketplaceVoucher(
@@ -214,6 +239,16 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         Bundle bundle = new Bundle();
         bundle.putString(PLATFORM_KEY, platform);
         bundle.putString(CATEGORY_KEY, categoryKey);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static Fragment newInstance(String platform, String categoryKey, String cartId) {
+        PromoCodeFragment fragment = new PromoCodeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PLATFORM_KEY, platform);
+        bundle.putString(CATEGORY_KEY, categoryKey);
+        bundle.putString(EXTRA_CART_ID, cartId);
         fragment.setArguments(bundle);
         return fragment;
     }

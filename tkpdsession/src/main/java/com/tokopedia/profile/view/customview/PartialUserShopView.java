@@ -1,7 +1,6 @@
 package com.tokopedia.profile.view.customview;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -22,13 +21,15 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.profile.view.listener.TopProfileActivityListener;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
 
@@ -58,6 +59,7 @@ public class PartialUserShopView extends BaseCustomView {
     private Drawable drawableAddLow;
     private Drawable drawableAddHigh;
 
+    private TopProfileActivityListener.View listener;
 
     private boolean isShopFavorite = false;
 
@@ -201,6 +203,10 @@ public class PartialUserShopView extends BaseCustomView {
         }
     }
 
+    public void setPartialShopListener(TopProfileActivityListener.View listener){
+        this.listener = listener;
+    }
+
     private class ClickFavouriteShop implements OnClickListener {
 
         private final TopProfileViewModel data;
@@ -211,38 +217,43 @@ public class PartialUserShopView extends BaseCustomView {
 
         @Override
         public void onClick(View v) {
-            new RetrofitInteractorImpl().favoriteShop(
-                    getContext(),
-                    NetworkParam.paramFaveShop(String.valueOf(data.getShopId())),
-                    new RetrofitInteractor.FaveListener() {
-                        @Override
-                        public void onSuccess(boolean status) {
-                            if (getContext().getApplicationContext() instanceof AbstractionRouter) {
-                                if (!isShopFavorite) {
-                                    ((AbstractionRouter) getContext().getApplicationContext())
-                                            .getAnalyticTracker()
-                                            .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
-                                                    TOP_PROFILE,
-                                                    CLICK_ON_FAVORITE,
-                                                    "");
-                                } else {
-                                    ((AbstractionRouter) getContext().getApplicationContext())
-                                            .getAnalyticTracker()
-                                            .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
-                                                    TOP_PROFILE,
-                                                    CLICK_ON_UNFAVORITE,
-                                                    "");
+            if (SessionHandler.isV4Login(getContext())) {
+                new RetrofitInteractorImpl().favoriteShop(
+                        getContext(),
+                        NetworkParam.paramFaveShop(String.valueOf(data.getShopId())),
+                        new RetrofitInteractor.FaveListener() {
+                            @Override
+                            public void onSuccess(boolean status) {
+                                if (getContext().getApplicationContext() instanceof
+                                        AbstractionRouter) {
+                                    if (!isShopFavorite) {
+                                        ((AbstractionRouter) getContext().getApplicationContext())
+                                                .getAnalyticTracker()
+                                                .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                                        TOP_PROFILE,
+                                                        CLICK_ON_FAVORITE,
+                                                        "");
+                                    } else {
+                                        ((AbstractionRouter) getContext().getApplicationContext())
+                                                .getAnalyticTracker()
+                                                .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                                        TOP_PROFILE,
+                                                        CLICK_ON_UNFAVORITE,
+                                                        "");
+                                    }
+
+                                    reverseFavorite();
                                 }
-
-                                reverseFavorite();
                             }
-                        }
 
-                        @Override
-                        public void onError(String error) {
+                            @Override
+                            public void onError(String error) {
 
-                        }
-                    });
+                            }
+                        });
+            } else {
+                listener.onGoToLoginPage();
+            }
         }
     }
 
@@ -256,15 +267,12 @@ public class PartialUserShopView extends BaseCustomView {
 
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(getContext(), ShopInfoActivity.class);
-            intent.putExtras(
-                    ShopInfoActivity.
-                            createBundle(String.valueOf(data.getShopId()),
-                                    "",
-                                    data.getShopName(),
-                                    data.getShopLogo(),
-                                    data.isFavorite() ? 1 : 0));
-            getContext().startActivity(intent);
+            if (getContext().getApplicationContext() instanceof SessionRouter) {
+                getContext().startActivity(
+                        ((SessionRouter) getContext().getApplicationContext())
+                                .getShopPageIntent(getContext(),
+                                        String.valueOf(data.getShopId())));
+            }
         }
     }
 

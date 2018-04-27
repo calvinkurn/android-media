@@ -28,6 +28,7 @@ import com.tokopedia.events.domain.model.request.cart.TaxPerQuantityItem;
 import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
@@ -142,6 +143,11 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
                 getView().hideProgressBar();
             }
         }
+    }
+
+    @Override
+    public String getSCREEN_NAME() {
+        return EventsGAConst.EVENTS_SEAT_SELECTIONPAGE;
     }
 
     public void setTicketPrice(int numOfTickets) {

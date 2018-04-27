@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -30,6 +31,7 @@ import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
 import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
@@ -387,6 +389,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvEmailID.clearFocus();
             mainContent.requestFocus();
         }
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_EMAIL, "");
         mPresenter.updateEmail(tvEmailID.getText().toString());
     }
 
@@ -417,6 +420,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvTelephone.clearFocus();
             mainContent.requestFocus();
         }
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_NUMBER, "");
         mPresenter.updateNumber(tvTelephone.getText().toString());
     }
 
@@ -454,15 +458,18 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             switch (resultCode) {
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_SUCCESS:
                     getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
+                    UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
                     finish();
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
+                    UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_FAILURE);
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
+                    UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_CANCELLED);
                     break;
                 default:
                     break;
@@ -509,5 +516,16 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         holder.setImage(resID);
         holder.setTextView(label);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+    }
+
+    @Override
+    public String getScreenName() {
+        return mPresenter.getSCREEN_NAME();
     }
 }

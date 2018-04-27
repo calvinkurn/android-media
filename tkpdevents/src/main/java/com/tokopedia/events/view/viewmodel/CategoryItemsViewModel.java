@@ -80,6 +80,7 @@ public class CategoryItemsViewModel implements Parcelable {
     private Object schedules;
     private Object forms;
     private int minLikes;
+    private boolean isTrack = false;
 
     public CategoryItemsViewModel() {
     }
@@ -651,6 +652,14 @@ public class CategoryItemsViewModel implements Parcelable {
         return forms;
     }
 
+    public boolean isTrack() {
+        return isTrack;
+    }
+
+    public void setTrack(boolean track) {
+        isTrack = track;
+    }
+
     public void setForms(Object forms) {
         this.forms = forms;
     }
@@ -728,6 +737,7 @@ public class CategoryItemsViewModel implements Parcelable {
         dest.writeString(this.saleEndTime);
         dest.writeValue(this.dateRange);
         dest.writeString(this.cityName);
+        dest.writeByte(this.isTrack ? (byte) 1 : (byte) 0);
     }
 
     protected CategoryItemsViewModel(Parcel in) {
@@ -796,9 +806,10 @@ public class CategoryItemsViewModel implements Parcelable {
         this.saleEndTime = in.readString();
         this.dateRange = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.cityName = in.readString();
+        this.isTrack = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<CategoryItemsViewModel> CREATOR = new Parcelable.Creator<CategoryItemsViewModel>() {
+    public static final Creator<CategoryItemsViewModel> CREATOR = new Creator<CategoryItemsViewModel>() {
         @Override
         public CategoryItemsViewModel createFromParcel(Parcel source) {
             return new CategoryItemsViewModel(source);

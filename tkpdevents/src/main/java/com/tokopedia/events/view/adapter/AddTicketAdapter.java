@@ -180,18 +180,21 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
 
         public void toggleMaxTicketWarning(int visibility, int quantity) {
-            if (visibility != maksTicket.getVisibility()) {
-                if (visibility == View.VISIBLE) {
-                    maksTicket.setText(String.format(mContext.getResources().getString(R.string.max_ticket_warning), quantity));
-                    maksTicket.setVisibility(visibility);
-                    btnIncrement.setBackgroundResource(R.drawable.add_button_layerlist_grey);
-                    btnIncrement.setClickable(false);
-                } else {
-                    maksTicket.setVisibility(visibility);
-                    btnIncrement.setBackgroundResource(R.drawable.add_button_layerlist_green);
-                    btnIncrement.setClickable(true);
-                }
+            if (visibility == View.VISIBLE) {
+                maksTicket.setText(String.format(mContext.getResources().getString(R.string.max_ticket_warning), quantity));
+                maksTicket.setVisibility(visibility);
+                btnIncrement.setBackgroundResource(R.drawable.add_button_layerlist_grey);
+                btnIncrement.setClickable(false);
+            } else {
+                maksTicket.setVisibility(visibility);
+                btnIncrement.setBackgroundResource(R.drawable.add_button_layerlist_green);
+                btnIncrement.setClickable(true);
             }
+        }
+
+        public void toggleMinTicketWarning(int visibility, int quantity) {
+            maksTicket.setText(String.format(mContext.getResources().getString(R.string.min_ticket_warning), quantity));
+            maksTicket.setVisibility(visibility);
         }
     }
 }

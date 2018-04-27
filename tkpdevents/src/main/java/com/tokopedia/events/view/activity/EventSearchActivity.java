@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.events.R;
@@ -23,8 +24,11 @@ import com.tokopedia.events.view.contractor.EventSearchContract;
 import com.tokopedia.events.view.customview.SearchInputView;
 import com.tokopedia.events.view.presenter.EventSearchPresenter;
 import com.tokopedia.events.view.utils.Utils;
+import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -64,7 +68,6 @@ public class EventSearchActivity extends TActivity implements
     LinearLayoutManager layoutManager;
 
     Unbinder unbinder;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +115,23 @@ public class EventSearchActivity extends TActivity implements
     public void navigateToActivityRequest(Intent intent, int requestCode) {
 
     }
+
+//    @Override
+//    public void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels) {
+//        if (categoryItemsViewModels != null && categoryItemsViewModels.size() != 0) {
+//            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//            EventCategoryAdapter eventCategoryAdapter = new EventCategoryAdapter(getActivity(), categoryItemsViewModels);
+//            rvSearchResults.setLayoutManager(linearLayoutManager);
+//            rvSearchResults.setAdapter(eventCategoryAdapter);
+//            tvTopevents.setVisibility(View.GONE);
+//            rvTopEventSuggestions.setVisibility(View.GONE);
+//        } else {
+//            rvSearchResults.setVisibility(View.GONE);
+//            rvTopEventSuggestions.setVisibility(View.GONE);
+//            tvTopevents.setText("No Events Found");
+//            tvTopevents.setVisibility(View.VISIBLE);
+//        }
+//    }
 
     @Override
     public void showProgressBar() {
@@ -226,4 +246,15 @@ public class EventSearchActivity extends TActivity implements
             mPresenter.onRecyclerViewScrolled(layoutManager);
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+    }
+
+    @Override
+    public String getScreenName() {
+        return mPresenter.getSCREEN_NAME();
+    }
 }

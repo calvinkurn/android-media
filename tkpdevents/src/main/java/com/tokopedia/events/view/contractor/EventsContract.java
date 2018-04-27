@@ -66,9 +66,11 @@ public class EventsContract {
 
         void setupCallback(AdapterCallbacks callbacks);
 
+        String getSCREEN_NAME();
     }
 
     public interface AdapterCallbacks {
         void notifyDatasetChanged(int position);
+
     }
 }

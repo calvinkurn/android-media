@@ -60,6 +60,7 @@ public class MoEngageContainer implements IMoengageContainer {
     public void initialize() {
         MoEHelper.getInstance(context).autoIntegrate(MainApplication.getInstance());
         MoEHelper.getInstance(context).setLogLevel(Logger.VERBOSE);
+        MoEHelper.getInstance(context).optOutOfIMEICollection(context, true);
         /*Single<Void> initTask = Single.create(new Single.OnSubscribe<Void>() {
             @Override
             public void call(SingleSubscriber<? super Void> singleSubscriber) {
