@@ -65,8 +65,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     public void unregisterShake() {
-        mShakeEnabler.removeMessages(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG);
-        mShakeEnabler.removeMessages(MESSAGE_SHAKE_END);
         sd.unregisterListener(this);
         sd.stop();
     }
@@ -87,7 +85,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     private boolean isShakeShakeEnable() {
-        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true);
+        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true) ||  true;
 
     }
 
