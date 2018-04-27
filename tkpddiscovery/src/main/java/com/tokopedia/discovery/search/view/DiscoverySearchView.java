@@ -15,9 +15,6 @@ import android.os.Parcelable;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -350,22 +347,13 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         }
 
-        Spanned description = new SpannableString("");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            description = Html.fromHtml(remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
-                    mContext.getResources().getString(R.string.on_board_desc)), Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            description = Html.fromHtml(remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
-                    mContext.getResources().getString(R.string.on_board_desc)));
-        }
-
         mImageSearchButton.setWillNotCacheDrawing(false);
         ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
         showCaseObjectList.add(new ShowCaseObject(
                 mImageSearchButton,
                 mContext.getResources().getString(R.string.on_board_title),
-                description.toString(),
+                remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
+                        mContext.getResources().getString(R.string.on_board_desc)),
                 ShowCaseContentPosition.UNDEFINED,
                 R.color.tkpd_main_green));
         showCaseDialog.show(((Activity) mContext), showCaseTag, showCaseObjectList);
