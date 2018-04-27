@@ -94,8 +94,7 @@ public class GetFacebookCredentialUseCase {
                         try {
                             String email = object.getString("email");
                             subscriber.onSuccess(accessToken, email);
-
-                        } catch (JSONException e) {
+                        } catch (JSONException | NullPointerException e) {
                             LoginManager.getInstance().logOut();
                             subscriber.onError(new ErrorMessageException(
                                     MainApplication.getAppContext().getString(R.string.facebook_error_not_authorized),
