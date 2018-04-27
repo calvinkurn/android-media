@@ -60,15 +60,15 @@ okbuck {
     target = "android-27"
     linearAllocHardLimit = [
             customerapp: 10130000,
-//            sellerapp: 10130000
+            sellerapp: 10130000
     ]
     extraBuckOpts = [
             'customerappDebug': [
                     "android_binary": ["trim_resource_ids = True"] as Set
             ]
-//            ,'sellerappDebug': [
-//                    "android_binary": ["trim_resource_ids = True"]
-//            ]
+            ,'sellerappDebug': [
+                    "android_binary": ["trim_resource_ids = True"]
+            ]
     ]
 
     intellij {
