@@ -3,7 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 buildscript {
     repositories {
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
     }
     dependencies {

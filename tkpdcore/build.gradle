@@ -6,7 +6,7 @@ apply plugin: 'com.jakewharton.butterknife'
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
     }
@@ -32,7 +32,7 @@ android {
 project.ext {
     artifactId = 'core'
     groupId = 'com.tokopedia.core'
-    versionName = "2.22"
+    versionName = "2.23"
     artifactName ="tkpdcore-release"
 }
 
@@ -48,8 +48,8 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.youtubeApi)
     implementation project(rootProject.ext.libraries.design)
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){

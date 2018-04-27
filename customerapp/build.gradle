@@ -80,7 +80,7 @@ def archiveAPK(variant, output) {
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
     }
@@ -262,9 +262,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation (project(rootProject.ext.features.core)){
-        exclude module: rootProject.ext.libraries.youtubeApi
-    }
+    implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.ride)
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.kol)
@@ -283,12 +281,8 @@ dependencies {
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transaction)
     implementation project(rootProject.ext.features.seller)
-    implementation (project(rootProject.ext.features.productDetail)){
-        exclude module: rootProject.ext.libraries.youtubeApi
-    }
-    implementation (project(rootProject.ext.features.discovery)){
-        exclude module: rootProject.ext.libraries.youtubeApi
-    }
+    implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.discovery)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.reputationCommon)
@@ -296,7 +290,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)
-    implementation project(rootProject.ext.libraries.youtubeApi)
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
@@ -354,7 +348,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.rxJavaMath
     implementation rootProject.ext.miscDependencies.scannerZxing
-    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex

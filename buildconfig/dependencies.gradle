@@ -7,7 +7,7 @@ ext {
 
     supportLibraryVersion = '26.0.2'
     playServiceVersion = '11.0.4'
-    butterKnifeVersion = '8.4.0'
+    butterKnifeVersion = '9.0.0-SNAPSHOT'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
     okHttpVersion = '3.8.0'
@@ -22,11 +22,11 @@ ext {
     reactNativeVersion = '0.51.0'
     alibabaCoreLibVersion = '3.2.8'
 
-    tkpdUseCaseVersion = '2.22'
+    tkpdUseCaseVersion = '2.23'
     tkpdAbstractionVersion = '2.22'
     tkpdCacheApiVersion = '2.22'
     tkpdApplinkVersion = '2.22'
-    tkpdCoreVersion = '2.22'
+    tkpdCoreVersion = '2.22.a'
     tkpdInboxVersion = '2.22'
     tkpdSessionVersion = '2.22'
     tkpdSellerVersion = '2.22'
@@ -233,7 +233,8 @@ ext {
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.12"
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.12",
+            youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]
 
     alibabaDependencies = [
