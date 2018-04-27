@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.contact_us.ContactUsModuleRouter;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -111,9 +112,9 @@ import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.home.IHomeRouter;
-import com.tokopedia.inbox.contactus.ContactUsConstant;
-import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
-import com.tokopedia.inbox.contactus.activity.ContactUsCreateTicketActivity;
+import com.tokopedia.contact_us.createticket.ContactUsConstant;
+import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
+import com.tokopedia.contact_us.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -272,7 +273,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
         DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter,
-        LoyaltyModuleRouter, GamificationRouter, ProfileModuleRouter {
+        LoyaltyModuleRouter, GamificationRouter, ProfileModuleRouter, ContactUsModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1882,5 +1883,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getDesktopLinkGroupChat() {
         return ChatroomUrl.DESKTOP_URL;
+    }
+
+    @Override
+    public Intent getChatBotIntent(Context context, String messageId) {
+        return ChatRoomActivity.getChatBotIntent(context, messageId);
     }
 }
