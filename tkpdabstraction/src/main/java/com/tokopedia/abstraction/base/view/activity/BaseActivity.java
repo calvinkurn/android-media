@@ -73,7 +73,11 @@ abstract class BaseActivity extends AppCompatActivity implements
     }
     protected void registerShake() {
         if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getApplication()).registerShake(getScreenName());
+            String screenName = getScreenName();
+            if(screenName ==  null) {
+                screenName = this.getClass().getSimpleName();
+            }
+            ((AbstractionRouter) getApplication()).registerShake(screenName);
         }
     }
 
