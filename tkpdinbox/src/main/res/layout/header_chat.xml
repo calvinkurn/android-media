@@ -4,22 +4,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_header"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
+    android:layout_height="@dimen/dp_56"
     android:layout_gravity="center"
     android:gravity="center_vertical"
     android:orientation="vertical">
 
     <ImageView
         android:id="@+id/user_avatar"
-        android:layout_width="34dp"
-        android:layout_height="34dp"
+        android:layout_width="@dimen/avatar_thumb_size"
+        android:layout_height="@dimen/avatar_thumb_size"
         android:layout_centerVertical="true"
         tools:src="@drawable/ic_image_avatar_boy"/>
 
     <ImageView
         android:id="@+id/online_status"
-        android:layout_width="7dp"
-        android:layout_height="7dp"
+        android:layout_width="@dimen/dp_7"
+        android:layout_height="@dimen/dp_7"
         android:layout_alignBottom="@+id/user_avatar"
         android:layout_alignEnd="@+id/user_avatar"
         android:layout_alignRight="@+id/user_avatar"
@@ -27,59 +27,69 @@
         android:visibility="gone"
         tools:visibility="visible"/>
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/user_avatar"
+        android:layout_toEndOf="@id/user_avatar"
+        android:layout_toRightOf="@id/user_avatar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/user_avatar"
         android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-
+            android:layout_marginLeft="@dimen/dp_7"
+            android:layout_marginStart="@dimen/dp_7"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/black_70"
-            android:textSize="16sp"
+            android:textSize="@dimen/sp_16"
             android:textStyle="normal"
-            tools:text="Store"/>
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintEnd_toStartOf="@+id/label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_default="wrap"
+            tools:text="Store name"/>
 
         <TextView
             android:id="@id/label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/title"
-            android:layout_marginLeft="7dp"
-            android:layout_marginStart="7dp"
-            android:layout_toEndOf="@+id/title"
-            android:layout_toRightOf="@+id/title"
             android:background="@drawable/label_user_chat"
             android:fontFamily="sans-serif"
-            android:padding="4dp"
+            android:padding="@dimen/dp_4"
             android:textColor="@color/medium_green"
-            android:textSize="9sp"
+            android:textSize="@dimen/chat_person_tag_text_size"
             android:textStyle="normal"
-            tools:text="penjual"/>
+            android:layout_marginRight="@dimen/dp_7"
+            android:layout_marginLeft="@dimen/dp_7"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintBottom_toTopOf="@id/title"
+            app:layout_constraintStart_toEndOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Penjual"/>
 
         <TextView
             android:id="@+id/subtitle"
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/title"
-            android:layout_alignStart="@+id/title"
-            android:layout_below="@id/title"
             android:fontFamily="sans-serif"
-            android:lineSpacingExtra="9sp"
+            android:lineSpacingExtra="@dimen/online_status_text_line_spacing"
             android:textColor="@color/black_38"
-            android:textSize="11sp"
+            android:textSize="@dimen/online_status_text_size"
             android:textStyle="normal"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintStart_toStartOf="@id/title"
             tools:text="Terakhir online 3 menit yang lalu"/>
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </RelativeLayout>

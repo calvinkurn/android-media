@@ -32,6 +32,7 @@ public interface Constant {
         int TRANSACTION = 400;
         int SELLER = 500;
         int RESOLUTION = 600;
+        int GROUPCHAT = 700;
     }
 
     interface Settings {

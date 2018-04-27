@@ -102,6 +102,12 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        shopReviewPresenter.onDestroy();
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }

@@ -31,6 +31,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @LayoutRes
     public static final int LAYOUT = R.layout.home_banner;
+    public static final String ATTRIBUTION = "attribution";
     private BannerView bannerView;
     private final HomeCategoryListener listener;
     private final Context context;
@@ -75,9 +76,9 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void onPromoClick(int position) {
-        Promotion promotion = getPromotion(position);
-        HomePageTracking.eventPromoClick(promotion);
-        listener.onPromoClick(position, slidesList.get(position), String.valueOf(promotion.getImpressionDataLayer().get("attribution")));
+        Promotion promotion =getPromotion(position);
+        HomePageTracking.eventPromoClick(promotion);listener.onPromoClick(position, slidesList.get(position),
+                String.valueOf(promotion.getImpressionDataLayer().get(ATTRIBUTION)));
     }
 
     @Override

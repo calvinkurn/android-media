@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -56,7 +55,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     private SnackbarRetry messageSnackbar;
     private CoordinatorLayout root;
     private int position = 0;
-    private List<String> titleList = new ArrayList<>();
+    private List<String> sectionList = new ArrayList<>();
 
     @DeepLink(Constants.Applinks.EXPLORE)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -196,12 +195,12 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     }
 
     private int sectionToPosition(String section) {
-        return titleList.indexOf(section.toLowerCase());
+        return sectionList.indexOf(section.toLowerCase());
     }
 
 
     private void setupTabIcon(List<ExploreSectionViewModel> list) {
-        titleList = new ArrayList<>();
+        sectionList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             DynamicHomeIcon.UseCaseIcon model = list.get(i).getUseCaseIcon();
             View view = LayoutInflater.from(this).inflate(R.layout.explore_tab_item, null, false);
@@ -213,7 +212,8 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
             labelTxt.setText(title);
             view.setOnClickListener(new OnTabExplorerClickListener(title, tabLayout, i));
             tab.setCustomView(view);
-            titleList.add(title.toLowerCase());
+            Uri uri = Uri.parse(model.getApplinks());
+            sectionList.add(uri.getLastPathSegment().toLowerCase());
         }
     }
 

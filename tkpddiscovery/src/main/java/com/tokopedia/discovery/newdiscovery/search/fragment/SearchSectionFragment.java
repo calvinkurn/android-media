@@ -365,8 +365,12 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected void clearDataFilterSort() {
-        this.filters.clear();
-        this.sort.clear();
+        if (filters != null) {
+            this.filters.clear();
+        }
+        if (sort != null) {
+            this.sort.clear();
+        }
     }
 
     protected void openFilterActivity() {
