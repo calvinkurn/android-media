@@ -180,7 +180,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     @Override
     public void updateTimer(Long l) {
-        shakeShakeMessage.setText(String.format(getResources().getString(R.string.shake_shake_terus), l));
+        shakeShakeMessage.setText(""+l);
 
     }
 

@@ -36,15 +36,28 @@
                 app:srcCompat="@drawable/ic_shake_shake" />
 
             <TextView
-                android:id="@+id/shake_shake_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
                 android:textColor="@color/medium_green"
-                tools:text="@string/cancel_shake_shake"
+                android:text="@string/shake_shake_terus"
                 />
+            <TextView
+                android:id="@+id/shake_shake_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_3"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:text="1"
+                android:background="@layout/layout_circle"
+                android:textColor="@color/medium_green">
+
+            </TextView>
 
         </android.support.v7.widget.LinearLayoutCompat>
 
