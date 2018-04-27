@@ -109,9 +109,9 @@ public interface FlightBookingPassengerContract {
 
         void showPassengerLastNameShouldSameWithFirstNameError(int resId);
 
-        void canGoBack();
-
         String getString(int resId);
+
+        void showPassengerChildBirthdateShouldLessThanEqual12Years(int resId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -141,8 +141,6 @@ public interface FlightBookingPassengerContract {
         void onNewPassengerChoosed();
 
         void onChangeFromSavedPassenger(FlightBookingPassengerViewModel selectedPassenger);
-
-        void onUnselectPassengerList(String passengerId);
 
     }
 }

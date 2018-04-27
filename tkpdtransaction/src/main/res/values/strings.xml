@@ -4,6 +4,7 @@
     <string name="title_confirm_shipment">Konfirmasi Pengiriman</string>
     <string name="title_scan_awb">Scan Barcode</string>
     <string name="label_insert_awb">Isi Nomor Resi</string>
+    <string name="title_reference_number_alternative">No. Resi</string>
     <string name="message_failed_pick_image">Gambar gagal diambil</string>
     <string name="default_success_message_request_cancel_order">Berhasil mengajukan pembatalan pesanan</string>
     <string name="default_success_message_reject_order">Berhasil membatalkan pesanan</string>
@@ -30,6 +31,7 @@
     <string name="courier_not_available">Alamat tidak didukung agen pengirim.</string>
     <string name="label_order_shipping_address">Alamat Pengiriman :</string>
     <string name="label_response_limit">Batas Respon :</string>
+    <string name="label_response_auto_finish">Selesai Otomatis :</string>
     <string name="label_accept_partial_order">Terima Sebagian :</string>
     <string name="shipment_data_not_complete">Data tidak lengkap.</string>
     <string name="label_title_empty_cart">Keranjang belanja Anda Kosong.</string>
@@ -165,10 +167,16 @@
     <string name="button_order_detail_cancel_chance">Batalkan Pencarian</string>
     <string name="title_cancellation_notes">Tulis Keterangan Anda di sini</string>
     <string name="title_cancel_shipment_notes">Tulis alasan pembatalan</string>
-    <string name="sub_title_cancel_shipment_notes">Pembatalan pengiriman akan mendapatkan pengurangan reputasi sebesar 3 poin</string>
+    <string name="sub_title_cancel_shipment_notes">Per 10 Mei 2018, diterapkan sistem penalti reputasi toko baru bagi penjual yang membatalkan pesanan saat pengiriman, sebesar: \n\n
+        -1 poin untuk penjual tanpa Badge \n
+        -3 poin untuk Badge Bronze \n
+        -8 poin untuk Badge Silver \n
+        -10 poin untuk Badge Gold \n
+        -15 poin untuk Badge Diamond</string>
     <string name="label_cancel_shipment_notes">Alasan Pembatalan</string>
     <string name="label_explanation">Keterangan</string>
     <string name="label_awb_number">Nomor Resi</string>
+    <string name="notification_awb_copied">Nomor Resi sudah tersalin</string>
     <string name="title_reject_order_weight_price_fragment">Perbarui Harga atau Berat Produk</string>
     <string name="title_replacement_cancellation">Pilih Alasan Pembatalan: </string>
     <string name="title_replacement_reason_1">Saya hanya berbelanja dari toko yang saya percaya</string>

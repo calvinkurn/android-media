@@ -168,7 +168,8 @@
         <activity
             android:name=".contactus.activity.ContactUsCreateTicketActivity"
             android:screenOrientation="portrait"/>
-
+        <activity android:name=".attachinvoice.view.activity.AttachInvoiceActivity"
+            android:screenOrientation="portrait"/>
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->
         <!-- ======================================================= -->

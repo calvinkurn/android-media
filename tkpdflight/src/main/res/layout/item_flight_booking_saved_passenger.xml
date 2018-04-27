@@ -36,27 +36,25 @@
 
     <ImageView
         android:id="@+id/image_passenger_delete"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="@dimen/dp_25"
+        android:layout_height="@dimen/dp_25"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/dp_5"
-        android:layout_marginRight="@dimen/dp_5"
+        android:layout_marginLeft="@dimen/dp_7"
+        android:layout_marginRight="@dimen/dp_7"
         android:layout_toLeftOf="@+id/image_passenger_edit"
         android:layout_toStartOf="@+id/image_passenger_edit"
         android:padding="@dimen/dp_3"
-        android:visibility="gone"
         app:srcCompat="@drawable/ic_flight_delete" />
 
     <ImageView
         android:id="@+id/image_passenger_edit"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="@dimen/dp_25"
+        android:layout_height="@dimen/dp_25"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginLeft="@dimen/dp_7"
         android:padding="@dimen/dp_3"
-        android:visibility="gone"
         app:srcCompat="@drawable/ic_flight_edit" />
 
 </RelativeLayout>

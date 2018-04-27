@@ -62,7 +62,7 @@
                 android:orientation="vertical">
 
 
-                <android.support.design.widget.TextInputLayout
+                <com.tokopedia.design.text.TkpdHintTextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -71,10 +71,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/title_reference_number"
-                        app:drawableRightCompat="@drawable/ic_select_awb"
+                        app:editTextDrawableRightCompat="@drawable/ic_select_awb"
                         android:maxLength="17"/>
 
-                </android.support.design.widget.TextInputLayout>
+                </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                 <Spinner
                     android:id="@+id/spinner_kurir"

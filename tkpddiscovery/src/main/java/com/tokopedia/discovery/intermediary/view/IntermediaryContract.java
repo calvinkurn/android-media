@@ -13,6 +13,7 @@ import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDom
 import com.tokopedia.discovery.intermediary.domain.model.VideoModel;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by alifa on 3/24/17.
@@ -52,6 +53,9 @@ public interface IntermediaryContract {
 
         void updateDepartementId(String id);
 
+        void trackEventEnhance(Map<String, Object> dataLayer);
+
+        String getTrackerAttribution();
     }
 
     interface Presenter extends CustomerPresenter<View> {

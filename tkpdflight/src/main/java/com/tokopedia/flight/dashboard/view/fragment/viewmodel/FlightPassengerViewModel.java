@@ -3,9 +3,6 @@ package com.tokopedia.flight.dashboard.view.fragment.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.flight.booking.view.adapter.FlightBookingListPassengerAdapterTypeFactory;
-
 /**
  * Created by alvarisi on 10/25/17.
  */

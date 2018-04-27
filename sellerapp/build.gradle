@@ -11,12 +11,12 @@ def getDpiId(String density) {
 }
 
 def getAPKArchiveFolder(variant) {
-    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
+    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode
 }
 
 def allowSplit() {
     return gradle.startParameter.taskNames.contains("assembleRelease") &&
-            !project.hasProperty('tkpdBuildType');
+            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "production")
 }
 
 def allowDistribution() {
@@ -24,6 +24,10 @@ def allowDistribution() {
         return "true";
     }
     return "false";
+}
+
+def allowProguard() {
+    return project.hasProperty('tkpdBuildType')
 }
 
 def getTkpdVersionCode() {
@@ -122,7 +126,11 @@ android {
             zipAlignEnabled true
             shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles  'proguard-rules.txt'
+            if (allowProguard()) {
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            } else {
+                proguardFiles 'proguard-rules.txt'
+            }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
             if (allowSplit()) {
@@ -219,9 +227,10 @@ dependencies {
     compile project(rootProject.ext.features.transaction)
     compile project(rootProject.ext.features.reputation)
     compile project(rootProject.ext.features.mitraToppers)
-	compile(project(':tkpdshop')) {
-        exclude group: 'com.tokopedia.core'
-    }
+    compile project(rootProject.ext.features.shopPage)
+    compile project(rootProject.ext.libraries.pushNotif)
+    compile project(rootProject.ext.libraries.applink)
+
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
     }
@@ -236,48 +245,11 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
-    // Required -- JUnit 4 framework
-    testCompile rootProject.ext.testDependencies.junit
-
-    // Optional -- Mockito framework
-    testCompile rootProject.ext.testDependencies.mockitorCore
-
-    testCompile rootProject.ext.miscDependencies.rxJava
-
-    androidTestCompile rootProject.ext.miscDependencies.rxJava
-
-    androidTestCompile rootProject.ext.testDependencies.uiautomator
-
-    androidTestCompile rootProject.ext.testDependencies.spoon
-    androidTestCompile rootProject.ext.testDependencies.androidAnnotation
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
-    androidTestCompile(rootProject.ext.testDependencies.androidTestRunner) {
-        exclude module: 'support-annotations'
-    }
-    androidTestCompile(rootProject.ext.testDependencies.androidRulesVersion) {
-        exclude module: 'support-annotations'
-    }
-
-    androidTestCompile(rootProject.ext.testDependencies.espressoIntents) {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
-
-    androidTestCompile rootProject.ext.testDependencies.retrofitMock
-    androidTestCompile rootProject.ext.testDependencies.retrofitMockWebser
-
-    androidTestCompile rootProject.ext.miscDependencies.dagger
-    androidTestCompile rootProject.ext.miscDependencies.gson
-    androidTestCompile rootProject.ext.miscDependencies.parcelerApi
-
-    androidTestCompile rootProject.ext.testDependencies.dexMaker
-    androidTestCompile(rootProject.ext.testDependencies.dexMakerMockito) {
-        exclude group: 'org.hamcrest', module: 'hamcrest-core'
-    }
-
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    testCompile rootProject.ext.testDependencies.junit
 }

@@ -9,8 +9,8 @@ import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragme
 import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.otp.tokocashotp.view.fragment.ChooseTokocashVerificationMethodFragment;
 import com.tokopedia.otp.tokocashotp.view.fragment.TokoCashVerificationFragment;
-import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionPhoneVerificationFragment;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionPhoneVerificationFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberEmailVerificationFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
@@ -18,6 +18,8 @@ import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.ChooseTokocashAccountFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.LoginPhoneNumberFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.NotConnectedTokocashFragment;
+import com.tokopedia.session.register.registerphonenumber.view.fragment.AddNameFragment;
+import com.tokopedia.session.register.registerphonenumber.view.fragment.RegisterPhoneNumberFragment;
 import com.tokopedia.session.register.view.fragment.CreatePasswordFragment;
 import com.tokopedia.session.register.view.fragment.RegisterEmailFragment;
 import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
@@ -69,6 +71,10 @@ public interface SessionComponent {
     void inject(ChooseTokocashAccountFragment chooseTokocashAccountFragment);
 
     void inject(NotConnectedTokocashFragment notConnectedTokocashFragment);
+
+    void inject(RegisterPhoneNumberFragment registerPhoneNumberFragment);
+
+    void inject(AddNameFragment addNameFragment);
 
     GetUserInfoUseCase getUserInfoUseCase();
 

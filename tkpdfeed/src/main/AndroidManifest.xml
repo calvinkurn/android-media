@@ -38,7 +38,10 @@
             android:label="@string/title_following_kol"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
-
+        <activity android:name=".feedplus.ReactNativeExplorePageActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".feedplus.ReactNativeContentDetailsActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

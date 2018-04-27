@@ -102,31 +102,22 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         }
 
         if (callInitialLoadAutomatically()) {
-            loadInitialData(true);
+            loadInitialData();
         }
     }
 
     public void onSwipeRefresh(){
         hideSnackBarRetry();
         swipeToRefresh.setRefreshing(true);
-        // If swipe to refresh, do not remove existing data, to avoid double loading
-        loadInitialData(false);
+        loadInitialData();
     }
-
 
     protected void loadInitialData() {
-        loadInitialData(true);
-    }
-
-
-    protected void loadInitialData(boolean deleteDataAndShowLoading) {
-        if (deleteDataAndShowLoading) {
-            // Load all from the beginning / reset data
-            // Need to clear all data to avoid invalid data in case of error
-            adapter.clearAllElements();
-            showLoading();
-        }
+        // Load all from the beginning / reset data
+        // Need to clear all data to avoid invalid data in case of error
         isLoadingInitialData = true;
+        adapter.clearAllElements();
+        showLoading();
         loadData(getDefaultInitialPage());
     }
 
@@ -270,10 +261,11 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         showSnackBarRetry(throwable, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
+                showLoading();
                 if (endlessRecyclerViewScrollListener != null) {
                     endlessRecyclerViewScrollListener.loadMoreNextPage();
                 } else {
-                    loadInitialData(true);
+                    loadInitialData();
                 }
             }
         });
@@ -282,7 +274,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     @Override
     public void onRetryClicked() {
         showLoading();
-        loadInitialData(true);
+        loadInitialData();
     }
 
     protected void hideLoading() {

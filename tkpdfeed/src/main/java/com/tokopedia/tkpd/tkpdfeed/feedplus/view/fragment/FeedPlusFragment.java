@@ -40,6 +40,8 @@ import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -67,6 +69,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabe
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
@@ -79,6 +82,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsView
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
 import java.util.ArrayList;
@@ -95,12 +99,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
         FeedPlus.View.Toppicks,
         FeedPlus.View.Kol,
         SwipeRefreshLayout.OnRefreshListener,
-        TopAdsItemClickListener {
+        TopAdsItemClickListener, TopAdsInfoClickListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
 
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
+    public static final String KEY_EXPLORE_NATIVE_ENABLE = "mainapp_explore_native_enable";
+    public static final String KEY_EXPLORE_URL = "mainapp_explore_url";
+    public static final String DEFAULT_EXPLORE_URL = "tokopedia://webview?url=https%3A%2F%2Fm.tokopedia.com%2Fcontent%2Fexplore%3Fwebview%3Dtrue";
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
     RelativeLayout mainContent;
@@ -108,6 +115,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     Trace trace;
     private ShareBottomDialog shareBottomDialog;
     private TkpdProgressDialog progressDialog;
+    private RemoteConfig remoteConfig;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -174,7 +182,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     presenter.fetchNextPage();
             }
         });
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        layoutManager = new NpaLinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL,
+                false);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         String loginIdString = SessionHandler.getLoginID(getActivity());
@@ -276,6 +286,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     @Override
@@ -322,6 +333,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         ShareData shareData = ShareData.Builder.aShareData()
                 .setName(title)
+                .setTextContent(title)
                 .setDescription(contentMessage)
                 .setImgUri(imgUrl)
                 .setUri(shareUrl)
@@ -716,7 +728,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         Integer.valueOf(product.getAdId()),
                         FeedEnhancedTracking.Promotion
                                 .createContentNameTopadsProduct(),
-                        (product.getAdRefKey().equals("") ?
+                        (TextUtils.isEmpty(product.getAdRefKey()) ?
                                 FeedEnhancedTracking.Promotion.TRACKING_NONE :
                                 product.getAdRefKey()),
                         position,
@@ -969,6 +981,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
+        if(remoteConfig != null && !remoteConfig.getBoolean(KEY_EXPLORE_NATIVE_ENABLE, false)) {
+            url = remoteConfig.getString(KEY_EXPLORE_URL, DEFAULT_EXPLORE_URL);
+        }
         ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
     }
 
