@@ -160,7 +160,7 @@ public class ProductVariant implements Parcelable {
         for (Child child: getChildren()) {
             if (child.getProductId()==productId)  return child;
         }
-        return null;
+        return getChildren().get(0);
 
     }
 
