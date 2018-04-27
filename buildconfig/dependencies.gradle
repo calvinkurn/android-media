@@ -7,7 +7,7 @@ ext {
 
     supportLibraryVersion = '26.0.2'
     playServiceVersion = '11.0.4'
-    butterKnifeVersion = '9.0.0-SNAPSHOT'
+    butterKnifeVersion = '8.4.0'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
     okHttpVersion = '3.8.0'
@@ -19,7 +19,7 @@ ext {
     rulesVersion = "0.5"
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
-    reactNativeVersion = '0.51.0'
+    reactNativeVersion = '0.52.1'
     alibabaCoreLibVersion = '3.2.8'
 
     tkpdUseCaseVersion = '2.23'
@@ -141,6 +141,7 @@ ext {
             apolloRuntime       : "com.apollographql.apollo:apollo-runtime:$apolloVersion",
             apolloRxSupport     : "com.apollographql.apollo:apollo-rx-support:$apolloVersion",
             apolloRx2Support    : "com.apollographql.apollo:apollo-rx2-support:$apolloVersion",
+
     ]
 
     miscDependencies = [
@@ -153,7 +154,7 @@ ext {
             rxJava                : "io.reactivex:rxjava:1.2.9",
             rxJavaMath            : "io.reactivex:rxjava-math:1.0.0",
             rxJavaComputation     : 'io.reactivex:rxjava-computation-expressions:0.21.0',
-            multiDex              : "com.android.support:multidex:1.0.3",
+            multiDex              : "com.android.support:multidex:1.0.1",
             javaxAnnotation       : "javax.annotation:jsr250-api:1.0",
             dagger                : "com.google.dagger:dagger:2.5",
             daggerCompiler        : "com.google.dagger:dagger-compiler:2.5",
@@ -166,8 +167,7 @@ ext {
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.4.1",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
-            codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3",
-            sendBird              : "com.sendbird.sdk:sendbird-android-sdk:3.0.49"
+            codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3"
     ]
 
     testDependencies = [
@@ -276,6 +276,7 @@ ext {
             kol             : ":features:content:kol",
             groupchat       : ":features:user:groupchat",
             gamification    : ":features:promo:gamification"
+
     ]
 
     libraries = [
@@ -285,7 +286,8 @@ ext {
             pushNotif       : ":libraries:push_notification",
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
-            useCase         : ":libraries:use_case",
+             useCase         : ":libraries:use_case",
+            fingerprint     : ":libraries:fingerprint"
             youtubeApi      : ":libraries:YouTubeAndroidPlayerApi"
     ]
 

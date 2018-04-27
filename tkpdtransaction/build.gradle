@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
 
 buildscript {
@@ -22,10 +23,12 @@ project.ext {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.core)
-    implementation project(rootProject.ext.features.payment)
-    implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.loyalty)
+    compile project(rootProject.ext.features.core)
+    compile project(rootProject.ext.features.topAdsSdk)
+    compile project(rootProject.ext.features.payment)
+    compile project(rootProject.ext.libraries.design)
+    compile project(rootProject.ext.features.loyalty)
+    compile project(rootProject.ext.libraries.fingerprint)
 
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
