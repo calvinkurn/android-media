@@ -150,7 +150,6 @@ android {
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles  'proguard-rules.txt'
-            ext.alwaysUpdateBuildId = false
         }
         release {
             signingConfig signingConfigs.debug
@@ -244,12 +243,7 @@ android {
 
     productFlavors {
         staging {
-            minSdkVersion 21
             dimension "tier"
-            resConfigs ("en", "xxhdpi")
-            splits.abi.enable = false
-            splits.density.enable = false
-            aaptOptions.cruncherEnabled = false
         }
 
         live {
