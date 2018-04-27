@@ -1,4 +1,4 @@
-package com.tokopedia.flight.detail.data.cache;
+package com.tokopedia.flight.orderlist.data.cache;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -16,7 +16,7 @@ import rx.Observable;
  * @author by furqan on 27/04/18.
  */
 
-public class FlightDetailCacheSource {
+public class FlightOrderDataCacheSource {
 
     private static long FLIGHT_DETAIL_CACHE_TIMEOUT = TimeUnit.MINUTES.toSeconds(10);
     private static String FLIGHT_DETAIL_CACHE_KEY = "FLIGHT_DETAIL_CACHE";
@@ -24,7 +24,7 @@ public class FlightDetailCacheSource {
     private CacheManager cacheManager;
 
     @Inject
-    public FlightDetailCacheSource(CacheManager cacheManager) {
+    public FlightOrderDataCacheSource(CacheManager cacheManager) {
         this.cacheManager = cacheManager;
     }
 
