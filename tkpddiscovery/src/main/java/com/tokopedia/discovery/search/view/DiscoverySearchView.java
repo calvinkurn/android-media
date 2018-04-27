@@ -15,6 +15,7 @@ import android.os.Parcelable;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -265,8 +266,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         allowVoiceSearch = true;
 
         remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-        setImageSearch(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
-                false));
+        /*setImageSearch(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
+                false));*/
+        setImageSearch(true);
 
         showVoice(true);
         showImageSearch(true);
@@ -351,8 +353,8 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         showCaseObjectList.add(new ShowCaseObject(
                 mImageSearchButton,
                 mContext.getResources().getString(R.string.on_board_title),
-                remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
-                        mContext.getResources().getString(R.string.on_board_desc)),
+                Html.fromHtml(remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
+                        mContext.getResources().getString(R.string.on_board_desc)), Html.FROM_HTML_MODE_LEGACY).toString(),
                 ShowCaseContentPosition.UNDEFINED,
                 R.color.tkpd_main_green));
         showCaseDialog.show(((Activity) mContext), showCaseTag, showCaseObjectList);
