@@ -592,7 +592,7 @@ public class TkpdBaseURL {
         public static final String PATH_DELETE_SEARCH = "/universe/v1?device=android&source=searchbar";
 
         public static final String PATH_SEARCH_PRODUCT = "search/product/v3";
-        public static final String PATH_IMAGE_SEARCH = "imagesearch/";
+        public static final String PATH_IMAGE_SEARCH = "search/imagesearch/";
         public static final String PATH_GET_ATTRIBUTE = "search/product/attributes/v3";
         public static final String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
         public static final String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
