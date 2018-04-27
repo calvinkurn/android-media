@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.util.SparseArrayCompat;
 import android.view.ViewGroup;
 
-import com.github.florent37.camerafragment.configuration.Configuration;
 import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
@@ -38,11 +37,7 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
                         imagePickerBuilder.supportMultipleSelection() ,
                         imagePickerBuilder.getMinResolution());
             case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA:
-                Configuration.Builder builder = new Configuration.Builder();
-                // builder.setMediaQuality(Configuration.MEDIA_QUALITY_HIGH);
-                return ImagePickerCameraFragment.newInstance(
-                        builder.build()
-                );
+                return ImagePickerCameraFragment.newInstance();
             case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM:
                 return ImagePickerInstagramFragment.newInstance();
             default:
