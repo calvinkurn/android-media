@@ -11,6 +11,10 @@ import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.view.OrderQueryTicketActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -52,12 +56,23 @@ public class ContactUsPurchaseViewHolder extends RecyclerView.ViewHolder {
         void bind(BuyerPurchaseList buyerPurchaseList) {
             this.buyerPurchaseList = buyerPurchaseList;
             txtOrderId.setText(buyerPurchaseList.getDetail().getCode());
-            txtOrderDate.setText(buyerPurchaseList.getDetail().getCreateTime());
+            txtOrderDate.setText(lastUpdatedDate(buyerPurchaseList.getDetail().getCreateTime()));
             ImageHandler.loadImageThumbs(imgProduct.getContext(),imgProduct,buyerPurchaseList.getProducts().get(0).getImage());
             txtProductName.setText(buyerPurchaseList.getProducts().get(0).getName());
             txtMoreItem.setText("+"+(buyerPurchaseList.getProducts().size()-1)+" barang lainnya");
             txtTotalPrice.setText(buyerPurchaseList.getDetail().getTotalAmount());
             txtInvalidMsg.setText(buyerPurchaseList.getDetail().getStatus());
         }
-
+    public static String lastUpdatedDate(String date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat output = new SimpleDateFormat("dd MMM yyyy");
+        String formattedTime = "";
+        try {
+            Date d = sdf.parse(date);
+            formattedTime = output.format(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return formattedTime;
+    }
     }

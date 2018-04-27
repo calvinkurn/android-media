@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:id="@+id/constraint_layout">
 
 
     <TextView
@@ -193,12 +194,13 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_selected_images"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginTop="@dimen/margin_default"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView38" />
+        app:layout_constraintTop_toBottomOf="@+id/textView38"
+        app:layout_constraintBottom_toTopOf="@+id/btn_send"/>
 
     <ImageView
         android:id="@+id/iv_upload"
@@ -219,15 +221,15 @@
         android:layout_height="40dp"
         android:layout_marginBottom="@dimen/margin_default"
         android:background="@drawable/rounded_rectangle_grey_solid"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginRight="@dimen/new_margin_med"
         android:gravity="center"
         android:text="Kirim"
         android:textColor="@color/white"
         android:textSize="@dimen/font_smaller"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <!--Transparent Layer with Button starts here. Make Visible from Code-->
 
@@ -295,6 +297,7 @@
         android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginRight="@dimen/margin_default"
         android:gravity="start"
+        android:layout_gravity="bottom|center_horizontal"
         android:textColor="@color/black4_text"
         android:textSize="@dimen/font_smaller"
         android:visibility="gone"
@@ -319,7 +322,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_atur_dan_geser" />
 
-
     <TextView
         android:id="@+id/btn_tutup"
         android:layout_width="0dp"
@@ -338,6 +340,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         tools:text="Kirim" />
-
 
 </android.support.constraint.ConstraintLayout>

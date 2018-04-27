@@ -25,6 +25,10 @@ public interface SubmitTicketContract {
 
         public void showMessage(String showToast);
         public void finish();
+
+        void setSubmitButtonEnabled(boolean enabled);
+
+        void setSnackBarErrorMessage(String hello);
     }
     public interface Presenter extends CustomerPresenter<View> {
         public void onSendButtonClick();

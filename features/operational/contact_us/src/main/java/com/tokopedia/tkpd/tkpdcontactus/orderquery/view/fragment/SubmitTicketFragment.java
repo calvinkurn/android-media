@@ -9,13 +9,20 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +43,8 @@ import com.tokopedia.tkpd.tkpdcontactus.orderquery.di.OrderQueryComponent;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.view.presenter.SubmitTicketContract;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.view.presenter.SubmitTicketPresenter;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +69,8 @@ import permissions.dispatcher.RuntimePermissions;
 public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTicketContract.View {
 
     public static final String KEY_QUERY_TICKET = "KEY_QUERY_TICKET";
+    @BindView(R2.id.constraint_layout)
+    ConstraintLayout constraint_layout;
     @BindView(R2.id.img_product)
     ImageView imgProduct;
     @BindView(R2.id.txt_invoice_no)
@@ -70,6 +81,8 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     TextView txtQueryTitle;
     @BindView(R2.id.edt_query)
     AppCompatEditText edtQuery;
+    @BindView(R2.id.btn_send)
+    TextView sendButton;
     ImageUploadAdapter imageUploadAdapter;
 
     OrderQueryComponent orderQueryComponent;
@@ -99,10 +112,33 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         imageUploadAdapter = new ImageUploadAdapter(getContext());
         rvSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvSelectedImages.setAdapter(imageUploadAdapter);
+        edtQuery.addTextChangedListener(watcher(edtQuery));
         return view;
 
     }
+    private TextWatcher watcher(final EditText editText) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.e("sandeep","count ="+count);
+                if(s.length() >= 30){
+                    setSubmitButtonEnabled(true);
+                } else {
+                    setSubmitButtonEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+    }
     @Override
     protected String getScreenName() {
         return null;
@@ -165,6 +201,41 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     @Override
     public void finish() {
         getActivity().finish();
+    }
+
+    @Override
+    public void setSubmitButtonEnabled(boolean enabled) {
+        sendButton.setClickable(enabled);
+        if(enabled) {
+            sendButton.setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_green_solid));
+        } else {
+            sendButton.setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_grey_solid));
+        }
+    }
+
+    @Override
+    public void setSnackBarErrorMessage(String hello) {
+        final Snackbar snackbar = Snackbar.make(constraint_layout,hello,Snackbar.LENGTH_INDEFINITE);
+        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+        //layout.setBackgroundColor(getResources().getColor(R.color.red_100));
+        TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setVisibility(View.INVISIBLE);
+
+// Inflate our custom view
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View snackView = inflater.inflate(R.layout.snackbar_error_layout, null);
+        TextView tv = snackView.findViewById(R.id.tv_msg);
+        tv.setText(hello);
+        TextView okbtn = snackView.findViewById(R.id.snack_ok);
+        okbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snackbar.dismiss();
+            }
+        });
+        layout.addView(snackView, 0);
+        layout.setPadding(0, 0, 0, 0);
+        snackbar.show();
     }
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
