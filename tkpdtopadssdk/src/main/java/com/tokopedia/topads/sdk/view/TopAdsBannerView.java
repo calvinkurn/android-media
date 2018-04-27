@@ -106,7 +106,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         }
         for (int i = 0; i < 2; i++) {
             ImageView pointView = new ImageView(getContext());
-            pointView.setPadding(5, 5, 5, 5);
+            pointView.setPadding(10, 0, 10, 5);
             if (i == 0) {
                 pointView.setImageResource(R.drawable.dot_green);
             } else {

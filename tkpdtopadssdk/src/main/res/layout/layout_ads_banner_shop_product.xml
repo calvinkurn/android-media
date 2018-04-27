@@ -4,16 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_72"
-    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
         android:paddingTop="@dimen/dp_4"
-        android:paddingBottom="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10">
 
         <android.support.v7.widget.RecyclerView
@@ -28,16 +25,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_11"
+            android:layout_marginTop="-5dp"
+            android:layout_gravity="center_vertical|right"
             android:textColor="@color/tkpd_main_green"
-            android:gravity="center_vertical|right"
-            android:layout_marginRight="@dimen/dp_10"
             android:text="@string/kunjungi_toko"/>
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_300" />
 
 </LinearLayout>

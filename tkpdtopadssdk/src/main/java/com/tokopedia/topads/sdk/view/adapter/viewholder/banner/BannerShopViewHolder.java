@@ -74,8 +74,8 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                 badgeContainer.setVisibility(View.VISIBLE);
                 for (Badge badge : cpm.getBadges()) {
                     ImageView badgeImg = new ImageView(context);
-                    badgeImg.setLayoutParams(new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size),
-                            context.getResources().getDimensionPixelSize(R.dimen.badge_size)));
+                    badgeImg.setLayoutParams(new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size_small),
+                            context.getResources().getDimensionPixelSize(R.dimen.badge_size_small)));
                     Glide.with(context).load(badge.getImageUrl()).into(badgeImg);
                     badgeContainer.addView(badgeImg);
                 }
