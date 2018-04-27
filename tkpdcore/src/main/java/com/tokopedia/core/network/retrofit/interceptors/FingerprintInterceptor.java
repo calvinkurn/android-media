@@ -116,7 +116,6 @@ public class FingerprintInterceptor implements Interceptor {
      * @param context
      * @return
      */
-
     private String getGoogleAdId(final Context context) {
         final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ADVERTISINGID);
 
@@ -136,7 +135,6 @@ public class FingerprintInterceptor implements Interceptor {
                             e.printStackTrace();
                         }
                         return adInfo.getId();
-
                     }
                 }).onErrorReturn(new Func1<Throwable, String>() {
                     @Override
