@@ -407,6 +407,9 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
     }
 
     private void updateFilterInputData(FilterFlagSelectedModel model) {
+        if (model == null) {
+            return;
+        }
         savedCheckedState = model.getSavedCheckedState();
         savedTextInput = model.getSavedTextInput();
         selectedCategoryId = model.getCategoryId();
