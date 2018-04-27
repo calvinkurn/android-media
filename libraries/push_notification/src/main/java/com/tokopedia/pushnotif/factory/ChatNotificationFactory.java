@@ -22,9 +22,11 @@ public class ChatNotificationFactory extends BaseNotificationFactory{
     public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notifcationType, int notificationId) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
         builder.setContentTitle(applinkNotificationModel.getDesc());
-        builder.setContentText(applinkNotificationModel.getFullName()+" : "+applinkNotificationModel.getSummary());
+        builder.setContentText(applinkNotificationModel.getSummary());
         builder.setSmallIcon(getDrawableIcon());
         builder.setLargeIcon(getBitmap(applinkNotificationModel.getThumbnail()));
+        builder.setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(applinkNotificationModel.getSummary()));
         if (ApplinkNotificationHelper.allowGroup()) builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
         builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notifcationType, notificationId));
         builder.setDeleteIntent(createDismissPendingIntent(notifcationType, notificationId));
