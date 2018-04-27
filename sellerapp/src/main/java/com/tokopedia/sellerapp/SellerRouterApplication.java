@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -180,7 +182,7 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter,
-        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter {
+        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter, ApplinkRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1281,5 +1283,27 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public String getDesktopLinkGroupChat() {
         return "";
+    }
+
+    @Override
+    public void goToApplinkActivity(Context context, String applink) {
+        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
+        Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
+        intent.setData(Uri.parse(applink));
+
+        if (context instanceof Activity) {
+            deepLinkDelegate.dispatchFrom((Activity) context, intent);
+        } else {
+            context.startActivity(intent);
+        }
+    }
+
+    @Override
+    public Intent getApplinkIntent(Context context, String applink) {
+        Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
+        intent.setData(Uri.parse(applink));
+
+        return intent;
+
     }
 }
