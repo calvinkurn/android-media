@@ -53,11 +53,13 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView itemText;
         private ColorSampleView colorIcon;
+        private View itemContainer;
 
         public ViewHolder(View itemView) {
             super(itemView);
             itemText = itemView.findViewById(R.id.filter_item_text);
-            colorIcon = (ColorSampleView) itemView.findViewById(R.id.color_icon);
+            colorIcon = itemView.findViewById(R.id.color_icon);
+            itemContainer = itemView.findViewById(R.id.filter_item_container);
         }
 
         public void bind(final Option option, final int position) {
@@ -69,12 +71,11 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
             }
 
             if (Boolean.parseBoolean(option.getInputState())) {
-                itemText.setBackgroundResource(R.drawable.quick_filter_item_background_selected);
+                itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_selected);
             } else {
-                itemText.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
+                itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
             }
-            itemText.setText(option.getName());
-            itemText.setOnClickListener(new View.OnClickListener() {
+            itemContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     boolean newCheckedState = !Boolean.parseBoolean(option.getInputState());
@@ -83,6 +84,7 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
                     notifyItemChanged(position);
                 }
             });
+            itemText.setText(option.getName());
         }
     }
 }
