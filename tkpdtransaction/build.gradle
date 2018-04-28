@@ -23,12 +23,12 @@ project.ext {
 }
 
 dependencies {
-    compile project(rootProject.ext.features.core)
-    compile project(rootProject.ext.features.topAdsSdk)
-    compile project(rootProject.ext.features.payment)
-    compile project(rootProject.ext.libraries.design)
-    compile project(rootProject.ext.features.loyalty)
-    compile project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.libraries.fingerprint)
 
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
@@ -62,7 +62,7 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    compile(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
+    implementation(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
 }
 
 apply from: '../publish_local.gradle'

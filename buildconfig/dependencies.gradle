@@ -286,9 +286,8 @@ ext {
             pushNotif       : ":libraries:push_notification",
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
-             useCase         : ":libraries:use_case",
-            fingerprint     : ":libraries:fingerprint"
+            useCase         : ":libraries:use_case",
+            fingerprint     : ":libraries:fingerprint",
             youtubeApi      : ":libraries:YouTubeAndroidPlayerApi"
     ]
-
 }
