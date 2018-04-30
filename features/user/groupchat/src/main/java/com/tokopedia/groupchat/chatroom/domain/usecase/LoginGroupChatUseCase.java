@@ -1,6 +1,7 @@
 package com.tokopedia.groupchat.chatroom.domain.usecase;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.sendbird.android.OpenChannel;
@@ -10,6 +11,9 @@ import com.sendbird.android.User;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
 
+import java.util.Date;
+import java.util.UUID;
+
 import javax.inject.Inject;
 
 /**
@@ -17,6 +21,9 @@ import javax.inject.Inject;
  */
 
 public class LoginGroupChatUseCase {
+
+    private static final String GROUP_CHAT_SP = "GROUP_CHAT";
+    private static final String GROUP_CHAT_ANON_USER_ID = "GROUP_CHAT_ANON_USER_ID";
 
     public interface LoginGroupChatListener {
         void onSuccessEnterChannel(OpenChannel openChannel);
@@ -35,8 +42,8 @@ public class LoginGroupChatUseCase {
     public void execute(final Context context, final String channelUrl,
                         String userId, final String userName, final String userAvatar,
                         final LoginGroupChatListener listener, String sendBirdToken) {
-        if(TextUtils.isEmpty(userId)){
-            userId = context.getString(R.string.anonymous);
+        if (TextUtils.isEmpty(userId)) {
+            userId = getAnonymousSendbirdUserId(context);
         }
         SendBird.connect(userId, sendBirdToken, new SendBird.ConnectHandler() {
             @Override
@@ -96,5 +103,25 @@ public class LoginGroupChatUseCase {
             }
         });
 
+    }
+
+    private String getAnonymousSendbirdUserId(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(GROUP_CHAT_SP, Context
+                .MODE_PRIVATE);
+
+        String anonUserId = sharedPreferences.getString(GROUP_CHAT_ANON_USER_ID, "");
+
+        if (TextUtils.isEmpty(anonUserId)) {
+            anonUserId = context.getString(R.string.anonymous) + UUID.randomUUID() + new
+                    Date().toString();
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(GROUP_CHAT_ANON_USER_ID, anonUserId);
+            editor.apply();
+
+            return anonUserId;
+        } else {
+            return anonUserId;
+        }
     }
 }
