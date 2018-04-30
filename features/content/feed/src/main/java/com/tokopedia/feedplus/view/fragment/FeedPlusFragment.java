@@ -110,6 +110,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
+    private static final int DEFAULT_VALUE = -1;
 
     private static final String ARGS_ROW_NUMBER = "row_number";
 
@@ -716,7 +717,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             case OPEN_KOL_COMMENT:
                 if (resultCode == Activity.RESULT_OK) {
                     onSuccessAddDeleteKolComment(
-                            data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
+                            data.getIntExtra(KolCommentActivity.ARGS_POSITION, DEFAULT_VALUE),
                             data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0)
                     );
                 }
@@ -724,15 +725,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
             case OPEN_KOL_PROFILE:
                 if (resultCode == Activity.RESULT_OK) {
                     onSuccessFollowUnfollowFromProfile(
-                            data.getIntExtra(ARGS_ROW_NUMBER, -1),
-                            data.getIntExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, -1)
+                            data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
+                            data.getIntExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, DEFAULT_VALUE)
                     );
 
                     updatePostState(
-                            data.getIntExtra(ARGS_ROW_NUMBER, -1),
-                            data.getIntExtra(PARAM_IS_LIKED, -1),
-                            data.getIntExtra(PARAM_TOTAL_LIKES, -1),
-                            data.getIntExtra(PARAM_TOTAL_COMMENTS, -1)
+                            data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
+                            data.getIntExtra(PARAM_IS_LIKED, DEFAULT_VALUE),
+                            data.getIntExtra(PARAM_TOTAL_LIKES, DEFAULT_VALUE),
+                            data.getIntExtra(PARAM_TOTAL_COMMENTS, DEFAULT_VALUE)
                     );
                 }
                 break;
@@ -1087,10 +1088,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessFollowUnfollowFromProfile(int rowNumber, int isFollowing) {
-        if (rowNumber != -1 && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
+        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
             KolViewModel kolViewModel = (KolViewModel) adapter.getlist().get(rowNumber);
 
-            if (isFollowing != -1) {
+            if (isFollowing != DEFAULT_VALUE) {
                 kolViewModel.setFollowed(isFollowing == IS_FOLLOWING_TRUE);
                 kolViewModel.setTemporarilyFollowed(isFollowing == IS_FOLLOWING_TRUE);
             }
@@ -1099,18 +1100,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void updatePostState(int rowNumber, int isLiked, int totalLike, int totalComment) {
-        if (rowNumber != -1 && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
+        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
             KolViewModel kolViewModel = (KolViewModel) adapter.getlist().get(rowNumber);
 
-            if (isLiked != -1) {
+            if (isLiked != DEFAULT_VALUE) {
                 kolViewModel.setLiked(isLiked == IS_LIKE_TRUE);
             }
 
-            if (totalLike != -1) {
+            if (totalLike != DEFAULT_VALUE) {
                 kolViewModel.setTotalLike(totalLike);
             }
 
-            if (totalComment != -1) {
+            if (totalComment != DEFAULT_VALUE) {
                 kolViewModel.setTotalComment(totalComment);
             }
             adapter.notifyItemChanged(rowNumber);
