@@ -150,6 +150,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                 holder.productName.getContext().getString(R.string.see_other_product),
                 String.valueOf(extraProduct));
         holder.productName.setText(seeOtherProduct);
+        holder.productPrice.setVisibility(View.GONE);
     }
 
     private void goToFeedDetail() {
