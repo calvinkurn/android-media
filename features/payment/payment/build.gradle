@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {

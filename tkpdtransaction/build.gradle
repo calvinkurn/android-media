@@ -29,10 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.libraries.fingerprint)
-
-    implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
