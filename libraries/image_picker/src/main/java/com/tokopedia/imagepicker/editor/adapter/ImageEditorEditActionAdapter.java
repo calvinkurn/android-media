@@ -34,7 +34,7 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (listener!=null) {
-            listener.onEditActionClicked((int)v.getTag());
+            listener.onEditActionClicked(v.getId());
         }
     }
 
@@ -61,7 +61,7 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
             View view = LayoutInflater.from(context).inflate(R.layout.view_image_icon, viewGroup, false);
             ImageView ivEdit = view.findViewById(R.id.iv_edit);
             TextView tvEdit = view.findViewById(R.id.tv_edit);
-            view.setTag(tabTypeDefItem);
+            view.setId(tabTypeDefItem);
             switch (tabTypeDefItem) {
                 case TYPE_CROP:
                     ivEdit.setImageResource(R.drawable.ic_crop);

@@ -77,6 +77,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         initProgressBar(view);
 
         setImageData();
+
         return view;
     }
 

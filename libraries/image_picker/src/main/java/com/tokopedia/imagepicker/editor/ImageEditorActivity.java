@@ -14,9 +14,11 @@ import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorEditActionAdapter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.presenter.ImageDownloadPresenter;
+import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
 
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ import java.util.ArrayList;
  * Created by Hendry on 9/25/2017.
  */
 
-public class ImageEditorActivity extends BaseSimpleActivity implements ImageDownloadPresenter.ImageDownloadView, ImageEditorEditActionAdapter.OnImageEditorEditActionAdapterListener {
+public class ImageEditorActivity extends BaseSimpleActivity implements ImageDownloadPresenter.ImageDownloadView {
 
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
     public static final String EXTRA_MIN_RESOLUTION = "MIN_IMG_RESOLUTION";
@@ -52,7 +54,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private ImageDownloadPresenter imageDownloadPresenter;
 
     private View vgContentContainer;
-    private ViewPager viewPager;
+    private NonSwipeableViewPager viewPager;
 
     private ImageEditorViewPagerAdapter imageEditorViewPagerAdapter;
 
@@ -82,12 +84,20 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
-            extraImageUrls = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
-        } else {
-            finish();
-            return;
-        }
+        //TODO for test only
+        extraImageUrls = new ArrayList<>();
+        extraImageUrls.add("/storage/emulated/0/Tokopedia/738855.jpg");
+        extraImageUrls.add("/storage/emulated/0/Download/Guitar-PNG-Image-500x556.png");
+        extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Documents/IMG_20180308_181928_HDR.jpg");
+        extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20180111-WA0004.jpg");
+        extraImageUrls.add("/storage/emulated/0/Download/303836.jpg");
+
+//        if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
+//            extraImageUrls = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
+//        } else {
+//            finish();
+//            return;
+//        }
 
         minResolution = intent.getIntExtra(EXTRA_MIN_RESOLUTION, 0);
         imageEditActionType = intent.getIntArrayExtra(EXTRA_EDIT_ACTION_TYPE);
@@ -113,16 +123,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     }
 
     private void setupEditMainLayout() {
-        ViewGroup viewGroupMainContent = findViewById(R.id.vg_editor_main_content);
-        ImageEditorEditActionAdapter imageEditorEditActionAdapter =
-                new ImageEditorEditActionAdapter(viewGroupMainContent, this, imageEditActionType, this);
-        imageEditorEditActionAdapter.renderView();
-    }
-
-    @Override
-    public void onEditActionClicked(@ImagePickerBuilder.ImageEditActionTypeDef int actionEditType) {
-        // TODO cehck the actiondef
-        // TODO enabled the image zoom if crop;
+        ImageEditActionMainWidget imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
+        imageEditActionMainWidget.setData(imageEditActionType);
     }
 
     private void finishEditImage() {
@@ -201,6 +203,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                     minResolution);
         }
         viewPager.setAdapter(imageEditorViewPagerAdapter);
+        // viewPager.setCanSwipe(true);
 
     }
 
