@@ -3,6 +3,7 @@ package com.tokopedia.loyalty.view.viewholder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ public class PromoDetailInfoViewHolder extends RecyclerView.ViewHolder {
     private PromoImageView ivPromoDetailThumbnail;
     private TextView tvPromoDetailTitle;
     private TextView tvPromoDetailPeriod;
+    private TextView tvPromoDetailMinTransactionLabel;
     private TextView tvPromoDetailMinTransaction;
     private FloatingActionButton fabPromoDetailShare;
 
@@ -37,6 +39,7 @@ public class PromoDetailInfoViewHolder extends RecyclerView.ViewHolder {
         this.ivPromoDetailThumbnail = itemView.findViewById(R.id.iv_promo_detail_thumbnail);
         this.tvPromoDetailTitle = itemView.findViewById(R.id.tv_promo_detail_title);
         this.tvPromoDetailPeriod = itemView.findViewById(R.id.tv_promo_detail_period);
+        this.tvPromoDetailMinTransactionLabel = itemView.findViewById(R.id.tv_promo_detail_min_transaction_label);
         this.tvPromoDetailMinTransaction = itemView.findViewById(R.id.tv_promo_detail_min_transaction);
         this.fabPromoDetailShare = itemView.findViewById(R.id.fab_promo_detail_share);
     }
@@ -45,6 +48,7 @@ public class PromoDetailInfoViewHolder extends RecyclerView.ViewHolder {
         ImageHandler.LoadImage(this.ivPromoDetailThumbnail, holderData.getThumbnailImageUrl());
         this.tvPromoDetailTitle.setText(Html.fromHtml(holderData.getTitle()));
         this.tvPromoDetailPeriod.setText(holderData.getPromoPeriod());
+        this.tvPromoDetailMinTransactionLabel.setText(getTransactionLabel(holderData.getMinTransaction()));
         this.tvPromoDetailMinTransaction.setText(holderData.getMinTransaction());
         this.fabPromoDetailShare.setOnClickListener(promoShareListener(holderData.getPromoData()));
     }
@@ -56,5 +60,11 @@ public class PromoDetailInfoViewHolder extends RecyclerView.ViewHolder {
                 adapterActionListener.onItemPromoShareClicked(promoData);
             }
         };
+    }
+
+    private int getTransactionLabel(String minTransaction) {
+        return (TextUtils.isEmpty(minTransaction)) ?
+                R.string.label_no_min_transaction_promo_loyalty_module :
+                R.string.label_min_transaction_promo_loyalty_module;
     }
 }
