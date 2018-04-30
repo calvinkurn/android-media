@@ -770,8 +770,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                     break;
                 case DynamicFilterLocationActivity.REQUEST_CODE:
                     handleResultFromLocationPage();
-                    filterMainAdapter.notifyItemChanged(selectedExpandableItemPosition);
-                    applyFilter();
                     break;
                 case DynamicFilterCategoryActivity.REQUEST_CODE:
                     handleResultFromCategoryPage(data);
@@ -815,6 +813,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                             OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
                         }
                         filterMainAdapter.notifyItemChanged(selectedExpandableItemPosition);
+                        applyFilter();
                     }
                 });
     }
