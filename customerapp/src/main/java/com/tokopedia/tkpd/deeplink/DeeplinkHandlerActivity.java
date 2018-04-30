@@ -42,6 +42,8 @@ import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
+import com.tokopedia.pushnotif.SummaryNotification;
+import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.ride.deeplink.RideDeeplinkModule;
 import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
@@ -149,14 +151,20 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     int notificationId = bundle.getInt(Constant.EXTRA_NOTIFICATION_ID, 0);
 
                     if (notificationId == 0) {
-                        HistoryNotification.clearAllHistoryNotification(this, notificationType);
+                        HistoryNotification.clearAllHistoryNotification(notificationType);
                     } else {
-                        HistoryNotification.clearHistoryNotification(this, notificationType, notificationId);
+                        HistoryNotification.clearHistoryNotification(notificationType, notificationId);
                     }
 
                     NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
                     notificationManagerCompat.cancel(notificationId);
-                    notificationManagerCompat.cancel(notificationType);
+
+                    //clear summary notification if group notification only have 1 left
+                    if (notificationId != 0 && HistoryNotification.isSingleNotification(notificationType)) {
+                        notificationManagerCompat.cancel(notificationType);
+                    }
+
+
                 }
 //                NotificationModHandler.clearCacheIfFromNotification(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }

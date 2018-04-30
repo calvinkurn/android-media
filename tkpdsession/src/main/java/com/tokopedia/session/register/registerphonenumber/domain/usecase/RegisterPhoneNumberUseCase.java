@@ -20,6 +20,7 @@ public class RegisterPhoneNumberUseCase extends UseCase<RegisterPhoneNumberModel
     private static final String PARAMS_PHONE_NUMBER = "phone";
     private static final String PARAMS_TYPE = "type";
     private static final String PARAMS_TYPE_PHONE = "phone";
+    private static final String PARAMS_NAME = "fullname";
     private static final String PARAMS_OS_TYPE = "os_type";
     private static final int PARAMS_OS_TYPE_ANDROID = 1;
 
@@ -43,6 +44,15 @@ public class RegisterPhoneNumberUseCase extends UseCase<RegisterPhoneNumberModel
     public static RequestParams getParams(String phoneNumber) {
         RequestParams params = RequestParams.create();
         params.putString(PARAMS_PHONE_NUMBER, phoneNumber);
+        params.putString(PARAMS_TYPE, PARAMS_TYPE_PHONE);
+        params.putInt(PARAMS_OS_TYPE, PARAMS_OS_TYPE_ANDROID);
+        return params;
+    }
+
+    public static RequestParams getParamsWithName(String phoneNumber, String name) {
+        RequestParams params = RequestParams.create();
+        params.putString(PARAMS_PHONE_NUMBER, phoneNumber);
+        params.putString(PARAMS_NAME, name);
         params.putString(PARAMS_TYPE, PARAMS_TYPE_PHONE);
         params.putInt(PARAMS_OS_TYPE, PARAMS_OS_TYPE_ANDROID);
         return params;

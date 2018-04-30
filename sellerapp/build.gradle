@@ -11,12 +11,12 @@ def getDpiId(String density) {
 }
 
 def getAPKArchiveFolder(variant) {
-    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
+    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode
 }
 
 def allowSplit() {
     return gradle.startParameter.taskNames.contains("assembleRelease") &&
-            !project.hasProperty('tkpdBuildType');
+            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "production")
 }
 
 def allowDistribution() {
@@ -229,6 +229,8 @@ dependencies {
     compile project(rootProject.ext.features.mitraToppers)
     compile project(rootProject.ext.features.shopPage)
     compile project(rootProject.ext.features.profile)
+    compile project(rootProject.ext.libraries.pushNotif)
+    compile project(rootProject.ext.libraries.applink)
 
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
