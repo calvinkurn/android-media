@@ -111,6 +111,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
     public void onDestroy() {
         LocalBroadcastManager.getInstance(getAppContext()).unregisterReceiver(mMessageReceiver);
         mMessageReceiver = null;
+        mPresenter.destroyView();
         super.onDestroy();
     }
 

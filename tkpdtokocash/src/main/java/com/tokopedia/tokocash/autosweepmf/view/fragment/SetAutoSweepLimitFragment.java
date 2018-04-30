@@ -130,6 +130,7 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements Set
 
     @Override
     public void onDestroy() {
+        mPresenter.destroyView();
         super.onDestroy();
     }
 

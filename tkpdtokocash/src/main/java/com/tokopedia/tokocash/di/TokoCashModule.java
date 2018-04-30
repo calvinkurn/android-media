@@ -17,6 +17,7 @@ import com.tokopedia.tokocash.accountsetting.domain.PostUnlinkTokoCashUseCase;
 import com.tokopedia.tokocash.activation.data.ActivateRepository;
 import com.tokopedia.tokocash.activation.domain.LinkedTokoCashUseCase;
 import com.tokopedia.tokocash.activation.domain.RequestOtpTokoCashUseCase;
+import com.tokopedia.tokocash.network.interceptor.AutoSweepInterceptor;
 import com.tokopedia.tokocash.autosweepmf.data.source.cloud.api.AutoSweepApi;
 import com.tokopedia.tokocash.autosweepmf.view.presenter.SetAutoSweepLimitPresenter;
 import com.tokopedia.tokocash.autosweepmf.view.util.InputFilterMinMax;
@@ -35,6 +36,7 @@ import com.tokopedia.tokocash.network.interceptor.TokoCashErrorResponseIntercept
 import com.tokopedia.tokocash.network.interceptor.WalletAuthInterceptor;
 import com.tokopedia.tokocash.network.interceptor.WalletErrorResponseInterceptor;
 import com.tokopedia.tokocash.network.model.ActivateTokoCashErrorResponse;
+import com.tokopedia.tokocash.network.model.AutoSweepErrorResponse;
 import com.tokopedia.tokocash.network.model.TokoCashErrorResponse;
 import com.tokopedia.tokocash.network.model.WalletErrorResponse;
 import com.tokopedia.tokocash.pendingcashback.data.PendingCashbackRepository;
@@ -228,12 +230,12 @@ public class TokoCashModule {
 
     @Provides
     @OkHttpAutoSweepQualifier
-    OkHttpClient provideOkHttpClientAutoSweep(WalletAuthInterceptor walletAuthInterceptor, Gson gson,
-                                           WalletTokenRefresh walletTokenRefresh, WalletUserSession walletUserSession,
-                                           @TokoCashChuckQualifier Interceptor chuckIntereptor) {
+    OkHttpClient provideOkHttpClientAutoSweep(AutoSweepInterceptor autoSweepInterceptor, Gson gson,
+                                              WalletTokenRefresh walletTokenRefresh, WalletUserSession walletUserSession,
+                                              @TokoCashChuckQualifier Interceptor chuckIntereptor) {
         return new OkHttpClient.Builder()
-                .addInterceptor(walletAuthInterceptor)
-                .addInterceptor(new WalletErrorResponseInterceptor(WalletErrorResponse.class, gson,
+                .addInterceptor(autoSweepInterceptor)
+                .addInterceptor(new WalletErrorResponseInterceptor(AutoSweepErrorResponse.class, gson,
                         walletTokenRefresh, walletUserSession))
                 .addInterceptor(chuckIntereptor).build();
     }
