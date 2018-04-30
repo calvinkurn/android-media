@@ -162,6 +162,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
                 phoneNumber,
                 RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
                 true,
+                false,
                 RequestOtpUseCase.MODE_SMS
         );
         startActivityForResult(intent, REQUEST_VERIFY_PHONE);

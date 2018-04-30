@@ -10,19 +10,25 @@ public class VerificationPassModel {
     private String email;
     private int otpType;
     private boolean canUseOtherMethod;
+    private boolean showChooseMethod;
 
-    public VerificationPassModel(String phoneNumber, int otpType, boolean canUseOtherMethod) {
+    public VerificationPassModel(String phoneNumber, int otpType, boolean canUseOtherMethod,
+                                 boolean showChooseMethod) {
         this.phoneNumber = phoneNumber;
         this.email = "";
         this.otpType = otpType;
         this.canUseOtherMethod = canUseOtherMethod;
+        this.showChooseMethod = showChooseMethod;
     }
 
-    public VerificationPassModel(String phoneNumber, String email, int otpType, boolean canUseOtherMethod) {
+    public VerificationPassModel(String phoneNumber, String email, int otpType,
+                                 boolean canUseOtherMethod, boolean showChooseMethod) {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.otpType = otpType;
         this.canUseOtherMethod = canUseOtherMethod;
+        this.showChooseMethod = showChooseMethod;
+
     }
 
     public String getPhoneNumber() {
@@ -41,4 +47,7 @@ public class VerificationPassModel {
         return canUseOtherMethod;
     }
 
+    public boolean isShowChooseMethod() {
+        return showChooseMethod;
+    }
 }

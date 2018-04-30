@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.analytics.AppScreen;
@@ -261,6 +260,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
                 email,
                 RequestOtpUseCase.OTP_TYPE_CHANGE_PHONE_NUMBER,
                 true,
+                false,
                 RequestOtpUseCase.MODE_SMS
         );
         startActivityForResult(intent, REQUEST_VERIFY_CODE);

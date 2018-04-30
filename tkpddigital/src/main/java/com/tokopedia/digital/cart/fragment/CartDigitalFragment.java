@@ -691,7 +691,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
         Intent intent = VerificationActivity.getCallingIntent(getActivity(),
                 SessionHandler.getPhoneNumber(), RequestOtpUseCase.OTP_TYPE_CHECKOUT_DIGITAL,
-                true, RequestOtpUseCase.MODE_SMS);
+                true, false, RequestOtpUseCase.MODE_SMS);
         startActivityForResult(intent, OtpVerificationActivity.REQUEST_CODE);
     }
 

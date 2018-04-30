@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -96,8 +95,7 @@ public class VerificationActivity extends BaseSimpleActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment;
 
-        if (passModel.canUseOtherMethod()) {
-//            fragment = InterruptVerificationFragment.createInstance(bundle);
+        if (passModel.canUseOtherMethod() && passModel.isShowChooseMethod()) {
             fragment = ChooseVerificationMethodFragment.createInstance(bundle);
             fragmentTransaction.add(R.id.parent_view, fragment, FIRST_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
@@ -292,6 +290,7 @@ public class VerificationActivity extends BaseSimpleActivity {
         VerificationPassModel passModel = new
                 VerificationPassModel(phone, email,
                 RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
+                typeSecurityQuestion == VerificationActivity.TYPE_SQ_PHONE,
                 typeSecurityQuestion == VerificationActivity.TYPE_SQ_PHONE
         );
         cacheManager.setKey(VerificationActivity.PASS_MODEL);
@@ -312,10 +311,12 @@ public class VerificationActivity extends BaseSimpleActivity {
     }
 
     public static Intent getCallingIntent(Context context, String phoneNumber, int otpType,
-                                          boolean canUseOtherMethod, String requestMode) {
+                                          boolean canUseOtherMethod, boolean showChooseMethod,
+                                          String requestMode) {
         VerificationPassModel passModel = new VerificationPassModel(phoneNumber,
                 otpType,
-                canUseOtherMethod);
+                canUseOtherMethod,
+                showChooseMethod);
 
         GlobalCacheManager cacheManager = new GlobalCacheManager();
         cacheManager.setKey(VerificationActivity.PASS_MODEL);
@@ -338,11 +339,12 @@ public class VerificationActivity extends BaseSimpleActivity {
 
     public static Intent getCallingIntent(Context context, String phoneNumber, String email,
                                           int otpType, boolean canUseOtherMethod,
-                                          String requestMode) {
+                                          boolean showChooseMethod, String requestMode) {
         VerificationPassModel passModel = new VerificationPassModel(phoneNumber,
                 email,
                 otpType,
-                canUseOtherMethod);
+                canUseOtherMethod,
+                showChooseMethod);
 
         GlobalCacheManager cacheManager = new GlobalCacheManager();
         cacheManager.setKey(VerificationActivity.PASS_MODEL);
