@@ -10,8 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -118,13 +116,12 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         ViewGroup viewGroupMainContent = findViewById(R.id.vg_editor_main_content);
         ImageEditorEditActionAdapter imageEditorEditActionAdapter =
                 new ImageEditorEditActionAdapter(viewGroupMainContent, this, imageEditActionType, this);
-
-        imageEditorEditActionAdapter.notifyDataSetChanged();
+        imageEditorEditActionAdapter.renderView();
     }
 
     @Override
     public void onEditActionClicked(@ImagePickerBuilder.ImageEditActionTypeDef int actionEditType) {
-        //TODO cehck the actiondef
+        // TODO cehck the actiondef
         // TODO enabled the image zoom if crop;
     }
 

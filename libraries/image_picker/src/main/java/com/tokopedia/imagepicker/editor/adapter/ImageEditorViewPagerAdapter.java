@@ -7,7 +7,7 @@ import android.support.v4.util.SparseArrayCompat;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 
-import com.tokopedia.imagepicker.editor.ImageEditPreviewLegacyFragment;
+import com.tokopedia.imagepicker.editor.ImageEditPreviewFragment;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
         if (TextUtils.isEmpty(localImagePath)) {
             localImagePath = oriImagePath;
         }
-        return ImageEditPreviewLegacyFragment.newInstance(oriImagePath, localImagePath, minResolution);
+        return ImageEditPreviewFragment.newInstance(oriImagePath, localImagePath, minResolution);
     }
 
     @Override

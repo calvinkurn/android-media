@@ -53,7 +53,7 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
         this.listener = listener;
     }
 
-    public void notifyDataSetChanged() {
+    public void renderView() {
         if (viewGroup.getChildCount() > 0) {
             viewGroup.removeAllViews();
         }
@@ -73,7 +73,7 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
                     break;
                 case TYPE_WATERMARK:
                     ivEdit.setImageResource(R.drawable.circle_red);
-                    tvEdit.setText(context.getString(R.string.rotate));
+                    tvEdit.setText(context.getString(R.string.watermark));
                     break;
             }
             view.setOnClickListener(this);
