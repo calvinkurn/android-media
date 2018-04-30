@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker.editor;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,12 +9,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
+import com.tokopedia.imagepicker.editor.adapter.ImageEditorEditActionAdapter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.presenter.ImageDownloadPresenter;
+import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
+import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
 
 import java.util.ArrayList;
 
@@ -24,10 +30,20 @@ import java.util.ArrayList;
 public class ImageEditorActivity extends BaseSimpleActivity implements ImageDownloadPresenter.ImageDownloadView {
 
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
+    public static final String EXTRA_MIN_RESOLUTION = "MIN_IMG_RESOLUTION";
+    public static final String EXTRA_EDIT_ACTION_TYPE = "EDIT_ACTION_TYPE";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
     public static final String SAVED_FINAL_PATHS = "SAVED_CROPPED_PATHS";
     public static final String SAVED_LOCAL_IMAGE_PATH = "RES_PATH";
+
+    public static final String EDIT_RESULT_PATHS = "result_paths";
+
+
+    private ArrayList<String> extraImageUrls;
+    private int minResolution;
+    private @ImagePickerBuilder.ImageEditActionTypeDef
+    int[] imageEditActionType;
 
     private ArrayList<String> localImagePaths;
     private ArrayList<String> finalImagePaths;
@@ -36,24 +52,26 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
     private View vgProgressBar;
     private ImageDownloadPresenter imageDownloadPresenter;
-    private ArrayList<String> extraImageUrls;
+
     private View vgContentContainer;
-    private ViewPager viewPager;
+    private NonSwipeableViewPager viewPager;
 
     private ImageEditorViewPagerAdapter imageEditorViewPagerAdapter;
 
-    public static Intent getIntent(Context context, ArrayList<String> imageUrls) {
+    public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
+                                   @ImagePickerBuilder.ImageEditActionTypeDef int[] imageEditActionType) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
+        intent.putExtra(EXTRA_MIN_RESOLUTION, minResolution);
+        intent.putExtra(EXTRA_EDIT_ACTION_TYPE, imageEditActionType);
         return intent;
     }
 
-    public static Intent getIntent(Context context, String imageUrl) {
-        Intent intent = new Intent(context, ImageEditorActivity.class);
+    public static Intent getIntent(Context context, String imageUrl, int minResolution,
+                                   @ImagePickerBuilder.ImageEditActionTypeDef int[] imageEditActionType) {
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(imageUrl);
-        intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
-        return intent;
+        return getIntent(context, imageUrls, minResolution, imageEditActionType);
     }
 
     @Override
@@ -64,12 +82,25 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getIntent().hasExtra(EXTRA_IMAGE_URLS)) {
-            extraImageUrls = getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS);
-        } else {
-            finish();
-            return;
-        }
+
+        Intent intent = getIntent();
+        //TODO for test only
+        extraImageUrls = new ArrayList<>();
+        extraImageUrls.add("/storage/emulated/0/Tokopedia/738855.jpg");
+        extraImageUrls.add("/storage/emulated/0/Download/Guitar-PNG-Image-500x556.png");
+        extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Documents/IMG_20180308_181928_HDR.jpg");
+        extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20180111-WA0004.jpg");
+        extraImageUrls.add("/storage/emulated/0/Download/303836.jpg");
+
+//        if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
+//            extraImageUrls = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
+//        } else {
+//            finish();
+//            return;
+//        }
+
+        minResolution = intent.getIntExtra(EXTRA_MIN_RESOLUTION, 0);
+        imageEditActionType = intent.getIntArrayExtra(EXTRA_EDIT_ACTION_TYPE);
 
         vgProgressBar = findViewById(R.id.vg_download_progress_bar);
         vgContentContainer = findViewById(R.id.vg_content_container);
@@ -87,6 +118,21 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             localImagePaths = savedInstanceState.getStringArrayList(SAVED_LOCAL_IMAGE_PATH);
             finalImagePaths = savedInstanceState.getStringArrayList(SAVED_FINAL_PATHS);
         }
+
+        setupEditMainLayout();
+    }
+
+    private void setupEditMainLayout() {
+        ImageEditActionMainWidget imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
+        imageEditActionMainWidget.setData(imageEditActionType);
+    }
+
+    private void finishEditImage() {
+        Intent intent = new Intent();
+        intent.putStringArrayListExtra(EDIT_RESULT_PATHS, finalImagePaths);
+        setResult(Activity.RESULT_OK, intent);
+
+        finish();
     }
 
     @Override
@@ -153,9 +199,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         if (imageEditorViewPagerAdapter == null) {
             imageEditorViewPagerAdapter = new ImageEditorViewPagerAdapter(getSupportFragmentManager(),
                     localImagePaths,
-                    finalImagePaths);
+                    finalImagePaths,
+                    minResolution);
         }
         viewPager.setAdapter(imageEditorViewPagerAdapter);
+        // viewPager.setCanSwipe(true);
 
     }
 
@@ -269,4 +317,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     protected Fragment getNewFragment() {
         return null;
     }
+
+
 }

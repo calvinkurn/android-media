@@ -18,7 +18,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.imagepicker.R;
@@ -35,6 +34,7 @@ import com.tokopedia.imagepicker.picker.widget.AlbumsSpinner;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.imagepicker.editor.ImageEditorActivity.EDIT_RESULT_PATHS;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW;
 
 public class ImagePickerActivity extends BaseSimpleActivity
@@ -43,6 +43,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
         ImagePickerCameraFragment.OnImagePickerCameraFragmentListener {
 
     public static final String EXTRA_IMAGE_PICKER_BUILDER = "x_img_pick_builder";
+
+    public static final String PICKER_RESULT_PATHS = "result_paths";
 
     public static final String SAVED_SELECTED_TAB = "saved_sel_tab";
     private static final int REQUEST_CAMERA_PERMISSIONS = 932;
@@ -282,8 +284,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
         switch (imagePickerBuilder.getImageSelectionType()) {
             case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_SINGLE: {
-                Toast.makeText(this, "onAlbumClicked " + item.getRealPath(), Toast.LENGTH_SHORT).show();
-                startSingleEditImage(item.getRealPath());
+                onSingleImagePicked(item.getRealPath());
             }
             break;
             case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
@@ -299,9 +300,28 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
-    private void startSingleEditImage(String imageUrlOrPath) {
-        Intent intent = ImageEditorActivity.getIntent(this, imageUrlOrPath);
-        startActivityForResult(intent, REQUEST_CODE_EDITOR);
+    private void onSingleImagePicked(String imageUrlOrPath) {
+        if (imagePickerBuilder.isContinueToEditAfterPick()) {
+            Intent intent = ImageEditorActivity.getIntent(this, imageUrlOrPath,
+                    imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType());
+            startActivityForResult(intent, REQUEST_CODE_EDITOR);
+        } else {
+            onFinishWithSingleImage(imageUrlOrPath);
+        }
+    }
+
+    private void onFinishWithSingleImage (String imageUrlOrPath) {
+        ArrayList<String> finalPathList = new ArrayList<>();
+        finalPathList.add(imageUrlOrPath);
+        onFinishWithMultipleImage(finalPathList);
+    }
+
+    private void onFinishWithMultipleImage (ArrayList<String> imageUrlOrPathList) {
+        Intent intent = new Intent();
+        intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
+        setResult(Activity.RESULT_OK, intent);
+
+        finish();
     }
 
     @Override
@@ -309,9 +329,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CODE_EDITOR:
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    //TODO setresult the final path
-                    finish();
+                if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(EDIT_RESULT_PATHS)) {
+                    ArrayList<String> finalPathList = data.getStringArrayListExtra(EDIT_RESULT_PATHS);
+                    onFinishWithMultipleImage(finalPathList);
                 }
                 break;
             default:
@@ -324,8 +344,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     public void onImageTaken(String filePath) {
         switch (imagePickerBuilder.getImageSelectionType()) {
             case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_SINGLE: {
-                Toast.makeText(this, "onAlbumClicked " + filePath, Toast.LENGTH_SHORT).show();
-                startSingleEditImage(filePath);
+                onSingleImagePicked(filePath);
             }
             break;
             case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:

@@ -5,54 +5,36 @@
     android:id="@+id/top_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_gravity="top"
-        android:background="@color/grey_500">
-
-        <com.tokopedia.imagepicker.editor.widget.CropperView
-            android:id="@+id/cropper_view"
+        android:showDividers="beginning|end"
+        android:divider="@drawable/bg_line_separator">
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:nocropper__grid_color="@color/white_65"
-            app:nocropper__grid_opacity="0.8"
-            app:nocropper__grid_thickness="0.8dp"
-            app:nocropper__padding_color="@android:color/transparent" />
+            android:background="@color/white">
 
-        <ImageView
-            android:id="@+id/snap_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="start|bottom"
-            android:layout_margin="16dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
-            android:scaleType="center"
-            android:src="@drawable/circle_red" />
+            <com.yalantis.ucrop.view.UCropView
+                android:id="@+id/ucrop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0"/>
 
-        <ImageView
-            android:id="@+id/rotate_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="end|bottom"
-            android:layout_margin="16dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
-            android:scaleType="center"
-            android:src="@drawable/circle_red" />
+            <ProgressBar
+                android:id="@+id/progressbar"
+                style="?android:attr/indeterminate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                tools:visibility="visible"/>
 
-        <ProgressBar
-            android:id="@+id/progressbar"
-            style="?android:attr/indeterminate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            tools:visibility="visible"/>
+        </FrameLayout>
+    </LinearLayout>
 
-    </FrameLayout>
 </FrameLayout>
 

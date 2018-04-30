@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
@@ -20,7 +21,19 @@
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
             app:subtitleTextAppearance="?subtitleTextAppearance"
-            app:titleTextAppearance="?titleTextAppearance" />
+            app:titleTextAppearance="?titleTextAppearance">
+
+            <TextView
+                android:id="@+id/tv_done"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                style="@style/TextView.Title.Green"
+                android:text="@string/label_done"
+                android:padding="@dimen/dp_8"
+                android:background="?attr/selectableItemBackground"/>
+
+        </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
@@ -40,37 +53,89 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <LinearLayout
-                android:id="@+id/vg_action_edit"
+            <FrameLayout
+                android:id="@+id/vg_footer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_16">
-                <ImageView
-                    android:id="@+id/ic_crop"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/circle_red"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16" />
+                android:layout_height="@dimen/editor_footer_height">
 
-                <ImageView
-                    android:id="@+id/ic_rotate"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/circle_red"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"/>
+                <LinearLayout
+                    android:id="@+id/vg_editor_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="visible"
+                    tools:visibility="visible">
 
-                <ImageView
-                    android:id="@+id/ic_watermark"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/circle_red"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"/>
-            </LinearLayout>
+                    <com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget
+                        android:id="@+id/image_edit_action_main_widget"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <HorizontalScrollView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center">
+
+                        <LinearLayout
+                            android:id="@+id/vg_editor_preview_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+                            <!-- layout in programmatically -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dp_12"
+                                android:layout_marginRight="@dimen/dp_12"
+                                android:text="Preview Test" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dp_12"
+                                android:layout_marginRight="@dimen/dp_12"
+                                android:text="Preview Test" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dp_12"
+                                android:layout_marginRight="@dimen/dp_12"
+                                android:text="Preview Test" />
+
+                            <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:text="budi fewge  fe few few     "/>-->
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+                </LinearLayout>
+            </FrameLayout>
+
+            <!--<FrameLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/dp_72">-->
+
+            <!--<android.support.design.widget.TabLayout-->
+            <!--android:id="@+id/tab_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:clipChildren="false"-->
+            <!--android:clipToPadding="false"-->
+            <!--app:tabGravity="fill"-->
+            <!--app:tabIndicatorColor="@null"-->
+            <!--app:tabMinWidth="@dimen/tab_min_width"-->
+            <!--app:tabMode="fixed"-->
+            <!--app:tabSelectedTextColor="@color/font_black_primary_70"-->
+            <!--app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"-->
+            <!--app:tabTextColor="@color/font_black_primary_70">-->
+            <!--&lt;!&ndash;will be added programmatically at ImageEditorActivity&ndash;&gt;-->
+
+            <!--</android.support.design.widget.TabLayout>-->
+
+            <!--</FrameLayout>-->
 
         </LinearLayout>
 
@@ -95,6 +160,15 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/downloading_images" />
         </LinearLayout>
+
+        <View
+            android:id="@+id/blocking_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="gone"
+            android:clickable="true"
+            android:focusable="true" />
 
     </FrameLayout>
 

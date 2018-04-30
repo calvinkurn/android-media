@@ -66,18 +66,22 @@ public class ImageUtils {
         return timeString + new Random().nextInt(10);
     }
 
-    public static File getTokopediaPhotoPath() {
+    public static File getTokopediaPhotoPath(boolean isPng) {
         File directory = getTokopediaPublicDirectory();
-        return new File(directory.getAbsolutePath() + generateUniqueFileName() + ".jpg");
+        return new File(directory.getAbsolutePath() + generateUniqueFileName() + (isPng ? ".png" : ".jpg"));
+    }
+
+    public static File getTokopediaPhotoPath(String referencePath) {
+        return getTokopediaPhotoPath(referencePath.endsWith(".png"));
     }
 
     /**
      * write byte buffer to Cache File int TkpdCacheDirectory
      * This "cache file" is a representation of the bytes.
      */
-    public static File writeImageToTkpdPath(byte[] buffer) {
+    public static File writeImageToTkpdPath(byte[] buffer, boolean isPng) {
         if (buffer != null) {
-            File photo = getTokopediaPhotoPath();
+            File photo = getTokopediaPhotoPath(isPng);
             if (photo.exists()) {
                 photo.delete();
             }
@@ -94,7 +98,8 @@ public class ImageUtils {
      * without changing the original image
      */
     public static File writeImageToTkpdPath(String galleryOrCameraPath) {
-        return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR, DEF_HEIGHT_CMPR, 100));
+        return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR, DEF_HEIGHT_CMPR, 100),
+                galleryOrCameraPath.endsWith("png"));
     }
 
     /**
@@ -108,7 +113,7 @@ public class ImageUtils {
             byte[] bytes;
             bitmap.compress(isPng ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, bao);
             bytes = bao.toByteArray();
-            return writeImageToTkpdPath(bytes);
+            return writeImageToTkpdPath(bytes, isPng);
         } else {
             return null;
         }
@@ -119,8 +124,8 @@ public class ImageUtils {
      * The file represents the copy of the original bitmap and can be deleted/modified
      * without changing the original image
      */
-    public static File writeImageToTkpdPath(InputStream source) {
-        File photo = getTokopediaPhotoPath();
+    public static File writeImageToTkpdPath(InputStream source, boolean isPng) {
+        File photo = getTokopediaPhotoPath(isPng);
         if (photo.exists()) {
             photo.delete();
         }
@@ -172,7 +177,7 @@ public class ImageUtils {
         File attach;
         try {
             InputStream attachment = context.getContentResolver().openInputStream(contentUri);
-            attach = ImageUtils.writeImageToTkpdPath(attachment);
+            attach = ImageUtils.writeImageToTkpdPath(attachment, isPNGMimeType(getMimeType(context, contentUri)));
             if (attach == null) {
                 return null;
             }

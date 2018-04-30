@@ -19,4 +19,8 @@ dependencies {
 //    compile project(rootProject.ext.libraries.applink)
 
     compile 'com.otaliastudios:cameraview:1.5.0'
+
+    compile ('com.github.yalantis:ucrop:2.2.2'){
+        exclude group: 'com.android.support'
+    }
 }

@@ -5,4 +5,6 @@
     <dimen name="img_thumb_holder">72dp</dimen>
     <dimen name="img_thumb_m">50dp</dimen>
     <dimen name="media_grid_spacing">2dp</dimen>
+    <dimen name="editor_main_height">60dp</dimen>
+    <dimen name="editor_footer_height">132dp</dimen>
 </resources>

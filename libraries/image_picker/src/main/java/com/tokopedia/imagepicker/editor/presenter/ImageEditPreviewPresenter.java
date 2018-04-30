@@ -21,14 +21,14 @@ import rx.subscriptions.CompositeSubscription;
 
 public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPreviewPresenter.ImageEditPreviewView> {
 
-    public static final float EXPECTED_PREVIEW_WIDTH = 1280f;
+    private float expectedPreviewWidth = 1280f;
 
     private CompositeSubscription compositeSubscription;
 
     public interface ImageEditPreviewView extends CustomerView {
         Context getContext();
         void onErrorConvertPathToPreviewBitmap(Throwable e);
-        void onSuccessConvertPathToPreviewBitmap(Bitmap bitmap, float expectedPreviewWidth);
+        void onSuccessConvertPathToPreviewBitmap(BitmapPreviewResult bitmapPreviewResult);
     }
 
     public void detachView(){
@@ -38,27 +38,44 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         }
     }
 
+    public class BitmapPreviewResult{
+        public Bitmap previewBitmap;
+        public int originalWidth;
+        public int originalHeight;
+        public float scaleToPreview;
+        public float previewWidth;
+    }
+
     public void convertImagePathToPreviewBitmap(String imagePath){
         Subscription subscription =
                 Observable.just(imagePath)
-                        .map(new Func1<String, Bitmap>() {
+                        .map(new Func1<String, BitmapPreviewResult>() {
                             @Override
-                            public Bitmap call(String path) {
+                            public BitmapPreviewResult call(String path) {
                                 Bitmap previewBitmap = BitmapFactory.decodeFile(path);
+                                int originalWidth = previewBitmap.getWidth();
+                                int originalHeight = previewBitmap.getHeight();
 
-                                int maxBitmapWidthOrHeight = Math.max(previewBitmap.getWidth(), previewBitmap.getHeight());
-                                float scaleToPreview = (float) maxBitmapWidthOrHeight / EXPECTED_PREVIEW_WIDTH;
-
-                                previewBitmap = Bitmap.createScaledBitmap(previewBitmap, (int) (previewBitmap.getWidth() / scaleToPreview),
-                                        (int) (previewBitmap.getHeight() / scaleToPreview), true);
-
-                                return previewBitmap;
+                                int maxBitmapWidthOrHeight = Math.max(originalWidth, originalHeight);
+                                float scaleToPreview = 1;
+                                if (maxBitmapWidthOrHeight > expectedPreviewWidth){
+                                    scaleToPreview = (float) maxBitmapWidthOrHeight / expectedPreviewWidth;
+                                    previewBitmap = Bitmap.createScaledBitmap(previewBitmap, (int) (previewBitmap.getWidth() / scaleToPreview),
+                                            (int) (previewBitmap.getHeight() / scaleToPreview), true);
+                                }
+                                BitmapPreviewResult bitmapPreviewResult = new BitmapPreviewResult();
+                                bitmapPreviewResult.previewBitmap = previewBitmap;
+                                bitmapPreviewResult.originalWidth = originalWidth;
+                                bitmapPreviewResult.originalHeight = originalHeight;
+                                bitmapPreviewResult.scaleToPreview = scaleToPreview;
+                                bitmapPreviewResult.previewWidth = Math.min(maxBitmapWidthOrHeight, expectedPreviewWidth);
+                                return bitmapPreviewResult;
                             }
                         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Bitmap>() {
+                .subscribe(new Subscriber<BitmapPreviewResult>() {
                                @Override
                                public void onCompleted() {
 
@@ -72,8 +89,8 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                                }
 
                                @Override
-                               public void onNext(Bitmap bitmap) {
-                                   getView().onSuccessConvertPathToPreviewBitmap(bitmap, EXPECTED_PREVIEW_WIDTH);
+                               public void onNext(BitmapPreviewResult bitmapPreviewResult) {
+                                   getView().onSuccessConvertPathToPreviewBitmap(bitmapPreviewResult);
                                }
                            }
                 );
