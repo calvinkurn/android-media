@@ -99,19 +99,21 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         if (cpm != null && cpm.getCpmShop() != null) {
             ArrayList<Item> items = new ArrayList<>();
             items.add(new BannerShopViewModel(cpm, appLink, adsClickUrl));
-            items.add(new BannerShopProductViewModel(cpm, appLink, adsClickUrl));
-            bannerAdsAdapter.setList(items);
-        }
-        for (int i = 0; i < 2; i++) {
-            ImageView pointView = new ImageView(getContext());
-            pointView.setPadding(10, 0, 10, 5);
-            if (i == 0) {
-                pointView.setImageResource(R.drawable.dot_green);
-            } else {
-                pointView.setImageResource(R.drawable.dot_grey);
+            if (cpm.getCpmShop().getProducts().size() > 0) {
+                items.add(new BannerShopProductViewModel(cpm, appLink, adsClickUrl));
+                for (int i = 0; i < 2; i++) {
+                    ImageView pointView = new ImageView(getContext());
+                    pointView.setPadding(10, 0, 10, 5);
+                    if (i == 0) {
+                        pointView.setImageResource(R.drawable.dot_green);
+                    } else {
+                        pointView.setImageResource(R.drawable.dot_grey);
+                    }
+                    indicatorItems.add(pointView);
+                    indicatorContainer.addView(pointView);
+                }
             }
-            indicatorItems.add(pointView);
-            indicatorContainer.addView(pointView);
+            bannerAdsAdapter.setList(items);
         }
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

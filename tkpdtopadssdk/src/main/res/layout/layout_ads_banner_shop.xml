@@ -89,10 +89,11 @@
     <TextView
         android:id="@+id/visit_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center_vertical|right"
         android:layout_marginRight="@dimen/dp_10"
         android:text="@string/kunjungi_toko"
+        android:gravity="center_vertical"
         android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/sp_11" />
 </LinearLayout>
