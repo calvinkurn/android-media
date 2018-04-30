@@ -1,68 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <com.otaliastudios.cameraview.CameraView
+        android:id="@+id/camera_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:id="@+id/content_container">
+        android:layout_gravity="center"
+        android:keepScreenOn="true"
+        app:cameraAudio="on"
+        app:cameraCropOutput="false"
+        app:cameraFacing="back"
+        app:cameraFlash="off"
+        app:cameraGestureLongTap="none"
+        app:cameraGesturePinch="zoom"
+        app:cameraGestureScrollHorizontal="exposureCorrection"
+        app:cameraGestureScrollVertical="none"
+        app:cameraGestureTap="focusWithMarker"
+        app:cameraGrid="off"
+        app:cameraJpegQuality="100"
+        app:cameraPlaySounds="true"
+        app:cameraSessionType="picture" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_gravity="top|end"
-            android:paddingTop="10dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dp_20">
 
-            <com.github.florent37.camerafragment.widgets.CameraSettingsView
-                android:id="@+id/settings_view"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:layout_marginStart="15dp"
-                android:visibility="gone"
-                tools:visibility="visible" />
+        <ImageButton
+            android:id="@+id/image_button_flash"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_smiley_good" />
 
-            <com.github.florent37.camerafragment.widgets.FlashSwitchView
-                android:id="@+id/flash_switch_view"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerInParent="true" />
+        <ImageButton
+            android:id="@+id/image_button_shutter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_smiley_neutral" />
 
-            <com.github.florent37.camerafragment.widgets.CameraSwitchView
-                android:id="@+id/front_back_camera_switcher"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="15dp"
-                android:layout_marginRight="15dp" />
+        <ImageButton
+            android:id="@+id/image_button_flip"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_smiley_bad" />
 
-        </RelativeLayout>
+    </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/record_panel"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_gravity="bottom|start"
-            android:background="@android:color/transparent">
-
-            <com.github.florent37.camerafragment.widgets.RecordButton
-                android:id="@+id/record_button"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp" />
-
-        </RelativeLayout>
-
-    </FrameLayout>
-
-</FrameLayout>
+</RelativeLayout>
