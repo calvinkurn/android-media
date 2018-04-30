@@ -21,11 +21,6 @@ public interface CotpApi {
     String DATE = "Date";
     String USER_ID = "Tkpd-UserId";
 
-
-//    @GET(CotpUrl.PATH_GET_METHOD_LIST)
-//    Observable<Response<DataResponse<ListMethodItemPojo>>> getVerificationMethodList(
-//            @QueryMap Map<String, Object> parameters);
-
     @FormUrlEncoded
     @POST(CotpUrl.REQUEST_OTP)
     Observable<Response<WsResponse<RequestOtpPojo>>> requestOtp(@Header(DATE) String date,

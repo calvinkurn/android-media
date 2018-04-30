@@ -16,6 +16,9 @@ public class OtpErrorHandler {
         if (e instanceof OtpErrorException
                 && !TextUtils.isEmpty(e.getLocalizedMessage())) {
             return e.getLocalizedMessage();
+        } else if (e instanceof ErrorMessageException
+                && !TextUtils.isEmpty(e.getLocalizedMessage())){
+            return e.getLocalizedMessage();
         } else {
             return ErrorHandler.getErrorMessage(context, e);
         }

@@ -12,6 +12,7 @@ import com.tokopedia.otp.common.network.AccountsAuthorizationInterceptor;
 import com.tokopedia.otp.common.network.AuthorizationBearerInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorResponse;
+import com.tokopedia.otp.common.network.WSErrorResponse;
 import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
@@ -70,6 +71,7 @@ public class OtpNetModule {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(new ErrorResponseInterceptor(OtpErrorResponse.class))
+                .addInterceptor(new ErrorResponseInterceptor(WSErrorResponse.class))
                 .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(authorizationBearerInterceptor);
 
@@ -83,9 +85,9 @@ public class OtpNetModule {
     @Provides
     @MethodListQualifier
     public OkHttpClient provideMethodListOkHttpClient(FingerprintInterceptor fingerprintInterceptor,
-                                            ChuckInterceptor chuckInterceptor,
-                                            HttpLoggingInterceptor httpLoggingInterceptor,
-                                            TkpdAuthInterceptor tkpdAuthInterceptor) {
+                                                      ChuckInterceptor chuckInterceptor,
+                                                      HttpLoggingInterceptor httpLoggingInterceptor,
+                                                      TkpdAuthInterceptor tkpdAuthInterceptor) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(fingerprintInterceptor)
