@@ -229,6 +229,8 @@ dependencies {
     compile project(rootProject.ext.features.mitraToppers)
     compile project(rootProject.ext.features.shopPage)
     compile project(rootProject.ext.features.profile)
+    compile project(rootProject.ext.libraries.pushNotif)
+    compile project(rootProject.ext.libraries.applink)
 
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'

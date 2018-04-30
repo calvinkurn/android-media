@@ -92,6 +92,9 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
 
             holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
 
+            holder.productPrice.setVisibility(View.VISIBLE);
+            holder.productPrice.setText(list.get(position).getPrice());
+
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -147,6 +150,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                 holder.productName.getContext().getString(R.string.see_other_product),
                 String.valueOf(extraProduct));
         holder.productName.setText(seeOtherProduct);
+        holder.productPrice.setVisibility(View.GONE);
     }
 
     private void goToFeedDetail() {
@@ -202,6 +206,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             paddingTop = (int) resources.getDimension(R.dimen.product_padding_medium);
             paddingBottom = (int) resources.getDimension(R.dimen.product_padding_medium);
 
+            holder.productName.setMinLines(1);
             holder.productName.setMaxLines(1);
         } else if (getItemCount() == MAX_FEED_SIZE_SMALL) {
             paddingTop = (int) resources.getDimension(R.dimen.product_padding_small);
@@ -214,17 +219,16 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         }
 
         paddingSide = (int) resources.getDimension(R.dimen.new_margin_small);
-        holder.productName.setPadding(paddingSide, paddingTop, paddingSide, paddingBottom);
+        holder.productName.setPadding(paddingSide, paddingTop, paddingSide, 0);
+        holder.productPrice.setPadding(paddingSide, 0, paddingSide, paddingBottom);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public View container;
-
         public TextView productName;
-
         public ImageView productImage;
-
+        private TextView productPrice;
         public TextView extraProduct;
 
         public ViewHolder(View itemLayoutView) {
@@ -233,6 +237,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             productName = (TextView) itemView.findViewById(R.id.title);
             extraProduct = (TextView) itemView.findViewById(R.id.extra_product);
             productImage = (ImageView) itemView.findViewById(R.id.product_image);
+            productPrice = (TextView) itemView.findViewById(R.id.price);
         }
     }
 }

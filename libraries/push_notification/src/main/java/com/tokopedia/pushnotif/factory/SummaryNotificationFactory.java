@@ -92,18 +92,4 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         return historyNotificationDB.getSenderName()+" : "+historyNotificationDB.getMessage();
 
     }
-
-    public Boolean isSingleSummary() {
-        Boolean isSingle = true;
-        int prevNotificationId = 0;
-        for (HistoryNotificationDB historyNotificationDB : listHistoryNotification) {
-            if (prevNotificationId == 0) {
-                prevNotificationId = historyNotificationDB.getNotificationId();
-            } else if (prevNotificationId != historyNotificationDB.getNotificationId()) {
-                isSingle = false;
-                prevNotificationId = historyNotificationDB.getNotificationId();
-            }
-        }
-        return isSingle;
-    }
 }
