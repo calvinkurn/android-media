@@ -165,7 +165,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void getParameterTopPay(TKPDMapParam<String, String> params, Scheduler scheduler,
+    public void getParameterTopPay(TKPDMapParam<String, Object> params, Scheduler scheduler,
                                    Subscriber<TopPayParameterData> subscriber) {
         Observable<Response<TkpdResponse>> observable
                 = txActService.getApi().getParameterDynamicPayment(params);
@@ -294,9 +294,10 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void cancelVoucherCache(Subscriber<Boolean> subscriber) {
+    public void cancelVoucherCache(Context context, Subscriber<Boolean> subscriber) {
         compositeSubscription.add(voucherCartService.getApi()
-                .checkVoucherCode(new HashMap<String, String>())
+                .checkVoucherCode(AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE,
+                        AuthUtil.generateParamsNetwork(context, new TKPDMapParam<String, String>()))
                 .map(new Func1<String, Boolean>() {
                     @Override
                     public Boolean call(String response) {

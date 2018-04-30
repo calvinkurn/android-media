@@ -521,6 +521,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 .setShopDomain(linkSegment.get(0))
                 .setProductUri(uriData.toString())
                 .build());
+        productInfoIntent.setData(uriData);
         viewListener.goToPage(productInfoIntent);
     }
 

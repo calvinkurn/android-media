@@ -142,6 +142,8 @@ public class ChatRoomContract {
         void showSearchInvoiceScreen();
 
         boolean shouldHandleUrlManually(String url);
+
+        void showSnackbarError(String string);
     }
 
     interface Presenter extends CustomerPresenter<View>{

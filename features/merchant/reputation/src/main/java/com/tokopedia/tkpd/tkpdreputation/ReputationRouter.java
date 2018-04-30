@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.gcm.model.NotificationPass;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author by nisie on 9/20/17.
@@ -23,7 +24,7 @@ public interface ReputationRouter {
 
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
   
-    void sendEventTrackingShopPage(HashMap<String, Object> eventTracking);
+    void sendEventTrackingShopPage(Map<String, Object> eventTracking);
 
     Intent getTopProfileIntent(Context context, String reviewUserId);
 

@@ -367,6 +367,11 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
                 getView().getPassengerBirthDate(), twoYearsAgo)) {
             isValid = false;
             getView().showPassengerChildBirthdateShouldMoreThan2Years(R.string.flight_booking_passenger_birthdate_child_shoud_more_than_two_years);
+        } else if (isChildPassenger() && flightPassengerInfoValidator.validateDateNotLessThan(
+                twelveYearsAgo,
+                getView().getPassengerBirthDate())) {
+            isValid = false;
+            getView().showPassengerChildBirthdateShouldLessThanEqual12Years(R.string.flight_booking_passenger_birthdate_child_sholud_lessthan_than_equal_12years);
         } else if (isInfantPassenger() && flightPassengerInfoValidator.validateDateLessThan(
                 getView().getPassengerBirthDate(), twoYearsAgo)) {
             isValid = false;

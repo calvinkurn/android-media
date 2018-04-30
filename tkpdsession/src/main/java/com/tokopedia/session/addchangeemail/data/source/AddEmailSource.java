@@ -45,8 +45,8 @@ public class AddEmailSource {
     public Observable<AddEmailViewModel> addEmail(RequestParams params) {
         return accountsService.getApi()
                 .addEmail(params.getParameters())
-                .map(addEmailMapper)
-                .doOnNext(updateCache(params.getString(AddEmailUseCase.PARAM_EMAIL, "")));
+                .map(addEmailMapper);
+//                .doOnNext(updateCache(params.getString(AddEmailUseCase.PARAM_EMAIL, "")));
     }
 
     public Observable<CheckEmailViewModel> checkEmail(RequestParams params) {

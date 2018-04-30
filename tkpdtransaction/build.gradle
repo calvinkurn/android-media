@@ -20,6 +20,7 @@ dependencies {
     compile project(rootProject.ext.features.topAdsSdk)
     compile project(rootProject.ext.features.payment)
 
+    compile project(rootProject.ext.libraries.fingerprint)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

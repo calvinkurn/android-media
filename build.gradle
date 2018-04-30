@@ -41,6 +41,7 @@ allprojects {
         flatDir {
             dirs '../aars'
         }
+        maven { url 'https://hansel.io/maven' }
     }
 }
 

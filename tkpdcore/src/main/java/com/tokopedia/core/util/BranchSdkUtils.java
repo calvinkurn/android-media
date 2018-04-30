@@ -11,7 +11,6 @@ import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
@@ -51,6 +50,9 @@ public class BranchSdkUtils {
     public static final String PRODUCTTYPE_MARKETPLACE = "marketplace";
     private static final String BRANCH_PROMOCODE_KEY = "branch_promo";
     public static String REFERRAL_ADVOCATE_PROMO_CODE = "";
+    private static final String BRANCH_ANDROID_DESKTOP_URL_KEY = "android_url";
+    private static final String BRANCH_IOS_DESKTOP_URL_KEY = "ios_url";
+
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
@@ -113,6 +115,8 @@ public class BranchSdkUtils {
 
         if (desktopUrl == null) {
             linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
+            linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
+            linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, data.renderShareUri());
 
         }
 
