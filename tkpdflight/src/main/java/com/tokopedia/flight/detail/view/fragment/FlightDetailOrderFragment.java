@@ -629,6 +629,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     private void navigateToCancellationListPage() {
-        startActivity(FlightCancellationListActivity.createIntent(getContext()));
+        startActivity(FlightCancellationListActivity.createIntent(getContext(), getFlightOrder().getId()));
     }
 }
