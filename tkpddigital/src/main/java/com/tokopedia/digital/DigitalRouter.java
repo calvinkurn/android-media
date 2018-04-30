@@ -1,7 +1,6 @@
 package com.tokopedia.digital;
 
 import android.content.Context;
-import android.content.Intent;
 
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.digital.tokocash.model.CashBackData;
@@ -15,5 +14,4 @@ import rx.Observable;
 public interface DigitalRouter extends IDigitalModuleRouter {
 
     Observable<CashBackData> getPendingCashbackUseCase(Context context);
-
 }
