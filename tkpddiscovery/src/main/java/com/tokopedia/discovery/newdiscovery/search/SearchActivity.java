@@ -1,366 +1,260 @@
-package com.tokopedia.discovery.newdiscovery.search;
+package com.tokopedia.events.view.activity;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
-import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
-import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
-import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
-import com.tokopedia.discovery.search.view.DiscoverySearchView;
+import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.events.R;
+import com.tokopedia.events.R2;
+import com.tokopedia.events.di.DaggerEventComponent;
+import com.tokopedia.events.di.EventComponent;
+import com.tokopedia.events.di.EventModule;
+import com.tokopedia.events.view.adapter.EventCategoryAdapter;
+import com.tokopedia.events.view.adapter.TopEventsSuggestionsAdapter;
+import com.tokopedia.events.view.contractor.EventSearchContract;
+import com.tokopedia.events.view.customview.SearchInputView;
+import com.tokopedia.events.view.presenter.EventSearchPresenter;
+import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.events.view.viewmodel.SearchViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
-import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
- * Created by henrypriyono on 10/6/17.
+ * Created by pranaymohapatra on 10/01/18.
  */
 
-public class SearchActivity extends DiscoveryActivity
-        implements SearchContract.View, RedirectionListener {
+public class EventSearchActivity extends TActivity implements
+        EventSearchContract.IEventSearchView, SearchInputView.Listener {
 
-    public static final int TAB_THIRD_POSITION = 2;
-    public static final int TAB_SECOND_POSITION = 1;
-    public static final int TAB_PRODUCT = 0;
-
-    private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
-    private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
-
-    private ProductListFragment productListFragment;
-    private CatalogFragment catalogFragment;
-    private ShopListFragment shopListFragment;
-
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-
-    private String productTabTitle;
-    private String catalogTabTitle;
-    private String shopTabTitle;
-
+    EventComponent eventComponent;
     @Inject
-    SearchPresenter searchPresenter;
+    public EventSearchPresenter mPresenter;
 
-    private SearchComponent searchComponent;
-    private boolean forImageSearch = false;
+    @BindView(R2.id.main_content)
+    FrameLayout mainContent;
 
-    public SearchComponent getSearchComponent() {
-        return searchComponent;
-    }
+    @BindView(R2.id.progress_bar_layout)
+    View progressBarLayout;
+    @BindView(R2.id.prog_bar)
+    ProgressBar progBar;
+    @BindView(R2.id.search_input_view)
+    SearchInputView searchInputView;
 
-    @DeepLink(Constants.Applinks.DISCOVERY_SEARCH)
-    public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        String departmentId = bundle.getString(BrowseApi.SC);
-        Intent intent = new Intent(context, SearchActivity.class);
+    @BindView(R2.id.rv_search_results)
+    RecyclerView rvSearchResults;
+    @BindView(R2.id.rv_top_events_suggestions)
+    RecyclerView rvTopEventSuggestions;
+    @BindView(R2.id.tv_topevents)
+    TextView tvTopevents;
 
-        if (!TextUtils.isEmpty(departmentId)) {
-            intent = BrowseProductRouter.getDefaultBrowseIntent(context);
-            throw new RuntimeException("this should go to category activity");
-        }
+    LinearLayoutManager layoutManager;
 
-        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(BrowseApi.Q, bundle.getString("keyword", "")));
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    public static Intent newInstance(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, SearchActivity.class);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    public static void moveTo(AppCompatActivity activity,
-                              ProductViewModel productViewModel,
-                              boolean forceSwipeToShop) {
-        if (activity != null) {
-            Intent intent = new Intent(activity, SearchActivity.class);
-            intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
-            intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
-            activity.startActivity(intent);
-        }
-    }
+    Unbinder unbinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_events_search);
+        unbinder = ButterKnife.bind(this);
         initInjector();
-        setPresenter(searchPresenter);
-        searchPresenter.attachView(this);
-        searchPresenter.setDiscoveryView(this);
-        initResources();
+        executeInjector();
+        ButterKnife.bind(this);
+        searchInputView.setListener(this);
+        mPresenter.attachView(this);
+        toolbar.setTitle("Events");
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        mPresenter.initialize();
 
-        ProductViewModel productViewModel =
-                getIntent().getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
+    }
 
-        boolean forceSwipeToShop;
-        String searchQuery = getIntent().getStringExtra(BrowseProductRouter.EXTRAS_SEARCH_TERM);
+    public static Intent getCallingIntent(Activity activity) {
+        return new Intent(activity, EventSearchActivity.class);
+    }
 
-        if (savedInstanceState != null) {
-            forceSwipeToShop = isForceSwipeToShop();
+    @Override
+    public void onSearchSubmitted(String text) {
+        mPresenter.searchSubmitted(text);
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
+
+        mPresenter.searchTextChanged(text);
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
+    }
+
+    @Override
+    public void navigateToActivityRequest(Intent intent, int requestCode) {
+
+    }
+
+    @Override
+    public void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels) {
+        if (categoryItemsViewModels != null && categoryItemsViewModels.size() != 0) {
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            EventCategoryAdapter eventCategoryAdapter = new EventCategoryAdapter(getActivity(), categoryItemsViewModels);
+            rvSearchResults.setLayoutManager(linearLayoutManager);
+            rvSearchResults.setAdapter(eventCategoryAdapter);
+            tvTopevents.setVisibility(View.GONE);
+            rvTopEventSuggestions.setVisibility(View.GONE);
         } else {
-            forceSwipeToShop = getIntent().getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
+            rvSearchResults.setVisibility(View.GONE);
+            rvTopEventSuggestions.setVisibility(View.GONE);
+            tvTopevents.setText("No Events Found");
+            tvTopevents.setVisibility(View.VISIBLE);
         }
-        if (productViewModel != null) {
-            setLastQuerySearchView(productViewModel.getQuery());
-            loadSection(productViewModel, forceSwipeToShop);
+    }
 
-            forImageSearch = productViewModel.isImageSearch();
+    @Override
+    public void showProgressBar() {
 
-            if (!forImageSearch)
-                setToolbarTitle(productViewModel.getQuery());
-            else
-                setToolbarTitle("Image Search");
-        } else if (!TextUtils.isEmpty(searchQuery)) {
-            onProductQuerySubmit(searchQuery);
+    }
+
+    @Override
+    public void hideProgressBar() {
+
+    }
+
+    @Override
+    public RequestParams getParams() {
+        return null;
+    }
+
+    @Override
+    public View getRootView() {
+        return null;
+    }
+
+    @Override
+    public FragmentManager getFragmentManagerInstance() {
+        return getSupportFragmentManager();
+    }
+
+    @Override
+    public void setTopEvents(List<SearchViewModel> searchViewModels) {
+        if (searchViewModels != null && !searchViewModels.isEmpty()) {
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, mPresenter);
+            rvTopEventSuggestions.setLayoutManager(layoutManager);
+            rvTopEventSuggestions.setAdapter(adapter);
+            rvTopEventSuggestions.removeOnScrollListener(rvOnScrollListener);
+            tvTopevents.setText("TOP EVENTS");
+            tvTopevents.setVisibility(View.VISIBLE);
+            rvTopEventSuggestions.setVisibility(View.VISIBLE);
+            rvSearchResults.setVisibility(View.GONE);
         } else {
-            searchView.showSearch(true, false);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    KeyboardHandler.showSoftKeyboard(SearchActivity.this);
-                }
-            }, 200);
+            tvTopevents.setVisibility(View.GONE);
+            rvTopEventSuggestions.setVisibility(View.GONE);
+            rvSearchResults.setVisibility(View.GONE);
         }
+    }
 
-        if (getIntent() != null &&
-                getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
-            UnifyTracking.eventBeliLongClick();
+    @Override
+    public void setSuggestions(List<SearchViewModel> suggestions, String highlight) {
+        if (suggestions != null && !suggestions.isEmpty()) {
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, mPresenter);
+            adapter.setHighLightText(highlight);
+            rvTopEventSuggestions.setLayoutManager(layoutManager);
+            rvTopEventSuggestions.setAdapter(adapter);
+            rvTopEventSuggestions.addOnScrollListener(rvOnScrollListener);
+            tvTopevents.setVisibility(View.GONE);
+            rvTopEventSuggestions.setVisibility(View.VISIBLE);
+            rvSearchResults.setVisibility(View.GONE);
+        } else {
+            rvSearchResults.setVisibility(View.GONE);
+            rvTopEventSuggestions.setVisibility(View.GONE);
+            tvTopevents.setText("No Events Found");
+            tvTopevents.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void removeFooter() {
+        ((TopEventsSuggestionsAdapter) rvTopEventSuggestions.getAdapter()).removeFooter();
+    }
+
+    @Override
+    public void addFooter() {
+        ((TopEventsSuggestionsAdapter) rvTopEventSuggestions.getAdapter()).addFooter();
+
+    }
+
+    @Override
+    public void addEvents(List<SearchViewModel> searchViewModels) {
+        ((TopEventsSuggestionsAdapter) rvTopEventSuggestions.getAdapter()).addAll(searchViewModels);
+
+    }
+
+    @Override
+    public LinearLayoutManager getLayoutManager() {
+        return layoutManager;
+    }
+
+    private void executeInjector() {
+        if (eventComponent == null) initInjector();
+        eventComponent.inject(this);
     }
 
     private void initInjector() {
-        searchComponent =
-                DaggerSearchComponent.builder()
-                        .appComponent(getApplicationComponent())
-                        .build();
-
-        searchComponent.inject(this);
+        eventComponent = DaggerEventComponent.builder()
+                .appComponent(getApplicationComponent())
+                .eventModule(new EventModule(this))
+                .build();
     }
 
-    private void initResources() {
-        productTabTitle = getString(R.string.product_tab_title);
-        catalogTabTitle = getString(R.string.catalog_tab_title);
-        shopTabTitle = getString(R.string.shop_tab_title);
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 
-    private void loadSection(ProductViewModel productViewModel, boolean forceSwipeToShop) {
-
-        List<SearchSectionItem> searchSectionItemList = null;
-        productViewModel = null;
-
-        if (productViewModel.isHasCatalog()) {
-            populateThreeTabItem(searchSectionItemList, productViewModel);
-        } else if (!productViewModel.isImageSearch()) {
-            populateTwoTabItem(searchSectionItemList, productViewModel);
-        } else {
-            populateOneTabItem(searchSectionItemList, productViewModel);
+    private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
         }
-        SearchSectionPagerAdapter searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
-        searchSectionPagerAdapter.setData(searchSectionItemList);
-        viewPager.setAdapter(searchSectionPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-        setActiveTab(forceSwipeToShop);
-    }
 
-    private void populateOneTabItem(List<SearchSectionItem> searchSectionItemList, ProductViewModel productViewModel) {
-        productListFragment = getProductFragment(productViewModel);
-        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
-        tabLayout.setVisibility(View.GONE);
-    }
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            mPresenter.onRecyclerViewScrolled(layoutManager);
+        }
+    };
 
-    private void setActiveTab(final boolean swipeToShop) {
-        viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                if (swipeToShop) {
-                    viewPager.setCurrentItem(getShopTabPosition());
-                } else {
-                    viewPager.setCurrentItem(getActiveTabPosition());
-                }
-            }
-        });
-    }
-
-    private int getShopTabPosition() {
-        return viewPager.getAdapter().getCount() - 1;
-    }
-
-    private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList,
-                                      ProductViewModel productViewModel) {
-
-        productListFragment = getProductFragment(productViewModel);
-        catalogFragment = getCatalogFragment(productViewModel.getQuery());
-        shopListFragment = getShopFragment(productViewModel.getQuery());
-
-        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
-        searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
-        searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case TAB_PRODUCT:
-                        productListFragment.backToTop();
-                        break;
-                    case TAB_SECOND_POSITION:
-                        catalogFragment.backToTop();
-                        break;
-                    case TAB_THIRD_POSITION:
-                        shopListFragment.backToTop();
-                        break;
-                }
-            }
-
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case TAB_PRODUCT:
-                        SearchTracking.eventSearchResultTabClick(productTabTitle);
-                        break;
-                    case TAB_SECOND_POSITION:
-                        SearchTracking.eventSearchResultTabClick(catalogTabTitle);
-                        break;
-                    case TAB_THIRD_POSITION:
-                        SearchTracking.eventSearchResultTabClick(shopTabTitle);
-                        break;
-                }
-            }
-        });
-    }
-
-    private CatalogFragment getCatalogFragment(String query) {
-        return CatalogFragment.createInstanceByQuery(query);
-    }
-
-    private ProductListFragment getProductFragment(ProductViewModel productViewModel) {
-        return ProductListFragment.newInstance(productViewModel);
-    }
-
-    private ShopListFragment getShopFragment(String query) {
-        return ShopListFragment.newInstance(query);
-    }
-
-    private void populateTwoTabItem(List<SearchSectionItem> searchSectionItemList,
-                                    ProductViewModel productViewModel) {
-
-        productListFragment = getProductFragment(productViewModel);
-        shopListFragment = getShopFragment(productViewModel.getQuery());
-
-        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
-        searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case TAB_PRODUCT:
-                        productListFragment.backToTop();
-                        break;
-                    case TAB_SECOND_POSITION:
-                        shopListFragment.backToTop();
-                        break;
-                }
-            }
-
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case TAB_PRODUCT:
-                        SearchTracking.eventSearchResultTabClick(productTabTitle);
-                        break;
-                    case TAB_SECOND_POSITION:
-                        SearchTracking.eventSearchResultTabClick(shopTabTitle);
-                        break;
-                }
-            }
-        });
-
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override
-    protected int getLayoutRes() {
-        return R.layout.activity_search;
-    }
-
-    @Override
-    protected void initView() {
-        super.initView();
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        viewPager = (ViewPager) findViewById(R.id.pager);
-    }
-
-    @Override
-    protected void prepareView() {
-        super.prepareView();
-
-        viewPager.setOffscreenPageLimit(2);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                setForceSwipeToShop(false);
-                setActiveTabPosition(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-    }
-
-    @Override
-    public void performNewProductSearch(String query, boolean forceSearch) {
-        setForceSearch(forceSearch);
-        setForceSwipeToShop(false);
-        setRequestOfficialStoreBanner(true);
-        performRequestProduct(query);
-    }
-
-    @Override
-    public void showSearchInputView() {
-        searchView.showSearch(true, DiscoverySearchView.TAB_DEFAULT_SUGGESTION);
-        searchView.setFinishOnClose(false);
-    }
-
-    @Override
-    protected void onDestroy() {
-        searchPresenter.detachView();
-        super.onDestroy();
+    public String getScreenName() {
+        return mPresenter.getSCREEN_NAME();
     }
 }
