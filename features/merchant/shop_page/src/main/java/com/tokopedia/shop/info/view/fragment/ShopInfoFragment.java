@@ -118,10 +118,8 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
     }
 
     private void displayAboutStoreInfo(final ShopInfo shopInfo) {
-        if(!TextHtmlUtils.getTextFromHtml(shopInfo.getInfo().getShopTagline()).toString().equalsIgnoreCase("0"))
-            taglineTextView.setText(TextHtmlUtils.getTextFromHtml(shopInfo.getInfo().getShopTagline()));
-        if(!TextHtmlUtils.getTextFromHtml(shopInfo.getInfo().getShopDescription()).toString().equalsIgnoreCase("0"))
-            descriptionTextView.setText(TextHtmlUtils.getTextFromHtml(shopInfo.getInfo().getShopDescription()));
+        taglineTextView.setText(TextHtmlUtils.getTextFromHtml(shopInfo.getInfo().getShopTagline()));
+        descriptionTextView.setText(TextHtmlUtils.getTextFromHtml(shopInfo.getInfo().getShopDescription()));
 
         String physicalAddressContent = getString(R.string.shop_info_physical_shop_location_only_online);
         if (shopInfo.getAddress().size() > 0) {
