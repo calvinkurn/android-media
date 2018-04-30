@@ -27,25 +27,4 @@ public interface UserSession {
     boolean isMsisdnVerified();
 
     boolean isHasPassword();
-
-    String getTemporaryUserId();
-
-    void setUUID(String uuid);
-
-    void setLoginSession(boolean isLogin, String userId, String fullName, String shopId, boolean
-            msisdnVerified, String shopName);
-
-    String getTempEmail();
-
-    void setEmail(String email);
-
-    void setGoldMerchant(int shopIsGold);
-
-    String getTempPhoneNumber();
-
-    void setPhoneNumber(String phoneNumber);
-
-    void setTempLoginName(String fullName);
-
-    void setTempLoginSession(String userId);
 }

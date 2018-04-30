@@ -1,11 +1,11 @@
 package com.tokopedia.otp.cotp.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.otp.common.network.OtpErrorHandler;
 import com.tokopedia.otp.cotp.domain.GetVerificationMethodListUseCase;
 import com.tokopedia.otp.cotp.view.viewlistener.SelectVerification;
 import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 

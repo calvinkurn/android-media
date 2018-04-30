@@ -6,7 +6,7 @@ package com.tokopedia.otp.cotp.view.viewmodel;
 
 public class OtpLoginDomain {
 
-    private final int shopIsGold;
+    private final boolean shopIsGold;
     private final boolean isMsisdnVerified;
     private final int shopId;
     private final String shopName;
@@ -14,7 +14,7 @@ public class OtpLoginDomain {
     private final boolean isLogin;
     private final int userId;
 
-    public OtpLoginDomain(int shopIsGold,
+    public OtpLoginDomain(boolean shopIsGold,
                           boolean isMsisdnVerified,
                           int shopId, String shopName,
                           String fullName,
@@ -29,7 +29,7 @@ public class OtpLoginDomain {
         this.userId = userId;
     }
 
-    public int getShopIsGold() {
+    public boolean getShopIsGold() {
         return shopIsGold;
     }
 

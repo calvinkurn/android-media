@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,6 +26,12 @@ public class OtpModule {
             return ((AbstractionRouter) context).getAnalyticTracker();
         }
         throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
+    }
+
+    @OtpScope
+    @Provides
+    public UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
 }

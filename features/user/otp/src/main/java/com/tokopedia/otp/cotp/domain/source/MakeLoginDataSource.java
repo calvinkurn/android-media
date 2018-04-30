@@ -1,10 +1,14 @@
 package com.tokopedia.otp.cotp.domain.source;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.crashlytics.android.Crashlytics;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.util.BranchSdkUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.otp.cotp.data.SQLoginApi;
 import com.tokopedia.otp.cotp.di.CotpScope;
 import com.tokopedia.otp.cotp.domain.mapper.MakeLoginMapper;
 import com.tokopedia.otp.cotp.view.viewmodel.OtpLoginDomain;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;
 
@@ -36,7 +40,23 @@ public class MakeLoginDataSource {
         return otpLoginApi
                 .makeLogin(parameters)
                 .map(makeLoginMapper)
-                .doOnNext(saveToCache());
+                .doOnNext(saveToCache())
+                .doOnNext(setTrackingData());
+    }
+
+    private Action1<? super OtpLoginDomain> setTrackingData() {
+        return new Action1<OtpLoginDomain>() {
+            @Override
+            public void call(OtpLoginDomain makeLoginDomain) {
+                TrackingUtils.eventPushUserID();
+                if (!GlobalConfig.DEBUG) {
+                    Crashlytics.setUserIdentifier(String.valueOf(makeLoginDomain
+                            .getUserId()));
+                }
+                BranchSdkUtils.sendIdentityEvent(String.valueOf(makeLoginDomain
+                        .getUserId()));
+            }
+        };
     }
 
 
@@ -45,18 +65,20 @@ public class MakeLoginDataSource {
             @Override
             public void call(OtpLoginDomain makeLoginDomain) {
                 if (makeLoginDomain.isLogin()) {
-                    userSession.setLoginSession(makeLoginDomain.isLogin(),
-                            String.valueOf(makeLoginDomain.getUserId()),
-                            makeLoginDomain.getFullName(),
-                            String.valueOf(makeLoginDomain.getShopId()),
-                            makeLoginDomain.isMsisdnVerified(),
-                            makeLoginDomain.getShopName());
+                    userSession.setIsLogin(makeLoginDomain.isLogin());
+                    userSession.setUserId(String.valueOf(makeLoginDomain.getUserId()));
+                    userSession.setName(makeLoginDomain.getFullName());
                     userSession.setEmail(userSession.getTempEmail());
-                    userSession.setGoldMerchant(makeLoginDomain.getShopIsGold());
+                    userSession.setIsMsisdnVerified(makeLoginDomain.isMsisdnVerified());
                     userSession.setPhoneNumber(userSession.getTempPhoneNumber());
+
+                    userSession.setShopId(String.valueOf(makeLoginDomain.getShopId()));
+                    userSession.setShopName(makeLoginDomain.getShopName());
+                    userSession.setIsGoldMerchant(makeLoginDomain.getShopIsGold());
+
                 } else {
                     userSession.setTempLoginName(makeLoginDomain.getFullName());
-                    userSession.setTempLoginSession(String.valueOf(makeLoginDomain.getUserId()));
+                    userSession.setTempUserId(String.valueOf(makeLoginDomain.getUserId()));
                 }
             }
         };

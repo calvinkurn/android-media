@@ -108,7 +108,7 @@ public class AuthUtil {
         String date = generateDate(DATE_FORMAT);
         String contentMD5 = generateContentMd5(strParam);
         String userId = SessionHandler.getLoginID(MainApplication.getAppContext());
-s
+
         String authString = method
                 + "\n" + contentMD5
                 + "\n" + contentType

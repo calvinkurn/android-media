@@ -1,7 +1,6 @@
 package com.tokopedia.otp.cotp.domain.source;
 
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.otp.cotp.data.CotpApi;
 import com.tokopedia.otp.cotp.di.CotpScope;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
@@ -9,6 +8,7 @@ import com.tokopedia.otp.cotp.domain.mapper.RequestOtpMapper;
 import com.tokopedia.otp.cotp.domain.mapper.ValidateOtpMapper;
 import com.tokopedia.otp.cotp.view.viewmodel.RequestOtpViewModel;
 import com.tokopedia.otp.cotp.view.viewmodel.ValidateOtpDomain;
+import com.tokopedia.user.session.UserSession;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

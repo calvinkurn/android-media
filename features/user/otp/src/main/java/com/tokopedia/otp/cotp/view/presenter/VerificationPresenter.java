@@ -3,7 +3,6 @@ package com.tokopedia.otp.cotp.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.domain.interactor.ValidateOtpLoginUseCase;
 import com.tokopedia.otp.cotp.domain.interactor.ValidateOtpUseCase;
@@ -13,6 +12,7 @@ import com.tokopedia.otp.cotp.view.subscriber.VerifyOtpSubscriber;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 

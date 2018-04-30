@@ -3,7 +3,6 @@ package com.tokopedia.otp.common.di;
 import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
@@ -13,6 +12,7 @@ import com.tokopedia.otp.common.network.AccountsAuthorizationInterceptor;
 import com.tokopedia.otp.common.network.AuthorizationBearerInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorResponse;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;

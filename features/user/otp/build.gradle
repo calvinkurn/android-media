@@ -7,6 +7,7 @@ dependencies {
     compile project(rootProject.ext.libraries.abstraction)
     compile project(rootProject.ext.libraries.useCase)
     compile project(rootProject.ext.libraries.design)
+    compile project(rootProject.ext.libraries.userSession)
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

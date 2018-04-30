@@ -1,11 +1,11 @@
 package com.tokopedia.otp.cotp.domain.interactor;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.otp.cotp.view.viewmodel.OtpLoginDomain;
 import com.tokopedia.otp.cotp.view.viewmodel.ValidateOtpDomain;
 import com.tokopedia.otp.cotp.view.viewmodel.ValidateOtpLoginDomain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
