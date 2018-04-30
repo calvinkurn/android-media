@@ -43,7 +43,7 @@ public class BaseModel {
 
     @Override
     public String toString() {
-        return "ResponseContainer{" +
+        return "BaseModel{" +
                 "message='" + message + '\'' +
                 ", error='" + error + '\'' +
                 ", code=" + code +

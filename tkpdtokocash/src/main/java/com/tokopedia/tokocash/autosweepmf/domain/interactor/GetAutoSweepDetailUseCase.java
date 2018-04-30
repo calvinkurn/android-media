@@ -1,7 +1,7 @@
 package com.tokopedia.tokocash.autosweepmf.domain.interactor;
 
 import com.tokopedia.tokocash.autosweepmf.data.repository.AutoSweepRepositoryImpl;
-import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepDetail;
+import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepDetailDomain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-public class GetAutoSweepDetailUseCase extends UseCase<AutoSweepDetail> {
+public class GetAutoSweepDetailUseCase extends UseCase<AutoSweepDetailDomain> {
     private final AutoSweepRepositoryImpl mRepository;
 
     @Inject
@@ -19,7 +19,7 @@ public class GetAutoSweepDetailUseCase extends UseCase<AutoSweepDetail> {
 
 
     @Override
-    public Observable<AutoSweepDetail> createObservable(RequestParams requestParams) {
+    public Observable<AutoSweepDetailDomain> createObservable(RequestParams requestParams) {
         return mRepository.getAutoSweepDetail();
     }
 }

@@ -967,21 +967,12 @@ public class TkpdBaseURL {
         public static final String PATH_CHANGE_COURIER = "/v4/order/change_courier";
     }
 
-
     public class Referral {
         public static final String PATH_GET_REFERRAL_VOUCHER_CODE = "galadriel/promos/referral/code";
     }
 
-
     public class Promo {
         public static final String PATH_MENU_INDEX = "wp-json/wp/v2/hmenu";
         public static final String PATH_PROMO_LIST = "wp-json/wp/v2/posts";
-    }
-
-    public interface AutoSweep {
-        String WEB_LINK_MF_DASHBOARD = WEB_DOMAIN + "reksa-dana/dashboard";
-        String WEB_LINK_MF_USE = WEB_DOMAIN + "reksa-dana/autosweep-info";
-        String WEB_LINK_MF_RETURN_POLICY = "https://www.tokopedia.com/reksa-dana/autosweep-info";
-        String API_AUTO_SWEEP_HOME = "mutualfund/api/user/autosweep";
     }
 }

@@ -1,9 +1,15 @@
-package com.tokopedia.tokocash.autosweepmf.domain.model;
+package com.tokopedia.tokocash.autosweepmf.data.model;
 
-public class AutoSweepLimit extends BaseModel {
+import com.google.gson.annotations.SerializedName;
+
+public class AutoSweepLimitEntity {
+    @SerializedName("status")
     private boolean status;
+    @SerializedName("show_autosweep")
     private int showAutoSweep;
+    @SerializedName("autosweep")
     private int autoSweep;
+    @SerializedName("amount_limit")
     private long amountLimit;
 
     public boolean isStatus() {
@@ -40,7 +46,7 @@ public class AutoSweepLimit extends BaseModel {
 
     @Override
     public String toString() {
-        return "AutoSweepLimit{" +
+        return "AutoSweepLimitEntity{" +
                 "status=" + status +
                 ", showAutoSweep=" + showAutoSweep +
                 ", autoSweep=" + autoSweep +

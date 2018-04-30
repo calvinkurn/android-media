@@ -3,7 +3,7 @@ package com.tokopedia.tokocash.autosweepmf.domain.model;
 /**
  * Base model class for all sub model
  */
-public class BaseModel {
+public class BaseModelDomain {
     protected String message;
     protected String error;
     protected int code;
@@ -43,7 +43,7 @@ public class BaseModel {
 
     @Override
     public String toString() {
-        return "ResponseContainer{" +
+        return "BaseModelDomain{" +
                 "message='" + message + '\'' +
                 ", error='" + error + '\'' +
                 ", code=" + code +

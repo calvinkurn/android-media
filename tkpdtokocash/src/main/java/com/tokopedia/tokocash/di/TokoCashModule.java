@@ -53,8 +53,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.tokopedia.core.network.constants.TkpdBaseURL.WEB_DOMAIN;
-
 
 /**
  * Created by nabillasabbaha on 12/27/17.
@@ -229,10 +227,22 @@ public class TokoCashModule {
     }
 
     @Provides
+    @OkHttpAutoSweepQualifier
+    OkHttpClient provideOkHttpClientAutoSweep(WalletAuthInterceptor walletAuthInterceptor, Gson gson,
+                                           WalletTokenRefresh walletTokenRefresh, WalletUserSession walletUserSession,
+                                           @TokoCashChuckQualifier Interceptor chuckIntereptor) {
+        return new OkHttpClient.Builder()
+                .addInterceptor(walletAuthInterceptor)
+                .addInterceptor(new WalletErrorResponseInterceptor(WalletErrorResponse.class, gson,
+                        walletTokenRefresh, walletUserSession))
+                .addInterceptor(chuckIntereptor).build();
+    }
+
+    @Provides
     @RetrofitAutoSweepQualifier
     Retrofit provideRetrofitAutoSweep(Retrofit.Builder retrofitBuilder,
-                                      @OkHttpWalletQualifier OkHttpClient okHttpClient, Gson gson) {
-        return retrofitBuilder.baseUrl(WEB_DOMAIN)
+                                      @OkHttpAutoSweepQualifier OkHttpClient okHttpClient, Gson gson) {
+        return retrofitBuilder.baseUrl(WalletUrl.BaseUrl.WEB_DOMAIN)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)

@@ -12,7 +12,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
-import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +26,8 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tokocash.R;
@@ -56,7 +55,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
-    private static String WEB_LINK_MF_DASHBOARD = TkpdBaseURL.AutoSweep.WEB_LINK_MF_DASHBOARD;
+    private static String WEB_LINK_MF_DASHBOARD;
     private static String MF_INFO_LINK = CommonConstant.NOT_AVAILABLE;
     private TextView mTextLimitTokocash, mTextLimitTokocashValue, mTextDescription;
     private Button mBtnPositive, mBtnNegative;
@@ -111,6 +110,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
     @Override
     public void onDestroy() {
         LocalBroadcastManager.getInstance(getAppContext()).unregisterReceiver(mMessageReceiver);
+        mMessageReceiver = null;
         super.onDestroy();
     }
 
@@ -185,11 +185,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
         //Setting description
         if (!MfUtils.isNullOrEmpty(data.getDescription())) {
             mTextDescription.setVisibility(View.VISIBLE);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                mTextDescription.setText(Html.fromHtml(data.getDescription(), Html.FROM_HTML_MODE_LEGACY));
-            } else {
-                mTextDescription.setText(Html.fromHtml(data.getDescription()));
-            }
+            mTextDescription.setText(MethodChecker.fromHtml(data.getDescription()));
         } else {
             mTextDescription.setVisibility(View.GONE);
         }
@@ -198,11 +194,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
         if (!MfUtils.isNullOrEmpty(data.getTitle())) {
             mContainerWarning.setVisibility(View.VISIBLE);
             mTextWaningTitle.setText(data.getTitle());
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                mTextWarningMessage.setText(Html.fromHtml(data.getContent(), Html.FROM_HTML_MODE_LEGACY));
-            } else {
-                mTextWarningMessage.setText(Html.fromHtml(data.getContent()));
-            }
+            mTextWarningMessage.setText(MethodChecker.fromHtml(data.getContent()));
             //For supporting html anchor tag
             mTextWarningMessage.setMovementMethod(LinkMovementMethod.getInstance());
         } else {
@@ -256,12 +248,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
 
         //setting negative button link
         this.mDialogNegativeLink = data.getDialogNegativeButtonLink();
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            mDialogBuilder.setMessage(Html.fromHtml(data.getDialogContent(), Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            mDialogBuilder.setMessage(Html.fromHtml(data.getDialogContent()));
-        }
+        mDialogBuilder.setMessage(MethodChecker.fromHtml(data.getDialogContent()));
 
         mDialogBuilder.setPositiveButton(data.getDialogLabelPositive(), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {

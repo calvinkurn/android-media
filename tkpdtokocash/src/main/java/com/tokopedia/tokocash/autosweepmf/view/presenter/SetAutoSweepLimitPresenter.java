@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.tokocash.autosweepmf.domain.interactor.PostAutoSweepLimitUseCase;
+import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimitDomain;
 import com.tokopedia.tokocash.autosweepmf.view.contract.SetAutoSweepLimitContract;
 import com.tokopedia.tokocash.autosweepmf.view.mapper.AutoSweepLimitMapper;
 import com.tokopedia.tokocash.autosweepmf.view.model.AutoSweepLimit;
@@ -41,6 +42,9 @@ public class SetAutoSweepLimitPresenter extends BaseDaggerPresenter<SetAutoSweep
 
     @Override
     public void destroyView() {
+        if (mAutoSweepLimitUseCase != null) {
+            mAutoSweepLimitUseCase.unsubscribe();
+        }
     }
 
     @Override
@@ -48,9 +52,9 @@ public class SetAutoSweepLimitPresenter extends BaseDaggerPresenter<SetAutoSweep
         getView().showLoading();
         mAutoSweepLimitUseCase.setBody(getPayload(isEnable, amount));
         mAutoSweepLimitUseCase.getExecuteObservable(RequestParams.EMPTY).map(
-                new Func1<com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimit, AutoSweepLimit>() {
+                new Func1<AutoSweepLimitDomain, AutoSweepLimit>() {
                     @Override
-                    public AutoSweepLimit call(com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimit data) {
+                    public AutoSweepLimit call(AutoSweepLimitDomain data) {
                         return mMapper.transform(data);
 
                     }

@@ -2,7 +2,7 @@ package com.tokopedia.tokocash.autosweepmf.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AutoSweepDetail {
+public class AutoSweepDetailEntity {
     @SerializedName("mutualfund_account_status")
     private int accountStatus;
     @SerializedName("mutualfund_balance")
@@ -87,7 +87,7 @@ public class AutoSweepDetail {
 
     @Override
     public String toString() {
-        return "AutoSweepDetail{" +
+        return "AutoSweepDetailEntity{" +
                 "accountStatus=" + accountStatus +
                 ", balance=" + balance +
                 ", autoSweepStatus=" + autoSweepStatus +

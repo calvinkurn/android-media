@@ -3,6 +3,7 @@ package com.tokopedia.tokocash.autosweepmf.view.mapper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimitDomain;
 import com.tokopedia.tokocash.autosweepmf.view.model.AutoSweepLimit;
 
 import javax.inject.Inject;
@@ -13,7 +14,7 @@ public class AutoSweepLimitMapper {
     }
 
     @Nullable
-    public AutoSweepLimit transform(@NonNull com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimit data) {
+    public AutoSweepLimit transform(@NonNull AutoSweepLimitDomain data) {
         AutoSweepLimit sweepEnable = new AutoSweepLimit();
         sweepEnable.setAmountLimit(data.getAmountLimit());
         sweepEnable.setAutoSweep(data.getAutoSweep());

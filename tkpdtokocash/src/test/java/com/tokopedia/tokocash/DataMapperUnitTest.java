@@ -1,12 +1,14 @@
 package com.tokopedia.tokocash;
 
-import com.tokopedia.tokocash.autosweepmf.data.mapper.AutoSweepDetailMapper;
-import com.tokopedia.tokocash.autosweepmf.data.mapper.AutoSweepLimitMapper;
-import com.tokopedia.tokocash.autosweepmf.data.model.AutoSweepDetail;
-import com.tokopedia.tokocash.autosweepmf.data.model.AutoSweepLimit;
+import com.tokopedia.tokocash.autosweepmf.data.mapper.AutoSweepDetailMapperEntity;
+import com.tokopedia.tokocash.autosweepmf.data.mapper.AutoSweepLimitMapperEntity;
+import com.tokopedia.tokocash.autosweepmf.data.model.AutoSweepDetailEntity;
+import com.tokopedia.tokocash.autosweepmf.data.model.AutoSweepLimitEntity;
 import com.tokopedia.tokocash.autosweepmf.data.model.DetailText;
 import com.tokopedia.tokocash.autosweepmf.data.model.ResponseAutoSweepDetail;
 import com.tokopedia.tokocash.autosweepmf.data.model.ResponseAutoSweepLimit;
+import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepDetailDomain;
+import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimitDomain;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,18 +32,18 @@ public class DataMapperUnitTest {
     private static final String FAKE_STRING = "fake_string";
     private static final double FAKE_DOUBLE = 100.56d;
     @InjectMocks
-    AutoSweepDetailMapper dataAutoSweepDetailMapper;
+    AutoSweepDetailMapperEntity dataAutoSweepDetailMapperEntity;
     @InjectMocks
     com.tokopedia.tokocash.autosweepmf.view.mapper.AutoSweepDetailMapper viewAutoSweepDetailMapper;
     @InjectMocks
-    AutoSweepLimitMapper dataAutoSweepLimitMapper;
+    AutoSweepLimitMapperEntity dataAutoSweepLimitMapperEntity;
     @InjectMocks
     com.tokopedia.tokocash.autosweepmf.view.mapper.AutoSweepLimitMapper viewAutoSweepLimitMapper;
 
     @Test
     public void autoSweepDetailsDataToDomain_isCorrect() throws Exception {
         ResponseAutoSweepDetail responseData = new ResponseAutoSweepDetail();
-        AutoSweepDetail data = new AutoSweepDetail();
+        AutoSweepDetailEntity data = new AutoSweepDetailEntity();
         data.setAccountStatus(FAKE_INT);
         data.setAmountLimit(FAKE_INT);
         data.setBalance(FAKE_DOUBLE);
@@ -52,8 +54,8 @@ public class DataMapperUnitTest {
         data.setText(detailText);
         responseData.setData(data);
 
-        com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepDetail domain
-                = dataAutoSweepDetailMapper.transform(responseData);
+        AutoSweepDetailDomain domain
+                = dataAutoSweepDetailMapperEntity.transform(responseData);
 
         if (domain.getAccountStatus() == FAKE_INT
                 && domain.getAmountLimit() == FAKE_INT
@@ -68,7 +70,7 @@ public class DataMapperUnitTest {
 
     @Test
     public void autoSweepDetailDomainToView_isCorrect() throws Exception {
-        com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepDetail data = new com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepDetail();
+        AutoSweepDetailDomain data = new AutoSweepDetailDomain();
         data.setAccountStatus(FAKE_INT);
         data.setAmountLimit(FAKE_INT);
         data.setBalance(FAKE_DOUBLE);
@@ -94,15 +96,15 @@ public class DataMapperUnitTest {
     @Test
     public void autoSweepLimitDataToDomain_isCorrect() throws Exception {
         ResponseAutoSweepLimit responseData = new ResponseAutoSweepLimit();
-        AutoSweepLimit data = new AutoSweepLimit();
+        AutoSweepLimitEntity data = new AutoSweepLimitEntity();
         data.setStatus(true);
         data.setAmountLimit(FAKE_INT);
         data.setAutoSweep(FAKE_INT);
         responseData.setData(data);
 
 
-        com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimit domain
-                = dataAutoSweepLimitMapper.transform(responseData);
+        AutoSweepLimitDomain domain
+                = dataAutoSweepLimitMapperEntity.transform(responseData);
 
         if (domain.getAutoSweep() == FAKE_INT
                 && domain.getAmountLimit() == FAKE_INT
@@ -115,7 +117,7 @@ public class DataMapperUnitTest {
 
     @Test
     public void autoSweepLimitDomainToView_isCorrect() throws Exception {
-        com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimit domain = new com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimit();
+        AutoSweepLimitDomain domain = new AutoSweepLimitDomain();
         domain.setStatus(true);
         domain.setAmountLimit(FAKE_INT);
         domain.setAutoSweep(FAKE_INT);

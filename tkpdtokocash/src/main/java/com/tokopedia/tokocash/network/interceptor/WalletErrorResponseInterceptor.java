@@ -88,8 +88,7 @@ public class WalletErrorResponseInterceptor implements Interceptor {
         try {
             String responseString = response.peekBody(512).string();
             return (responseString.toLowerCase().contains("invalid token")
-                    || responseString.toLowerCase().contains("Invalid token")
-                    || responseString.contains("403000"));
+                    || responseString.toLowerCase().contains("Invalid token"));
         } catch (IOException e) {
             e.printStackTrace();
             return false;

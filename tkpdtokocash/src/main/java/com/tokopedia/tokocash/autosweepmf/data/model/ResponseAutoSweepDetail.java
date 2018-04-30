@@ -1,13 +1,13 @@
 package com.tokopedia.tokocash.autosweepmf.data.model;
 
 public class ResponseAutoSweepDetail extends ResponseContainer {
-    private AutoSweepDetail data;
+    private AutoSweepDetailEntity data;
 
-    public AutoSweepDetail getData() {
+    public AutoSweepDetailEntity getData() {
         return data;
     }
 
-    public void setData(AutoSweepDetail data) {
+    public void setData(AutoSweepDetailEntity data) {
         this.data = data;
     }
 

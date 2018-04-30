@@ -10,7 +10,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import rx.Observable;
 
-import static com.tokopedia.core.network.constants.TkpdBaseURL.AutoSweep.API_AUTO_SWEEP_HOME;
+import static com.tokopedia.tokocash.network.api.WalletUrl.AutoSweep.API_AUTO_SWEEP_HOME;
 
 /**
  * Retrofit interface for autosweepmf apis

@@ -1,6 +1,6 @@
 package com.tokopedia.tokocash.autosweepmf.domain.model;
 
-public class AutoSweepDetail extends BaseModel {
+public class AutoSweepDetailDomain extends BaseModelDomain {
     private int accountStatus;
     private double balance;
     private int autoSweepStatus;
@@ -148,7 +148,7 @@ public class AutoSweepDetail extends BaseModel {
 
     @Override
     public String toString() {
-        return "AutoSweepDetail{" +
+        return "AutoSweepDetailDomain{" +
                 "accountStatus=" + accountStatus +
                 ", balance=" + balance +
                 ", autoSweepStatus=" + autoSweepStatus +

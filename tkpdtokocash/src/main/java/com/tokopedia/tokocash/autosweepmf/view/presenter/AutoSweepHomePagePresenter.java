@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.tokocash.autosweepmf.domain.interactor.GetAutoSweepDetailUseCase;
 import com.tokopedia.tokocash.autosweepmf.domain.interactor.PostAutoSweepLimitUseCase;
+import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepDetailDomain;
+import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimitDomain;
 import com.tokopedia.tokocash.autosweepmf.view.contract.AutoSweepHomeContract;
 import com.tokopedia.tokocash.autosweepmf.view.mapper.AutoSweepDetailMapper;
 import com.tokopedia.tokocash.autosweepmf.view.mapper.AutoSweepLimitMapper;
@@ -44,16 +46,18 @@ public class AutoSweepHomePagePresenter extends BaseDaggerPresenter<AutoSweepHom
 
     @Override
     public void destroyView() {
-
+        if (mGetAutoSweepDetailUseCase != null) {
+            mGetAutoSweepDetailUseCase.unsubscribe();
+        }
     }
 
     @Override
     public void getAutoSweepDetail() {
         getView().showLoading();
         mGetAutoSweepDetailUseCase.getExecuteObservable(RequestParams.EMPTY).map(
-                new Func1<com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepDetail, AutoSweepDetail>() {
+                new Func1<AutoSweepDetailDomain, AutoSweepDetail>() {
                     @Override
-                    public AutoSweepDetail call(com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepDetail domainData) {
+                    public AutoSweepDetail call(AutoSweepDetailDomain domainData) {
                         return mMapper.transform(domainData);
 
                     }
@@ -88,9 +92,9 @@ public class AutoSweepHomePagePresenter extends BaseDaggerPresenter<AutoSweepHom
         getView().showLoading();
         mAutoSweepLimitUseCase.setBody(getPayload(isEnable, amount));
         mAutoSweepLimitUseCase.getExecuteObservable(RequestParams.EMPTY).map(
-                new Func1<com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimit, AutoSweepLimit>() {
+                new Func1<AutoSweepLimitDomain, AutoSweepLimit>() {
                     @Override
-                    public AutoSweepLimit call(com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimit data) {
+                    public AutoSweepLimit call(AutoSweepLimitDomain data) {
                         return mAutoSweepLimitMapper.transform(data);
 
                     }

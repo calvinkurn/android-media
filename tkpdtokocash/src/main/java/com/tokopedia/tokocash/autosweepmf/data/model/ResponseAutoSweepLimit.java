@@ -1,13 +1,13 @@
 package com.tokopedia.tokocash.autosweepmf.data.model;
 
 public class ResponseAutoSweepLimit extends ResponseContainer {
-    private AutoSweepLimit data;
+    private AutoSweepLimitEntity data;
 
-    public AutoSweepLimit getData() {
+    public AutoSweepLimitEntity getData() {
         return data;
     }
 
-    public void setData(AutoSweepLimit data) {
+    public void setData(AutoSweepLimitEntity data) {
         this.data = data;
     }
 
