@@ -1,5 +1,8 @@
 package com.tokopedia.flight.orderlist.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
@@ -10,7 +13,7 @@ import java.util.List;
  * @author by alvarisi on 12/11/17.
  */
 
-public class FlightOrderJourney implements Visitable<FlightDetailOrderTypeFactory> {
+public class FlightOrderJourney implements Visitable<FlightDetailOrderTypeFactory>, Parcelable {
     private long journeyId;
     private String departureCity;
     private String departureCityCode;
@@ -25,6 +28,32 @@ public class FlightOrderJourney implements Visitable<FlightDetailOrderTypeFactor
 
     public FlightOrderJourney() {
     }
+
+    protected FlightOrderJourney(Parcel in) {
+        journeyId = in.readLong();
+        departureCity = in.readString();
+        departureCityCode = in.readString();
+        departureAiportId = in.readString();
+        departureTime = in.readString();
+        arrivalCity = in.readString();
+        arrivalCityCode = in.readString();
+        arrivalAirportId = in.readString();
+        arrivalTime = in.readString();
+        status = in.readString();
+        routeViewModels = in.createTypedArrayList(FlightDetailRouteViewModel.CREATOR);
+    }
+
+    public static final Creator<FlightOrderJourney> CREATOR = new Creator<FlightOrderJourney>() {
+        @Override
+        public FlightOrderJourney createFromParcel(Parcel in) {
+            return new FlightOrderJourney(in);
+        }
+
+        @Override
+        public FlightOrderJourney[] newArray(int size) {
+            return new FlightOrderJourney[size];
+        }
+    };
 
     public String getDepartureCity() {
         return departureCity;
@@ -117,5 +146,25 @@ public class FlightOrderJourney implements Visitable<FlightDetailOrderTypeFactor
 
     public void setJourneyId(long journeyId) {
         this.journeyId = journeyId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(journeyId);
+        dest.writeString(departureCity);
+        dest.writeString(departureCityCode);
+        dest.writeString(departureAiportId);
+        dest.writeString(departureTime);
+        dest.writeString(arrivalCity);
+        dest.writeString(arrivalCityCode);
+        dest.writeString(arrivalAirportId);
+        dest.writeString(arrivalTime);
+        dest.writeString(status);
+        dest.writeTypedList(routeViewModels);
     }
 }
