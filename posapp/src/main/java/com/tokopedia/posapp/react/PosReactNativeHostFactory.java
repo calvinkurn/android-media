@@ -27,14 +27,6 @@ public class PosReactNativeHostFactory {
         return instance.createReactNativeHostDev(application);
     }
 
-    private static String getCodePushDeploymentKey() {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            return "RJQQF4Z7msN2YLRUIMdBj66oUUQ42b330ab3-6286-4793-b2b8-1067ed266709";
-        } else {
-            return "6H1Wtins9JpnmlDljcgMvBwEcpvA2b330ab3-6286-4793-b2b8-1067ed266709";
-        }
-    }
-
     private PosReactNativeHost createReactNativeHost(final Application application) {
         return new PosReactNativeHost(application) {
             @Override
@@ -80,5 +72,13 @@ public class PosReactNativeHostFactory {
                 new PosReactPackage(),
                 new CodePush(getCodePushDeploymentKey(), application, GlobalConfig.isAllowDebuggingTools())
         );
+    }
+
+    private String getCodePushDeploymentKey() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            return "RJQQF4Z7msN2YLRUIMdBj66oUUQ42b330ab3-6286-4793-b2b8-1067ed266709";
+        } else {
+            return "6H1Wtins9JpnmlDljcgMvBwEcpvA2b330ab3-6286-4793-b2b8-1067ed266709";
+        }
     }
 }

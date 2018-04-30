@@ -65,7 +65,7 @@ public class ProductManagementPresenter implements ProductManagement.Presenter {
 
     @Override
     public void editStatus(ProductViewModel productViewModel, boolean status, int position) {
-        RequestParams requestParams = RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
         requestParams.putString(ProductConstant.Key.OUTLET_ID, posSession.getOutletId());
 
         requestParams.putObject(ProductConstant.Key.EDIT_PRODUCT_REQUEST, getRequestModel(productViewModel, status));

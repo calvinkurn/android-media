@@ -43,7 +43,7 @@ public class ProductPresenter implements Product.Presenter {
 
     @Override
     public void getProduct(ProductPass productPass) {
-        RequestParams params = RequestParams.EMPTY;
+        RequestParams params = RequestParams.create();
         params.putString(PARAM_PRODUCT_ID, productPass.getProductId());
         params.putString(PARAM_SHOP_ID, userSession.getShopId());
         params.putString(PARAM_PERPAGE, "1");

@@ -50,9 +50,8 @@ public class OutletPresenter implements Outlet.Presenter {
     public void getOutlet(String query) {
         view.startLoading();
         view.clearOutletData();
-
-        getOutletUseCase.execute(RequestParams.EMPTY, new GetOutletSubscriber(view));
-        deleteAllCartUsecase.execute(RequestParams.EMPTY, new Subscriber<ATCStatusDomain>() {
+        getOutletUseCase.execute(RequestParams.create(), new GetOutletSubscriber(view));
+        deleteAllCartUsecase.execute(RequestParams.create(), new Subscriber<ATCStatusDomain>() {
             @Override
             public void onCompleted() {}
 
