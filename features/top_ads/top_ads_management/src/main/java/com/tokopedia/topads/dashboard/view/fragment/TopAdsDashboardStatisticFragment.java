@@ -24,6 +24,8 @@ import com.db.williamchart.view.LineChartView;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
+import com.tokopedia.topads.dashboard.data.model.data.Summary;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ public abstract class TopAdsDashboardStatisticFragment extends TkpdBaseV4Fragmen
     LineChartView contentGraph;
     private TopAdsBaseWilliamChartConfig topAdsBaseWilliamChartConfig;
     private BaseWilliamChartConfig baseWilliamChartConfig;
+    private Summary summary;
     private List<Cell> cells;
     private String[] mLabels;
     private ArrayList<TooltipModel> mLabelDisplay = new ArrayList<>();
@@ -132,8 +135,9 @@ public abstract class TopAdsDashboardStatisticFragment extends TkpdBaseV4Fragmen
         return indexToDisplay;
     }
 
-    public void updateDataCell(List<Cell> cells) {
-        this.cells = cells;
+    public void updateDataStatistic(DataStatistic dataStatistic) {
+        this.summary = dataStatistic.getSummary();
+        this.cells = dataStatistic.getCells();
         mLabels = generateLabels();
         mValues = generateValues();
         mLabelDisplay = generateLabelDisplay();

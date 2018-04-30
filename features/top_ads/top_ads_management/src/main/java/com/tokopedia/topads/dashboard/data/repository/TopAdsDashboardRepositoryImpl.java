@@ -30,13 +30,7 @@ public class TopAdsDashboardRepositoryImpl implements TopAdsDashboardRepository 
     }
 
     @Override
-    public Observable<List<Cell>> getStatistics(RequestParams requestParams) {
-        return topAdsDashboardDataSource.getStatistics(requestParams)
-                .map(new Func1<DataStatistic, List<Cell>>() {
-                    @Override
-                    public List<Cell> call(DataStatistic dataStatistic) {
-                        return dataStatistic.getCells();
-                    }
-                });
+    public Observable<DataStatistic> getStatistics(RequestParams requestParams) {
+        return topAdsDashboardDataSource.getStatistics(requestParams);
     }
 }

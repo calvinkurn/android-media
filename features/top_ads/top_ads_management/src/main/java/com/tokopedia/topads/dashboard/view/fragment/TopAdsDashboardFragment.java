@@ -36,6 +36,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsStatisticsType;
 import com.tokopedia.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
 import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsDashboardComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -80,7 +81,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     private LabelView dateLabelView;
     Date startDate, endDate;
-    List<Cell> cells;
+    DataStatistic dataStatistic;
     @TopAdsStatisticsType int selectedStatisticType;
 
     private int totalProductAd;
@@ -124,6 +125,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         initShopInfoComponent(view);
         initSummaryComponent(view);
         initStatisticComponent(view);
+        initEmptyStateView(view);
         FloatingButton button = (FloatingButton) view.findViewById(R.id.button_topads_add_promo);
         button.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +133,14 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                 startActivity(new Intent(getActivity(), TopAdsAddingPromoOptionActivity.class));
             }
         });
+    }
+
+    private void initEmptyStateView(View view) {
+        TextView textView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
+        textView.setText(R.string.topads_dashboard_empty_usage_title);
+        textView = (TextView) view.findViewById(R.id.text_view_empty_content_text);
+        textView.setText(R.string.topads_dashboard_empty_usage_desc);
+        view.findViewById(R.id.button_add_promo).setVisibility(View.GONE);
     }
 
     @Override
@@ -167,7 +177,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             @Override
             public void onPageSelected(int position) {
                 trackingStatisticBar(position);
-                getCurrentStatisticsFragment().updateDataCell(cells);
+                getCurrentStatisticsFragment().updateDataStatistic(dataStatistic);
             }
 
             @Override
@@ -341,8 +351,6 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private void loadData() {
         topAdsDashboardPresenter.getShopDeposit();
         topAdsDashboardPresenter.getShopInfo();
-        topAdsDashboardPresenter.populateTotalAds();
-        loadStatisticsData();
     }
 
     protected void loadStatisticsData(){
@@ -430,13 +438,11 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_ADD_CREDIT) {
 
-        } else if (requestCode == DatePickerConstant.REQUEST_CODE_DATE){
-            if (data != null){
+        } else if (requestCode == DatePickerConstant.REQUEST_CODE_DATE) {
+            if (data != null) {
                 handlingResultDateSelection(data);
             }
         }
-
-
     }
 
     private void handlingResultDateSelection(Intent data){
@@ -462,6 +468,15 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     @Override
     public void onLoadTopAdsShopDepositSuccess(DataDeposit dataDeposit) {
         depositValueTextView.setText(dataDeposit.getAmountFmt());
+        if (dataDeposit.isAdUsage()){
+            topAdsDashboardPresenter.populateTotalAds();
+            loadStatisticsData();
+            getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.GONE);
+            getView().findViewById(R.id.topads_dashboard_content).setVisibility(View.VISIBLE);
+        } else {
+            getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.topads_dashboard_content).setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -500,11 +515,11 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     @Override
-    public void onSuccesGetStatisticsInfo(List<Cell> cells) {
-        this.cells = cells;
+    public void onSuccesGetStatisticsInfo(DataStatistic dataStatistic) {
+        this.dataStatistic = dataStatistic;
         Fragment fragment = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
         if (fragment != null && fragment instanceof TopAdsDashboardStatisticFragment) {
-            ((TopAdsDashboardStatisticFragment) fragment).updateDataCell(this.cells);
+            ((TopAdsDashboardStatisticFragment) fragment).updateDataStatistic(this.dataStatistic);
         }
     }
 

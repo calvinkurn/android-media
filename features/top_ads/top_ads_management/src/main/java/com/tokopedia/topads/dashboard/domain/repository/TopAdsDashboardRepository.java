@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.domain.repository;
 
 import com.tokopedia.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
 import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.usecase.RequestParams;
 
@@ -16,5 +17,5 @@ public interface TopAdsDashboardRepository {
 
     Observable<TotalAd> populateTotalAds(RequestParams requestParams);
 
-    Observable<List<Cell>> getStatistics(RequestParams requestParams);
+    Observable<DataStatistic> getStatistics(RequestParams requestParams);
 }
