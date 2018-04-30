@@ -1331,4 +1331,14 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getChangePhoneNumberRequestIntent(Context context) {
         return ChangePhoneNumberRequestActivity.getCallingIntent(context);
     }
+
+    @Override
+    public Intent getPromoListIntent(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public Intent getPromoDetailIntent(Context context, String slug) {
+        return null;
+    }
 }
