@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 public class CreditCardViewLayout extends FrameLayout {
@@ -32,9 +31,6 @@ public class CreditCardViewLayout extends FrameLayout {
         int height = MeasureSpec.getSize(heightMeasureSpec);
 
         setMeasuredDimension(width, width * CREDIT_CARD_HEIGHT / CREDIT_CARD_WIDTH);
-
-        Log.d("CreditCardView width", MeasureSpec.toString(widthMeasureSpec));
-        Log.d("CreditCardView height", MeasureSpec.toString(heightMeasureSpec));
     }
 
 }
