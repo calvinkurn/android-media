@@ -3,7 +3,6 @@ package com.tokopedia.flight.orderlist.data.cloud.entity;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,7 +51,7 @@ public class FlightEntity {
     private PaymentInfoEntity payment;
     @SerializedName("cancellations")
     @Expose
-    private ArrayList<CancellationEntity> cancellations;
+    private List<CancellationEntity> cancellations;
 
     public FlightEntity() {
     }
@@ -109,7 +108,7 @@ public class FlightEntity {
         return pdf;
     }
 
-    public ArrayList<CancellationEntity> getCancellations() {
+    public List<CancellationEntity> getCancellations() {
         return cancellations;
     }
 }
