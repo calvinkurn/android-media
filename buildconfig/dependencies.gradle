@@ -256,8 +256,7 @@ ext {
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
             useCase         : ":libraries:use_case",
-            imagePicker     : ":libraries:image_picker",
-            ucrop           : ":libraries:ucrop"
+            imagePicker     : ":libraries:image_picker"
     ]
 
 }
