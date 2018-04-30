@@ -1,6 +1,12 @@
 package com.tokopedia.posapp.bank.data.source.cloud.api;
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.posapp.bank.data.pojo.BankItemResponse;
+import com.tokopedia.posapp.bank.data.pojo.CCBinResponse;
+import com.tokopedia.posapp.bank.data.pojo.InstallmentResponse;
+import com.tokopedia.posapp.base.data.pojo.ListResponse;
+import com.tokopedia.posapp.base.data.pojo.PosResponse;
+import com.tokopedia.posapp.base.data.pojo.PosSimpleResponse;
 import com.tokopedia.posapp.common.PosUrl;
 
 import retrofit2.Response;
@@ -17,11 +23,11 @@ public interface BankApi {
     String PROFILE_CODE = "profile_code";
 
     @GET(PosUrl.Payment.GET_INSTALLMENT_TERM)
-    Observable<Response<TkpdResponse>> getBankInstallment(
+    Observable<Response<PosSimpleResponse<ListResponse<BankItemResponse>>>> getBankInstallment(
             @Path(MERCHANT_CODE) String merchantCode,
             @Path(PROFILE_CODE) String profileCode
     );
 
     @GET(PosUrl.Payment.GET_CREDIT_CARDS)
-    Observable<Response<TkpdResponse>> getBins();
+    Observable<Response<PosSimpleResponse<ListResponse<CCBinResponse>>>> getBins();
 }

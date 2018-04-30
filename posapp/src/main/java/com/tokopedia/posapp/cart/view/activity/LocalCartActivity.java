@@ -10,8 +10,8 @@ import android.support.v4.app.TaskStackBuilder;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.applink.PosAppLink;
-import com.tokopedia.posapp.react.PosReactConst;
 import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
+import com.tokopedia.posapp.react.PosReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeActivity;
 
@@ -23,8 +23,8 @@ public class LocalCartActivity extends ReactNativeActivity {
     @DeepLink(PosAppLink.CART)
     public static TaskStackBuilder newInstance(Context context, Bundle extras) {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
-        Intent cartIntent =  new Intent(context, LocalCartActivity.class).setData(uri).putExtras(extras);
-        Intent parentIntent =  new Intent(context, ProductListActivity.class)
+        Intent cartIntent = new Intent(context, LocalCartActivity.class).setData(uri).putExtras(extras);
+        Intent parentIntent = new Intent(context, ProductListActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(parentIntent);
@@ -34,8 +34,8 @@ public class LocalCartActivity extends ReactNativeActivity {
     }
 
     public static TaskStackBuilder newTopInstance(Context context) {
-        Intent cartIntent =  new Intent(context, LocalCartActivity.class);
-        Intent parentIntent =  new Intent(context, ProductListActivity.class)
+        Intent cartIntent = new Intent(context, LocalCartActivity.class);
+        Intent parentIntent = new Intent(context, ProductListActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(parentIntent);

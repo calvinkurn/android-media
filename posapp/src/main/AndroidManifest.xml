@@ -79,6 +79,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".payment.checkout.CheckoutActivity"
+            android:theme="@style/Theme.Design.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
             android:name=".payment.process.PaymentProcessingActivity"

@@ -196,4 +196,11 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
             }
         });
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        outletPresenter.detachView();
+        shopPresenter.detachView();
+    }
 }
