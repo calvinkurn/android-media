@@ -1,5 +1,7 @@
 package com.tokopedia.posapp.outlet.view.presenter;
 
+import com.tokopedia.posapp.cart.domain.model.ATCStatusDomain;
+import com.tokopedia.posapp.cart.domain.usecase.DeleteAllCartUsecase;
 import com.tokopedia.posapp.outlet.domain.usecase.GetOutletUseCase;
 import com.tokopedia.posapp.outlet.view.GetOutletSubscriber;
 import com.tokopedia.posapp.outlet.view.Outlet;
@@ -7,6 +9,7 @@ import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -23,10 +26,13 @@ public class OutletPresenter implements Outlet.Presenter {
 
     private Outlet.View view;
     private GetOutletUseCase getOutletUseCase;
+    private DeleteAllCartUsecase deleteAllCartUsecase;
 
     @Inject
-    public OutletPresenter(GetOutletUseCase outletUseCase) {
+    public OutletPresenter(GetOutletUseCase outletUseCase,
+                           DeleteAllCartUsecase deleteAllCartUsecase) {
         this.getOutletUseCase = outletUseCase;
+        this.deleteAllCartUsecase = deleteAllCartUsecase;
     }
 
     @Override
@@ -46,6 +52,16 @@ public class OutletPresenter implements Outlet.Presenter {
         view.clearOutletData();
 
         getOutletUseCase.execute(RequestParams.EMPTY, new GetOutletSubscriber(view));
+        deleteAllCartUsecase.execute(RequestParams.EMPTY, new Subscriber<ATCStatusDomain>() {
+            @Override
+            public void onCompleted() {}
+
+            @Override
+            public void onError(Throwable e) {}
+
+            @Override
+            public void onNext(ATCStatusDomain atcStatusDomain) {}
+        });
     }
 
     @Override
