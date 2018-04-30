@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.events.R;
@@ -17,6 +18,7 @@ import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.adapter.FiltersAdapter;
 import com.tokopedia.events.view.contractor.EventSearchContract;
 import com.tokopedia.events.view.fragment.FilterFragment;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
@@ -48,6 +50,7 @@ public class EventSearchPresenter
     private boolean isLoading;
     private boolean isLastPage;
     private final int PAGE_SIZE = 20;
+    private String searchTag;
     RequestParams searchNextParams = RequestParams.create();
 
     @Inject
@@ -100,6 +103,8 @@ public class EventSearchPresenter
         if (searchText != null) {
             if (searchText.length() > 2) {
                 getEventsListBySearch(searchText);
+                searchTag = searchText;
+                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH,searchText);
             }
             if (searchText.length() == 0) {
                 getView().setTopEvents(mTopEvents);
@@ -112,6 +117,8 @@ public class EventSearchPresenter
     @Override
     public void searchSubmitted(String searchText) {
         getEventsListBySearch(searchText);
+        searchTag = searchText;
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH,searchText);
     }
 
     @Override
@@ -162,7 +169,9 @@ public class EventSearchPresenter
     }
 
     @Override
-    public void onSearchResultClick(SearchViewModel searchViewModel) {
+    public void onSearchResultClick(SearchViewModel searchViewModel, int position) {
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK,searchTag + " - " +
+                searchViewModel.getTitle() + " - " + position);
         CategoryItemsViewModel detailsViewModel = new CategoryItemsViewModel();
         detailsViewModel.setTitle(searchViewModel.getTitle());
         detailsViewModel.setDisplayName(searchViewModel.getDisplayName());
@@ -184,6 +193,11 @@ public class EventSearchPresenter
     @Override
     public void onRecyclerViewScrolled(LinearLayoutManager layoutManager) {
         checkIfToLoad(layoutManager);
+    }
+
+    @Override
+    public String getSCREEN_NAME() {
+        return EventsGAConst.EVENTS_SEARCHPAGE;
     }
 
     private void loadMoreItems() {
@@ -230,7 +244,7 @@ public class EventSearchPresenter
         mSearchData = searchDomainModel;
         String nexturl = mSearchData.getPage().getUriNext();
         if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
-            searchNextParams.putString("nexturl",nexturl);
+            searchNextParams.putString("nexturl", nexturl);
             isLastPage = false;
         } else {
             isLastPage = true;
@@ -239,6 +253,10 @@ public class EventSearchPresenter
                 .convertIntoCategoryListItemsVeiwModel(searchDomainModel.getEvents());
         return Utils.getSingletonInstance()
                 .convertSearchResultsToModel(categoryItemsViewModels);
+    }
+
+    public String getSearchTag() {
+        return searchTag;
     }
 
 }

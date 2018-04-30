@@ -35,6 +35,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.R;
 
 import java.io.File;
@@ -42,6 +44,9 @@ import java.io.IOException;
 
 
 public class ImageHandler {
+
+    public static final int IMAGE_WIDTH_HD = 1280;
+    public static final int IMAGE_WIDTH_MIN = 480;
 
     public static Bitmap ResizeBitmap(Bitmap bitmap, float bounding) {
         int width = bitmap.getWidth();
@@ -159,12 +164,12 @@ public class ImageHandler {
         final int width = options.outWidth;
         int inSampleSize = 1;
 
-        if (height > 960 || width > 1280) {
+        if (height > IMAGE_WIDTH_HD || width > IMAGE_WIDTH_HD) {
 
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
-            while ((halfHeight / inSampleSize) > 360
-                    && (halfWidth / inSampleSize) > 480) {
+            while ((halfHeight / inSampleSize) > IMAGE_WIDTH_MIN
+                    && (halfWidth / inSampleSize) > IMAGE_WIDTH_MIN) {
                 inSampleSize = inSampleSize * 2;
             }
         }
@@ -209,7 +214,6 @@ public class ImageHandler {
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(imageview);
     }
@@ -290,6 +294,24 @@ public class ImageHandler {
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .dontAnimate()
                 .into(imageview);
+    }
+
+    public static void loadImageWithSignature(ImageView imageview, String url, StringSignature stringSignature) {
+        Glide.with(imageview.getContext())
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .dontAnimate()
+                .signature(stringSignature)
+                .into(imageview);
+    }
+
+    public static void downloadOriginalSizeImageWithSignature(Context context, String url, StringSignature stringSignature,
+                                                              RequestListener<String, GlideDrawable> backgroundImgRequestListener) {
+        Glide.with(context)
+                .load(url)
+                .signature(stringSignature)
+                .listener(backgroundImgRequestListener)
+                .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
     }
 
     public static void loadImageCover2(ImageView imageview, String url) {
@@ -570,14 +592,14 @@ public class ImageHandler {
         }
 
         if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Glide
-                    .with(context)
+            Glide.with(context)
                     .load(imageUrl)
                     .asBitmap()
                     .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                        public void onResourceReady(Bitmap resource, GlideAnimation
+                                glideAnimation) {
                             Bitmap blurredBitmap = blur(context, resource);
                             imageView.setImageBitmap(blurredBitmap);
                         }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -15,7 +16,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -35,11 +35,16 @@ import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
+import com.tokopedia.pushnotif.Constant;
+import com.tokopedia.pushnotif.HistoryNotification;
+import com.tokopedia.pushnotif.SummaryNotification;
+import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.ride.deeplink.RideDeeplinkModule;
 import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
+
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.deeplink.FeedDeeplinkModule;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
@@ -47,14 +52,18 @@ import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
-import com.tokopedia.tkpdstream.common.applink.StreamApplinkModule;
-import com.tokopedia.tkpdstream.common.applink.StreamApplinkModuleLoader;
+import com.tokopedia.groupchat.common.applink.GroupChatApplinkModule;
+import com.tokopedia.groupchat.common.applink.GroupChatApplinkModuleLoader;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModule;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModule;
 import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModuleLoader;
+import com.tokopedia.shop.applink.ShopAppLinkModule;
+import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
+import com.tokopedia.gamification.applink.GamificationApplinkModule;
+import com.tokopedia.gamification.applink.GamificationApplinkModuleLoader;
 
 import org.json.JSONObject;
 
@@ -80,7 +89,10 @@ import io.branch.referral.BranchError;
         EventsDeepLinkModule.class,
         LoyaltyAppLinkModule.class,
         StreamApplinkModule.class,
-        DealsDeepLinkModule.class
+        DealsDeepLinkModule.class,
+        ShopAppLinkModule.class,
+        GroupChatApplinkModule.class,
+        GamificationApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -105,7 +117,10 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new EventsDeepLinkModuleLoader(),
                 new LoyaltyAppLinkModuleLoader(),
                 new StreamApplinkModuleLoader(),
-                new DealsDeepLinkModuleLoader()
+                new DealsDeepLinkModuleLoader(),
+                new ShopAppLinkModuleLoader(),
+                new GroupChatApplinkModuleLoader(),
+                new GamificationApplinkModuleLoader()
         );
     }
 
@@ -135,6 +150,25 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 Bundle bundle = getIntent().getExtras();
                 if (bundle.getBoolean(Constants.EXTRA_PUSH_PERSONALIZATION, false)) {
                     UnifyTracking.eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+                } else if (bundle.getBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, false)) {
+                    int notificationType = bundle.getInt(Constant.EXTRA_NOTIFICATION_TYPE, 0);
+                    int notificationId = bundle.getInt(Constant.EXTRA_NOTIFICATION_ID, 0);
+
+                    if (notificationId == 0) {
+                        HistoryNotification.clearAllHistoryNotification(notificationType);
+                    } else {
+                        HistoryNotification.clearHistoryNotification(notificationType, notificationId);
+                    }
+
+                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                    notificationManagerCompat.cancel(notificationId);
+
+                    //clear summary notification if group notification only have 1 left
+                    if (notificationId != 0 && HistoryNotification.isSingleNotification(notificationType)) {
+                        notificationManagerCompat.cancel(notificationType);
+                    }
+
+
                 }
 //                NotificationModHandler.clearCacheIfFromNotification(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }

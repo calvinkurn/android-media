@@ -4,6 +4,6 @@
     android:id="@+id/titleTextView"
     android:layout_width="wrap_content"
     android:layout_height="1dp"
-    android:layout_marginBottom="@dimen/bottomsheet_vertical_margin"
-    android:layout_marginTop="@dimen/bottomsheet_vertical_margin"
+    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginTop="@dimen/dp_8"
     android:background="@color/colorSheetDivider" />

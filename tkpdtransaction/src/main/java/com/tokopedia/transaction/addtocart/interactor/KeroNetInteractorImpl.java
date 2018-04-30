@@ -1,13 +1,21 @@
 package com.tokopedia.transaction.addtocart.interactor;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
+import com.tokopedia.core.network.apiservices.logistics.LogisticsAuthService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.addtocart.model.kero.Rates;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.addtocart.model.kero.LogisticsData;
+import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -21,21 +29,22 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class KeroNetInteractorImpl implements KeroNetInteractor {
 
-    private final KeroAuthService keroService;
+    private final LogisticsAuthService logisticsAuthService;
     private CompositeSubscription compositeSubscription;
 
     public KeroNetInteractorImpl() {
-        keroService = new KeroAuthService(0);
         compositeSubscription = new CompositeSubscription();
+        logisticsAuthService = new LogisticsAuthService();
     }
 
     @Override
     public void calculateShipping(@NonNull Context context,
                                   @NonNull TKPDMapParam<String, String> params,
                                   @NonNull final CalculationListener listener) {
-        Observable<Response<String>> observable = keroService
-                .getApi()
-                .calculateShippingRate(AuthUtil.generateParamsNetwork(context, params));
+
+        Observable<Response<String>> observable = logisticsAuthService.getApi()
+                .getLogisticsData(getRequestPayload(context, AuthUtil.generateParamsNetwork(context, params)));
+
 
         Subscriber<Response<String>> subscriber = new Subscriber<Response<String>>() {
             @Override
@@ -50,16 +59,19 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
 
             @Override
             public void onNext(Response<String> stringResponse) {
-                if (stringResponse.body() != null) {
-                    Rates rates = new Gson().fromJson(stringResponse.body(), Rates.class);
-                    listener.onSuccess(rates.getData());
-                } else {
-                    throw new RuntimeException("Empty Response");
+                if (stringResponse.isSuccessful()) {
+                    LogisticsData logisticsData = new Gson().fromJson(stringResponse.body(), LogisticsData.class);
+                    if (logisticsData.getOngkirData() != null &&
+                            logisticsData.getOngkirData().getOngkir() != null &&
+                            logisticsData.getOngkirData().getOngkir().getData() != null) {
+                        listener.onSuccess(logisticsData.getOngkirData().getOngkir().getData());
+                    }
                 }
             }
         };
 
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+        compositeSubscription.add(observable
+                .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
@@ -67,9 +79,13 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
 
     @Override
     public void calculateKeroCartAddressShipping(
-            @NonNull final Context context, @NonNull final TKPDMapParam<String, String> param,
+            @NonNull final Context context, @NonNull final TKPDMapParam<String, String> params,
             @NonNull final OnCalculateKeroAddressShipping listener) {
-        Observable<Response<String>> observable = keroService.getApi().calculateShippingRate(param);
+
+
+        Observable<Response<String>> observable = logisticsAuthService.getApi()
+                .getLogisticsData(getRequestPayload(context, AuthUtil.generateParamsNetwork(context, params)));
+
         Subscriber<Response<String>> subscriber = new Subscriber<Response<String>>() {
             @Override
             public void onCompleted() {
@@ -85,21 +101,69 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             @Override
             public void onNext(Response<String> response) {
                 if (response.isSuccessful()) {
-                    Rates rates = new Gson().fromJson(response.body(), Rates.class);
-                    listener.onSuccess(rates.getData().getAttributes());
+                    LogisticsData logisticsData = new Gson().fromJson(response.body(), LogisticsData.class);
+                    if (logisticsData.getLogisticsError() != null && !logisticsData.getLogisticsError().get(0).getMessage().isEmpty()) {
+                        listener.onFailure();
+                    } else {
+                        listener.onSuccess(logisticsData.getOngkirData().getOngkir().getData().getAttributes());
+                    }
                 } else {
                     listener.onFailure();
                 }
             }
         };
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+        compositeSubscription.add(observable
+                .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
+    }
+
+
+    private String getRequestPayload(Context context, TKPDMapParam<String, String> params) {
+
+        return String.format(
+                loadRawString(context.getResources(), R.raw.logistics_get_courier_query),
+                params.get(KeroppiParam.CAT_ID),
+                params.get(KeroppiParam.DESTINATION),
+                params.get(KeroppiParam.FROM),
+                params.get(KeroppiParam.INSURANCE),
+                params.get(KeroppiParam.NAMES),
+                params.get(KeroppiParam.ORDER_VALUE),
+                params.get(KeroppiParam.ORIGIN),
+                params.get(KeroppiParam.PRODUCT_INSURANCE),
+                params.get(KeroppiParam.TOKEN),
+                params.get(KeroppiParam.UT),
+                params.get(KeroppiParam.WEIGHT),
+                params.get(KeroppiParam.PARAM_OS_TYPE));
+    }
+
+    private String loadRawString(Resources resources, int resId) {
+        InputStream rawResource = resources.openRawResource(resId);
+        String content = streamToString(rawResource);
+        try {
+            rawResource.close();
+        } catch (IOException e) {
+        }
+        return content;
+    }
+
+    private String streamToString(InputStream in) {
+        String temp;
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            while ((temp = bufferedReader.readLine()) != null) {
+                stringBuilder.append(temp + "\n");
+            }
+        } catch (IOException e) {
+        }
+        return stringBuilder.toString();
     }
 
     @Override
     public void onViewDestroyed() {
         compositeSubscription.unsubscribe();
     }
+
 }

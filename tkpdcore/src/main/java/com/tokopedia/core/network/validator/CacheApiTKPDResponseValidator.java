@@ -11,6 +11,7 @@ import okhttp3.ResponseBody;
  * Created by nathan on 1/26/18.
  */
 
+@Deprecated
 public class CacheApiTKPDResponseValidator<T extends BaseResponseError> extends CacheApiResponseValidator {
 
     private static final long BYTE_COUNT = Long.MAX_VALUE;

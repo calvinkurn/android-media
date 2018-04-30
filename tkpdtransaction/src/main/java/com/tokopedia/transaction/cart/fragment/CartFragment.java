@@ -60,7 +60,7 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
@@ -84,6 +84,7 @@ import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
+import com.tokopedia.transaction.cart.model.cartdata.AutoApply;
 import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
 import com.tokopedia.transaction.cart.model.cartdata.CartDonation;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
@@ -487,7 +488,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderErrorEmptyCart() {
+    public void renderErrorEmptyCart(AutoApply autoApply) {
         tvTickerGTM.setVisibility(View.GONE);
         nsvContainer.setVisibility(View.GONE);
         pbMainLoading.setVisibility(View.GONE);
@@ -499,7 +500,13 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         } catch (NullPointerException e) {
             View emptyState = LayoutInflater.from(context).
                     inflate(R.layout.layout_empty_shopping_chart, (ViewGroup) rootview);
-            Button shop = (Button) emptyState.findViewById(R.id.shoping);
+            Button shop = emptyState.findViewById(R.id.shoping);
+            final RelativeLayout autoApplyView = emptyState.findViewById(R.id.promo_result_empty_cart);
+            TextView labelPromoType = emptyState.findViewById(R.id.label_promo_type_empty_cart);
+            TextView promoVoucherCode = emptyState.findViewById(R.id.voucher_code_empty_cart);
+            TextView voucherDescription = emptyState.findViewById(R.id.voucher_description_empty_cart);
+            ImageView cancelPromoLayout = emptyState.findViewById(R.id.cancel_promo_layout_empty_cart);
+
             shop.setOnClickListener(getRetryEmptyCartClickListener());
             TopAdsParams params = new TopAdsParams();
             params.getParam().put(TopAdsParams.KEY_SRC, TOPADS_CART_SRC);
@@ -513,17 +520,41 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     .topAdsParams(params)
                     .build();
 
-            TopAdsView topAdsView = (TopAdsView) emptyState.findViewById(R.id.topads);
+            TopAdsView topAdsView = emptyState.findViewById(R.id.topads);
             topAdsView.setConfig(config);
             topAdsView.setDisplayMode(DisplayMode.FEED);
             topAdsView.setMaxItems(4);
             topAdsView.setAdsItemClickListener(this);
             topAdsView.loadTopAds();
+
+
+            if (autoApply != null && autoApply.isSuccess()) {
+                autoApplyView.setVisibility(View.VISIBLE);
+                if (autoApply.getIsCoupon() == 1) {
+                    labelPromoType.setText(String.format("%s : ", getString(R.string.title_coupon_code)));
+                    promoVoucherCode.setText(autoApply.getTitleDescription());
+                    voucherDescription.setText(autoApply.getMessageSuccess());
+                } else {
+                    labelPromoType.setText(String.format("%s : ", getString(R.string.title_promo_code)));
+                    promoVoucherCode.setText(autoApply.getCode());
+                    voucherDescription.setText(autoApply.getMessageSuccess());
+                }
+
+                cancelPromoLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        autoApplyView.setVisibility(View.GONE);
+                        presenter.cancelPromo();
+                    }
+                });
+            } else {
+                autoApplyView.setVisibility(View.GONE);
+            }
         }
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         ProductItem data = new ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -537,11 +568,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
-        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        getActivity().startActivity(intent);
+    public void onShopItemClicked(int position, Shop shop) {
+        Intent intent = ((TransactionRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
+        startActivity(intent);
     }
 
     @Override
@@ -550,11 +579,14 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderVisibleMainCartContainer() {
-        nsvContainer.setVisibility(View.VISIBLE);
+    public void renderInvisibleLoading() {
         pbMainLoading.setVisibility(View.GONE);
         tvTotalPayment.setVisibility(View.GONE);
-        presenter.processGetTickerGTM();
+    }
+
+    @Override
+    public void renderVisibleMainCartContainer() {
+        nsvContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -670,6 +702,13 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         donasiCheckbox.setOnCheckedChangeListener(getOnCheckedDonasiListener(donation.getDonationValue()));
         donasiInfo.setOnClickListener(getDonasiInfoListener(donation));
     }
+
+    @Override
+    public void renderCandelPromoSuccess(){
+        promoResultLayout.setVisibility(View.GONE);
+        promoCodeLayout.setVisibility(View.VISIBLE);
+    }
+
 
     private View.OnClickListener insertCode(final String voucherCode) {
         return new View.OnClickListener() {
@@ -806,6 +845,23 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void renderAutoApplyPromoView(AutoApply autoApply) {
+        if (autoApply.getIsCoupon() == 1)
+            setCouponResultLayout(
+                    autoApply.getCode(),
+                    autoApply.getTitleDescription(),
+                    autoApply.getMessageSuccess());
+        else setVoucherResultLayout(autoApply.getCode(),
+                String.valueOf(autoApply.getCashbackAmount()),
+                autoApply.getMessageSuccess());
+    }
+
+    @Override
+    public void renderPartialOrder(boolean enableCancelPartial) {
+        cartItemAdapter.setEnableCancelPartial(enableCancelPartial);
+    }
+
+    @Override
     public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
         Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), clazz).putExtras(bundle);
         getActivity().startService(intent);
@@ -850,7 +906,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onSubmitEditCartItem(CartItem cartData, List<ProductEditData> cartProductEditDataList) {
-        presenter.processSubmitEditCart(cartData, cartProductEditDataList);
+        presenter.processSubmitEditCart(getActivity(), cartData, cartProductEditDataList);
     }
 
     @Override
@@ -867,9 +923,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onShopDetailInfoClicked(CartShop cartShop) {
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(cartShop.getShopId(), ""));
-        navigateToActivity(intent);
+        Intent intent = ((TransactionRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), cartShop.getShopId());
+        startActivity(intent);
     }
 
     @Override
@@ -880,6 +935,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onGetParameterTopPaySuccess(TopPayParameterData data) {
         hideProgressLoading();
+        presenter.trackStep2CheckoutEE(data.getParameter().getTransactionId());
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.setRedirectUrl(data.getRedirectUrl());
         paymentPassData.setTransactionId(data.getParameter().getTransactionId());
@@ -1008,21 +1064,34 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                         bundle.getString(LoyaltyActivity.VOUCHER_AMOUNT, ""),
                         bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "")
                 );
-                cancelPromoLayout.setOnClickListener(onPromoCancelled());
             } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
-                promoResultLayout.setVisibility(View.VISIBLE);
-                labelPromoType.setText(getString(R.string.title_coupon_code) + " : ");
-                promoVoucherCode.setText(bundle.getString(LoyaltyActivity.COUPON_TITLE, ""));
-                voucherDescription.setText(bundle.getString(LoyaltyActivity.COUPON_MESSAGE, ""));
+                //bundle.getString(LoyaltyActivity.COUPON_TITLE, "")
+                //bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "")
+                //bundle.getString(LoyaltyActivity.COUPON_CODE)
+                setCouponResultLayout(
+                        bundle.getString(LoyaltyActivity.COUPON_CODE),
+                        bundle.getString(LoyaltyActivity.COUPON_TITLE, ""),
+                        bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "")
+                );
 
-                //TODO check state
-                voucherCode = bundle.getString(LoyaltyActivity.COUPON_CODE);
-                instantPromoPlaceHolder.setVisibility(View.GONE);
-                promoCodeLayout.setVisibility(View.GONE);
-                cancelPromoLayout.setOnClickListener(onPromoCancelled());
             }
         }
+    }
+
+    private void setCouponResultLayout(String couponCode,
+                                       String couponTitle,
+                                       String description) {
+        promoResultLayout.setVisibility(View.VISIBLE);
+        labelPromoType.setText(getString(R.string.title_coupon_code) + " : ");
+        promoVoucherCode.setText(couponTitle);
+        voucherDescription.setText(description);
+
+        //TODO check state
+        this.voucherCode = couponCode;
+        instantPromoPlaceHolder.setVisibility(View.GONE);
+        promoCodeLayout.setVisibility(View.GONE);
+        cancelPromoLayout.setOnClickListener(onPromoCancelled());
     }
 
     private void setVoucherResultLayout(String voucherCode,
@@ -1037,14 +1106,14 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         this.voucherCode = voucherCode;
         promoCodeLayout.setVisibility(View.GONE);
         instantPromoPlaceHolder.setVisibility(View.GONE);
+        cancelPromoLayout.setOnClickListener(onPromoCancelled());
     }
 
     private View.OnClickListener onPromoCancelled() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                promoResultLayout.setVisibility(View.GONE);
-                promoCodeLayout.setVisibility(View.VISIBLE);
+                presenter.cancelPromo();
             }
         };
     }

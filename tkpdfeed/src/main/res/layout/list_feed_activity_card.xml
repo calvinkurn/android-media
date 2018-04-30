@@ -3,14 +3,8 @@
     android:id="@id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_sm"
-    android:background="@color/white"
-    android:orientation="vertical">
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_300" />
+    android:orientation="vertical"
+    android:background="@drawable/background_shadow_feed" >
 
     <include layout="@layout/feed_product_header" />
 
@@ -23,8 +17,4 @@
 
     <include layout="@layout/buy_button" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_300" />
 </LinearLayout>
