@@ -70,29 +70,31 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                 int position = 1;
                 for (DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
                     if (channel.getLayout() != null) {
-                        position++;
-                        if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
-                            channel.setHomeAttribution(String.format("%d - sprintSaleProduct - $1 - $2", position));
-                            HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
-                                    channel.getEnhanceImpressionSprintSaleHomePage(position)
-                            );
-                        } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)) {
-                            channel.setHomeAttribution(String.format("%d - sprintSaleBanner - $1", position));
-                            HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
-                                    channel.getEnhanceImpressionSprintSaleCarouselHomePage(position)
-                            );
-                        } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
-                            channel.setPromoName(String.format("/ - p%d - lego banner", position));
-                            channel.setHomeAttribution(String.format("%d - legoBanner - $1 - $2", position));
-                            HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
-                                    channel.getEnhanceImpressionLegoBannerHomePage(position)
-                            );
-                        } else {
-                            channel.setPromoName(String.format("/ - p%d - %s", position, channel.getHeader().getName()));
-                            channel.setHomeAttribution(String.format("%d - curatedListBanner - %s - $1 - $2", position, channel.getHeader().getName()));
-                            HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
-                                    channel.getEnhanceImpressionDynamicChannelHomePage(position)
-                            );
+                        if(homeData.isCache()) {
+                            position++;
+                            if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
+                                channel.setHomeAttribution(String.format("%d - sprintSaleProduct - $1 - $2", position));
+                                HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
+                                        channel.getEnhanceImpressionSprintSaleHomePage(position)
+                                );
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)) {
+                                channel.setHomeAttribution(String.format("%d - sprintSaleBanner - $1", position));
+                                HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
+                                        channel.getEnhanceImpressionSprintSaleCarouselHomePage(position)
+                                );
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
+                                channel.setPromoName(String.format("/ - p%d - lego banner", position));
+                                channel.setHomeAttribution(String.format("%d - legoBanner - $1 - $2", position));
+                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
+                                        channel.getEnhanceImpressionLegoBannerHomePage(position)
+                                );
+                            } else {
+                                channel.setPromoName(String.format("/ - p%d - %s", position, channel.getHeader().getName()));
+                                channel.setHomeAttribution(String.format("%d - curatedListBanner - %s - $1 - $2", position, channel.getHeader().getName()));
+                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
+                                        channel.getEnhanceImpressionDynamicChannelHomePage(position)
+                                );
+                            }
                         }
                         if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
                             list.add(new DigitalsViewModel(MainApplication.getAppContext().getString(R.string.digital_widget_title), 0));
