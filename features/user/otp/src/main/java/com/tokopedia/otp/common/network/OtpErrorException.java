@@ -9,8 +9,4 @@ public class OtpErrorException extends RuntimeException {
     public OtpErrorException(String errorMessage) {
         super(errorMessage);
     }
-
-    public OtpErrorException(String errorMessage, String errorCode) {
-        super(errorMessage + " " + "( " + errorCode + " )");
-    }
 }

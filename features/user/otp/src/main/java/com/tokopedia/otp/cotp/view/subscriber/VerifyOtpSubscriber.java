@@ -26,7 +26,7 @@ public class VerifyOtpSubscriber extends Subscriber<ValidateOtpDomain> {
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingProgress();
-        view.onErrorVerifyOtpCode(OtpErrorHandler.getErrorMessage(e, view.getContext()));
+        view.onErrorVerifyOtpCode(OtpErrorHandler.getErrorMessage(e, view.getContext(), false));
     }
 
     @Override

@@ -8,11 +8,18 @@ import java.io.IOException;
 
 public class ErrorMessageException extends IOException {
 
+    private String errorCode;
+
     public ErrorMessageException(String errorMessage) {
         super(errorMessage);
     }
 
     public ErrorMessageException(String errorMessage, String errorCode) {
-        super(errorMessage + " " + "( " + errorCode + " )");
+        super(errorMessage);
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
     }
 }

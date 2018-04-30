@@ -27,7 +27,7 @@ public class RequestOtpSubscriber extends Subscriber<RequestOtpViewModel> {
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingProgress();
-        view.onErrorGetOTP(OtpErrorHandler.getErrorMessage(e, view.getContext()));
+        view.onErrorGetOTP(OtpErrorHandler.getErrorMessage(e, view.getContext(), false));
     }
 
     @Override

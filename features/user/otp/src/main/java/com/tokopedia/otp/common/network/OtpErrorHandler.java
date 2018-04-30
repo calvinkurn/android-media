@@ -11,17 +11,25 @@ import com.tokopedia.otp.R;
  */
 public class OtpErrorHandler {
 
-    public static String getErrorMessage(Throwable e, final Context context) {
+    public static String getErrorMessage(Throwable e, final Context context, boolean
+            showErrorCode) {
 
         if (e instanceof OtpErrorException
                 && !TextUtils.isEmpty(e.getLocalizedMessage())) {
-            return e.getLocalizedMessage();
+            return showErrorCode ? formatString(e.getLocalizedMessage(),
+                    String.valueOf(OtpErrorCode.WS_ERROR))
+                    : e.getLocalizedMessage();
         } else if (e instanceof ErrorMessageException
-                && !TextUtils.isEmpty(e.getLocalizedMessage())){
-            return e.getLocalizedMessage();
+                && !TextUtils.isEmpty(e.getLocalizedMessage())) {
+            return showErrorCode ? formatString(e.getLocalizedMessage(), ((ErrorMessageException)
+                    e).getErrorCode()) : e.getLocalizedMessage();
         } else {
             return ErrorHandler.getErrorMessage(context, e);
         }
+    }
+
+    private static String formatString(String message, String errorCode) {
+        return String.format("%s ( %s )", message, String.valueOf(errorCode));
     }
 
     public static String getDefaultErrorCodeMessage(int errorCode, Context context) {
