@@ -1,12 +1,10 @@
 package com.tokopedia.tkpd.tkpdcontactus.home.data;
 
 import java.util.List;
-import javax.annotation.Generated;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.Paging;
 
-@Generated("com.robohorse.robopojogenerator")
 public class BuyerPurchaseData{
 
 	@SerializedName("paging")

@@ -1,9 +1,7 @@
 package com.tokopedia.tkpd.tkpdcontactus.home.data;
 
-import javax.annotation.Generated;
 import com.google.gson.annotations.SerializedName;
 
-@Generated("com.robohorse.robopojogenerator")
 public class TopBotStatus{
 
 	@SerializedName("is_active")
