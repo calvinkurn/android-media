@@ -288,6 +288,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.rxJavaMath
 
+    implementation project(rootProject.ext.libraries.fingerprint)
+
     implementation(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
     }

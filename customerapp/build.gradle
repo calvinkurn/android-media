@@ -288,7 +288,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.fingerprint)
 
+    implementation rootProject.ext.miscDependencies.bcaOneClick
     implementation rootProject.ext.tkpdDependencies.shopCommon
 
     implementation rootProject.ext.playServicesDependencies.remoteConfig
