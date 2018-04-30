@@ -24,6 +24,7 @@ public class Product implements Parcelable {
     private long pricePlain;
     private Promo promo;
     private int status;
+    private String detailCompact;
 
     private Product(Builder builder) {
         setProductId(builder.productId);
@@ -53,6 +54,14 @@ public class Product implements Parcelable {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public String getDetailCompact() {
+        return detailCompact;
+    }
+
+    public void setDetailCompact(String detailCompact) {
+        this.detailCompact = detailCompact;
     }
 
     public String getDetailUrl() {
