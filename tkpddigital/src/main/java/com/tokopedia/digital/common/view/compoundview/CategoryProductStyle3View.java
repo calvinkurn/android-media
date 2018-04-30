@@ -24,8 +24,6 @@ import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.model.Validation;
-import com.tokopedia.digital.widget.view.compoundview.NewWidgetOperatorChooserView;
-import com.tokopedia.digital.widget.view.compoundview.NewWidgetProductChooserView;
 
 import java.util.List;
 import java.util.regex.Pattern;

@@ -19,32 +19,12 @@ public class ClientNumber implements Parcelable {
     public static final String TYPE_INPUT_ALPHANUMERIC = "tel";
     public static final String DEFAULT_TYPE_CONTRACT = "client_number";
 
-    @SerializedName("name")
-    @Expose
     private String name;
-
-    @SerializedName("type")
-    @Expose
     private String type;
-
-    @SerializedName("text")
-    @Expose
     private String text;
-
-    @SerializedName("help")
-    @Expose
     private String help;
-
-    @SerializedName("placeholder")
-    @Expose
     private String placeholder;
-
-    @SerializedName("_default")
-    @Expose
     private String _default;
-
-    @SerializedName("validation")
-    @Expose
     private List<Validation> validation = new ArrayList<>();
 
     public String getName() {

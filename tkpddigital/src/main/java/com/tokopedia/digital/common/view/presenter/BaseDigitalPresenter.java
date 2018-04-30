@@ -13,7 +13,6 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ContactData;
-import com.tokopedia.digital.widget.view.model.product.Product;
 
 /**
  * Created by nabillasabbaha on 8/8/17.
@@ -33,49 +32,6 @@ public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
     public BaseDigitalPresenter(Context context, LocalCacheHandler localCacheHandlerLastClientNumber) {
         this.context = context;
         this.localCacheHandlerLastClientNumber = localCacheHandlerLastClientNumber;
-    }
-
-    @Override
-    public void storeLastInstantCheckoutUsed(String categoryId, boolean checked) {
-        if (cacheHandlerRecentInstantCheckoutUsed == null)
-            cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
-                    context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
-            );
-        cacheHandlerRecentInstantCheckoutUsed.putBoolean(
-                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
-        );
-        cacheHandlerRecentInstantCheckoutUsed.applyEditor();
-    }
-
-    @Override
-    public boolean isRecentInstantCheckoutUsed(String categoryId) {
-        if (cacheHandlerRecentInstantCheckoutUsed == null)
-            cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
-                    context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
-            );
-        return cacheHandlerRecentInstantCheckoutUsed.getBoolean(
-                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
-        );
-    }
-
-    @Deprecated
-    @Override
-    public void storeLastClientNumberTyped(String categoryId, String clientNumber, Product selectedProduct) {
-        localCacheHandlerLastClientNumber.putString(
-                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, clientNumber
-        );
-        localCacheHandlerLastClientNumber.putString(
-                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId,
-                (selectedProduct != null ?
-                        String.valueOf(
-                                selectedProduct.getRelationships().getOperator().getData().getId()
-                        ) : "")
-        );
-        localCacheHandlerLastClientNumber.putString(
-                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId,
-                (selectedProduct != null ? selectedProduct.getId() : "")
-        );
-        localCacheHandlerLastClientNumber.applyEditor();
     }
 
     @Override

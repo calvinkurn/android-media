@@ -13,48 +13,16 @@ public class Product implements Parcelable {
     public static final int STATUS_OUT_OF_STOCK = 3;
     public static final int STATUS_INACTIVE = 2;
 
-    @SerializedName("product_id")
-    @Expose
     private String productId;
-
-    @SerializedName("product_type")
-    @Expose
     private String productType;
-
-    @SerializedName("desc")
-    @Expose
     private String desc;
-
-    @SerializedName("detail")
-    @Expose
     private String detail;
-
-    @SerializedName("detail_url")
-    @Expose
     private String detailUrl;
-
-    @SerializedName("detail_url_text")
-    @Expose
     private String detailUrlText;
-
-    @SerializedName("info")
-    @Expose
     private String info;
-
-    @SerializedName("price")
-    @Expose
     private String price;
-
-    @SerializedName("price_plain")
-    @Expose
     private long pricePlain;
-
-    @SerializedName("promo")
-    @Expose
     private Promo promo;
-
-    @SerializedName("status")
-    @Expose
     private int status;
 
     private Product(Builder builder) {

@@ -23,6 +23,7 @@ import java.util.List;
  */
 
 public class AutoCompleteTVAdapter extends ArrayAdapter<OrderClientNumber> implements Filterable {
+
     private Context context;
     private int resource;
     private List<OrderClientNumber> orderClientNumbers;
@@ -110,8 +111,8 @@ public class AutoCompleteTVAdapter extends ArrayAdapter<OrderClientNumber> imple
         private TextView name;
 
         ItemHolder(View itemView) {
-            number = (TextView) itemView.findViewById(R.id.text_name);
-            name = (TextView) itemView.findViewById(R.id.text_number);
+            number = itemView.findViewById(R.id.text_name);
+            name = itemView.findViewById(R.id.text_number);
         }
 
         public void bind(OrderClientNumber orderClientNumber) {

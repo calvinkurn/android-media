@@ -11,32 +11,12 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Promo implements Parcelable {
 
-    @SerializedName("bonus_text")
-    @Expose
     private String bonusText;
-
-    @SerializedName("id")
-    @Expose
     private String id;
-
-    @SerializedName("new_price")
-    @Expose
     private String newPrice;
-
-    @SerializedName("new_price_plain")
-    @Expose
     private long newPricePlain;
-
-    @SerializedName("tag")
-    @Expose
     private String tag;
-
-    @SerializedName("terms")
-    @Expose
     private String terms;
-
-    @SerializedName("value_text")
-    @Expose
     private String valueText;
 
     public String getBonusText() {

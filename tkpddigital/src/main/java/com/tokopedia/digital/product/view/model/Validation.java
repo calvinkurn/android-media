@@ -11,12 +11,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Validation implements Parcelable {
 
-    @SerializedName("regex")
-    @Expose
     private String regex;
-
-    @SerializedName("error")
-    @Expose
     private String error;
 
     public String getRegex() {
