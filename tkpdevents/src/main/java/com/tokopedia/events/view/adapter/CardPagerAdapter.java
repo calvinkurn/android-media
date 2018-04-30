@@ -10,11 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.events.R;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
 import com.tokopedia.events.view.utils.CardAdapter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
@@ -96,6 +98,8 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
         currentDataIndex = position;
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, mData.get(currentDataIndex).getTitle()
+                + " - " + currentDataIndex);
     }
 
     private void bind(CategoryItemsViewModel item, View view) {

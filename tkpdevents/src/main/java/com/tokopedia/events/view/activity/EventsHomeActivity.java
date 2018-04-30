@@ -103,7 +103,6 @@ public class EventsHomeActivity extends TActivity
     private int mBannnerPos;
     private int defaultViewPagerPos = -1;
     private String defaultSection;
-    private final static String THEMEPARK = "hiburan";
     private final static String TOP = "top";
 
 
