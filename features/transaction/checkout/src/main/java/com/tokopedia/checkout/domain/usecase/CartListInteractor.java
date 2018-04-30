@@ -59,23 +59,6 @@ public class CartListInteractor implements ICartListInteractor {
     }
 
     @Override
-    public void deleteCart(Subscriber<DeleteCartData> subscriber, TKPDMapParam<String, String> param) {
-        compositeSubscription.add(
-                cartRepository.deleteCartData(param)
-                        .map(new Func1<DeleteCartDataResponse, DeleteCartData>() {
-                            @Override
-                            public DeleteCartData call(DeleteCartDataResponse deleteCartDataResponse) {
-                                return cartMapper.convertToDeleteCartData(deleteCartDataResponse);
-                            }
-                        })
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(subscriber)
-        );
-    }
-
-    @Override
     public void deleteCartAndRefreshCartList(Subscriber<DeleteAndRefreshCartListData> subscriber,
                                              final TKPDMapParam<String, String> paramDelete,
                                              final TKPDMapParam<String, String> paramGetCartList) {

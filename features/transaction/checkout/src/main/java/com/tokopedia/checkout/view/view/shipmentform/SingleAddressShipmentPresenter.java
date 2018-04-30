@@ -5,17 +5,22 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
-import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
+import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.transaction.common.constant.PickupPointParamConstant;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author Aghny A. Putra on 26/01/18
@@ -24,12 +29,19 @@ import rx.Subscriber;
 public class SingleAddressShipmentPresenter implements ISingleAddressShipmentPresenter {
 
     private final ICartSingleAddressView view;
-    private final ICartListInteractor cartListInteractor;
+    private final CompositeSubscription compositeSubscription;
+    private final GetShipmentAddressFormUseCase getShipmentAddressFormUseCase;
+    private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
 
     @Inject
-    public SingleAddressShipmentPresenter(ICartSingleAddressView view, ICartListInteractor cartListInteractor) {
+    public SingleAddressShipmentPresenter(ICartSingleAddressView view,
+                                          CompositeSubscription compositeSubscription,
+                                          GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
+                                          CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase) {
         this.view = view;
-        this.cartListInteractor = cartListInteractor;
+        this.compositeSubscription = compositeSubscription;
+        this.getShipmentAddressFormUseCase = getShipmentAddressFormUseCase;
+        this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
     }
 
     Subscriber<CheckPromoCodeCartShipmentResult> getSubscriberCheckPromoShipment() {
@@ -60,39 +72,50 @@ public class SingleAddressShipmentPresenter implements ISingleAddressShipmentPre
         view.showProgressLoading();
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
-        cartListInteractor.getShipmentForm(
-                new Subscriber<CartShipmentAddressFormData>() {
-                    @Override
-                    public void onCompleted() {
 
-                    }
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
+                view.getGeneratedAuthParamNetwork(paramGetShipmentForm));
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        view.hideProgressLoading();
-                    }
+        compositeSubscription.add(
+                getShipmentAddressFormUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(
+                                new Subscriber<CartShipmentAddressFormData>() {
+                                    @Override
+                                    public void onCompleted() {
 
-                    @Override
-                    public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-                        boolean isEnableCheckout = true;
-                        for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
-                            if (groupAddress.isError() || groupAddress.isWarning())
-                                isEnableCheckout = false;
-                            for (GroupShop groupShop : groupAddress.getGroupShop()) {
-                                if (groupShop.isError() || groupShop.isWarning())
-                                    isEnableCheckout = false;
-                            }
-                        }
-                        if (isEnableCheckout) {
-                            view.renderCheckShipmentPrepareCheckoutSuccess();
-                        } else {
-                            view.renderErrorDataHasChangedCheckShipmentPrepareCheckout(
-                                    cartShipmentAddressFormData
-                            );
-                        }
-                    }
-                }, view.getGeneratedAuthParamNetwork(paramGetShipmentForm)
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        e.printStackTrace();
+                                        view.hideProgressLoading();
+                                    }
+
+                                    @Override
+                                    public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
+                                        boolean isEnableCheckout = true;
+                                        for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
+                                            if (groupAddress.isError() || groupAddress.isWarning())
+                                                isEnableCheckout = false;
+                                            for (GroupShop groupShop : groupAddress.getGroupShop()) {
+                                                if (groupShop.isError() || groupShop.isWarning())
+                                                    isEnableCheckout = false;
+                                            }
+                                        }
+                                        if (isEnableCheckout) {
+                                            view.renderCheckShipmentPrepareCheckoutSuccess();
+                                        } else {
+                                            view.renderErrorDataHasChangedCheckShipmentPrepareCheckout(
+                                                    cartShipmentAddressFormData
+                                            );
+                                        }
+                                    }
+                                }
+                        )
         );
     }
 
@@ -100,30 +123,45 @@ public class SingleAddressShipmentPresenter implements ISingleAddressShipmentPre
     public void processCheckPromoCodeFromSuggestedPromo(String promoCode) {
         view.showLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("promo_code", promoCode);
-        param.put("lang", "id");
-        cartListInteractor.checkPromoCodeCartList(new Subscriber<PromoCodeCartListData>() {
-            @Override
-            public void onCompleted() {
+        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
+        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG,
+                CheckPromoCodeCartListUseCase.PARAM_VALUE_LANG_ID);
+        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_SUGGESTED,
+                CheckPromoCodeCartListUseCase.PARAM_VALUE_SUGGESTED);
 
-            }
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
+                view.getGeneratedAuthParamNetwork(param));
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                view.hideLoading();
-            }
+        compositeSubscription.add(
+                checkPromoCodeCartListUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(new Subscriber<CheckPromoCodeCartListResult>() {
+                            @Override
+                            public void onCompleted() {
 
-            @Override
-            public void onNext(PromoCodeCartListData promoCodeCartListData) {
-                view.hideLoading();
-                if (!promoCodeCartListData.isError()) {
-                    view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
-                } else {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(promoCodeCartListData.getErrorMessage());
-                }
-            }
-        }, view.getGeneratedAuthParamNetwork(param));
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                view.hideLoading();
+                            }
+
+                            @Override
+                            public void onNext(CheckPromoCodeCartListResult
+                                                       promoCodeCartListData) {
+                                view.hideLoading();
+                                if (!promoCodeCartListData.isError()) {
+                                    view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
+                                } else {
+                                    view.renderErrorCheckPromoCodeFromSuggestedPromo(promoCodeCartListData.getErrorMessage());
+                                }
+                            }
+                        })
+        );
     }
 
     @Override

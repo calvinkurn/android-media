@@ -7,6 +7,8 @@ import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
 import com.tokopedia.checkout.domain.usecase.CartListInteractor;
+import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.checkout.view.di.scope.SingleAddressShipmentScope;
@@ -53,13 +55,20 @@ public class SingleAddressShipmentModule {
                                                    ICartMapper cartMapper,
                                                    IShipmentMapper shipmentMapper,
                                                    IVoucherCouponMapper voucherCouponMapper) {
-        return new CartListInteractor(compositeSubscription, cartRepository, cartMapper, shipmentMapper, voucherCouponMapper);
+        return new CartListInteractor(
+                compositeSubscription, cartRepository, cartMapper, shipmentMapper, voucherCouponMapper
+        );
     }
 
     @Provides
     @SingleAddressShipmentScope
-    SingleAddressShipmentPresenter provideCartSingleAddressPresenter(ICartListInteractor cartListInteractor) {
-        return new SingleAddressShipmentPresenter(viewListener, cartListInteractor);
+    SingleAddressShipmentPresenter provideCartSingleAddressPresenter(
+            CompositeSubscription compositeSubscription,
+            GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
+            CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase
+    ) {
+        return new SingleAddressShipmentPresenter(viewListener, compositeSubscription,
+                getShipmentAddressFormUseCase, checkPromoCodeCartListUseCase);
     }
 
     @Provides
@@ -70,7 +79,8 @@ public class SingleAddressShipmentModule {
 
     @Provides
     @SingleAddressShipmentScope
-    SingleAddressShipmentAdapter provideCartSingleAddressAdapter(ShipmentDataRequestConverter shipmentDataRequestConverter) {
+    SingleAddressShipmentAdapter provideCartSingleAddressAdapter
+            (ShipmentDataRequestConverter shipmentDataRequestConverter) {
         return new SingleAddressShipmentAdapter(adapterActionListener, shipmentDataRequestConverter);
     }
 

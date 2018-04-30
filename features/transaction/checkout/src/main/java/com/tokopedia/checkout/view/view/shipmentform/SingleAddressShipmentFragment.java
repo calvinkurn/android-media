@@ -42,7 +42,6 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostMo
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.SingleShipmentData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.mapper.CartShipmentAddressFormDataConverter;
 import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter;
@@ -57,6 +56,7 @@ import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.Data;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
@@ -271,7 +271,7 @@ public class SingleAddressShipmentFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
+    public void renderCheckPromoCodeFromSuggestedPromoSuccess(CheckPromoCodeCartListResult promoCodeCartListData) {
         this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
                 .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
                 .promoCode(promoCodeCartListData.getDataVoucher().getCode())

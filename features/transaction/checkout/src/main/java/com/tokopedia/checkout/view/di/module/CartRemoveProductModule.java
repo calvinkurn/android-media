@@ -9,6 +9,8 @@ import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
 import com.tokopedia.checkout.domain.usecase.CartListInteractor;
+import com.tokopedia.checkout.domain.usecase.DeleteCartUpdateCartUseCase;
+import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.checkout.view.adapter.CartRemoveProductAdapter;
 import com.tokopedia.checkout.view.di.scope.CartRemoveProductScope;
@@ -62,8 +64,14 @@ public class CartRemoveProductModule {
 
     @Provides
     @CartRemoveProductScope
-    CartRemoveProductPresenter provideCartRemoveProductPresenter(ICartListInteractor cartListInteractor) {
-        return new CartRemoveProductPresenter(cartListInteractor);
+    CartRemoveProductPresenter provideCartRemoveProductPresenter(
+            CompositeSubscription compositeSubscription,
+            DeleteCartUseCase deleteCartUseCase,
+            DeleteCartUpdateCartUseCase deleteCartUpdateCartUseCase
+    ) {
+        return new CartRemoveProductPresenter(
+                compositeSubscription, deleteCartUseCase, deleteCartUpdateCartUseCase
+        );
     }
 
     @Provides

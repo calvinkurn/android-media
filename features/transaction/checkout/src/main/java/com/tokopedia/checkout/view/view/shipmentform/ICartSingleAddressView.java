@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.view.shipmentform;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.view.base.IBaseView;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 
 /**
@@ -37,7 +38,7 @@ public interface ICartSingleAddressView extends IBaseView {
 
     void renderErrorTimeoutConnectionCheckShipmentPrepareCheckout(String message);
 
-    void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
+    void renderCheckPromoCodeFromSuggestedPromoSuccess(CheckPromoCodeCartListResult promoCodeCartListData);
 
     void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 }

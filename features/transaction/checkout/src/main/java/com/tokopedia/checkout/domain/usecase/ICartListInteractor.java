@@ -5,8 +5,6 @@ import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.DeleteUpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndShipmentFormCartData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateToSingleAddressShipmentData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
@@ -19,8 +17,6 @@ import rx.Subscriber;
  */
 
 public interface ICartListInteractor {
-
-    void deleteCart(Subscriber<DeleteCartData> subscriber, TKPDMapParam<String, String> param);
 
     void deleteCartAndRefreshCartList(Subscriber<DeleteAndRefreshCartListData> subscriber,
                                       TKPDMapParam<String, String> paramDelete,

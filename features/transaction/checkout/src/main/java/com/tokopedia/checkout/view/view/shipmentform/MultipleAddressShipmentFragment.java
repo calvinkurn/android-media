@@ -46,6 +46,7 @@ import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
@@ -336,7 +337,7 @@ public class MultipleAddressShipmentFragment extends BaseCheckoutFragment implem
     }
 
     @Override
-    public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
+    public void renderCheckPromoCodeFromSuggestedPromoSuccess(CheckPromoCodeCartListResult promoCodeCartListData) {
         this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
                 .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
                 .promoCode(promoCodeCartListData.getDataVoucher().getCode())

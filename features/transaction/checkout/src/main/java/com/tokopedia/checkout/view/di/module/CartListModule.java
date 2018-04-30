@@ -9,8 +9,15 @@ import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
 import com.tokopedia.checkout.domain.usecase.CartListInteractor;
+import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
+import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
+import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
 import com.tokopedia.checkout.view.view.cartlist.CartFragment;
@@ -63,10 +70,21 @@ public class CartListModule {
     @Provides
     @CartListScope
     ICartListPresenter provideICartListPresenter(ICartRepository cartRepository,
-                                                 ICartListInteractor cartListInteractor,
                                                  GetCartListUseCase getCartListUseCase,
+                                                 DeleteCartUseCase deleteCartUseCase,
+                                                 DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
+                                                 UpdateCartGetShipmentAddressFormUseCase updateCartGetShipmentAddressFormUseCase,
+                                                 GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
+                                                 ResetCartGetCartListUseCase resetCartGetCartListUseCase,
+                                                 ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase,
+                                                 CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                  CompositeSubscription compositeSubscription) {
-        return new CartListPresenter(cartListView, cartListInteractor, getCartListUseCase, compositeSubscription);
+        return new CartListPresenter(
+                cartListView, getCartListUseCase, deleteCartUseCase,
+                deleteCartGetCartListUseCase, updateCartGetShipmentAddressFormUseCase,
+                getShipmentAddressFormUseCase, resetCartGetCartListUseCase,
+                resetCartGetShipmentFormUseCase, checkPromoCodeCartListUseCase, compositeSubscription
+        );
     }
 
     @Provides

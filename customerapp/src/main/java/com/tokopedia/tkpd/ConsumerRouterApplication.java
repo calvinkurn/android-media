@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.checkout.data.entity.response.addtocart.AddToCartDataResponse;
@@ -1565,8 +1566,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<CheckPromoCodeCartListResult> tkpdLoyaltyGetCheckPromoCodeCartListResultObservable(
             String promoCode
     ) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
+        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_SUGGESTED,
+                CheckPromoCodeCartListUseCase.PARAM_VALUE_NOT_SUGGESTED);
+        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG,
+                CheckPromoCodeCartListUseCase.PARAM_VALUE_LANG_ID);
+
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putString(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
+        requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
+                com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
+                        this, param, userSession.getUserId(), userSession.getDeviceId()
+                ));
+
         return CartComponentInjector.newInstance(cartApiServiceComponent)
                 .getCheckPromoCodeCartListUseCase()
                 .createObservable(requestParams);

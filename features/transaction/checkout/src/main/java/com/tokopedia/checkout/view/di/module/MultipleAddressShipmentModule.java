@@ -7,6 +7,8 @@ import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
 import com.tokopedia.checkout.domain.usecase.CartListInteractor;
+import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.checkout.view.di.scope.MultipleAddressShipmentScope;
 import com.tokopedia.checkout.view.view.shipmentform.IMultipleAddressShipmentPresenter;
@@ -54,8 +56,11 @@ public class MultipleAddressShipmentModule {
 
     @MultipleAddressShipmentScope
     @Provides
-    IMultipleAddressShipmentPresenter providePresenter(ICartListInteractor cartListInteractor) {
-        return new MultipleAddressShipmentPresenter(view, cartListInteractor);
+    IMultipleAddressShipmentPresenter providePresenter(CompositeSubscription compositeSubscription,
+                                                       GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
+                                                       CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase) {
+        return new MultipleAddressShipmentPresenter(view, compositeSubscription,
+                getShipmentAddressFormUseCase, checkPromoCodeCartListUseCase);
     }
 
 }

@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 
 /**
@@ -37,7 +38,7 @@ public interface IMultipleAddressShipmentView {
             TKPDMapParam<String, String> originParams
     );
 
-    void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
+    void renderCheckPromoCodeFromSuggestedPromoSuccess(CheckPromoCodeCartListResult checkPromoCodeCartListResult);
 
     void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 }

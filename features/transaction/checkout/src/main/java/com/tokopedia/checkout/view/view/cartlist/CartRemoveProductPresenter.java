@@ -7,13 +7,20 @@ import com.tokopedia.checkout.data.entity.request.UpdateCartRequest;
 import com.tokopedia.checkout.domain.datamodel.DeleteUpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
-import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
+import com.tokopedia.checkout.domain.usecase.DeleteCartUpdateCartUseCase;
+import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.view.base.CartMvpPresenter;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author Aghny A. Putra on 05/02/18
@@ -22,10 +29,18 @@ import rx.Subscriber;
 public class CartRemoveProductPresenter
         extends CartMvpPresenter<IRemoveProductListView<List<CartItemData>>> {
 
-    private final ICartListInteractor cartListInteractor;
+    private final DeleteCartUseCase deleteCartUseCase;
+    private final CompositeSubscription compositeSubscription;
+    private final DeleteCartUpdateCartUseCase deleteCartUpdateCartUseCase;
 
-    public CartRemoveProductPresenter(ICartListInteractor cartListInteractor) {
-        this.cartListInteractor = cartListInteractor;
+    @Inject
+    public CartRemoveProductPresenter(CompositeSubscription compositeSubscription,
+                                      DeleteCartUseCase deleteCartUseCase,
+                                      DeleteCartUpdateCartUseCase deleteCartUpdateCartUseCase) {
+        this.compositeSubscription = compositeSubscription;
+        this.deleteCartUseCase = deleteCartUseCase;
+        this.deleteCartUpdateCartUseCase = deleteCartUpdateCartUseCase;
+
     }
 
     @Override
@@ -72,48 +87,69 @@ public class CartRemoveProductPresenter
         paramUpdate.put("carts", new Gson().toJson(updateCartRequestList));
 
         if (!updateCartRequestList.isEmpty()) {
-            cartListInteractor.deleteAndUpdateCart(new Subscriber<DeleteUpdateCartData>() {
-                @Override
-                public void onCompleted() {
 
-                }
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putObject(DeleteCartUpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
+                    getMvpView().getGenerateParamAuth(paramDelete));
+            requestParams.putObject(DeleteCartUpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+                    getMvpView().getGenerateParamAuth(paramUpdate));
 
-                @Override
-                public void onError(Throwable throwable) {
+            compositeSubscription.add(
+                    deleteCartUpdateCartUseCase.createObservable(requestParams)
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .unsubscribeOn(Schedulers.newThread())
+                            .subscribe(new Subscriber<DeleteUpdateCartData>() {
+                                @Override
+                                public void onCompleted() {
 
-                }
+                                }
 
-                @Override
-                public void onNext(DeleteUpdateCartData deleteUpdateCartData) {
-                    if (deleteUpdateCartData.isSuccess()) {
-                        getMvpView().renderSuccessDeletePartialCart(deleteUpdateCartData.getMessage());
-                    } else {
-                        getMvpView().renderOnFailureDeleteCart(deleteUpdateCartData.getMessage());
-                    }
-                }
-            }, getMvpView().getGenerateParamAuth(paramDelete), getMvpView().getGenerateParamAuth(paramUpdate));
+                                @Override
+                                public void onError(Throwable throwable) {
 
+                                }
+
+                                @Override
+                                public void onNext(DeleteUpdateCartData deleteUpdateCartData) {
+                                    if (deleteUpdateCartData.isSuccess()) {
+                                        getMvpView().renderSuccessDeletePartialCart(deleteUpdateCartData.getMessage());
+                                    } else {
+                                        getMvpView().renderOnFailureDeleteCart(deleteUpdateCartData.getMessage());
+                                    }
+                                }
+                            })
+            );
         } else {
-            cartListInteractor.deleteCart(new Subscriber<DeleteCartData>() {
-                @Override
-                public void onCompleted() {
 
-                }
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putObject(DeleteCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING, paramDelete);
+            compositeSubscription.add(
+                    deleteCartUseCase.createObservable(requestParams)
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .unsubscribeOn(Schedulers.newThread())
+                            .subscribe(new Subscriber<DeleteCartData>() {
+                                @Override
+                                public void onCompleted() {
 
-                @Override
-                public void onError(Throwable throwable) {
+                                }
 
-                }
+                                @Override
+                                public void onError(Throwable throwable) {
 
-                @Override
-                public void onNext(DeleteCartData deleteCartData) {
-                    if (deleteCartData.isSuccess()) {
-                        getMvpView().renderSuccessDeleteAllCart(deleteCartData.getMessage());
-                    } else {
-                        getMvpView().renderOnFailureDeleteCart(deleteCartData.getMessage());
-                    }
-                }
-            }, paramDelete);
+                                }
+
+                                @Override
+                                public void onNext(DeleteCartData deleteCartData) {
+                                    if (deleteCartData.isSuccess()) {
+                                        getMvpView().renderSuccessDeleteAllCart(deleteCartData.getMessage());
+                                    } else {
+                                        getMvpView().renderOnFailureDeleteCart(deleteCartData.getMessage());
+                                    }
+                                }
+                            })
+            );
         }
     }
 
