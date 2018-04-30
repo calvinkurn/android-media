@@ -10,7 +10,12 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.push.PushManager;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
+import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
+import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
+import com.tokopedia.pushnotif.ApplinkNotificationHelper;
+import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.PushNotification;
+import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.tkpd.ConsumerMainApplication;
 
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
@@ -24,6 +29,7 @@ import rx.Observable;
 public class AppNotificationReceiver implements IAppNotificationReceiver {
     private AppNotificationReceiverUIBackground mAppNotificationReceiverUIBackground;
     private Context mContext;
+    private ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
 
     public AppNotificationReceiver() {
 
@@ -34,6 +40,7 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
             mAppNotificationReceiverUIBackground = new AppNotificationReceiverUIBackground(application);
 
         mContext = application.getApplicationContext();
+        mActivitiesLifecycleCallbacks = new ActivitiesLifecycleCallbacks(application);
     }
 
     @Override
@@ -47,11 +54,18 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
         }
 
         if (isApplinkNotification(bundle)) {
-            PushNotification.notify(mContext, bundle);
+            PushNotification.notify(mContext, bundle, getCurrentActivity());
             extraAction(bundle);
         } else {
             mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(bundle);
         }
+    }
+
+    private int getCurrentActivity(){
+        if(mActivitiesLifecycleCallbacks instanceof ChatNotifInterface) {
+            return Constant.NotificationId.CHAT;
+        }
+        return 0;
     }
 
     private void extraAction(Bundle data) {

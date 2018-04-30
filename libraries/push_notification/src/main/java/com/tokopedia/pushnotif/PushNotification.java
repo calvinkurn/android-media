@@ -1,5 +1,6 @@
 package com.tokopedia.pushnotif;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.content.Context;
 import android.os.Bundle;
@@ -29,7 +30,7 @@ public class PushNotification {
         FlowManager.initModule(PushNotificationGeneratedDatabaseHolder.class);
     }
 
-    public static void notify(Context context, Bundle data) {
+    public static void notify(Context context, Bundle data, int liveActivity) {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
 
         if (ApplinkNotificationHelper.allowToShow(context, applinkNotificationModel)) {
@@ -38,7 +39,7 @@ public class PushNotification {
 
             if (notificationId == Constant.NotificationId.TALK) {
                 notifyTalk(context, applinkNotificationModel, notificationId, notificationManagerCompat);
-            } else if (notificationId == Constant.NotificationId.CHAT) {
+            } else if (notificationId == Constant.NotificationId.CHAT && notificationId != liveActivity) {
                 notifyChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else if(notificationId == Constant.NotificationId.GROUPCHAT) {
                 notifyGroupChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
@@ -106,6 +107,13 @@ public class PushNotification {
                 .createNotification(applinkNotificationModel, notificationType, notificationType);
 
         notificationManagerCompat.notify(notificationType, notifChat);
+    }
 
+    private static boolean shouldNotify(Activity liveActivity, Activity comparisonActivity){
+        if(liveActivity == null){
+            return true;
+        }else {
+            return liveActivity instanceof ChatNotifInterface
+        }
     }
 }

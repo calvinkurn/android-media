@@ -13,6 +13,8 @@ import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
+import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
+import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.sellerapp.SellerMainApplication;
 
@@ -47,11 +49,18 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
     public void onNotificationReceived(String from, Bundle data){
         CommonUtils.dumper("onNotificationReceived");
         if (isApplinkNotification(data)) {
-            PushNotification.notify(mContext, data);
+            PushNotification.notify(mContext, data, getCurrentActivity());
         } else {
             mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(data);
         }
         mNotificationAnalyticsReceiver.onNotificationReceived(Observable.just(data));
+    }
+
+    private int getCurrentActivity(){
+        if(mActivitiesLifecycleCallbacks instanceof ChatNotifInterface) {
+            return Constant.NotificationId.CHAT;
+        }
+        return 0;
     }
 
     @Override

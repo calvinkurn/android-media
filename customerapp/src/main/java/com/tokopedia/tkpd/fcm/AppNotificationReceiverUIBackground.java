@@ -75,7 +75,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         if (isAllowedNotification(bundle)) {
             mFCMCacheManager.setCache();
             if (isApplinkNotification(bundle)) {
-                PushNotification.notify(mContext, bundle);
+                PushNotification.notify(mContext, bundle, 0);
             } else {
                 //TODO this function for divide the new and old flow(that still supported)
                 // next if complete new plz to delete
