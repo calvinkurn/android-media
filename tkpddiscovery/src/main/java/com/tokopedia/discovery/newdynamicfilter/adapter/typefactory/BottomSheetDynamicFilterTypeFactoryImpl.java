@@ -10,13 +10,14 @@ import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilter
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterItemToggleViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterNoViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterViewHolder;
+import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 public class BottomSheetDynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
 
-    private DynamicFilterView filterView;
+    private BottomSheetDynamicFilterView filterView;
 
-    public BottomSheetDynamicFilterTypeFactoryImpl(DynamicFilterView filterView) {
+    public BottomSheetDynamicFilterTypeFactoryImpl(BottomSheetDynamicFilterView filterView) {
         this.filterView = filterView;
     }
 

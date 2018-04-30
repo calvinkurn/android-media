@@ -70,6 +70,11 @@ public class Option implements Parcelable {
 
     String inputState = "";
 
+
+    public boolean isCategoryOption() {
+        return Option.KEY_CATEGORY.equals(getKey());
+    }
+
     /**
      * @return The name
      */

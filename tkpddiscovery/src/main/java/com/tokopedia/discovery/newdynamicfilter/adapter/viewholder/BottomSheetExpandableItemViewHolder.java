@@ -11,6 +11,7 @@ import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.adapter.BottomSheetExpandableItemSelectedListAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.ExpandableItemSelectedListAdapter;
+import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder {
@@ -20,9 +21,9 @@ public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder
     View seeAllButton;
     RecyclerView recyclerView;
     BottomSheetExpandableItemSelectedListAdapter adapter;
-    DynamicFilterView filterView;
+    BottomSheetDynamicFilterView filterView;
 
-    public BottomSheetExpandableItemViewHolder(View itemView, DynamicFilterView filterView) {
+    public BottomSheetExpandableItemViewHolder(View itemView, BottomSheetDynamicFilterView filterView) {
         super(itemView);
         this.filterView = filterView;
         titleContainer = (LinearLayout) itemView.findViewById(R.id.title_container);
@@ -52,7 +53,7 @@ public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder
             seeAllButton.setVisibility(View.GONE);
         }
 
-        adapter.setSelectedOptionsList(filterView.getPresetOptions(filter));
+        adapter.setSelectedOptionsList(filterView.getSelectedOptions(filter));
     }
 
     private boolean hasCustomOptions(Filter filter) {

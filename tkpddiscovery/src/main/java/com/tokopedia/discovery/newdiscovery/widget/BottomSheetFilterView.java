@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.widget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
@@ -26,15 +27,19 @@ import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.list.widget.AlphabeticalSideBar;
 import com.tokopedia.design.search.EmptySearchResultView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdynamicfilter.AbstractDynamicFilterDetailActivity;
+import com.tokopedia.discovery.newdynamicfilter.DynamicFilterCategoryActivity;
+import com.tokopedia.discovery.newdynamicfilter.DynamicFilterLocationActivity;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.BottomSheetDynamicFilterTypeFactoryImpl;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
-import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactoryImpl;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterDbHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
+import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
-import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +47,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.core.discovery.model.Option.KEY_CATEGORY;
 import static com.tokopedia.core.discovery.model.Option.METRIC_INTERNATIONAL;
 
@@ -49,7 +60,7 @@ import static com.tokopedia.core.discovery.model.Option.METRIC_INTERNATIONAL;
  * Created by henrypriyono on 12/03/18.
  */
 
-public class BottomSheetFilterView extends BaseCustomView implements DynamicFilterView, DynamicFilterDetailView {
+public class BottomSheetFilterView extends BaseCustomView implements BottomSheetDynamicFilterView, DynamicFilterDetailView {
 
     public static final String EXTRA_SELECTED_FILTERS = "EXTRA_SELECTED_FILTERS";
     public static final String EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST";
@@ -174,13 +185,13 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
 
     @Override
     public void onExpandableItemClicked(Filter filter) {
-        activeFilterDetailOptionList = filter.getOptions();
-        enrichWithInputState(filter);
-        initFilterDetailTopBar(filter);
-        initFilterDetailSearchView(filter);
-        initFilterDetailRecyclerView();
-        loadFilterDetailItems(activeFilterDetailOptionList);
-        showFilterDetailPage();
+        selectedExpandableItemPosition = filterMainAdapter.getItemPosition(filter);
+        if (filter.isCategoryFilter()) {
+            callback.launchFilterCategoryPage(filter, selectedCategoryRootId, selectedCategoryId);
+        } else {
+            enrichWithInputState(filter);
+            callback.launchFilterDetailPage(filter);
+        }
     }
 
     private void enrichWithInputState(Filter filter) {
@@ -214,18 +225,6 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
 
     @Override
     public List<Option> getSelectedOptions(Filter filter) {
-        List<Option> selectedOptions = new ArrayList<>();
-
-        if (filter.isCategoryFilter() && isCategorySelected()) {
-            selectedOptions.add(getSelectedCategoryAsOption());
-        } else {
-            selectedOptions.addAll(getCheckedOptionList(filter));
-        }
-        return selectedOptions;
-    }
-
-    @Override
-    public List<Option> getPresetOptions(Filter filter) {
         enrichWithInputState(filter);
 
         List<Option> selectedOptions = new ArrayList<>();
@@ -397,7 +396,7 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
 
     public void launchFilterBottomSheet() {
         if (bottomSheetBehavior != null) {
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
     }
 
@@ -420,22 +419,10 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
     private void loadFilterData(List<Filter> filterList) {
         List<Filter> list = new ArrayList<>();
         list.addAll(filterList);
-        removeCategoryFilter(list);
         removeFiltersWithEmptyOption(list);
         mergeSizeFilterOptionsWithSameValue(list);
         removeBrandFilterOptionsWithSameValue(list);
         filterMainAdapter.setFilterList(list);
-    }
-
-    private void removeCategoryFilter(List<Filter> filterList) {
-        Iterator<Filter> iterator = filterList.iterator();
-        while (iterator.hasNext()) {
-            Filter filter = iterator.next();
-            if (filter.isCategoryFilter()) {
-                iterator.remove();
-                break;
-            }
-        }
     }
 
     private void removeFiltersWithEmptyOption(List<Filter> filterList) {
@@ -674,6 +661,21 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
         pressedSliderMaxValueState = maxValue;
     }
 
+    @Override
+    public boolean isSelectedCategory(Option option) {
+        return !TextUtils.isEmpty(selectedCategoryId)
+                &&  selectedCategoryId.equals(option.getValue());
+    }
+
+    @Override
+    public void selectCategory(Option option) {
+        FilterFlagSelectedModel filterFlagSelectedModel = new FilterFlagSelectedModel();
+        FilterHelper.populateWithSelectedCategory(filterMainAdapter.getFilterList(), filterFlagSelectedModel, option.getValue());
+        selectedCategoryId = filterFlagSelectedModel.getCategoryId();
+        selectedCategoryName = filterFlagSelectedModel.getSelectedCategoryName();
+        selectedCategoryRootId = filterFlagSelectedModel.getSelectedCategoryRootId();
+    }
+
     private HashMap<String, String> generateSelectedFilterMap() {
         HashMap<String, String> selectedFilterMap = new HashMap<>();
 
@@ -743,6 +745,69 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
         return model;
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case AbstractDynamicFilterDetailActivity.REQUEST_CODE:
+                    handleResultFromDetailPage(data);
+                    break;
+                case DynamicFilterLocationActivity.REQUEST_CODE:
+                    handleResultFromLocationPage();
+                    break;
+                case DynamicFilterCategoryActivity.REQUEST_CODE:
+                    handleResultFromCategoryPage(data);
+                    break;
+            }
+            filterMainAdapter.notifyItemChanged(selectedExpandableItemPosition);
+        }
+    }
+
+    private void handleResultFromDetailPage(Intent data) {
+        List<Option> optionList
+                = data.getParcelableArrayListExtra(AbstractDynamicFilterDetailActivity.EXTRA_RESULT);
+        for (Option option : optionList) {
+            OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
+        }
+    }
+
+    private void handleResultFromLocationPage() {
+        Observable.create(new Observable.OnSubscribe<List<Option>>() {
+            @Override
+            public void call(Subscriber<? super List<Option>> subscriber) {
+                subscriber.onNext(FilterDbHelper.loadLocationFilterOptions());
+            }
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Option>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Option> optionList) {
+                        for (Option option : optionList) {
+                            OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
+                        }
+                        filterMainAdapter.notifyItemChanged(selectedExpandableItemPosition);
+                    }
+                });
+    }
+
+    private void handleResultFromCategoryPage(Intent data) {
+        selectedCategoryId
+                = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID);
+        selectedCategoryRootId
+                = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ROOT_ID);
+        selectedCategoryName
+                = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
+    }
+
     public interface Callback {
         void onApplyFilter(HashMap<String, String> selectedFilter,
                            FilterFlagSelectedModel filterFlagSelectedModel);
@@ -750,6 +815,9 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
         void onHide();
         boolean isSearchShown();
         void hideKeyboard();
+
+        void launchFilterCategoryPage(Filter filter, String selectedCategoryRootId, String selectedCategoryId);
+        void launchFilterDetailPage(Filter filter);
     }
 
     private class OptionSearchFilter extends android.widget.Filter {

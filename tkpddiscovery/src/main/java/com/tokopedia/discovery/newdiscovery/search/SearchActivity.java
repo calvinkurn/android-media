@@ -33,6 +33,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 
@@ -355,6 +356,12 @@ public class SearchActivity extends DiscoveryActivity
         initBottomSheetListener();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        bottomSheetFilterView.onActivityResult(requestCode, resultCode, data);
+    }
+
     private void initBottomSheetListener() {
         bottomSheetFilterView.setCallback(new BottomSheetFilterView.Callback() {
             @Override
@@ -382,6 +389,16 @@ public class SearchActivity extends DiscoveryActivity
             @Override
             public void hideKeyboard() {
                 KeyboardHandler.hideSoftKeyboard(SearchActivity.this);
+            }
+
+            @Override
+            public void launchFilterCategoryPage(Filter filter, String selectedCategoryRootId, String selectedCategoryId) {
+                FilterDetailActivityRouter.launchCategoryActivity(SearchActivity.this, filter, selectedCategoryRootId, selectedCategoryId);
+            }
+
+            @Override
+            public void launchFilterDetailPage(Filter filter) {
+                FilterDetailActivityRouter.launchDetailActivity(SearchActivity.this, filter);
             }
         });
     }
