@@ -189,8 +189,7 @@ public interface TkpdCoreRouter {
 
     void sendTrackingGroupChatLeftNavigation();
 
-    Observable<TKPDMapParam<String,Object>> verifyEventPromo(RequestParams requestParams);
-}
+    Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams);
 
     String getDesktopLinkGroupChat();
 }

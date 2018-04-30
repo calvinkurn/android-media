@@ -1,11 +1,11 @@
 package com.tokopedia.loyalty.view.presenter;
 
-import com.google.gson.JsonObject;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.domain.RequestParams;
 import android.support.annotation.NonNull;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -25,7 +25,6 @@ import com.tokopedia.loyalty.view.view.IPromoCouponView;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -55,10 +54,11 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         //param.put("user_id", SessionHandler.getLoginID(view.getContext()));
-        if (platform.equalsIgnoreCase(FLIGHT_STRING)){
+        if (platform.equalsIgnoreCase(FLIGHT_STRING)) {
             platform = LoyaltyActivity.DIGITAL_STRING;
             param.put("category_id", view.getCategoryId());
-        };
+        }
+        ;
         param.put("type", platform);
 
         //TODO Revert Later
@@ -95,7 +95,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                     @Override
                     public void onNext(CouponsDataWrapper wrapper) {
                         if (wrapper.getCoupons().size() < 1) {
-                            if (wrapper.getEmptyMessage() != null){
+                            if (wrapper.getEmptyMessage() != null) {
                                 view.couponDataNoResult(
                                         wrapper.getEmptyMessage().getTitle(),
                                         wrapper.getEmptyMessage().getSubTitle()
@@ -122,7 +122,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         //TODO Revert Later
         promoCouponInteractor.getCouponList(
                 AuthUtil.generateParamsNetwork(view.getContext(), param),
-                new Subscriber<List<CouponsDataWrapper>>() {
+                new Subscriber<CouponsDataWrapper>() {
                     @Override
                     public void onCompleted() {
                         view.enableSwipeRefresh();
@@ -150,11 +150,18 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                     }
 
                     @Override
-                    public void onNext(List<CouponsDataWrapper> couponData) {
-                        if (couponData.size() < 1) {
-                            view.couponDataNoResult();
+                    public void onNext(CouponsDataWrapper wrapper) {
+                        if (wrapper.getCoupons().size() < 1) {
+                            if (wrapper.getEmptyMessage() != null) {
+                                view.couponDataNoResult(
+                                        wrapper.getEmptyMessage().getTitle(),
+                                        wrapper.getEmptyMessage().getSubTitle()
+                                );
+                            } else {
+                                view.couponDataNoResult();
+                            }
                         } else {
-                            view.renderCouponListDataResult(couponData);
+                            view.renderCouponListDataResult(wrapper.getCoupons());
                         }
                     }
                 });
@@ -215,6 +222,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 AuthUtil.generateParamsNetwork(view.getContext(), param
                 ), makeDigitalCouponSubscriber(couponData));
     }
+
     @Override
     public void submitFlightVoucher(final CouponData data, String cartId) {
         view.showProgressLoading();
@@ -259,6 +267,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             }
         };
     }
+
     @Override
     public void submitEventVoucher(final CouponData couponData, JsonObject requestBody, boolean flag) {
         view.showProgressLoading();

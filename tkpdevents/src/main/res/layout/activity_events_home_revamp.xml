@@ -57,7 +57,7 @@
                         <com.tkpd.library.ui.widget.TouchViewPager
                             android:id="@+id/event_bannerpager"
                             android:layout_width="0dp"
-                            android:layout_height="@dimen/banner_height"
+                            android:layout_height="@dimen/dp_180"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -69,10 +69,10 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginEnd="@dimen/new_margin_small"
-                            android:layout_marginLeft="@dimen/margin_default"
+                            android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginRight="@dimen/new_margin_small"
-                            android:layout_marginStart="@dimen/margin_default"
-                            android:padding="@dimen/divider_height_thin"
+                            android:layout_marginStart="@dimen/dp_16"
+                            android:padding="@dimen/dp_2"
                             app:centered="false"
                             app:fillColor="@color/green_nob"
                             app:layout_constraintBottom_toBottomOf="@+id/tv_promo_codes"
@@ -81,7 +81,7 @@
                             app:layout_constraintTop_toTopOf="@+id/tv_promo_codes"
                             app:layout_constraintVertical_bias="0.5"
                             app:pageColor="@color/grey_400"
-                            app:radius="@dimen/margin_padding_small"
+                            app:radius="@dimen/dp_4"
                             app:strokeColor="@color/grey_400" />
 
                         <TextView
@@ -89,8 +89,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical|right"
-                            android:layout_marginEnd="@dimen/margin_default"
-                            android:layout_marginRight="@dimen/margin_default"
+                            android:layout_marginEnd="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
                             android:layout_marginTop="@dimen/new_margin_sm"
                             android:clickable="false"
                             android:drawableRight="@drawable/ic_arrow_right"
@@ -111,7 +111,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/new_margin_sm"
-                        android:layout_marginTop="@dimen/margin_default"
+                        android:layout_marginTop="@dimen/dp_16"
                         android:background="@color/white"
                         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -119,11 +119,11 @@
                             android:id="@+id/tv12_topevents"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/margin_default"
-                            android:layout_marginStart="@dimen/margin_default"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginStart="@dimen/dp_16"
                             android:text="Top Events"
                             android:textColor="@color/black_70"
-                            android:textSize="@dimen/font_smaller"
+                            android:textSize="@dimen/sp_13"
                             android:textStyle="bold"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -132,15 +132,15 @@
                             android:id="@+id/viewpager_top_events"
                             android:layout_width="0dp"
                             android:layout_height="216dp"
-                            android:layout_marginTop="@dimen/margin_default"
+                            android:layout_marginTop="@dimen/dp_16"
                             android:background="@color/white"
                             android:clipToPadding="false"
                             android:overScrollMode="never"
-                            android:paddingBottom="@dimen/margin_default"
+                            android:paddingBottom="@dimen/dp_16"
                             android:paddingEnd="@dimen/new_margin_sm"
-                            android:paddingLeft="@dimen/margin_default"
+                            android:paddingLeft="@dimen/dp_16"
                             android:paddingRight="@dimen/new_margin_sm"
-                            android:paddingStart="@dimen/margin_default"
+                            android:paddingStart="@dimen/dp_16"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/tv12_topevents" />
@@ -149,15 +149,15 @@
                             android:id="@+id/tv_addtocalendar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/margin_default"
-                            android:layout_marginStart="@dimen/margin_default"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginStart="@dimen/dp_16"
                             android:drawableLeft="@drawable/ic_event_calendar_white"
-                            android:drawablePadding="@dimen/new_margin_medsmall"
+                            android:drawablePadding="@dimen/dp_12"
                             android:drawableStart="@drawable/ic_event_calendar_white"
                             android:drawableTint="@color/green_nob"
                             android:text="Lihat Kalendar Event"
                             android:textColor="@color/green_nob"
-                            android:textSize="@dimen/font_smaller"
+                            android:textSize="@dimen/sp_13"
                             android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -170,7 +170,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/divider_height_thin"
+                android:layout_height="@dimen/dp_2"
                 android:background="@color/grey_200" />
 
             <android.support.design.widget.TabLayout
@@ -211,8 +211,8 @@
 
         <ProgressBar
             android:id="@+id/prog_bar"
-            android:layout_width="@dimen/progbar_height"
-            android:layout_height="@dimen/progbar_height"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
             android:layout_gravity="center" />
     </FrameLayout>
 </FrameLayout>

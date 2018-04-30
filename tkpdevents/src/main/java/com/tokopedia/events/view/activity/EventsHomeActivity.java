@@ -39,7 +39,6 @@ import com.tokopedia.events.view.adapter.CardPagerAdapter;
 import com.tokopedia.events.view.adapter.CategoryFragmentPagerAdapter;
 import com.tokopedia.events.view.adapter.SlidingImageAdapter;
 import com.tokopedia.events.view.contractor.EventsContract;
-import com.tokopedia.events.view.customview.EventCategoryView;
 import com.tokopedia.events.view.fragment.CategoryFragment;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
 import com.tokopedia.events.view.utils.CirclePageIndicator;
@@ -303,7 +302,6 @@ public class EventsHomeActivity extends TActivity
         tabs.setupWithViewPager(categoryViewPager);
         categoryViewPager.setCurrentItem(defaultViewPagerPos);
         categoryViewPager.setSaveFromParentEnabled(false);
-        indicatorLayout.setVisibility(View.VISIBLE);
         if (defaultViewPagerPos == 0) {
             IFragmentLifecycleCallback fragmentToShow = (CategoryFragment) categoryTabsPagerAdapter.getItem(defaultViewPagerPos);
             fragmentToShow.fragmentResume();

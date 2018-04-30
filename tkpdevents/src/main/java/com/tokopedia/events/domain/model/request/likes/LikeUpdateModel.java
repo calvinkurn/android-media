@@ -1,9 +1,7 @@
 package com.tokopedia.events.domain.model.request.likes;
 
-import javax.annotation.Generated;
 import com.google.gson.annotations.SerializedName;
 
-@Generated("com.robohorse.robopojogenerator")
 public class LikeUpdateModel{
 
 	@SerializedName("rating")

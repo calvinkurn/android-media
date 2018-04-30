@@ -1,6 +1,5 @@
 package com.tokopedia.events.domain.model;
 
-import javax.annotation.Generated;
 import com.google.gson.annotations.SerializedName;
 
 public class Catalog{

@@ -11,12 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
@@ -35,6 +37,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
     private List<CategoryItemsViewModel> categoryItems;
     private Context context;
     private int redColor;
+    private boolean isTrackingEnabled;
 
     public EventCategoryAdapterRevamp(Context context, List<CategoryItemsViewModel> categoryItems) {
         this.context = context;
@@ -70,7 +73,8 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
         public TextView eventTime;
         @BindView(R2.id.tv3_tag)
         public TextView tvDisplayTag;
-        int index;
+        private int index;
+        private boolean isShown = false;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
@@ -111,6 +115,10 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 tvAddToWishlist.setTextColor(redColor);
                 tvAddToWishlist.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist_red,
                         0, 0, 0);
+            } else {
+                tvAddToWishlist.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist,
+                        0, 0, 0);
+                tvAddToWishlist.setTextColor(context.getResources().getColor(R.color.black_54));
             }
 
             ImageHandler.loadImageCover2(eventImage, categoryItems.get(position).getThumbnailApp());
@@ -144,6 +152,13 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             return this.index;
         }
 
+        public boolean isShown() {
+            return isShown;
+        }
+
+        public void setShown(boolean shown) {
+            isShown = shown;
+        }
     }
 
     @Override
@@ -168,6 +183,17 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
         holder.setViewHolder(model, position);
     }
 
+    @Override
+    public void onViewAttachedToWindow(EventCategoryAdapterRevamp.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (!holder.isShown() && isTrackingEnabled) {
+            holder.setShown(true);
+            categoryItems.get(holder.getIndex()).setTrack(true);
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryItems.get(holder.getIndex()).getTitle()
+                    + " - " + holder.getIndex());
+        }
+    }
+
     class CategoryItemViewListener implements View.OnClickListener {
 
         ViewHolder mViewHolder;
@@ -183,6 +209,14 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             detailsIntent.putExtra("homedata", categoryItems.get(mViewHolder.getIndex()));
             context.startActivity(detailsIntent);
         }
+    }
+
+    public void enableTracking() {
+        isTrackingEnabled = true;
+    }
+
+    public void disableTracking() {
+        isTrackingEnabled = false;
     }
 
 }

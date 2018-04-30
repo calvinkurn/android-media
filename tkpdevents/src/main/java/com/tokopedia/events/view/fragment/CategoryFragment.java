@@ -8,14 +8,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.view.adapter.EventCategoryAdapterRevamp;
-import com.tokopedia.events.view.adapter.EventCategoryAdapter;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.IFragmentLifecycleCallback;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
@@ -32,7 +30,7 @@ public class CategoryFragment extends TkpdBaseV4Fragment implements IFragmentLif
     @BindView(R2.id.recyclerview_event)
     RecyclerView recyclerview;
     LinearLayoutManager linearLayoutManager;
-    EventCategoryAdapter eventCategoryAdapter;
+    EventCategoryAdapterRevamp eventCategoryAdapter;
 
     private Boolean isCreated = false;
     private Boolean isSelected = false;

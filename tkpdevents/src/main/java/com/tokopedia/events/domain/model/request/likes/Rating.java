@@ -1,75 +1,73 @@
 package com.tokopedia.events.domain.model.request.likes;
 
-import javax.annotation.Generated;
 import com.google.gson.annotations.SerializedName;
 
-@Generated("com.robohorse.robopojogenerator")
-public class Rating{
+public class Rating {
 
-	@SerializedName("feedback")
-	private String feedback;
+    @SerializedName("feedback")
+    private String feedback;
 
-	@SerializedName("user_id")
-	private int userId;
+    @SerializedName("user_id")
+    private int userId;
 
-	@SerializedName("product_id")
-	private int productId;
+    @SerializedName("product_id")
+    private int productId;
 
-	@SerializedName("rating")
-	private int rating;
+    @SerializedName("rating")
+    private int rating;
 
-	@SerializedName("is_liked")
-	private String isLiked;
+    @SerializedName("is_liked")
+    private String isLiked;
 
-	public void setFeedback(String feedback){
-		this.feedback = feedback;
-	}
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
 
-	public String getFeedback(){
-		return feedback;
-	}
+    public String getFeedback() {
+        return feedback;
+    }
 
-	public void setUserId(int userId){
-		this.userId = userId;
-	}
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
-	public int getUserId(){
-		return userId;
-	}
+    public int getUserId() {
+        return userId;
+    }
 
-	public void setProductId(int productId){
-		this.productId = productId;
-	}
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
 
-	public int getProductId(){
-		return productId;
-	}
+    public int getProductId() {
+        return productId;
+    }
 
-	public void setRating(int rating){
-		this.rating = rating;
-	}
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 
-	public int getRating(){
-		return rating;
-	}
+    public int getRating() {
+        return rating;
+    }
 
-	public void setIsLiked(String isLiked){
-		this.isLiked = isLiked;
-	}
+    public void setIsLiked(String isLiked) {
+        this.isLiked = isLiked;
+    }
 
-	public String getIsLiked(){
-		return isLiked;
-	}
+    public String getIsLiked() {
+        return isLiked;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"Rating{" + 
-			"feedback = '" + feedback + '\'' + 
-			",user_id = '" + userId + '\'' + 
-			",product_id = '" + productId + '\'' + 
-			",rating = '" + rating + '\'' + 
-			",is_liked = '" + isLiked + '\'' + 
-			"}";
-		}
+    @Override
+    public String toString() {
+        return
+                "Rating{" +
+                        "feedback = '" + feedback + '\'' +
+                        ",user_id = '" + userId + '\'' +
+                        ",product_id = '" + productId + '\'' +
+                        ",rating = '" + rating + '\'' +
+                        ",is_liked = '" + isLiked + '\'' +
+                        "}";
+    }
 }
