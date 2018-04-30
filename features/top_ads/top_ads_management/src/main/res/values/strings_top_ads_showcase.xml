@@ -14,6 +14,12 @@
     <string name="topads_showcase_home_desc_5">Pantau performa promo Anda pada tampilan statistik ini.</string>
     <string name="topads_showcase_home_title_6">Tambah Promo</string>
     <string name="topads_showcase_home_desc_6">Klik di sini untuk menambahkan promo Anda.</string>
+    <string name="topads_showcase_home_title_7">Rangkuman Data</string>
+    <string name="topads_showcase_home_desc_7">Filter data promo yang ingin ditampilkan.</string>
+    <string name="topads_showcase_home_title_8">Grup Promo</string>
+    <string name="topads_showcase_home_desc_8">Gunakan Grup Promo dan nikmati kemudahan mengatur Promo Anda dalam sekali pengaturan.</string>
+    <string name="topads_showcase_home_title_9">TopAds Kata Kunci</string>
+    <string name="topads_showcase_home_desc_9">Gunakan kata kunci agar promo Anda dapat tampil pada pencarian yang sesuai.</string>
 
     <!-- TOP ADS STATISTIK -->
     <string name="topads_showcase_statistics_title_1">Atur Periode</string>

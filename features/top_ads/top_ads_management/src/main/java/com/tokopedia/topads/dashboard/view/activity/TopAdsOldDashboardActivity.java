@@ -56,7 +56,7 @@ public class TopAdsOldDashboardActivity extends DrawerPresenterActivity implemen
     private ShowCaseDialog showCaseDialog;
 
 
-    @DeepLink(Constants.Applinks.SellerApp.TOPADS_DASHBOARD)
+    //@DeepLink(Constants.Applinks.SellerApp.TOPADS_DASHBOARD)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
