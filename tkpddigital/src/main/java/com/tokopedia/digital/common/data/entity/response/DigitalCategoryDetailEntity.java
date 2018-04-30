@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Created by Rizky on 30/04/18.
+ * @author rizkyfadillah on 30/04/18.
  */
 public class DigitalCategoryDetailEntity {
 
