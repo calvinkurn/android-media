@@ -11,10 +11,20 @@ import android.support.annotation.RequiresPermission;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.otaliastudios.cameraview.CameraListener;
+import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.Flash;
+import com.otaliastudios.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.imagepicker.R;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hendry on 19/04/18.
@@ -23,7 +33,16 @@ import com.tokopedia.imagepicker.R;
 public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
 
     private CameraView cameraView;
+    private ImageButton flashImageButton;
+    private ImageButton shutterImageButton;
+    private ImageButton flipImageButton;
     private OnImagePickerCameraFragmentListener onImagePickerCameraFragmentListener;
+
+    private boolean mCapturingPicture;
+    private Size mCaptureNativeSize;
+    private long mCaptureTime;
+    private List<Flash> supportedFlashList;
+    private int flashIndex;
 
     public interface OnImagePickerCameraFragmentListener {
         void onImageTaken(String filePath);
@@ -33,11 +52,6 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     @RequiresPermission("android.permission.CAMERA")
     public static ImagePickerCameraFragment newInstance() {
         return new ImagePickerCameraFragment();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -50,6 +64,83 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         cameraView = view.findViewById(R.id.camera_view);
+        flashImageButton = view.findViewById(R.id.image_button_flash);
+        shutterImageButton = view.findViewById(R.id.image_button_shutter);
+        flipImageButton = view.findViewById(R.id.image_button_flip);
+        cameraView.addCameraListener(new CameraListener() {
+            public void onCameraOpened(CameraOptions options) {
+                supportedFlashList = new ArrayList<>(cameraView.getCameraOptions().getSupportedFlash());
+            }
+
+            public void onPictureTaken(byte[] jpeg) {
+                onPicture(jpeg);
+            }
+
+            @Override
+            public void onVideoTaken(File video) {
+                super.onVideoTaken(video);
+            }
+        });
+        flashImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int flashIndexTemp = flashIndex++ % 4;
+                Flash flash = supportedFlashList.get(flashIndexTemp);
+                cameraView.set(flash);
+                Toast.makeText(getActivity(), flash.name() + " - " + flash.ordinal(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        shutterImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                capturePhoto();
+            }
+        });
+        flipImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleCamera();
+            }
+        });
+    }
+
+    private void capturePhoto() {
+        if (mCapturingPicture) {
+            return;
+        }
+        mCapturingPicture = true;
+        mCaptureTime = System.currentTimeMillis();
+        mCaptureNativeSize = cameraView.getPictureSize();
+        cameraView.capturePicture();
+    }
+
+    private void onPicture(byte[] jpeg) {
+        mCapturingPicture = false;
+        long callbackTime = System.currentTimeMillis();
+        // This can happen if picture was taken with a gesture.
+        if (mCaptureTime == 0) {
+            mCaptureTime = callbackTime - 300;
+        }
+        if (mCaptureNativeSize == null) {
+            mCaptureNativeSize = cameraView.getPictureSize();
+        }
+
+//        PicturePreviewActivity.setImage(jpeg);
+//        Intent intent = new Intent(CameraActivity.this, PicturePreviewActivity.class);
+//        intent.putExtra("delay", callbackTime - mCaptureTime);
+//        intent.putExtra("nativeWidth", mCaptureNativeSize.getWidth());
+//        intent.putExtra("nativeHeight", mCaptureNativeSize.getHeight());
+//        startActivity(intent);
+
+        mCaptureTime = 0;
+        mCaptureNativeSize = null;
+    }
+
+    private void toggleCamera() {
+        if (mCapturingPicture) {
+            return;
+        }
+        cameraView.toggleFacing();
     }
 
     @Override
