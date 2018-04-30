@@ -29,6 +29,8 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     public void detachView() {
         super.detachView();
         getKolCommentsUseCase.unsubscribe();
+        sendKolCommentUseCase.unsubscribe();
+        deleteKolCommentUseCase.unsubscribe();
     }
 
     @Inject
