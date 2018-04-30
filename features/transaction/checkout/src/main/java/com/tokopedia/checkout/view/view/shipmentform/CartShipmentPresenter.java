@@ -2,9 +2,12 @@ package com.tokopedia.checkout.view.view.shipmentform;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
+import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
@@ -74,8 +77,19 @@ public class CartShipmentPresenter implements ICartShipmentPresenter {
     @Override
     public void checkPromoShipment(Subscriber<CheckPromoCodeCartShipmentResult> subscriber,
                                    CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_CARTS,
+                new Gson().toJson(checkPromoCodeCartShipmentRequest));
+        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_PROMO_LANG,
+                CheckPromoCodeCartShipmentUseCase.PARAM_VALUE_LANG_ID);
+        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_PROMO_SUGGESTED,
+                CheckPromoCodeCartShipmentUseCase.PARAM_VALUE_NOT_SUGGESTED);
+
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(CheckPromoCodeCartShipmentUseCase.PARAM_CARTS, checkPromoCodeCartShipmentRequest);
+        requestParams.putObject(CheckPromoCodeCartShipmentUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
+                cartShipmentActivity.getGeneratedAuthParamNetwork(param));
+
+
         compositeSubscription.add(
                 checkPromoCodeCartShipmentUseCase.createObservable(requestParams)
                         .subscribeOn(Schedulers.newThread())

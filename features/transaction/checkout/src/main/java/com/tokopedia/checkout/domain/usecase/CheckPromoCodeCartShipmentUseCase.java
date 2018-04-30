@@ -1,15 +1,11 @@
 package com.tokopedia.checkout.domain.usecase;
 
-import com.google.gson.Gson;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.entity.response.checkpromocodefinal.CheckPromoCodeFinalDataResponse;
 import com.tokopedia.checkout.data.repository.ICartRepository;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -23,9 +19,18 @@ import rx.functions.Func1;
  */
 
 public class CheckPromoCodeCartShipmentUseCase extends UseCase<CheckPromoCodeCartShipmentResult> {
+    public static final String PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO = "PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO";
+    public static final String PARAM_PROMO_LANG = "lang";
     public static final String PARAM_CARTS = "carts";
+    public static final String PARAM_PROMO_SUGGESTED = "suggested";
+    public static final String PARAM_VALUE_SUGGESTED = "1";
+    public static final String PARAM_VALUE_NOT_SUGGESTED = "0";
+    public static final String PARAM_VALUE_LANG_ID = "id";
+
+
     private final ICartRepository cartRepository;
     private final IVoucherCouponMapper voucherCouponMapper;
+
 
     @Inject
     public CheckPromoCodeCartShipmentUseCase(ICartRepository cartRepository,
@@ -35,33 +40,29 @@ public class CheckPromoCodeCartShipmentUseCase extends UseCase<CheckPromoCodeCar
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Observable<CheckPromoCodeCartShipmentResult> createObservable(RequestParams requestParams) {
-        CheckPromoCodeCartShipmentRequest request =
-                (CheckPromoCodeCartShipmentRequest) requestParams.getObject(PARAM_CARTS);
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(PARAM_CARTS, new Gson().toJson(request));
-        param.put("lang", "id");
-        param.put("suggested", "0");
-        return cartRepository.checkPromoCodeCartShipment(AuthUtil.generateParamsNetwork(
-                MainApplication.getAppContext(), param
-        )).map(
-                new Func1<CheckPromoCodeFinalDataResponse, PromoCodeCartShipmentData>() {
-                    @Override
-                    public PromoCodeCartShipmentData call(
-                            CheckPromoCodeFinalDataResponse checkPromoCodeFinalDataResponse
-                    ) {
-                        return voucherCouponMapper.convertPromoCodeCartShipmentData(
-                                checkPromoCodeFinalDataResponse
-                        );
-                    }
-                }
-        ).map(
-                new Func1<PromoCodeCartShipmentData, CheckPromoCodeCartShipmentResult>() {
-                    @Override
-                    public CheckPromoCodeCartShipmentResult call(PromoCodeCartShipmentData promoCodeCartShipmentData) {
-                        return voucherCouponMapper.convertCheckPromoCodeCartShipmentResult(promoCodeCartShipmentData);
-                    }
-                }
-        );
+        TKPDMapParam<String, String> param =
+                (TKPDMapParam<String, String>) requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO);
+        return cartRepository.checkPromoCodeCartShipment(param)
+                .map(
+                        new Func1<CheckPromoCodeFinalDataResponse, PromoCodeCartShipmentData>() {
+                            @Override
+                            public PromoCodeCartShipmentData call(
+                                    CheckPromoCodeFinalDataResponse checkPromoCodeFinalDataResponse
+                            ) {
+                                return voucherCouponMapper.convertPromoCodeCartShipmentData(
+                                        checkPromoCodeFinalDataResponse
+                                );
+                            }
+                        }
+                ).map(
+                        new Func1<PromoCodeCartShipmentData, CheckPromoCodeCartShipmentResult>() {
+                            @Override
+                            public CheckPromoCodeCartShipmentResult call(PromoCodeCartShipmentData promoCodeCartShipmentData) {
+                                return voucherCouponMapper.convertCheckPromoCodeCartShipmentResult(promoCodeCartShipmentData);
+                            }
+                        }
+                );
     }
 }

@@ -15,6 +15,7 @@ import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.google.gson.Gson;
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -1588,8 +1589,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<CheckPromoCodeCartShipmentResult> tkpdLoyaltyGetCheckPromoCodeCartShipmentResultObservable(
             CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest
     ) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_CARTS,
+                new Gson().toJson(checkPromoCodeCartShipmentRequest));
+        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_PROMO_LANG,
+                CheckPromoCodeCartShipmentUseCase.PARAM_VALUE_LANG_ID);
+        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_PROMO_SUGGESTED,
+                CheckPromoCodeCartShipmentUseCase.PARAM_VALUE_NOT_SUGGESTED);
+
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putObject(CheckPromoCodeCartShipmentUseCase.PARAM_CARTS, checkPromoCodeCartShipmentRequest);
+        requestParams.putObject(CheckPromoCodeCartShipmentUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
+                com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
+                        this, param, userSession.getUserId(), userSession.getDeviceId())
+        );
         return CartComponentInjector.newInstance(cartApiServiceComponent)
                 .getCheckPromoCodeCartShipmentUseCase().createObservable(requestParams);
     }
