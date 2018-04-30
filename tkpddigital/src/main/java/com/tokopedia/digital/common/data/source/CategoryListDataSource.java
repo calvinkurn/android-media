@@ -39,7 +39,12 @@ public class CategoryListDataSource {
 
     public Observable<List<Category>> getCategoryList() {
         return Observable.concat(getDataFromDb(), getDataFromCloud())
-                .first(categoryEntities -> categoryEntities != null && !categoryEntities.isEmpty())
+                .first(new Func1<List<CategoryEntity>, Boolean>() {
+                    @Override
+                    public Boolean call(List<CategoryEntity> categoryEntities) {
+                        return categoryEntities != null;
+                    }
+                })
                 .map(categoryMapper);
     }
 
