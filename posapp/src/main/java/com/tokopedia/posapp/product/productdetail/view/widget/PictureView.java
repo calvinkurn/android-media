@@ -97,10 +97,10 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
             productImageList.add(ProductImage.Builder.aProductImage()
                     .setImageSrc300(resUri.toString())
                     .setImageDescription("").build());
-            imagePagerAdapter.addAll(productImageList);
+            imagePagerAdapter.addAllWithoutSort(productImageList);
             indicator.notifyDataSetChanged();
         } else {
-            imagePagerAdapter.addAll(productImageList);
+            imagePagerAdapter.addAllWithoutSort(productImageList);
             indicator.notifyDataSetChanged();
             imagePagerAdapter.setActionListener(new PictureView.PagerAdapterAction());
         }
