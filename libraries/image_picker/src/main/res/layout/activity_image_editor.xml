@@ -64,7 +64,9 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:visibility="visible"
-                    tools:visibility="visible">
+                    tools:visibility="visible"
+                    android:divider="@drawable/bg_line_separator"
+                    android:showDividers="beginning">
 
                     <com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget
                         android:id="@+id/image_edit_action_main_widget"
@@ -160,15 +162,6 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/downloading_images" />
         </LinearLayout>
-
-        <View
-            android:id="@+id/blocking_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            tools:visibility="gone"
-            android:clickable="true"
-            android:focusable="true" />
 
     </FrameLayout>
 
