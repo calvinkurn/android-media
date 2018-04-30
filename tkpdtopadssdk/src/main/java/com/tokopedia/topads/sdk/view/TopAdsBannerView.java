@@ -99,9 +99,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         if (cpm != null && cpm.getCpmShop() != null) {
             ArrayList<Item> items = new ArrayList<>();
             items.add(new BannerShopViewModel(cpm, appLink, adsClickUrl));
-            if (cpm.getCpmShop().getProducts().size() > 1) {
-                items.add(new BannerShopProductViewModel(cpm, appLink, adsClickUrl));
-            }
+            items.add(new BannerShopProductViewModel(cpm, appLink, adsClickUrl));
             bannerAdsAdapter.setList(items);
         }
         for (int i = 0; i < 2; i++) {

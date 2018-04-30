@@ -3,14 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_72"
+    android:layout_height="68dp"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/dp_5"
         android:paddingRight="@dimen/dp_10">
 
         <android.support.v7.widget.RecyclerView
