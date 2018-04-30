@@ -167,14 +167,12 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
             @Override
             public void onError(Throwable e) {
-                Log.e("shakeshake",e.getMessage());
                 e.printStackTrace();
             }
 
             @Override
             public void onNext(Long l) {
                 if(l==SHAKE_SHAKE_WAIT_TIME_SEC && !secondShakeHappen) {
-                    Log.e("shake_shake","tier finish unsubscripbe called outer");
                     finishShake();
                     return;
                 }
@@ -186,7 +184,6 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
         });
     }
     void finishShake() {
-        Log.e("shake_shake","fihnish called called outer");
         if(subscription != null)
             subscription.unsubscribe();
         getView().setInvisibleCounter();
