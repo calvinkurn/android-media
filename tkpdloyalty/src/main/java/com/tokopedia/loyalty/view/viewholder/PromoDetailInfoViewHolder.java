@@ -49,6 +49,7 @@ public class PromoDetailInfoViewHolder extends RecyclerView.ViewHolder {
         this.tvPromoDetailTitle.setText(Html.fromHtml(holderData.getTitle()));
         this.tvPromoDetailPeriod.setText(holderData.getPromoPeriod());
         this.tvPromoDetailMinTransactionLabel.setText(getTransactionLabel(holderData.getMinTransaction()));
+        this.tvPromoDetailMinTransaction.setVisibility(isVisible(holderData.getMinTransaction()));
         this.tvPromoDetailMinTransaction.setText(holderData.getMinTransaction());
         this.fabPromoDetailShare.setOnClickListener(promoShareListener(holderData.getPromoData()));
     }
@@ -60,6 +61,10 @@ public class PromoDetailInfoViewHolder extends RecyclerView.ViewHolder {
                 adapterActionListener.onItemPromoShareClicked(promoData);
             }
         };
+    }
+
+    private int isVisible(String minTransaction) {
+        return (TextUtils.isEmpty(minTransaction)) ? View.GONE : View.VISIBLE;
     }
 
     private int getTransactionLabel(String minTransaction) {
