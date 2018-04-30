@@ -78,6 +78,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private TextView orderId;
     private ImageView copyOrderId;
     private View containerDownloadEticket;
+    private LinearLayout containerCancellation;
     private TextView orderStatus;
     private TextView transactionDate;
     private View layoutExpendablePassenger;
@@ -167,6 +168,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         tvPaymentCostLabel = (TextView) view.findViewById(R.id.tv_payment_cost_label);
         tvPaymentDueDate = (TextView) view.findViewById(R.id.tv_payment_due_date);
         progressDialog = new ProgressDialog(getActivity());
+
+        containerCancellation = view.findViewById(R.id.cancellation_container);
 
         setViewClickListener();
 
@@ -503,6 +506,16 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void hidePaymentDueDate() {
         paymentDueDateLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showCancellationContainer() {
+        containerCancellation.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideCancellationContainer() {
+        containerCancellation.setVisibility(View.GONE);
     }
 
     @Override

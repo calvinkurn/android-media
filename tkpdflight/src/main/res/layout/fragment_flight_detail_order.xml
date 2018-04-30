@@ -161,7 +161,7 @@
                         style="@style/TextView.Small.BlackSecondary"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:text="@string/flight_order_detail_due_date_label"/>
+                        android:text="@string/flight_order_detail_due_date_label" />
 
                     <TextView
                         android:id="@+id/tv_payment_due_date"
@@ -290,6 +290,29 @@
                 android:nestedScrollingEnabled="false"
                 android:paddingLeft="@dimen/dp_20"
                 android:paddingRight="@dimen/dp_20" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@color/white"
+            android:visibility="gone"
+            android:id="@+id/cancellation_container"
+            android:orientation="horizontal">
+
+            <com.tokopedia.design.component.TextViewCompat
+                style="@style/TextView.TitleBig.Bold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20"
+                android:paddingTop="@dimen/dp_16"
+                android:text="@string/flight_order_detail_cancellation_label"
+                android:textSize="@dimen/sp_18" />
 
         </LinearLayout>
 

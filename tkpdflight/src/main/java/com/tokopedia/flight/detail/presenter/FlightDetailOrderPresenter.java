@@ -160,6 +160,12 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 );
                 generateStatus(flightOrder.getStatus(), flightOrder.getStatusString());
                 renderPaymentInfo(flightOrder);
+
+                if (flightOrder.getCancellations() != null && flightOrder.getCancellations().size() > 0) {
+                    getView().showCancellationContainer();
+                } else {
+                    getView().hideCancellationContainer();
+                }
             }
         };
     }
