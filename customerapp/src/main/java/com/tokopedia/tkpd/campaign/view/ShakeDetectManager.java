@@ -8,7 +8,6 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -85,7 +84,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     private boolean isShakeShakeEnable() {
-        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true) ||  true ;
+        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true) ;
 
     }
 
@@ -105,7 +104,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         if(mShakeEnabler.hasMessages(MESSAGE_SHAKE_END)) {
             mShakeEnabler.removeMessages(MESSAGE_SHAKE_END);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
-            Log.e("shake_shake","sending end shake 1");
             return;
         }
 
@@ -113,9 +111,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
            /* mShakeEnabler.sendEmptyMessage(MESSAGE_DISABLE_SHAKE);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);*/
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
-            Log.e("shake_shake","sending end shake 2");
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG,SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND);
-            Log.e("shake_shake","sending end shake 3");
 
         }
     }
@@ -147,7 +143,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                    if(mShakeEnabler.hasMessages(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG)) {
                        mShakeEnabler.removeMessages(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG);
                        startShake(false);
-                       Log.e("shake_shake","sending end shake 0");
                    }
                    break;
                case MESSAGE_SHAKE_SHAKE_CONTINUE_LONG:

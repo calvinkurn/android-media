@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.campaign.view.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Vibrator;
-import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -81,13 +80,11 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
         } else {
             if(shakeUseCase != null)
-                Log.e("shake_shake","unsubscripbe called");
                 shakeUseCase.unsubscribe();
             if(isFirstShake) {
                 isFirstShake = false;
                 secondShakeHappen = true;
             }
-            Log.e("shake_shake","unsubscripbe called outer");
             getView().setInvisibleCounter();
             RequestParams requestParams = RequestParams.create();
             requestParams.putString(IS_AUDIO, "false");
