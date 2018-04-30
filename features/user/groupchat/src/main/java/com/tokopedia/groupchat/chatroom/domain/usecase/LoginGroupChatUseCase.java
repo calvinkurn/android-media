@@ -112,8 +112,7 @@ public class LoginGroupChatUseCase {
         String anonUserId = sharedPreferences.getString(GROUP_CHAT_ANON_USER_ID, "");
 
         if (TextUtils.isEmpty(anonUserId)) {
-            anonUserId = context.getString(R.string.anonymous) + UUID.randomUUID() + new
-                    Date().toString();
+            anonUserId = context.getString(R.string.anonymous) + UUID.randomUUID() + System.currentTimeMillis();
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(GROUP_CHAT_ANON_USER_ID, anonUserId);
