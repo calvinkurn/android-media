@@ -32,7 +32,7 @@ public class FlightOrderPassengerViewModelMapper {
         return viewModel;
     }
 
-    private List<FlightBookingAmenityViewModel> transformAmenities(List<PassengerAmentityEntity> amenities) {
+    public List<FlightBookingAmenityViewModel> transformAmenities(List<PassengerAmentityEntity> amenities) {
         List<FlightBookingAmenityViewModel> viewModels = new ArrayList<>();
 
         for (PassengerAmentityEntity amentityEntity : amenities) {
