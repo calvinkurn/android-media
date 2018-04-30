@@ -25,8 +25,8 @@ import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.design.component.FloatingButton;
-import com.tokopedia.design.label.DateLabelView;
 import com.tokopedia.design.label.LabelView;
+import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -72,17 +72,21 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private LabelView groupSummaryLabelView;
     private LabelView itemSummaryLabelView;
     private LabelView keywordLabelView;
+    private LabelView storeLabelView;
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private TopAdsStatisticPagerAdapter pagerAdapter;
+    private View contentStatisticsView;
 
-    DateLabelView dateLabelView;
+    private LabelView dateLabelView;
     Date startDate, endDate;
     List<Cell> cells;
     @TopAdsStatisticsType int selectedStatisticType;
 
     private int totalProductAd;
     private int totalGroupAd;
+
+    private Callback callback;
 
     @Inject
     TopAdsDashboardPresenter topAdsDashboardPresenter;
@@ -120,8 +124,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         initShopInfoComponent(view);
         initSummaryComponent(view);
         initStatisticComponent(view);
-        FloatingButton button = (FloatingButton) view.findViewById(R.id.button_add_promo);
-        button.setOnClickListener(new View.OnClickListener() {
+        FloatingButton button = (FloatingButton) view.findViewById(R.id.button_topads_add_promo);
+        button.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), TopAdsAddingPromoOptionActivity.class));
@@ -129,8 +133,17 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         });
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Callback){
+            callback = (Callback) context;
+        }
+    }
+
     private void initStatisticComponent(View view) {
-        statisticsOptionLabelView = view.findViewById(R.id.label_view_statistics);
+        contentStatisticsView = view.findViewById(R.id.topads_content_statistics);
+        statisticsOptionLabelView = (LabelView) view.findViewById(R.id.label_view_statistics);
         statisticsOptionLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -162,6 +175,50 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
             }
         });
+    }
+
+    public View getStatisticsOptionLabelView() {
+        return statisticsOptionLabelView;
+    }
+
+    public View getDateLabelView() {
+        return dateLabelView;
+    }
+
+    public View getContentStatisticsView() {
+        return contentStatisticsView;
+    }
+
+    public View getGroupSummaryLabelView() {
+        return groupSummaryLabelView;
+    }
+
+    public View getItemSummaryLabelView() {
+        return itemSummaryLabelView;
+    }
+
+    public View getKeywordLabelView() {
+        return keywordLabelView;
+    }
+
+    public View getStoreLabelView() {
+        return storeLabelView;
+    }
+
+    public ViewGroup getScrollView(){
+        if (getView() != null) {
+            return getView().findViewById(R.id.scroll_view);
+        } else {
+            return null;
+        }
+    }
+
+    public View getButtonAddPromo(){
+        if (getView() != null) {
+            return getView().findViewById(R.id.button_add_promo);
+        } else {
+            return null;
+        }
     }
 
     private void trackingStatisticBar(int position) {
@@ -220,6 +277,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         groupSummaryLabelView = view.findViewById(R.id.label_view_group_summary);
         itemSummaryLabelView = view.findViewById(R.id.label_view_item_summary);
         keywordLabelView = view.findViewById(R.id.label_view_keyword);
+        storeLabelView = (LabelView) view.findViewById(R.id.label_view_shop);
         groupSummaryLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -236,6 +294,12 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             @Override
             public void onClick(View view) {
                 onSummaryKeywordClicked();
+            }
+        });
+        storeLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
     }
@@ -311,7 +375,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                 goToAddCredit();
             }
         });
-        dateLabelView = view.findViewById(R.id.date_label_view);
+        dateLabelView = (LabelView) view.findViewById(R.id.date_label_view);
         dateLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -428,6 +492,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         groupSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductGroupAd()));
         itemSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductAd()));
         keywordLabelView.setContent(String.valueOf(totalAd.getTotalKeyword()));
+        startShowCase();
     }
 
     @Override
@@ -445,7 +510,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     public void updateLabelDateView(Date startDate, Date endDate) {
-        dateLabelView.setDate(startDate, endDate);
+        dateLabelView.setContent(DateLabelUtils.getRangeDateFormatted(getActivity(), startDate.getTime(), endDate.getTime()));
     }
 
     @Override
@@ -477,6 +542,12 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         bottomSheetDialog.show();
 
 
+    }
+
+    public void startShowCase(){
+        if (callback != null){
+            callback.startShowCase();
+        }
     }
 
     private void onCostSelected(){
@@ -555,5 +626,9 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             default:
                 break;
         }
+    }
+
+    public interface Callback{
+        void startShowCase();
     }
 }
