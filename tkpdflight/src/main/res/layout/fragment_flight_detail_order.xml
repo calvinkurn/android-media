@@ -294,19 +294,22 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/cancellation_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
             android:background="@color/white"
-            android:visibility="gone"
-            android:id="@+id/cancellation_container"
-            android:orientation="horizontal">
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <com.tokopedia.design.component.TextViewCompat
                 style="@style/TextView.TitleBig.Bold"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
                 android:paddingBottom="@dimen/dp_16"
                 android:paddingLeft="@dimen/dp_20"
                 android:paddingRight="@dimen/dp_20"

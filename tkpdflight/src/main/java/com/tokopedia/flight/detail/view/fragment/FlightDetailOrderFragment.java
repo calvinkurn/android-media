@@ -37,6 +37,7 @@ import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
+import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.view.FullDividerItemDecoration;
@@ -246,6 +247,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                     startActivity(((FlightModuleRouter) getActivity().getApplication())
                             .getWebviewActivity(getActivity(), invoiceLink));
                 }
+            }
+        });
+
+        containerCancellation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToCancellationListPage();
             }
         });
 
@@ -618,5 +626,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     private void showGreenSnackbar(int resId) {
         NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(resId));
+    }
+
+    private void navigateToCancellationListPage() {
+        startActivity(FlightCancellationListActivity.createIntent(getContext()));
     }
 }
