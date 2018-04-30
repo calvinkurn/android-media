@@ -291,7 +291,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.fingerprint)
 
     implementation rootProject.ext.miscDependencies.bcaOneClick
-    implementation rootProject.ext.tkpdDependencies.shopCommon
+    implementation project(rootProject.ext.features.shopCommon)
 
     implementation rootProject.ext.playServicesDependencies.remoteConfig
     implementation rootProject.ext.playServicesDependencies.firebase
