@@ -7,7 +7,7 @@
     <dimen name="dynamic_filter_item_padding">16dp</dimen>
     <dimen name="dynamic_filter_item_separator_height">16dp</dimen>
     <dimen name="color_item_icon_size">40dp</dimen>
-    <dimen name="chip_color_item_icon_size">20dp</dimen>
+    <dimen name="chip_color_item_icon_size">23dp</dimen>
     <dimen name="filter_detail_search_padding_top_bottom">14dp</dimen>
     <dimen name="filter_detail_search_padding_side">17dp</dimen>
     <dimen name="dynamic_filter_color_item_vertical_padding">8dp</dimen>
