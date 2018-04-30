@@ -38,7 +38,7 @@ ext {
     rulesVersion = "0.5"
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
-    reactNativeVersion = '0.51.0'
+    reactNativeVersion = '0.52.1'
     alibabaCoreLibVersion = '3.2.8'
 
     networkDependencies = [
@@ -244,6 +244,7 @@ ext {
             kol             : ":features:content:kol",
             groupchat       : ":features:user:groupchat",
             gamification    : ":features:promo:gamification",
+            profile         : ":features:user:profile",
             otp             : ":features:user:otp"
     ]
 
@@ -255,6 +256,7 @@ ext {
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
             useCase         : ":libraries:use_case",
+            fingerprint     : ":libraries:fingerprint",
             userSession     : ":libraries:user_session"
     ]
 

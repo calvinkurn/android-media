@@ -14,6 +14,7 @@ import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.ChooseTokocashAccountFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.LoginPhoneNumberFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.NotConnectedTokocashFragment;
+import com.tokopedia.session.register.registerphonenumber.view.fragment.AddNameFragment;
 import com.tokopedia.session.register.registerphonenumber.view.fragment.RegisterPhoneNumberFragment;
 import com.tokopedia.session.register.view.fragment.CreatePasswordFragment;
 import com.tokopedia.session.register.view.fragment.RegisterEmailFragment;
@@ -61,6 +62,7 @@ public interface SessionComponent {
 
     void inject(RegisterPhoneNumberFragment registerPhoneNumberFragment);
 
+    void inject(AddNameFragment addNameFragment);
 
     GetUserInfoUseCase getUserInfoUseCase();
 

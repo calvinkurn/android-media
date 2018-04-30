@@ -34,6 +34,7 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
+import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
 import com.tokopedia.session.register.registerphonenumber.view.activity.WelcomePageActivity;
 import com.tokopedia.session.register.registerphonenumber.view.listener.RegisterPhoneNumber;
@@ -52,6 +53,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     private static final int REQUEST_VERIFY_PHONE = 101;
     private static final int REQUEST_WELCOME_PAGE = 102;
+    private static final int REQUEST_ADD_NAME = 103;
 
     private EditText phoneNumber;
     private TextView nextButton;
@@ -249,15 +251,10 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void doRegisterPhoneNumber() {
-        presenter.registerPhoneNumber(phoneNumber.getText().toString());
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_VERIFY_PHONE
                 && resultCode == Activity.RESULT_OK) {
-            doRegisterPhoneNumber();
+            goToAddNamePage(phoneNumber.getText().toString());
         } else if (requestCode == REQUEST_WELCOME_PAGE) {
             if (resultCode == Activity.RESULT_OK) {
                 goToProfileCompletionPage();
@@ -265,26 +262,13 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
             }
+        } else if (requestCode == REQUEST_ADD_NAME) {
+            if (resultCode == Activity.RESULT_OK) {
+                goToWelcomePage();
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    @Override
-    public void showSuccessRegisterPhoneNumber(LoginRegisterPhoneNumberModel model) {
-        dismissLoading();
-        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterPhoneNumber());
-        if (model.getMakeLoginDomain().isLogin()) {
-            goToWelcomePage();
-        } else {
-            goToLoginPhoneNumber();
-        }
-    }
-
-    @Override
-    public void showErrorRegisterPhoneNumber(String message) {
-        dismissLoading();
-        showSnackbar(message);
     }
 
     @Override
@@ -292,14 +276,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         phoneNumber.clearFocus();
     }
 
-    private void showSnackbarErrorWithAction(String message) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                doRegisterPhoneNumber();
-            }
-        }).showRetrySnackbar();
-    }
+
 
     private void showSnackbar(String message) {
         NetworkErrorHelper.showSnackbar(getActivity(), message);
@@ -309,6 +286,11 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+    }
+
+    @Override
+    public void goToAddNamePage(String phoneNumber) {
+        startActivityForResult(AddNameActivity.newInstance(getActivity(), phoneNumber), REQUEST_ADD_NAME);
     }
 
     private void goToWelcomePage() {

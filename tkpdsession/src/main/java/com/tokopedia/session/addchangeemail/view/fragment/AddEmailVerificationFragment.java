@@ -220,7 +220,7 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
 
     @Override
     public void onErrorRequest(String error) {
-        if (error.contains(getString(R.string.limit_otp_reached))) {
+        if (error.contains(getActivity().getString(R.string.limit_otp_reached))) {
             limitOtp.setVisibility(View.VISIBLE);
             setLimitReachedCountdownText();
         } else {
