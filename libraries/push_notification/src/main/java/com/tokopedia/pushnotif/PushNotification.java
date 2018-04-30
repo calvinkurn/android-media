@@ -108,12 +108,4 @@ public class PushNotification {
 
         notificationManagerCompat.notify(notificationType, notifChat);
     }
-
-    private static boolean shouldNotify(Activity liveActivity, Activity comparisonActivity){
-        if(liveActivity == null){
-            return true;
-        }else {
-            return liveActivity instanceof ChatNotifInterface
-        }
-    }
 }
