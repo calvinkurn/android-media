@@ -4,7 +4,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 
 import com.tokopedia.events.view.fragment.CategoryFragment;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
@@ -23,11 +22,12 @@ public class CategoryFragmentPagerAdapter extends FragmentStatePagerAdapter {
     public CategoryFragmentPagerAdapter(FragmentManager fm, List<CategoryViewModel> categoryList) {
         super(fm);
         this.categoryList = categoryList;
-        for(int  i = 0; i<this.categoryList.size();i++){
+        for (int i = 0; i < this.categoryList.size(); i++) {
             CategoryViewModel model = this.categoryList.get(i);
-            if(model.getTitle().equals("Carousel") ||
+            if (model.getTitle().equals("Carousel") ||
                     model.getName().equals("carousel") ||
-                    model.getItems().size()==0) {
+                    model.getName().equalsIgnoreCase("top") ||
+                    model.getItems().size() == 0) {
                 this.categoryList.remove(i);
                 i--;
             }
