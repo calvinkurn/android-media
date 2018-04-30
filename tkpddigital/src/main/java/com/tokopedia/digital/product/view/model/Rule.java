@@ -3,16 +3,36 @@ package com.tokopedia.digital.product.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
 public class Rule implements Parcelable {
 
+    @SerializedName("maximum_length")
+    @Expose
     private int maximumLength;
+
+    @SerializedName("product_text")
+    @Expose
     private String productText;
+
+    @SerializedName("product_view_style")
+    @Expose
     private int productViewStyle;
+
+    @SerializedName("show_price")
+    @Expose
     private boolean showPrice;
+
+    @SerializedName("enable_voucher")
+    @Expose
     private boolean enableVoucher;
+
+    @SerializedName("button_text")
+    @Expose
     private String buttonText;
 
     public int getMaximumLength() {

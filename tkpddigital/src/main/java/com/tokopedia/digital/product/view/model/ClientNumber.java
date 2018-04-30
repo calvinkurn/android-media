@@ -3,6 +3,9 @@ package com.tokopedia.digital.product.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +19,32 @@ public class ClientNumber implements Parcelable {
     public static final String TYPE_INPUT_ALPHANUMERIC = "tel";
     public static final String DEFAULT_TYPE_CONTRACT = "client_number";
 
+    @SerializedName("name")
+    @Expose
     private String name;
+
+    @SerializedName("type")
+    @Expose
     private String type;
+
+    @SerializedName("text")
+    @Expose
     private String text;
+
+    @SerializedName("help")
+    @Expose
     private String help;
+
+    @SerializedName("placeholder")
+    @Expose
     private String placeholder;
+
+    @SerializedName("_default")
+    @Expose
     private String _default;
+
+    @SerializedName("validation")
+    @Expose
     private List<Validation> validation = new ArrayList<>();
 
     public String getName() {

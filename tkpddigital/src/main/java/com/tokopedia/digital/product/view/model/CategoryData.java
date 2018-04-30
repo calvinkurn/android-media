@@ -4,6 +4,9 @@ package com.tokopedia.digital.product.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,24 +32,72 @@ public class CategoryData implements Parcelable {
             STYLE_PRODUCT_CATEGORY_99
     };
 
+    @SerializedName("category_id")
+    @Expose
     private String categoryId;
+
+    @SerializedName("category_type")
+    @Expose
     private String categoryType;
 
+    @SerializedName("title_text")
+    @Expose
     private String titleText;
+
+    @SerializedName("name")
+    @Expose
     private String name;
+
+    @SerializedName("icon")
+    @Expose
     private String icon;
+
+    @SerializedName("icon_url")
+    @Expose
     private String iconUrl;
+
+    @SerializedName("teaser")
+    @Expose
     private Teaser teaser;
+
+    @SerializedName("is_new")
+    @Expose
     private boolean isNew;
+
+    @SerializedName("instant_checkout")
+    @Expose
     private boolean instantCheckout;
+
+    @SerializedName("slug")
+    @Expose
     private String slug;
+
+    @SerializedName("default_operator_id")
+    @Expose
     private String defaultOperatorId;
+
+    @SerializedName("operator_style")
+    @Expose
     private String operatorStyle;
+
+    @SerializedName("operator_label")
+    @Expose
     private String operatorLabel;
+
+    @SerializedName("clientnumber_list")
+    @Expose
     private List<ClientNumber> clientNumberList = new ArrayList<>();
+
+    @SerializedName("operator_list")
+    @Expose
     private List<Operator> operatorList = new ArrayList<>();
 
+    @SerializedName("banner_data_list_included")
+    @Expose
     private List<BannerData> bannerDataListIncluded = new ArrayList<>();
+
+    @SerializedName("other_banner_data_list_included")
+    @Expose
     private List<BannerData> otherBannerDataListIncluded = new ArrayList<>();
 
     private CategoryData(Builder builder) {

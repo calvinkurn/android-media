@@ -3,14 +3,21 @@ package com.tokopedia.digital.product.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
 
 public class Teaser implements Parcelable {
 
-
+    @SerializedName("title")
+    @Expose
     private String title;
+
+    @SerializedName("content")
+    @Expose
     private String content;
 
     public String getTitle() {

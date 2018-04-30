@@ -3,30 +3,84 @@ package com.tokopedia.digital.product.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author anggaprasetiyo on 4/25/17.
  */
 
 public class BannerData implements Parcelable {
+
     public static final String DEFAULT_TYPE_CONTRACT = "banner";
     public static final String OTHER_TYPE_CONTRACT = "other_banner";
+
+    @SerializedName("id")
+    @Expose
     private String id;
+
+    @SerializedName("type")
+    @Expose
     private String type;
+
+    @SerializedName("recharge_cms_banner_id")
+    @Expose
     private int rechargeCmsbannerId;
+
+    @SerializedName("file_name")
+    @Expose
     private String fileName;
+
+    @SerializedName("file_name_webp")
+    @Expose
     private String fileNameWebp;
+
+    @SerializedName("start_date")
+    @Expose
     private String startDate;
+
+    @SerializedName("end_date")
+    @Expose
     private String endDate;
+
+    @SerializedName("img_url")
+    @Expose
     private String imgUrl;
+
+    @SerializedName("priority")
+    @Expose
     private int priority;
+
+    @SerializedName("status")
+    @Expose
     private int status;
+
+    @SerializedName("title")
+    @Expose
     private String title;
+
+    @SerializedName("subtitle")
+    @Expose
     private String subtitle;
+
+    @SerializedName("promo_code")
+    @Expose
     private String promocode;
+
+    @SerializedName("data_title")
+    @Expose
     private String dataTitle;
+
+    @SerializedName("image")
+    @Expose
     private String image;
+
+    @SerializedName("link")
+    @Expose
     private String link;
 
+    @SerializedName("voucher_code_copied")
+    @Expose
     private boolean voucherCodeCopied;
 
     private BannerData(Builder builder) {

@@ -3,6 +3,9 @@ package com.tokopedia.digital.product.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,16 +15,49 @@ import java.util.List;
 public class Operator implements Parcelable {
 
     public static final String DEFAULT_TYPE_CONTRACT = "operator";
+
+    @SerializedName("operator_id")
+    @Expose
     private String operatorId;
+
+    @SerializedName("operator_type")
+    @Expose
     private String operatorType;
+
+    @SerializedName("name")
+    @Expose
     private String name;
+
+    @SerializedName("image")
+    @Expose
     private String image;
+
+    @SerializedName("lastorder_url")
+    @Expose
     private String lastorderUrl;
+
+    @SerializedName("default_product_id")
+    @Expose
     private int defaultProductId;
+
+    @SerializedName("rule")
+    @Expose
     private Rule rule;
+
+    @SerializedName("prefix_list")
+    @Expose
     private List<String> prefixList = new ArrayList<>();
+
+    @SerializedName("clientnumber_list")
+    @Expose
     private List<ClientNumber> clientNumberList = new ArrayList<>();
+
+    @SerializedName("product_list")
+    @Expose
     private List<Product> productList = new ArrayList<>();
+
+    @SerializedName("ussd_code")
+    @Expose
     private String ussdCode;
 
     public void setUssdCode(String ussdCode) {
