@@ -824,7 +824,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderPromoView(final boolean isCouponActive) {
+    public void renderPromoView(final boolean isCouponActive, final String defaultPromoTab) {
         if (isCouponActive) promoActivationTitle.setText(R.string.title_use_promo_code_and_voucher);
         else promoActivationTitle.setText(R.string.title_use_promo_code);
 
@@ -834,9 +834,18 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
                 Intent intent;
                 if (isCouponActive) {
-                    intent = LoyaltyActivity.newInstanceCouponActive(
-                            getActivity(), "marketplace", "marketplace"
-                    );
+                    if(defaultPromoTab.equals(LoyaltyActivity.COUPON_STATE)) {
+                        intent = LoyaltyActivity
+                                .newInstanceCouponActiveAndSelected(
+                                        getActivity(),
+                                        "marketplace",
+                                        "marketplace"
+                                );
+                    } else {
+                        intent = LoyaltyActivity.newInstanceCouponActive(
+                                getActivity(), "marketplace", "marketplace"
+                        );
+                    }
                 } else intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
                         "marketplace", "marketplace");
                 startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
@@ -859,6 +868,12 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void renderPartialOrder(boolean enableCancelPartial) {
         cartItemAdapter.setEnableCancelPartial(enableCancelPartial);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.processGetCartData();
     }
 
     @Override
