@@ -32,7 +32,7 @@ import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
  * @author ricoharisin .
  */
 
-public class ReactNavigationModule extends ReactContextBaseJavaModule {
+public class ReactNavigationModule extends ReactContextBaseJavaModule{
     private static final int LOGIN_REQUEST_CODE = 1005;
 
     private Context context;
@@ -133,5 +133,4 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
             getCurrentActivity().finish();
         }
     }
-
 }
