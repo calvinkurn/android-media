@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.constant.DigitalCategoryConstant;
@@ -16,6 +17,7 @@ import com.tokopedia.digital.common.data.entity.response.ResponseCategoryDetailI
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.view.model.CategoryData;
 
+import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -40,7 +42,12 @@ public class CategoryDetailDataSource {
 
     public Observable<CategoryData> getCategory(String categoryId, TKPDMapParam<String, String> param) {
         return Observable.concat(getDataFromLocal(categoryId), getDataFromCloud(categoryId, param))
-                .first(categoryData -> categoryData != null);
+                .first(new Func1<CategoryData, Boolean>() {
+                    @Override
+                    public Boolean call(CategoryData categoryData) {
+                        return categoryData != null;
+                    }
+                });
     }
 
     private Observable<CategoryData> getDataFromLocal(String categoryId) {
@@ -65,31 +72,44 @@ public class CategoryDetailDataSource {
 
     private Observable<CategoryData> getDataFromCloud(String categoryId, TKPDMapParam<String, String> param) {
         return digitalEndpointService.getApi().getCategory(categoryId, param)
-                .map(response -> new DigitalCategoryDetailEntity(
-                        response.body().convertDataObj(ResponseCategoryDetailData.class),
-                        response.body().convertIncludedList(ResponseCategoryDetailIncluded[].class)
-                ))
+                .map(new Func1<Response<TkpdDigitalResponse>, DigitalCategoryDetailEntity>() {
+                    @Override
+                    public DigitalCategoryDetailEntity call(Response<TkpdDigitalResponse> response) {
+                        return new DigitalCategoryDetailEntity(
+                                response.body().convertDataObj(ResponseCategoryDetailData.class),
+                                response.body().convertIncludedList(ResponseCategoryDetailIncluded[].class)
+                        );
+                    }
+                })
                 .doOnNext(saveToCache(categoryId))
                 .map(getFuncTransformCategoryData());
     }
 
     private Action1<DigitalCategoryDetailEntity> saveToCache(final String categoryId) {
-        return digitalCategoryDetailEntity -> {
-            globalCacheManager.setKey(DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId);
-            globalCacheManager.setValue(CacheUtil.convertModelToString(digitalCategoryDetailEntity,
-                    new TypeToken<DigitalCategoryDetailEntity>() {
-                    }.getType()));
-            globalCacheManager.setCacheDuration(600); // 10 minutes
-            globalCacheManager.store();
+        return new Action1<DigitalCategoryDetailEntity>() {
+            @Override
+            public void call(DigitalCategoryDetailEntity digitalCategoryDetailEntity) {
+                globalCacheManager.setKey(DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId);
+                globalCacheManager.setValue(CacheUtil.convertModelToString(digitalCategoryDetailEntity,
+                        new TypeToken<DigitalCategoryDetailEntity>() {
+                        }.getType()));
+                globalCacheManager.setCacheDuration(600); // 10 minutes
+                globalCacheManager.store();
+            }
         };
     }
 
     @NonNull
     private Func1<DigitalCategoryDetailEntity, CategoryData> getFuncTransformCategoryData() {
-        return digitalCategoryDetailEntity -> productDigitalMapper.transformCategoryData(
-                digitalCategoryDetailEntity.getData(),
-                digitalCategoryDetailEntity.getIncluded()
-        );
+        return new Func1<DigitalCategoryDetailEntity, CategoryData>() {
+            @Override
+            public CategoryData call(DigitalCategoryDetailEntity digitalCategoryDetailEntity) {
+                return productDigitalMapper.transformCategoryData(
+                        digitalCategoryDetailEntity.getData(),
+                        digitalCategoryDetailEntity.getIncluded()
+                );
+            }
+        };
     }
 
     public Observable<String> getHelpUrl(String categoryId) {

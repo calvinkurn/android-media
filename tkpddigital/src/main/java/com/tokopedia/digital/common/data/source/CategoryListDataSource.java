@@ -14,6 +14,7 @@ import java.util.List;
 
 import retrofit2.Response;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -45,15 +46,18 @@ public class CategoryListDataSource {
     private Observable<List<CategoryEntity>> getDataFromCloud() {
         return digitalEndpointService.getApi().getCategoryList()
                 .map(getFuncTransformCategoryEntityList())
-                .doOnNext(categoryEntityList -> {
-                    deleteCache(categoryEntityList);
-                    if (categoryEntityList != null) {
-                        globalCacheManager.setKey(KEY_CATEGORY_LIST);
-                        globalCacheManager.setValue(
-                                CacheUtil.convertListModelToString(categoryEntityList,
-                                        new TypeToken<List<CategoryEntity>>() {
-                                        }.getType()));
-                        globalCacheManager.store();
+                .doOnNext(new Action1<List<CategoryEntity>>() {
+                    @Override
+                    public void call(List<CategoryEntity> categoryEntities) {
+                        deleteCache(categoryEntities);
+                        if (categoryEntities != null) {
+                            globalCacheManager.setKey(KEY_CATEGORY_LIST);
+                            globalCacheManager.setValue(
+                                    CacheUtil.convertListModelToString(categoryEntities,
+                                            new TypeToken<List<CategoryEntity>>() {
+                                            }.getType()));
+                            globalCacheManager.store();
+                        }
                     }
                 });
     }
@@ -80,7 +84,12 @@ public class CategoryListDataSource {
     }
 
     private Func1<Response<TkpdDigitalResponse>, List<CategoryEntity>> getFuncTransformCategoryEntityList() {
-        return tkpdDigitalResponseResponse -> tkpdDigitalResponseResponse.body().convertDataList(CategoryEntity[].class);
+        return new Func1<Response<TkpdDigitalResponse>, List<CategoryEntity>>() {
+            @Override
+            public List<CategoryEntity> call(Response<TkpdDigitalResponse> response) {
+                return response.body().convertDataList(CategoryEntity[].class);
+            }
+        };
     }
 
 }
