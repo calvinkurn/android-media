@@ -51,7 +51,7 @@ public class EditProductPresenter implements EditProduct.Presenter {
     public void save(ProductViewModel productViewModel, String price, int position) {
         double localPrice = getPriceValue(price);
         if(localPrice != 0) {
-            RequestParams requestParams = RequestParams.EMPTY;
+            RequestParams requestParams = RequestParams.create();
             requestParams.putString(ProductConstant.Key.OUTLET_ID, posSessionHandler.getOutletId());
 
             requestParams.putObject(ProductConstant.Key.EDIT_PRODUCT_REQUEST, getRequestModel(productViewModel, localPrice));

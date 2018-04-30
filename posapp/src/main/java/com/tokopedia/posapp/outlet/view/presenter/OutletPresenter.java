@@ -45,7 +45,7 @@ public class OutletPresenter implements Outlet.Presenter {
         view.startLoading();
         view.clearOutletData();
 
-        getOutletUseCase.execute(RequestParams.EMPTY, new GetOutletSubscriber(view));
+        getOutletUseCase.execute(RequestParams.create(), new GetOutletSubscriber(view));
     }
 
     @Override
