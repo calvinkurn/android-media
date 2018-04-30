@@ -228,15 +228,28 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         enrichWithInputState(filter);
 
         List<Option> selectedOptions = new ArrayList<>();
+        List<Option> popularOptionList = getPopularOptionList(filter);
 
-        if (filter.isCategoryFilter() && isCategorySelected()) {
+        if (filter.isCategoryFilter() && isCategorySelected() && !isSelectedCategoryInList(popularOptionList)) {
             selectedOptions.add(getSelectedCategoryAsOption());
         } else {
             selectedOptions.addAll(getCustomSelectedOptionList(filter));
         }
 
-        selectedOptions.addAll(getPopularOptionList(filter));
+        selectedOptions.addAll(popularOptionList);
         return selectedOptions;
+    }
+
+    private boolean isSelectedCategoryInList(List<Option> optionList) {
+        if (TextUtils.isEmpty(selectedCategoryId)) {
+            return false;
+        }
+        for (Option option : optionList) {
+            if (selectedCategoryId.equals(option.getValue())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isCategorySelected() {
