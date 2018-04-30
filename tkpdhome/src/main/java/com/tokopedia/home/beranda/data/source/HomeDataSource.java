@@ -54,6 +54,7 @@ public class HomeDataSource {
                 String cache = cacheManager.getValueString(TkpdCache.Key.HOME_DATA_CACHE);
                 if (cache != null) {
                     HomeData homeData = gson.fromJson(cache, HomeData.class);
+                    homeData.setCache(true);
                     GraphqlResponse<HomeData> graphqlResponse = new GraphqlResponse<>();
                     graphqlResponse.setData(homeData);
                     return Response.success(graphqlResponse);
