@@ -39,8 +39,8 @@ public class Authenticated extends BaseGTMModel {
     private static final String KEY_AF_UNIQUE_ID =       "afUniqueId";
     public static final String KEY_NETWORK_SPEED =      "networkSpeed";
     public static final String KEY_COMPETITOR_INTELLIGENCE =      "cIntel";
-    public static final String KEY_PAGE_TYPE =         "pageType";
-    public static final String KEY_PRODUCT_ID =        "productId";
+    public static final String KEY_PAGE_TYPE = "pageType";
+    public static final String KEY_PRODUCT_ID = "productId";
 
 
     private Map<String, Object> contactInfo = new HashMap<>();

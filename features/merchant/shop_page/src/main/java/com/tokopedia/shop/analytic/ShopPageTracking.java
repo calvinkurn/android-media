@@ -25,7 +25,7 @@ public class ShopPageTracking {
         this.shopModuleRouter = shopModuleRouter;
     }
 
-    private void sendScreenName(String screenName){
+    private void sendScreenName(String screenName) {
         shopModuleRouter.sendScreenName(screenName);
     }
 
@@ -219,7 +219,7 @@ public class ShopPageTracking {
         eventShopPageOfficialStore(
                 titlePage + ShopPageTrackingConstant.TOP_SECTION_IMPRESSION,
                 "", shopId, myShop, shopType);
-        sendScreenName("/shoppage - "+shopId);
+        sendScreenName("/shoppage - " + shopId);
     }
 
     public void eventClickWishlistShop(String titlePage, boolean wishList, boolean isFromHomeShop, String productId, boolean myShop, int shopType) {

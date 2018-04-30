@@ -63,7 +63,7 @@
         <meta-data
             android:name="NOTIFICATION_LARGE_ICON"
             android:value="@drawable/qc_launcher"
-            tools:replace="android:value" />
+            tools:replace="android:value"/>
         <meta-data
             android:name="HANSEL_APP_ID"
             android:value="JM8LWF8S5B951JQOAZAFRNX14"/>
@@ -281,7 +281,7 @@
         <activity
             android:name=".campaign.view.activity.ShakeErrorCampaignActivity"
             android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".flight.presentation.FlightPhoneVerificationActivity"

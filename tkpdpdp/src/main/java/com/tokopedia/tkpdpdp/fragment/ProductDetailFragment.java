@@ -1333,7 +1333,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void addProductStock(Child productStock) {
         productStockNonVariant = productStock;
-        if(productData !=null && productData.getInfo() !=null && productStock.isEnabled()){
+        if (productData != null && productData.getInfo() != null && productStock.isEnabled()) {
             productData.getInfo().setProductStockWording(productStockNonVariant.getStockWording());
             productData.getInfo().setLimitedStock(productStockNonVariant.isLimitedStock());
             headerInfoView.renderStockAvailability(productData.getInfo());

@@ -504,7 +504,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         .getContactUsIntent(getContext());
                 intent.putExtra(ContactUsConstant.PARAM_URL,
                         URLGenerator.generateURLContactUs(url, getContext()));
-                intent.putExtra(ContactUsConstant.IS_CHAT_BOT,true);
+                intent.putExtra(ContactUsConstant.IS_CHAT_BOT, true);
                 startActivity(intent);
             } else if(isChatBot && isNeedAuthToken) {
                 startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),

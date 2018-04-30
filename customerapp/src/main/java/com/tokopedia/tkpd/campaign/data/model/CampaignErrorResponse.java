@@ -41,6 +41,6 @@ public class CampaignErrorResponse extends BaseResponseError {
 
     @Override
     public IOException createException() {
-        return new CampaignException(error[0],data.getStatus());
+        return new CampaignException(error[0], data.getStatus());
     }
 }

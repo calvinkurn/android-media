@@ -270,6 +270,7 @@ import com.tokopedia.transaction.wallet.WalletActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -298,7 +299,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
         DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter, ITkpdLoyaltyModuleRouter,
-        ICartCheckoutModuleRouter, com.tokopedia.transaction.router.ICartCheckoutModuleRouter, GamificationRouter,ProfileModuleRouter{
+        ICartCheckoutModuleRouter, com.tokopedia.transaction.router.ICartCheckoutModuleRouter, GamificationRouter, ProfileModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;

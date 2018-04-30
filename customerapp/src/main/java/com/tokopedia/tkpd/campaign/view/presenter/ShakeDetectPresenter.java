@@ -74,7 +74,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else if (e instanceof CampaignException) {
                     if (((CampaignException) e).isMissingAuthorizationCredentials()) {
-                        intent.putExtra("needLogin",true);
+                        intent.putExtra("needLogin", true);
                     } else {
                         getView().showErrorGetInfo(e.getMessage());
                         return;

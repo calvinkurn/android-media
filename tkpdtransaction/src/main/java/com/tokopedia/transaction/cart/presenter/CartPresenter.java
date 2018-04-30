@@ -522,7 +522,7 @@ public class CartPresenter implements ICartPresenter {
 
     private void switchInsurancePrice(@NonNull CartItemEditable cartItemEditable, boolean useInsurance) {
         cartItemEditable.setUseInsurance(useInsurance);
-        if(cartItemEditable.getCartCourierPrices() != null)
+        if (cartItemEditable.getCartCourierPrices() != null)
             cartItemEditable.getCartCourierPrices().setCartSubtotal(useInsurance);
         view.refreshCartList();
     }

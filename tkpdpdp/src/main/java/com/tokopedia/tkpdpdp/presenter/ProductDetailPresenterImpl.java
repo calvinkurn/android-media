@@ -325,9 +325,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             } else {
                 ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "reguler", "/product", String.valueOf(successResult.getInfo().getProductId()));
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            CommonUtils.dumper("GAv4 error "+e.getMessage());
+            CommonUtils.dumper("GAv4 error " + e.getMessage());
         }
 
     }

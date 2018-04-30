@@ -263,12 +263,11 @@ dependencies {
     compile project(rootProject.ext.features.profile)
     compile project(rootProject.ext.features.shopPage)
     compile project(rootProject.ext.libraries.reactNative)
-//    compile project(rootProject.ext.features.content)
-    compile project(rootProject.ext.features.checkout)
     compile project(rootProject.ext.features.kol)
     compile project(rootProject.ext.libraries.pushNotif)
     compile project(rootProject.ext.libraries.applink)
     compile project(rootProject.ext.features.gamification)
+    compile project(rootProject.ext.features.checkout)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

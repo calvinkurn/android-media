@@ -1299,23 +1299,23 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = new Intent(context, ProfileCompletionActivity.class);
         return intent;
 
-    public void goToApplinkActivity(Context context, String applink) {
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
-        intent.setData(Uri.parse(applink));
+        public void goToApplinkActivity (Context context, String applink){
+            DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
+            Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
+            intent.setData(Uri.parse(applink));
 
-        if (context instanceof Activity) {
-            deepLinkDelegate.dispatchFrom((Activity) context, intent);
-        } else {
-            context.startActivity(intent);
+            if (context instanceof Activity) {
+                deepLinkDelegate.dispatchFrom((Activity) context, intent);
+            } else {
+                context.startActivity(intent);
+            }
         }
-    }
 
-    @Override
-    public Intent getApplinkIntent(Context context, String applink) {
-        Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
-        intent.setData(Uri.parse(applink));
+        @Override
+        public Intent getApplinkIntent (Context context, String applink){
+            Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
+            intent.setData(Uri.parse(applink));
 
-        return intent;
-    }
+            return intent;
+        }
 }

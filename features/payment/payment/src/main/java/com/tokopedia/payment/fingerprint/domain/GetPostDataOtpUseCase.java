@@ -29,7 +29,7 @@ public class GetPostDataOtpUseCase extends UseCase<HashMap<String, String>> {
         return fingerprintRepository.getPostDataOtp(requestParams.getString(TRANSACTION_ID, ""));
     }
 
-    public RequestParams createRequestParams(String transactionId, String urlOtp){
+    public RequestParams createRequestParams(String transactionId, String urlOtp) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(TRANSACTION_ID, transactionId);
         return requestParams;

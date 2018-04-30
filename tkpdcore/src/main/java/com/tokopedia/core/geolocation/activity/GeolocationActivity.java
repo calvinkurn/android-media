@@ -112,7 +112,7 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(getFragmentManager().findFragmentByTag(
+        if (getFragmentManager().findFragmentByTag(
                 GoogleMapFragment.class.getSimpleName()
         ) != null) {
             getFragmentManager()

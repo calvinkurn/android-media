@@ -150,7 +150,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                         }
                     }, 500);
                 }
-            }else if(intent.getBooleanExtra("needLogin",false)) {
+            } else if (intent.getBooleanExtra("needLogin", false)) {
                 final Intent intent1 = ((TkpdCoreRouter) MainApplication.getAppContext())
                         .getLoginIntent(context);
                 new Handler().postDelayed(new Runnable() {
@@ -159,7 +159,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                         intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent1);
                     }
-                },500);
+                }, 500);
             }
             deinit();
         }

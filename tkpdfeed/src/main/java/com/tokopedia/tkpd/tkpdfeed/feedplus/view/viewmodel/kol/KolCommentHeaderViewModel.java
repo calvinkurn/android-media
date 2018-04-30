@@ -15,7 +15,7 @@ public class KolCommentHeaderViewModel extends KolCommentViewModel implements
     boolean canLoadMore;
     boolean isLoading;
 
-    public  KolCommentHeaderViewModel() {
+    public KolCommentHeaderViewModel() {
         super();
 
     }

@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:clipToPadding="false"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:clipToPadding="false"
+              android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -16,7 +16,7 @@
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
         app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance" />
+        app:titleTextAppearance="?titleTextAppearance"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             app:srcCompat="@drawable/ic_error_shake_campaign"
-            android:layout_marginBottom="@dimen/dp_16" />
+            android:layout_marginBottom="@dimen/dp_16"/>
 
         <TextView
             android:id="@+id/text_title"
@@ -39,7 +39,7 @@
             android:textStyle="bold"
             android:textSize="@dimen/sp_16"
             android:gravity="center"
-            tools:text="Terjadi Kendala pada Server" />
+            tools:text="Terjadi Kendala pada Server"/>
 
         <TextView
             android:id="@+id/text_error_message"
@@ -48,7 +48,7 @@
             android:layout_marginBottom="@dimen/dp_16"
             android:textSize="@dimen/sp_12"
             android:gravity="center"
-            tools:text="Untuk saat ini Tokopedia kepenuhan pengunjung" />
+            tools:text="Untuk saat ini Tokopedia kepenuhan pengunjung"/>
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/button_return"
@@ -61,7 +61,7 @@
             tools:text="Kembali ke Beranda"
             app:buttonCompatSize="medium"
             app:buttonCompatType="primary"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"/>
 
     </LinearLayout>
 
