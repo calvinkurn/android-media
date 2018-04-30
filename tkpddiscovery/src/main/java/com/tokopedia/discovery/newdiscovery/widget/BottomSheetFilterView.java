@@ -286,6 +286,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     public void removeSelectedOption(Option option) {
         if (KEY_CATEGORY.equals(option.getKey())) {
             resetSelectedCategory();
+            applyFilter();
         } else {
             saveCheckedState(option, false);
         }
@@ -674,6 +675,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         selectedCategoryId = filterFlagSelectedModel.getCategoryId();
         selectedCategoryName = filterFlagSelectedModel.getSelectedCategoryName();
         selectedCategoryRootId = filterFlagSelectedModel.getSelectedCategoryRootId();
+        applyFilter();
     }
 
     private HashMap<String, String> generateSelectedFilterMap() {
@@ -750,15 +752,20 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
             switch (requestCode) {
                 case AbstractDynamicFilterDetailActivity.REQUEST_CODE:
                     handleResultFromDetailPage(data);
+                    filterMainAdapter.notifyItemChanged(selectedExpandableItemPosition);
+                    applyFilter();
                     break;
                 case DynamicFilterLocationActivity.REQUEST_CODE:
                     handleResultFromLocationPage();
+                    filterMainAdapter.notifyItemChanged(selectedExpandableItemPosition);
+                    applyFilter();
                     break;
                 case DynamicFilterCategoryActivity.REQUEST_CODE:
                     handleResultFromCategoryPage(data);
+                    filterMainAdapter.notifyItemChanged(selectedExpandableItemPosition);
+                    applyFilter();
                     break;
             }
-            filterMainAdapter.notifyItemChanged(selectedExpandableItemPosition);
         }
     }
 
