@@ -636,6 +636,16 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e));
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODER_USER_LOGIN:
+                refreshData();
+                break;
+        }
+    }
+
     public void setViewState(int viewState) {
         switch (viewState) {
             case VIEW_CONTENT:

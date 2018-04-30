@@ -79,7 +79,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private ImageButton mVoiceBtn;
     private ImageButton mImageSearchButton;
     private ImageButton mEmptyBtn;
-    private RelativeLayout mSearchTopBar;
+    private LinearLayout mSearchTopBar;
     private LinearLayout mSearchContainer;
     private CharSequence mOldQueryText;
     private CharSequence mUserQuery;
@@ -240,7 +240,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         LayoutInflater.from(mContext).inflate(R.layout.search_view, this, true);
         mSearchLayout = findViewById(R.id.search_layout);
         mSearchContainer = (LinearLayout) mSearchLayout.findViewById(R.id.search_container);
-        mSearchTopBar = (RelativeLayout) mSearchLayout.findViewById(R.id.search_top_bar);
+        mSearchTopBar = (LinearLayout) mSearchLayout.findViewById(R.id.search_top_bar);
         mSearchSrcTextView = (EditTextCompat) mSearchLayout.findViewById(R.id.searchTextView);
         mBackBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_up_btn);
         mVoiceBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_voice_btn);

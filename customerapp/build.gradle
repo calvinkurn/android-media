@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
-apply plugin: 'io.hansel.preprocessor'
 
 
 def getDpiId(String density) {
@@ -80,11 +79,9 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
-        classpath 'io.hansel.preprocessor:preprocessor:6.0.1'
     }
 }
 
@@ -263,6 +260,7 @@ dependencies {
     compile project(rootProject.ext.features.flight)
     compile project(rootProject.ext.features.home)
     compile project(rootProject.ext.features.groupchat)
+    compile project(rootProject.ext.features.profile)
     compile project(rootProject.ext.features.shopPage)
     compile project(rootProject.ext.libraries.reactNative)
     compile project(rootProject.ext.features.kol)
@@ -328,5 +326,12 @@ dependencies {
     //[END] test and androidTest dependencies
 }
 
+
+project.ext.sentryCli = [
+        logLevel: "debug",
+        flavorAware: true
+]
+
 apply from: "../buildconfig/reactnative/react.gradle"
 apply from: "../buildconfig/reactnative/codepush.gradle"
+apply from: "../buildconfig/reactnative/sentry.gradle"

@@ -267,7 +267,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             defaultChild = productVariant.getChildFromProductId(productVariant.getDefaultChild());
         }
 
-        if (TextUtils.isEmpty(defaultChild.getPicture().getThumbnail())) {
+        if (defaultChild != null && TextUtils.isEmpty(defaultChild.getPicture().getThumbnail())) {
             mainImage = new String (productDetailData.getProductImages().get(0).getImageSrc());
         } else if (productDetailData.getProductImages().size()>1) {
             mainImage = new String (productDetailData.getProductImages().get(1).getImageSrc());

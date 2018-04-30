@@ -148,5 +148,9 @@ public class ApplinkNotificationHelper {
                 return true;
         }
     }
+
+    public static Boolean allowGroup() {
+        return Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT;
+    }
 }
 

@@ -26,6 +26,8 @@ import java.util.Map;
 public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddressConstant {
 
 
+    private static final double MONAS_LATITUDE = -6.175794;
+    private static final double MONAS_LONGITUDE = 106.826457;
     private final AddAddressFragmentView viewListener;
     private final AddAddressRetrofitInteractor networkInteractor;
     private Destination address;
@@ -201,7 +203,10 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
 
     @Override
     public void setLatLng(String latitude, String longitude) {
-        LatLng latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+        LatLng latLng;
+        if(!latitude.isEmpty() && !longitude.isEmpty()) {
+            latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+        } else latLng = new LatLng(MONAS_LATITUDE, MONAS_LONGITUDE);
         address.setLatLng(latLng);
     }
 

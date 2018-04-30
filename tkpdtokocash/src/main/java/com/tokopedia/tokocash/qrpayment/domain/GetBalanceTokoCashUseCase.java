@@ -5,6 +5,8 @@ import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -16,6 +18,7 @@ public class GetBalanceTokoCashUseCase extends UseCase<BalanceTokoCash> {
 
     private BalanceRepository repository;
 
+    @Inject
     public GetBalanceTokoCashUseCase(BalanceRepository repository) {
         this.repository = repository;
     }
