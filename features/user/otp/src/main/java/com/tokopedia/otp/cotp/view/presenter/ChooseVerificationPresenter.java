@@ -47,7 +47,8 @@ public class ChooseVerificationPresenter extends BaseDaggerPresenter<SelectVerif
             @Override
             public void onError(Throwable e) {
                 getView().dismissLoading();
-                getView().onErrorGetList(OtpErrorHandler.getErrorMessage(e, getView().getContext()));
+                getView().onErrorGetList(OtpErrorHandler.getErrorMessage(e, getView().getContext
+                        ()));
             }
 
             @Override

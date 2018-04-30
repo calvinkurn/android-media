@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpWithEmailUseCase;
 import com.tokopedia.otp.cotp.domain.interactor.ValidateOtpLoginUseCase;
 import com.tokopedia.otp.cotp.domain.interactor.ValidateOtpUseCase;
 import com.tokopedia.otp.cotp.view.subscriber.RequestOtpSubscriber;
@@ -25,7 +24,6 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
         Verification.Presenter {
 
     private final RequestOtpUseCase requestOtpUseCase;
-    private final RequestOtpWithEmailUseCase requestOtpEmailUseCase;
     private final ValidateOtpLoginUseCase validateOtpLoginUseCase;
     private final ValidateOtpUseCase validateOtpUseCase;
     private final UserSession userSession;
@@ -33,11 +31,9 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
     @Inject
     public VerificationPresenter(UserSession userSession,
                                  RequestOtpUseCase requestOtpUseCase,
-                                 RequestOtpWithEmailUseCase requestOtpEmailUseCase,
                                  ValidateOtpLoginUseCase validateOtpLoginUseCase,
                                  ValidateOtpUseCase validateOtpUseCase) {
         this.requestOtpUseCase = requestOtpUseCase;
-        this.requestOtpEmailUseCase = requestOtpEmailUseCase;
         this.validateOtpLoginUseCase = validateOtpLoginUseCase;
         this.validateOtpUseCase = validateOtpUseCase;
         this.userSession = userSession;
@@ -50,7 +46,6 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
     @Override
     public void detachView() {
         super.detachView();
-        requestOtpEmailUseCase.unsubscribe();
         requestOtpUseCase.unsubscribe();
         validateOtpUseCase.unsubscribe();
         validateOtpLoginUseCase.unsubscribe();
@@ -77,7 +72,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
         switch (viewModel.getType()) {
             case RequestOtpUseCase.MODE_EMAIL:
                 if (!TextUtils.isEmpty(passModel.getEmail())) {
-                    requestOtpEmailUseCase.execute(RequestOtpWithEmailUseCase.getParam(
+                    requestOtpUseCase.execute(RequestOtpUseCase.getParamEmail(
                             passModel.getEmail(),
                             passModel.getOtpType(),
                             userSession.getUserId()
@@ -100,7 +95,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
         switch (viewModel.getType()) {
             case RequestOtpUseCase.MODE_EMAIL:
                 if (!TextUtils.isEmpty(passModel.getEmail())) {
-                    requestOtpEmailUseCase.execute(RequestOtpWithEmailUseCase.getParam(
+                    requestOtpUseCase.execute(RequestOtpUseCase.getParamEmail(
                             passModel.getEmail(),
                             passModel.getOtpType(),
                             userSession.getTemporaryUserId()

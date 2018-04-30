@@ -1,6 +1,5 @@
 package com.tokopedia.otp.cotp.view.subscriber;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.otp.common.network.OtpErrorCode;
 import com.tokopedia.otp.common.network.OtpErrorHandler;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
@@ -27,7 +26,7 @@ public class VerifyOtpSubscriber extends Subscriber<ValidateOtpDomain> {
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingProgress();
-        view.onErrorVerifyOtpCode(OtpErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
+        view.onErrorVerifyOtpCode(OtpErrorHandler.getErrorMessage(e, view.getContext()));
     }
 
     @Override

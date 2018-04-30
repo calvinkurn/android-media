@@ -51,14 +51,24 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
     }
 
     public static RequestParams getParam(String mode, String phone, int otpType, String
-            tempUserId) {
+            userId) {
         RequestParams param = RequestParams.create();
+        param.putString(PARAM_USER_ID, userId);
+        param.putString(PARAM_MSISDN, phone);
         param.putString(PARAM_MODE, mode);
         param.putInt(PARAM_OTP_TYPE, otpType);
-        param.putString(PARAM_MSISDN, phone);
         param.putString(PARAM_OS_TYPE, TYPE_ANDROID);
-        param.putString(PARAM_USER_ID, tempUserId);
+        return param;
+    }
 
+    public static RequestParams getParamEmail(String email, int otpType,
+                                              String userId) {
+        RequestParams param = RequestParams.create();
+        param.putString(PARAM_USER_ID, userId);
+        param.putString(PARAM_EMAIL, email);
+        param.putString(PARAM_MODE, MODE_EMAIL);
+        param.putInt(PARAM_OTP_TYPE, otpType);
+        param.putString(PARAM_OS_TYPE, TYPE_ANDROID);
         return param;
     }
 

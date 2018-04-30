@@ -44,6 +44,7 @@ import com.tokopedia.inbox.inboxchat.data.network.ChatBotUrl;
 import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
+import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
@@ -185,6 +186,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GamificationUrl.GQL_BASE_URL = ConsumerAppBaseUrl.GAMIFICATION_BASE_URL;
         ChatBotUrl.BASE_URL = ConsumerAppBaseUrl.CHATBOT_DOMAIN;
         CotpUrl.BASE_URL = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        SQLoginUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
+
     }
 
     private void generateConsumerAppNetworkKeys() {

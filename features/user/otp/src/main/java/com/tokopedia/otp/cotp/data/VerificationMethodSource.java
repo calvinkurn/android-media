@@ -14,11 +14,11 @@ import rx.Observable;
 
 public class VerificationMethodSource {
 
-    private CotpApi cotpApi;
+    private CotpMethodListApi cotpApi;
     private VerificationMethodMapper verificationMethodMapper;
 
     @Inject
-    public VerificationMethodSource(CotpApi cotpApi,
+    public VerificationMethodSource(CotpMethodListApi cotpApi,
                                     VerificationMethodMapper verificationMethodMapper) {
         this.cotpApi = cotpApi;
         this.verificationMethodMapper = verificationMethodMapper;

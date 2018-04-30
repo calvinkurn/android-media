@@ -6,5 +6,5 @@ import javax.inject.Qualifier;
  * @author by nisie on 4/25/18.
  */
 @Qualifier
-public @interface CotpQualifier {
+@interface CotpQualifier {
 }

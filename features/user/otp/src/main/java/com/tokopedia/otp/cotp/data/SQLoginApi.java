@@ -1,5 +1,8 @@
 package com.tokopedia.otp.cotp.data;
 
+import com.tokopedia.otp.common.network.WsResponse;
+import com.tokopedia.otp.cotp.domain.pojo.MakeLoginPojo;
+
 import java.util.Map;
 
 import retrofit2.Response;
@@ -16,6 +19,6 @@ public interface SQLoginApi {
 
     @FormUrlEncoded
     @POST(SQLoginUrl.PATH_MAKE_LOGIN)
-    Observable<Response<String>> makeLogin(@FieldMap Map<String, Object> params);
+    Observable<Response<WsResponse<MakeLoginPojo>>> makeLogin(@FieldMap Map<String, Object> params);
 
 }

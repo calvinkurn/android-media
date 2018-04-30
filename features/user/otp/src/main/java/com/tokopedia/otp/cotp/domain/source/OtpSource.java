@@ -29,13 +29,16 @@ public class OtpSource {
     private static final java.lang.String DATE_FORMAT = "EEE, dd MMM yyyy hh:mm:ss Z";
     private final ValidateOtpMapper validateOtpMapper;
     private final CotpApi otpApi;
+
     private final RequestOtpMapper requestOTPMapper;
 
     @Inject
     UserSession userSession;
 
     @Inject
-    public OtpSource(@CotpScope CotpApi otpApi, RequestOtpMapper requestOTPMapper,
+    public OtpSource(@CotpScope CotpApi otpApi,
+                     RequestOtpMapper
+                             requestOTPMapper,
                      ValidateOtpMapper validateOtpMapper) {
         this.otpApi = otpApi;
         this.requestOTPMapper = requestOTPMapper;
@@ -46,6 +49,7 @@ public class OtpSource {
         return otpApi
                 .requestOtp(
                         new SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(new Date()),
+                        parameters.get(RequestOtpUseCase.PARAM_USER_ID).toString(),
                         parameters)
                 .map(requestOTPMapper);
     }
@@ -68,8 +72,9 @@ public class OtpSource {
 
     public Observable<RequestOtpViewModel> requestOtpWithEmail(HashMap<String, Object> parameters) {
         return otpApi
-                .requestOtpToEmail(
+                .requestOtpEmail(
                         new SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(new Date()),
+                        parameters.get(RequestOtpUseCase.PARAM_USER_ID).toString(),
                         parameters)
                 .map(requestOTPMapper);
     }
