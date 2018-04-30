@@ -95,6 +95,12 @@ public class ImagePagerAdapter extends PagerAdapter {
         notifyDataSetChanged();
     }
 
+    public void addAllWithoutSort(List<ProductImage> productImages) {
+        this.productImages.clear();
+        this.productImages.addAll(productImages);
+        notifyDataSetChanged();
+    }
+
     public void addFirst(ProductImage productImage) {
         this.productImages.clear();
         this.productImages.add(productImage);
