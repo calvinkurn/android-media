@@ -39,8 +39,10 @@ public class PushNotification {
 
             if (notificationId == Constant.NotificationId.TALK) {
                 notifyTalk(context, applinkNotificationModel, notificationId, notificationManagerCompat);
-            } else if (notificationId == Constant.NotificationId.CHAT && notificationId != liveActivity) {
-                notifyChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            } else if (notificationId == Constant.NotificationId.CHAT) {
+                if(notificationId != liveActivity) {
+                    notifyChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+                }
             } else if(notificationId == Constant.NotificationId.GROUPCHAT) {
                 notifyGroupChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else {
