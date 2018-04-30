@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
@@ -32,6 +31,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
@@ -212,7 +212,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     public void goToSecurityQuestion(AccountTokocash accountTokocash,
                                      LoginTokoCashViewModel loginTokoCashViewModel) {
 
-        Intent intent = ((SessionRouter) getActivity().getApplicationContext())
+        Intent intent = VerificationActivity
                 .getSecurityQuestionVerificationIntent(getActivity(),
                         loginTokoCashViewModel.getMakeLoginDomain().getSecurityDomain()
                                 .getUserCheckSecurity2(),

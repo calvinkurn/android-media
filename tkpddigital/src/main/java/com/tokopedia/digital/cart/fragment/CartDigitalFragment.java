@@ -32,7 +32,6 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
-import com.tokopedia.digital.DigitalRouter;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.cart.activity.InstantCheckoutActivity;
@@ -61,6 +60,7 @@ import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -689,7 +689,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void interruptRequestTokenVerification() {
 
-        Intent intent = ((DigitalRouter) getActivity().getApplicationContext()).getCOTPIntent(getActivity(),
+        Intent intent = VerificationActivity.getCallingIntent(getActivity(),
                 SessionHandler.getPhoneNumber(), RequestOtpUseCase.OTP_TYPE_CHECKOUT_DIGITAL,
                 true, RequestOtpUseCase.MODE_SMS);
         startActivityForResult(intent, OtpVerificationActivity.REQUEST_CODE);

@@ -16,6 +16,4 @@ public interface DigitalRouter extends IDigitalModuleRouter {
 
     Observable<CashBackData> getPendingCashbackUseCase(Context context);
 
-    Intent getCOTPIntent(Context context, String phoneNumber, int otpTypeCheckoutDigital,
-                         boolean canUseOtherMethod, String otpMode);
 }

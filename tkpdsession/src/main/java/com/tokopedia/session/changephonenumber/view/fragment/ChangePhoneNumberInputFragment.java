@@ -27,6 +27,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.customview.BottomSheetInfo;
@@ -254,7 +255,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     }
 
     private void goToVerification() {
-        Intent intent = ((SessionRouter) getActivity().getApplicationContext()).getCOTPIntent(
+        Intent intent = VerificationActivity.getCallingIntent(
                 getActivity(),
                 cleanPhoneNumber(newPhoneNumber),
                 email,

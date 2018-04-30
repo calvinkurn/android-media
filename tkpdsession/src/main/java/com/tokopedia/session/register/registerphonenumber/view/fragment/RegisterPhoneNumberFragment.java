@@ -19,7 +19,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
@@ -31,6 +30,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
@@ -157,7 +157,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     @Override
     public void goToVerifyAccountPage(String phoneNumber) {
 
-        Intent intent = ((SessionRouter) getActivity().getApplicationContext()).getCOTPIntent(
+        Intent intent = VerificationActivity.getCallingIntent(
                 getActivity(),
                 phoneNumber,
                 RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,

@@ -4,15 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.OTPAnalytics;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
@@ -29,9 +33,9 @@ import javax.inject.Inject;
 
 /**
  * @author by nisie on 11/29/17.
- *         <p>
- *         Please build VerificationPassModel and put it to cachemanager with key PASS_MODEL.
- *         This is to prevent TransactionTooLarge.
+ * <p>
+ * Please build VerificationPassModel and put it to cachemanager with key PASS_MODEL.
+ * This is to prevent TransactionTooLarge.
  */
 
 public class VerificationActivity extends BaseSimpleActivity {
@@ -281,7 +285,21 @@ public class VerificationActivity extends BaseSimpleActivity {
     }
 
     public static Intent getSecurityQuestionVerificationIntent(Context context, int
-            typeSecurityQuestion) {
+            typeSecurityQuestion, String email, String phone) {
+
+        GlobalCacheManager cacheManager = new GlobalCacheManager();
+
+        VerificationPassModel passModel = new
+                VerificationPassModel(phone, email,
+                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
+                typeSecurityQuestion == VerificationActivity.TYPE_SQ_PHONE
+        );
+        cacheManager.setKey(VerificationActivity.PASS_MODEL);
+        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
+                new TypeToken<VerificationPassModel>() {
+                }.getType()));
+        cacheManager.store();
+
         Intent intent = new Intent(context, VerificationActivity.class);
         Bundle bundle = new Bundle();
         if (typeSecurityQuestion == TYPE_SQ_PHONE) {
@@ -293,7 +311,19 @@ public class VerificationActivity extends BaseSimpleActivity {
         return intent;
     }
 
-    public static Intent getCallingIntent(Context context, String requestMode) {
+    public static Intent getCallingIntent(Context context, String phoneNumber, int otpType,
+                                          boolean canUseOtherMethod, String requestMode) {
+        VerificationPassModel passModel = new VerificationPassModel(phoneNumber,
+                otpType,
+                canUseOtherMethod);
+
+        GlobalCacheManager cacheManager = new GlobalCacheManager();
+        cacheManager.setKey(VerificationActivity.PASS_MODEL);
+        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
+                new TypeToken<VerificationPassModel>() {
+                }.getType()));
+        cacheManager.store();
+
         Intent intent = new Intent(context, VerificationActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_REQUEST_OTP_MODE, requestMode);
@@ -304,5 +334,27 @@ public class VerificationActivity extends BaseSimpleActivity {
     @Override
     protected Fragment getNewFragment() {
         return null;
+    }
+
+    public static Intent getCallingIntent(Context context, String phoneNumber, String email,
+                                          int otpType, boolean canUseOtherMethod,
+                                          String requestMode) {
+        VerificationPassModel passModel = new VerificationPassModel(phoneNumber,
+                email,
+                otpType,
+                canUseOtherMethod);
+
+        GlobalCacheManager cacheManager = new GlobalCacheManager();
+        cacheManager.setKey(VerificationActivity.PASS_MODEL);
+        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
+                new TypeToken<VerificationPassModel>() {
+                }.getType()));
+        cacheManager.store();
+
+        Intent intent = new Intent(context, VerificationActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_REQUEST_OTP_MODE, requestMode);
+        intent.putExtras(bundle);
+        return intent;
     }
 }

@@ -35,7 +35,6 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
@@ -56,6 +55,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionModule;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
@@ -572,7 +572,7 @@ public class LoginFragment extends BaseDaggerFragment
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName,
                                        String email, String phone) {
 
-        Intent intent = ((SessionRouter)getActivity().getApplicationContext()).getSecurityQuestionVerificationIntent
+        Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent
                 (getActivity(), securityDomain.getUserCheckSecurity2(), email, phone);
         startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
 

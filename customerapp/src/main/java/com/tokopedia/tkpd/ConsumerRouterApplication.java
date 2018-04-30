@@ -35,7 +35,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
@@ -141,7 +140,6 @@ import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
@@ -1887,62 +1885,5 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getChangePhoneNumberRequestIntent(Context context) {
         return ChangePhoneNumberRequestActivity.getCallingIntent(context);
-    }
-
-    @Override
-    public Intent getSecurityQuestionVerificationIntent(Context context, int userCheckSecurity2,
-                                                        String email, String phone) {
-
-        GlobalCacheManager cacheManager = new GlobalCacheManager();
-
-        VerificationPassModel passModel = new
-                VerificationPassModel(phone, email,
-                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
-                userCheckSecurity2 == VerificationActivity.TYPE_SQ_PHONE
-        );
-        cacheManager.setKey(VerificationActivity.PASS_MODEL);
-        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
-                new TypeToken<VerificationPassModel>() {
-                }.getType()));
-        cacheManager.store();
-
-        return VerificationActivity.getSecurityQuestionVerificationIntent(context, userCheckSecurity2);
-    }
-
-    @Override
-    public Intent getCOTPIntent(Context context, String phoneNumber, int otpType, boolean
-            canUseOtherMethod, String modeOtp) {
-
-        VerificationPassModel passModel = new VerificationPassModel(phoneNumber,
-                otpType,
-                canUseOtherMethod);
-
-        GlobalCacheManager cacheManager = new GlobalCacheManager();
-        cacheManager.setKey(VerificationActivity.PASS_MODEL);
-        cacheManager.setValue(com.tokopedia.abstraction.common.utils.network.CacheUtil.convertModelToString(passModel,
-                new TypeToken<VerificationPassModel>() {
-                }.getType()));
-        cacheManager.store();
-
-        return VerificationActivity.getCallingIntent(context, modeOtp);
-    }
-
-    @Override
-    public Intent getCOTPIntent(Context context, String phoneNumber, String email, int otpType,
-                                boolean canUseOtherMethod, String modeOtp) {
-
-        VerificationPassModel passModel = new VerificationPassModel(phoneNumber,
-                email,
-                otpType,
-                canUseOtherMethod);
-
-        GlobalCacheManager cacheManager = new GlobalCacheManager();
-        cacheManager.setKey(VerificationActivity.PASS_MODEL);
-        cacheManager.setValue(com.tokopedia.abstraction.common.utils.network.CacheUtil.convertModelToString(passModel,
-                new TypeToken<VerificationPassModel>() {
-                }.getType()));
-        cacheManager.store();
-
-        return VerificationActivity.getCallingIntent(context, modeOtp);
     }
 }
