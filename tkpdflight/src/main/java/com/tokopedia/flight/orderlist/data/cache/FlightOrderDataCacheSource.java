@@ -39,6 +39,13 @@ public class FlightOrderDataCacheSource {
         return Observable.just(true);
     }
 
+    public Observable<OrderEntity> getCache() {
+        String jsonString = cacheManager.get(FLIGHT_DETAIL_CACHE_KEY);
+        Type type = new TypeToken<OrderEntity>(){}.getType();
+        OrderEntity data = CacheUtil.convertStringToModel(jsonString, type);
+        return Observable.just(data);
+    }
+
     public void saveCache(OrderEntity orderEntity) {
         cacheManager.delete(FLIGHT_DETAIL_CACHE_KEY);
 
