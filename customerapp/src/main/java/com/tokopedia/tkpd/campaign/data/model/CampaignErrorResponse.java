@@ -23,6 +23,8 @@ public class CampaignErrorResponse extends BaseResponseError {
         this.data = data;
     }
 
+    @SerializedName("data")
+    @Expose
     private CampaignResponseEntity data;
 
     @SerializedName(ERROR_KEY)
