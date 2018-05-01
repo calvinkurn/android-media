@@ -81,7 +81,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     private boolean isShakeShakeEnable() {
-        return true;
+        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true);
 
     }
 

@@ -107,7 +107,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Oops!");
         builder.setMessage(message);
-        builder.setPositiveButton("Ok"),
+        builder.setPositiveButton("Ok",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
