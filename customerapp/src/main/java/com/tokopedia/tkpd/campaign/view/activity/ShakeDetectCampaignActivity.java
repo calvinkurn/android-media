@@ -12,6 +12,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.di.CampaignComponent;
 import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
 import com.tokopedia.tkpd.campaign.view.presenter.ShakeDetectContract;
@@ -105,9 +106,9 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     @Override
     public void showErrorGetInfo(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Oops!");
+        builder.setTitle(getString(R.string.title_dialog_wrong_scan));
         builder.setMessage(message);
-        builder.setPositiveButton("Ok",
+        builder.setPositiveButton(getString(R.string.btn_dialog_wrong_scan),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
