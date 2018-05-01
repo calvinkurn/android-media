@@ -3,26 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/new_margin_med"
+    android:layout_marginLeft="@dimen/dp_16"
     android:orientation="vertical">
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/new_margin_sm"
+        android:layout_marginTop="@dimen/dp_24"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="2sp"
         android:text="Bali"
         android:textColor="@color/black_39"
-        android:textSize="@dimen/text_size_medium"
+        android:textSize="@dimen/sp_14"
         android:textStyle="normal" />
 
     <View
         android:id="@+id/divider3"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_height_thin"
-        android:layout_marginTop="@dimen/new_margin_lm_22"
+        android:layout_height="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_22"
         android:background="@color/grey_300" />
 
 </LinearLayout>

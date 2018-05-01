@@ -24,7 +24,7 @@
         android:singleLine="true"
         android:text="Makanan"
         android:textColor="@color/black_39"
-        android:textSize="@dimen/font_micro"
+        android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewCatItem" />

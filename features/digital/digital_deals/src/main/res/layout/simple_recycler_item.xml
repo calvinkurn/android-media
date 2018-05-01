@@ -11,16 +11,16 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/new_margin_med"
         android:layout_marginTop="@dimen/new_margin_med"
-        android:paddingEnd="@dimen/margin_default"
+        android:paddingEnd="@dimen/dp_16"
         android:paddingStart="@dimen/new_margin_med"
         android:textColor="@color/black_70"
-        android:textSize="@dimen/font_small"/>
+        android:textSize="@dimen/sp_14"/>
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:paddingStart="@dimen/new_margin_med"
-        android:layout_height="@dimen/divider_height_thin"
+        android:layout_height="@dimen/dp_2"
         android:background="@color/divider_color" />
 
 </LinearLayout>

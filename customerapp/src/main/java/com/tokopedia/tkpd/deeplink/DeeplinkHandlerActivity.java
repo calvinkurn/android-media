@@ -44,7 +44,6 @@ import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
-
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.deeplink.FeedDeeplinkModule;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
@@ -88,7 +87,6 @@ import io.branch.referral.BranchError;
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
         LoyaltyAppLinkModule.class,
-        StreamApplinkModule.class,
         DealsDeepLinkModule.class,
         ShopAppLinkModule.class,
         GroupChatApplinkModule.class,
@@ -116,7 +114,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new TokoCashApplinkModuleLoader(),
                 new EventsDeepLinkModuleLoader(),
                 new LoyaltyAppLinkModuleLoader(),
-                new StreamApplinkModuleLoader(),
                 new DealsDeepLinkModuleLoader(),
                 new ShopAppLinkModuleLoader(),
                 new GroupChatApplinkModuleLoader(),

@@ -10,12 +10,12 @@
         android:id="@+id/tv_popular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/new_margin_med"
-        android:layout_marginTop="@dimen/new_margin_med"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
         android:fontFamily="sans-serif-medium"
         android:text="Populer di Jakarta "
         android:textColor="@color/black_39"
-        android:textSize="@dimen/text_size_17"
+        android:textSize="@dimen/sp_17"
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -26,7 +26,7 @@
         android:fontFamily="sans-serif-medium"
         android:text="(25)"
         android:textColor="@color/black_38"
-        android:textSize="@dimen/text_size_17"
+        android:textSize="@dimen/sp_17"
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
         app:layout_constraintLeft_toRightOf="@+id/tv_popular"
@@ -36,7 +36,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@id/number_of_locations"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:listitem="@layout/deals_item_card" />

@@ -26,5 +26,7 @@
     <dimen name="image_width_24">24dp</dimen>
     <dimen name="voucher_top_view_height">55dp</dimen>
     <dimen name="redeem_button_height">50dp</dimen>
+    <dimen name="image_width_ll">60dp</dimen>
+    <dimen name="banner_height_deals">120dp</dimen>
 
 </resources>

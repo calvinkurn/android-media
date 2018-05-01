@@ -67,7 +67,7 @@
         <!--&lt;!&ndash;android:id="@+id/pager_indicator"&ndash;&gt;-->
         <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
         <!--&lt;!&ndash;android:layout_height="@dimen/circle_indicator_height"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_marginBottom="@dimen/new_margin_med"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginBottom="@dimen/dp_16"&ndash;&gt;-->
         <!--&lt;!&ndash;app:centered="false"&ndash;&gt;-->
         <!--&lt;!&ndash;app:fillColor="@color/green_nob"&ndash;&gt;-->
         <!--&lt;!&ndash;app:layout_constraintBottom_toBottomOf="@+id/deals_bannerpager"&ndash;&gt;-->
@@ -133,13 +133,13 @@
         android:layout_height="@dimen/bottom_view_height"
         android:layout_gravity="bottom"
         app:cardBackgroundColor="@color/white"
-        app:cardElevation="@dimen/bottomsheet_elevation">
+        app:cardElevation="@dimen/dp_8">
 
         <LinearLayout
             android:id="@+id/ll_buynow"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/new_margin_med"
+            android:layout_margin="@dimen/dp_16"
             android:background="@drawable/button_buy_now_background"
             android:gravity="center">
 
@@ -150,7 +150,7 @@
                 android:gravity="center_horizontal"
                 android:text="@string/buy_now"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_medium"
+                android:textSize="@dimen/sp_14"
                 android:textStyle="normal" />
         </LinearLayout>
 

@@ -56,7 +56,7 @@
             android:paddingTop="@dimen/padding_vs"
             android:text="Terjual 150 kali"
             android:textColor="@color/white"
-            android:textSize="@dimen/font_micro"
+            android:textSize="@dimen/sp_12"
             android:textStyle="normal" />
 
     </LinearLayout>

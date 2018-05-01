@@ -37,7 +37,7 @@
     <style name="MyTheme.Detail" parent="MyTheme" />
 
     <style name="ToolbarExpandedTitle">
-        <item name="android:textSize">@dimen/font_sub_headline</item>
+        <item name="android:textSize">@dimen/sp_24</item>
         <item name="android:shadowColor">#ffffff</item>
         <item name="android:textColor">@color/black_39</item>
         <item name="android:singleLine">true</item>

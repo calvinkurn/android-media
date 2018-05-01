@@ -132,7 +132,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         private TextView dealsDetails;
         private TextView dealOfferer;
         private TextView dealavailableLocations;
-        private TextView dealSoldNumberTimes;
         private TextView dealListPrice;
         private TextView dealSellingPrice;
         private int index;
@@ -148,7 +147,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             dealOfferer = itemView.findViewById(R.id.tv_brand_name);
             dealavailableLocations = itemView.findViewById(R.id.tv_available_locations);
             dealListPrice = itemView.findViewById(R.id.tv_Mrp);
-            dealSoldNumberTimes = itemView.findViewById(R.id.tv_sold_times);
             brandImage=itemView.findViewById(R.id.iv_brand);
             dealSellingPrice = itemView.findViewById(R.id.tv_salesPrice);
         }
@@ -157,7 +155,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 //            discount.setText(categoryItemsViewModel.getd);
             mPosition=position;
             dealsDetails.setText(categoryItemsViewModel.getDisplayName());
-            dealSoldNumberTimes.setText("Terjual " + categoryItemsViewModel.getSoldQuantity() + " kali");
             ImageHandler.loadImageCover2(dealImage, categoryItemsViewModel.getImageWeb());
 
             dealListPrice.setText("Rp " + categoryItemsViewModel.getMrp());
