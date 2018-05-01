@@ -5,6 +5,7 @@ import android.support.annotation.IntDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import static com.tokopedia.topads.dashboard.constant.TopAdsAddingOption.GROUP_OPT;
 import static com.tokopedia.topads.dashboard.constant.TopAdsAddingOption.HEADLINE_OPT;
 import static com.tokopedia.topads.dashboard.constant.TopAdsAddingOption.KEYWORDS_OPT;
 import static com.tokopedia.topads.dashboard.constant.TopAdsAddingOption.PRODUCT_OPT;
@@ -14,10 +15,12 @@ import static com.tokopedia.topads.dashboard.constant.TopAdsAddingOption.SHOP_OP
  * Created by hadi.putra on 26/04/18.
  */
 @Retention(RetentionPolicy.SOURCE)
-@IntDef({PRODUCT_OPT, SHOP_OPT, HEADLINE_OPT, KEYWORDS_OPT})
+@IntDef({SHOP_OPT, GROUP_OPT, PRODUCT_OPT, HEADLINE_OPT, KEYWORDS_OPT})
 public @interface TopAdsAddingOption {
-    int PRODUCT_OPT = 1;
-    int SHOP_OPT = 2;
-    int HEADLINE_OPT = 3;
-    int KEYWORDS_OPT = 4;
+    int SHOP_OPT = 1;
+    int GROUP_OPT = 2;
+    int PRODUCT_OPT = 3;
+    int HEADLINE_OPT = 4;
+    int KEYWORDS_OPT = 5;
+
 }
