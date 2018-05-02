@@ -45,7 +45,9 @@
             android:id="@+id/vg_content_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager
                 android:id="@+id/view_pager"
@@ -64,9 +66,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:visibility="visible"
-                    tools:visibility="visible"
-                    android:divider="@drawable/bg_line_separator"
-                    android:showDividers="beginning">
+                    tools:visibility="visible">
 
                     <com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget
                         android:id="@+id/image_edit_action_main_widget"
@@ -89,7 +89,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <ProgressBar
                 android:id="@+id/progressbar"

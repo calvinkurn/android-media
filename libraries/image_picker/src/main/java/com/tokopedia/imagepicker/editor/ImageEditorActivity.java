@@ -110,12 +110,25 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         minResolution = intent.getIntExtra(EXTRA_MIN_RESOLUTION, 0);
         imageEditActionType = intent.getIntArrayExtra(EXTRA_EDIT_ACTION_TYPE);
 
+        if (savedInstanceState == null) {
+            currentImageIndex = 0;
+            localImagePaths = new ArrayList<>();
+            finalImagePaths = new ArrayList<>();
+            isInEditMode = false;
+        } else {
+            currentImageIndex = savedInstanceState.getInt(SAVED_IMAGE_INDEX, 0);
+            localImagePaths = savedInstanceState.getStringArrayList(SAVED_LOCAL_IMAGE_PATH);
+            finalImagePaths = savedInstanceState.getStringArrayList(SAVED_FINAL_PATHS);
+            isInEditMode = savedInstanceState.getBoolean(SAVED_IN_EDIT_MODE);
+        }
+
         vgDownloadProgressBar = findViewById(R.id.vg_download_progress_bar);
         vgContentContainer = findViewById(R.id.vg_content_container);
-        hideProgressDialog();
-        hideContentView();
 
         viewPager = findViewById(R.id.view_pager);
+        imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
+        imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -134,36 +147,18 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             }
         });
 
-        if (savedInstanceState == null) {
-            currentImageIndex = 0;
-            localImagePaths = new ArrayList<>();
-            finalImagePaths = new ArrayList<>();
-            isInEditMode = false;
-        } else {
-            currentImageIndex = savedInstanceState.getInt(SAVED_IMAGE_INDEX, 0);
-            localImagePaths = savedInstanceState.getStringArrayList(SAVED_LOCAL_IMAGE_PATH);
-            finalImagePaths = savedInstanceState.getStringArrayList(SAVED_FINAL_PATHS);
-            isInEditMode = savedInstanceState.getBoolean(SAVED_IN_EDIT_MODE);
-        }
-
-        setupEditMainLayout();
-        setUpMode();
+        imageEditActionMainWidget.setData(imageEditActionType);
+        setupEditMode();
     }
 
-    private void setUpMode() {
+    private void setupEditMode() {
         // TODO setup edit/preview mode
         // EDIT: have cancel and save
         // NON-EDIT: have thumbnail and edit action
         viewPager.setCanSwipe(!isInEditMode);
     }
 
-    private void setupEditMainLayout() {
-        imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
-        imageEditActionMainWidget.setData(imageEditActionType);
-    }
-
     private void setUpThumbnailPreview(){
-        imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
         imageEditThumbnailListWidget.setOnImageEditThumbnailListWidgetListener(this);
         imageEditThumbnailListWidget.setData(finalImagePaths, currentImageIndex);
     }
@@ -214,6 +209,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             }
             if (hasNetworkImage) {
                 showProgressDialog();
+                hideContentView();
                 imageDownloadPresenter = new ImageDownloadPresenter();
                 imageDownloadPresenter.attachView(this);
                 imageDownloadPresenter.convertHttpPathToLocalPath(extraImageUrls);
@@ -250,22 +246,22 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
     private void showProgressDialog() {
         vgDownloadProgressBar.setVisibility(View.VISIBLE);
-        imageEditThumbnailListWidget.setVisibility(View.GONE);
-        imageEditActionMainWidget.setVisibility(View.GONE);
     }
 
     private void hideProgressDialog() {
         vgDownloadProgressBar.setVisibility(View.GONE);
-        imageEditThumbnailListWidget.setVisibility(View.VISIBLE);
-        imageEditActionMainWidget.setVisibility(View.VISIBLE);
     }
 
-    private void hideContentView() {
+    private void hideContentView(){
         vgContentContainer.setVisibility(View.GONE);
+        imageEditThumbnailListWidget.setVisibility(View.GONE);
+        imageEditActionMainWidget.setVisibility(View.GONE);
     }
 
     private void showContentView() {
         vgContentContainer.setVisibility(View.VISIBLE);
+        imageEditThumbnailListWidget.setVisibility(View.VISIBLE);
+        imageEditActionMainWidget.setVisibility(View.VISIBLE);
     }
 
 
