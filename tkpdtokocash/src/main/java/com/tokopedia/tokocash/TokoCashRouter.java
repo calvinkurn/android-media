@@ -9,6 +9,8 @@ import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore
 
 import java.util.List;
 
+import okhttp3.Interceptor;
+
 /**
  * Created by nabillasabbaha on 10/5/17.
  */
@@ -27,4 +29,6 @@ public interface TokoCashRouter {
     String getUserEmailProfil();
 
     Fragment getTopupTokoCashFragment();
+
+    Interceptor getChuckInterceptor();
 }
