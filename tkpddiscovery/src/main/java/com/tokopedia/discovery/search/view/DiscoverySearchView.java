@@ -327,7 +327,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     private void startShowCase() {
-        final String showCaseTag = ((Activity) mContext).getClass().getName();
+        final String showCaseTag = "Image Search ShowCase";
         if (ShowCasePreference.hasShown(mContext, showCaseTag)) {
             return;
         }
