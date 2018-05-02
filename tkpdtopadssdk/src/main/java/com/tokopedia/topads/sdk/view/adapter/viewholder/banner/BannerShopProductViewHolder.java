@@ -15,6 +15,7 @@ import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel;
 
@@ -33,12 +34,14 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     private RecyclerView recyclerView;
     private ItemAdapter itemAdapter;
     public TextView visitShop;
+    private ImageLoader imageLoader;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
 
 
     public BannerShopProductViewHolder(View itemView, TopAdsBannerClickListener topAdsBannerClickListener) {
         super(itemView);
         this.topAdsBannerClickListener = topAdsBannerClickListener;
+        imageLoader = new ImageLoader(itemView.getContext());
         recyclerView = itemView.findViewById(R.id.list);
         visitShop = itemView.findViewById(R.id.visit_btn);
         itemAdapter = new ItemAdapter();
@@ -66,6 +69,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
 
         public void setProductList(List<Product> productList) {
             this.productList = productList;
+            this.productList.remove(0); //remove index 0 because already show on first page
             notifyDataSetChanged();
         }
 
@@ -78,12 +82,13 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         @Override
         public void onBindViewHolder(ItemViewHolder holder, final int position) {
             final Product product = productList.get(position);
-            Glide.with(holder.getContext()).load(product.getImageProduct().getImageUrl()).into(holder.imageView);
+            imageLoader.loadImage(product.getImageProduct().getImageUrl(), product.getImageProduct().getImageUrl(), holder.imageView);
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (topAdsBannerClickListener != null) {
                         topAdsBannerClickListener.onBannerAdsClicked(product.getApplinks());
+                        new ImpresionTask().execute(product.getImageProduct().getImageClickUrl());
                     }
                 }
             });

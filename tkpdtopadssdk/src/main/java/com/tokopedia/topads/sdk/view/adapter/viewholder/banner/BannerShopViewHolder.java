@@ -19,6 +19,7 @@ import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel;
@@ -40,19 +41,23 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     private TextView nameTxt;
     private TextView descriptionTxt;
     private LinearLayout badgeContainer;
-    public TextView visitShop;
+    private CardView imageContainer;
+    private ImageView productImage;
+    private ImageLoader imageLoader;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
 
     public BannerShopViewHolder(View itemView, final TopAdsBannerClickListener topAdsBannerClickListener) {
         super(itemView);
         this.topAdsBannerClickListener = topAdsBannerClickListener;
+        imageLoader = new ImageLoader(context);
         context = itemView.getContext();
         iconImg = (ImageView) itemView.findViewById(R.id.icon);
         promotedTxt = (TextView) itemView.findViewById(R.id.title_promote);
         nameTxt = (TextView) itemView.findViewById(R.id.shop_name);
         descriptionTxt = (TextView) itemView.findViewById(R.id.description);
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
-        visitShop = itemView.findViewById(R.id.visit_btn);
+        imageContainer = itemView.findViewById(R.id.image_container);
+        productImage = itemView.findViewById(R.id.image);
     }
 
     @Override
@@ -68,7 +73,10 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
             });
             promotedTxt.setText(cpm.getPromotedText());
             nameTxt.setText(TopAdsBannerView.escapeHTML(cpm.getName()));
-            descriptionTxt.setText(TopAdsBannerView.escapeHTML(cpm.getDecription()));
+
+            String desc = String.format("%s %s", TopAdsBannerView.escapeHTML(cpm.getDecription()), cpm.getCta());
+            TopAdsBannerView.setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
+
             if (cpm.getBadges().size() > 0) {
                 badgeContainer.removeAllViews();
                 badgeContainer.setVisibility(View.VISIBLE);
@@ -82,15 +90,26 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
             } else {
                 badgeContainer.setVisibility(View.GONE);
             }
-            visitShop.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(topAdsBannerClickListener!=null) {
-                        topAdsBannerClickListener.onBannerAdsClicked(element.getAppLink());
-                        new ImpresionTask().execute(element.getAdsClickUrl());
+            if(cpm.getCpmShop() !=null && cpm.getCpmShop().getProducts().size() > 0){
+                final Product product = cpm.getCpmShop().getProducts().get(0);
+                imageLoader.loadImage(product.getImageProduct().getImageUrl(), productImage);
+
+                productImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        new ImpresionTask().execute(product.getImageProduct().getImageClickUrl());
                     }
-                }
-            });
+                });
+            }
+//            visitShop.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if(topAdsBannerClickListener!=null) {
+//                        topAdsBannerClickListener.onBannerAdsClicked(element.getAppLink());
+//                        new ImpresionTask().execute(element.getAdsClickUrl());
+//                    }
+//                }
+//            });
         }
     }
 }
