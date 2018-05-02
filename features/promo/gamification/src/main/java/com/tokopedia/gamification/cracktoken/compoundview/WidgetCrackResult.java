@@ -30,6 +30,7 @@ import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackResult;
+import com.tokopedia.gamification.util.HexValidator;
 
 import java.util.List;
 
@@ -187,7 +188,11 @@ public class WidgetCrackResult extends RelativeLayout {
             TextView textView = new TextView(getContext());
             textView.setGravity(Gravity.CENTER);
             textView.setText(rewardText.getText());
-            textView.setTextColor(Color.parseColor(rewardText.getColor()));
+            if (HexValidator.validate(rewardText.getColor())) {
+                textView.setTextColor(Color.parseColor(rewardText.getColor()));
+            } else {
+                textView.setTextColor(getContext().getResources().getColor(R.color.default_text_reward_color));
+            }
             int dimenTextSize = convertSize(rewardText.getSize());
             float textSizeInPx = getContext().getResources().getDimension(dimenTextSize);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx);
@@ -259,8 +264,8 @@ public class WidgetCrackResult extends RelativeLayout {
                     listener.onClickCloseButtonWhenError();
                 } else {
                     listener.onClickCloseButton();
-                    listener.onTrackingCloseRewardButton(crackResult);
                 }
+                listener.onTrackingCloseRewardButton(crackResult);
             }
         });
     }

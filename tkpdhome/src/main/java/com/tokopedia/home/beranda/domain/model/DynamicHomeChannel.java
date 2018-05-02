@@ -32,6 +32,7 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_SPRINT = "sprint_3_image";
         public static final String LAYOUT_6_IMAGE = "6_image";
         public static final String LAYOUT_SPRINT_CAROUSEL = "sprint_carousel";
+        public static final String LAYOUT_DIGITAL_WIDGET = "digital_widget";
 
         @Expose
         @SerializedName("id")
@@ -227,7 +228,8 @@ public class DynamicHomeChannel {
                                             )
                                     )
                             )
-                    )
+                    ),
+                    "attribution", getHomeAttribution(position + 1, getGrids()[position].getId())
             );
         }
 
@@ -250,7 +252,7 @@ public class DynamicHomeChannel {
                                     )
                             )
                     ),
-                    "attribution", getHomeAttribution(position + 1, "")
+                    "attribution", getHomeAttribution(position + 1, getGrids()[position].getId())
             );
         }
 
@@ -418,6 +420,10 @@ public class DynamicHomeChannel {
 
         public void setHomeAttribution(String homeAttribution) {
             this.homeAttribution = homeAttribution;
+        }
+
+        public String getHomeAttribution() {
+            return homeAttribution;
         }
     }
 

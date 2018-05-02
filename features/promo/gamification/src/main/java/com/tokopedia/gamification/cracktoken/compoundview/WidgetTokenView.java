@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView;
@@ -210,19 +211,22 @@ public class WidgetTokenView extends FrameLayout {
         String imageRightUrl = imageUrls.get(6);
         String imageLeftUrl = imageUrls.get(5);
 
-        ImageHandler.loadImageAndCache(imageViewFull, full);
+        StringSignature stringSignature = new StringSignature(String.valueOf(tokenAsset.getVersion()));
+
+        ImageHandler.loadImageWithSignature(imageViewFull, full, stringSignature);
         Glide.with(getContext())
                 .load(cracked)
                 .asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .signature(new StringSignature(String.valueOf(tokenAsset.getVersion())))
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageViewCracked.setImageBitmap(resource);
                     }
                 });
-        ImageHandler.loadImageAndCache(imageViewRight, imageRightUrl);
-        ImageHandler.loadImageAndCache(imageViewLeft, imageLeftUrl);
+        ImageHandler.loadImageWithSignature(imageViewRight, imageRightUrl, stringSignature);
+        ImageHandler.loadImageWithSignature(imageViewLeft, imageLeftUrl, stringSignature);
 
         reset();
         show();

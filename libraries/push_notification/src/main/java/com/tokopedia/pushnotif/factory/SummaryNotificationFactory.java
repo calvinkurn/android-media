@@ -2,20 +2,27 @@ package com.tokopedia.pushnotif.factory;
 
 import android.app.Notification;
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
 import com.tokopedia.pushnotif.SummaryNotification;
+import com.tokopedia.pushnotif.db.model.HistoryNotificationDB;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.model.SummaryNotificationModel;
+
+import java.util.List;
 
 /**
  * @author ricoharisin .
  */
 
 public class SummaryNotificationFactory extends BaseNotificationFactory {
+
+    private List<HistoryNotificationDB> listHistoryNotification;
 
 
     public SummaryNotificationFactory(Context context) {
@@ -29,26 +36,29 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         builder.setSmallIcon(getDrawableIcon());
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
         HistoryNotification.storeNotification(applinkNotificationModel.getFullName(),
-                applinkNotificationModel.getSummary(), notificationType);
+                applinkNotificationModel.getSummary(), notificationType,
+                ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks()));
 
-        SummaryNotificationModel summaryNotificationModel = SummaryNotification.generateSummaryNotificationModel(context, notificationType);
+        listHistoryNotification = HistoryNotification.getListHistoryNotification(notificationType);
 
-        if (summaryNotificationModel.getHistoryString().size() == 1) return null;
-
-        for (String s : summaryNotificationModel.getHistoryString()) {
-            inboxStyle.addLine(s);
+        for (HistoryNotificationDB history : listHistoryNotification) {
+            inboxStyle.addLine(genarateContentText(history));
         }
 
-        inboxStyle.setSummaryText(summaryNotificationModel.getSummaryText());
+        inboxStyle.setSummaryText(SummaryNotification.generateSummaryText(notificationType, listHistoryNotification.size()));
 
-        builder.setContentText(summaryNotificationModel.getHistoryString().get(0));
+        builder.setContentText(genarateContentText(listHistoryNotification.get(0)));
         builder.setLargeIcon(getBitmapLargeIcon());
         builder.setStyle(inboxStyle);
-        builder.setGroupSummary(true);
-        builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
-        builder.setContentIntent(createPendingIntent(getGenericApplinks(notificationType), notificationType, notificationId));
-        builder.setDeleteIntent(createDismissPendingIntent(notificationType));
+        if (ApplinkNotificationHelper.allowGroup()) {
+            builder.setGroupSummary(true);
+            builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
+        }
+        builder.setContentIntent(createPendingIntent(getGenericApplinks(notificationType), notificationType, 0));
+        builder.setDeleteIntent(createDismissPendingIntent(notificationType, 0));
+        builder.setAutoCancel(true);
 
         if (isAllowBell()) {
             builder.setSound(getRingtoneUri());
@@ -72,5 +82,14 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         } else {
             return "Tokopedia - Chat";
         }
+    }
+
+    public int getTotalSummary() {
+        return listHistoryNotification.size();
+    }
+
+    public String genarateContentText(HistoryNotificationDB historyNotificationDB) {
+        return historyNotificationDB.getSenderName()+" : "+historyNotificationDB.getMessage();
+
     }
 }
