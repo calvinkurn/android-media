@@ -49,7 +49,7 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
     public void onNotificationReceived(String from, Bundle data){
         CommonUtils.dumper("onNotificationReceived");
         if (isApplinkNotification(data)) {
-            PushNotification.notify(mContext, data, getCurrentActivity());
+            PushNotification.notify(mContext, data);
         } else {
             mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(data);
         }

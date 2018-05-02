@@ -28,7 +28,6 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
-import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -49,8 +48,6 @@ import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
 
 import java.util.Map;
-
-import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
@@ -75,7 +72,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         if (isAllowedNotification(bundle)) {
             mFCMCacheManager.setCache();
             if (isApplinkNotification(bundle)) {
-                PushNotification.notify(mContext, bundle, 0);
+                PushNotification.notify(mContext, bundle);
             } else {
                 //TODO this function for divide the new and old flow(that still supported)
                 // next if complete new plz to delete

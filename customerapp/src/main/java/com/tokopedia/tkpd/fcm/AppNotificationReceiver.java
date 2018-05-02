@@ -54,11 +54,19 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
         }
 
         if (isApplinkNotification(bundle)) {
-            PushNotification.notify(mContext, bundle, getCurrentActivity());
-            extraAction(bundle);
+            if (!isInExcludedActivity(bundle)) {
+                PushNotification.notify(mContext, bundle);
+                extraAction(bundle);
+            }
         } else {
             mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(bundle);
         }
+    }
+
+    private boolean isInExcludedActivity(Bundle data) {
+        ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
+        int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
+        return notificationId == getCurrentActivity();
     }
 
     private int getCurrentActivity(){
