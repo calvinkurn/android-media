@@ -39,6 +39,7 @@ import com.tokopedia.topads.sdk.view.TopAdsView;
 
 public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> implements TopAdsItemClickListener {
 
+    public static final String SEARCH_NF_VALUE = "1";
     private final int MAX_TOPADS = 4;
     private TopAdsView topAdsView;
     private TopAdsParams params = new TopAdsParams();
@@ -64,7 +65,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.banner_ads);
 
         params = topAdsConfig.getTopAdsParams();
-        params.getParam().put(TopAdsParams.KEY_SEARCH_NF, "1");
+        params.getParam().put(TopAdsParams.KEY_SEARCH_NF, SEARCH_NF_VALUE);
     }
 
     private void loadProductAds() {
