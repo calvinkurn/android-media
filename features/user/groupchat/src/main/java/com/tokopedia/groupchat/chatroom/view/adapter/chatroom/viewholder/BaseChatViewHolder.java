@@ -1,10 +1,12 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder;
 
 import android.graphics.Typeface;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -16,7 +18,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BaseChatViewMode
  * @author by nisie on 2/27/18.
  */
 
-abstract class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<T> {
+public abstract class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<T> {
 
     protected TextView nickname;
     protected TextView postTime;
@@ -39,8 +41,8 @@ abstract class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolde
     public void bind(T element) {
         if (element instanceof BaseChatViewModel) {
             BaseChatViewModel viewModel = (BaseChatViewModel) element;
-
-            ImageHandler.loadImageCircle2(avatar.getContext(), avatar, viewModel.getSenderIconUrl());
+            ImageHandler.loadImageCircle2(avatar.getContext(), avatar, viewModel.getSenderIconUrl
+                    (), R.drawable.ic_loading_toped_new);
             nickname.setText(MethodChecker.fromHtml(viewModel.getSenderName()));
             postTime.setText(viewModel.getFormattedCreatedAt());
 
@@ -66,6 +68,12 @@ abstract class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolde
             } else {
                 headerTime.setVisibility(View.GONE);
             }
+        }
+    }
+
+    public void onViewRecycled() {
+        if(avatar != null) {
+            Glide.clear(avatar);
         }
     }
 }

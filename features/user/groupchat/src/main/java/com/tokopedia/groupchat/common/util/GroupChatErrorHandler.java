@@ -36,6 +36,8 @@ public class GroupChatErrorHandler {
 
     public static final int CHANNEL_NOT_FOUND = 400201;
     public static final int USER_IS_BANNED = 900100;
+    public static final int WORD_IS_BANNED = 900060;
+
 
     public static String getSendBirdErrorMessage(Context context, SendBirdException e, boolean withCode) {
         switch (e.getCode()) {
@@ -67,6 +69,9 @@ public class GroupChatErrorHandler {
                         .getCode(), withCode);
             case USER_IS_BANNED:
                 return formattedString(context.getString(R.string.user_is_banned), e.getCode(), withCode);
+            case WORD_IS_BANNED:
+                return formattedString(context.getString(R.string.word_is_blocked), e.getCode(),
+                        withCode);
             default:
                 return formattedString(context.getString(R.string.default_sendbird_error),
                         GroupChatErrorCode.UNKNOWN, withCode);

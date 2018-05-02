@@ -75,5 +75,7 @@
     <string name="check_now">Cek sekarang!</string>
     <string name="error_max_characters_reached">Maaf, anda hanya bisa mengirim kurang dari 200 karakter</string>
     <string name="has_voted_label">Sudah Memilih</string>
+    <string name="word_is_blocked">Maaf, pesan anda tidak dapat dikirim karena mengandung kata
+        yang diblokir.</string>
 
 </resources>
