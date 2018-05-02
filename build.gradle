@@ -75,12 +75,6 @@ okbuck {
         sources = true
     }
 
-    // Allows okbuck to espresso and robolectric buck rules.
-//    test {
-//        espresso = true
-//        robolectric = true
-//    }
-
     lint {
         disabled = true
     }
