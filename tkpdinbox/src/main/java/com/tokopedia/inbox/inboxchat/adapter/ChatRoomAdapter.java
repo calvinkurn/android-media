@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
@@ -20,17 +20,15 @@ import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSentViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedProductViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -43,14 +41,14 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private final ChatRoomTypeFactory typeFactory;
     private List<Visitable> list;
     private EmptyModel emptyModel;
-    private LoadingModel loadingModel;
+    private LoadingMoreModel loadingModel;
     private TimeMachineChatModel timeMachineChatModel;
     private TypingChatModel typingModel;
     public ChatRoomAdapter(ChatRoomTypeFactory typeFactory) {
         this.list = new ArrayList<>();
         this.typeFactory = typeFactory;
         this.emptyModel = new EmptyModel();
-        this.loadingModel = new LoadingModel();
+        this.loadingModel = new LoadingMoreModel();
         this.timeMachineChatModel = new TimeMachineChatModel("");
         this.typingModel = new TypingChatModel();
     }
@@ -153,14 +151,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void addList(List<Visitable> list) {
+    public void addList(List<Visitable> newItems) {
         int positionStart = this.list.size();
-        this.list.addAll(list);
-//        notifyItemRangeInserted(positionStart, list.size());
-//        if (positionStart != 0) {
-//            notifyItemChanged(positionStart - 1);
-//        }
-        notifyDataSetChanged();
+        this.list.addAll(newItems);
+        notifyItemRangeInserted(positionStart, newItems.size());
+        notifyItemRangeChanged(positionStart-10, 10);
     }
 
     public void showEmpty() {
@@ -236,6 +231,14 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyItemRangeChanged(0, 2);
     }
 
+    public void addReply(List<DummyChatViewModel> list) {
+        for (int i = 0; i < list.size(); i++) {
+            this.list.add(0, list.get(i));
+            notifyItemInserted(0);
+            notifyItemRangeChanged(0, 2);
+        }
+    }
+
     public void showLoading() {
         this.list.add(list.size(),loadingModel);
         notifyItemInserted(list.size());
@@ -257,13 +260,13 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyItemRemoved(0);
     }
 
+
     public boolean checkLoadMore(int index) {
         if (index == getItemCount()-1) {
-            return (list.get(index) instanceof LoadingModel);
+            return (list.get(index) instanceof LoadingMoreModel);
         }
         return false;
     }
-
 
     public ReplyParcelableModel getLastItem() {
         ListReplyViewModel item;
@@ -282,8 +285,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void showTimeMachine() {
-        this.list.add(0, timeMachineChatModel);
-        notifyItemInserted(0);
+        this.list.add(timeMachineChatModel);
+        notifyItemInserted(list.size());
     }
 
     public void setReadStatus(WebSocketResponse response) {
@@ -315,6 +318,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return list.contains(typingModel);
     }
 
+
     public void showRetryFor(MyChatViewModel model, boolean b) {
         int position = list.indexOf(model);
         if(position >= 0 && list.get(position) instanceof  MyChatViewModel) {
@@ -322,7 +326,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             notifyItemChanged(position);
         }
     }
-
 
     public void changeRating(OppositeChatViewModel model) {
         int position = list.indexOf(model);

@@ -96,12 +96,11 @@ import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -250,19 +249,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
         }
     }
 
-    public boolean isAllowedTemplate() {
-        return (remoteConfig.getBoolean(ENABLE_TOPCHAT));
-    }
-
     @Override
     public Fragment getFragment() {
         return this;
-    }
-
-    @Override
-    public void onErrorUploadImages(String errorMessage, MyChatViewModel model) {
-        showError(errorMessage);
-        showRetryFor(model);
     }
 
     private void showRetryFor(MyChatViewModel model) {
@@ -285,13 +274,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         switch (item.getItemId()) {
                             case RESEND:
                                 adapter.remove(attachment);
-                                ImageUpload model = new ImageUpload();
-                                model.setImageId(String.valueOf(System.currentTimeMillis() /
-                                        MILIS_TO_SECOND));
-                                model.setFileLoc(attachment.getAttachment().getAttributes()
-                                        .getImageUrl());
-                                MyChatViewModel temp = addAttachImageBalloonToChatList(model);
+                                String fileLoc = attachment.getAttachment().getAttributes().getImageUrl();
+                                DummyChatViewModel temp = generateChatViewModelWithImage(fileLoc);
                                 presenter.startUpload(Collections.singletonList(temp), networkType);
+                                adapter.addReply(temp);
                                 break;
                             case DELETE:
                                 adapter.remove(attachment);
@@ -341,20 +327,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     }
                 });
 
-
-        if (needCreateWebSocket()) {
-            sendButton.setOnClickListener(getSendWithWebSocketListener());
-        } else {
-            sendButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    UnifyTracking.eventSendMessagePage();
-                    presenter.initMessage(replyColumn.getText().toString(),
-                            getArguments().getString(ChatRoomActivity.PARAM_SOURCE),
-                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ID),
-                            getArguments().getString(ChatRoomActivity.PARAM_USER_ID));
-                }
-            });
+        if(needCreateWebSocket()) {
+            sendButton.setOnClickListener(generateSendClickListener());
+        }else {
+            sendButton.setOnClickListener(getSendInitMessage());
         }
 
         setPickerButton();
@@ -414,6 +390,19 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 );
             }
         });
+    }
+
+    private View.OnClickListener generateSendClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scrollToBottom();
+                presenter.sendMessage(networkType);
+                UnifyTracking.sendChat(TopChatAnalytics.Category.CHAT_DETAIL,
+                        TopChatAnalytics.Action.CHAT_DETAIL_SEND,
+                        TopChatAnalytics.Name.CHAT_DETAIL);
+            }
+        };
     }
 
     @Override
@@ -521,22 +510,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
         notifier.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onSuccessInitMessage() {
-        CommonUtils.UniversalToast(getActivity(), getString(R.string.success_send_msg));
-        getActivity().finish();
-    }
-
-
-    @Override
-    public void onErrorInitMessage(String s) {
-        adapter.removeLast();
-        NetworkErrorHelper.showSnackbar(getActivity(), s);
-        sendButton.setEnabled(true);
-    }
-
     private void initVar() {
-        networkType = MODE_API;
+        if (needCreateWebSocket()) {
+            networkType = MODE_WEBSOCKET;
+        } else {
+            networkType = MODE_API;
+        }
         typeFactory = new ChatRoomTypeFactoryImpl(this);
         templateChatFactory = new TemplateChatTypeFactoryImpl(this);
     }
@@ -626,14 +605,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showLoading() {
-    }
-
-    @Override
-    public void finishLoading() {
-    }
-
-    @Override
     public void setHeader() {
 
         if (toolbar != null) {
@@ -666,7 +637,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setTextAreaReply(boolean textAreaReply) {
+    public void displayReplyField(boolean textAreaReply) {
         if (textAreaReply) {
             replyView.setVisibility(View.VISIBLE);
         } else {
@@ -695,21 +666,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public WebSocketInterface getInterface() {
         return this;
-    }
-
-    @Override
-    public void onGoToTimeMachine(String url) {
-        startActivity(TimeMachineActivity.getCallingIntent(getActivity(), url));
-    }
-
-    @Override
-    public void addTimeMachine() {
-        adapter.showTimeMachine();
-    }
-
-    @Override
-    public String getKeyword() {
-        return getArguments().getString(PARAM_KEYWORD);
     }
 
     @Override
@@ -742,16 +698,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void scrollToBottom() {
-        recyclerView.scrollToPosition(0);
-    }
-
-    @Override
-    public String getReplyMessage() {
-        return replyColumn.getText().toString();
-    }
-
-    @Override
     public void showError(String error) {
         if (adapter.getItemCount() == 0) {
             NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new
@@ -768,62 +714,18 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 NetworkErrorHelper.showSnackbar(getActivity());
             } else {
                 NetworkErrorHelper.showSnackbar(getActivity(), error);
-
             }
         }
-    }
-
-    public void addIncomingMessage(final WebSocketResponse response) {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    setViewEnabled(true);
-                    presenter.addMessageChatBalloon(response);
-                    setResult();
-                }
-            });
-        }
-    }
-
-    @Override
-    public void onSuccessSendReply(ReplyActionData replyData, String reply) {
-        adapter.removeLast();
-        addView(replyData, reply);
-    }
-
-
-    @Override
-    public void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model) {
-        adapter.remove(model);
-        addView(data, UPLOADING);
-    }
-
-    @Override
-    public void onSuccessSetRating(OppositeChatViewModel model) {
-        adapter.changeRating(model);
-    }
-
-    @Override
-    public void onErrorSetRating() {
-        showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
-                .string.string_general_error)));
-    }
-
-    @Override
-    public void onClickRating(OppositeChatViewModel element, int rating) {
-        UserSession userSession = ((AbstractionRouter) getContext().
-                getApplicationContext()).getSession();
-        int userId = 0;
-        if (userSession != null && !TextUtils.isEmpty(userSession.getUserId())) {
-            userId = Integer.valueOf(userSession.getUserId());
-        }
-        presenter.setChatRating(element, userId, rating);
     }
 
     @Override
     public void setUploadingMode(boolean mode) {
         uploading = mode;
+    }
+
+    @Override
+    public void scrollToBottom() {
+        recyclerView.scrollToPosition(0);
     }
 
     @Override
@@ -840,42 +742,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
         this.title = nameHeader;
     }
 
-    private void addView(ReplyActionData replyData, String reply) {
-        setViewEnabled(true);
-        MyChatViewModel item = new MyChatViewModel();
-        item.setReplyId(replyData.getChat().getMsgId());
-        item.setMsgId(replyData.getChat().getMsgId());
-        item.setSenderId(replyData.getChat().getSenderId());
-        item.setSenderName(replyData.getChat().getFrom());
-        item.setMsg(replyData.getChat().getMsg());
-        item.setReplyTime(replyData.getChat().getReplyTime());
-        item.setAttachment(replyData.getChat().getAttachment());
-        item.setAttachmentId(Integer.parseInt(replyData.getChat().getAttachment().getId()));
-        adapter.addReply(item);
-        finishLoading();
-        replyColumn.setText("");
-        setResult();
-    }
-
-    @Override
-    public void onErrorSendReply() {
-        adapter.removeLast();
-        setViewEnabled(true);
-        finishLoading();
-        replyColumn.setText("");
-        showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
-                .string.string_general_error)));
-    }
-
     @Override
     public void resetReplyColumn() {
         replyColumn.setText("");
-    }
-
-    @Override
-    public boolean isMyMessage(int fromUid) {
-        return String.valueOf(fromUid).equals(SessionHandler.getLoginID(MainApplication
-                .getAppContext()));
     }
 
     @Override
@@ -888,65 +757,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
         }
     }
 
-
-    @Override
-    public boolean isCurrentThread(int msgId) {
-        return getArguments().getString(PARAM_MESSAGE_ID).equals(String.valueOf(msgId));
-    }
-
     @Override
     public void setViewEnabled(boolean isEnabled) {
 
     }
 
     @Override
-    public void addDummyMessage() {
-        MyChatViewModel item = new MyChatViewModel();
-        item.setMsg(getReplyMessage());
-        item.setMsgId(Integer.parseInt(getArguments().getString(InboxMessageConstant
-                .PARAM_MESSAGE_ID)));
-        item.setReplyTime(MyChatViewModel.SENDING_TEXT);
-        item.setDummy(true);
-        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
-        adapter.addReply(item);
-        scrollToBottom();
-    }
-
-
-    @Override
-    public void addInitialMessageBalloon() {
-        MyChatViewModel item = new MyChatViewModel();
-        item.setMsg(getReplyMessage());
-        item.setReplyTime(MyChatViewModel.SENDING_TEXT);
-        item.setDummy(true);
-        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
-        adapter.addReply(item);
-        scrollToBottom();
-    }
-
-    private MyChatViewModel addAttachImageBalloonToChatList(ImageUpload imageUpload) {
-        MyChatViewModel item = new MyChatViewModel();
-        Attachment attachment = new Attachment();
-        attachment.setType(AttachmentChatHelper.IMAGE_ATTACHED);
-        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
-        attachmentAttributes.setImageUrl(imageUpload.getFileLoc());
-        attachment.setId(imageUpload.getImageId());
-        attachment.setAttributes(attachmentAttributes);
-        item.setAttachment(attachment);
-        item.setReplyTime(MyChatViewModel.SENDING_TEXT);
-        item.setDummy(true);
-        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
-        adapter.addReply(item);
-        scrollToBottom();
-
-        return item;
-    }
-
-    @Override
     public void disableAction() {
         sendButton.setEnabled(false);
     }
-
 
     private void setResult() {
         if (adapter != null && getActivity() != null) {
@@ -985,98 +804,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        presenter.detachView();
-    }
-
-
-    @Override
     public void hideMainLoading() {
         progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onIncomingEvent(WebSocketResponse response) {
-        switch (response.getCode()) {
-            case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
-                if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
-                        (PARAM_MESSAGE_ID))) {
-                    setOnlineDesc(getString(R.string.is_typing));
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapter.showTyping();
-                            if (layoutManager.findFirstCompletelyVisibleItemPosition() < 2) {
-                                scrollToBottom();
-                            }
-                        }
-                    });
-                }
-                break;
-            case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
-                if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
-                        (PARAM_MESSAGE_ID))) {
-                    setOnlineDesc(getActivity().getString(R.string.just_now));
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (adapter.isTyping()) {
-                                adapter.removeTyping();
-                                if (layoutManager.findFirstCompletelyVisibleItemPosition() < 2) {
-                                    scrollToBottom();
-                                }
-                            }
-                        }
-                    });
-                }
-                break;
-            case ChatWebSocketConstant.EVENT_TOPCHAT_READ_MESSAGE:
-                adapter.setReadStatus(response);
-                break;
-            case ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE:
-                addIncomingMessage(response);
-                break;
-            default:
-                break;
-        }
-
-    }
-
-    @Override
-    public void onErrorWebSocket() {
-        if (getActivity() != null && presenter != null) {
-            networkType = MODE_API;
-            sendButton.setOnClickListener(getSendWithApiListener());
-            notifyConnectionWebSocket();
-            presenter.recreateWebSocket();
-        }
-    }
-
-    @Override
-    public void onOpenWebSocket() {
-        if (getActivity() != null && presenter != null) {
-
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    TextView title = notifier.findViewById(R.id.title);
-                    title.setText(R.string.connected_websocket);
-                    View action = notifier.findViewById(R.id.action);
-                    action.setVisibility(View.GONE);
-                    networkType = MODE_WEBSOCKET;
-                    sendButton.setOnClickListener(getSendWithWebSocketListener());
-
-                }
-            });
-            notifier.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    notifier.setVisibility(View.GONE);
-                }
-            }, 1500);
-            presenter.onOpenWebSocket();
-        }
     }
 
     @Override
@@ -1091,28 +820,21 @@ public class ChatRoomFragment extends BaseDaggerFragment
         presenter.closeWebSocket();
     }
 
-    public View.OnClickListener getSendWithApiListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scrollToBottom();
-                presenter.sendMessageWithApi();
-                UnifyTracking.sendChat(TopChatAnalytics.Category.CHAT_DETAIL,
-                        TopChatAnalytics.Action.CHAT_DETAIL_SEND,
-                        TopChatAnalytics.Name.CHAT_DETAIL);
-            }
-        };
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 
-    public View.OnClickListener getSendWithWebSocketListener() {
+    private View.OnClickListener getSendInitMessage() {
         return new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                scrollToBottom();
-                presenter.sendMessageWithWebsocket();
-                UnifyTracking.sendChat(TopChatAnalytics.Category.CHAT_DETAIL,
-                        TopChatAnalytics.Action.CHAT_DETAIL_SEND,
-                        TopChatAnalytics.Name.CHAT_DETAIL);
+            public void onClick(View view) {
+                UnifyTracking.eventSendMessagePage();
+                presenter.initMessage(replyColumn.getText().toString(),
+                        getArguments().getString(ChatRoomActivity.PARAM_SOURCE),
+                        getArguments().getString(ChatRoomActivity.PARAM_SENDER_ID),
+                        getArguments().getString(ChatRoomActivity.PARAM_USER_ID));
             }
         };
     }
@@ -1131,11 +853,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
             case ImageUploadHandlerChat.REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     String fileLoc = presenter.getFileLocFromCamera();
-                    ImageUpload model = new ImageUpload();
-                    model.setImageId(String.valueOf(System.currentTimeMillis() / 1000));
-                    model.setFileLoc(fileLoc);
-                    MyChatViewModel temp = addAttachImageBalloonToChatList(model);
+                    DummyChatViewModel temp = generateChatViewModelWithImage(fileLoc);
                     presenter.startUpload(Collections.singletonList(temp), networkType);
+                    adapter.addReply(temp);
                 }
                 break;
 
@@ -1144,28 +864,22 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     break;
                 }
                 String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
-                List<MyChatViewModel> list = new ArrayList<>();
+                List<DummyChatViewModel> list = new ArrayList<>();
 
                 if (!TextUtils.isEmpty(imageUrl)) {
-                    ImageUpload model = new ImageUpload();
-                    model.setImageId(String.valueOf(System.currentTimeMillis() / 1000));
-                    model.setFileLoc(imageUrl);
-                    MyChatViewModel temp = addAttachImageBalloonToChatList(model);
+                    DummyChatViewModel temp = generateChatViewModelWithImage(imageUrl);
                     list.add(temp);
                 } else {
                     ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity
                             .IMAGE_URLS);
                     if (imageUrls != null) {
                         for (int i = 0; i < imageUrls.size(); i++) {
-                            ImageUpload model = new ImageUpload();
-                            model.setImageId(String.valueOf(System.currentTimeMillis() / 1000));
-                            model.setFileLoc(imageUrls.get(i));
-                            MyChatViewModel temp = addAttachImageBalloonToChatList(model);
+                            DummyChatViewModel temp = generateChatViewModelWithImage(imageUrls.get(i));
                             list.add(temp);
                         }
                     }
                 }
-
+                adapter.addReply(list);
                 presenter.startUpload(list, networkType);
                 break;
             case AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE:
@@ -1190,85 +904,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
             default:
                 break;
         }
-    }
-
-    private void attachInvoiceRetrieved(SelectedInvoice selectedInvoice) {
-        String msgId = getArguments().getString(PARAM_MESSAGE_ID);
-        addInvoiceChatBalloonToChatList(selectedInvoice);
-        presenter.sendInvoiceAttachment(msgId, selectedInvoice);
-    }
-
-
-    private void addInvoiceChatBalloonToChatList(SelectedInvoice selectedInvoice) {
-        AttachInvoiceSentViewModel invoiceToSend = new AttachInvoiceSentViewModel();
-        Attachment attachment = new Attachment();
-        attachment.setType(AttachmentChatHelper.INVOICE_ATTACHED);
-        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
-        AttachmentInvoiceAttributes attachmentInvoiceAttributes = new AttachmentInvoiceAttributes(
-                selectedInvoice.getInvoiceNo(),
-                selectedInvoice.getDate(),
-                selectedInvoice.getDescription(),
-                selectedInvoice.getInvoiceUrl(),
-                selectedInvoice.getInvoiceId(),
-                selectedInvoice.getTopProductImage(),
-                selectedInvoice.getStatus(),
-                selectedInvoice.getStatusId(),
-                selectedInvoice.getTopProductName(),
-                selectedInvoice.getAmount()
-        );
-        AttachmentInvoice attachmentInvoice = new AttachmentInvoice();
-        attachmentInvoice.setType(selectedInvoice.getInvoiceType());
-        attachmentInvoice.setTypeString(selectedInvoice.getInvoiceTypeStr());
-        attachmentInvoice.setAttributes(attachmentInvoiceAttributes);
-        attachmentAttributes.setInvoiceLink(attachmentInvoice);
-        attachment.setAttributes(attachmentAttributes);
-
-        invoiceToSend.setAttachment(attachment);
-        invoiceToSend.setReplyTime(MyChatViewModel.SENDING_TEXT);
-        invoiceToSend.setDummy(true);
-        invoiceToSend.setMsg("");
-        invoiceToSend.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
-        adapter.addReply(invoiceToSend);
-        scrollToBottom();
-    }
-
-    public void attachProductRetrieved(ArrayList<ResultProduct> resultProducts) {
-        UnifyTracking.eventSendAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
-                TopChatAnalytics.Action.CHAT_DETAIL_ATTACHMENT,
-                TopChatAnalytics.Name.CHAT_DETAIL);
-
-        String msgId = getArguments().getString(PARAM_MESSAGE_ID);
-        for (ResultProduct result : resultProducts) {
-            try {
-                addProductChatBalloonToChatList(result);
-                presenter.sendProductAttachment(msgId, result);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void addProductChatBalloonToChatList(ResultProduct product) {
-        AttachProductViewModel item = new AttachProductViewModel(true);
-        Attachment attachment = new Attachment();
-        attachment.setType(AttachmentChatHelper.PRODUCT_ATTACHED);
-        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
-        attachmentAttributes.setProductId(product.getProductId());
-        AttachmentProductProfile productProfile = new AttachmentProductProfile();
-        productProfile.setImageUrl(product.getProductImageThumbnail());
-        productProfile.setName(product.getName());
-        productProfile.setPrice(product.getPrice());
-        productProfile.setUrl(product.getProductUrl());
-        attachmentAttributes.setProductProfile(productProfile);
-        attachment.setAttributes(attachmentAttributes);
-        attachment.setId(product.getProductId().toString());
-        item.setAttachment(attachment);
-        item.setReplyTime(MyChatViewModel.SENDING_TEXT);
-        item.setDummy(true);
-        item.setMsg("");
-        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
-        adapter.addReply(item);
-        scrollToBottom();
     }
 
     public void onBackPressed() {
@@ -1308,13 +943,23 @@ public class ChatRoomFragment extends BaseDaggerFragment
         presenter.openCamera();
     }
 
+    @Override
+    public boolean shouldHandleUrlManually(String url) {
+        String urlManualHandlingList[] = {CONTACT_US_URL_BASE_DOMAIN};
+        return (Arrays.asList(urlManualHandlingList).contains(url) || isChatBot);
+    }
+
+    @Override
+    public void showSnackbarError(String string) {
+        NetworkErrorHelper.showSnackbar(getActivity(), string);
+    }
+
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void actionImagePicker() {
         Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
                 .getGalleryIntent(getActivity(), false, 1, true);
         startActivityForResult(intent, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[]
@@ -1333,6 +978,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
     }
+
 
     @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showRationaleForStorage(final PermissionRequest request) {
@@ -1380,6 +1026,23 @@ public class ChatRoomFragment extends BaseDaggerFragment
         RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
+    //Getter
+    @Override
+    public String getKeyword() {
+        return getArguments().getString(PARAM_KEYWORD);
+    }
+
+    @Override
+    public String getReplyMessage() {
+        return replyColumn.getText().toString();
+    }
+
+    @Override
+    public UserSession getUserSession() {
+        return ((AbstractionRouter) getActivity().getApplication()).getSession();
+    }
+
+    //Clicker (from viewholder) with it's tracker
     @Override
     public void productClicked(Integer productId, String productName, String productPrice, Long
             dateTimeReply, String url) {
@@ -1406,10 +1069,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         }
     }
 
-    @Override
-    public boolean isChatBot() {
-        return isChatBot;
-    }
 
     private void trackProductClicked() {
         if ((getActivity().getApplicationContext() instanceof AbstractionRouter)) {
@@ -1436,18 +1095,324 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public boolean shouldHandleUrlManually(String url) {
-        String urlManualHandlingList[] = {CONTACT_US_URL_BASE_DOMAIN};
-        return (Arrays.asList(urlManualHandlingList).contains(url) || isChatBot);
+    public void onClickRating(OppositeChatViewModel element, int rating) {
+        UserSession userSession = ((AbstractionRouter) getContext().
+                getApplicationContext()).getSession();
+        int userId = 0;
+        if (userSession != null && !TextUtils.isEmpty(userSession.getUserId())) {
+            userId = Integer.valueOf(userSession.getUserId());
+        }
+        presenter.setChatRating(element, userId, rating);
     }
 
     @Override
-    public void showSnackbarError(String string) {
-        NetworkErrorHelper.showSnackbar(getActivity(), string);
+    public void onGoToTimeMachine(String url) {
+        startActivity(TimeMachineActivity.getCallingIntent(getActivity(), url));
+    }
+
+
+    //CHECK CONDITION
+
+    @Override
+    public boolean isChatBot() {
+        return isChatBot;
     }
 
     @Override
-    public UserSession getUserSession() {
-        return ((AbstractionRouter) getActivity().getApplication()).getSession();
+    public boolean isMyMessage(int fromUid) {
+        return String.valueOf(fromUid).equals(SessionHandler.getLoginID(MainApplication
+                .getAppContext()));
+    }
+
+    @Override
+    public boolean isCurrentThread(int msgId) {
+        return getArguments().getString(PARAM_MESSAGE_ID).equals(String.valueOf(msgId));
+    }
+
+    public boolean isAllowedTemplate() {
+        return (remoteConfig.getBoolean(ENABLE_TOPCHAT));
+    }
+
+
+    //ADD INCOMING MESSAGE
+
+    private AttachInvoiceSentViewModel generateInvoice(SelectedInvoice selectedInvoice) {
+        AttachInvoiceSentViewModel invoiceToSend = new AttachInvoiceSentViewModel();
+        Attachment attachment = new Attachment();
+        attachment.setType(AttachmentChatHelper.INVOICE_ATTACHED);
+        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
+        AttachmentInvoiceAttributes attachmentInvoiceAttributes = new AttachmentInvoiceAttributes(
+                selectedInvoice.getInvoiceNo(),
+                selectedInvoice.getDate(),
+                selectedInvoice.getDescription(),
+                selectedInvoice.getInvoiceUrl(),
+                selectedInvoice.getInvoiceId(),
+                selectedInvoice.getTopProductImage(),
+                selectedInvoice.getStatus(),
+                selectedInvoice.getStatusId(),
+                selectedInvoice.getTopProductName(),
+                selectedInvoice.getAmount()
+        );
+        AttachmentInvoice attachmentInvoice = new AttachmentInvoice();
+        attachmentInvoice.setType(selectedInvoice.getInvoiceType());
+        attachmentInvoice.setTypeString(selectedInvoice.getInvoiceTypeStr());
+        attachmentInvoice.setAttributes(attachmentInvoiceAttributes);
+        attachmentAttributes.setInvoiceLink(attachmentInvoice);
+        attachment.setAttributes(attachmentAttributes);
+
+        invoiceToSend.setAttachment(attachment);
+        invoiceToSend.setReplyTime(DummyChatViewModel.SENDING_TEXT);
+        invoiceToSend.setDummy(true);
+        invoiceToSend.setMsg("");
+        invoiceToSend.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+
+        return invoiceToSend;
+    }
+
+    public DummyChatViewModel generateChatViewModelWithImage(String imageUrl){
+        scrollToBottom();
+        ImageUpload model = new ImageUpload();
+        model.setImageId(String.valueOf(System.currentTimeMillis() / MILIS_TO_SECOND));
+        model.setFileLoc(imageUrl);
+        return generateChatViewModelWithImage(model);
+    }
+
+    private DummyChatViewModel generateChatViewModelWithImage(ImageUpload imageUpload) {
+        DummyChatViewModel item = new DummyChatViewModel();
+        Attachment attachment = new Attachment();
+        attachment.setType(AttachmentChatHelper.IMAGE_ATTACHED);
+        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
+        attachmentAttributes.setImageUrl(imageUpload.getFileLoc());
+        attachment.setId(imageUpload.getImageId());
+        attachment.setAttributes(attachmentAttributes);
+        item.setAttachment(attachment);
+        item.setReplyTime(DummyChatViewModel.SENDING_TEXT);
+        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+        return item;
+    }
+
+    private AttachProductViewModel generateProductChatViewModel(ResultProduct product) {
+        AttachProductViewModel item = new AttachProductViewModel(true);
+        Attachment attachment = new Attachment();
+        attachment.setType(AttachmentChatHelper.PRODUCT_ATTACHED);
+        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
+        attachmentAttributes.setProductId(product.getProductId());
+        AttachmentProductProfile productProfile = new AttachmentProductProfile();
+        productProfile.setImageUrl(product.getProductImageThumbnail());
+        productProfile.setName(product.getName());
+        productProfile.setPrice(product.getPrice());
+        productProfile.setUrl(product.getProductUrl());
+        attachmentAttributes.setProductProfile(productProfile);
+        attachment.setAttributes(attachmentAttributes);
+        attachment.setId(product.getProductId().toString());
+        item.setAttachment(attachment);
+        item.setReplyTime(DummyChatViewModel.SENDING_TEXT);
+        item.setDummy(true);
+        item.setMsg("");
+        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+        return item;
+    }
+
+    public void addIncomingMessage(final WebSocketResponse response) {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setViewEnabled(true);
+                    presenter.addMessageChatBalloon(response);
+                    setResult();
+                }
+            });
+        }
+    }
+
+    private void attachInvoiceRetrieved(SelectedInvoice selectedInvoice) {
+        String msgId = getArguments().getString(PARAM_MESSAGE_ID);
+        AttachInvoiceSentViewModel generatedInvoice = generateInvoice(selectedInvoice);
+        presenter.sendInvoiceAttachment(msgId, selectedInvoice);
+        adapter.addReply(generatedInvoice);
+        scrollToBottom();
+    }
+
+    public void attachProductRetrieved(ArrayList<ResultProduct> resultProducts) {
+        UnifyTracking.eventSendAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+                TopChatAnalytics.Action.CHAT_DETAIL_ATTACHMENT,
+                TopChatAnalytics.Name.CHAT_DETAIL);
+
+        String msgId = getArguments().getString(PARAM_MESSAGE_ID);
+        for (ResultProduct result : resultProducts) {
+            AttachProductViewModel item = generateProductChatViewModel(result);
+            presenter.sendProductAttachment(msgId, result);
+            adapter.addReply(item);
+            scrollToBottom();
+        }
+    }
+
+    private void addView(ReplyActionData replyData, String reply) {
+        setViewEnabled(true);
+        MyChatViewModel item = new MyChatViewModel();
+        item.setReplyId(replyData.getChat().getMsgId());
+        item.setMsgId(replyData.getChat().getMsgId());
+        item.setSenderId(replyData.getChat().getSenderId());
+        item.setSenderName(replyData.getChat().getFrom());
+        item.setMsg(reply);
+        item.setReplyTime(replyData.getChat().getReplyTime());
+        item.setAttachment(replyData.getChat().getAttachment());
+        item.setAttachmentId(Integer.parseInt(replyData.getChat().getAttachment().getId()));
+        adapter.addReply(item);
+        replyColumn.setText("");
+        setResult();
+    }
+
+    @Override
+    public void addTimeMachine() {
+        adapter.showTimeMachine();
+    }
+
+    @Override
+    public void addDummyMessage() {
+        DummyChatViewModel item = new DummyChatViewModel();
+        item.setMsg(getReplyMessage());
+        if(!TextUtils.isEmpty(getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID))) {
+            item.setMsgId(Integer.parseInt(getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID)));
+        }
+        item.setReplyTime(DummyChatViewModel.SENDING_TEXT);
+        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+        adapter.addReply(item);
+        scrollToBottom();
+    }
+
+    //Callback
+    @Override
+    public void onOpenWebSocket() {
+        if (getActivity() != null && presenter != null) {
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    TextView title = notifier.findViewById(R.id.title);
+                    title.setText(R.string.connected_websocket);
+                    View action = notifier.findViewById(R.id.action);
+                    action.setVisibility(View.GONE);
+                    networkType = MODE_WEBSOCKET;
+                    sendButton.setOnClickListener(generateSendClickListener());
+
+                }
+            });
+            notifier.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    notifier.setVisibility(View.GONE);
+                }
+            }, 1500);
+            presenter.onOpenWebSocket();
+        }
+    }
+
+    @Override
+    public void onErrorWebSocket() {
+        if (getActivity() != null && presenter != null) {
+            networkType = MODE_API;
+            sendButton.setOnClickListener(generateSendClickListener());
+            notifyConnectionWebSocket();
+            presenter.recreateWebSocket();
+        }
+    }
+
+    @Override
+    public void onIncomingEvent(WebSocketResponse response) {
+        switch (response.getCode()) {
+            case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
+                if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
+                        (PARAM_MESSAGE_ID))) {
+                    setOnlineDesc(getString(R.string.is_typing));
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.showTyping();
+                            if (layoutManager.findFirstCompletelyVisibleItemPosition() < 2) {
+                                scrollToBottom();
+                            }
+                        }
+                    });
+                }
+                break;
+            case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
+                if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
+                        (PARAM_MESSAGE_ID))) {
+                    setOnlineDesc(getActivity().getString(R.string.just_now));
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (adapter.isTyping()) {
+                                adapter.removeTyping();
+                                if (layoutManager.findFirstCompletelyVisibleItemPosition() < 2) {
+                                    scrollToBottom();
+                                }
+                            }
+                        }
+                    });
+                }
+                break;
+            case ChatWebSocketConstant.EVENT_TOPCHAT_READ_MESSAGE:
+                adapter.setReadStatus(response);
+                break;
+            case ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE:
+                addIncomingMessage(response);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onSuccessSendReply(ReplyActionData replyData, String reply) {
+        adapter.removeLast();
+        addView(replyData, reply);
+    }
+
+    @Override
+    public void onErrorSendReply() {
+        adapter.removeLast();
+        setViewEnabled(true);
+        replyColumn.setText("");
+        showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
+                .string.string_general_error)));
+    }
+
+    @Override
+    public void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model) {
+        adapter.remove(model);
+        addView(data, UPLOADING);
+    }
+
+    @Override
+    public void onSuccessSetRating(OppositeChatViewModel model) {
+        adapter.changeRating(model);
+    }
+
+    @Override
+    public void onErrorSetRating() {
+        showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
+                .string.string_general_error)));
+    }
+
+    @Override
+    public void onErrorUploadImages(String errorMessage, MyChatViewModel model) {
+        showError(errorMessage);
+        showRetryFor(model);
+    }
+
+    @Override
+    public void onSuccessInitMessage() {
+        CommonUtils.UniversalToast(getActivity(), getString(R.string.success_send_msg));
+        getActivity().finish();
+    }
+
+    @Override
+    public void onErrorInitMessage(String s) {
+        adapter.removeLast();
+        NetworkErrorHelper.showSnackbar(getActivity(), s);
+        sendButton.setEnabled(true);
     }
 }

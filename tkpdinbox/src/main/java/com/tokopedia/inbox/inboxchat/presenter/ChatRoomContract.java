@@ -17,6 +17,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSingleViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 
@@ -32,13 +33,9 @@ public class ChatRoomContract {
 
         Bundle getArguments();
 
-        void showLoading();
-
-        void finishLoading();
-
         void setHeader();
 
-        void setTextAreaReply(boolean b);
+        void displayReplyField(boolean b);
 
         ChatRoomAdapter getAdapter();
 
@@ -104,8 +101,6 @@ public class ChatRoomContract {
 
         void onSuccessInitMessage();
 
-        void addInitialMessageBalloon();
-
         void disableAction();
 
         void onErrorInitMessage(String s);
@@ -160,7 +155,7 @@ public class ChatRoomContract {
 
         void onGoToDetail(String userId, String role);
 
-        void sendMessageWithApi();
+        void sendMessage(int networkType);
 
         void addMessageChatBalloon(WebSocketResponse response);
 
@@ -168,7 +163,7 @@ public class ChatRoomContract {
 
         void openCamera();
 
-        void startUpload(List<MyChatViewModel> list, int network);
+        void startUpload(List<DummyChatViewModel> list, int network);
 
         String getFileLocFromCamera();
 

@@ -120,7 +120,7 @@ public class WebSocketUseCase {
         return json;
     }
 
-    public JsonObject getParamSendProductAttachment(String messageId, ResultProduct product) throws JSONException{
+    public JsonObject getParamSendProductAttachment(String messageId, ResultProduct product){
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
         JsonObject data = new JsonObject();

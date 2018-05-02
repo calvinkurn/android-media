@@ -36,14 +36,13 @@ import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,7 +126,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         } else {
             getView().setHeader();
             getView().hideMainLoading();
-            getView().setTextAreaReply(true);
+            getView().displayReplyField(true);
             getView().hideNotifier();
         }
         if (!getView().isChatBot()) {
@@ -138,7 +137,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void detachView() {
         super.detachView();
-        webSocketUseCase.unsubscribe();
+        if(webSocketUseCase != null)
+            webSocketUseCase.unsubscribe();
         getReplyListUseCase.unsubscribe();
         getTemplateUseCase.unsubscribe();
         replyMessageUseCase.unsubscribe();
@@ -146,7 +146,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         attachImageUseCase.unsubscribe();
         setChatRatingUseCase.unsubscribe();
     }
-
 
     @Override
     public void onGoToDetail(String id, String role) {
@@ -168,7 +167,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
         }
     }
-
 
     public void uploadWithApi(final String path, final MyChatViewModel model) {
         String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
@@ -195,31 +193,36 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     }
 
+
     @Override
-    public void sendMessageWithApi() {
+    public void sendMessage(int networkType) {
         if (isValidReply()) {
             getView().addDummyMessage();
             getView().setViewEnabled(false);
             final String reply = (getView().getReplyMessage());
             String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
-            RequestParams params = ReplyMessageUseCase.generateParam(messageId, reply);
 
-            replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
-                @Override
-                public void onCompleted() {
-                    isRequesting = false;
-                }
+            if(networkType == InboxChatConstant.MODE_WEBSOCKET) {
+                sendReply(messageId, reply);
+            }else if(networkType == InboxChatConstant.MODE_API) {
+                RequestParams params = ReplyMessageUseCase.generateParam(messageId, reply);
+                replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
+                    @Override
+                    public void onCompleted() {
+//                        isRequesting = false;
+                    }
 
-                @Override
-                public void onError(Throwable e) {
-                    getView().onErrorSendReply();
-                }
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().onErrorSendReply();
+                    }
 
-                @Override
-                public void onNext(ReplyActionData data) {
-                    getView().onSuccessSendReply(data, reply);
-                }
-            });
+                    @Override
+                    public void onNext(ReplyActionData data) {
+                        getView().onSuccessSendReply(data, reply);
+                    }
+                });
+            }
         }
     }
 
@@ -264,7 +267,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                     getView().getAdapter().removeLast();
                     getView().getAdapter().addReply(item);
                 }
-                getView().finishLoading();
                 getView().resetReplyColumn();
                 getView().scrollToBottom();
             } else if (getView() != null && getView().isCurrentThread(response.getData().getMsgId
@@ -298,7 +300,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 } else {
                     getView().getAdapter().addReply(item);
                 }
-                getView().finishLoading();
                 getView().scrollToBottomWithCheck();
                 readMessage(String.valueOf(response.getData().getMsgId()));
             }
@@ -310,7 +311,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void initMessage(String message, String source, String toShopId, String toUserId) {
         if (isValidReply()) {
-            getView().addInitialMessageBalloon();
+            getView().addDummyMessage();
             getView().disableAction();
             sendMessageUseCase.execute(SendMessageUseCase.getParam(
                     message,
@@ -346,7 +347,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     @Override
-    public void startUpload(final List<MyChatViewModel> list, final int network) {
+    public void startUpload(final List<DummyChatViewModel> list, final int network) {
         getView().setUploadingMode(true);
         String userId = SessionHandler.getTempLoginSession(getView().getActivity());
         String deviceId = GCMHandler.getRegistrationId(getView().getActivity());
@@ -414,8 +415,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         if (!isRequesting) {
             pagingHandler.nextPage();
             getReply();
-        } else {
-            getView().finishLoading();
         }
     }
 
@@ -436,9 +435,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
 
         isRequesting = true;
-        getReplyListUseCase.execute(requestParam,
-                new GetReplySubscriber(getView(),
-                        this));
+        getReplyListUseCase.execute(requestParam, new GetReplySubscriber(getView(), this));
     }
 
     public void setResult(ChatRoomViewModel replyData) {
@@ -453,7 +450,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         } else {
             getView().getAdapter().addList(replyData.getChatList());
         }
-        getView().setTextAreaReply(replyData.getTextAreaReply() == 1);
+        getView().displayReplyField(replyData.getTextAreaReply() == 1);
         getView().setCanLoadMore(replyData.isHasNext());
 
         if (!replyData.isHasNext() && replyData.isHasTimeMachine()) {
@@ -466,24 +463,11 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     private boolean isValidReply() {
-        boolean isValid = true;
         if (getView().getReplyMessage().trim().length() == 0) {
-            isValid = false;
             getView().showSnackbarError(getView().getString(R.string.error_empty_report));
+            return false;
         }
-        return isValid;
-    }
-
-    public void sendMessageWithWebsocket() {
-        if (isValidReply()) {
-            getView().addDummyMessage();
-            getView().setViewEnabled(false);
-
-            final String reply = (getView().getReplyMessage());
-            String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
-
-            sendReply(messageId, reply);
-        }
+        return true;
     }
 
     public void onRefresh() {
@@ -499,8 +483,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         webSocketUseCase.execute(webSocketUseCase.getParamSendInvoiceAttachment(messageId, invoice));
     }
 
-    public void sendProductAttachment(String messageId, ResultProduct product) throws
-            JSONException {
+    public void sendProductAttachment(String messageId, ResultProduct product) {
         webSocketUseCase.execute(webSocketUseCase.getParamSendProductAttachment(messageId, product));
     }
 
@@ -566,7 +549,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void closeWebSocket() {
-        webSocketUseCase.closeConnection();
+        if(webSocketUseCase!=null) {
+            webSocketUseCase.closeConnection();
+        }
     }
 
     public void getTemplate() {
