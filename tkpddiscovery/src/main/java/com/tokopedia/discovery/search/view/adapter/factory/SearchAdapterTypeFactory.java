@@ -95,6 +95,8 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
             viewHolder = new ShopSearchViewHolder(parent, clickListener);
         } else if(type == DigitalViewHolder.LAYOUT) {
             viewHolder = new DigitalViewHolder(parent, clickListener);
+        } else if(type == TitleViewHolder.LAYOUT) {
+            viewHolder = new TitleViewHolder(parent);
         } else if(type == CategoryViewHolder.LAYOUT) {
             viewHolder = new CategoryViewHolder(parent, clickListener);
         } else if(type == InCategoryViewHolder.LAYOUT) {
