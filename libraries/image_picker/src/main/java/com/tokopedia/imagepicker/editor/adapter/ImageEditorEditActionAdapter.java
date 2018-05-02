@@ -16,6 +16,7 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
 
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP;
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP_ROTATE;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_ROTATE;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_WATERMARK;
 
@@ -74,6 +75,10 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
                 case TYPE_WATERMARK:
                     ivEdit.setImageResource(R.drawable.circle_red);
                     tvEdit.setText(context.getString(R.string.watermark));
+                    break;
+                case TYPE_CROP_ROTATE:
+                    ivEdit.setImageResource(R.drawable.ic_crop);
+                    tvEdit.setText(context.getString(R.string.crop_and_rotate));
                     break;
             }
             view.setOnClickListener(this);
