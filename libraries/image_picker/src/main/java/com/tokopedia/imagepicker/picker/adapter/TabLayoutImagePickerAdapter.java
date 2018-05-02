@@ -44,17 +44,17 @@ public class TabLayoutImagePickerAdapter {
             TabLayout.Tab tab = tabLayout.newTab();
             switch (tabTypeDefItem) {
                 case TYPE_GALLERY:
-                    tab.setIcon(R.drawable.circle_red).setText(context.getString(R.string.gallery));
+                    tab.setText(context.getString(R.string.gallery));
                     unselectTab(tab);
                     tabLayout.addTab(tab);
                     break;
                 case TYPE_CAMERA:
-                    tab.setIcon(R.drawable.circle_red).setText(context.getString(R.string.camera));
+                    tab.setText(context.getString(R.string.camera));
                     unselectTab(tab);
                     tabLayout.addTab(tab);
                     break;
                 case TYPE_INSTAGRAM:
-                    tab.setIcon(R.drawable.circle_red).setText(context.getString(R.string.instagram));
+                    tab.setText(context.getString(R.string.instagram));
                     unselectTab(tab);
                     tabLayout.addTab(tab);
                     break;
@@ -62,24 +62,14 @@ public class TabLayoutImagePickerAdapter {
         }
     }
 
-    private void setColorFilterForTab(TabLayout.Tab tab, int colorRes) {
-        Drawable iconDrawable = tab.getIcon();
-        if (iconDrawable!= null) {
-            iconDrawable.clearColorFilter();
-            int tabIconColor = ContextCompat.getColor(context, colorRes);
-            tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
-        }
-    }
-
     public void selectTab(int position) {
         TabLayout.Tab tab = tabLayout.getTabAt(position);
-        setColorFilterForTab(tab, TabLayoutImagePickerAdapter.SELECTED_COLOR);
         if (tabLayout.getSelectedTabPosition()!= position) {
             tab.select();
         }
     }
 
     public void unselectTab(TabLayout.Tab tab) {
-        setColorFilterForTab(tab, TabLayoutImagePickerAdapter.UNSELECTED_COLOR);
+
     }
 }

@@ -22,7 +22,7 @@ import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageSelection
  */
 
 public enum ImagePickerBuilder {
-    ADD_PRODUCT(new int[]{TYPE_GALLERY, TYPE_INSTAGRAM, TYPE_CAMERA},
+    ADD_PRODUCT(new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM},
             GalleryType.IMAGE_ONLY,
             ImageSelectionTypeDef.TYPE_SINGLE,
             300,
