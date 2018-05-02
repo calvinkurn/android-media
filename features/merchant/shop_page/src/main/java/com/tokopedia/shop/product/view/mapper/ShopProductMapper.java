@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.view.mapper;
 
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.common.util.WishListUtils;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
@@ -26,10 +27,12 @@ public class ShopProductMapper {
     private static final String LABEL_CASHBACK = "Cashback";
     private static final String LABEL_PERCENTAGE = "%";
 
-    public List<ShopProductViewModel> convertFromShopProduct(List<ShopProduct> shopProductList) {
+    public List<ShopProductViewModel> convertFromShopProduct(List<ShopProduct> shopProductList, int page, int defaultPerPage) {
         List<ShopProductViewModel> shopProductViewModelList = new ArrayList<>();
-        for (ShopProduct shopProduct : shopProductList) {
+        for (int i = 0; i < shopProductList.size(); i++) {
+            ShopProduct shopProduct = shopProductList.get(i);
             ShopProductListViewModel shopProductViewModel = convertFromShopProduct(shopProduct);
+            shopProductViewModel.setPositionTracking(getCurrentPageView(page, i+1, defaultPerPage));
             shopProductViewModelList.add(shopProductViewModel);
         }
         return shopProductViewModelList;
@@ -122,17 +125,27 @@ public class ShopProductMapper {
         return shopProductViewModel;
     }
 
-    public PagingList<ShopProductHomeViewModel> convertFromProductViewModel(PagingList<ShopProductViewModel> shopProductViewModelPagingList) {
+    public PagingList<ShopProductHomeViewModel> convertFromProductViewModel(PagingList<ShopProductViewModel> shopProductViewModelPagingList, int page, int perPage) {
         PagingList<ShopProductHomeViewModel> shopProductHomeViewModelPagingList = new PagingList<>();
         shopProductHomeViewModelPagingList.setPaging(shopProductViewModelPagingList.getPaging());
         shopProductHomeViewModelPagingList.setTotalData(shopProductViewModelPagingList.getTotalData());
         List<ShopProductHomeViewModel> shopProductHomeViewModels = new ArrayList<>();
-        for(ShopProductViewModel shopProductViewModel : shopProductViewModelPagingList.getList()){
+        for(int i = 0; i<shopProductHomeViewModelPagingList.getList().size(); i++){
+            ShopProductViewModel shopProductViewModel =  shopProductViewModelPagingList.getList().get(i);
             ShopProductHomeViewModel shopProductHomeViewModel = convertFromProductModel(shopProductViewModel);
+            shopProductHomeViewModel.setPositionTracking(getCurrentPageView(page, i + 1, perPage));
             shopProductHomeViewModels.add(shopProductHomeViewModel);
         }
         shopProductHomeViewModelPagingList.setList(shopProductHomeViewModels);
         return shopProductHomeViewModelPagingList;
+    }
+
+    private int getCurrentPageView(int currentPage, int position, int perPage) {
+        if (currentPage > 1) {
+            return (perPage * (currentPage -1)) + position;
+        } else {
+            return position;
+        }
     }
 
     private ShopProductHomeViewModel convertFromProductModel(ShopProductViewModel shopProductViewModel) {
@@ -183,8 +196,10 @@ public class ShopProductMapper {
 
     public List<ShopProductLimitedFeaturedViewModel> convertFromProductViewModelFeatured(List<ShopProductViewModel> shopProductViewModels) {
         List<ShopProductLimitedFeaturedViewModel> shopProductLimitedFeaturedViewModels = new ArrayList<>();
-        for(ShopProductViewModel shopProductViewModel : shopProductViewModels){
+        for(int i = 0; i <shopProductViewModels.size(); i++){
+            ShopProductViewModel shopProductViewModel  =  shopProductViewModels.get(i);
             ShopProductLimitedFeaturedViewModel shopProductLimitedFeaturedViewModel = convertFromProductModelFeatured(shopProductViewModel);
+            shopProductLimitedFeaturedViewModel.setPositionTracking(i + 1);
             shopProductLimitedFeaturedViewModels.add(shopProductLimitedFeaturedViewModel);
         }
         return shopProductLimitedFeaturedViewModels;
