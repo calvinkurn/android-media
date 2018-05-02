@@ -78,6 +78,9 @@ public interface ApplinkConst {
     String SUB_PROMO_WITH_SLASH = "tokopedia://sale/{slug}/{category_slug}/";
     String BRAND_LIST = "tokopedia://official-store/brand";
     String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
+    String REGISTER = "tokopedia://registration";
+    String PROFILE = "tokopedia://people/{user_id}";
+
 
     String EVENTS = "tokopedia://events";
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";

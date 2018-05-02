@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'io.fabric'
 apply plugin: 'com.jakewharton.butterknife'
 
@@ -91,6 +92,7 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.+'
     }
 }
+
 
 android {
 
@@ -225,6 +227,7 @@ android {
 
     dexOptions {
         javaMaxHeapSize "4g"
+        keepRuntimeAnnotatedClasses false
     }
 
     compileOptions {
@@ -238,16 +241,9 @@ android {
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
 
-    // Specifies two flavor dimensions.
-    flavorDimensions "tier"
-
     productFlavors {
-        staging {
-            dimension "tier"
-        }
-
         live {
-            dimension "tier"
+
         }
     }
 }
