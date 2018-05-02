@@ -16,8 +16,6 @@ public interface ImageProductListPresenter extends CustomerPresenter<ImageProduc
 
     void loadMoreData(SearchParameter searchParameter, HashMap<String, String> additionalParams);
 
-    void loadData(SearchParameter searchParameter, boolean isForceSearch, HashMap<String, String> additionalParams);
-
     void handleWishlistButtonClicked(ProductItem productItem, int adapterPosition);
 
     void attachView(ImageProductListFragmentView viewListener, WishlistActionListener wishlistActionListener);

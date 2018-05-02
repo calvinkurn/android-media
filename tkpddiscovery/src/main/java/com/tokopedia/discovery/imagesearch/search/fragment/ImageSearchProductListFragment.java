@@ -333,7 +333,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                 !getSearchParameter().getDepartmentId().equals("0")) {
             adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getSearchParameter().getDepartmentId());
         }
-        topAdsConfig.setTopAdsParams(adsParams);
     }
 
     @Override

@@ -182,13 +182,4 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
         this.imagePath = imagePath;
     }
 
-    public static class GetImageSearchException extends RuntimeException {
-        public GetImageSearchException(String s) {
-        }
-    }
-
-    public static class HandleImageSearchResponseError extends RuntimeException {
-        public HandleImageSearchResponseError(String s) {
-        }
-    }
 }

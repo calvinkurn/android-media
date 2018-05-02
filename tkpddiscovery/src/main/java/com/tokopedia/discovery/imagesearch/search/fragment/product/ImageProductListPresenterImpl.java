@@ -113,53 +113,6 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
                 });
     }
 
-    @Override
-    public void loadData(SearchParameter searchParameter, boolean isForceSearch, HashMap<String, String> additionalParams) {
-        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false, true);
-        removeDefaultCategoryParam(requestParams);
-
-        getProductUseCase.execute(requestParams,
-                new DefaultSubscriber<SearchResultModel>() {
-                    @Override
-                    public void onStart() {
-                        getView().setTopAdsEndlessListener();
-                        getView().incrementStart();
-                    }
-
-                    @Override
-                    public void onCompleted() {
-                        getView().hideRefreshLayout();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (isViewAttached()) {
-                            getView().showNetworkError(0);
-                        }
-                    }
-
-                    @Override
-                    public void onNext(SearchResultModel searchResultModel) {
-                        if (isViewAttached()) {
-                            ProductViewModel productViewModel = ProductViewModelHelper.convertToProductViewModelFirstPage(searchResultModel);
-                            List<Visitable> list = new ArrayList<Visitable>();
-                            if (productViewModel.getProductList().isEmpty()) {
-                                getView().setEmptyProduct();
-                            } else {
-                                HeaderViewModel headerViewModel = new HeaderViewModel();
-                                headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
-                                list.add(headerViewModel);
-                                list.addAll(productViewModel.getProductList());
-                                getView().setProductList(list);
-                                if (getView().getStartFrom() > searchResultModel.getTotalData()) {
-                                    getView().unSetTopAdsEndlessListener();
-                                }
-                            }
-                            getView().storeTotalData(searchResultModel.getTotalData());
-                        }
-                    }
-                });
-    }
 
     @Override
     public void handleWishlistButtonClicked(ProductItem productItem, int adapterPosition) {
