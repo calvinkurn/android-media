@@ -21,6 +21,8 @@ import com.facebook.FacebookSdk;
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.FeedTracking;
@@ -78,6 +80,8 @@ import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
+import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -105,7 +109,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         FeedPlus.View.Toppicks,
         FeedPlus.View.Kol,
         SwipeRefreshLayout.OnRefreshListener,
-        TopAdsItemClickListener, TopAdsInfoClickListener {
+        TopAdsItemClickListener, TopAdsInfoClickListener,
+        KolPostListener.View.ViewHolder {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -126,12 +131,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private ShareBottomDialog shareBottomDialog;
     private TkpdProgressDialog progressDialog;
     private RemoteConfig remoteConfig;
+    private AbstractionRouter abstractionRouter;
 
     @Inject
     FeedPlusPresenter presenter;
 
     @Inject
-    SessionHandler sessionHandler;
+    UserSession userSession;
 
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
@@ -199,6 +205,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
         callbackManager = CallbackManager.Factory.create();
         String loginIdString = SessionHandler.getLoginID(getActivity());
         loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
+
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            abstractionRouter = (AbstractionRouter) getActivity().getApplication();
+        } else {
+            throw new IllegalStateException("Application must implement " +
+                    AbstractionRouter.class.getSimpleName());
+        }
     }
 
     @Nullable
@@ -995,7 +1008,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToKolComment(int page, int rowNumber, KolViewModel model) {
+    public void onGoToKolComment(int page, int rowNumber, KolPostViewModel model) {
         if (getActivity().getApplication() instanceof FeedModuleRouter) {
             FeedModuleRouter router = ((FeedModuleRouter) getActivity().getApplication());
             Intent intent = router.getKolCommentActivity(getContext(), model.getId(), rowNumber);
@@ -1135,5 +1148,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public int getAdapterListSize() {
         return adapter.getItemCount();
+    }
+
+    @Override
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    @Override
+    public AbstractionRouter getAbstractionRouter() {
+        return abstractionRouter;
     }
 }
