@@ -26,7 +26,6 @@ import rx.Subscriber;
 public class TopAdsDetailNewProductPresenterImpl extends TopAdsDetailEditProductPresenterImpl<TopAdsDetailEditView> implements TopAdsDetailNewProductPresenter {
 
     private TopAdsCreateDetailProductListUseCase topAdsSaveDetailProductListUseCase;
-    private TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase;
     private TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase;
 
     public TopAdsDetailNewProductPresenterImpl(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase,
@@ -35,9 +34,8 @@ public class TopAdsDetailNewProductPresenterImpl extends TopAdsDetailEditProduct
                                                TopAdsProductListUseCase topAdsProductListUseCase, TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
                                                TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
                                                TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase) {
-        super(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase);
+        super(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
         this.topAdsSaveDetailProductListUseCase = topAdsCreateDetailProductListUseCase;
-        this.topAdsGetSourceTaggingUseCase = topAdsGetSourceTaggingUseCase;
         this.topAdsRemoveSourceTaggingUseCase = topAdsRemoveSourceTaggingUseCase;
     }
 
@@ -82,22 +80,6 @@ public class TopAdsDetailNewProductPresenterImpl extends TopAdsDetailEditProduct
             @Override
             public void onNext(TopAdsDetailProductDomainModel topAdsDetailProductDomainModel) {
                 getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(topAdsDetailProductDomainModel));
-                topAdsRemoveSourceTaggingUseCase.execute(new Subscriber<Void>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Void aVoid) {
-
-                    }
-                });
             }
         };
     }
@@ -106,5 +88,6 @@ public class TopAdsDetailNewProductPresenterImpl extends TopAdsDetailEditProduct
     public void detachView() {
         super.detachView();
         topAdsSaveDetailProductListUseCase.unsubscribe();
+        topAdsGetSourceTaggingUseCase.unsubscribe();
     }
 }

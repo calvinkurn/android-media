@@ -15,6 +15,8 @@ import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCa
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractor;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailListener;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,13 +33,16 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
     protected final TopAdsGroupAdInteractor groupAdInteractor;
     private TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
     private TopAdsGetSuggestionUseCase getSuggestionUseCase;
+    protected TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
     public TopAdsDetailGroupPresenterImpl(Context context, TopAdsDetailListener<GroupAd> topAdsDetailListener, TopAdsGroupAdInteractor groupAdInteractor,
-                                          @Nullable TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase, @Nullable TopAdsGetSuggestionUseCase getSuggestionUseCase) {
+                                          @Nullable TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase, @Nullable TopAdsGetSuggestionUseCase getSuggestionUseCase,
+                                          TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase) {
         super(context, topAdsDetailListener);
         this.groupAdInteractor = groupAdInteractor;
         this.topAdsGetDetailGroupUseCase = topAdsGetDetailGroupUseCase;
         this.getSuggestionUseCase = getSuggestionUseCase;
+        this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
     }
 
     @Override
@@ -45,6 +50,9 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
         super.unsubscribe();
         if (groupAdInteractor != null) {
             groupAdInteractor.unSubscribe();
+        }
+        if (topAdsAddSourceTaggingUseCase != null){
+            topAdsAddSourceTaggingUseCase.unsubscribe();
         }
     }
 
@@ -125,5 +133,26 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
                 topAdsDetailListener.onAdLoaded(groupAd);
             }
         });
+    }
+
+    @Override
+    public void saveSourceTagging(@TopAdsSourceOption String source){
+        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source),
+                new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+
+                    }
+                });
     }
 }

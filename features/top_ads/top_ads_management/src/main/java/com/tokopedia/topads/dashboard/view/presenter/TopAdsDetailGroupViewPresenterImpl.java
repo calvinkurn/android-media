@@ -26,7 +26,7 @@ public class TopAdsDetailGroupViewPresenterImpl extends TopAdsDetailGroupPresent
     public TopAdsDetailGroupViewPresenterImpl(Context context,
                                               TopAdsDetailViewListener<GroupAd> topAdsDetailViewListener,
                                               TopAdsGroupAdInteractor groupAdInteractor) {
-        super(context, topAdsDetailViewListener, groupAdInteractor, null, null);
+        super(context, topAdsDetailViewListener, groupAdInteractor, null, null, null);
         this.topAdsDetailViewListener = topAdsDetailViewListener;
     }
 

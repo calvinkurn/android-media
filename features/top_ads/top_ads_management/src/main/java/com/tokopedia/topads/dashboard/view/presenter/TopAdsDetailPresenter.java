@@ -1,5 +1,7 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+
 import java.util.Date;
 
 /**
@@ -8,4 +10,6 @@ import java.util.Date;
 
 public interface TopAdsDetailPresenter extends RetrofitPresenter {
     void refreshAd(Date startDate, Date endDate, String id);
+
+    void saveSourceTagging(@TopAdsSourceOption String source);
 }

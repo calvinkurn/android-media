@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.topads.common.util.TopAdsSourceTaggingUseCaseUtil;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsProductAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsShopAdFactory;
@@ -29,6 +30,7 @@ import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMoveProductGroupTo
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenterImpl;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 
 /**
  * Created by zulfikarrahman on 3/1/17.
@@ -70,7 +72,10 @@ public class TopAdsGroupeditPromoDI {
                         topAdsShopAdsRepository,topAdsGroupAdsRepository);
         TopAdsMoveProductGroupToExistGroupUseCase topAdsMoveProductGroupToExistGroupUseCase =
                 new TopAdsMoveProductGroupToExistGroupUseCase(threadExecutor, postExecutionThread, topAdsProductAdsRepository);
+        TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase = TopAdsSourceTaggingUseCaseUtil.getTopAdsGetSourceTaggingUseCase(context);
+
         return new TopAdsGroupEditPromoPresenterImpl(topAdsSearchGroupAdsNameUseCase,
-                topAdsCheckExistGroupUseCase, topAdsEditProductGroupToNewGroupUseCase, topAdsMoveProductGroupToExistGroupUseCase);
+                topAdsCheckExistGroupUseCase, topAdsEditProductGroupToNewGroupUseCase,
+                topAdsMoveProductGroupToExistGroupUseCase,  topAdsGetSourceTaggingUseCase);
     }
 }

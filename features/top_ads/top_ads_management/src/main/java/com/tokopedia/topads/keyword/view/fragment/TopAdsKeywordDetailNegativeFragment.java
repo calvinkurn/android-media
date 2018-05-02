@@ -10,6 +10,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordEditDetailNegativeActivity;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.dashboard.view.model.Ad;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 /**
  * Created by zulfikarrahman on 5/30/17.
@@ -69,6 +70,7 @@ public class TopAdsKeywordDetailNegativeFragment extends TopAdsKeywordDetailFrag
 
     @Override
     protected void editAd() {
+        topadsKeywordDetailPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_NEGATIVE);
         startActivityForResult(TopAdsKeywordEditDetailNegativeActivity.createInstance(getActivity(), ((KeywordAd)ad)), REQUEST_CODE_AD_EDIT);
     }
 }

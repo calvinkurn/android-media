@@ -6,6 +6,8 @@ import com.tokopedia.topads.keyword.domain.interactor.TopAdsKeywordGetDetailUseC
 import com.tokopedia.topads.keyword.domain.model.KeywordDetailDomain;
 import com.tokopedia.topads.keyword.view.mapper.TopAdsKeywordDetailMapperView;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import java.util.Date;
 
@@ -19,11 +21,14 @@ public class TopAdsKeywordDetailPresenterImpl extends TopadsKeywordDetailPresent
 
     private final TopAdsKeywordGetDetailUseCase topAdsKeywordGetDetailUseCase;
     private final TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase;
+    private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
     public TopAdsKeywordDetailPresenterImpl(TopAdsKeywordGetDetailUseCase topAdsKeywordGetDetailUseCase,
-                                            TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase) {
+                                            TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase,
+                                            TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase) {
         this.topAdsKeywordGetDetailUseCase = topAdsKeywordGetDetailUseCase;
         this.topAdsKeywordActionBulkUseCase = topAdsKeywordActionBulkUseCase;
+        this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
     }
 
     @Override
@@ -146,8 +151,30 @@ public class TopAdsKeywordDetailPresenterImpl extends TopadsKeywordDetailPresent
     }
 
     @Override
+    public void saveSourceTagging(@TopAdsSourceOption String source){
+        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source),
+                new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+
+                    }
+                });
+    }
+
+    @Override
     public void unSubscribe() {
         topAdsKeywordActionBulkUseCase.unsubscribe();
         topAdsKeywordGetDetailUseCase.unsubscribe();
+        topAdsAddSourceTaggingUseCase.unsubscribe();
     }
 }

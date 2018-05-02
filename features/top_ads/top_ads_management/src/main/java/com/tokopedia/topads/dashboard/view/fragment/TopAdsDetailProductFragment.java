@@ -32,6 +32,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsEditProductMainPageAct
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupEditPromoActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductViewPresenterImpl;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -138,6 +139,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
 
     @Override
     protected void editAd() {
+        presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_DASHBOARD_PRODUCT);
         if (isHasGroupAd()) {
             Intent intent = TopAdsGroupEditPromoActivity.createIntent(getActivity(),
                     ad.getId(), TopAdsGroupEditPromoFragment.EXIST_GROUP, ad.getGroupName(),

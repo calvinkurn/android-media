@@ -19,6 +19,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsStatisticShopActivity;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsViewHolder;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardStoreFragmentListener;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardShopPresenterImpl;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsDashboardShopPresenterImpl> implements TopAdsDashboardStoreFragmentListener {
 
@@ -68,6 +69,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
 
     public void onCreateShop() {
         if (!TextUtils.isEmpty(shopAd.getName())) {
+            presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_SHOP);
             Intent intent = TopAdsCreatePromoShopActivity.createIntent(getActivity(), shopAd);
             startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
         }

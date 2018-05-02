@@ -22,6 +22,7 @@ import com.tokopedia.topads.keyword.di.module.TopAdsKeywordDetailModule;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordEditDetailPositiveActivity;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import javax.inject.Inject;
 
@@ -114,6 +115,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
 
     @Override
     protected void editAd() {
+        topadsKeywordDetailPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_POSITIVE);
         startActivityForResult(TopAdsKeywordEditDetailPositiveActivity.createInstance(getActivity(), ad), REQUEST_CODE_AD_EDIT);
     }
 

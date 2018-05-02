@@ -2,6 +2,7 @@ package com.tokopedia.topads.keyword.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import java.util.Date;
 
@@ -13,6 +14,8 @@ public abstract class TopadsKeywordDetailPresenter<T extends TopAdsDetailViewLis
     public abstract void refreshAd(Date startDate, Date endDate, String id, int isPositve, String shopId);
 
     public abstract void deleteAd(String id, String groupId, String shopId);
+
+    public abstract void saveSourceTagging(@TopAdsSourceOption String source);
 
     public abstract void unSubscribe();
 

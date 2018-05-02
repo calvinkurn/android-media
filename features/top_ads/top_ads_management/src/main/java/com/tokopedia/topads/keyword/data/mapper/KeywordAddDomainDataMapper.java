@@ -77,8 +77,8 @@ public class KeywordAddDomainDataMapper
             datum.setShopId(domainModel.getShopId());
             datum.setToggle(DEFAULT_TOGGLE);
             datum.setStatus(DEFAULT_STATUS);
-            datum.setSource(DEFAULT_SOURCE);
-            //datum.setSource(domainModel.getSource());
+            //datum.setSource(DEFAULT_SOURCE);
+            datum.setSource(domainModel.getSource());
             datumList.add(datum);
         }
         AddKeywordRequest addKeywordRequest = new AddKeywordRequest();

@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.topads.common.util.TopAdsSourceTaggingUseCaseUtil;
 import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopAdInteractor;
@@ -9,8 +10,11 @@ import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.request.ShopRequest;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import java.util.Date;
+
+import rx.Subscriber;
 
 /**
  * Created by zulfikarrahman on 1/3/17.
@@ -18,10 +22,12 @@ import java.util.Date;
 public class TopAdsDetailShopViewPresenterImpl extends TopAdsDetailProductViewPresenterImpl<ShopAd> {
 
     private final TopAdsShopAdInteractor shopAdInteractor;
+    private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
     public TopAdsDetailShopViewPresenterImpl(Context context, TopAdsDetailViewListener<ShopAd> topAdsDetailViewListener, TopAdsProductAdInteractor productAdInteractor, TopAdsShopAdInteractor shopAdInteractor) {
         super(context, topAdsDetailViewListener, productAdInteractor);
         this.shopAdInteractor = shopAdInteractor;
+        this.topAdsAddSourceTaggingUseCase = TopAdsSourceTaggingUseCaseUtil.getTopAdsAddSourceTaggingUseCase(context);
     }
 
     @Override
@@ -51,4 +57,26 @@ public class TopAdsDetailShopViewPresenterImpl extends TopAdsDetailProductViewPr
             shopAdInteractor.unSubscribe();
         }
     }
+
+    @Override
+    public void saveSourceTagging(String source) {
+        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase
+                .createRequestParams(source), new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+
+            }
+        });
+    }
+
 }

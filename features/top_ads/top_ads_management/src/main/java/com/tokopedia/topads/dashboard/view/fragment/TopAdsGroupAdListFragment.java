@@ -21,6 +21,7 @@ import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyGroupAd
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupAdListPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupAdListPresenterImpl;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import java.util.Date;
 
@@ -89,6 +90,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
 
     @Override
     public void onCreateAd() {
+        presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_GROUP);
         UnifyTracking.eventTopAdsProductNewPromoGroup();
         Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
         startActivityForResult(intent, REQUEST_CODE_AD_ADD);

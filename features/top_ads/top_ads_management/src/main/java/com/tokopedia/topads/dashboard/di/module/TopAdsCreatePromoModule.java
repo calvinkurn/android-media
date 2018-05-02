@@ -109,9 +109,11 @@ public class TopAdsCreatePromoModule {
     TopAdsDetailNewShopPresenter provideTopAdsDetailShopPresenter(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase,
                                                                      TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase,
                                                                      TopAdsCreateDetailShopUseCase topAdsCreateDetailShopUseCase,
-                                                                     TopAdsProductListUseCase topAdsProductListUseCase) {
-        return new TopAdsDetailNewShopPresenterImpl(topAdsGetDetailShopUseCase, topAdsSaveDetailShopUseCase, topAdsCreateDetailShopUseCase,
-                topAdsProductListUseCase);
+                                                                     TopAdsProductListUseCase topAdsProductListUseCase,
+                                                                  TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
+        return new TopAdsDetailNewShopPresenterImpl(topAdsGetDetailShopUseCase,
+                topAdsSaveDetailShopUseCase, topAdsCreateDetailShopUseCase,
+                topAdsProductListUseCase, topAdsGetSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope
@@ -119,8 +121,10 @@ public class TopAdsCreatePromoModule {
     TopAdsDetailEditProductPresenter provideTopadsDetailEditProductPresenter(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase,
                                                                              TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
                                                                              TopAdsProductListUseCase topAdsProductListUseCase,
-                                                                             TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase){
-        return new TopAdsDetailEditProductPresenterImpl(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase);
+                                                                             TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
+                                                                             TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase){
+        return new TopAdsDetailEditProductPresenterImpl(topAdsGetDetailProductUseCase,
+                topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope
@@ -128,16 +132,20 @@ public class TopAdsCreatePromoModule {
     TopAdsDetailEditGroupPresenter provideTopadsDetailEditGroupPresenter(TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
                                                                            TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
                                                                            TopAdsProductListUseCase topAdsProductListUseCase,
-                                                                         TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase){
-        return new TopAdsDetailEditGroupPresenterImpl(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase);
+                                                                         TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
+                                                                         TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase){
+        return new TopAdsDetailEditGroupPresenterImpl(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase,
+                topAdsProductListUseCase, topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope
     @Provides
     TopAdsDetailEditShopPresenter provideTopAdsDetailEditShopPresenter(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase,
                                                                           TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase,
-                                                                          TopAdsProductListUseCase topAdsProductListUseCase){
-        return new TopAdsDetailEditShopPresenterImpl(topAdsGetDetailShopUseCase, topAdsSaveDetailShopUseCase, topAdsProductListUseCase);
+                                                                          TopAdsProductListUseCase topAdsProductListUseCase,
+                                                                       TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase){
+        return new TopAdsDetailEditShopPresenterImpl(topAdsGetDetailShopUseCase, topAdsSaveDetailShopUseCase,
+                topAdsProductListUseCase, topAdsGetSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope

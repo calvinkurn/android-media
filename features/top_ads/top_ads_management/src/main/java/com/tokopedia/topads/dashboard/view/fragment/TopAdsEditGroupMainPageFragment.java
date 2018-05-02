@@ -21,6 +21,8 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupNameActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenterImpl;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import javax.inject.Inject;
 
@@ -34,6 +36,8 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
     TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
     @Inject
     TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase;
+    @Inject
+    TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
     private LabelView productAdd;
     private LabelView name;
     private LabelView keywordTotalAdd;
@@ -60,7 +64,9 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsDetailGroupPresenterImpl(getActivity(), this, new TopAdsGroupAdInteractorImpl(getActivity()), topAdsGetDetailGroupUseCase, topAdsGetSuggestionUseCase);
+        presenter = new TopAdsDetailGroupPresenterImpl(getActivity(), this,
+                new TopAdsGroupAdInteractorImpl(getActivity()), topAdsGetDetailGroupUseCase,
+                topAdsGetSuggestionUseCase, topAdsAddSourceTaggingUseCase);
     }
 
     @Override
@@ -87,6 +93,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
     @Override
     protected void onScheduleClicked() {
         Intent intent;
+        presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_GROUP);
         if (ad != null) {
             intent = TopAdsEditScheduleExistingGroupActivity.createIntent(getActivity(), String.valueOf(ad.getId()));
         } else {
@@ -103,6 +110,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
             @Override
             public void onClick(View view) {
                 if (isAdded() && ad != null) {
+                    presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_GROUP);
                     startActivityForResult(TopAdsEditGroupNameActivity.createIntent(getActivity(), ad.getName(), String.valueOf(ad.getId())), REQUEST_CODE_AD_EDIT);
                 }
             }
@@ -112,6 +120,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
             @Override
             public void onClick(View view) {
                 if (isAdded() && ad != null) {
+                    presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_GROUP);
                     startActivityForResult(TopAdsCreatePromoExistingGroupEditActivity.createIntent(getActivity(), String.valueOf(ad.getId()), null), REQUEST_CODE_AD_EDIT);
                 }
             }
@@ -121,6 +130,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
             @Override
             public void onClick(View v) {
                 if (isAdded() && ad != null) {
+                    presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_GROUP);
                     TopAdsKeywordNewChooseGroupActivity.start(TopAdsEditGroupMainPageFragment.this, getActivity(), REQUEST_CODE_AD_EDIT, true, ad.getName());
                 }
             }
@@ -130,6 +140,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
     @Override
     protected void onCostClicked() {
         Intent intent;
+        presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_GROUP);
         if (ad != null) {
             intent = TopAdsEditCostExistingGroupActivity.createIntent(getActivity(), String.valueOf(ad.getId()), ad);
         } else {

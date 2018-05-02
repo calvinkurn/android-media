@@ -11,6 +11,7 @@ import com.tokopedia.topads.keyword.domain.interactor.TopAdsKeywordActionBulkUse
 import com.tokopedia.topads.keyword.domain.interactor.TopAdsKeywordGetDetailUseCase;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordDetailPresenterImpl;
 import com.tokopedia.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,8 +27,9 @@ public class TopAdsKeywordDetailModule extends TopAdsKeywordModule {
     @TopAdsKeywordScope
     @Provides
     TopadsKeywordDetailPresenter providePresenterKeywordDetail(TopAdsKeywordGetDetailUseCase topAdsKeywordGetDetailUseCase,
-                                                               TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase){
-        return new TopAdsKeywordDetailPresenterImpl(topAdsKeywordGetDetailUseCase, topAdsKeywordActionBulkUseCase);
+                                                               TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase,
+                                                               TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase){
+        return new TopAdsKeywordDetailPresenterImpl(topAdsKeywordGetDetailUseCase, topAdsKeywordActionBulkUseCase, topAdsAddSourceTaggingUseCase);
     }
 
     @TopAdsKeywordScope

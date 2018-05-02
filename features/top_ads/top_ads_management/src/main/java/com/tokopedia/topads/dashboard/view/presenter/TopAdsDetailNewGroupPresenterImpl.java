@@ -34,7 +34,6 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
 
     private TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase;
     private TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase;
-    private TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase;
     private TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase;
 
     public TopAdsDetailNewGroupPresenterImpl(TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase,
@@ -45,10 +44,10 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
                                              TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
                                              TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
                                              TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase) {
-        super(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase);
+        super(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase, topAdsProductListUseCase,
+                topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
         this.topAdsCreateNewGroupUseCase = topAdsCreateNewGroupUseCase;
         this.topAdsCreateDetailProductListUseCase = topAdsCreateDetailProductListUseCase;
-        this.topAdsGetSourceTaggingUseCase = topAdsGetSourceTaggingUseCase;
         this.topAdsRemoveSourceTaggingUseCase = topAdsRemoveSourceTaggingUseCase;
     }
 
@@ -116,22 +115,6 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
             public void onNext(TopAdsDetailProductDomainModel domainModel) {
                 getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(domainModel));
                 getView().goToGroupDetail(domainModel.getGroupId());
-                topAdsRemoveSourceTaggingUseCase.execute(new Subscriber<Void>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Void aVoid) {
-
-                    }
-                });
             }
         };
     }

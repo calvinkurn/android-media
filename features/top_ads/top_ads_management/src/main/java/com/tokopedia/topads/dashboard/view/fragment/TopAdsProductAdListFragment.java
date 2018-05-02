@@ -22,6 +22,7 @@ import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyProduct
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsProductAdListPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsProductAdListPresenterImpl;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 /**
  * Created by zulfikarrahman on 12/16/16.
@@ -122,6 +123,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     @Override
     public void onCreateAd() {
         UnifyTracking.eventTopAdsProductNewPromoProduct();
+        presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_DASHBOARD_PRODUCT);
         Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
         this.startActivityForResult(intent, REQUEST_CODE_AD_ADD);
     }
