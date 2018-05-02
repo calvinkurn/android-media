@@ -973,7 +973,6 @@ public class TkpdBaseURL {
         public static final String PATH_CHANGE_COURIER = "/v4/order/change_courier";
     }
 
-
     public class Referral {
         public static final String PATH_GET_REFERRAL_VOUCHER_CODE = "galadriel/promos/referral/code";
     }
