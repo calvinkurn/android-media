@@ -8,6 +8,7 @@
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     android:foreground="?attr/selectableItemBackgroundBorderless">
+
     <ImageView
         android:id="@+id/iv_edit"
         android:layout_width="@dimen/dp_32"
@@ -15,9 +16,10 @@
         android:layout_gravity="center_horizontal"
         tools:src="@drawable/ic_crop" />
     <TextView
+        style="@style/TextView.Micro.BlackSecondary"
         android:id="@+id/tv_edit"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        tools:text="Crop"/>
+        android:layout_gravity="center_horizontal"
+        tools:text="Watermark"/>
 </LinearLayout>

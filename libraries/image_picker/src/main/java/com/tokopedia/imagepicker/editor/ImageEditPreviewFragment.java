@@ -1,12 +1,15 @@
 package com.tokopedia.imagepicker.editor;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -15,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.imagepicker.editor.adapter.ImageEditorEditActionAdapter;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
 import com.yalantis.ucrop.view.OverlayView;
@@ -40,6 +44,12 @@ public class ImageEditPreviewFragment extends Fragment {
     private View progressBar;
 
     private UCropView uCropView;
+    private View blockingView;
+
+    private OnImageEditPreviewFragmentListener onImageEditPreviewFragmentListener;
+    public interface OnImageEditPreviewFragmentListener{
+        boolean isInEditMode();
+    }
 
     public static ImageEditPreviewFragment newInstance(String oriImagePath, String edittedImagePath, int minResolution) {
         Bundle args = new Bundle();
@@ -60,6 +70,7 @@ public class ImageEditPreviewFragment extends Fragment {
         initUCrop(view);
         initProgressBar(view);
 
+        blockingView = view.findViewById(R.id.blocking_view);
         return view;
     }
 
@@ -170,12 +181,20 @@ public class ImageEditPreviewFragment extends Fragment {
     private void showLoadingAndHidePreview() {
         uCropView.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
+        blockingView.setVisibility(View.VISIBLE);
     }
 
     private void hideLoadingAndShowPreview() {
         progressBar.setVisibility(View.GONE);
         uCropView.setVisibility(View.VISIBLE);
         uCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
+        if (onImageEditPreviewFragmentListener.isInEditMode()) {
+            blockingView.setVisibility(View.GONE);
+            uCropView.getOverlayView().setShowCropGrid(true);
+        } else {
+            blockingView.setVisibility(View.VISIBLE);
+            uCropView.getOverlayView().setShowCropGrid(false);
+        }
     }
 
     @Override
@@ -189,5 +208,24 @@ public class ImageEditPreviewFragment extends Fragment {
         outState.putString(ARG_EDITTED_IMAGE_PATH, edittedImagePath);
     }
 
+    @TargetApi(23)
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        onAttachActivity(context);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachActivity(activity);
+        }
+    }
+
+    protected void onAttachActivity(Context context) {
+        onImageEditPreviewFragmentListener = (OnImageEditPreviewFragmentListener) context;
+    }
 
 }

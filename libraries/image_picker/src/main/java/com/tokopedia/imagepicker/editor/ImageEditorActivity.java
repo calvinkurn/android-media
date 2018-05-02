@@ -19,6 +19,7 @@ import com.tokopedia.imagepicker.editor.adapter.ImageEditorEditActionAdapter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.presenter.ImageDownloadPresenter;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
+import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
 import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
 
 import java.util.ArrayList;
@@ -27,7 +28,8 @@ import java.util.ArrayList;
  * Created by Hendry on 9/25/2017.
  */
 
-public class ImageEditorActivity extends BaseSimpleActivity implements ImageDownloadPresenter.ImageDownloadView {
+public class ImageEditorActivity extends BaseSimpleActivity implements ImageDownloadPresenter.ImageDownloadView,
+        ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener {
 
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
     public static final String EXTRA_MIN_RESOLUTION = "MIN_IMG_RESOLUTION";
@@ -36,6 +38,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
     public static final String SAVED_FINAL_PATHS = "SAVED_CROPPED_PATHS";
     public static final String SAVED_LOCAL_IMAGE_PATH = "RES_PATH";
+    public static final String SAVED_IN_EDIT_MODE = "SAVED_IN_EDIT_MODE";
 
     public static final String EDIT_RESULT_PATHS = "result_paths";
 
@@ -49,6 +52,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private ArrayList<String> finalImagePaths;
 
     private int currentImageIndex;
+    private boolean isInEditMode;
 
     private View vgProgressBar;
     private ImageDownloadPresenter imageDownloadPresenter;
@@ -57,6 +61,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private NonSwipeableViewPager viewPager;
 
     private ImageEditorViewPagerAdapter imageEditorViewPagerAdapter;
+    private ImageEditThumbnailListWidget imageEditThumbnailListWidget;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImagePickerBuilder.ImageEditActionTypeDef int[] imageEditActionType) {
@@ -91,6 +96,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Documents/IMG_20180308_181928_HDR.jpg");
         extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20180111-WA0004.jpg");
         extraImageUrls.add("/storage/emulated/0/Download/303836.jpg");
+        extraImageUrls.add("/storage/emulated/0/Tokopedia/738855.jpg");
+        extraImageUrls.add("/storage/emulated/0/Download/Guitar-PNG-Image-500x556.png");
+        extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Documents/IMG_20180308_181928_HDR.jpg");
+        extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20180111-WA0004.jpg");
+        extraImageUrls.add("/storage/emulated/0/Download/303836.jpg");
 
 //        if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
 //            extraImageUrls = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
@@ -108,24 +118,63 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         hideContentView();
 
         viewPager = findViewById(R.id.view_pager);
-        viewPager.setCanSwipe(true);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                currentImageIndex = position;
+                imageEditThumbnailListWidget.setIndex(currentImageIndex);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         if (savedInstanceState == null) {
             currentImageIndex = 0;
             localImagePaths = new ArrayList<>();
             finalImagePaths = new ArrayList<>();
+            isInEditMode = false;
         } else {
             currentImageIndex = savedInstanceState.getInt(SAVED_IMAGE_INDEX, 0);
             localImagePaths = savedInstanceState.getStringArrayList(SAVED_LOCAL_IMAGE_PATH);
             finalImagePaths = savedInstanceState.getStringArrayList(SAVED_FINAL_PATHS);
+            isInEditMode = savedInstanceState.getBoolean(SAVED_IN_EDIT_MODE);
         }
 
         setupEditMainLayout();
+        setUpMode();
+    }
+
+    private void setUpMode() {
+        // TODO setup edit/preview mode
+        // EDIT: have cancel and save
+        // NON-EDIT: have thumbnail and edit action
+        viewPager.setCanSwipe(!isInEditMode);
     }
 
     private void setupEditMainLayout() {
         ImageEditActionMainWidget imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
         imageEditActionMainWidget.setData(imageEditActionType);
+    }
+
+    private void setUpThumbnailPreview(){
+        imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
+        imageEditThumbnailListWidget.setOnImageEditThumbnailListWidgetListener(this);
+        imageEditThumbnailListWidget.setData(finalImagePaths, currentImageIndex);
+    }
+
+    @Override
+    public void onThumbnailItemClicked(String imagePath, int position) {
+        if (viewPager.getCurrentItem() != position) {
+            viewPager.setCurrentItem(position);
+        }
     }
 
     private void finishEditImage() {
@@ -134,14 +183,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         setResult(Activity.RESULT_OK, intent);
 
         finish();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults[0] != -1) {
-            viewPager.setAdapter(imageEditorViewPagerAdapter);
-        }
     }
 
     @Override
@@ -204,6 +245,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                     minResolution);
         }
         viewPager.setAdapter(imageEditorViewPagerAdapter);
+
+        setUpThumbnailPreview();
 
     }
 
@@ -311,11 +354,18 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         outState.putInt(SAVED_IMAGE_INDEX, currentImageIndex);
         outState.putStringArrayList(SAVED_LOCAL_IMAGE_PATH, localImagePaths);
         outState.putStringArrayList(SAVED_FINAL_PATHS, finalImagePaths);
+        outState.putBoolean(SAVED_IN_EDIT_MODE, isInEditMode);
     }
 
     @Override
     protected Fragment getNewFragment() {
         return null;
+    }
+
+
+    @Override
+    public boolean isInEditMode() {
+        return isInEditMode;
     }
 
 

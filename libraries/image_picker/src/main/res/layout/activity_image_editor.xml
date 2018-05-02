@@ -73,71 +73,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                    <HorizontalScrollView
+                    <com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget
+                        android:id="@+id/image_edit_thumbnail_list_widget"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center">
-
-                        <LinearLayout
-                            android:id="@+id/vg_editor_preview_content"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:orientation="horizontal">
-                            <!-- layout in programmatically -->
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/dp_12"
-                                android:layout_marginRight="@dimen/dp_12"
-                                android:text="Preview Test" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/dp_12"
-                                android:layout_marginRight="@dimen/dp_12"
-                                android:text="Preview Test" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/dp_12"
-                                android:layout_marginRight="@dimen/dp_12"
-                                android:text="Preview Test" />
-
-                            <!--<TextView-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:text="budi fewge  fe few few     "/>-->
-                        </LinearLayout>
-
-                    </HorizontalScrollView>
+                        android:layout_gravity="center_horizontal"/>
                 </LinearLayout>
             </FrameLayout>
-
-            <!--<FrameLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/dp_72">-->
-
-            <!--<android.support.design.widget.TabLayout-->
-            <!--android:id="@+id/tab_layout"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:clipChildren="false"-->
-            <!--android:clipToPadding="false"-->
-            <!--app:tabGravity="fill"-->
-            <!--app:tabIndicatorColor="@null"-->
-            <!--app:tabMinWidth="@dimen/tab_min_width"-->
-            <!--app:tabMode="fixed"-->
-            <!--app:tabSelectedTextColor="@color/font_black_primary_70"-->
-            <!--app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"-->
-            <!--app:tabTextColor="@color/font_black_primary_70">-->
-            <!--&lt;!&ndash;will be added programmatically at ImageEditorActivity&ndash;&gt;-->
-
-            <!--</android.support.design.widget.TabLayout>-->
-
-            <!--</FrameLayout>-->
 
         </LinearLayout>
 
