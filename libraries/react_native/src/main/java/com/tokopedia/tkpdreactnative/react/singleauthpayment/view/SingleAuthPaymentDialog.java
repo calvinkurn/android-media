@@ -46,8 +46,8 @@ public class SingleAuthPaymentDialog extends DialogPreferenceHide implements Sin
         setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                singlePaymentPresenter.savePreferenceHide(isCheckedBoxHideDialog());
                 dismiss();
+                singlePaymentPresenter.savePreferenceHide(isCheckedBoxHideDialog());
             }
         });
         setOnOkClickListener(new View.OnClickListener() {
