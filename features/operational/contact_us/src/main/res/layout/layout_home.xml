@@ -8,14 +8,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#fafbfc">
+<LinearLayout
+    android:id="@+id/layout_article"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+        <include
+            android:id="@+id/toped_bot"
+            layout="@layout/layout_toped_chatbot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="@dimen/new_margin_sm"
+            />
 
         <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/artikel_populer"
             layout="@layout/layout_article_popular"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent" />
-
+            app:layout_constraintTop_toBottomOf="@+id/toped_bot"/>
+</LinearLayout>
         <FrameLayout
             android:id="@+id/transactions_orders"
             android:layout_width="match_parent"
@@ -23,7 +38,7 @@
             android:layout_marginTop="@dimen/new_margin_sm"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/artikel_populer">
+            app:layout_constraintTop_toBottomOf="@+id/layout_article">
 
             <include
                 layout="@layout/layout_order_list"

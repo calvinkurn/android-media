@@ -54,8 +54,8 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     @BindView(R2.id.order_list_viewpager)
     ViewPager orderListViewpager;
     CardPagerAdapter cardAdapter;
-    @BindView(R2.id.btn_chat)
-    TextView btnChat;
+    @BindView(R2.id.toped_bot)
+    View btnChat;
 
     private ContactUsComponent campaignComponent;
 
@@ -172,10 +172,10 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
 
     @OnClick(R2.id.btn_contact_us)
     public void onBtnContactUsClicked() {
-        startActivity(ContactUsWebViewActivity.getInstance(getContext(), "https://www.tokopedia.com/contact-us"));
+        startActivity(ContactUsWebViewActivity.getInstance(getContext(), "https://www.tokopedia.com/contact-us?utm_source=android&flag_app=1#step1"));
     }
 
-    @OnClick(R2.id.btn_chat)
+    @OnClick(R2.id.btn_chat_toped)
     public void onBtnChatClicked() {
     }
 
