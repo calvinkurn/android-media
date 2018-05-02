@@ -29,6 +29,7 @@ public class SingleAuthPaymentDialog extends DialogPreferenceHide implements Sin
     SinglePaymentPresenter singlePaymentPresenter;
     @Inject
     SetSingleAuthPaymentPresenter singleAuthPaymentPresenter;
+    private boolean saveSinglePaymentAfterSavePref = true;
 
     public SingleAuthPaymentDialog(Activity context, Type type, FingerPrintUIHelper.Callback callback) {
         super(context, type);
@@ -46,13 +47,14 @@ public class SingleAuthPaymentDialog extends DialogPreferenceHide implements Sin
         setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dismiss();
+                saveSinglePaymentAfterSavePref = false;
                 singlePaymentPresenter.savePreferenceHide(isCheckedBoxHideDialog());
             }
         });
         setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                saveSinglePaymentAfterSavePref = true;
                 singlePaymentPresenter.savePreferenceHide(isCheckedBoxHideDialog());
             }
         });
@@ -108,8 +110,12 @@ public class SingleAuthPaymentDialog extends DialogPreferenceHide implements Sin
 
     @Override
     public void onSuccessSavePreference() {
-        if(context instanceof AppCompatActivity) {
-            singleAuthPaymentPresenter.setSingleAuthenticationMode();
+        if(saveSinglePaymentAfterSavePref) {
+            if (context instanceof AppCompatActivity) {
+                singleAuthPaymentPresenter.setSingleAuthenticationMode();
+            }
+        }else{
+            dismiss();
         }
     }
 
