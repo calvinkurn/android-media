@@ -25,7 +25,7 @@ import javax.inject.Inject;
  * Created by sachinbansal on 4/12/18.
  */
 
-public class ImageSearchActiviy extends DiscoveryActivity
+public class ImageSearchActivity extends DiscoveryActivity
         implements ImageSearchContract.View, RedirectionListener {
 
 
@@ -37,7 +37,7 @@ public class ImageSearchActiviy extends DiscoveryActivity
     private SearchComponent searchComponent;
 
     public static Intent newInstance(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, ImageSearchActiviy.class);
+        Intent intent = new Intent(context, ImageSearchActivity.class);
         intent.putExtras(bundle);
         return intent;
     }
@@ -46,7 +46,7 @@ public class ImageSearchActiviy extends DiscoveryActivity
     public static void moveTo(AppCompatActivity activity,
                               ProductViewModel productViewModel) {
         if (activity != null) {
-            Intent intent = new Intent(activity, ImageSearchActiviy.class);
+            Intent intent = new Intent(activity, ImageSearchActivity.class);
             intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
             activity.startActivity(intent);
         }
@@ -77,7 +77,7 @@ public class ImageSearchActiviy extends DiscoveryActivity
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    KeyboardHandler.showSoftKeyboard(ImageSearchActiviy.this);
+                    KeyboardHandler.showSoftKeyboard(ImageSearchActivity.this);
                 }
             }, 200);
         }

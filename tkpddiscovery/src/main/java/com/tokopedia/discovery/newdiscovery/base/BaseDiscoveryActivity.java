@@ -10,7 +10,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.discovery.imagesearch.search.ImageSearchActiviy;
+import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
@@ -111,7 +111,7 @@ public class BaseDiscoveryActivity
     @Override
     public void onHandleImageResponseSearch(ProductViewModel productViewModel) {
         TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
-        ImageSearchActiviy.moveTo(this, productViewModel);
+        ImageSearchActivity.moveTo(this, productViewModel);
         finish();
     }
 

@@ -8,7 +8,7 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
  * Created by sachinbansal on 4/12/18.
  */
 
-public class ImageSearchPresenter extends DiscoveryPresenter<ImageSearchContract.View, ImageSearchActiviy>
+public class ImageSearchPresenter extends DiscoveryPresenter<ImageSearchContract.View, ImageSearchActivity>
         implements ImageSearchContract.Presenter {
 
     public ImageSearchPresenter(GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {

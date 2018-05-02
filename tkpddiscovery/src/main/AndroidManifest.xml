@@ -83,7 +83,7 @@
             android:label=""
             android:screenOrientation="portrait" />
         <activity
-            android:name=".imagesearch.search.ImageSearchActiviy"
+            android:name=".imagesearch.search.ImageSearchActivity"
             android:label=""
             android:screenOrientation="portrait" />
         <activity android:name=".newdiscovery.category.presentation.CategoryActivity"></activity>

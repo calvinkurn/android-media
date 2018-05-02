@@ -2,7 +2,7 @@ package com.tokopedia.discovery.newdiscovery.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.discovery.imagesearch.di.module.ImageSearchModule;
-import com.tokopedia.discovery.imagesearch.search.ImageSearchActiviy;
+import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchPresenter;
 import com.tokopedia.discovery.imagesearch.search.fragment.ImageSearchProductListFragment;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenterImpl;
@@ -27,7 +27,7 @@ import dagger.Component;
 public interface SearchComponent {
     void inject(SearchActivity searchActivity);
 
-    void inject(ImageSearchActiviy imageSearchActiviy);
+    void inject(ImageSearchActivity imageSearchActiviy);
 
     void inject(ProductListFragment productListFragment);
 
