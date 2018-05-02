@@ -154,7 +154,12 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
                 // If etalase Id not found, then reset etalaseId
                 if (TextUtils.isEmpty(etalaseName)) {
                     for (EtalaseModel etalaseModel : etalaseModelListTemp) {
-                        if (shopProductRequestModel.getEtalaseId().equalsIgnoreCase(etalaseModel.getEtalaseName())) {
+                        if (shopProductRequestModel.getEtalaseId()
+                                .replace("-","")
+                                .equalsIgnoreCase(etalaseModel.getEtalaseName()
+                                        .replace("-","")
+                                        .replace("_","")
+                                        .replace(" ",""))) {
                             shopProductRequestModel.setEtalaseId(etalaseModel.getEtalaseId());
                             etalaseName = etalaseModel.getEtalaseName();
                             shopProductRequestModel.setUseAce((etalaseModel.getUseAce() == USE_ACE));
