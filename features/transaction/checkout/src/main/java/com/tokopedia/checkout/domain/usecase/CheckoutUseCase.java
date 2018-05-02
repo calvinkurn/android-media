@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.domain.usecase;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.checkout.data.entity.response.checkout.CheckoutDataResponse;
 import com.tokopedia.checkout.data.repository.ICartRepository;

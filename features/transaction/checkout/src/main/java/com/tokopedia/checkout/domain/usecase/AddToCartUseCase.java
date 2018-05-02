@@ -1,10 +1,10 @@
 package com.tokopedia.checkout.domain.usecase;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.checkout.data.repository.ICartRepository;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

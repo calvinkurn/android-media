@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.entity.request.MultipleAddressRequest;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
@@ -52,8 +53,13 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                 dataArray.add(cartData);
             }
         }
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("carts", dataArray.toString());
         RequestParams requestParam = RequestParams.create();
-        requestParam.putString("carts", dataArray.toString());
+        requestParam.putObject(
+                SubmitMultipleAddressUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
+                view.getGeneratedAuthParamNetwork(param)
+        );
         submitMultipleAddressUseCase.execute(
                 requestParam,
                 addMultipleAddressSubscriber());

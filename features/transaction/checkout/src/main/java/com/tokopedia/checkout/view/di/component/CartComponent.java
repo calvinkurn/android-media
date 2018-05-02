@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.di.component;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.checkout.data.repository.ICartRepository;
 import com.tokopedia.checkout.data.repository.ITopPayRepository;
@@ -41,6 +42,8 @@ public interface CartComponent {
     IShipmentMapper shipmentMapper();
 
     ITopPayMapper topPayMapper();
+
+    UserSession userSession();
 
     void inject(CartComponentInjector cartApiServiceComponentInjector);
 }
