@@ -16,7 +16,6 @@ public final class AppScreen {
     public static final String STATISTIC_PAGE = "Statistic Page";
     public static final String SCREEN_COPY_PRODUCT = "Salin Product Page";
     public static final String SCREEN_INSTOPED = "Instoped Upload Page";
-    public static final String SCREEN_INDEX_HOME = "Index Main";
     public static final String SCREEN_NATIVE_RECHARGE = "Native Recharge";
     public static final String SCREEN_LOGIN = "Login page";
     public static final String SCREEN_REGISTER = "Register page";
@@ -264,7 +263,6 @@ public final class AppScreen {
     public static final String SCREEN_OPPORTUNITY_DETAIL = "Replacement Detail Page";
     public static final String SCREEN_OPPORTUNITY_TAB= "Replacement Main Page";
     public static final String SCREEN_ONBOARDING = "Screen OnBoarding ";
-    public static final String SCREEN_KOL_COMMENTS = "Kol Comments Page";
     public static final String SCREEN_DISCOVERY_PAGE = "Discovery Page";
     public static final String SCREEN_CHAT = "inbox-chat";
     public static final String SCREEN_CHAT_DETAIL = "chat detail";
