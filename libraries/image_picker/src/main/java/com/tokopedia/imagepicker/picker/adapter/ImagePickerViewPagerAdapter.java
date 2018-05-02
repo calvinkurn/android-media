@@ -1,12 +1,14 @@
 package com.tokopedia.imagepicker.picker.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.util.SparseArrayCompat;
 import android.view.ViewGroup;
 
+import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
@@ -20,10 +22,12 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private SparseArrayCompat<Fragment> registeredFragments = new SparseArrayCompat<>();
     private ImagePickerBuilder imagePickerBuilder;
+    private Context context;
 
-    public ImagePickerViewPagerAdapter(FragmentManager fm, ImagePickerBuilder imagePickerBuilder) {
+    public ImagePickerViewPagerAdapter(Context context, FragmentManager fm, ImagePickerBuilder imagePickerBuilder) {
         super(fm);
         this.imagePickerBuilder = imagePickerBuilder;
+        this.context = context;
     }
 
     // Note: camera permission will be handled in activity, before the adapter is attached.
@@ -42,6 +46,20 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
                 return ImagePickerInstagramFragment.newInstance();
             default:
                 return new Fragment();
+        }
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        switch (imagePickerBuilder.getTabTypeDef(position)) {
+            case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY:
+                return context.getString(R.string.gallery);
+            case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA:
+                return context.getString(R.string.camera);
+            case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM:
+                return context.getString(R.string.instagram);
+            default:
+                return context.getString(R.string.gallery);
         }
     }
 

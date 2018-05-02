@@ -62,6 +62,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private TextView tvSelectedAlbum;
     private ImagePickerViewPagerAdapter imagePickerViewPagerAdapter;
     private List<String> permissionsToRequest;
+    private TabLayoutImagePickerAdapter tabLayoutImagePickerAdapter;
 
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
@@ -88,6 +89,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
             selectedTab = savedInstanceState.getInt(SAVED_SELECTED_TAB, 0);
         }
 
+        viewPager = findViewById(R.id.view_pager);
+        tabLayout = findViewById(R.id.tab_layout);
+
         setupPreview();
         setupViewPager();
         setupTabLayout();
@@ -104,8 +108,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     private void setupViewPager() {
-        viewPager = findViewById(R.id.view_pager);
-        imagePickerViewPagerAdapter = new ImagePickerViewPagerAdapter(getSupportFragmentManager(), imagePickerBuilder);
+        imagePickerViewPagerAdapter = new ImagePickerViewPagerAdapter(this,  getSupportFragmentManager(), imagePickerBuilder);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             int cameraIndex = imagePickerBuilder.indexTypeDef(ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA);
             int galleryIndex = imagePickerBuilder.indexTypeDef(ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY);
@@ -136,32 +139,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         } else { // under jellybean, no need to check runtime permission
             viewPager.setAdapter(imagePickerViewPagerAdapter);
         }
-    }
 
-    private void setupTabLayout() {
-        tabLayout = findViewById(R.id.tab_layout);
-        final TabLayoutImagePickerAdapter tabLayoutImagePickerAdapter =
-                new TabLayoutImagePickerAdapter(tabLayout, this, imagePickerBuilder.getTabTypeDef());
-        tabLayoutImagePickerAdapter.notifyDataSetChanged();
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                int position = tab.getPosition();
-                if (viewPager.getCurrentItem() != position) {
-                    viewPager.setCurrentItem(position);
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                tabLayoutImagePickerAdapter.unselectTab(tab);
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -171,7 +149,10 @@ public class ImagePickerActivity extends BaseSimpleActivity
             @Override
             public void onPageSelected(int position) {
                 selectedTab = position;
-                tabLayoutImagePickerAdapter.selectTab(position);
+                if (tabLayoutImagePickerAdapter!= null) {
+                    tabLayoutImagePickerAdapter.selectTab(position);
+
+                }
                 changeSpinnerVisibilityByPosition(position);
             }
 
@@ -180,7 +161,10 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
             }
         });
-        tabLayoutImagePickerAdapter.selectTab(selectedTab);
+    }
+
+    private void setupTabLayout() {
+        tabLayout.setupWithViewPager(viewPager);
         if (tabLayout.getTabCount() <= 1) {
             tabLayout.setVisibility(View.GONE);
         }

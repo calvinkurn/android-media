@@ -15,4 +15,5 @@
     <string name="crop">Crop</string>
     <string name="rotate">Rotate</string>
     <string name="watermark">Watermark</string>
+    <string name="crop_and_rotate">Crop/Rotate</string>
 </resources>

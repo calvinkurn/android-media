@@ -8,6 +8,7 @@ import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ExpectedImageR
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_4_5;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_5_4;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP;
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP_ROTATE;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_ROTATE;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_WATERMARK;
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA;
@@ -28,7 +29,7 @@ public enum ImagePickerBuilder {
             300,
             TYPE_1_1,
             true,
-            new int[]{TYPE_CROP, TYPE_ROTATE, TYPE_WATERMARK});
+            new int[]{TYPE_CROP_ROTATE});
 
     private @ImagePickerTabTypeDef int[] tabTypeDef;
     private @GalleryType int galleryType;
@@ -45,11 +46,12 @@ public enum ImagePickerBuilder {
         int TYPE_INSTAGRAM = 3;
     }
 
-    @IntDef({TYPE_CROP, TYPE_ROTATE, TYPE_WATERMARK})
+    @IntDef({TYPE_CROP, TYPE_ROTATE, TYPE_WATERMARK, TYPE_CROP_ROTATE})
     public @interface ImageEditActionTypeDef {
         int TYPE_CROP = 1;
         int TYPE_ROTATE = 2;
         int TYPE_WATERMARK = 3;
+        int TYPE_CROP_ROTATE = 4;
     }
 
     @IntDef({TYPE_SINGLE, TYPE_MULTIPLE_NO_PREVIEW, TYPE_MULTIPLE_WITH_PREVIEW})

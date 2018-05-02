@@ -44,7 +44,7 @@ public class ImageEditActionMainWidget extends FrameLayout implements ImageEdito
     }
 
     private void init() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_image_edit_action_main,
+        LayoutInflater.from(getContext()).inflate(R.layout.widget_image_edit_action_main,
                 this, true);
         viewGroupMainContent = findViewById(R.id.vg_editor_main_content);
     }
