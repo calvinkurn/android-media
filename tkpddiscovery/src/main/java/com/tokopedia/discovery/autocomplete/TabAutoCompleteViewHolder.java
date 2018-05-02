@@ -51,8 +51,8 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
 
     @Override
     public void bind(TabAutoCompleteViewModel element) {
-//        SearchResultFragment allFragment = pageAdapter.getRegisteredFragment(0);
-//        allFragment.clearData();
+        SearchResultFragment allFragment = pageAdapter.getRegisteredFragment(0);
+        allFragment.clearData();
         SearchResultFragment productFragment = pageAdapter.getRegisteredFragment(1);
         productFragment.clearData();
         SearchResultFragment shopFragment = pageAdapter.getRegisteredFragment(2);
@@ -62,7 +62,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             List<Visitable> list;
             switch (searchData.getId()) {
                 case "digital":
-//                    allFragment.addBulkSearchResult(prepareDigitalSearch(searchData, element.getSearchTerm()));
+                    allFragment.addBulkSearchResult(prepareDigitalSearch(searchData, element.getSearchTerm()));
                     continue;
                 case "category":
 //                    allFragment.addBulkSearchResult(prepareCategorySearch(searchData, element.getSearchTerm()));
