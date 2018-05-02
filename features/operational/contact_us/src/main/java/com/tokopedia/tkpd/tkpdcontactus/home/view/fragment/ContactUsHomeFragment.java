@@ -172,7 +172,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
 
     @OnClick(R2.id.btn_contact_us)
     public void onBtnContactUsClicked() {
-        startActivity(ContactUsWebViewActivity.getInstance(getContext(), "www.tokopedia.com/contact-us"));
+        startActivity(ContactUsWebViewActivity.getInstance(getContext(), "https://www.tokopedia.com/contact-us"));
     }
 
     @OnClick(R2.id.btn_chat)
