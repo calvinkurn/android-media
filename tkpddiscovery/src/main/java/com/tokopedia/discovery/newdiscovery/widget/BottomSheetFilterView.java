@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.core.discovery.model.Search;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.list.widget.AlphabeticalSideBar;
 import com.tokopedia.design.search.EmptySearchResultView;
@@ -436,6 +437,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         removeFiltersWithEmptyOption(list);
         mergeSizeFilterOptionsWithSameValue(list);
         removeBrandFilterOptionsWithSameValue(list);
+        mergeSingleOptionFilterToOthers(list);
+        removeFiltersWithSingleOption(list);
         filterMainAdapter.setFilterList(list);
     }
 
@@ -444,6 +447,16 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         while (iterator.hasNext()) {
             Filter filter = iterator.next();
             if (filter.getOptions().isEmpty() && !filter.isSeparator()) {
+                iterator.remove();
+            }
+        }
+    }
+
+    private void removeFiltersWithSingleOption(List<Filter> filterList) {
+        Iterator<Filter> iterator = filterList.iterator();
+        while (iterator.hasNext()) {
+            Filter filter = iterator.next();
+            if (filter.getOptions().size() == 1) {
                 iterator.remove();
             }
         }
@@ -513,6 +526,41 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
             return option.getName();
         } else {
             return option.getName() + " " + option.getMetric();
+        }
+    }
+
+    private void mergeSingleOptionFilterToOthers(List<Filter> list) {
+        List<Option> othersOptionList = new ArrayList<>();
+
+        for (Filter filter : list) {
+            if (filter.getOptions().size() == 1) {
+                othersOptionList.addAll(filter.getOptions());
+            }
+        }
+
+        if (!othersOptionList.isEmpty()) {
+            list.add(generateOthersFilter(othersOptionList));
+        }
+    }
+
+    private Filter generateOthersFilter(List<Option> othersOptionList) {
+        Filter filter = new Filter();
+        makeAllOptionPopular(othersOptionList);
+        filter.setOptions(othersOptionList);
+        filter.setTitle(getContext().getString(R.string.other_filter_title));
+        filter.setTemplateName("");
+
+        Search search = new Search();
+        search.setPlaceholder("");
+        search.setSearchable(0);
+        filter.setSearch(search);
+
+        return filter;
+    }
+
+    private void makeAllOptionPopular(List<Option> list) {
+        for (Option option : list) {
+            option.setPopular(true);
         }
     }
 

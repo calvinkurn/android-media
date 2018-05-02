@@ -43,4 +43,5 @@
     <string name="template_widget_promo_min_transaction">Min Transaksi : %1$s</string>
     <string name="no_result_found">No Results Found</string>
     <string name="bottom_sheet_filter_finish_button_template_text">Tampilkan %s hasil</string>
+    <string name="other_filter_title">Lainnya</string>
 </resources>
