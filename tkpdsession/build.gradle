@@ -19,6 +19,8 @@ dependencies {
     compile project(rootProject.ext.features.core)
     compile project(rootProject.ext.libraries.useCase)
 
+    compile project(rootProject.ext.features.otp)
+
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 

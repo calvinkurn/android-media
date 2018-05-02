@@ -201,7 +201,6 @@ ext {
             loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
             flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
             flightNoOp : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
-            cacheapi   : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
             reputation : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}"
     ]
 
@@ -244,8 +243,9 @@ ext {
             home            : ":tkpdhome",
             kol             : ":features:content:kol",
             groupchat       : ":features:user:groupchat",
-            gamification    : ":features:promo:gamification"
-
+            gamification    : ":features:promo:gamification",
+            profile         : ":features:user:profile",
+            otp             : ":features:user:otp"
     ]
 
     libraries = [
@@ -255,9 +255,9 @@ ext {
             pushNotif       : ":libraries:push_notification",
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
-            reactNative     : ":libraries:react_native",
             useCase         : ":libraries:use_case",
-            fingerprint     : ":libraries:fingerprint"
+            fingerprint     : ":libraries:fingerprint",
+            userSession     : ":libraries:user_session"
     ]
 
 }

@@ -86,12 +86,6 @@
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity
-            android:name="com.tokopedia.otp.cotp.view.activity.VerificationActivity"
-            android:label="@string/title_verify"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-
-        <activity
             android:name=".login.loginemail.view.activity.LoginActivity"
             android:label="@string/login"
             android:screenOrientation="portrait"
@@ -182,11 +176,7 @@
             android:label="@string/title_verify"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name="com.tokopedia.profile.view.activity.TopProfileActivity"
-            android:label=""
-            android:screenOrientation="portrait"
-            />
+
         <activity
             android:name=".login.loginemail.view.activity.ForbiddenActivity"
             android:label="@string/title_activity_forbidden"

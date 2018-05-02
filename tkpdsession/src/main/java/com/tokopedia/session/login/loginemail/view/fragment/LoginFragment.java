@@ -34,7 +34,6 @@ import android.widget.TextView;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -49,7 +48,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.customView.TextDrawable;
-import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -58,9 +56,6 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
-import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
-import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
@@ -577,29 +572,8 @@ public class LoginFragment extends BaseDaggerFragment
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName,
                                        String email, String phone) {
 
-        InterruptVerificationViewModel interruptVerificationViewModel;
-        if (securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE) {
-            interruptVerificationViewModel = InterruptVerificationViewModel
-                    .createDefaultSmsInterruptPage(phone);
-        } else {
-            interruptVerificationViewModel = InterruptVerificationViewModel
-                    .createDefaultEmailInterruptPage(email);
-        }
-
-        VerificationPassModel passModel = new
-                VerificationPassModel(phone, email,
-                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
-                interruptVerificationViewModel,
-                securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE
-        );
-        cacheManager.setKey(VerificationActivity.PASS_MODEL);
-        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
-                new TypeToken<VerificationPassModel>() {
-                }.getType()));
-        cacheManager.store();
-
-        Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
-                securityDomain.getUserCheckSecurity2());
+        Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent
+                (getActivity(), securityDomain.getUserCheckSecurity2(), email, phone);
         startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
 
     }
