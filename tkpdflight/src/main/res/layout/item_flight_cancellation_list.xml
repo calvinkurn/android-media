@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/txt_cancellation_id"
+        style="@style/TextView.Micro.BlackDisabled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
+        tools:text="Cancellation ID: 1234567890" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/txt_cancellation_journey"
+        style="@style/TextView.Small.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_5"
+        tools:text="Jakarta (CGK) - Surabaya (SUB)" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/txt_cancellation_created_time"
+        style="@style/TextView.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        tools:text="Tanggal Pembatalan: 12 Apr 2018, 11:30" />
+
+</LinearLayout>
