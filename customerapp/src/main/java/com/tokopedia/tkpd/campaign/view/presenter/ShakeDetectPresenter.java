@@ -67,7 +67,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     }
 
     private boolean isDoubleShakeShakeEnable() {
-        return remoteConfig.getBoolean(FIREBASE_DOUBLE_SHAKE_CONFIG_KEY,true);
+        return remoteConfig.getBoolean(FIREBASE_DOUBLE_SHAKE_CONFIG_KEY,true) && false;
 
     }
 
@@ -86,6 +86,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 secondShakeHappen = true;
             }
             getView().setInvisibleCounter();
+            getView().setCancelButtonVisible();
             RequestParams requestParams = RequestParams.create();
             requestParams.putString(IS_AUDIO, "false");
             if (ShakeDetectManager.sTopActivity != null) {

@@ -60,20 +60,14 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         initInjector();
         attachToPresenter();
         ButterKnife.bind(this);
-
-        boolean longshake = getIntent().getBooleanExtra(KEY_LONG_SHAKE, false);
-        if (longshake) {
-            shakeShakeMessageButton.setVisibility(View.GONE);
-            cancelButton.setVisibility(View.VISIBLE);
-            unregisterShake();
-        }
-        shakeDetect();
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 presenter.onCancelClick();
             }
         });
+        shakeDetect();
+
 
     }
 
@@ -192,6 +186,12 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     @Override
     public void setInvisibleCounter() {
         shakeShakeMessageButton.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setCancelButtonVisible() {
+        cancelButton.setVisibility(View.VISIBLE);
+        unregisterShake();
     }
 
     @Override

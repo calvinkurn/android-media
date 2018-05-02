@@ -32,6 +32,8 @@ public interface ShakeDetectContract {
 
         boolean isLongShakeTriggered();
         void setInvisibleCounter();
+
+        public void setCancelButtonVisible();
     }
 
     public interface Presenter extends CustomerPresenter<View>{
