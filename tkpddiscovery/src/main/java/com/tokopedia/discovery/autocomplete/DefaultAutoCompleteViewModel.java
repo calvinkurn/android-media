@@ -9,6 +9,7 @@ import java.util.List;
 public class DefaultAutoCompleteViewModel implements Visitable<HostAutoCompleteTypeFactory> {
 
     private List<SearchData> list;
+    private String searchTerm;
 
     public DefaultAutoCompleteViewModel() {
         this.list = new ArrayList<>();
@@ -27,4 +28,11 @@ public class DefaultAutoCompleteViewModel implements Visitable<HostAutoCompleteT
         return typeFactory.type(this);
     }
 
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm = searchTerm;
+    }
+
+    public String getSearchTerm() {
+        return searchTerm;
+    }
 }

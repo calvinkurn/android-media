@@ -1,18 +1,23 @@
 package com.tokopedia.discovery.autocomplete;
 
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.search.view.adapter.SearchPageAdapter;
 
 public class HostAutoCompleteFactory extends BaseAdapterTypeFactory
         implements HostAutoCompleteTypeFactory {
 
     private final ItemClickListener clickListener;
+    private final FragmentManager fragmentManager;
 
-    public HostAutoCompleteFactory(ItemClickListener clickListener) {
+    public HostAutoCompleteFactory(ItemClickListener clickListener,
+                                   FragmentManager fragmentManager) {
         this.clickListener = clickListener;
+        this.fragmentManager = fragmentManager;
     }
 
     @Override
@@ -31,7 +36,7 @@ public class HostAutoCompleteFactory extends BaseAdapterTypeFactory
         if (viewType == DefaultAutoCompleteViewHolder.LAYOUT) {
             viewHolder = new DefaultAutoCompleteViewHolder(view, clickListener);
         } else if (viewType == TabAutoCompleteViewHolder.LAYOUT) {
-            viewHolder = new TabAutoCompleteViewHolder(view, clickListener);
+            viewHolder = new TabAutoCompleteViewHolder(view, fragmentManager, clickListener);
         } else {
             viewHolder = super.createViewHolder(view, viewType);
         }

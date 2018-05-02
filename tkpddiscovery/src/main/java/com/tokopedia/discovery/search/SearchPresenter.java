@@ -6,6 +6,8 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.TabAutoCompleteViewModel;
+import com.tokopedia.discovery.autocomplete.viewmodel.DigitalSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.discovery.search.domain.DeleteParam;
 import com.tokopedia.discovery.search.domain.SearchParam;
 import com.tokopedia.discovery.search.domain.interactor.DeleteSearchUseCase;
@@ -46,7 +48,7 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
         this.querySearch = query;
         SearchParam searchParam = new SearchParam(context);
         searchParam.getParam().put(SearchParam.KEY_QUERY, (query.isEmpty() ? "" : query));
-        searchUseCase.execute(searchParam, new SearchSubscriber());
+        searchUseCase.execute(searchParam, new SearchSubscriber(querySearch));
     }
 
     @Override
@@ -92,6 +94,12 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
     }
 
     private class SearchSubscriber extends Subscriber<List<SearchData>> {
+        private final String querySearch;
+
+        public SearchSubscriber(String querySearch) {
+            this.querySearch = querySearch;
+        }
+
         @Override
         public void onCompleted() {
 
@@ -112,6 +120,7 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
                     switch (searchData.getId()) {
                         case "popular_search":
                         case "recent_search":
+                            defaultAutoCompleteViewModel.setSearchTerm(querySearch);
                             defaultAutoCompleteViewModel.addList(searchData);
                             continue;
                         case "digital":
@@ -120,6 +129,7 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
                         case "hotlist":
                         case "in_category":
                         case "shop":
+                            tabAutoCompleteViewModel.setSearchTerm(querySearch);
                             tabAutoCompleteViewModel.addList(searchData);
                             continue;
                     }

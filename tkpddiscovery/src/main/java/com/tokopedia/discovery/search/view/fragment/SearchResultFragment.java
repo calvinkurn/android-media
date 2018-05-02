@@ -86,6 +86,12 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
         }
     }
 
+    public void addBulkSearchResult(List<Visitable> list) {
+        if (adapter != null) {
+            adapter.addAll(list);
+        }
+    }
+
     private void prepareView(View view) {
         SearchAdapterTypeFactory typeFactory = new SearchAdapterTypeFactory(this);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);

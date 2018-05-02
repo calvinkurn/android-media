@@ -28,6 +28,7 @@ import com.tokopedia.discovery.search.SearchPresenter;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.search.view.adapter.SearchPageAdapter;
 
 import java.util.List;
 
@@ -96,13 +97,15 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     }
 
     private void prepareView() {
-        HostAutoCompleteTypeFactory typeFactory = new HostAutoCompleteFactory(this);
+        HostAutoCompleteTypeFactory typeFactory = new HostAutoCompleteFactory(
+                this,
+                getChildFragmentManager()
+        );
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false) {
                     @Override
                     public boolean canScrollVertically() {
-//                        to disable scroll return false
-                        return super.canScrollVertically();
+                        return false;
                     }
                 };
         adapter = new HostAutoCompleteAdapter(typeFactory);
@@ -148,6 +151,11 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
                                        TabAutoCompleteViewModel tabAutoCompleteViewModel) {
         adapter.setDefaultViewModel(defaultAutoCompleteViewModel);
         adapter.setSuggestionViewModel(tabAutoCompleteViewModel);
+        if (!tabAutoCompleteViewModel.getList().isEmpty()) {
+            recyclerView.scrollToPosition(1);
+        } else {
+            recyclerView.scrollToPosition(0);
+        }
     }
 
     @Override
@@ -198,7 +206,6 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     public void deleteRecentSearch(String keyword){
         presenter.deleteRecentSearchItem(keyword);
     }
-
 
     @Override
     public void onItemClicked(SearchItem item) {
