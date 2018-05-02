@@ -11,7 +11,10 @@ public class ContactUsArticleResponse{
 	private int id;
 
 	@SerializedName("title")
-	private RenderedData title;
+	private String title;
+
+    @SerializedName("content")
+    private String content;
 
 	public void setGuid(RenderedData guid){
 		this.guid = guid;
@@ -29,13 +32,21 @@ public class ContactUsArticleResponse{
 		return id;
 	}
 
-	public void setTitle(RenderedData title){
+	public void setTitle(String title){
 		this.title = title;
 	}
 
-	public RenderedData getTitle(){
+	public String getTitle(){
 		return title;
 	}
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
 	@Override
  	public String toString(){

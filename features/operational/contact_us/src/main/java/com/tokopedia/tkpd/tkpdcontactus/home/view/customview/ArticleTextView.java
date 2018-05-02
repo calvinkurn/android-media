@@ -13,6 +13,7 @@ import com.tokopedia.contactus.R;
 import com.tokopedia.tkpd.tkpdcontactus.common.customview.CustomTextView;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.ContactUsArticleResponse;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.ContactUsWebViewActivity;
+import com.tokopedia.tkpd.tkpdcontactus.orderquery.view.PopularFiveArticleActivity;
 
 /**
  * Created by sandeepgoyal on 05/04/18.
@@ -28,13 +29,13 @@ public class ArticleTextView extends CustomTextView {
 
     public void setContactUsArticle(ContactUsArticleResponse contactUsArticle) {
        this.contactUsArticle = contactUsArticle;
-       setText(contactUsArticle.getTitle().getRendered());
+       setText(contactUsArticle.getTitle());
     }
 
 
     @Override
     public void onViewClick() {
         getContext().startActivity(
-                ContactUsWebViewActivity.getInstance(getContext(),contactUsArticle.getGuid().getRendered()));
+                PopularFiveArticleActivity.getInstance(getContext(),contactUsArticle.getContent()));
     }
 }

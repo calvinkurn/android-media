@@ -125,7 +125,6 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.e("sandeep","count ="+count);
                 if(s.length() >= 30){
                     setSubmitButtonEnabled(true);
                 } else {

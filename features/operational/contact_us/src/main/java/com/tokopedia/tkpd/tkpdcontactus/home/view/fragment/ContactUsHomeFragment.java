@@ -92,11 +92,10 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_inbox:
-                startActivity(InboxRouter.getContactUsActivityIntent(getContext()));
-                return false;
-
+        int i = item.getItemId();
+        if (i == R.id.action_inbox) {
+            startActivity(ContactUsWebViewActivity.getInstance(getContext(), "https://www.tokopedia.com/inbox-ticket.pl"));
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -162,7 +161,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
 
     @OnClick(R2.id.btn_view_more)
     public void onViewClicked() {
-        startActivity(ContactUsWebViewActivity.getInstance(getContext(), "https://www.tokopedia.com/inbox-ticket.pl"));
+        startActivity(ContactUsWebViewActivity.getInstance(getContext(), "https://www.tokopedia.com/bantuan/"));
     }
 
     @OnClick(R2.id.view_full_purchaselist)

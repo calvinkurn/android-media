@@ -144,12 +144,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                     android.R.drawable.stat_sys_warning,
                     TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
         }
-
-        data.add(new DrawerItem("CONTACTUS",
-                R.drawable.ic_menu_logout,
-                TkpdState.DrawerPosition.CONTACT_US,
-                true));
-
     }
 
     private void createDataLogin(ArrayList<DrawerItem> data) {
@@ -204,10 +198,6 @@ public class DrawerBuyerHelper extends DrawerHelper
         data.add(new DrawerItem(context.getString(R.string.drawer_title_logout),
                 R.drawable.ic_menu_logout,
                 TkpdState.DrawerPosition.LOGOUT,
-                true));
-        data.add(new DrawerItem("CONTACTUS",
-                R.drawable.ic_menu_logout,
-                TkpdState.DrawerPosition.CONTACT_US,
                 true));
     }
 

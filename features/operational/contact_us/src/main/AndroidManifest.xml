@@ -6,26 +6,31 @@
             android:name="com.tokopedia.tkpd.tkpdcontactus.home.view.ContactUsHomeActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White"
+            android:label="@string/contact_us_title_home"/>
         <activity
             android:name="com.tokopedia.tkpd.tkpdcontactus.home.view.ContactUsWebViewActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White"
+            android:label="@string/contact_us_title_home"/>
 
         <activity android:name="com.tokopedia.tkpd.tkpdcontactus.home.view.BuyerPurchaseListActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White"
+            android:label="@string/contact_us_title_home"/>
         <activity android:name="com.tokopedia.tkpd.tkpdcontactus.orderquery.view.OrderQueryTicketActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White"
+            android:label="@string/contact_us_title_home" />
 
         <activity android:name="com.tokopedia.tkpd.tkpdcontactus.orderquery.view.QueryTicketDetailActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White"
+            android:label="@string/contact_us_title_home"/>
 
         <activity android:name="com.tokopedia.tkpd.tkpdcontactus.orderquery.view.SubmitTicketActivity"
             android:exported="true"
@@ -33,5 +38,11 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustNothing"
             android:label="@string/submit_ticket_title"/>
+        <activity android:name="com.tokopedia.tkpd.tkpdcontactus.orderquery.view.PopularFiveArticleActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustNothing"
+            android:label="@string/contact_us_title_home"/>
     </application>
 </manifest>

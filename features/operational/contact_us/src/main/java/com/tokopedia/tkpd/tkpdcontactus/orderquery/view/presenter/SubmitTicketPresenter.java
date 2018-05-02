@@ -141,8 +141,6 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
     private boolean fileSizeValid(String fileLoc) {
         File file = new File(fileLoc);
         long size = file.length();
-        Log.e("sandeep","fileLoc - "+fileLoc);
-        Log.e("sandeep","size = "+size);
         return ((size/1024) < 10240);
 
     }
