@@ -14,6 +14,7 @@ import java.io.IOException;
 
 public class CampaignErrorResponse extends BaseResponseError {
     private static final String ERROR_KEY = "message_error";
+    private static final String DATA_KEY = "data";
 
     public CampaignResponseEntity getErrorCode() {
         return data;
@@ -23,6 +24,8 @@ public class CampaignErrorResponse extends BaseResponseError {
         this.data = data;
     }
 
+    @SerializedName(DATA_KEY)
+    @Expose
     private CampaignResponseEntity data;
 
     @SerializedName(ERROR_KEY)

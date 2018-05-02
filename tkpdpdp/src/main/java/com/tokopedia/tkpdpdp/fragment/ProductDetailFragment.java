@@ -1229,6 +1229,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         if (!isAdded() || context == null) {
                             return;
                         }
+                        if (GlobalConfig.isSellerApp()) {
+                            return;
+                        }
                         Intent intent = new Intent(context, SimpleHomeRouter.getSimpleHomeActivityClass());
                         intent.putExtra(
                                 SimpleHomeRouter.FRAGMENT_TYPE,
