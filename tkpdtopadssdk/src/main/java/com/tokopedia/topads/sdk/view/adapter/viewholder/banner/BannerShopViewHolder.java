@@ -90,20 +90,22 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
             } else {
                 badgeContainer.setVisibility(View.GONE);
             }
-            if(cpm.getCpmShop() !=null && cpm.getCpmShop().getProducts().size() > 0){
-                imageContainer.setVisibility(View.VISIBLE);
-                final Product product = cpm.getCpmShop().getProducts().get(0);
-                imageLoader.loadImage(product.getImageProduct().getImageUrl(), productImage);
+            if(cpm.getCpmShop() !=null){
+                if(cpm.getCpmShop().getProducts().size() > 0) {
+                    imageContainer.setVisibility(View.VISIBLE);
+                    final Product product = cpm.getCpmShop().getProducts().get(0);
+                    imageLoader.loadImage(product.getImageProduct().getImageUrl(), productImage);
 
-                productImage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        topAdsBannerClickListener.onBannerAdsClicked(product.getApplinks());
-                        new ImpresionTask().execute(product.getImageProduct().getImageClickUrl());
-                    }
-                });
-            } else {
-                imageContainer.setVisibility(View.GONE);
+                    productImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            topAdsBannerClickListener.onBannerAdsClicked(product.getApplinks());
+                            new ImpresionTask().execute(product.getImageProduct().getImageClickUrl());
+                        }
+                    });
+                } else {
+                    imageContainer.setVisibility(View.GONE);
+                }
             }
             descriptionTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
