@@ -8,8 +8,8 @@
 
     <android.support.v7.widget.LinearLayoutCompat
         android:id="@+id/shake_shake_message_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="288dp"
+        android:layout_height="38dp"
         android:layout_gravity="bottom|center_horizontal"
         android:gravity="center"
         android:background="@drawable/bg_rect_rounded_white_shadow"
@@ -65,20 +65,20 @@
 
     <android.support.v7.widget.LinearLayoutCompat
         android:id="@+id/cancel_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="288dp"
+        android:layout_height="38dp"
         android:layout_gravity="bottom|center_horizontal"
         android:gravity="center"
         android:visibility="gone"
         android:background="@drawable/bg_rect_rounded_white_shadow"
-        android:layout_margin="@dimen/dp_10"
-        android:padding="@dimen/dp_5">
+        android:layout_margin="@dimen/dp_10">
 
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="@dimen/dp_80"
-            android:gravity="center"
+            android:gravity="center_vertical"
+            android:visibility="visible"
             android:minHeight="@dimen/dp_32"
             android:paddingLeft="@dimen/dp_5"
             android:paddingRight="@dimen/dp_5">
@@ -86,9 +86,9 @@
             <ImageView
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
+                app:srcCompat="@drawable/ic_shake_shake"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_10"
-                app:srcCompat="@drawable/ic_shake_shake" />
+                android:layout_marginRight="@dimen/dp_10"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -99,6 +99,11 @@
                 android:textColor="@color/medium_green"
                 android:text="@string/cancel_shake_shake"
                 />
+            <ImageView
+                android:layout_width="@dimen/dp_12"
+                android:layout_height="@dimen/dp_12"
+                app:srcCompat="@drawable/ic_cross"
+                android:layout_marginLeft="@dimen/dp_25"/>
 
         </android.support.v7.widget.LinearLayoutCompat>
 
