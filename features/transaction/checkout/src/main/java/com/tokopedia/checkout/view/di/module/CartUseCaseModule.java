@@ -2,13 +2,9 @@ package com.tokopedia.checkout.view.di.module;
 
 import com.google.gson.Gson;
 import com.tokopedia.checkout.data.repository.ICartRepository;
-import com.tokopedia.checkout.domain.mapper.CartMapper;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
-import com.tokopedia.checkout.domain.mapper.IMapperUtil;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.checkout.domain.mapper.MapperUtil;
-import com.tokopedia.checkout.domain.mapper.VoucherCouponMapper;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
@@ -31,21 +27,6 @@ import dagger.Provides;
  */
 @Module
 public class CartUseCaseModule {
-
-    @Provides
-    IMapperUtil provideIMapperUtil() {
-        return new MapperUtil();
-    }
-
-    @Provides
-    ICartMapper provideICartMapper(IMapperUtil mapperUtil) {
-        return new CartMapper(mapperUtil);
-    }
-
-    @Provides
-    IVoucherCouponMapper provideIVoucherCouponMapper(IMapperUtil mapperUtil) {
-        return new VoucherCouponMapper(mapperUtil);
-    }
 
     @Provides
     AddToCartUseCase addToCartUseCase(ICartRepository cartRepository, Gson gson) {

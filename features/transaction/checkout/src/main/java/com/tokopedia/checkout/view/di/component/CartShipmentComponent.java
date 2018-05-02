@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view.di.component;
 
+import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
+import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.view.di.module.CartShipmentModule;
 import com.tokopedia.checkout.view.di.scope.CartShipmentActivityScope;
 import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;

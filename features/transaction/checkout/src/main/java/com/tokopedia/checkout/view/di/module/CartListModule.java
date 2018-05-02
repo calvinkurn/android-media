@@ -4,10 +4,8 @@ import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.checkout.data.repository.ICartRepository;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
-import com.tokopedia.checkout.domain.mapper.IMapperUtil;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
 import com.tokopedia.checkout.domain.usecase.CartListInteractor;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
@@ -49,12 +47,6 @@ public class CartListModule {
     @CartListScope
     CompositeSubscription provideCompositeSubscription() {
         return new CompositeSubscription();
-    }
-
-    @Provides
-    @CartListScope
-    IShipmentMapper provideIShipmentMapper(IMapperUtil mapperUtil) {
-        return new ShipmentMapper(mapperUtil);
     }
 
     @Provides

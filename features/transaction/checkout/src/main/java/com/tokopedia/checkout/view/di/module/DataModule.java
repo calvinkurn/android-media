@@ -11,7 +11,10 @@ import com.tokopedia.checkout.data.apiservice.CartApiInterceptor;
 import com.tokopedia.checkout.data.apiservice.CartResponseConverter;
 import com.tokopedia.checkout.data.repository.CartRepository;
 import com.tokopedia.checkout.data.repository.ICartRepository;
-import com.tokopedia.checkout.view.di.CartQualifier;
+import com.tokopedia.checkout.data.repository.ITopPayRepository;
+import com.tokopedia.checkout.data.repository.TopPayRepository;
+import com.tokopedia.checkout.view.di.qualifier.CartQualifier;
+import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
@@ -82,4 +85,8 @@ public class DataModule {
         return new CartRepository(cartApi);
     }
 
+    @Provides
+    ITopPayRepository provideITopPayRepository(@CartQualifier CartApi cartApi) {
+        return new TopPayRepository(new TXActService());
+    }
 }
