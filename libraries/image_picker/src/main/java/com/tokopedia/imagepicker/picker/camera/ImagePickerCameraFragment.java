@@ -3,7 +3,9 @@ package com.tokopedia.imagepicker.picker.camera;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,13 +21,16 @@ import android.widget.Toast;
 
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
+import com.otaliastudios.cameraview.CameraUtils;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.util.ImageUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +52,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     private long mCaptureTime;
     private List<Flash> supportedFlashList;
     private int flashIndex;
+    private ProgressDialog progressDialog;
 
     public interface OnImagePickerCameraFragmentListener {
         void onImageTaken(String filePath);
@@ -73,7 +79,10 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         flipImageButton = view.findViewById(R.id.image_button_flip);
         cameraLayout = view.findViewById(R.id.layout_camera);
         cameraView.addCameraListener(new CameraListener() {
+
+            @Override
             public void onCameraOpened(CameraOptions options) {
+                cameraView.setCropOutput(true);
                 supportedFlashList = new ArrayList<>(cameraView.getCameraOptions().getSupportedFlash());
                 setPreviewCameraLayoutOneByOne();
             }
@@ -86,13 +95,9 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                 cameraLayout.setLayoutParams(params);
             }
 
-            public void onPictureTaken(byte[] jpeg) {
-                onPicture(jpeg);
-            }
-
             @Override
-            public void onVideoTaken(File video) {
-                super.onVideoTaken(video);
+            public void onPictureTaken(byte[] imageByte) {
+                generateImage(imageByte);
             }
         });
         flashImageButton.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +114,19 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
             public void onClick(View view) {
                 capturePhoto();
             }
+
+            private void capturePhoto() {
+                if (mCapturingPicture) {
+                    return;
+                }
+                if (isAdded()) {
+                    progressDialog.show();
+                }
+                mCapturingPicture = true;
+                mCaptureTime = System.currentTimeMillis();
+                mCaptureNativeSize = cameraView.getPictureSize();
+                cameraView.capturePicture();
+            }
         });
         flipImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,19 +134,13 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                 toggleCamera();
             }
         });
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.title_loading));
     }
 
-    private void capturePhoto() {
-        if (mCapturingPicture) {
-            return;
-        }
-        mCapturingPicture = true;
-        mCaptureTime = System.currentTimeMillis();
-        mCaptureNativeSize = cameraView.getPictureSize();
-        cameraView.capturePicture();
-    }
 
-    private void onPicture(byte[] jpeg) {
+    private void generateImage(byte[] imageByte) {
         mCapturingPicture = false;
         long callbackTime = System.currentTimeMillis();
         // This can happen if picture was taken with a gesture.
@@ -138,16 +150,26 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         if (mCaptureNativeSize == null) {
             mCaptureNativeSize = cameraView.getPictureSize();
         }
-
-//        PicturePreviewActivity.setImage(jpeg);
-//        Intent intent = new Intent(CameraActivity.this, PicturePreviewActivity.class);
-//        intent.putExtra("delay", callbackTime - mCaptureTime);
-//        intent.putExtra("nativeWidth", mCaptureNativeSize.getWidth());
-//        intent.putExtra("nativeHeight", mCaptureNativeSize.getHeight());
-//        startActivity(intent);
-
+        CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), new CameraUtils.BitmapCallback() {
+            @Override
+            public void onBitmapReady(Bitmap bitmap) {
+                File file = ImageUtils.getTokopediaPhotoPath(false);
+                try {
+                    FileOutputStream out = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                    out.flush();
+                    out.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+            }
+        });
         mCaptureTime = 0;
         mCaptureNativeSize = null;
+        if (isAdded()) {
+            progressDialog.hide();
+        }
     }
 
     private void toggleCamera() {
