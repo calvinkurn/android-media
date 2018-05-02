@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_med">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_referral_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_sm"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_horizontal"
+                    android:text="Ajak teman belanja di Tokopedia dan dapatkan hingga Rp80.000"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/sp_20"
+                    android:textStyle="normal" />
+
+
+                <TextView
+                    android:id="@+id/tv_referral_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_sm"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_horizontal"
+                    android:text="Teman Anda juga mendapat cashbac ini:"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="normal" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_referral_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_app_share_desc"
+                    android:layout_marginTop="@dimen/margin_med">
+
+                    <TextView
+                        android:id="@+id/tv_referral_code"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/margin_sm"
+                        android:background="@drawable/shape_copy_voucher_code_left_default"
+                        android:fontFamily="sans-serif"
+                        android:gravity="left"
+                        android:padding="@dimen/margin_sm"
+                        android:text=""
+                        android:textColor="@color/colorGreen"
+                        android:textSize="@dimen/font_medium"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/btn_copy_referral_code"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/tv_referral_code"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignTop="@id/tv_referral_code"
+                        android:layout_marginBottom="@dimen/dp_1"
+                        android:layout_marginRight="@dimen/dp_1"
+                        android:layout_marginTop="@dimen/dp_1"
+                        android:background="@color/white"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:paddingLeft="@dimen/padding_large"
+                        android:paddingRight="@dimen/padding_large"
+                        android:text="@string/menu_copy"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_medium"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/btn_copy_referral_code"
+                        android:layout_marginBottom="@dimen/margin_med"
+                        android:layout_marginTop="@dimen/margin_med"
+                        android:background="@color/colorGray" />
+
+                    <TextView
+                        android:id="@+id/tv_Bagikan_ke"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/btn_copy_referral_code"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/margin_small"
+
+                        android:background="@color/white"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:paddingLeft="@dimen/padding_large"
+                        android:paddingRight="@dimen/padding_large"
+                        android:text="Bagikan ke"
+                        android:textColor="@color/colorGray"
+                        android:textSize="@dimen/fonts" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/img_referral_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:src="@drawable/ic_whatsapp_share" />
+
+                    <ImageButton
+                        android:id="@+id/img_referral_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+
+                        android:src="@drawable/ic_line_share" />
+
+                    <ImageButton
+                        android:id="@+id/img_referral_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+
+                        android:src="@drawable/ic_instagram_share" />
+
+                    <ImageButton
+                        android:id="@+id/img_referral_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+
+                        android:src="@drawable/ic_facebook_share" />
+
+                    <ImageButton
+                        android:id="@+id/img_referral_more"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+
+                        android:src="@drawable/ic_more_share" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_referral_help_link"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:gravity="center_horizontal"
+                    android:lineSpacingExtra="@dimen/font_medium"
+                    android:padding="@dimen/padding_med"
+                    android:text="Bagaimana cara kerjanya?"
+                    android:textColor="@color/green_btn"
+                    android:textSize="@dimen/fontvs" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/img_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_set_profile" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/padding_small"
+                    android:text="6  teman diajak"
+                    android:textColor="@color/black_70"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toRightOf="@id/img_profile" />
+
+                <TextView
+                    android:id="@+id/tv_referral_progress_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Perolehan Referral:"
+                    android:textColor="@color/black_38"
+                    android:textSize="12sp"
+                    app:layout_constraintTop_toBottomOf="@+id/img_profile" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_referral"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:maxHeight="10dip"
+                    android:minHeight="10dip"
+                    android:paddingBottom="@dimen/dp_8"
+                    android:paddingLeft="@dimen/padding_detail"
+                    android:paddingRight="@dimen/padding_detail"
+                    android:paddingTop="@dimen/dp_8"
+                    android:progressDrawable="@drawable/horizontal_progressbar"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_referral_progress_label" />
+
+                <TextView
+                    android:id="@+id/tv_referral_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rp80.000,-"
+                    android:textColor="@color/black_38"
+                    android:textSize="12sp"
+                    app:layout_constraintTop_toBottomOf="@+id/progress_bar_referral" />
+
+            </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tab_referral_guide"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:tabIndicatorColor="@color/tkpd_main_green"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/tkpd_main_green">
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cara Kerja" />
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ketentuan" />
+
+            </android.support.design.widget.TabLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/view_pager_referral_guide"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+</ScrollView>

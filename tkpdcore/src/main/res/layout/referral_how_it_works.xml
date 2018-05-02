@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_howitworks_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:fontFamily="sans-serif"
+        android:gravity="center_horizontal"
+        android:text="Dapatkan Cashback dalam 3 Langkah:"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_20"
+        android:textStyle="normal" />
+
+    <ImageView
+        android:id="@+id/img_help_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_set_profile"
+        app:layout_constraintTop_toBottomOf="@+id/tv_howitworks_title" />
+
+    <ImageView
+        android:id="@+id/img_help_tell"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_set_profile"
+        app:layout_constraintLeft_toRightOf="@+id/img_help_share" />
+
+    <ImageView
+        android:id="@+id/img_help_recieve"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_set_profile"
+        app:layout_constraintLeft_toRightOf="@+id/img_help_tell" />
+
+    <TextView
+        android:id="@+id/tv_help_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Bagi kode referral-mu"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/fontvs"
+        app:layout_constraintTop_toBottomOf="@+id/img_help_share" />
+
+    <TextView
+        android:id="@+id/tv_help_tell"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Minta teman untuk mendaftar bertransaksi"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/fontvs"
+        app:layout_constraintLeft_toRightOf="@+id/tv_help_share" />
+
+    <TextView
+        android:id="@+id/tv_help_recieve"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Dapatkan cashback ke Tokocash"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/fontvs"
+        app:layout_constraintLeft_toRightOf="@+id/tv_help_tell" />
+
+    <TextView
+        android:id="@+id/btn_app_share"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_referral_code"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:background="@color/green_btn"
+        android:gravity="center_horizontal|center_vertical"
+        android:padding="@dimen/margin_sm"
+        android:text="@string/app_share_btn_label"
+        android:textColor="@color/white"
+        android:textSize="@dimen/fonts"
+        app:layout_constraintTop_toBottomOf="@+id/tv_help_share" />
+
+    <TextView
+        android:id="@+id/tv_referral_help_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_large"
+        android:lineSpacingExtra="@dimen/font_medium"
+        android:padding="@dimen/padding_med"
+        android:text="@string/title_app_referral_howitworks"
+        android:textColor="@color/green_btn"
+        android:textSize="@dimen/fontvs"
+        app:layout_constraintTop_toBottomOf="@+id/btn_app_share" />
+</android.support.constraint.ConstraintLayout>
