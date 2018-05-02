@@ -16,7 +16,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
 
     implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.goldMerchantCommon)
+
+    implementation rootProject.ext.tkpdDependencies.goldMerchantCommon
+
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.wishlistCommon)
 

@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'io.fabric'
 apply plugin: 'com.jakewharton.butterknife'
 
@@ -241,6 +240,9 @@ android {
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
 
+    // Specifies two flavor dimensions.
+    flavorDimensions "tier"
+
     productFlavors {
         live {
 
@@ -274,6 +276,7 @@ dependencies {
     implementation project(rootProject.ext.features.discovery)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.reputationCommon)
 
     implementation project(rootProject.ext.libraries.pushNotif)
