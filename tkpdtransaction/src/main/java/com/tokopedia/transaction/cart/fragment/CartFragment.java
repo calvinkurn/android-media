@@ -118,6 +118,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         PaymentGatewayFragment.ActionListener, CartItemAdapter.CartItemActionListener,
         TopPayBroadcastReceiver.ActionListener, TopAdsItemClickListener {
     private static final String ANALYTICS_GATEWAY_PAYMENT_FAILED = "payment failed";
+    private static final String MARKETPLACE_FLAG = "marketplace";
 
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
@@ -499,7 +500,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             rootview.findViewById(com.tokopedia.core.R.id.main_retry).setVisibility(View.VISIBLE);
         } catch (NullPointerException e) {
             View emptyState = LayoutInflater.from(context).
-                    inflate(R.layout.layout_empty_shopping_chart, (ViewGroup) rootview);
+                    inflate(R.layout.layout_empty_shopping_cart, (ViewGroup) rootview);
             Button shop = emptyState.findViewById(R.id.shoping);
             final RelativeLayout autoApplyView = emptyState.findViewById(R.id.promo_result_empty_cart);
             TextView promoVoucherCode = emptyState.findViewById(R.id.voucher_code_empty_cart);
@@ -832,16 +833,16 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                         intent = LoyaltyActivity
                                 .newInstanceCouponActiveAndSelected(
                                         getActivity(),
-                                        "marketplace",
-                                        "marketplace"
+                                        MARKETPLACE_FLAG,
+                                        MARKETPLACE_FLAG
                                 );
                     } else {
                         intent = LoyaltyActivity.newInstanceCouponActive(
-                                getActivity(), "marketplace", "marketplace"
+                                getActivity(), MARKETPLACE_FLAG, MARKETPLACE_FLAG
                         );
                     }
                 } else intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
-                        "marketplace", "marketplace");
+                        MARKETPLACE_FLAG, MARKETPLACE_FLAG);
                 startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
             }
         });
@@ -862,11 +863,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void renderPartialOrder(boolean enableCancelPartial) {
         cartItemAdapter.setEnableCancelPartial(enableCancelPartial);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override
