@@ -84,6 +84,7 @@ public class ImageUploadHandler {
         return intent;
     }
 
+
     private void startActivity(Intent intent, int code) {
         if (activity != null)
             activity.startActivityForResult(intent, code);
@@ -174,5 +175,7 @@ public class ImageUploadHandler {
         tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, 70, bao);
         return bao.toByteArray();
     }
+
+
 
 }
