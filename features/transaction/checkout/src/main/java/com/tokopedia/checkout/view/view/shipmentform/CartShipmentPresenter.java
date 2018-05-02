@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
-import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
@@ -63,8 +62,11 @@ public class CartShipmentPresenter implements ICartShipmentPresenter {
 
     @Override
     public void processVerifyPayment(String transactionId) {
+        TKPDMapParam<String, String> tkpdMapParam = new TKPDMapParam<>();
+        tkpdMapParam.put(GetThanksToppayUseCase.PARAM_TRANSACTION_ID, transactionId);
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(GetThanksToppayUseCase.PARAM_TRANSACTION_ID, transactionId);
+        requestParams.putObject(GetThanksToppayUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
+                cartShipmentActivity.getGeneratedAuthParamNetwork(tkpdMapParam));
         compositeSubscription.add(
                 getThanksToppayUseCase.createObservable(requestParams)
                         .subscribeOn(Schedulers.newThread())

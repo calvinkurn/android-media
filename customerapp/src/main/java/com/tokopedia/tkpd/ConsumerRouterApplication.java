@@ -1650,9 +1650,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<CouponListResult> tkpdLoyaltyGetCouponListObservable(String page, String pageSize) {
+        TKPDMapParam<String, String> tkpdMapParam = new TKPDMapParam<>();
+        tkpdMapParam.put(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE, page);
+        tkpdMapParam.put(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE_SIZE, pageSize);
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putString(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE, page);
-        requestParams.putString(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE_SIZE, pageSize);
+        requestParams.putObject(
+                GetCouponListCartMarketPlaceUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
+                com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
+                        this, tkpdMapParam, userSession.getUserId(), userSession.getDeviceId()
+                )
+        );
         return CartComponentInjector.newInstance(cartApiServiceComponent)
                 .getGetCouponListCartMarketPlaceUseCase().createObservable(requestParams);
     }

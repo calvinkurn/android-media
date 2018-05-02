@@ -3,11 +3,11 @@ package com.tokopedia.checkout.domain.usecase;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.checkout.data.entity.response.notifcounter.NotifCounterCartDataResponse;
+import com.tokopedia.checkout.data.repository.ICartRepository;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.checkout.data.entity.response.notifcounter.NotifCounterCartDataResponse;
-import com.tokopedia.checkout.data.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
