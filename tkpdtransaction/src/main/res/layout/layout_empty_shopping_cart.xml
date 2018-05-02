@@ -21,6 +21,7 @@
             android:background="@drawable/white_button_rounded"
             android:baselineAligned="false"
             android:padding="@dimen/dp_10"
+            android:visibility="gone"
             tools:visibility="visible">
 
             <LinearLayout
@@ -36,30 +37,12 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/label_promo_type_empty_cart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:lines="1"
-                        android:textStyle="bold"
-                        tools:text="Kode Voucher: "/>
-
-                    <TextView
                         android:id="@+id/voucher_code_empty_cart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:lines="1"
-                        android:textColor="@color/orange"
                         tools:text="GRATISJNE10sdsdfsdfdsfdsfdfdfsdfsasdasds"/>
 
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/voucher_description_empty_cart"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    tools:text="Potensi mendapatkan potongan ongkos kirim jkhjashdjlashd jkasdashd"/>
 
             </LinearLayout>
 
