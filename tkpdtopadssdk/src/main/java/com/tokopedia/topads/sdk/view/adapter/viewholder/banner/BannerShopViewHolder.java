@@ -49,8 +49,8 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     public BannerShopViewHolder(View itemView, final TopAdsBannerClickListener topAdsBannerClickListener) {
         super(itemView);
         this.topAdsBannerClickListener = topAdsBannerClickListener;
-        imageLoader = new ImageLoader(context);
         context = itemView.getContext();
+        imageLoader = new ImageLoader(context);
         iconImg = (ImageView) itemView.findViewById(R.id.icon);
         promotedTxt = (TextView) itemView.findViewById(R.id.title_promote);
         nameTxt = (TextView) itemView.findViewById(R.id.shop_name);
