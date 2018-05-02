@@ -40,9 +40,9 @@ public class AttachInvoicePresenter implements AttachInvoiceContract.Presenter {
     }
 
     @Override
-    public void onDestroy() {
+    public void detachView() {
         if(useCase != null) useCase.unsubscribe();
-        if(view == null) view = null;
-        if(activity == null) activity = null;
+        if(view != null) view = null;
+        if(activity != null) activity = null;
     }
 }

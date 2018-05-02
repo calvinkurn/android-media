@@ -30,6 +30,6 @@ public interface AttachProductContract {
         void completeSelection();
         void attachView(AttachProductContract.View view);
         void attachActivityContract(AttachProductContract.Activity activityContract);
-        void onDestroy();
+        void detachView();
     }
 }

@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.attachinvoice.di.DaggerAttachInvoiceComponent;
 import com.tokopedia.inbox.attachinvoice.view.AttachInvoiceContract;
@@ -143,7 +142,7 @@ public class AttachInvoiceFragment extends BaseListFragment<InvoiceViewModel,
 
     @Override
     public void onDestroy() {
-        if(presenter != null) presenter.onDestroy();
+        if(presenter != null) presenter.detachView();
         super.onDestroy();
     }
 }

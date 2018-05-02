@@ -71,11 +71,9 @@ public class AttachProductPresenter implements AttachProductContract.Presenter {
     }
 
     @Override
-    public void onDestroy() {
-        if(useCase != null){
-            useCase.unsubscribe();
-        }
-        view = null;
-        activityContract = null;
+    public void detachView() {
+        if(useCase != null) useCase.unsubscribe();
+        if(view != null) view = null;
+        if(activityContract != null) activityContract = null;
     }
 }
