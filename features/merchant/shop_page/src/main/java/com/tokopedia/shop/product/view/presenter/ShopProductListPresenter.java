@@ -153,7 +153,16 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
                 }
                 // If etalase Id not found, then reset etalaseId
                 if (TextUtils.isEmpty(etalaseName)) {
-                    shopProductRequestModel.setEtalaseId("");
+                    for (EtalaseModel etalaseModel : etalaseModelListTemp) {
+                        if (shopProductRequestModel.getEtalaseId().equalsIgnoreCase(etalaseModel.getEtalaseName())) {
+                            shopProductRequestModel.setEtalaseId(etalaseModel.getEtalaseId());
+                            etalaseName = etalaseModel.getEtalaseName();
+                            shopProductRequestModel.setUseAce((etalaseModel.getUseAce() == USE_ACE));
+                        }
+                    }
+                    if (TextUtils.isEmpty(etalaseName)) {
+                        shopProductRequestModel.setEtalaseId("");
+                    }
                 }
                 getView().onSuccessGetEtalase(shopProductRequestModel.getEtalaseId(), etalaseName);
                 getShopProductWithWishList(shopProductRequestModel);
