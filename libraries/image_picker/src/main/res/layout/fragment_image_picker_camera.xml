@@ -1,59 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true">
 
-    <com.otaliastudios.cameraview.CameraView
-        android:id="@+id/camera_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:keepScreenOn="true"
-        app:cameraAudio="on"
-        app:cameraCropOutput="false"
-        app:cameraFacing="back"
-        app:cameraFlash="off"
-        app:cameraGestureLongTap="none"
-        app:cameraGesturePinch="zoom"
-        app:cameraGestureScrollHorizontal="exposureCorrection"
-        app:cameraGestureScrollVertical="none"
-        app:cameraGestureTap="focusWithMarker"
-        app:cameraGrid="off"
-        app:cameraJpegQuality="100"
-        app:cameraPlaySounds="true"
-        app:cameraSessionType="picture" />
-
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/layout_camera"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/dp_20">
+        android:layout_gravity="center">
 
-        <ImageButton
-            android:id="@+id/image_button_flash"
-            android:layout_width="0dp"
+        <com.otaliastudios.cameraview.CameraView
+            android:id="@+id/camera_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:keepScreenOn="true"
+            app:cameraAudio="on"
+            app:cameraCropOutput="false"
+            app:cameraFacing="back"
+            app:cameraFlash="off"
+            app:cameraGestureLongTap="none"
+            app:cameraGesturePinch="zoom"
+            app:cameraGestureScrollHorizontal="exposureCorrection"
+            app:cameraGestureScrollVertical="none"
+            app:cameraGestureTap="focusWithMarker"
+            app:cameraGrid="off"
+            app:cameraJpegQuality="100"
+            app:cameraPlaySounds="true"
+            app:cameraSessionType="picture" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            app:srcCompat="@drawable/ic_smiley_good" />
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_20">
 
-        <ImageButton
-            android:id="@+id/image_button_shutter"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            app:srcCompat="@drawable/ic_smiley_neutral" />
+            <ImageButton
+                android:id="@+id/image_button_flash"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_smiley_good" />
 
-        <ImageButton
-            android:id="@+id/image_button_flip"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            app:srcCompat="@drawable/ic_smiley_bad" />
+            <ImageButton
+                android:id="@+id/image_button_shutter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_smiley_neutral" />
 
-    </LinearLayout>
+            <ImageButton
+                android:id="@+id/image_button_flip"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_smiley_bad" />
 
-</RelativeLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+</FrameLayout>

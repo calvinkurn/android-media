@@ -4,14 +4,17 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.otaliastudios.cameraview.CameraListener;
@@ -36,6 +39,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     private ImageButton flashImageButton;
     private ImageButton shutterImageButton;
     private ImageButton flipImageButton;
+    private RelativeLayout cameraLayout;
     private OnImagePickerCameraFragmentListener onImagePickerCameraFragmentListener;
 
     private boolean mCapturingPicture;
@@ -67,9 +71,19 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         flashImageButton = view.findViewById(R.id.image_button_flash);
         shutterImageButton = view.findViewById(R.id.image_button_shutter);
         flipImageButton = view.findViewById(R.id.image_button_flip);
+        cameraLayout = view.findViewById(R.id.layout_camera);
         cameraView.addCameraListener(new CameraListener() {
             public void onCameraOpened(CameraOptions options) {
                 supportedFlashList = new ArrayList<>(cameraView.getCameraOptions().getSupportedFlash());
+                setPreviewCameraLayoutOneByOne();
+            }
+
+            private void setPreviewCameraLayoutOneByOne() {
+                ViewGroup.LayoutParams params = cameraLayout.getLayoutParams();
+                int cameraSize = getPreviewSizeOneByOne();
+                params.width = cameraSize;
+                params.height = cameraSize;
+                cameraLayout.setLayoutParams(params);
             }
 
             public void onPictureTaken(byte[] jpeg) {
@@ -141,6 +155,15 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
             return;
         }
         cameraView.toggleFacing();
+    }
+
+    private int getPreviewSizeOneByOne() {
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        return width;
     }
 
     @Override
