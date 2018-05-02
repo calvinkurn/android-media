@@ -7,16 +7,19 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.StyleSpan;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -57,6 +60,7 @@ import com.tokopedia.session.register.view.adapter.AutoCompleteTextAdapter;
 import com.tokopedia.session.register.view.di.RegisterEmailDependencyInjector;
 import com.tokopedia.session.register.view.presenter.RegisterEmailPresenter;
 import com.tokopedia.session.register.view.util.RegisterUtil;
+import com.tokopedia.session.register.view.util.ViewUtil;
 import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
 import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
 import com.tokopedia.util.CustomPhoneNumberUtil;
@@ -180,6 +184,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
         registerNextTAndC.setText(MethodChecker.fromHtml(joinString));
         registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
+        ViewUtil.stripUnderlines(registerNextTAndC);
+
+        showPasswordHint();
+        showEmailHint();
+        showNameHint();
+        showPhoneHint();
     }
 
     private Spannable getSpannable(String sourceString, String hyperlinkString) {
@@ -213,7 +223,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             email.setText(savedInstanceState.getString(EMAIL, ""));
             registerPassword.setText(savedInstanceState.getString(PASSWORD, ""));
         }
-
     }
 
     @Override
@@ -248,6 +257,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                showNameHint();
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
                 } else if (s.length() < 3) {
@@ -256,7 +266,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                     setWrapperError(wrapper, getString(R.string.error_illegal_character));
                 } else if (RegisterUtil.isExceedMaxCharacter(name.getText().toString())) {
                     setWrapperError(wrapper, getString(R.string.error_max_35_character));
-
                 }
 
                 checkIsValidForm();
@@ -280,6 +289,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                showPasswordHint();
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
                 } else if (registerPassword.getText().toString().length() < PASSWORD_MINIMUM_LENGTH) {
@@ -307,6 +317,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                showEmailHint();
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
                 } else if (!CommonUtils.EmailValidation(email.getText().toString())) {
@@ -395,6 +406,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                showPhoneHint();
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
                 } else if (s.length() < 3) {
@@ -402,7 +414,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                 } else if (!RegisterUtil.isValidPhoneNumber(
                         phone.getText().toString().replace("-", ""))) {
                     setWrapperError(wrapper, getString(R.string.error_invalid_phone_number));
-
                 }
 
                 checkIsValidForm();
@@ -506,6 +517,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
+        wrapper.setHelperEnabled(false);
+        wrapper.setHelper(null);
         if (s == null) {
             wrapper.setError(s);
             wrapper.setErrorEnabled(false);
@@ -513,6 +526,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             wrapper.setErrorEnabled(true);
             wrapper.setError(s);
         }
+    }
+
+    private void setWrapperHint(TkpdHintTextInputLayout wrapper, String s) {
+        wrapper.setErrorEnabled(false);
+        wrapper.setHelperEnabled(true);
+        wrapper.setHelper(s);
     }
 
     @Override
@@ -540,7 +559,28 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         setWrapperError(wrapperName, null);
         setWrapperError(wrapperEmail, null);
         setWrapperError(wrapperPassword, null);
+        showPasswordHint();
+        showEmailHint();
+        showNameHint();
+        showPhoneHint();
     }
+
+    public void showPasswordHint() {
+        setWrapperHint(wrapperPassword, getResources().getString(R.string.minimal_6_character));
+    }
+
+    public void showNameHint() {
+        setWrapperHint(wrapperName, "  ");
+    }
+
+    public void showEmailHint() {
+        setWrapperHint(wrapperEmail, getResources().getString(R.string.send_verif_to_email));
+    }
+
+    public void showPhoneHint() {
+        setWrapperHint(wrapperPhone, getResources().getString(R.string.phone_example));
+    }
+
 
     @Override
     public void setActionsEnabled(boolean isEnabled) {
@@ -615,8 +655,17 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     public void onSuccessRegister(RegisterEmailViewModel registerResult) {
         dismissLoadingProgress();
         setActionsEnabled(true);
+        lostViewFocus();
         presenter.startAction(registerResult);
 
+    }
+
+    public void lostViewFocus() {
+        email.clearFocus();
+        phone.clearFocus();
+        name.clearFocus();
+        registerPassword.clearFocus();
+        registerButton.clearFocus();
     }
 
     @Override
@@ -646,27 +695,29 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     public void showInfo() {
         dismissLoadingProgress();
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getResources().getString(R.string.email_already_registered));
-        builder.setMessage(String.format(getResources().getString(R.string.email_already_registered_info), getEmail().getText().toString()));
-        builder.setPositiveButton(getResources().getString(R.string.phone_number_already_registered_yes), new DialogInterface.OnClickListener() {
+        TextView view = (TextView) redirectView.findViewById(R.id.body);
+        final String emailString = email.getText().toString();
+        String text = getString(R.string.account_registered_body, emailString);
+        String part = getString(R.string.account_registered_body_part);
+        Spannable spannable = getSpannable(text, part);
+        spannable.setSpan(new StyleSpan(Typeface.BOLD), text.indexOf(emailString)
+                , text.indexOf(emailString) + emailString.length()
+                , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        view.setText(spannable, TextView.BufferType.SPANNABLE);
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int i) {
-                //go to login
+            public void onClick(View view) {
+                startActivity(ForgotPasswordActivity.getCallingIntent(getActivity(), emailString));
             }
         });
-        builder.setNegativeButton(getResources().getString(R.string.phone_number_already_registered_no), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+        redirectView.setVisibility(View.VISIBLE);
+        container.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void goToLoginEmail() {
+        startActivity(LoginActivity.getIntentLoginFromRegister(getActivity(), email.getText().toString()));
+        getActivity().finish();
     }
 
     @Override

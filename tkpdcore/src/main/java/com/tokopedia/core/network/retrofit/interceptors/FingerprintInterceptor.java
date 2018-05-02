@@ -88,7 +88,7 @@ public class FingerprintInterceptor implements Interceptor {
                                 return Utilities.toBase64(s, Base64.NO_WRAP);
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                return "UnsupportedEncoding";
+                                return "";
                             }
 
                         }

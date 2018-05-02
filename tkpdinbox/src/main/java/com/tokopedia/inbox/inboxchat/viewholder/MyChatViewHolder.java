@@ -6,6 +6,8 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.format.DateFormat;
 import android.text.style.BackgroundColorSpan;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentProductProfile;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.viewholder.movement.ChatLinkHandlerMovementMethod;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 
 import java.util.Date;
@@ -88,7 +91,8 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
                 message.setText(MethodChecker.fromHtml(element.getMsg()));
             }
         }
-        message.setMovementMethod(new SelectableSpannedMovementMethod());
+
+        message.setMovementMethod(new ChatLinkHandlerMovementMethod(viewListener));
 
         date.setVisibility(View.VISIBLE);
         String time;
@@ -195,6 +199,8 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
     }
 
     public void onViewRecycled() {
-        Glide.clear(attachment);
+        if(attachment != null) {
+            Glide.clear(attachment);
+        }
     }
 }

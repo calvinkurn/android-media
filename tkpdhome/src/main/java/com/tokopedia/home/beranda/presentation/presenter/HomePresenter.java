@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -69,6 +68,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private HomeFeedListener feedListener;
     private HeaderViewModel headerViewModel;
     private boolean fetchFirstData;
+    private long REQUEST_DELAY = 180000;// 3 minutes
+    private static long lastRequestTime;
 
     public HomePresenter(Context context) {
         this.context = context;
@@ -91,6 +92,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private Observable<List<Visitable>> getDataFromNetwork() {
         return getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -101,30 +103,38 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void onResume() {
-        if (isViewAttached() && !this.fetchFirstData) {
-            subscription = getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<List<Visitable>>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onNext(List<Visitable> visitables) {
-                            if (isViewAttached() && isDataValid(visitables)) {
-                                getView().updateListOnResume(visitables);
-                            }
-                        }
-                    });
-            compositeSubscription.add(subscription);
+        boolean needRefresh = (lastRequestTime + REQUEST_DELAY < System.currentTimeMillis());
+        if (isViewAttached() && !this.fetchFirstData && needRefresh) {
+            updateHomeData();
         }
+    }
+
+    @Override
+    public void updateHomeData() {
+        subscription = getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Visitable>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Visitable> visitables) {
+                        if (isViewAttached()) {
+                            getView().updateListOnResume(visitables);
+                        }
+                        lastRequestTime = System.currentTimeMillis();
+                    }
+                });
+        compositeSubscription.add(subscription);
     }
 
     @Override
@@ -132,10 +142,11 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         initHeaderViewModelData();
         subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(refreshData())
                 .onErrorResumeNext(getDataFromNetwork())
-                .subscribe(new HomeDataSubscriber());
+                .subscribe(createHomeDataSubscriber());
         compositeSubscription.add(subscription);
     }
 
@@ -153,9 +164,13 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         return new Action1<List<Visitable>>() {
             @Override
             public void call(List<Visitable> visitables) {
-                compositeSubscription.add(getDataFromNetwork().subscribe(new HomeDataSubscriber()));
+                compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber()));
             }
         };
+    }
+
+    private HomeDataSubscriber createHomeDataSubscriber() {
+        return new HomeDataSubscriber(this);
     }
 
     @Override
@@ -373,50 +388,71 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         return !CURSOR_NO_NEXT_PAGE_FEED.equals(currentCursor);
     }
 
-    private class HomeDataSubscriber extends Subscriber<List<Visitable>> {
+    public HeaderViewModel getHeaderViewModel() {
+        return headerViewModel;
+    }
 
-        public HomeDataSubscriber() {
+    public void setFetchFirstData(boolean fetchFirstData) {
+        this.fetchFirstData = fetchFirstData;
+    }
+
+    public boolean isLogin() {
+        return SessionHandler.isV4Login(context);
+    }
+
+    public void showNetworkError() {
+        getView().showNetworkError(context.getString(R.string.msg_network_error));
+    }
+
+    private static class HomeDataSubscriber extends Subscriber<List<Visitable>> {
+
+        HomePresenter homePresenter;
+
+        public HomeDataSubscriber(HomePresenter homePresenter) {
+            this.homePresenter = homePresenter;
         }
 
         @Override
         public void onStart() {
-            if (isViewAttached()) {
-                getView().showLoading();
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                homePresenter.getView().showLoading();
             }
         }
 
         @Override
         public void onCompleted() {
-            if (isViewAttached()) {
-                getView().hideLoading();
-                fetchFirstData = false;
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                homePresenter.getView().hideLoading();
+                homePresenter.setFetchFirstData(false);
+                homePresenter = null;
             }
         }
 
         @Override
         public void onError(Throwable e) {
-            if (isViewAttached()) {
-                getView().showNetworkError(ErrorHandler.getErrorMessage(e));
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                homePresenter.getView().showNetworkError(ErrorHandler.getErrorMessage(e));
                 onCompleted();
             }
         }
 
         @Override
         public void onNext(List<Visitable> visitables) {
-            if (isViewAttached()) {
-                if (SessionHandler.isV4Login(context) && headerViewModel != null) {
-                    visitables.add(0, headerViewModel);
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                if (homePresenter.isLogin() && homePresenter.getHeaderViewModel() != null) {
+                    visitables.add(0, homePresenter.getHeaderViewModel());
                 }
-                getView().setItems(visitables);
+                homePresenter.getView().setItems(visitables);
                 if (visitables.size() > 0) {
-                    getView().showRecomendationButton();
+                    homePresenter.getView().showRecomendationButton();
                 }
-                if (isDataValid(visitables)) {
-                    getView().removeNetworkError();
+                if (homePresenter.isDataValid(visitables)) {
+                    homePresenter.getView().removeNetworkError();
                 } else {
-                    getView().showNetworkError(context.getString(R.string.msg_network_error));
+                    homePresenter.showNetworkError();
                 }
             }
+            lastRequestTime = System.currentTimeMillis();
         }
 
     }
@@ -432,5 +468,28 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             }
         }
         return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        unsubscribeAllUseCase();
+    }
+
+    private void unsubscribeAllUseCase(){
+        if(getHomeDataUseCase != null){
+            getHomeFeedsUseCase.unsubscribe();
+        }
+
+        if(getHomeFeedsUseCase != null){
+            getHomeFeedsUseCase.unsubscribe();
+        }
+
+        if(localHomeDataUseCase != null){
+            localHomeDataUseCase.unsubscribe();
+        }
+
+        if(subscription != null){
+            subscription.unsubscribe();
+        }
     }
 }

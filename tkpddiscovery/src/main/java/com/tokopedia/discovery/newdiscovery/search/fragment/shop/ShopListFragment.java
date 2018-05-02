@@ -236,8 +236,6 @@ public class ShopListFragment extends SearchSectionFragment
         adapter.appendItems(shopItemList);
         if (isHasNextPage) {
             adapter.addLoading();
-        } else {
-            recyclerView.clearOnScrollListeners();
         }
         showBottomBarNavigation(true);
     }
@@ -252,7 +250,6 @@ public class ShopListFragment extends SearchSectionFragment
 
     private void handleEmptySearchResult() {
         isNextPageAvailable = false;
-        recyclerView.clearOnScrollListeners();
         adapter.removeLoading();
         if (adapter.isListEmpty()) {
             String message = String.format(getString(R.string.empty_search_content_template), query);
@@ -424,10 +421,10 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected void switchLayoutType() {
-        super.switchLayoutType();
+    protected void switchLayoutType(boolean isImageSearch) {
+        super.switchLayoutType(isImageSearch);
         
-        if (!getUserVisibleHint() || !isNextPageAvailable) {
+        if (!getUserVisibleHint()) {
             return;
         }
         recyclerView.clearOnScrollListeners();

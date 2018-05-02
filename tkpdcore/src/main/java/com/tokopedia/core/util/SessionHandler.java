@@ -14,6 +14,7 @@ import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -141,6 +142,7 @@ public class SessionHandler {
         editor.putString(TOKEN_TYPE, null);
         editor.putString(ACCESS_TOKEN, null);
         editor.putBoolean(HAS_PASSWORD, true);
+        editor.putString(PROFILE_PICTURE, null);
 
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
@@ -157,7 +159,11 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         LocalCacheHandler.clearCache(context, TOKOCASH_SESSION);
         logoutInstagram(context);
-        MethodChecker.removeAllCookies(context);
+        try {
+            MethodChecker.removeAllCookies(context);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
 
 
@@ -552,7 +558,7 @@ public class SessionHandler {
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.apply();
         TrackingUtils.eventPushUserID();
-        if(!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
+        if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
 
         BranchSdkUtils.sendIdentityEvent(u_id);
 

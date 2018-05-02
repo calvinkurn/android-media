@@ -65,6 +65,7 @@
     <string name="error_reply_discussion_resolution_reach_max">Maksimal video yg dapat diupload 1 buah</string>
     <string name="error_reply_discussion_resolution_not_support">Extensi file belum disupport</string>
     <string name="error_reply_discussion_resolution_file_not_allowed">Maaf, file Extension tidak disupport</string>
+    <string name="error_reply_discussion_resolution_version_minimum">Mohon maaf device Anda tidak dapat menggunakan fitur ini</string>
     <string name="error_reply_discussion_resolution_reach_max_size_video">Maksimum ukuran file adalah 20mb</string>
     <string name="error_reply_discussion_resolution_reach_max_size_image">Maksimum ukuran gambar adalah 15mb</string>
     <string name="error_reply_discussion_resolution_min_size">Ukuran panjang dan lebar minimal adalah 300px</string>
@@ -315,4 +316,7 @@ yang ditemukan</string>
     <string name="title_personal">Personal</string>
     <string name="title_community">Channel</string>
     <string name="chat_title">Chat ( %d )</string>
+
+    <!-- attach invoice -->
+    <string name="total_invoice">Total: </string>
 </resources>

@@ -35,6 +35,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.R;
 
 import java.io.File;
@@ -292,6 +294,24 @@ public class ImageHandler {
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .dontAnimate()
                 .into(imageview);
+    }
+
+    public static void loadImageWithSignature(ImageView imageview, String url, StringSignature stringSignature) {
+        Glide.with(imageview.getContext())
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .dontAnimate()
+                .signature(stringSignature)
+                .into(imageview);
+    }
+
+    public static void downloadOriginalSizeImageWithSignature(Context context, String url, StringSignature stringSignature,
+                                                              RequestListener<String, GlideDrawable> backgroundImgRequestListener) {
+        Glide.with(context)
+                .load(url)
+                .signature(stringSignature)
+                .listener(backgroundImgRequestListener)
+                .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
     }
 
     public static void loadImageCover2(ImageView imageview, String url) {
@@ -572,14 +592,14 @@ public class ImageHandler {
         }
 
         if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Glide
-                    .with(context)
+            Glide.with(context)
                     .load(imageUrl)
                     .asBitmap()
                     .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                        public void onResourceReady(Bitmap resource, GlideAnimation
+                                glideAnimation) {
                             Bitmap blurredBitmap = blur(context, resource);
                             imageView.setImageBitmap(blurredBitmap);
                         }

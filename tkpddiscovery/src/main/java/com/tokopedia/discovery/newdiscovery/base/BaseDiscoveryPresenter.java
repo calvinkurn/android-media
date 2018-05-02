@@ -40,11 +40,6 @@ public class BaseDiscoveryPresenter<T extends CustomerView, D extends BaseDiscov
     }
 
     @Override
-    public void requestImageSearchProduct(SearchParameter imageSearchProductParameter) {
-        checkDiscoveryViewAttached();
-    }
-
-    @Override
     public void requestImageSearch(String imageByteArray) {
         checkDiscoveryViewAttached();
     }

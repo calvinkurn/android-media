@@ -30,10 +30,10 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
@@ -45,6 +45,9 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
+import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
+import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
@@ -292,25 +295,28 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.PEOPLE,
                 drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
                 getTotalBuyerNotif());
-        buyerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_payment_status),
-                TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONFIRM)));
-        buyerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_order_status),
-                TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_ORDER_STATUS)));
-        buyerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_confirm_delivery),
-                TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_DELIVERY_CONFIRM)));
-        buyerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_transaction_canceled),
-                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_REORDER)));
-        buyerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_purchase_list),
-                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false)));
+
+        buyerMenu.add(new DrawerItem(
+                        context.getString(R.string.drawer_title_shopping_list),
+                        TkpdState.DrawerPosition.PEOPLE_SHOPPING_LIST,
+                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
+                        getTotalBuyerNotif()
+                )
+        );
+        buyerMenu.add(new DrawerItem(
+                        context.getString(R.string.drawer_title_digital_transaction_list),
+                        TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST,
+                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
+                )
+        );
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_FLIGHT_TRANSACTION_MENU)) {
+            buyerMenu.add(new DrawerItem(
+                            context.getString(R.string.drawer_title_travel_flight_transaction_list),
+                            TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST,
+                            drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
+                    )
+            );
+        }
         return buyerMenu;
     }
 
@@ -381,7 +387,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private boolean hasShop(DrawerProfile drawerProfile) {
-        return !drawerProfile.getShopName().equals("");
+        return !drawerProfile.getShopName().equals("") && !drawerProfile.getShopName().equals("0");
     }
 
     @Override
@@ -448,10 +454,10 @@ public class DrawerBuyerHelper extends DrawerHelper
     @Override
     public void onItemClicked(DrawerItem item) {
         if (item.getId() == selectedPosition) {
-                if (item.getId() == TkpdState.DrawerPosition.INDEX_HOME) {
-                    selectTabHome();
-                }
-                closeDrawer();
+            if (item.getId() == TkpdState.DrawerPosition.INDEX_HOME) {
+                selectTabHome();
+            }
+            closeDrawer();
         } else {
             Intent intent;
             switch (item.getId()) {
@@ -490,6 +496,19 @@ public class DrawerBuyerHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST:
                     context.startActivity(TransactionPurchaseRouter.createIntentTxAll(context));
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
+                    break;
+                case TkpdState.DrawerPosition.PEOPLE_SHOPPING_LIST:
+                    context.startActivity(TransactionPurchaseRouter.createIntentTxSummary(context));
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
+                    break;
+                case TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST:
+                    context.startActivity(DigitalWebActivity.newInstance(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                            + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST));
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
+                    break;
+                case TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST:
+                    context.startActivity(FlightOrderListActivity.getCallingIntent(context));
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST);
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
                     intent = SellerRouter.getActivitySellingTransactionNewOrder(context);

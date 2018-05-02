@@ -30,11 +30,14 @@ import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsSortByActivity;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsFilterViewListener;
+import com.tokopedia.topads.dashboard.view.model.TopAdsSortByModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.keyword.view.listener.AdListMenuListener;
@@ -57,6 +60,7 @@ public abstract class TopAdsAdListFragment<P extends
     protected static final int REQUEST_CODE_AD_CHANGE = 2;
     protected static final int REQUEST_CODE_AD_FILTER = 3;
     protected static final int REQUEST_CODE_AD_ADD = 4;
+    protected static final int REQUEST_CODE_AD_SORT_BY = 5;
     protected SearchInputView searchInputView;
     protected int status;
     protected String keyword;
@@ -71,6 +75,7 @@ public abstract class TopAdsAdListFragment<P extends
     @Px
     private int tempBottomPaddingRecycleView;
     private OnAdListFragmentListener listener;
+    protected TopAdsSortByModel selectedSort;
     public TopAdsAdListFragment() {
         // Required empty public constructor
     }
@@ -124,6 +129,12 @@ public abstract class TopAdsAdListFragment<P extends
         initDateLabelView(view);
     }
 
+    @Override
+    public void goToSortBy() {
+        Intent intent = TopAdsSortByActivity.createIntent(getActivity(), selectedSort == null? SortTopAdsOption.LATEST : selectedSort.getId());
+        startActivityForResult(intent, REQUEST_CODE_AD_SORT_BY);
+    }
+
     protected void initDateLabelView(View view) {
         appBarLayout = (AppBarLayout) view.findViewById(R.id.app_bar_layout);
         dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
@@ -140,6 +151,12 @@ public abstract class TopAdsAdListFragment<P extends
         searchInputView.setListener(this);
         buttonActionView = (BottomActionView) view.findViewById(R.id.bottom_action_view);
         buttonActionView.setButton1OnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToSortBy();
+            }
+        });
+        buttonActionView.setButton2OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goToFilter();
@@ -169,6 +186,8 @@ public abstract class TopAdsAdListFragment<P extends
                 setResultAdListChanged();
             }
         } else if (requestCode == REQUEST_CODE_AD_FILTER) {
+            setSearchMode(true);
+        } else if (requestCode == REQUEST_CODE_AD_SORT_BY) {
             setSearchMode(true);
         }
     }

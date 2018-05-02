@@ -25,8 +25,6 @@ public interface BaseDiscoveryContract {
 
         void onHandleResponseSearch(ProductViewModel productViewModel);
 
-        void onHandleImageSearchResponseSuccess(List<String> productIdList, String productIds);
-
         void onHandleImageSearchResponseError();
 
         void onHandleResponseIntermediary(String departmentId);
@@ -40,6 +38,8 @@ public interface BaseDiscoveryContract {
         void onHandleResponseError();
 
         void onHandleInvalidImageSearchResponse();
+
+        void onHandleImageSearchResponseSuccess();
     }
 
     interface Presenter<D extends View> {
@@ -47,8 +47,6 @@ public interface BaseDiscoveryContract {
         void setDiscoveryView(D discoveryView);
 
         void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStoreBanner);
-
-        void requestImageSearchProduct(SearchParameter imageSearchProductParameter);
 
         void requestImageSearch(String filePath);
 

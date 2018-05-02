@@ -1,6 +1,5 @@
 package com.tokopedia.profile.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,6 +41,7 @@ import com.tokopedia.profile.view.listener.TopProfileFragmentListener;
 import com.tokopedia.profile.view.viewmodel.TopProfileSectionItem;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +64,7 @@ public class TopProfileActivity extends BaseSimpleActivity
     private static final String TITLE_POST = "Post";
     private static final String ZERO = "0";
     private static final int MANAGE_PEOPLE_CODE = 13;
+    private static final int LOGIN_REQUEST_CODE = 23;
     @Inject
     TopProfileActivityListener.Presenter presenter;
     private AppBarLayout appBarLayout;
@@ -103,6 +104,7 @@ public class TopProfileActivity extends BaseSimpleActivity
 
     private String userId;
     private TopProfileViewModel topProfileViewModel;
+    private TopProfileFragment profileFragment;
 
     @DeepLink(SessionApplinkUrl.PROFILE)
     public static Intent getCallingTopProfile(Context context, Bundle bundle) {
@@ -355,20 +357,19 @@ public class TopProfileActivity extends BaseSimpleActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case MANAGE_PEOPLE_CODE:
-                if (resultCode == Activity.RESULT_OK) {
-                    presenter.getTopProfileData(userId);
-                }
-                break;
-            default:
-                break;
+        if (requestCode == MANAGE_PEOPLE_CODE || requestCode == LOGIN_REQUEST_CODE) {
+            presenter.getTopProfileData(userId);
         }
+    }
+
+    @Override
+    public void onGoToLoginPage() {
+        Intent intent = LoginActivity.getCallingIntent(getContext());
+        startActivityForResult(intent, LOGIN_REQUEST_CODE);
     }
 
     private void initTabLoad() {
         List<TopProfileSectionItem> topProfileSectionItemList = new ArrayList<>();
-        TopProfileFragment profileFragment;
 
         if (topProfileViewModel.isKol()
                 && !GlobalConfig.isSellerApp()
@@ -389,7 +390,9 @@ public class TopProfileActivity extends BaseSimpleActivity
 
         if (topProfileViewModel.isUser()
                 || !topProfileViewModel.isKol()) {
-            profileFragment = TopProfileFragment.newInstance();
+            if (profileFragment == null) {
+                profileFragment = TopProfileFragment.newInstance();
+            }
             topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_PROFILE,
                     profileFragment));
             TopProfileFragmentListener.View fragmentListener = profileFragment;
@@ -584,9 +587,4 @@ public class TopProfileActivity extends BaseSimpleActivity
         else presenter.followKol(userId);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        presenter.getTopProfileData(userId);
-    }
 }

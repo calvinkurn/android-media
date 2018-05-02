@@ -16,18 +16,16 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
-import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
+import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.listener.SendChat;
 import com.tokopedia.inbox.inboxchat.presenter.SendChatPresenter;
-import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 
 import javax.inject.Inject;
 
@@ -127,9 +125,9 @@ public class SendChatFragment extends BaseDaggerFragment
         attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventInsertAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_INSERT,
-                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+                UnifyTracking.eventInsertAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+                        TopChatAnalytics.Action.CHAT_DETAIL_INSERT,
+                        TopChatAnalytics.Name.CHAT_DETAIL);
 
                 presenter.getAttachProductDialog(
                         getArguments().getString(SendMessageActivity
@@ -148,9 +146,9 @@ public class SendChatFragment extends BaseDaggerFragment
 
     @Override
     public void addUrlToReply(String url) {
-        UnifyTracking.eventSendAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                TopChatTrackingEventLabel.Action.CHAT_DETAIL_ATTACHMENT,
-                TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+        UnifyTracking.eventSendAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+                TopChatAnalytics.Action.CHAT_DETAIL_ATTACHMENT,
+                TopChatAnalytics.Name.CHAT_DETAIL);
         replyColumn.setText(replyColumn.getText() + "\n" + url);
         replyColumn.setSelection(replyColumn.length());
     }

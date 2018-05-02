@@ -41,7 +41,9 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
@@ -60,6 +62,7 @@ import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.inbox.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.inbox.attachproduct.view.activity.AttachProductActivity;
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
+import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
@@ -74,7 +77,7 @@ import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactoryImpl;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactoryImpl;
-import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
+import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
@@ -101,6 +104,7 @@ import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -127,6 +131,10 @@ import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBS
 @RuntimePermissions
 public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
+    private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
+    private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
+    private static final String APPLINK_SCHEME = "tokopedia";
+    private static final String CONTACT_US_URL_BASE_DOMAIN = TkpdBaseURL.BASE_CONTACT_US;
     private static final String ROLE_SHOP = "shop";
     private static final String ENABLE_TOPCHAT = "topchat_template";
     public static final String TAG = "ChatRoomFragment";
@@ -369,9 +377,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void onClick(View view) {
                 replyColumn.clearFocus();
 
-                UnifyTracking.eventAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_ATTACH,
-                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+                UnifyTracking.eventAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+                        TopChatAnalytics.Action.CHAT_DETAIL_ATTACH,
+                        TopChatAnalytics.Name.CHAT_DETAIL);
 
                 AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
                 myAlertDialog.setMessage(getActivity().getString(R.string.dialog_upload_option));
@@ -400,9 +408,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
         attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventInsertAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_INSERT,
-                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+                UnifyTracking.eventInsertAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+                        TopChatAnalytics.Action.CHAT_DETAIL_INSERT,
+                        TopChatAnalytics.Name.CHAT_DETAIL);
                 presenter.getAttachProductDialog(
                         getArguments().getString(ChatRoomActivity
                                 .PARAM_SENDER_ID, ""),
@@ -432,20 +440,20 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void addTemplateString(String message) {
-        String labelCategory = TopChatTrackingEventLabel.Category.INBOX_CHAT;
+        String labelCategory = TopChatAnalytics.Category.INBOX_CHAT;
         if (!getArguments().getBoolean(PARAM_WEBSOCKET)) {
             if (getArguments().getString(PARAM_SENDER_TAG).equals(ChatRoomActivity.ROLE_SELLER)) {
-                labelCategory = TopChatTrackingEventLabel.Category.SHOP_PAGE;
+                labelCategory = TopChatAnalytics.Category.SHOP_PAGE;
             }
             if (getArguments().getString(SendMessageActivity.PARAM_CUSTOM_MESSAGE, "").length() >
                     0) {
-                labelCategory = TopChatTrackingEventLabel.Category.PRODUCT_PAGE;
+                labelCategory = TopChatAnalytics.Category.PRODUCT_PAGE;
             }
         }
 
         UnifyTracking.eventClickTemplate(labelCategory,
-                TopChatTrackingEventLabel.Action.TEMPLATE_CHAT_CLICK,
-                TopChatTrackingEventLabel.Name.INBOX_CHAT);
+                TopChatAnalytics.Action.TEMPLATE_CHAT_CLICK,
+                TopChatAnalytics.Name.INBOX_CHAT);
         String text = replyColumn.getText().toString();
         int index = replyColumn.getSelectionStart();
         replyColumn.setText(String.format("%s %s %s", text.substring(0, index), message, text
@@ -472,13 +480,40 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToWebView(String url, String id) {
-        UnifyTracking.eventClickThumbnailMarketing(TopChatTrackingEventLabel.Category.INBOX_CHAT,
-                TopChatTrackingEventLabel.Action.CLICK_THUMBNAIL,
-                TopChatTrackingEventLabel.Name.INBOX_CHAT,
+        UnifyTracking.eventClickThumbnailMarketing(TopChatAnalytics.Category.INBOX_CHAT,
+                TopChatAnalytics.Action.CLICK_THUMBNAIL,
+                TopChatAnalytics.Name.INBOX_CHAT,
                 id
         );
+
+        Uri uri = Uri.parse(url);
         KeyboardHandler.DropKeyboard(getActivity(), getView());
-        startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
+        if(uri != null) {
+            boolean isTargetDomainTokopedia = uri.getHost().endsWith("tokopedia.com");
+            boolean isTargetTkpMeAndNotRedirect = (TextUtils.equals(uri.getHost(),BASE_DOMAIN_SHORTENED) &&
+                    !TextUtils.equals(uri.getEncodedPath(),"/r"));
+            boolean isNeedAuthToken = (isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect);
+            
+            if(uri.getScheme().equals(APPLINK_SCHEME)){
+                ((TkpdInboxRouter) getActivity().getApplicationContext())
+                        .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+            }
+            else if (uri.getPathSegments().contains(CONTACT_US_PATH_SEGMENT)) {
+                Intent intent = ((TkpdInboxRouter) MainApplication
+                        .getAppContext())
+                        .getContactUsIntent(getContext());
+                intent.putExtra(ContactUsConstant.PARAM_URL,
+                        URLGenerator.generateURLContactUs(url, getContext()));
+                intent.putExtra(ContactUsConstant.IS_CHAT_BOT,true);
+                startActivity(intent);
+            } else if(isChatBot && isNeedAuthToken) {
+                startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),
+                        URLGenerator.generateURLSessionLoginV4(url,getContext())));
+            }
+            else {
+                startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),url));
+            }
+        }
     }
 
     @Override
@@ -1069,9 +1104,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                 presenter.sendMessageWithApi();
-                UnifyTracking.sendChat(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_SEND,
-                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+                UnifyTracking.sendChat(TopChatAnalytics.Category.CHAT_DETAIL,
+                        TopChatAnalytics.Action.CHAT_DETAIL_SEND,
+                        TopChatAnalytics.Name.CHAT_DETAIL);
             }
         };
     }
@@ -1082,9 +1117,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                 presenter.sendMessageWithWebsocket();
-                UnifyTracking.sendChat(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_SEND,
-                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+                UnifyTracking.sendChat(TopChatAnalytics.Category.CHAT_DETAIL,
+                        TopChatAnalytics.Action.CHAT_DETAIL_SEND,
+                        TopChatAnalytics.Name.CHAT_DETAIL);
             }
         };
     }
@@ -1209,9 +1244,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     public void attachProductRetrieved(ArrayList<ResultProduct> resultProducts) {
-        UnifyTracking.eventSendAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                TopChatTrackingEventLabel.Action.CHAT_DETAIL_ATTACHMENT,
-                TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+        UnifyTracking.eventSendAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+                TopChatAnalytics.Action.CHAT_DETAIL_ATTACHMENT,
+                TopChatAnalytics.Name.CHAT_DETAIL);
 
         String msgId = getArguments().getString(PARAM_MESSAGE_ID);
         for (ResultProduct result : resultProducts) {
@@ -1409,5 +1444,16 @@ public class ChatRoomFragment extends BaseDaggerFragment
         Intent intent = AttachInvoiceActivity.createInstance(getActivity(), userId
                 , Integer.parseInt(msgId));
         startActivityForResult(intent, AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE);
+    }
+
+    @Override
+    public boolean shouldHandleUrlManually(String url) {
+        String urlManualHandlingList[] = {CONTACT_US_URL_BASE_DOMAIN};
+        return (Arrays.asList(urlManualHandlingList).contains(url) || isChatBot);
+    }
+
+    @Override
+    public void showSnackbarError(String string) {
+        NetworkErrorHelper.showSnackbar(getActivity(), string);
     }
 }

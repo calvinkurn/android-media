@@ -44,4 +44,5 @@ public class ConsumerAppBaseUrl {
     public static final String HOME_DATA_BASE_URL = "https://gql.tokopedia.com/";
     public static final String TOPPROFILE_DOMAIN = GRAPHQL_DOMAIN;
     public static final String CHATBOT_DOMAIN = BASE_API_DOMAIN;
+    public static final String GAMIFICATION_BASE_URL = "https://gql.tokopedia.com/";
 }

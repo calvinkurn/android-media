@@ -1,6 +1,7 @@
 package com.tokopedia.flight.airline.data;
 
 import com.tokopedia.abstraction.base.data.source.DataListSource;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.airline.data.cache.FlightAirlineDataCacheSource;
 import com.tokopedia.flight.airline.data.cloud.FlightAirlineDataListCloudSource;
 import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
@@ -14,6 +15,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func0;
 import rx.functions.Func1;
 
 /**
@@ -22,14 +24,19 @@ import rx.functions.Func1;
 
 public class FlightAirlineDataListSource extends DataListSource<AirlineData, FlightAirlineDB> {
     private static final String DEFAULT_EMPTY_VALUE = "";
+    private final FlightModuleRouter flightModuleRouter;
+    private FlightAirlineDataCacheSource flightAirlineDataListCacheSource;
     private FlightAirlineDataListDBSource flightAirlineDataListDBSource;
     private FlightAirlineDataListCloudSource flightAirlineDataListCloudSource;
 
     @Inject
-    public FlightAirlineDataListSource(FlightAirlineDataCacheSource flightAirlineDataListCacheSource,
+    public FlightAirlineDataListSource(FlightModuleRouter flightModuleRouter,
+                                       FlightAirlineDataCacheSource flightAirlineDataListCacheSource,
                                        FlightAirlineDataListDBSource flightAirlineDataListDBSource,
                                        FlightAirlineDataListCloudSource flightAirlineDataListCloudSource) {
         super(flightAirlineDataListCacheSource, flightAirlineDataListDBSource, flightAirlineDataListCloudSource);
+        this.flightModuleRouter = flightModuleRouter;
+        this.flightAirlineDataListCacheSource = flightAirlineDataListCacheSource;
         this.flightAirlineDataListDBSource = flightAirlineDataListDBSource;
         this.flightAirlineDataListCloudSource = flightAirlineDataListCloudSource;
     }
@@ -44,7 +51,21 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
     }
 
     public Observable<List<FlightAirlineDB>> getAirlineList() {
-        return getDataList(null);
+        return Observable.defer(new Func0<Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call() {
+                if (flightModuleRouter.getLongConfig("flight_airline") > flightAirlineDataListCacheSource.getVersion()){
+                    flightAirlineDataListCacheSource.updateVersion(flightModuleRouter.getLongConfig("flight_airline"));
+                    return flightAirlineDataListCacheSource.setExpired();
+                }
+                return Observable.just(true);
+            }
+        }).flatMap(new Func1<Boolean, Observable<List<FlightAirlineDB>>>() {
+            @Override
+            public Observable<List<FlightAirlineDB>> call(Boolean aBoolean) {
+                return getDataList(null);
+            }
+        });
     }
 
     public Observable<FlightAirlineDB> getAirline(final String airlineId) {
@@ -96,7 +117,9 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
     }
 
     public Observable<FlightAirlineDB> getCacheAirline(final String airlineId) {
-        return flightAirlineDataListDBSource.getAirline(airlineId).map(new Func1<FlightAirlineDB, FlightAirlineDB>() {
+        return flightAirlineDataListDBSource
+                .getAirline(airlineId)
+                .map(new Func1<FlightAirlineDB, FlightAirlineDB>() {
             @Override
             public FlightAirlineDB call(FlightAirlineDB flightAirlineDB) {
                 if (flightAirlineDB == null){

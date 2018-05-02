@@ -31,16 +31,12 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
-import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
@@ -481,46 +477,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         getPresenter().requestImageSearch(imagePath);
     }
 
-    List<String> productIDList = new ArrayList<>();
-
-    @Override
-    public void onHandleResponseSearch(ProductViewModel productViewModel) {
-
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-        HashMap<String, ProductItem> productItemHashMap = new HashMap<>();
-        for (ProductItem productItem : productViewModel.getProductList()) {
-            productItemHashMap.put(productItem.getProductID(), productItem);
-        }
-        List<ProductItem> productItemList = new ArrayList<>();
-        for (String productId : productIDList) {
-            if (productItemHashMap.get(productId) != null)
-                productItemList.add(productItemHashMap.get(productId));
-        }
-        productViewModel.setProductList(productItemList);
-        productViewModel.setTotalData(productItemList.size());
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
-        finish();
-    }
-
-    @Override
-    public void onHandleImageSearchResponseSuccess(List<String> productIDList, String productIDs) {
-        this.productIDList = productIDList;
-        if (fromCamera) {
-            sendCameraImageSearchResultGTM(SUCCESS);
-        } else {
-            sendGalleryImageSearchResultGTM(SUCCESS);
-        }
-
-        SearchParameter imageSearchProductParameter = new SearchParameter();
-        imageSearchProductParameter.setStartRow(productIDList.size());
-        imageSearchProductParameter.setQueryKey(String.valueOf(productIDs));
-        imageSearchProductParameter.setSource("imagesearch");
-        getPresenter().requestImageSearchProduct(imageSearchProductParameter);
-
-    }
-
     @Override
     public void onHandleImageSearchResponseError() {
         if (tkpdProgressDialog != null) {
@@ -533,7 +489,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             sendGalleryImageSearchResultGTM(FAILURE);
         }
 
-        Toast.makeText(this, "No Results Found", Toast.LENGTH_SHORT).show();
+        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.no_result_found));
     }
 
     @Override
@@ -548,7 +504,16 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             sendGalleryImageSearchResultGTM(NO_RESPONSE);
         }
 
-        Toast.makeText(this, "No Results Found", Toast.LENGTH_SHORT).show();
+        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.no_result_found));
+    }
+
+    @Override
+    public void onHandleImageSearchResponseSuccess() {
+        if (fromCamera) {
+            sendCameraImageSearchResultGTM(SUCCESS);
+        } else {
+            sendGalleryImageSearchResultGTM(SUCCESS);
+        }
     }
 
     public void showSnackBarView(String message) {
