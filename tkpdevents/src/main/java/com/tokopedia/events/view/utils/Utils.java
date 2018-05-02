@@ -272,5 +272,6 @@ public class Utils {
         public final static String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
         public final static String TOP_EVENTS = "TOP EVENTS";
         public final static String CHECKOUTDATA = "checkoutdata";
+        public final static String PRODUCTID = "product_id";
     }
 }

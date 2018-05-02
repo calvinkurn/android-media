@@ -92,6 +92,10 @@ public class CategoryItemsViewModel implements Parcelable {
 
     public void setWasLiked(boolean wasLiked) {
         this.wasLiked = wasLiked;
+        if (this.wasLiked) {
+            if (minLikes <= 0)
+                setMinLikes(1);
+        }
     }
 
     public int getId() {

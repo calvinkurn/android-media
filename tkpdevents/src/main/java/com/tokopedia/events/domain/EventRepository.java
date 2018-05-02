@@ -12,6 +12,7 @@ import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.domain.model.EventLocationDomain;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
+import com.tokopedia.events.domain.model.ProductRatingDomain;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 
 import java.util.List;
@@ -55,5 +56,7 @@ public interface EventRepository {
     Observable<LikeUpdateResultDomain> updateLikes(JsonObject requestBody);
 
     Observable<List<Integer>> getUserLikes();
+
+    Observable<ProductRatingDomain> getProductRating(int id);
 
 }

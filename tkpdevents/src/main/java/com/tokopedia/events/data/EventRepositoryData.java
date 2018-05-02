@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.LikeUpdateResponse;
+import com.tokopedia.events.data.entity.response.ProductRatingResponse;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.UserLikesResponse;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
@@ -17,6 +18,7 @@ import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.domain.model.EventLocationDomain;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
+import com.tokopedia.events.domain.model.ProductRatingDomain;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 
 import java.util.ArrayList;
@@ -181,6 +183,21 @@ public class EventRepositoryData implements EventRepository {
                             likedProductIds.add(response.getProductId());
                         }
                         return likedProductIds;
+                    }
+                });
+    }
+
+    @Override
+    public Observable<ProductRatingDomain> getProductRating(int id) {
+        return eventsDataStoreFactory
+                .createCloudDataStore().getProductRating(id)
+                .map(new Func1<ProductRatingResponse, ProductRatingDomain>() {
+                    @Override
+                    public ProductRatingDomain call(ProductRatingResponse productRatingResponse) {
+                        ProductRatingDomain ratingDomain = new ProductRatingDomain();
+                        ratingDomain.setId(productRatingResponse.getProductId());
+                        ratingDomain.setTotalLikes(productRatingResponse.getTotalLikes());
+                        return ratingDomain;
                     }
                 });
     }

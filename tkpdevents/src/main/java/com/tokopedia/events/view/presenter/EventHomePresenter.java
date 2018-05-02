@@ -12,6 +12,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
+import com.tokopedia.events.domain.GetProductRatingUseCase;
 import com.tokopedia.events.domain.GetUserLikesUseCase;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
@@ -58,8 +59,10 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     private GetEventsListRequestUseCase getEventsListRequestUsecase;
     private PostUpdateEventLikesUseCase postUpdateEventLikesUseCase;
     private GetUserLikesUseCase getUserLikesUseCase;
+    private GetProductRatingUseCase getProductRatingUseCase;
     private CategoryViewModel carousel;
     private List<CategoryViewModel> categoryViewModels;
+    private List<CategoryItemsViewModel> likedEvents;
     private TouchViewPager mTouchViewPager;
     private int currentPage, totalPages;
     private List<AdapterCallbacks> adapterCallbacks;
@@ -70,10 +73,12 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
 
     public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase,
                               PostUpdateEventLikesUseCase eventLikesUseCase,
-                              GetUserLikesUseCase likesUseCase) {
+                              GetUserLikesUseCase likesUseCase,
+                              GetProductRatingUseCase ratingUseCase) {
         this.getEventsListRequestUsecase = getEventsListRequestUsecase;
         this.postUpdateEventLikesUseCase = eventLikesUseCase;
         this.getUserLikesUseCase = likesUseCase;
+        this.getProductRatingUseCase = ratingUseCase;
         adapterCallbacks = new ArrayList<>();
     }
 
@@ -272,11 +277,11 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                                     .subscribeOn(Schedulers.newThread())
                                     .observeOn(AndroidSchedulers.mainThread());
                         else {
-                            List<Integer> empty = new ArrayList<Integer>();
+                            List<Integer> empty = new ArrayList<>();
                             return Observable.just(empty);
                         }
                     }
-                }).concatMap(new Func1<List<Integer>, Observable<List<CategoryViewModel>>>() {
+                }).flatMap(new Func1<List<Integer>, Observable<List<CategoryViewModel>>>() {
             @Override
             public Observable<List<CategoryViewModel>> call(List<Integer> integers) {
                 if (!integers.isEmpty() || integers.size() > 0)
@@ -350,6 +355,49 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
 //                CommonUtils.dumper("enter onNext");
 //            }
 //        });
+//        concatMap(new Func1<CategoryItemsViewModel, Observable<ProductRatingDomain>>() {
+//    @Override
+//    public Observable<ProductRatingDomain> call(CategoryItemsViewModel categoryItemsViewModel) {
+//        RequestParams params = RequestParams.create();
+//        params.putInt(Utils.Constants.PRODUCTID, categoryItemsViewModel.getId());
+//        return getProductRatingUseCase.getExecuteObservable(params).subscribeOn(Schedulers.newThread());
+//    }
+//}).subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<ProductRatingDomain>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        Log.d("Likes", "On complete getting likes");
+//                        getCarousel(categoryViewModels);
+//                        getView().renderCategoryList(categoryViewModels);
+//                        getView().showSearchButton();
+//                        getView().hideProgressBar();
+//                        CommonUtils.dumper("enter onCompleted");
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        CommonUtils.dumper("enter error");
+//                        e.printStackTrace();
+//                        getView().hideProgressBar();
+//                        NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+//                            @Override
+//                            public void onRetryClicked() {
+//                                getEventsList();
+//                            }
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onNext(ProductRatingDomain ratingDomain) {
+//                        Log.d("Likes", "The Likes are " + ratingDomain);
+//                        for(CategoryItemsViewModel categoryItemsViewModel : likedEvents)
+//                            if(categoryItemsViewModel.getId()==ratingDomain.getId()){
+//                                categoryItemsViewModel.setMinLikes(ratingDomain.getTotalLikes());
+//                            }
+//                        CommonUtils.dumper("enter onNext");
+//                    }
+//                });
     }
 
     public ArrayList<String> getCarouselImages(List<CategoryItemsViewModel> categoryItemsViewModels) {

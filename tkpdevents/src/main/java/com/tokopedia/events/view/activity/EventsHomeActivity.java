@@ -42,13 +42,12 @@ import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.fragment.CategoryFragment;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
 import com.tokopedia.events.view.utils.CirclePageIndicator;
-import com.tokopedia.events.view.utils.ShadowTransformer;
-import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.IFragmentLifecycleCallback;
+import com.tokopedia.events.view.utils.ShadowTransformer;
+import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -57,9 +56,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-
-import static com.tokopedia.events.view.utils.Utils.Constants.EXTRA_SECTION;
-import static com.tokopedia.events.view.utils.Utils.Constants.TOP;
 
 /**
  * Created by ashwanityagi on 02/11/17.
@@ -98,11 +94,14 @@ public class EventsHomeActivity extends TActivity
     TextView addToCalendar;
     @BindView(R2.id.viewpager_top_events)
     ViewPager topEventsViewPager;
+    @BindView(R2.id.htab_maincontent)
+    View hTabMainContent;
 
 
     private int mBannnerPos;
     private int defaultViewPagerPos = -1;
     private String defaultSection;
+    private final static String THEMEPARK = "hiburan";
     private final static String TOP = "top";
 
 
@@ -251,14 +250,15 @@ public class EventsHomeActivity extends TActivity
 
     @Override
     public void renderCategoryList(List<CategoryViewModel> categoryList) {
+        int pos = -1;
         for (CategoryViewModel categoryViewModel : categoryList) {
-            if (categoryViewModel.getItems() == null || categoryViewModel.getItems().size() == 0) {
-            } else {
+            if (categoryViewModel.getItems() != null && categoryViewModel.getItems().size() != 0) {
                 if ("carousel".equalsIgnoreCase(categoryViewModel.getName())) {
                     adapter = new SlidingImageAdapter(EventsHomeActivity.this, mPresenter.getCarouselImages(categoryViewModel.getItems()), mPresenter);
                     setViewPagerListener();
                     tabLayout.setViewPager(viewPager);
                     mPresenter.startBannerSlide(viewPager);
+                    continue;
                 } else if ("top".equalsIgnoreCase(categoryViewModel.getName())) {
                     CardPagerAdapter cardPagerAdapter = new CardPagerAdapter(mPresenter);
                     cardPagerAdapter.addData(categoryViewModel.getItems());
@@ -284,10 +284,12 @@ public class EventsHomeActivity extends TActivity
 
                         }
                     });
+                    continue;
                 }
                 if (defaultViewPagerPos <= 0) {
+                    pos++;
                     if (defaultSection.equalsIgnoreCase(categoryViewModel.getName()))
-                        defaultViewPagerPos = categoryList.indexOf(categoryViewModel);
+                        defaultViewPagerPos = pos;
                     else
                         defaultViewPagerPos = 0;
                 }
@@ -305,6 +307,7 @@ public class EventsHomeActivity extends TActivity
             IFragmentLifecycleCallback fragmentToShow = (CategoryFragment) categoryTabsPagerAdapter.getItem(defaultViewPagerPos);
             fragmentToShow.fragmentResume();
         }
+        hTabMainContent.setVisibility(View.VISIBLE);
     }
 
 

@@ -98,8 +98,11 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
         currentDataIndex = position;
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, mData.get(currentDataIndex).getTitle()
-                + " - " + currentDataIndex);
+        if (!mData.get(currentDataIndex).isTrack()) {
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, mData.get(currentDataIndex).getTitle()
+                    + " - " + currentDataIndex);
+            mData.get(currentDataIndex).setTrack(true);
+        }
     }
 
     private void bind(CategoryItemsViewModel item, View view) {

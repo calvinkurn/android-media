@@ -92,7 +92,7 @@ public class CategoryFragment extends TkpdBaseV4Fragment implements IFragmentLif
     private void sendGAProductImpression() {
         if (isCreated && isSelected) {
             int lastIndex = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-            for (int i = 0; i <= lastIndex; i++) {
+            for (int i = 0; i < lastIndex; i++) {
                 if (!categoryViewModel.getItems().get(i).isTrack())
                     UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryViewModel.getItems().get(i).getTitle()
                             + " - " + i);

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.Toolbar
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -21,12 +21,12 @@
         app:subtitleTextAppearance="@style/EventToolbarTextStyle"
         app:titleTextAppearance="@style/EventToolbarTextStyle" />
 
-    <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <android.support.design.widget.CoordinatorLayout
         android:id="@+id/htab_maincontent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
+        android:visibility="invisible"
         tools:context="com.tokopedia.events.view.activity.EventsHomeActivity">
 
         <android.support.design.widget.AppBarLayout
@@ -93,6 +93,7 @@
                             android:layout_marginRight="@dimen/dp_16"
                             android:layout_marginTop="@dimen/new_margin_sm"
                             android:clickable="false"
+                            android:drawableEnd="@drawable/ic_arrow_right"
                             android:drawableRight="@drawable/ic_arrow_right"
                             android:drawableTint="@color/green_nob"
                             android:focusable="false"
@@ -103,8 +104,7 @@
                             android:textStyle="normal"
                             android:visibility="invisible"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/event_bannerpager"
-                            android:drawableEnd="@drawable/ic_arrow_right" />
+                            app:layout_constraintTop_toBottomOf="@id/event_bannerpager" />
                     </android.support.constraint.ConstraintLayout>
 
                     <android.support.constraint.ConstraintLayout
@@ -151,11 +151,10 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginStart="@dimen/dp_16"
-                            android:drawableLeft="@drawable/ic_event_calendar_white"
+                            android:drawableLeft="@drawable/ic_event_calendar_green"
                             android:drawablePadding="@dimen/dp_12"
-                            android:drawableStart="@drawable/ic_event_calendar_white"
-                            android:drawableTint="@color/green_nob"
-                            android:text="Lihat Kalendar Event"
+                            android:drawableStart="@drawable/ic_event_calendar_green"
+                            android:text="@string/lihat_kalendar_event"
                             android:textColor="@color/green_nob"
                             android:textSize="@dimen/sp_13"
                             android:textStyle="bold"

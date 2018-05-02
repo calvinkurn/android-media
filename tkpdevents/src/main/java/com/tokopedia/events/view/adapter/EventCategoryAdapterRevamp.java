@@ -181,6 +181,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
     public void onBindViewHolder(ViewHolder holder, int position) {
         CategoryItemsViewModel model = categoryItems.get(position);
         holder.setViewHolder(model, position);
+        holder.setShown(model.isTrack());
     }
 
     @Override
@@ -191,23 +192,6 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             categoryItems.get(holder.getIndex()).setTrack(true);
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryItems.get(holder.getIndex()).getTitle()
                     + " - " + holder.getIndex());
-        }
-    }
-
-    class CategoryItemViewListener implements View.OnClickListener {
-
-        ViewHolder mViewHolder;
-
-        public CategoryItemViewListener(ViewHolder holder) {
-            this.mViewHolder = holder;
-        }
-
-        @Override
-        public void onClick(View view) {
-            Intent detailsIntent = new Intent(context, EventDetailsActivity.class);
-            detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
-            detailsIntent.putExtra("homedata", categoryItems.get(mViewHolder.getIndex()));
-            context.startActivity(detailsIntent);
         }
     }
 

@@ -6,6 +6,7 @@ import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
 import com.tokopedia.events.data.entity.response.LikeUpdateResponse;
+import com.tokopedia.events.data.entity.response.ProductRatingResponse;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.UserLikesResponse;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
@@ -55,4 +56,6 @@ public interface EventDataStore {
     Observable<LikeUpdateResponse> updateLikes(JsonObject requestBody);
 
     Observable<List<UserLikesResponse>> getUserLikes();
+
+    Observable<ProductRatingResponse> getProductRating(int id);
 }

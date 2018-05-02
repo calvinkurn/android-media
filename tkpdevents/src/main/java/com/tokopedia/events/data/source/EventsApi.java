@@ -5,6 +5,7 @@ import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
 import com.tokopedia.events.data.entity.response.LikeUpdateResponse;
+import com.tokopedia.events.data.entity.response.ProductRatingResponse;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.UserLikesResponse;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
@@ -82,4 +83,7 @@ public interface EventsApi {
     @Headers({"Content-Type: application/json"})
     Observable<LikeUpdateResponse> updateLikes(@Body JsonObject requestBody);
 
+    @GET(EventsUrl.EVENT_PRODUCT_RATING)
+    @Headers({"Content-Type: application/json"})
+    Observable<ProductRatingResponse> getProductLike(@Path("id") int productID);
 }
