@@ -208,6 +208,7 @@
     <dimen name="drop_down_indicator_width">10dp</dimen>
     <dimen name="drop_down_indicator_height">5dp</dimen>
     <dimen name="product_grid_padding">10dp</dimen>
+    <dimen name="product_item_margin">15dp</dimen>
     <dimen name="top_ads_separator_height">15dp</dimen>
 
     <dimen name="spacing_show_case">12dp</dimen>

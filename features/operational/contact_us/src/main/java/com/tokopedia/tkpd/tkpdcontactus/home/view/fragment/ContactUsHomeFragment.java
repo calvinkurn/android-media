@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdcontactus.home.view.fragment;
 
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -20,6 +21,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.inbox.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.tkpd.tkpdcontactus.common.customview.ShadowTransformer;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.ContactUsArticleResponse;
@@ -79,6 +81,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
         cardAdapter = new CardPagerAdapter();
         ShadowTransformer shadowTransformer = new ShadowTransformer(orderListViewpager, cardAdapter);
         orderListViewpager.setPageTransformer(false, shadowTransformer);
+        orderListViewpager.setPageMargin((int)getResources().getDimension(R.dimen.product_item_margin));
         orderListViewpager.setOffscreenPageLimit(3);
         setHasOptionsMenu(true);
         return view;
@@ -94,7 +97,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.action_inbox) {
-            startActivity(ContactUsWebViewActivity.getInstance(getContext(), "https://www.tokopedia.com/inbox-ticket.pl"));
+            startActivity(new Intent(getContext(),InboxTicketActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
