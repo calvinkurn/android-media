@@ -2,21 +2,23 @@ package com.tokopedia.flight.cancellation.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
+import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationListFragment;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
+
+import static com.tokopedia.flight.cancellation.view.fragment.FlightCancellationListFragment.EXTRA_INVOICE_ID;
 
 public class FlightCancellationListActivity extends BaseFlightActivity implements HasComponent<FlightCancellationComponent> {
 
-    public static Intent createIntent(Context context) {
+    public static Intent createIntent(Context context, String invoiceId) {
         Intent intent = new Intent(context, FlightCancellationListActivity.class);
-
+        intent.putExtra(EXTRA_INVOICE_ID, invoiceId);
         return intent;
     }
 
@@ -37,6 +39,8 @@ public class FlightCancellationListActivity extends BaseFlightActivity implement
 
     @Override
     protected Fragment getNewFragment() {
-        return null;
+        return FlightCancellationListFragment.createInstance(
+                getIntent().getExtras().getString(EXTRA_INVOICE_ID)
+        );
     }
 }
