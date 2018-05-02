@@ -4,18 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
-import com.tokopedia.imagepicker.editor.adapter.ImageEditorEditActionAdapter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.presenter.ImageDownloadPresenter;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
@@ -54,7 +51,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private int currentImageIndex;
     private boolean isInEditMode;
 
-    private View vgProgressBar;
+    private View vgDownloadProgressBar;
     private ImageDownloadPresenter imageDownloadPresenter;
 
     private View vgContentContainer;
@@ -62,6 +59,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
     private ImageEditorViewPagerAdapter imageEditorViewPagerAdapter;
     private ImageEditThumbnailListWidget imageEditThumbnailListWidget;
+    private ImageEditActionMainWidget imageEditActionMainWidget;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImagePickerBuilder.ImageEditActionTypeDef int[] imageEditActionType) {
@@ -112,7 +110,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         minResolution = intent.getIntExtra(EXTRA_MIN_RESOLUTION, 0);
         imageEditActionType = intent.getIntArrayExtra(EXTRA_EDIT_ACTION_TYPE);
 
-        vgProgressBar = findViewById(R.id.vg_download_progress_bar);
+        vgDownloadProgressBar = findViewById(R.id.vg_download_progress_bar);
         vgContentContainer = findViewById(R.id.vg_content_container);
         hideProgressDialog();
         hideContentView();
@@ -160,7 +158,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     }
 
     private void setupEditMainLayout() {
-        ImageEditActionMainWidget imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
+        imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
         imageEditActionMainWidget.setData(imageEditActionType);
     }
 
@@ -251,11 +249,15 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     }
 
     private void showProgressDialog() {
-        vgProgressBar.setVisibility(View.VISIBLE);
+        vgDownloadProgressBar.setVisibility(View.VISIBLE);
+        imageEditThumbnailListWidget.setVisibility(View.GONE);
+        imageEditActionMainWidget.setVisibility(View.GONE);
     }
 
     private void hideProgressDialog() {
-        vgProgressBar.setVisibility(View.GONE);
+        vgDownloadProgressBar.setVisibility(View.GONE);
+        imageEditThumbnailListWidget.setVisibility(View.VISIBLE);
+        imageEditActionMainWidget.setVisibility(View.VISIBLE);
     }
 
     private void hideContentView() {
