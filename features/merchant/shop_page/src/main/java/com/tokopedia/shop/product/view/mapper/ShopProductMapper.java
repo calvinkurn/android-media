@@ -130,7 +130,7 @@ public class ShopProductMapper {
         shopProductHomeViewModelPagingList.setPaging(shopProductViewModelPagingList.getPaging());
         shopProductHomeViewModelPagingList.setTotalData(shopProductViewModelPagingList.getTotalData());
         List<ShopProductHomeViewModel> shopProductHomeViewModels = new ArrayList<>();
-        for(int i = 0; i<shopProductHomeViewModelPagingList.getList().size(); i++){
+        for(int i = 0; i<shopProductViewModelPagingList.getList().size(); i++){
             ShopProductViewModel shopProductViewModel =  shopProductViewModelPagingList.getList().get(i);
             ShopProductHomeViewModel shopProductHomeViewModel = convertFromProductModel(shopProductViewModel);
             shopProductHomeViewModel.setPositionTracking(getCurrentPageView(page, i + 1, perPage));
