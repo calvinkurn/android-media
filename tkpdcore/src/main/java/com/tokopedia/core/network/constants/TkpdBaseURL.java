@@ -64,6 +64,7 @@ public class TkpdBaseURL {
     public static String TOKOPOINT_API_DOMAIN = "https://gw.tokopedia.com/tokopoints/api/";
     public static String PROMO_API_DOMAIN = "https://www.tokopedia.com/promo/";
 
+    public static String CONTACT_US_BASE ="https://www.tokopedia.com/";
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
         public static final String URL_PRODUCT = BASE_DOMAIN + V4_PRODUCT;
