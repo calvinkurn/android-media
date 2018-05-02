@@ -15,7 +15,7 @@ public interface HomeCategoryListener {
 
     void onCloseTicker(int pos);
 
-    void onPromoClick(int position, BannerSlidesModel slidesModel);
+    void onPromoClick(int position, BannerSlidesModel slidesModel, String attribution);
 
     void openShop();
 

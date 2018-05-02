@@ -60,7 +60,7 @@ public class FlightPassengerListPresenter extends BaseDaggerPresenter<FlightPass
 
     @Override
     public void onViewCreated() {
-        getSavedPassengerList();
+//        getSavedPassengerList();
     }
 
     @Override
@@ -144,7 +144,8 @@ public class FlightPassengerListPresenter extends BaseDaggerPresenter<FlightPass
         getView().showSuccessChangePassengerData();
     }
 
-    private void getSavedPassengerList() {
+    @Override
+    public void getSavedPassengerList() {
         flightPassengerGetListUseCase.execute(
                 getSavedPassengerRequestParams(),
                 new Subscriber<List<FlightBookingPassengerViewModel>>() {
