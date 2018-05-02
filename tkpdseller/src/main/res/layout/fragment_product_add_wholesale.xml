@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/LabelLayout.InnerExpandable"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/padding_med">
+
+    <TextView
+        style="@style/TextView.Small"
+        android:text="@string/product_label_product_main_price" />
+
+    <TextView
+        android:id="@+id/text_main_price"
+        style="@style/TextView.SubHeadline"
+        android:layout_marginTop="@dimen/dp_8"
+        tools:text="Rp 25.000" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_wholesale"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16">
+
     </android.support.v7.widget.RecyclerView>
 
     <TextView

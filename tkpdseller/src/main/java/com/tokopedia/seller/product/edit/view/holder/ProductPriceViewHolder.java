@@ -29,6 +29,7 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
 import com.tokopedia.seller.product.edit.view.adapter.WholesaleAdapter;
@@ -46,6 +47,7 @@ import java.util.Locale;
 public class ProductPriceViewHolder extends ProductViewHolder
         implements WholesaleAdapter.Listener {
 
+    public static final int REQUEST_CODE_GET_PRODUCT_WHOLESALE = 100;
     private static final int MAX_WHOLESALE = 5;
 
     private WholesaleAdapter wholesaleAdapter;
@@ -53,7 +55,7 @@ public class ProductPriceViewHolder extends ProductViewHolder
     private SpinnerCounterInputView priceSpinnerCounterInputView;
     private ExpandableOptionSwitch wholesaleExpandableOptionSwitch;
     private CounterInputView minimumOrderCounterInputView;
-
+    private LabelView wholesaleLabelView;
     private TextView textViewAddWholesale;
 
     private boolean goldMerchant;
@@ -63,11 +65,12 @@ public class ProductPriceViewHolder extends ProductViewHolder
     private boolean officialStore;
     private final View vWholeSaleVariantInfo;
 
-    public ProductPriceViewHolder(View view, Listener listener) {
+    public ProductPriceViewHolder(View view, final Listener listener) {
         editPriceImageButton = view.findViewById(R.id.image_button_edit_price);
         vWholeSaleVariantInfo = view.findViewById(R.id.v_wholesale_variant_info);
         priceSpinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_price);
         wholesaleExpandableOptionSwitch = view.findViewById(R.id.expandable_option_switch_wholesale);
+        wholesaleLabelView = view.findViewById(R.id.label_view_wholesale);
         minimumOrderCounterInputView = view.findViewById(R.id.counter_input_view_minimum_order);
         editPriceImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +139,13 @@ public class ProductPriceViewHolder extends ProductViewHolder
                 EditText editText = priceSpinnerCounterInputView.getCounterEditText();
                 editText.setSelection(editText.getText().length());
                 priceSpinnerCounterInputView.setCounterError(null);
+            }
+        });
+
+        wholesaleLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.startProductAddWholesaleActivity();
             }
         });
 
@@ -209,6 +219,17 @@ public class ProductPriceViewHolder extends ProductViewHolder
                     setWholesalePrice(model.getProductWholesale());
                 }
                 wholesaleExpandableOptionSwitch.setVisibility(View.VISIBLE);
+
+                Context context = wholesaleLabelView.getContext();
+
+                if(model.getProductWholesale().isEmpty()){
+                    wholesaleLabelView.setContent(context.getString(R.string.product_label_add));
+                }
+                else {
+                    wholesaleLabelView.setContent(String.valueOf(model.getProductWholesale().size()) + " " + context.getString(R.string.product_label_price));
+                }
+
+
             } else {
                 wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
             }
@@ -343,8 +364,8 @@ public class ProductPriceViewHolder extends ProductViewHolder
             if (!ProductPriceRangeUtils.isPriceValid(priceValue, currencyType, officialStore)) {
                 priceSpinnerCounterInputView.setCounterError(
                         priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid,
-                        ProductPriceRangeUtils.getMinPriceString( currencyType, officialStore),
-                        ProductPriceRangeUtils.getMaxPriceString( currencyType, officialStore)));
+                                ProductPriceRangeUtils.getMinPriceString( currencyType, officialStore),
+                                ProductPriceRangeUtils.getMaxPriceString( currencyType, officialStore)));
                 wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
                 return false;
             } else if (ProductPriceRangeUtils.getMinPrice(currencyType, officialStore) == priceValue) {
@@ -445,5 +466,7 @@ public class ProductPriceViewHolder extends ProductViewHolder
         boolean hasVariant();
 
         void showDialogEditPriceVariant();
+
+        void startProductAddWholesaleActivity();
     }
 }
