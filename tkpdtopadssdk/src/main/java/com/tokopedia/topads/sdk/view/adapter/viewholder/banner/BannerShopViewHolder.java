@@ -91,6 +91,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                 badgeContainer.setVisibility(View.GONE);
             }
             if(cpm.getCpmShop() !=null && cpm.getCpmShop().getProducts().size() > 0){
+                imageContainer.setVisibility(View.VISIBLE);
                 final Product product = cpm.getCpmShop().getProducts().get(0);
                 imageLoader.loadImage(product.getImageProduct().getImageUrl(), productImage);
 
@@ -101,6 +102,8 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                         new ImpresionTask().execute(product.getImageProduct().getImageClickUrl());
                     }
                 });
+            } else {
+                imageContainer.setVisibility(View.GONE);
             }
             descriptionTxt.setOnClickListener(new View.OnClickListener() {
                 @Override

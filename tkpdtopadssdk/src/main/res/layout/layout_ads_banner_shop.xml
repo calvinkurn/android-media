@@ -57,7 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="2dp"></LinearLayout>
+                    android:padding="2dp" />
 
                 <TextView
                     android:id="@+id/shop_name"
