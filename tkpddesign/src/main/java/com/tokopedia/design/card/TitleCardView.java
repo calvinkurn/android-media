@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -75,7 +76,10 @@ public class TitleCardView extends CardView {
         loadingLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_loading_layout, VIEW_NOT_AVAILABLE);
         errorLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_error_layout, VIEW_NOT_AVAILABLE);
         emptyLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_empty_layout, VIEW_NOT_AVAILABLE);
-        iconDrawable = a.getDrawable(R.styleable.TitleCardView_tcv_icon);
+        int resDrawable = a.getResourceId(R.styleable.TitleCardView_tcv_icon, VIEW_NOT_AVAILABLE);
+        if (resDrawable != VIEW_NOT_AVAILABLE) {
+            iconDrawable = AppCompatResources.getDrawable(getContext(), resDrawable);
+        }
         useGradientTitleLoading = a.getBoolean(R.styleable.TitleCardView_tcv_use_gradient_title, true);
         titleHeight = a.getDimensionPixelSize(R.styleable.TitleCardView_tcv_title_height, 0);
         a.recycle();

@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -729,7 +731,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionShopDetailClick(String shopID) {
-        Intent intent = ((TkpdInboxRouter) getActivity()).getShopPageIntent(getActivity(), String.valueOf(shopID));
+        Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext()).getShopPageIntent(getActivity(), String.valueOf(shopID));
         startActivity(intent);
     }
 
