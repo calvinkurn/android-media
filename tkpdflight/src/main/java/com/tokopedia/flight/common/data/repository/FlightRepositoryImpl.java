@@ -381,6 +381,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
+    public Observable<OrderEntity> getOrderEntity(String id) {
+        return flightOrderDataSource.getOrder(id);
+    }
+
+    @Override
     public Observable<List<BannerDetail>> getBanners(Map<String, String> params) {
         return bannerDataSource.getBannerData(params);
     }

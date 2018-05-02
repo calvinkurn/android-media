@@ -17,6 +17,8 @@ public interface FlightCancellationListContract {
 
         List<FlightCancellationListViewModel> getFlightCancellationList();
 
+        String getInvoiceId();
+
         void setFlightCancellationList(List<FlightCancellationListViewModel> cancellationList);
 
     }

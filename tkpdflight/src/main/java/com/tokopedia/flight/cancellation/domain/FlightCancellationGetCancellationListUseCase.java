@@ -25,6 +25,9 @@ import rx.functions.Func3;
 
 public class FlightCancellationGetCancellationListUseCase extends UseCase<List<FlightCancellationListViewModel>> {
 
+    private static final String INVOICE_ID_PARAM = "INVOICE_ID_PARAM";
+    private static final String DEFAULT_INVOICE_ID = "";
+
     private FlightOrderDataCacheSource flightOrderDataCacheSource;
     private FlightOrderEntityToCancellationListMapper flightOrderEntityToCancellationListMapper;
     private FlightRepository flightRepository;
@@ -39,8 +42,18 @@ public class FlightCancellationGetCancellationListUseCase extends UseCase<List<F
     }
 
     @Override
-    public Observable<List<FlightCancellationListViewModel>> createObservable(RequestParams requestParams) {
-        return flightOrderDataCacheSource.getCache()
+    public Observable<List<FlightCancellationListViewModel>> createObservable(final RequestParams requestParams) {
+        return flightOrderDataCacheSource.isExpired()
+                .flatMap(new Func1<Boolean, Observable<OrderEntity>>() {
+                    @Override
+                    public Observable<OrderEntity> call(Boolean aBoolean) {
+                        if (aBoolean) {
+                            return flightRepository.getOrderEntity(requestParams.getString(INVOICE_ID_PARAM, DEFAULT_INVOICE_ID));
+                        } else {
+                            return flightOrderDataCacheSource.getCache();
+                        }
+                    }
+                })
                 .flatMap(new Func1<OrderEntity, Observable<List<FlightCancellationListViewModel>>>() {
                     @Override
                     public Observable<List<FlightCancellationListViewModel>> call(OrderEntity orderEntity) {
@@ -99,8 +112,10 @@ public class FlightCancellationGetCancellationListUseCase extends UseCase<List<F
                 });
     }
 
-    public RequestParams createEmptyRequest() {
-        return RequestParams.EMPTY;
+    public RequestParams createRequestParams(String invoiceId) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(INVOICE_ID_PARAM, invoiceId);
+        return requestParams;
     }
 
 }

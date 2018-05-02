@@ -28,6 +28,7 @@ public class FlightCancellationListFragment extends BaseListFragment<FlightCance
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
 
     private List<FlightCancellationListViewModel> cancellationListViewModelList;
+    private String invoiceId;
 
     @Inject
     FlightCancellationListPresenter presenter;
@@ -48,6 +49,8 @@ public class FlightCancellationListFragment extends BaseListFragment<FlightCance
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        invoiceId = getArguments().getString(EXTRA_INVOICE_ID);
+
         presenter.attachView(this);
         super.onViewCreated(view, savedInstanceState);
     }
@@ -86,6 +89,11 @@ public class FlightCancellationListFragment extends BaseListFragment<FlightCance
     @Override
     public List<FlightCancellationListViewModel> getFlightCancellationList() {
         return cancellationListViewModelList;
+    }
+
+    @Override
+    public String getInvoiceId() {
+        return invoiceId;
     }
 
     @Override

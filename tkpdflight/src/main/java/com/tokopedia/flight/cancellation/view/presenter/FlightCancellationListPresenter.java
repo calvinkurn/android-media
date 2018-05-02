@@ -28,7 +28,9 @@ public class FlightCancellationListPresenter extends BaseDaggerPresenter<FlightC
     @Override
     public void onViewCreated() {
         flightCancellationGetCancellationListUseCase.execute(
-                flightCancellationGetCancellationListUseCase.createEmptyRequest(),
+                flightCancellationGetCancellationListUseCase.createRequestParams(
+                        getView().getInvoiceId()
+                ),
                 new Subscriber<List<FlightCancellationListViewModel>>() {
                     @Override
                     public void onCompleted() {
