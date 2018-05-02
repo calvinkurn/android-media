@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.session.register.registerphonenumber.view.fragment.AddNameFragment;
+import com.tokopedia.session.changename.view.fragment.ChangeNameFragment;
 
 /**
  * @author by yfsx on 22/03/18.
@@ -23,6 +23,6 @@ public class ChangeNameActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return AddNameFragment.newInstance(new Bundle());
+        return ChangeNameFragment.newInstance(new Bundle());
     }
 }
