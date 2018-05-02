@@ -99,8 +99,6 @@ public class AuthUtil {
         private static final int[] RAW_SCROOGE_KEY = new int[]{49, 50, 69, 56, 77, 105, 69, 55, 89, 69, 54, 86, 122, 115, 69, 80, 66, 80, 101, 77};
         private static final int[] RAW_ZEUS_KEY = new int[]{102, 100, 100, 98, 100, 56, 49, 101, 101, 52, 49, 49, 54, 98, 56, 99, 98, 55, 97, 52, 48, 56, 100, 55, 102, 98, 102, 98, 57, 99, 49, 55};
         private static final int[] RAW_NOTP_KEY = new int[]{110, 117, 108, 97, 121, 117, 107, 97, 119, 111, 106, 117};
-        private static final int[] RAW_ALIYUN_SECRET_KEY = new int[]{101, 74, 76, 86, 51, 80, 74, 67, 67, 69, 110, 55, 115, 113, 102, 53, 118, 86, 114, 73, 122, 97, 69, 83, 84, 102, 115, 78, 100, 109};
-        private static final int[] RAW_ALIYUN_ACCESS_KEY_ID = new int[]{76, 84, 65, 73, 85, 101, 69, 87, 83, 118, 105, 97, 49, 75, 107, 87};
         private static final int[] RAW_BRANCHIO_KEY_ID = new int[]{107, 101, 121, 95, 108, 105, 118, 101, 95, 97, 98, 104, 72, 103, 73, 104, 49, 68, 81, 105, 117, 80, 120, 100, 66, 78, 103, 57, 69, 88, 101, 112, 100, 68, 117, 103, 119, 119, 107, 72, 114};
 
         public static final String KEY_WSV4_NEW = convert(RAW_KEY_WSV4);
