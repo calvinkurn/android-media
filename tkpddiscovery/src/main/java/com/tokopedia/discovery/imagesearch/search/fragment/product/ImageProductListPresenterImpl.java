@@ -135,13 +135,11 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     }
 
     private void addWishlist(String productId, String userId, int adapterPosition) {
-        Log.d(this.toString(), "Add Wishlist " + productId);
         addWishlistActionUseCase.execute(AddWishlistActionUseCase.generateParam(productId, userId),
                 new AddWishlistActionSubscriber(wishlistActionListener, adapterPosition));
     }
 
     private void removeWishlist(String productId, String userId, int adapterPosition) {
-        Log.d(this.toString(), "Remove Wishlist " + productId);
         removeWishlistActionUseCase.execute(RemoveWishlistActionUseCase.generateParam(productId, userId),
                 new RemoveWishlistActionSubscriber(wishlistActionListener, adapterPosition));
     }

@@ -206,11 +206,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
             public void onLoad(int page, int totalCount) {
-                /*if (isAllowLoadMore()) {
-                    loadMoreProduct(adapter.getStartFrom());
-                } else {
-                    topAdsRecyclerAdapter.hideLoading();
-                }*/
                 topAdsRecyclerAdapter.hideLoading();
             }
         });
