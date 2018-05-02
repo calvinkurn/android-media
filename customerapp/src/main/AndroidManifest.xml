@@ -180,7 +180,7 @@
             android:label="@string/label_gold_merchant"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity"
+            android:name="com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity"
             android:label="@string/title_detail_feed"
             android:screenOrientation="portrait" />
 
