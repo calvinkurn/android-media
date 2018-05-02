@@ -97,19 +97,20 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                 productImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        topAdsBannerClickListener.onBannerAdsClicked(product.getApplinks());
                         new ImpresionTask().execute(product.getImageProduct().getImageClickUrl());
                     }
                 });
             }
-//            visitShop.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if(topAdsBannerClickListener!=null) {
-//                        topAdsBannerClickListener.onBannerAdsClicked(element.getAppLink());
-//                        new ImpresionTask().execute(element.getAdsClickUrl());
-//                    }
-//                }
-//            });
+            descriptionTxt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(topAdsBannerClickListener!=null) {
+                        topAdsBannerClickListener.onBannerAdsClicked(element.getAppLink());
+                        new ImpresionTask().execute(element.getAdsClickUrl());
+                    }
+                }
+            });
         }
     }
 }
