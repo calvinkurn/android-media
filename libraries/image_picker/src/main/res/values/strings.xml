@@ -16,4 +16,6 @@
     <string name="rotate">Rotate</string>
     <string name="watermark">Watermark</string>
     <string name="crop_and_rotate">Crop/Rotate</string>
+    <string name="cancel">Batal</string>
+    <string name="save">Simpan</string>
 </resources>

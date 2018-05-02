@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.editor.ImageEditPreviewFragment;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorEditActionAdapter;
 import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
 
@@ -22,6 +23,11 @@ import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
 public class ImageEditActionMainWidget extends FrameLayout implements ImageEditorEditActionAdapter.OnImageEditorEditActionAdapterListener {
 
     private ViewGroup viewGroupMainContent;
+
+    private OnImageEditActionMainWidgetListener onImageEditActionMainWidgetListener;
+    public interface OnImageEditActionMainWidgetListener{
+        void onEditActionClicked (@ImagePickerBuilder.ImageEditActionTypeDef int editActionType);
+    }
 
     public ImageEditActionMainWidget(@NonNull Context context) {
         super(context);
@@ -43,6 +49,10 @@ public class ImageEditActionMainWidget extends FrameLayout implements ImageEdito
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    public void setOnImageEditActionMainWidgetListener(OnImageEditActionMainWidgetListener onImageEditActionMainWidgetListener) {
+        this.onImageEditActionMainWidgetListener = onImageEditActionMainWidgetListener;
+    }
+
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.widget_image_edit_action_main,
                 this, true);
@@ -57,6 +67,8 @@ public class ImageEditActionMainWidget extends FrameLayout implements ImageEdito
 
     @Override
     public void onEditActionClicked(@ImagePickerBuilder.ImageEditActionTypeDef int actionEditType) {
-        //TODO
+        if (onImageEditActionMainWidgetListener!= null) {
+            onImageEditActionMainWidgetListener.onEditActionClicked(actionEditType);
+        }
     }
 }

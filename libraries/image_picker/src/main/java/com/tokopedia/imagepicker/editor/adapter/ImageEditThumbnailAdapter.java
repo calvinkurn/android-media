@@ -1,8 +1,8 @@
 package com.tokopedia.imagepicker.editor.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +24,11 @@ public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThu
     private RecyclerView recyclerView;
 
     private int selectedIndex = 0;
+    private int itemWidth;
 
     private OnImageEditThumbnailAdapterListener onImageEditThumbnailAdapterListener;
-    public interface OnImageEditThumbnailAdapterListener{
+
+    public interface OnImageEditThumbnailAdapterListener {
         void onThumbnailItemClicked(String imagePath, int position);
     }
 
@@ -36,6 +38,7 @@ public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThu
         this.imagePathList = imagePathList;
         this.selectedIndex = imageIndex;
         this.onImageEditThumbnailAdapterListener = onImageEditThumbnailAdapterListener;
+        itemWidth = context.getResources().getDimensionPixelOffset(R.dimen.image_edit_thumbnail_width);
     }
 
 
@@ -53,17 +56,22 @@ public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThu
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            if (selectedIndex!= position) {
+            if (recyclerView != null) {
+                scrollToCenter(position);
+            }
+            if (selectedIndex != position) {
                 selectedIndex = position;
                 notifyDataSetChanged();
 
                 String imagePath = imagePathList.get(position);
                 onImageEditThumbnailAdapterListener.onThumbnailItemClicked(imagePath, position);
             }
-            /*if (recyclerView!=null) {
-                recyclerView.smoothScrollToPosition(getAdapterPosition());
-            }*/
         }
+    }
+
+    public void scrollToCenter(int position) {
+        int centerOfScreen = recyclerView.getWidth() / 2 - itemWidth / 2;
+        ((LinearLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(position, centerOfScreen);
     }
 
     public void setData(ArrayList<String> imagePathList, int imageIndex) {
@@ -73,8 +81,9 @@ public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThu
     }
 
     public void setSelectedIndex(int imageIndex) {
-        if (imageIndex!=selectedIndex) {
+        if (imageIndex != selectedIndex) {
             this.selectedIndex = imageIndex;
+            scrollToCenter(imageIndex);
             notifyDataSetChanged();
         }
     }

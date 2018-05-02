@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.imagepicker.editor.adapter.ImageEditorEditActionAdapter;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
 import com.yalantis.ucrop.view.OverlayView;
@@ -47,7 +46,10 @@ public class ImageEditPreviewFragment extends Fragment {
     private View blockingView;
 
     private OnImageEditPreviewFragmentListener onImageEditPreviewFragmentListener;
-    public interface OnImageEditPreviewFragmentListener{
+    private boolean loadCompleted;
+    private float currentScale;
+
+    public interface OnImageEditPreviewFragmentListener {
         boolean isInEditMode();
     }
 
@@ -74,7 +76,7 @@ public class ImageEditPreviewFragment extends Fragment {
         return view;
     }
 
-    private void initVar(@Nullable Bundle savedInstanceState){
+    private void initVar(@Nullable Bundle savedInstanceState) {
         Bundle bundle = getArguments();
         oriImagePath = bundle.getString(ARG_ORI_IMAGE_PATH);
         minResolution = bundle.getInt(ARG_MIN_RESOLUTION);
@@ -86,13 +88,14 @@ public class ImageEditPreviewFragment extends Fragment {
         }
     }
 
-    private void initUCrop(final View view){
+    private void initUCrop(final View view) {
         uCropView = view.findViewById(R.id.ucrop);
         GestureCropImageView gestureCropImageView = uCropView.getCropImageView();
 
         gestureCropImageView.setTransformImageListener(new TransformImageView.TransformImageListener() {
             @Override
             public void onLoadComplete() {
+                loadCompleted = true;
                 hideLoadingAndShowPreview();
             }
 
@@ -114,7 +117,7 @@ public class ImageEditPreviewFragment extends Fragment {
 
     }
 
-    private void initProgressBar(View view){
+    private void initProgressBar(View view) {
         progressBar = view.findViewById(R.id.progressbar);
     }
 
@@ -188,13 +191,27 @@ public class ImageEditPreviewFragment extends Fragment {
         progressBar.setVisibility(View.GONE);
         uCropView.setVisibility(View.VISIBLE);
         uCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
-        if (onImageEditPreviewFragmentListener.isInEditMode()) {
-            blockingView.setVisibility(View.GONE);
-            uCropView.getOverlayView().setShowCropGrid(true);
-        } else {
-            blockingView.setVisibility(View.VISIBLE);
-            uCropView.getOverlayView().setShowCropGrid(false);
+        setEditMode(onImageEditPreviewFragmentListener.isInEditMode());
+    }
+
+    public void setEditMode(boolean isEditMode) {
+        if (loadCompleted) {
+            if (isEditMode) {
+                blockingView.setVisibility(View.GONE);
+                uCropView.getOverlayView().setShowCropGrid(true);
+            } else {
+                blockingView.setVisibility(View.VISIBLE);
+                uCropView.getOverlayView().setShowCropGrid(false);
+            }
+            uCropView.getOverlayView().invalidate();
         }
+    }
+
+    public void cancelCropRotateImage() {
+        GestureCropImageView gestureCropImageView = uCropView.getCropImageView();
+        gestureCropImageView.postRotate(-gestureCropImageView.getCurrentAngle());
+        gestureCropImageView.zoomOutImage(gestureCropImageView.getMinScale());
+        gestureCropImageView.setImageToWrapCropBounds(false);
     }
 
     @Override

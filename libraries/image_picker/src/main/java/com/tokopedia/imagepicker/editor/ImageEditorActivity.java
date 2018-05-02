@@ -21,12 +21,17 @@ import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
 
 import java.util.ArrayList;
 
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP;
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP_ROTATE;
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_ROTATE;
+import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_WATERMARK;
+
 /**
  * Created by Hendry on 9/25/2017.
  */
 
 public class ImageEditorActivity extends BaseSimpleActivity implements ImageDownloadPresenter.ImageDownloadView,
-        ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener {
+        ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener, ImageEditActionMainWidget.OnImageEditActionMainWidgetListener {
 
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
     public static final String EXTRA_MIN_RESOLUTION = "MIN_IMG_RESOLUTION";
@@ -36,6 +41,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     public static final String SAVED_FINAL_PATHS = "SAVED_CROPPED_PATHS";
     public static final String SAVED_LOCAL_IMAGE_PATH = "RES_PATH";
     public static final String SAVED_IN_EDIT_MODE = "SAVED_IN_EDIT_MODE";
+    public static final String SAVED_EDIT_TYPE = "SAVED_EDIT_TYPE";
 
     public static final String EDIT_RESULT_PATHS = "result_paths";
 
@@ -50,6 +56,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
     private int currentImageIndex;
     private boolean isInEditMode;
+    private @ImagePickerBuilder.ImageEditActionTypeDef
+    int currentEditActionType;
 
     private View vgDownloadProgressBar;
     private ImageDownloadPresenter imageDownloadPresenter;
@@ -60,6 +68,9 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private ImageEditorViewPagerAdapter imageEditorViewPagerAdapter;
     private ImageEditThumbnailListWidget imageEditThumbnailListWidget;
     private ImageEditActionMainWidget imageEditActionMainWidget;
+    private View editorMainView;
+    private View editorControlView;
+    private View editCancelView;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImagePickerBuilder.ImageEditActionTypeDef int[] imageEditActionType) {
@@ -115,17 +126,22 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             localImagePaths = new ArrayList<>();
             finalImagePaths = new ArrayList<>();
             isInEditMode = false;
+            currentEditActionType = TYPE_CROP_ROTATE;
         } else {
             currentImageIndex = savedInstanceState.getInt(SAVED_IMAGE_INDEX, 0);
             localImagePaths = savedInstanceState.getStringArrayList(SAVED_LOCAL_IMAGE_PATH);
             finalImagePaths = savedInstanceState.getStringArrayList(SAVED_FINAL_PATHS);
             isInEditMode = savedInstanceState.getBoolean(SAVED_IN_EDIT_MODE);
+            currentEditActionType = savedInstanceState.getInt(SAVED_EDIT_TYPE);
         }
 
         vgDownloadProgressBar = findViewById(R.id.vg_download_progress_bar);
         vgContentContainer = findViewById(R.id.vg_content_container);
 
         viewPager = findViewById(R.id.view_pager);
+        editorMainView = findViewById(R.id.vg_editor_main);
+        editorControlView = findViewById(R.id.vg_editor_control);
+        editCancelView = findViewById(R.id.tv_edit_cancel);
         imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
         imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
 
@@ -147,20 +163,88 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             }
         });
 
-        imageEditActionMainWidget.setData(imageEditActionType);
-        setupEditMode();
+        setupEditCancelButton();
     }
 
-    private void setupEditMode() {
+    private void setupEditCancelButton() {
+        editCancelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageEditPreviewFragment fragment = (ImageEditPreviewFragment)
+                        imageEditorViewPagerAdapter.getRegisteredFragment(currentImageIndex);
+                if (fragment != null) {
+                    switch (currentEditActionType) {
+                        case TYPE_CROP:
+                        case TYPE_ROTATE:
+                        case TYPE_CROP_ROTATE:
+                            fragment.cancelCropRotateImage();
+                            break;
+                        case TYPE_WATERMARK:
+                            //TODO undo watermark here
+                            break;
+                    }
+
+                }
+                setupEditMode(false, TYPE_CROP_ROTATE);
+            }
+        });
+    }
+
+    private void setupEditActionWidget() {
+        imageEditActionMainWidget.setOnImageEditActionMainWidgetListener(this);
+        imageEditActionMainWidget.setData(imageEditActionType);
+    }
+
+    @Override
+    public void onEditActionClicked(@ImagePickerBuilder.ImageEditActionTypeDef int editActionType) {
+        setupEditMode(true, editActionType);
+    }
+
+    private void setupEditMode(boolean isInEditMode, int editActionType) {
+        this.isInEditMode = isInEditMode;
+        this.currentEditActionType = editActionType;
+
         // TODO setup edit/preview mode
         // EDIT: have cancel and save
         // NON-EDIT: have thumbnail and edit action
         viewPager.setCanSwipe(!isInEditMode);
+        int position = viewPager.getCurrentItem();
+        ImageEditPreviewFragment fragment = (ImageEditPreviewFragment)
+                imageEditorViewPagerAdapter.getRegisteredFragment(position);
+        if (isInEditMode) {
+            editorMainView.setVisibility(View.GONE);
+            editorControlView.setVisibility(View.VISIBLE);
+            if (fragment != null) {
+                fragment.setEditMode(true);
+            }
+            //TODO show controls
+            switch (editActionType) {
+                case TYPE_CROP:
+                    //currently not supported.
+                    break;
+                case ImagePickerBuilder.ImageEditActionTypeDef.TYPE_ROTATE:
+                    //currently not supported.
+                    break;
+                case ImagePickerBuilder.ImageEditActionTypeDef.TYPE_WATERMARK:
+                    //currently not supported.
+                    break;
+                case TYPE_CROP_ROTATE:
+                    break;
+            }
+        } else {
+            editorMainView.setVisibility(View.VISIBLE);
+            editorControlView.setVisibility(View.GONE);
+
+            if (fragment != null) {
+                fragment.setEditMode(false);
+            }
+        }
     }
 
-    private void setUpThumbnailPreview(){
+    private void setUpThumbnailPreview() {
         imageEditThumbnailListWidget.setOnImageEditThumbnailListWidgetListener(this);
         imageEditThumbnailListWidget.setData(finalImagePaths, currentImageIndex);
+        imageEditThumbnailListWidget.setVisibility(finalImagePaths.size() <= 1 ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -240,6 +324,9 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         }
         viewPager.setAdapter(imageEditorViewPagerAdapter);
 
+        setupEditActionWidget();
+        setupEditMode(isInEditMode, currentEditActionType);
+
         setUpThumbnailPreview();
 
     }
@@ -252,7 +339,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         vgDownloadProgressBar.setVisibility(View.GONE);
     }
 
-    private void hideContentView(){
+    private void hideContentView() {
         vgContentContainer.setVisibility(View.GONE);
         imageEditThumbnailListWidget.setVisibility(View.GONE);
         imageEditActionMainWidget.setVisibility(View.GONE);
@@ -353,6 +440,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         outState.putStringArrayList(SAVED_LOCAL_IMAGE_PATH, localImagePaths);
         outState.putStringArrayList(SAVED_FINAL_PATHS, finalImagePaths);
         outState.putBoolean(SAVED_IN_EDIT_MODE, isInEditMode);
+        outState.putInt(SAVED_EDIT_TYPE, currentEditActionType);
     }
 
     @Override

@@ -7,4 +7,5 @@
     <dimen name="media_grid_spacing">2dp</dimen>
     <dimen name="editor_main_height">64dp</dimen>
     <dimen name="editor_footer_height">148dp</dimen>
+    <dimen name="image_edit_thumbnail_width">72dp</dimen>
 </resources>
