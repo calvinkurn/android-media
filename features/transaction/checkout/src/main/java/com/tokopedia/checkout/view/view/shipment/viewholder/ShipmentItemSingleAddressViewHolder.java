@@ -37,9 +37,6 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
     private Context mContext;
     private ShipmentAdapterActionListener mActionListener;
 
-    private boolean mIsAllCartItemShown;
-    private boolean mIsCostDetailShown;
-
     public ShipmentItemSingleAddressViewHolder(View itemView, Context context,
                                                ShipmentAdapterActionListener actionListener) {
         super(itemView);
@@ -52,8 +49,6 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
                                RecipientAddressModel recipientAddressModel,
                                ArrayList<ShowCaseObject> showCaseObjectList) {
 
-        mIsAllCartItemShown = false;
-        mIsCostDetailShown = false;
         addressLayout.setVisibility(View.GONE);
 
         ShipmentSingleAddressItem shipmentSingleAddressItem = (ShipmentSingleAddressItem) shipmentItem;
@@ -61,7 +56,7 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentSingleAddressItem.getCartItemModels());
 
         bindFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
-        bindOtherCartItems(cartItemModelList);
+        bindOtherCartItems(shipmentSingleAddressItem, cartItemModelList);
         bindChooseCourier(shipmentSingleAddressItem, shipmentSingleAddressItem.getSelectedShipmentDetailData(),
                 recipientAddressModel);
         bindCostDetail(shipmentSingleAddressItem);
@@ -93,17 +88,20 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         tvCashback.setText(cashback);
     }
 
-    private void bindOtherCartItems(List<CartItemModel> cartItemModelList) {
-        rlExpandOtherProduct.setVisibility(cartItemModelList.isEmpty() ?
-                View.GONE : View.VISIBLE);
-        tvExpandOtherProduct.setText(getOtherCartItemsLabel(cartItemModelList,
-                mIsAllCartItemShown));
+    private void bindOtherCartItems(ShipmentSingleAddressItem shipmentItem, List<CartItemModel> cartItemModels) {
+        if (cartItemModels != null) {
+            rlExpandOtherProduct.setVisibility(cartItemModels.isEmpty() ?
+                    View.GONE : View.VISIBLE);
+            tvExpandOtherProduct.setText(getOtherCartItemsLabel(cartItemModels,
+                    shipmentItem.isAllItemViewStateExpanded()));
 
-        ivDetailOptionChevron.setImageResource(getResourceDrawerChevron(mIsAllCartItemShown));
-        rlExpandOtherProduct.setOnClickListener(showAllProductListener(cartItemModelList));
-        tvExpandOtherProduct.setOnClickListener(showAllProductListener(cartItemModelList));
+            ivDetailOptionChevron.setImageResource(getResourceDrawerChevron(
+                    shipmentItem.isAllItemViewStateExpanded()));
+            rlExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem, cartItemModels));
+            tvExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem, cartItemModels));
 
-        initInnerRecyclerView(cartItemModelList);
+            initInnerRecyclerView(cartItemModels);
+        }
     }
 
     private void bindChooseCourier(ShipmentSingleAddressItem shipmentSingleAddressItem,
@@ -125,7 +123,7 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
 
     private void bindCostDetail(ShipmentSingleAddressItem shipmentSingleAddressItem) {
         rlCartSubTotal.setVisibility(View.VISIBLE);
-        rlShipmentCost.setVisibility(mIsCostDetailShown ? View.VISIBLE : View.GONE);
+        rlShipmentCost.setVisibility(shipmentSingleAddressItem.isDetailSubtotalViewStateExpanded() ? View.VISIBLE : View.GONE);
         tvShopName.setText(shipmentSingleAddressItem.getShopName());
 
         int totalItem = 0;
@@ -147,14 +145,16 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
                 insurancePrice = shipmentSingleAddressItem.getSelectedShipmentDetailData()
                         .getSelectedCourier().getInsurancePrice();
             }
-            subTotalPrice = shippingPrice + insurancePrice + additionalPrice + totalItemPrice;
-            tvShippingFeeLabel = getTotalWeightLabel(totalWeight, shipmentSingleAddressItem.getWeightUnit());
-            tvTotalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
+            additionalPrice = shipmentSingleAddressItem.getSelectedShipmentDetailData()
+                    .getSelectedCourier().getAdditionalPrice();
             for (CartItemModel cartItemModel : shipmentSingleAddressItem.getCartItemModels()) {
                 totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
                 totalItem += cartItemModel.getQuantity();
                 totalWeight += cartItemModel.getWeight();
             }
+            tvShippingFeeLabel = getTotalWeightLabel(totalWeight, shipmentSingleAddressItem.getWeightUnit());
+            tvTotalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
+            subTotalPrice += (totalItemPrice + shippingPrice + insurancePrice + additionalPrice);
         }
         tvTotalItemPrice.setText(getPriceFormat(totalItemPrice));
         tvTotalItem.setText(tvTotalItemLabel);
@@ -162,7 +162,7 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         tvSubTotalPrice.setText(getPriceFormat(subTotalPrice));
         tvShippingFeePrice.setText(getPriceFormat(shippingPrice));
         tvInsuranceFeePrice.setText(getPriceFormat(insurancePrice));
-        rlCartSubTotal.setOnClickListener(costDetailOptionListener());
+        rlCartSubTotal.setOnClickListener(costDetailOptionListener(shipmentSingleAddressItem));
     }
 
     private void bindError(ShipmentItem shipmentItem) {
@@ -184,7 +184,7 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
     }
 
     private void initInnerRecyclerView(List<CartItemModel> cartItemList) {
-        rvCartItem.setVisibility(View.GONE);
+//        rvCartItem.setVisibility(View.GONE);
 
         rvCartItem.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
@@ -217,21 +217,22 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
                 String.format("+%s Produk Lainnya", cartItemList.size());
     }
 
-    private View.OnClickListener showAllProductListener(final List<CartItemModel> cartItemList) {
+    private View.OnClickListener showAllProductListener(final ShipmentItem shipmentItem,
+                                                        final List<CartItemModel> cartItemList) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggleShowAllProduct(cartItemList);
+                toggleShowAllProduct(shipmentItem, cartItemList);
             }
         };
     }
 
-    private void toggleShowAllProduct(List<CartItemModel> cartItemList) {
-        mIsAllCartItemShown = !mIsAllCartItemShown;
-        rvCartItem.setVisibility(mIsAllCartItemShown ? View.VISIBLE : View.GONE);
+    private void toggleShowAllProduct(ShipmentItem shipmentItem, List<CartItemModel> cartItemList) {
+        shipmentItem.setAllItemViewStateExpanded(!shipmentItem.isAllItemViewStateExpanded());
+        rvCartItem.setVisibility(shipmentItem.isAllItemViewStateExpanded() ? View.VISIBLE : View.GONE);
 
         tvExpandOtherProduct.setText(getOtherCartItemsLabel(cartItemList,
-                mIsAllCartItemShown));
+                shipmentItem.isAllItemViewStateExpanded()));
     }
 
     private View.OnClickListener selectShippingOptionListener(final int position,
@@ -245,20 +246,20 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         };
     }
 
-    private View.OnClickListener costDetailOptionListener() {
+    private View.OnClickListener costDetailOptionListener(final ShipmentItem shipmentItem) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggleShowCostDetail();
+                toggleShowCostDetail(shipmentItem);
             }
         };
     }
 
-    private void toggleShowCostDetail() {
-        mIsCostDetailShown = !mIsCostDetailShown;
-        ivDetailOptionChevron.setImageResource(getResourceDrawerChevron(mIsCostDetailShown));
+    private void toggleShowCostDetail(ShipmentItem shipmentItem) {
+        shipmentItem.setDetailSubtotalViewStateExpanded(!shipmentItem.isDetailSubtotalViewStateExpanded());
+        ivDetailOptionChevron.setImageResource(getResourceDrawerChevron(shipmentItem.isDetailSubtotalViewStateExpanded()));
 
-        rlShipmentCost.setVisibility(mIsCostDetailShown ? View.VISIBLE : View.GONE);
+        rlShipmentCost.setVisibility(shipmentItem.isDetailSubtotalViewStateExpanded() ? View.VISIBLE : View.GONE);
     }
 
     private int getResourceDrawerChevron(boolean isExpanded) {

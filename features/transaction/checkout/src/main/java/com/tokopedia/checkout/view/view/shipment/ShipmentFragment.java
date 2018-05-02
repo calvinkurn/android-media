@@ -120,6 +120,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        shipmentPresenter.attachView(this);
+    }
+
+    @Override
     protected void onFirstTimeLaunched() {
 
     }
@@ -215,7 +221,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.addAddressShipmentData(recipientAddressModel);
         }
         shipmentAdapter.addCartItemDataList(shipmentItems);
-//        shipmentAdapter.addShipmentCostData(singleShipmentData.getShipmentCost());
+        shipmentAdapter.addShipmentCostData(new ShipmentCostModel());
     }
 
     @Override
@@ -340,19 +346,22 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentPresenter.processVerifyPayment(checkoutData.getTransactionId());
                     break;
             }
+        } else if ((requestCode == REQUEST_CHOOSE_PICKUP_POINT || requestCode == REQUEST_CODE_SHIPMENT_DETAIL)
+                && resultCode == Activity.RESULT_OK) {
+            onResultFromRequestCodeCourierOptions(requestCode, data);
         }
     }
 
     private void onResultFromRequestCodeCourierOptions(int requestCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CHOOSE_PICKUP_POINT:
-                Store pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
+//                Store pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
 //                shipmentAdapter.setPickupPoint(pickupBooth);
                 break;
             case REQUEST_CODE_SHIPMENT_DETAIL:
                 ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
                 int position = data.getIntExtra(EXTRA_POSITION, 0);
-//                shipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
+                shipmentAdapter.setSelecteCourier(position, shipmentDetailData);
             default:
                 break;
         }
@@ -456,12 +465,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCartDataEnableToCheckout() {
-
+        tvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_button_orange_enabled);
+        tvSelectPaymentMethod.setTextColor(getResources().getColor(R.color.white));
+        tvSelectPaymentMethod.setOnClickListener(getOnClickListenerButtonCheckout());
     }
 
     @Override
     public void onCartDataDisableToCheckout() {
-
+        tvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_button_disabled);
+        tvSelectPaymentMethod.setTextColor(getResources().getColor(R.color.grey_500));
+        tvSelectPaymentMethod.setOnClickListener(null);
     }
 
     @Override

@@ -11,8 +11,9 @@ import android.view.ViewGroup;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
+import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentCostViewHolder;
 import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentItemMultipleAddressViewHolder;
@@ -199,10 +200,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void checkDataForCheckout() {
         boolean availableCheckout = true;
-        for (Object object : shipmentDataList) {
-            if (object instanceof CartSellerItemModel) {
-                if (((CartSellerItemModel) object).getSelectedShipmentDetailData() == null ||
-                        ((CartSellerItemModel) object).isError()) {
+        for (ShipmentData shipmentData : shipmentDataList) {
+            if (shipmentData instanceof ShipmentItem) {
+                if (((ShipmentItem) shipmentData).getSelectedShipmentDetailData() == null ||
+                        ((ShipmentItem) shipmentData).isError()) {
                     availableCheckout = false;
                 }
             }
@@ -213,4 +214,79 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             shipmentAdapterActionListener.onCartDataDisableToCheckout();
         }
     }
+
+    public void setSelecteCourier(int position, ShipmentDetailData shipmentDetailData) {
+        ShipmentData currentShipmentData = shipmentDataList.get(position);
+        if (currentShipmentData instanceof ShipmentItem) {
+            ((ShipmentItem) currentShipmentData).setSelectedShipmentDetailData(shipmentDetailData);
+            updateCost();
+            checkDataForCheckout();
+        }
+        notifyItemChanged(position);
+        notifyItemChanged(shipmentDataList.size() - 1);
+    }
+
+    private void updateCost() {
+        double totalWeight = 0;
+        double totalPrice = 0;
+        double additionalFee = 0;
+        double totalItemPrice = 0;
+        int totalItem = 0;
+        double shippingFee = 0;
+        double insuranceFee = 0;
+        for (ShipmentData shipmentData : shipmentDataList) {
+            if (shipmentData instanceof ShipmentItem) {
+                if (((ShipmentItem) shipmentData).getSelectedShipmentDetailData() != null) {
+                    if (shipmentData instanceof ShipmentSingleAddressItem) {
+                        ShipmentSingleAddressItem shipmentSingleAddressItem =
+                                (ShipmentSingleAddressItem) shipmentData;
+                        List<CartItemModel> cartItemModels = shipmentSingleAddressItem.getCartItemModels();
+                        for (CartItemModel cartItemModel : cartItemModels) {
+                            totalWeight += (cartItemModel.getWeight() * cartItemModel.getQuantity());
+                            totalItem += cartItemModel.getQuantity();
+                            totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
+                        }
+                        shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
+                                .getSelectedCourier().getDeliveryPrice();
+                        if (shipmentSingleAddressItem.getSelectedShipmentDetailData().getUseInsurance()) {
+                            insuranceFee = shipmentSingleAddressItem.getSelectedShipmentDetailData()
+                                    .getSelectedCourier().getInsurancePrice();
+                        }
+                        additionalFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
+                                .getSelectedCourier().getAdditionalPrice();
+                        // Additional fee is included in shipping fee
+                        shippingFee += additionalFee;
+                        totalPrice += (totalItemPrice + shippingFee + insuranceFee);
+                    } else {
+                        ShipmentMultipleAddressItem shipmentMultipleAddressItem =
+                                (ShipmentMultipleAddressItem) shipmentData;
+                        totalWeight += (shipmentMultipleAddressItem.getMultipleAddressItemData().getProductRawWeight() *
+                                Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty()));
+                        totalItem += Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty());
+                        shippingFee += shipmentMultipleAddressItem.getSelectedShipmentDetailData()
+                                .getSelectedCourier().getDeliveryPrice();
+                        if (shipmentMultipleAddressItem.getSelectedShipmentDetailData().getUseInsurance()) {
+                            insuranceFee += shipmentMultipleAddressItem.getSelectedShipmentDetailData()
+                                    .getSelectedCourier().getInsurancePrice();
+                        }
+                        totalItemPrice += (shipmentMultipleAddressItem.getProductPriceNumber() *
+                                Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty()));
+                        additionalFee += shipmentMultipleAddressItem.getSelectedShipmentDetailData()
+                                .getSelectedCourier().getAdditionalPrice();
+                        // Additional fee is included in shipping fee
+                        shippingFee += additionalFee;
+                        totalPrice += (totalItemPrice + shippingFee + insuranceFee);
+                    }
+                }
+            }
+        }
+        shipmentCostModel.setTotalWeight(totalWeight);
+        shipmentCostModel.setTotalPrice(totalPrice);
+        shipmentCostModel.setAdditionalFee(additionalFee);
+        shipmentCostModel.setTotalItemPrice(totalItemPrice);
+        shipmentCostModel.setTotalItem(totalItem);
+        shipmentCostModel.setShippingFee(shippingFee);
+        shipmentCostModel.setInsuranceFee(insuranceFee);
+    }
+
 }

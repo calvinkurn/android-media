@@ -33,6 +33,9 @@ public abstract class ShipmentItem implements ShipmentData {
     private String unixTime;
     private Store store;
 
+    private boolean detailSubtotalViewStateExpanded;
+    private boolean allItemViewStateExpanded;
+
     public ShipmentItem() {
     }
 
@@ -170,5 +173,21 @@ public abstract class ShipmentItem implements ShipmentData {
 
     public void setWeightUnit(int weightUnit) {
         this.weightUnit = weightUnit;
+    }
+
+    public boolean isDetailSubtotalViewStateExpanded() {
+        return detailSubtotalViewStateExpanded;
+    }
+
+    public void setDetailSubtotalViewStateExpanded(boolean detailSubtotalViewStateExpanded) {
+        this.detailSubtotalViewStateExpanded = detailSubtotalViewStateExpanded;
+    }
+
+    public boolean isAllItemViewStateExpanded() {
+        return allItemViewStateExpanded;
+    }
+
+    public void setAllItemViewStateExpanded(boolean allItemViewStateExpanded) {
+        this.allItemViewStateExpanded = allItemViewStateExpanded;
     }
 }

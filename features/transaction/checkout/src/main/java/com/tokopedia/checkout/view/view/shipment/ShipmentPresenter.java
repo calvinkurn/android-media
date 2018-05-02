@@ -61,8 +61,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void detachView() {
         super.detachView();
+        checkoutUseCase.unsubscribe();
+        compositeSubscription.unsubscribe();
+        getThanksToppayUseCase.unsubscribe();
+        checkPromoCodeCartShipmentUseCase.unsubscribe();
     }
 
+    @Override
     public void processCheckShipmentPrepareCheckout() {
         getView().showLoading();
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
