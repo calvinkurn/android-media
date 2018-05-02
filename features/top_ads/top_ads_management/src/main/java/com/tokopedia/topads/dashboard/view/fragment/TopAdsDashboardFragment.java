@@ -29,6 +29,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetCustomContentView;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.design.component.FloatingButton;
+import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
@@ -681,23 +682,31 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     private void showMoreBottomSheetDialog() {
-        final BottomSheetCustomContentView bottomSheetView = new BottomSheetCustomContentView(getActivity());
-        View dashboardMenuView = getLayoutInflater().inflate(R.layout.partial_topads_dashboard_menu, null);
-
-        dashboardMenuView.findViewById(R.id.topads_menu_help).setOnClickListener(new View.OnClickListener() {
+        final Menus menus = new Menus(getActivity());
+        menus.setItemMenuList(R.array.top_ads_dashboard_menu_more);
+        menus.setActionText(getString(R.string.close));
+        menus.setOnActionClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getScrollView().scrollTo(0,0);
-                startShowCase();
-                bottomSheetView.dismiss();
+                menus.dismiss();
             }
         });
 
-        bottomSheetView.setCustomContentLayout(dashboardMenuView);
-        bottomSheetView.renderBottomSheet(new BottomSheetCustomContentView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .build());
-        bottomSheetView.show();
+        menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
+            @Override
+            public void onClick(Menus.ItemMenus itemMenus, int pos) {
+                switch (pos){
+                    case 0: {
+                        getScrollView().scrollTo(0,0);
+                        startShowCase();
+                        menus.dismiss();
+                    }
+                    default: break;
+                }
+            }
+        });
+
+        menus.show();
     }
 
     public interface Callback{

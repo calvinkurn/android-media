@@ -120,4 +120,9 @@
         <!--<item>@drawable/ic_top_ads_headline</item>-->
         <item>@drawable/ic_top_ads_keyword</item>
     </integer-array>
+
+    <string-array name="top_ads_dashboard_menu_more">
+        <item>@string/topads_menu_help</item>
+        <item>@string/topads_menu_seller_centre</item>
+    </string-array>
 </resources>
