@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.dashboard.data.model.data.Summary;
 
 /**
  * Created by zulfikarrahman on 1/6/17.
@@ -23,8 +24,13 @@ public class TopAdsStatisticConversionFragment extends TopAdsDashboardStatisticF
     }
 
     @Override
+    protected String getTotalSummary(Summary summary) {
+        return summary.getConversionSumFmt();
+    }
+
+    @Override
     protected String getTitleGraph() {
-        return getString(R.string.title_top_ads_statistic_graph_convertion);
+        return getString(R.string.label_top_ads_conversion);
     }
 
     @Override

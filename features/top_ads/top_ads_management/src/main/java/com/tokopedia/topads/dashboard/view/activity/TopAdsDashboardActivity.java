@@ -146,12 +146,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsDashboardActivity.class.getName();
-        if (ShowCasePreference.hasShown(this, showCaseTag)) {
-            return;
-        }
-        if (showCaseDialog != null) {
-            return;
-        }
+
         TopAdsDashboardFragment fragment = (TopAdsDashboardFragment) getSupportFragmentManager().findFragmentByTag(TAG);
         if (fragment == null){
             return;

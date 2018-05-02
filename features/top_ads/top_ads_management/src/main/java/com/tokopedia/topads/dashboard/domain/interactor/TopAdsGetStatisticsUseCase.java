@@ -5,6 +5,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsStatisticsType;
 import com.tokopedia.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
 import com.tokopedia.topads.dashboard.domain.repository.TopAdsDashboardRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -22,7 +23,7 @@ import rx.Observable;
  * Created by hadi.putra on 25/04/18.
  */
 
-public class TopAdsGetStatisticsUseCase extends UseCase<List<Cell>> {
+public class TopAdsGetStatisticsUseCase extends UseCase<DataStatistic> {
 
     private final TopAdsDashboardRepository topAdsDashboardRepository;
 
@@ -32,7 +33,7 @@ public class TopAdsGetStatisticsUseCase extends UseCase<List<Cell>> {
     }
 
     @Override
-    public Observable<List<Cell>> createObservable(RequestParams requestParams) {
+    public Observable<DataStatistic> createObservable(RequestParams requestParams) {
         return topAdsDashboardRepository.getStatistics(requestParams);
     }
 

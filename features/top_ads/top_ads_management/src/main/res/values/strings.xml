@@ -11,4 +11,8 @@
 
     <string name="topads_dashboard_all_promo_menu">Semua Promo</string>
     <string name="label_add_promo">Tambah Promo</string>
+    <string name="topads_dashboard_empty_usage_desc">TopAds membuat promo Anda muncul di tempat-tempat strategis dan mudah ditemukan calon pembeli.</string>
+    <string name="action_more">More</string>
+    <string name="topads_menu_help">Step Bantuan</string>
+    <string name="topads_menu_seller_centre">Seller Center</string>
 </resources>

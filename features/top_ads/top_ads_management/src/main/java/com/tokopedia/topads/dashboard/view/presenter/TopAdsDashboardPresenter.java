@@ -1,7 +1,5 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
-import android.util.Log;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
@@ -12,6 +10,7 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositUseCase
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsStatisticsType;
 import com.tokopedia.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
 import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetStatisticsUseCase;
@@ -179,9 +178,8 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
     }
 
     public void getTopAdsStatistic(Date startDate, Date endDate, @TopAdsStatisticsType int selectedStatisticType) {
-        Log.e(getClass().getSimpleName(), "presenter called statistics");
         topAdsGetStatisticsUseCase.execute(TopAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
-                selectedStatisticType, userSession.getShopId()), new Subscriber<List<Cell>>() {
+                selectedStatisticType, userSession.getShopId()), new Subscriber<DataStatistic>() {
             @Override
             public void onCompleted() {
 
@@ -195,9 +193,9 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
             }
 
             @Override
-            public void onNext(List<Cell> cells) {
+            public void onNext(DataStatistic dataStatistic) {
                 if (isViewAttached()){
-                    getView().onSuccesGetStatisticsInfo(cells);
+                    getView().onSuccesGetStatisticsInfo(dataStatistic);
                 }
             }
         });

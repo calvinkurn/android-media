@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/top_ads_dashboard_margin_bottom_space"
+    android:layout_marginTop="@dimen/top_ads_dashboard_margin_cards"
+    android:background="@drawable/border_background_view_topads"
+    android:divider="@drawable/bg_line_separator"
+    android:showDividers="middle">
+
+    <TextView
+        android:id="@+id/topads_menu_help"
+        style="@style/LabelLayout"
+        android:text="@string/topads_menu_help"/>
+
+    <TextView
+        android:id="@+id/topads_menu_seller_center"
+        style="@style/LabelLayout"
+        android:text="@string/topads_menu_seller_centre"/>
+
+</LinearLayout>

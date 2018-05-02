@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.topads.common.data.model.DataDeposit;
 import com.tokopedia.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
 import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
 
 import java.util.Date;
@@ -28,5 +29,5 @@ public interface TopAdsDashboardView extends CustomerView {
 
     void onErrorGetStatisticsInfo(Throwable throwable);
 
-    void onSuccesGetStatisticsInfo(List<Cell> cells);
+    void onSuccesGetStatisticsInfo(DataStatistic dataStatistic);
 }

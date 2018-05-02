@@ -24,6 +24,8 @@ import com.db.williamchart.view.LineChartView;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
+import com.tokopedia.topads.dashboard.data.model.data.Summary;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,9 +37,11 @@ import java.util.List;
 
 public abstract class TopAdsDashboardStatisticFragment extends TkpdBaseV4Fragment {
     TextView contentTitleGraph;
+    TextView contentCountSummaryGraph;
     LineChartView contentGraph;
     private TopAdsBaseWilliamChartConfig topAdsBaseWilliamChartConfig;
     private BaseWilliamChartConfig baseWilliamChartConfig;
+    private Summary summary;
     private List<Cell> cells;
     private String[] mLabels;
     private ArrayList<TooltipModel> mLabelDisplay = new ArrayList<>();
@@ -58,6 +62,7 @@ public abstract class TopAdsDashboardStatisticFragment extends TkpdBaseV4Fragmen
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         contentTitleGraph = (TextView) view.findViewById(R.id.content_title_graph);
         contentGraph = (LineChartView) view.findViewById(R.id.content_graph);
+        contentCountSummaryGraph = (TextView) view.findViewById(R.id.content_count_summary_graph);
         contentTitleGraph.setText(getTitleGraph());
     }
 
@@ -132,12 +137,18 @@ public abstract class TopAdsDashboardStatisticFragment extends TkpdBaseV4Fragmen
         return indexToDisplay;
     }
 
-    public void updateDataCell(List<Cell> cells) {
-        this.cells = cells;
+    public void updateDataStatistic(DataStatistic dataStatistic) {
+        this.summary = dataStatistic.getSummary();
+        this.cells = dataStatistic.getCells();
+        updateTotalSummary();
         mLabels = generateLabels();
         mValues = generateValues();
         mLabelDisplay = generateLabelDisplay();
         generateLineChart();
+    }
+
+    private void updateTotalSummary() {
+        contentCountSummaryGraph.setText(getTotalSummary(summary));
     }
 
     protected String[] generateLabels() {
@@ -194,4 +205,6 @@ public abstract class TopAdsDashboardStatisticFragment extends TkpdBaseV4Fragmen
     protected abstract String getValueDisplay(Cell cell);
 
     protected abstract float getValueData(Cell cell);
+
+    protected abstract String getTotalSummary(Summary summary);
 }
