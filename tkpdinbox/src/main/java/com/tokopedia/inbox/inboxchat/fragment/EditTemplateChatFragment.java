@@ -280,4 +280,9 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
 }
