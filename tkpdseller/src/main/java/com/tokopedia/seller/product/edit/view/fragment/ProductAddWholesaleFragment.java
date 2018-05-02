@@ -30,7 +30,8 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
     private static final int MAX_WHOLESALE = 5;
     private WholesaleAdapter wholesaleAdapter;
     private TextView textViewAddWholesale, textMainPrice;
-    ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList;
+    private ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList;
+    private double productPrice;
 
     public static ProductAddWholesaleFragment newInstance() {
         Bundle args = new Bundle();
@@ -55,6 +56,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         Intent activityIntent = getActivity().getIntent();
 
         productWholesaleViewModelList = activityIntent.getParcelableArrayListExtra(ProductAddWholesaleActivity.EXTRA_PRODUCT_WHOLESALE_LIST);
+        productPrice = activityIntent.getDoubleExtra(ProductAddWholesaleActivity.EXTRA_PRODUCT_MAIN_PRICE, 0);
     }
 
     @Nullable
@@ -78,13 +80,14 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
             }
         });
 
-        renderData(productWholesaleViewModelList);
+        renderData(productWholesaleViewModelList, productPrice);
 
         return root;
     }
 
-    public void renderData(ArrayList<ProductWholesaleViewModel> productWholesaleViewModelArrayList){
+    public void renderData(ArrayList<ProductWholesaleViewModel> productWholesaleViewModelArrayList, double productPrice){
         setWholesalePrice(productWholesaleViewModelArrayList);
+        textMainPrice.setText("Rp " + productPrice);
     }
 
     @Override

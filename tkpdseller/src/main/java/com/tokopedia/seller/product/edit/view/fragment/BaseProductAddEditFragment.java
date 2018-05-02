@@ -535,7 +535,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     public void startProductAddWholesaleActivity() {
         ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList = (ArrayList<ProductWholesaleViewModel>) currentProductViewModel.getProductWholesale();
         Intent intent = ProductAddWholesaleActivity.getIntent(getActivity(),
-                productWholesaleViewModelList);
+                productWholesaleViewModelList,
+                currentProductViewModel.getProductPrice());
         startActivityForResult(intent, ProductPriceViewHolder.REQUEST_CODE_GET_PRODUCT_WHOLESALE);
     }
 

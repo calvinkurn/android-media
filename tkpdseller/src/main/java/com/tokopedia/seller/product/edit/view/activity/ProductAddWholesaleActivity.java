@@ -23,15 +23,17 @@ import java.util.ArrayList;
 public class ProductAddWholesaleActivity extends BaseSimpleActivity {
 
     public static final String EXTRA_PRODUCT_WHOLESALE_LIST = "EXTRA_PRODUCT_WHOLESALE_LIST";
+    public static final String EXTRA_PRODUCT_MAIN_PRICE = "EXTRA_PRODUCT_MAIN_PRICE";
 
     @Override
     protected Fragment getNewFragment() {
         return ProductAddWholesaleFragment.newInstance();
     }
 
-    public static Intent getIntent(Context context, ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList) {
+    public static Intent getIntent(Context context, ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList, double productPrice) {
         Intent intent = new Intent(context, ProductAddWholesaleActivity.class);
         intent.putExtra(EXTRA_PRODUCT_WHOLESALE_LIST, productWholesaleViewModelList);
+        intent.putExtra(EXTRA_PRODUCT_MAIN_PRICE, productPrice);
         return intent;
     }
 
