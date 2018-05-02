@@ -93,7 +93,7 @@ public class PaymentProcedureWebViewFragment extends TkpdBaseV4Fragment {
     }
 
     private boolean overrideUrl(String url) {
-        if(((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url)) {
+        if (getActivity() != null && ((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url)) {
             ((TkpdCoreRouter) getActivity().getApplicationContext()).actionApplinkFromActivity(getActivity(), url);
             return true;
         }

@@ -504,6 +504,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         .getContactUsIntent(getContext());
                 intent.putExtra(ContactUsConstant.PARAM_URL,
                         URLGenerator.generateURLContactUs(url, getContext()));
+                intent.putExtra(ContactUsConstant.IS_CHAT_BOT, true);
                 startActivity(intent);
             } else if(isChatBot && isNeedAuthToken) {
                 startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),
@@ -1449,5 +1450,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public boolean shouldHandleUrlManually(String url) {
         String urlManualHandlingList[] = {CONTACT_US_URL_BASE_DOMAIN};
         return (Arrays.asList(urlManualHandlingList).contains(url) || isChatBot);
+    }
+
+    @Override
+    public void showSnackbarError(String string) {
+        NetworkErrorHelper.showSnackbar(getActivity(), string);
     }
 }

@@ -1,15 +1,7 @@
 package com.tokopedia.checkout.view.di.module;
 
-import com.tokopedia.checkout.data.repository.ICartRepository;
-import com.tokopedia.checkout.domain.mapper.CartMapper;
-import com.tokopedia.checkout.domain.mapper.ICartMapper;
-import com.tokopedia.checkout.domain.mapper.IMapperUtil;
-import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
-import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
-import com.tokopedia.checkout.domain.mapper.VoucherCouponMapper;
-import com.tokopedia.checkout.domain.usecase.CartListInteractor;
-import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
+import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.view.di.scope.MultipleAddressShipmentScope;
 import com.tokopedia.checkout.view.view.shipmentform.IMultipleAddressShipmentPresenter;
 import com.tokopedia.checkout.view.view.shipmentform.IMultipleAddressShipmentView;
@@ -23,7 +15,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by kris on 2/5/18. Tokopedia
  */
 
-@Module(includes = {DataModule.class, UtilModule.class})
+@Module
 public class MultipleAddressShipmentModule {
 
     private IMultipleAddressShipmentView view;
@@ -38,38 +30,13 @@ public class MultipleAddressShipmentModule {
         return new CompositeSubscription();
     }
 
-    @Provides
-    @MultipleAddressShipmentScope
-    ICartMapper provideICartMapper(IMapperUtil mapperUtil) {
-        return new CartMapper(mapperUtil);
-    }
-
-    @Provides
-    @MultipleAddressShipmentScope
-    IShipmentMapper provideIShipmentMapper(IMapperUtil mapperUtil) {
-        return new ShipmentMapper(mapperUtil);
-    }
-
-    @Provides
-    @MultipleAddressShipmentScope
-    IVoucherCouponMapper provideIVoucherCouponMapper(IMapperUtil mapperUtil) {
-        return new VoucherCouponMapper(mapperUtil);
-    }
-
-    @Provides
-    @MultipleAddressShipmentScope
-    ICartListInteractor provideICartListInteractor(CompositeSubscription compositeSubscription,
-                                                   ICartRepository cartRepository,
-                                                   ICartMapper cartMapper,
-                                                   IShipmentMapper shipmentMapper,
-                                                   IVoucherCouponMapper voucherCouponMapper) {
-        return new CartListInteractor(compositeSubscription, cartRepository, cartMapper, shipmentMapper, voucherCouponMapper);
-    }
-
     @MultipleAddressShipmentScope
     @Provides
-    IMultipleAddressShipmentPresenter providePresenter(ICartListInteractor cartListInteractor) {
-        return new MultipleAddressShipmentPresenter(view, cartListInteractor);
+    IMultipleAddressShipmentPresenter providePresenter(CompositeSubscription compositeSubscription,
+                                                       GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
+                                                       CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase) {
+        return new MultipleAddressShipmentPresenter(view, compositeSubscription,
+                getShipmentAddressFormUseCase, checkPromoCodeCartListUseCase);
     }
 
 }

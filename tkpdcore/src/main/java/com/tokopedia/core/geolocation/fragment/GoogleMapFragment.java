@@ -474,5 +474,8 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            presenter.onMapReady();
+        }
     }
 }

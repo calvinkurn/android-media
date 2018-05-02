@@ -34,6 +34,7 @@ import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.common.view.FullDividerItemDecoration;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
@@ -290,8 +291,10 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updatePassengerList(List<FlightDetailPassenger> flightDetailPassengers) {
-        if (flightBookingReviewPassengerAdapter.getDataSize() < 2) {
+        if (flightDetailPassengers.size() < 2) {
             removePassengerRecyclerDivider();
+        } else {
+            addPassengerRecyclerDivider();
         }
 
         flightBookingReviewPassengerAdapter.addElement(flightDetailPassengers);
@@ -319,6 +322,10 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     private void removePassengerRecyclerDivider() {
         recyclerViewPassenger.clearItemDecoration();
+    }
+
+    private void addPassengerRecyclerDivider() {
+        recyclerViewPassenger.addItemDecoration(new FullDividerItemDecoration(recyclerViewPassenger.getContext()));
     }
 
     private void togglePassengerInfo() {

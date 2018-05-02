@@ -1,11 +1,8 @@
 package com.tokopedia.checkout.view.view.shipmentform;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
+import android.support.annotation.NonNull;
+
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.checkout.data.entity.request.DataCheckoutRequest;
 import com.tokopedia.checkout.data.entity.request.DropshipDataCheckoutRequest;
@@ -22,10 +19,16 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.common.constant.PickupPointParamConstant;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +37,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by kris on 2/5/18. Tokopedia
@@ -42,13 +48,19 @@ import rx.Subscriber;
 public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmentPresenter {
 
     private final IMultipleAddressShipmentView view;
-    private final ICartListInteractor cartListInteractor;
+    private final CompositeSubscription compositeSubscription;
+    private final GetShipmentAddressFormUseCase getShipmentAddressFormUseCase;
+    private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
 
     @Inject
     public MultipleAddressShipmentPresenter(IMultipleAddressShipmentView view,
-                                            ICartListInteractor cartListInteractor) {
+                                            CompositeSubscription compositeSubscription,
+                                            GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
+                                            CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase) {
         this.view = view;
-        this.cartListInteractor = cartListInteractor;
+        this.compositeSubscription = compositeSubscription;
+        this.getShipmentAddressFormUseCase = getShipmentAddressFormUseCase;
+        this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
     }
 
     @Override
@@ -305,37 +317,48 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
 
     @Override
     public void processCheckShipmentFormPrepareCheckout() {
-        cartListInteractor.getShipmentForm(new Subscriber<CartShipmentAddressFormData>() {
-            @Override
-            public void onCompleted() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
+                view.getGeneratedAuthParamNetwork(null));
+        compositeSubscription.add(
+                getShipmentAddressFormUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(
+                                new Subscriber<CartShipmentAddressFormData>() {
+                                    @Override
+                                    public void onCompleted() {
 
-            }
+                                    }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        e.printStackTrace();
+                                    }
 
-            @Override
-            public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-                boolean isEnableCheckout = true;
-                for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
-                    if (groupAddress.isError() || groupAddress.isWarning())
-                        isEnableCheckout = false;
-                    for (GroupShop groupShop : groupAddress.getGroupShop()) {
-                        if (groupShop.isError() || groupShop.isWarning())
-                            isEnableCheckout = false;
-                    }
-                }
-                if (isEnableCheckout) {
-                    view.renderCheckShipmentPrepareCheckoutSuccess();
-                } else {
-                    view.renderErrorDataHasChangedCheckShipmentPrepareCheckout(
-                            cartShipmentAddressFormData
-                    );
-                }
-            }
-        }, AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), new TKPDMapParam<String, String>()));
+                                    @Override
+                                    public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
+                                        boolean isEnableCheckout = true;
+                                        for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
+                                            if (groupAddress.isError() || groupAddress.isWarning())
+                                                isEnableCheckout = false;
+                                            for (GroupShop groupShop : groupAddress.getGroupShop()) {
+                                                if (groupShop.isError() || groupShop.isWarning())
+                                                    isEnableCheckout = false;
+                                            }
+                                        }
+                                        if (isEnableCheckout) {
+                                            view.renderCheckShipmentPrepareCheckoutSuccess();
+                                        } else {
+                                            view.renderErrorDataHasChangedCheckShipmentPrepareCheckout(
+                                                    cartShipmentAddressFormData
+                                            );
+                                        }
+                                    }
+                                }
+                        )
+        );
     }
 
     private int switchValue(boolean isTrue) {
@@ -349,7 +372,25 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("promo_code", promoCode);
         param.put("lang", "id");
-        cartListInteractor.checkPromoCodeCartList(new Subscriber<PromoCodeCartListData>() {
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
+                view.getGeneratedAuthParamNetwork(param));
+        compositeSubscription.add(
+                checkPromoCodeCartListUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(
+                                getSubscriberCheckPromoCodeFromSuggested()
+                        )
+        );
+
+    }
+
+    @NonNull
+    private Subscriber<CheckPromoCodeCartListResult> getSubscriberCheckPromoCodeFromSuggested() {
+        return new Subscriber<CheckPromoCodeCartListResult>() {
             @Override
             public void onCompleted() {
 
@@ -362,15 +403,15 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
             }
 
             @Override
-            public void onNext(PromoCodeCartListData promoCodeCartListData) {
+            public void onNext(CheckPromoCodeCartListResult checkPromoCodeCartListResult) {
                 view.hideLoading();
-                if (!promoCodeCartListData.isError()) {
-                    view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
+                if (!checkPromoCodeCartListResult.isError()) {
+                    view.renderCheckPromoCodeFromSuggestedPromoSuccess(checkPromoCodeCartListResult);
                 } else {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(promoCodeCartListData.getErrorMessage());
+                    view.renderErrorCheckPromoCodeFromSuggestedPromo(checkPromoCodeCartListResult.getErrorMessage());
                 }
             }
-        }, view.getGeneratedAuthParamNetwork(param));
+        };
     }
 
     @Override

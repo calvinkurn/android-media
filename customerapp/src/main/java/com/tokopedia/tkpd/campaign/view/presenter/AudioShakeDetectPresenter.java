@@ -33,6 +33,7 @@ import rx.Subscriber;
 
 import static com.tokopedia.tkpd.campaign.domain.audio.PostAudioDataUseCase.AUDIO_PATH;
 import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.IS_AUDIO;
+import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.SCREEN_NAME;
 
 /**
  * Created by sandeepgoyal on 21/02/18.
@@ -64,7 +65,7 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
     WavRecorder recorder;
 
     private void startRecording() throws IOException {
-        recorder = new WavRecorder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdcard/campaign.wav");
+        recorder = new WavRecorder();
         recorder.startRecording(this);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -78,9 +79,11 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
 
     @Override
     public void onRecordComplete() {
+        getView().showErrorNetwork("Record Complete");
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(IS_AUDIO, "true");
-        requestParams.putString(AUDIO_PATH, Environment.getExternalStorageDirectory().getAbsolutePath()+"/sdcard/campaign.wav");
+        requestParams.putString(SCREEN_NAME, ShakeDetectManager.sTopActivity);
+        requestParams.putString(AUDIO_PATH, WavRecorder.getFilePath());
         postShakeDetectUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
             public void onCompleted() {

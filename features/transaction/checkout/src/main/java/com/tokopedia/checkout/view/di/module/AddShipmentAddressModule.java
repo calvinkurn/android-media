@@ -15,17 +15,18 @@ import dagger.Provides;
 @Module
 public class AddShipmentAddressModule {
 
-    @Provides
-    @AddShipmentAddressScope
-    IAddShipmentAddressPresenter providePresenter() {
-        return new AddShipmentAddressPresenter(
-                provideAddressEditableModel());
-    }
 
     @Provides
     @AddShipmentAddressScope
     RecipientAddressModel provideAddressEditableModel() {
         return new RecipientAddressModel();
+    }
+
+
+    @Provides
+    @AddShipmentAddressScope
+    IAddShipmentAddressPresenter providePresenter(@AddShipmentAddressScope RecipientAddressModel recipientAddressModel) {
+        return new AddShipmentAddressPresenter(recipientAddressModel);
     }
 
 }

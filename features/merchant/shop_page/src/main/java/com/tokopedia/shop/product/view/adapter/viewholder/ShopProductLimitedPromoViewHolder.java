@@ -40,6 +40,7 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
     private View loadingLayout;
     private ShopPagePromoWebView shopPagePromoWebView;
     private boolean binded;
+    private boolean isLogin;
 
     public ShopProductLimitedPromoViewHolder(View itemView, PromoViewHolderListener promoViewHolderListener,
                                              ShopPagePromoWebView.Listener promoWebViewListener) {
@@ -81,16 +82,19 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
 
     @Override
     public void bind(ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel) {
-        if (binded) {
+        if (binded && isLogin == shopProductLimitedPromoViewModel.isLogin()) {
             return;
         }
         if (shopProductLimitedPromoViewModel.isLogin()) {
+            clearCache(shopPagePromoWebView);
             shopPagePromoWebView.loadAuthUrl(shopProductLimitedPromoViewModel.getUrl(), shopProductLimitedPromoViewModel.getUserId());
         } else {
+            clearCache(shopPagePromoWebView);
             shopPagePromoWebView.loadUrl(shopProductLimitedPromoViewModel.getUrl());
         }
         shopProductLimitedPromoViewModel.setShopProductUserVisibleHintListener(this);
         binded = true;
+        isLogin = shopProductLimitedPromoViewModel.isLogin();
     }
 
     private void showLoading() {

@@ -64,6 +64,13 @@
             android:name="NOTIFICATION_LARGE_ICON"
             android:value="@drawable/qc_launcher"
             tools:replace="android:value"/>
+        <meta-data
+            android:name="HANSEL_APP_ID"
+            android:value="JM8LWF8S5B951JQOAZAFRNX14"/>
+        <meta-data
+            android:name="HANSEL_APP_KEY"
+            android:value="8CDH74MC9EZLPFIHNNJPT39ERKS5BODETYX2LBFQ83ECSV86WY"/>
+
 
         <activity
             android:name=".ConsumerSplashScreen"
@@ -270,6 +277,11 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/DialogTheme"/>
+
+        <activity
+            android:name=".campaign.view.activity.ShakeErrorCampaignActivity"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".flight.presentation.FlightPhoneVerificationActivity"

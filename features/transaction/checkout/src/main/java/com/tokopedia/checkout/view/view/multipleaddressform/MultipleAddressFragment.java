@@ -7,6 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
@@ -14,6 +17,7 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.view.adapter.MultipleAddressAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
+import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerMultipleAddressComponent;
 import com.tokopedia.checkout.view.di.component.MultipleAddressComponent;
 import com.tokopedia.checkout.view.di.module.MultipleAddressModule;
@@ -32,11 +36,12 @@ import static com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddre
  */
 
 public class MultipleAddressFragment extends BaseCheckoutFragment
-        implements IMultipleAddressView,
-        MultipleAddressAdapter.MultipleAddressAdapterListener {
+        implements IMultipleAddressView, MultipleAddressAdapter.MultipleAddressAdapterListener {
 
     @Inject
     IMultipleAddressPresenter presenter;
+    @Inject
+    UserSession userSession;
 
     public static final int ADD_SHIPMENT_ADDRESS_REQUEST_CODE = 21;
     public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;
@@ -82,6 +87,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     protected void initInjector() {
         MultipleAddressComponent component = DaggerMultipleAddressComponent
                 .builder()
+                .cartComponent(getComponent(CartComponent.class))
                 .multipleAddressModule(new MultipleAddressModule(this)).build();
         component.inject(this);
     }
@@ -154,6 +160,15 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     public void successMakeShipmentData() {
         getActivity().setResult(RESULT_CODE_SUCCESS_SET_SHIPPING);
         getActivity().finish();
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> param) {
+        return param != null ? AuthUtil.generateParamsNetwork(
+                getActivity(), param, userSession.getUserId(), userSession.getDeviceId()
+        ) : AuthUtil.generateParamsNetwork(
+                getActivity(), userSession.getUserId(), userSession.getDeviceId()
+        );
     }
 
     @Override

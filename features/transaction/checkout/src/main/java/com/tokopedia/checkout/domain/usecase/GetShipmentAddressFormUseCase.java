@@ -1,0 +1,45 @@
+package com.tokopedia.checkout.domain.usecase;
+
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.checkout.data.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
+import com.tokopedia.checkout.data.repository.ICartRepository;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
+
+import rx.Observable;
+import rx.functions.Func1;
+
+/**
+ * @author anggaprasetiyo on 30/04/18.
+ */
+public class GetShipmentAddressFormUseCase extends UseCase<CartShipmentAddressFormData> {
+    public static final String PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS
+            = "PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS";
+
+    private final ICartRepository cartRepository;
+    private final IShipmentMapper shipmentMapper;
+
+    @Inject
+    public GetShipmentAddressFormUseCase(ICartRepository cartRepository, IShipmentMapper shipmentMapper) {
+        this.cartRepository = cartRepository;
+        this.shipmentMapper = shipmentMapper;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Observable<CartShipmentAddressFormData> createObservable(RequestParams requestParams) {
+        TKPDMapParam<String, String> param = (TKPDMapParam<String, String>)
+                requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS);
+        return cartRepository.getShipmentAddressForm(param)
+                .map(new Func1<ShipmentAddressFormDataResponse, CartShipmentAddressFormData>() {
+                    @Override
+                    public CartShipmentAddressFormData call(ShipmentAddressFormDataResponse shipmentAddressFormDataResponse) {
+                        return shipmentMapper.convertToShipmentAddressFormData(shipmentAddressFormDataResponse);
+                    }
+                });
+    }
+}

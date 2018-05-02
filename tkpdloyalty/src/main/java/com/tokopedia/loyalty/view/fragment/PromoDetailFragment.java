@@ -24,8 +24,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
-import com.tokopedia.loyalty.domain.entity.response.promo.GroupCode;
-import com.tokopedia.loyalty.domain.entity.response.promo.PromoCode;
 import com.tokopedia.loyalty.view.adapter.PromoDetailAdapter;
 import com.tokopedia.loyalty.view.data.PromoCodeViewModel;
 import com.tokopedia.loyalty.view.data.PromoData;
@@ -40,12 +38,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.subscriptions.CompositeSubscription;
+
 /**
  * @author Aghny A. Putra on 23/03/18
  */
 
-public class PromoDetailFragment extends BaseDaggerFragment
-        implements IPromoDetailView, RefreshHandler.OnRefreshHandlerListener {
+public class PromoDetailFragment extends BaseDaggerFragment implements
+        IPromoDetailView,
+        RefreshHandler.OnRefreshHandlerListener,
+        PromoDetailAdapter.OnAdapterActionListener {
 
     private static final String ARG_EXTRA_PROMO_FLAG = "flag";
     private static final String ARG_EXTRA_PROMO_DATA = "promo_data";
@@ -74,6 +76,8 @@ public class PromoDetailFragment extends BaseDaggerFragment
     @Inject PromoDetailPresenter promoDetailPresenter;
     @Inject PromoDetailAdapter promoDetailAdapter;
     @Inject PromoDataMapper promoDataMapper;
+    @Inject
+    CompositeSubscription compositeSubscription;
 
     @Override
     protected String getScreenName() {
@@ -150,15 +154,16 @@ public class PromoDetailFragment extends BaseDaggerFragment
         this.rvPromoDetailView.setLayoutManager(new LinearLayoutManager(getActivity()));
         this.rvPromoDetailView.setHasFixedSize(true);
 
-        this.promoDetailAdapter.setAdapterListener(getAdapterActionListener());
-
+        this.promoDetailAdapter.setAdapterListener(this);
         this.promoDetailPresenter.attachView(this);
+
         this.refreshHandler.startRefresh();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof PromoDetailFragment.OnFragmentInteractionListener) {
             this.actionListener = (PromoDetailFragment.OnFragmentInteractionListener) context;
         } else {
@@ -170,8 +175,13 @@ public class PromoDetailFragment extends BaseDaggerFragment
     @Override
     public void onDetach() {
         super.onDetach();
-        this.promoDetailPresenter.detachView();
         this.actionListener = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        this.compositeSubscription.unsubscribe();
     }
 
     @Override
@@ -216,65 +226,63 @@ public class PromoDetailFragment extends BaseDaggerFragment
         handleErrorEmptyState(message);
     }
 
-    private PromoDetailAdapter.OnAdapterActionListener getAdapterActionListener() {
-        return new PromoDetailAdapter.OnAdapterActionListener() {
-            @Override
-            public void onItemPromoShareClicked(PromoData promoData) {
-                promoDetailAnalytics.userSharePromo("");
-                actionListener.onSharePromo(promoData);
-            }
 
-            @Override
-            public void onItemPromoCodeCopyClipboardClicked(String promoName, String promoCode) {
-                promoDetailAnalytics.userClickCopyIcon(promoName);
-                String message = getString(R.string.voucher_code_copy_to_clipboard);
-
-                if (getView() != null) Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
-                else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-
-                ClipboardManager clipboard = (ClipboardManager)
-                        getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-
-                ClipData clip = ClipData.newPlainText("CLIP_DATA_LABEL_VOUCHER_PROMO", promoCode);
-
-                if (clipboard != null) clipboard.setPrimaryClip(clip);
-            }
-
-            @Override
-            public void onItemPromoCodeTooltipClicked() {
-                promoDetailAnalytics.userClickTooltip();
-
-                if (bottomSheetInfoPromoCode == null) {
-                    bottomSheetInfoPromoCode = new BottomSheetView(getActivity());
-
-                    bottomSheetInfoPromoCode.renderBottomSheet(new BottomSheetView.BottomSheetField
-                            .BottomSheetFieldBuilder()
-                            .setTitle(getString(R.string.bottom_sheet_title_promo_tooltips))
-                            .setBody(getString(R.string.bottom_sheet_body_promo_tooltips))
-                            .setImg(R.drawable.ic_promo)
-                            .build());
-
-                    bottomSheetInfoPromoCode.setBtnCloseOnClick(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            promoDetailAnalytics.userCloseTooltip();
-                            bottomSheetInfoPromoCode.dismiss();
-                        }
-                    });
-                }
-
-                bottomSheetInfoPromoCode.show();
-            }
-
-            @Override
-            public void onWebViewLinkClicked(String url) {
-                if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-                    TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
-                    tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), url);
-                }
-            }
-        };
+    @Override
+    public void onItemPromoShareClicked(PromoData promoData) {
+        this.promoDetailAnalytics.userSharePromo("");
+        this.actionListener.onSharePromo(promoData);
     }
+
+    @Override
+    public void onItemPromoCodeCopyClipboardClicked(String promoName, String promoCode) {
+        this.promoDetailAnalytics.userClickCopyIcon(promoName);
+        String message = getString(R.string.voucher_code_copy_to_clipboard);
+
+        if (getView() != null) Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+
+        ClipboardManager clipboard = (ClipboardManager)
+                getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+
+        ClipData clip = ClipData.newPlainText("CLIP_DATA_LABEL_VOUCHER_PROMO", promoCode);
+
+        if (clipboard != null) clipboard.setPrimaryClip(clip);
+    }
+
+    @Override
+    public void onItemPromoCodeTooltipClicked() {
+        this.promoDetailAnalytics.userClickTooltip();
+
+        if (this.bottomSheetInfoPromoCode == null) {
+            this.bottomSheetInfoPromoCode = new BottomSheetView(getActivity());
+
+            this.bottomSheetInfoPromoCode.renderBottomSheet(new BottomSheetView.BottomSheetField
+                    .BottomSheetFieldBuilder()
+                    .setTitle(getString(R.string.bottom_sheet_title_promo_tooltips))
+                    .setBody(getString(R.string.bottom_sheet_body_promo_tooltips))
+                    .setImg(R.drawable.ic_promo)
+                    .build());
+
+            this.bottomSheetInfoPromoCode.setBtnCloseOnClick(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    promoDetailAnalytics.userCloseTooltip();
+                    bottomSheetInfoPromoCode.dismiss();
+                }
+            });
+        }
+
+        this.bottomSheetInfoPromoCode.show();
+    }
+
+    @Override
+    public void onWebViewLinkClicked(String url) {
+        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+            TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
+            tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), url);
+        }
+    }
+
 
     private void setFragmentLayout(final PromoData promoData) {
         this.llPromoDetailBottomLayout.setVisibility(View.VISIBLE);

@@ -61,7 +61,9 @@ public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
     }
 
     private List<ShopEtalaseViewModel> mergeListOther(PagingListOther<EtalaseModel> pagingListOther) {
-        pagingListOther.getListOther().addAll(pagingListOther.getList());
+        if (pagingListOther.getList() != null && !pagingListOther.getList().isEmpty()) {
+            pagingListOther.getListOther().addAll(pagingListOther.getList());
+        }
         List<ShopEtalaseViewModel> shopEtalaseViewModels = new ArrayList<>();
         for (EtalaseModel etalaseModel : pagingListOther.getListOther()) {
             ShopEtalaseViewModel model = new ShopEtalaseViewModel();

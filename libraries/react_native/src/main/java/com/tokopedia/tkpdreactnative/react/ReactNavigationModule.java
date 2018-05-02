@@ -133,5 +133,4 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
             getCurrentActivity().finish();
         }
     }
-
 }

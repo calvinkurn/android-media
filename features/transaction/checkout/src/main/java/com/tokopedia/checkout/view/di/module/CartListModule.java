@@ -3,15 +3,14 @@ package com.tokopedia.checkout.view.di.module;
 import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.checkout.data.repository.ICartRepository;
-import com.tokopedia.checkout.domain.mapper.CartMapper;
-import com.tokopedia.checkout.domain.mapper.ICartMapper;
-import com.tokopedia.checkout.domain.mapper.IMapperUtil;
-import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
-import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
-import com.tokopedia.checkout.domain.mapper.VoucherCouponMapper;
-import com.tokopedia.checkout.domain.usecase.CartListInteractor;
-import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
+import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
+import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
+import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
+import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
 import com.tokopedia.checkout.view.view.cartlist.CartFragment;
@@ -28,7 +27,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-@Module(includes = {DataModule.class, ConverterDataModule.class, UtilModule.class})
+@Module(includes = {ConverterDataModule.class})
 public class CartListModule {
 
     private final ICartListView cartListView;
@@ -47,37 +46,22 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    ICartMapper provideICartMapper(IMapperUtil mapperUtil) {
-        return new CartMapper(mapperUtil);
-    }
-
-    @Provides
-    @CartListScope
-    IShipmentMapper provideIShipmentMapper(IMapperUtil mapperUtil) {
-        return new ShipmentMapper(mapperUtil);
-    }
-
-    @Provides
-    @CartListScope
-    IVoucherCouponMapper provideIVoucherCouponMapper(IMapperUtil mapperUtil) {
-        return new VoucherCouponMapper(mapperUtil);
-    }
-
-    @Provides
-    @CartListScope
-    ICartListInteractor provideICartListInteractor(CompositeSubscription compositeSubscription,
-                                                   ICartRepository cartRepository,
-                                                   ICartMapper cartMapper,
-                                                   IShipmentMapper shipmentMapper,
-                                                   IVoucherCouponMapper voucherCouponMapper) {
-        return new CartListInteractor(compositeSubscription, cartRepository, cartMapper, shipmentMapper, voucherCouponMapper);
-    }
-
-    @Provides
-    @CartListScope
     ICartListPresenter provideICartListPresenter(ICartRepository cartRepository,
-                                                 ICartListInteractor cartListInteractor) {
-        return new CartListPresenter(cartListView, cartListInteractor);
+                                                 GetCartListUseCase getCartListUseCase,
+                                                 DeleteCartUseCase deleteCartUseCase,
+                                                 DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
+                                                 UpdateCartGetShipmentAddressFormUseCase updateCartGetShipmentAddressFormUseCase,
+                                                 GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
+                                                 ResetCartGetCartListUseCase resetCartGetCartListUseCase,
+                                                 ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase,
+                                                 CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
+                                                 CompositeSubscription compositeSubscription) {
+        return new CartListPresenter(
+                cartListView, getCartListUseCase, deleteCartUseCase,
+                deleteCartGetCartListUseCase, updateCartGetShipmentAddressFormUseCase,
+                getShipmentAddressFormUseCase, resetCartGetCartListUseCase,
+                resetCartGetShipmentFormUseCase, checkPromoCodeCartListUseCase, compositeSubscription
+        );
     }
 
     @Provides

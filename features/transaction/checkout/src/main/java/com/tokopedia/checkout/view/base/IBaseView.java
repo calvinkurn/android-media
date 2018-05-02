@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 
 /**
  * @author anggaprasetiyo on 1/9/17.

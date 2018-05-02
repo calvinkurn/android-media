@@ -22,7 +22,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * @author Angga.Prasetiyo on 25/11/2015.
- *         Modified by kulomady add method without params
+ * Modified by kulomady add method without params
  */
 public class AuthUtil {
     private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
@@ -37,8 +37,8 @@ public class AuthUtil {
     private static final String HEADER_DATE = "Date";
     public static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_USER_ID = "X-User-ID";
-    private static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
-    private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
+    public static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
+    public static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
     public static final String HEADER_DEVICE = "X-Device";
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
     public static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
@@ -186,11 +186,6 @@ public class AuthUtil {
                 authKey, DATE_FORMAT, userId
         );
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
-
-        if (userId != null && !userId.equals("")) {
-            finalHeader.put(HEADER_TKPD_USER_ID, userId);
-            finalHeader.put(HEADER_X_TKPD_USER_ID, userId);
-        }
         return finalHeader;
     }
 

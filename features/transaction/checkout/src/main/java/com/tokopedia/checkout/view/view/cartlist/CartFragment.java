@@ -20,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.R;
@@ -34,6 +36,7 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
+import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartListComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartListComponent;
 import com.tokopedia.checkout.view.di.module.CartListModule;
@@ -46,12 +49,12 @@ import com.tokopedia.checkout.view.view.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
@@ -117,6 +120,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     protected void initInjector() {
         CartListComponent cartListComponent = DaggerCartListComponent.builder()
+                .cartComponent(getComponent(CartComponent.class))
                 .cartListModule(new CartListModule(this))
                 .build();
         cartListComponent.inject(this);
@@ -142,11 +146,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     }
 
-    /**
-     * apakah fragment ini support options menu?
-     *
-     * @return iya atau tidak
-     */
     @Override
     protected boolean getOptionsMenuEnable() {
         return true;
@@ -399,14 +398,22 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         return null;
     }
 
-    @SuppressWarnings("deprecation")
+
     @Override
     public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
             TKPDMapParam<String, String> originParams
     ) {
         return originParams == null
-                ? com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity())
-                : com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity(), originParams);
+                ? AuthUtil.generateParamsNetwork(
+                getActivity(), SessionHandler.getLoginID(getActivity()),
+                GCMHandler.getRegistrationId(getActivity())
+        )
+                : AuthUtil.generateParamsNetwork(
+                getActivity(), originParams,
+                SessionHandler.getLoginID(getActivity()),
+                GCMHandler.getRegistrationId(getActivity()
+                )
+        );
     }
 
     @Override
@@ -566,7 +573,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
-    public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
+    public void renderCheckPromoCodeFromSuggestedPromoSuccess(CheckPromoCodeCartListResult promoCodeCartListData) {
         this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
                 .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
                 .promoCode(promoCodeCartListData.getDataVoucher().getCode())

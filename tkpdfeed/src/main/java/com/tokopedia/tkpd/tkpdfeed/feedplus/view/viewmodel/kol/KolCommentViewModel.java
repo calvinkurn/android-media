@@ -21,6 +21,10 @@ public class KolCommentViewModel implements Visitable<KolTypeFactory>, Parcelabl
     protected String userId;
     protected boolean canDeleteComment;
 
+    public KolCommentViewModel() {
+
+    }
+
     public KolCommentViewModel(String id, String userId, String avatarUrl, String name, String
             review,
                                String time,

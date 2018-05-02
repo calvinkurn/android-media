@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.R;
@@ -41,11 +42,11 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostMo
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.SingleShipmentData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.mapper.CartShipmentAddressFormDataConverter;
 import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
+import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerSingleAddressShipmentComponent;
 import com.tokopedia.checkout.view.di.component.SingleAddressShipmentComponent;
 import com.tokopedia.checkout.view.di.module.SingleAddressShipmentModule;
@@ -54,10 +55,12 @@ import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.Data;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
@@ -130,6 +133,7 @@ public class SingleAddressShipmentFragment extends BaseCheckoutFragment
     @Override
     protected void initInjector() {
         SingleAddressShipmentComponent component = DaggerSingleAddressShipmentComponent.builder()
+                .cartComponent(getComponent(CartComponent.class))
                 .singleAddressShipmentModule(new SingleAddressShipmentModule(this))
                 .build();
         component.inject(this);
@@ -267,7 +271,7 @@ public class SingleAddressShipmentFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
+    public void renderCheckPromoCodeFromSuggestedPromoSuccess(CheckPromoCodeCartListResult promoCodeCartListData) {
         this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
                 .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
                 .promoCode(promoCodeCartListData.getDataVoucher().getCode())
@@ -749,11 +753,21 @@ public class SingleAddressShipmentFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
+    public com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> originParams
+    ) {
         return originParams == null
-                ? com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity())
-                : com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity(),
-                originParams);
+                ?
+                AuthUtil.generateParamsNetwork(
+                        getActivity(), SessionHandler.getLoginID(getActivity()),
+                        GCMHandler.getRegistrationId(getActivity())
+                )
+                :
+                AuthUtil.generateParamsNetwork(
+                        getActivity(), originParams,
+                        SessionHandler.getLoginID(getActivity()),
+                        GCMHandler.getRegistrationId(getActivity())
+                );
     }
 
     @Override

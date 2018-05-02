@@ -39,38 +39,30 @@
                 tools:text="@string/prompt_phone"
                 tools:visibility="visible" />
 
-            <com.tokopedia.design.text.TkpdHintTextInputLayout
-                android:id="@+id/wrapper_email"
+            <AutoCompleteTextView
+                android:id="@+id/ac_client_number"
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_label_client_number">
-
-                <AutoCompleteTextView
-                    android:id="@+id/ac_client_number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_label_client_number"
-                    android:focusableInTouchMode="true"
-                    android:inputType="numberDecimal"
-                    android:maxLines="1"
-                    android:nextFocusLeft="@id/pulsa_autocompleteview"
-                    android:nextFocusUp="@id/pulsa_autocompleteview"
-                    android:popupBackground="@color/white"
-                    android:textColor="@color/digital_item_title"
-                    android:textColorHint="@color/grey_400"
-                    android:textSize="@dimen/fonts" />
-            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+                android:layout_below="@+id/tv_label_client_number"
+                android:focusableInTouchMode="true"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:nextFocusLeft="@id/pulsa_autocompleteview"
+                android:nextFocusUp="@id/pulsa_autocompleteview"
+                android:popupBackground="@color/white"
+                android:textColor="@color/digital_item_title"
+                android:textColorHint="@color/grey_400"
+                android:textSize="@dimen/fonts"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/wrapper_email"
+                android:layout_alignBottom="@+id/ac_client_number"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/tv_label_client_number"
-                android:layout_centerVertical="true"
-                android:layout_gravity="end|center"
+                android:layout_gravity="end"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -101,7 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_weight="0.12"
-            android:paddingBottom="@dimen/padding_vs"
+            android:paddingBottom="@dimen/dp_9"
             tools:visibility="visible">
 
             <Button

@@ -470,4 +470,26 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         return false;
     }
 
+    @Override
+    public void onDestroy() {
+        unsubscribeAllUseCase();
+    }
+
+    private void unsubscribeAllUseCase() {
+        if (getHomeDataUseCase != null) {
+            getHomeFeedsUseCase.unsubscribe();
+        }
+
+        if (getHomeFeedsUseCase != null) {
+            getHomeFeedsUseCase.unsubscribe();
+        }
+
+        if (localHomeDataUseCase != null) {
+            localHomeDataUseCase.unsubscribe();
+        }
+
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
+    }
 }

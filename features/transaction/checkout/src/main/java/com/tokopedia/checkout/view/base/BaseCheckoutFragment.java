@@ -49,6 +49,7 @@ public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
         return componentType.cast(((HasComponent<C>) getActivity()).getComponent());
     }
 
+
     protected abstract boolean isRetainInstance();
 
     @Override

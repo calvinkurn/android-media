@@ -31,6 +31,7 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static com.tokopedia.core.network.retrofit.utils.AuthUtil.KEY.KEY_BRANCHIO;
 import static com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase.CAMPAIGN_ID;
 
 
@@ -80,8 +81,10 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 onScanCompleteGetInfoQrCampaign(uri.getPathSegments().get(0));
             } else if(host.contains("tokopedia.link")){
                 onScanBranchIOLink(barcodeData);
-            }else if(host.contains("tokopedia")){
+            } else if (host.contains("tokopedia")) {
                 openActivity(barcodeData);
+            } else {
+                getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
             }
         } else {
             getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
@@ -92,7 +95,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         getView().showProgressDialog();
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("url", qrCode);
-        requestParams.putString("branch_key","key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr");
+        requestParams.putString("branch_key", KEY_BRANCHIO);
         branchIODeeplinkUseCase.execute(requestParams, new Subscriber<BranchIOAndroidDeepLink>() {
             @Override
             public void onCompleted() {
@@ -137,11 +140,13 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         postBarCodeDataUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
             public void onCompleted() {
+                getView().hideProgressDialog();
                 getView().finish();
             }
 
             @Override
             public void onError(Throwable e) {
+                getView().hideProgressDialog();
                 if (e instanceof CampaignException) {
                     getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
                 } else {

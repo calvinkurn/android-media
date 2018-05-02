@@ -11,6 +11,9 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
@@ -19,14 +22,19 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
+import com.tokopedia.checkout.view.di.component.CartComponent;
+import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.di.component.CartShipmentComponent;
+import com.tokopedia.checkout.view.di.component.DaggerCartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartShipmentComponent;
 import com.tokopedia.checkout.view.di.module.CartShipmentModule;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.checkout.view.di.module.DataModule;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 
@@ -39,7 +47,8 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 25/01/18.
  */
 
-public class CartShipmentActivity extends BaseCheckoutActivity implements ICartShipmentActivity {
+public class CartShipmentActivity extends BaseCheckoutActivity implements ICartShipmentActivity,
+        HasComponent<CartComponent> {
     public static final int REQUEST_CODE = 983;
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 1;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2;
@@ -107,6 +116,7 @@ public class CartShipmentActivity extends BaseCheckoutActivity implements ICartS
 
     protected void initInjector() {
         CartShipmentComponent component = DaggerCartShipmentComponent.builder()
+                .cartComponent(getComponent())
                 .cartShipmentModule(new CartShipmentModule(this))
                 .build();
         component.inject(this);
@@ -284,11 +294,21 @@ public class CartShipmentActivity extends BaseCheckoutActivity implements ICartS
     }
 
     @Override
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
+    public com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> originParams
+    ) {
         return originParams == null
-                ? com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(this)
-                : com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(this,
-                originParams);
+                ?
+                AuthUtil.generateParamsNetwork(
+                        this, SessionHandler.getLoginID(this),
+                        GCMHandler.getRegistrationId(this)
+                )
+                :
+                AuthUtil.generateParamsNetwork(
+                        this, originParams,
+                        SessionHandler.getLoginID(this),
+                        GCMHandler.getRegistrationId(this)
+                );
     }
 
     @Override
@@ -348,5 +368,15 @@ public class CartShipmentActivity extends BaseCheckoutActivity implements ICartS
                             cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
                     );
         }
+    }
+
+    @Override
+    public CartComponent getComponent() {
+        return CartComponentInjector.newInstance(
+                DaggerCartComponent.builder()
+                        .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
+                        .dataModule(new DataModule())
+                        .build())
+                .getCartApiServiceComponent();
     }
 }

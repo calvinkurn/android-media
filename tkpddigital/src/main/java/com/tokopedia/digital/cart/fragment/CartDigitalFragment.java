@@ -19,12 +19,15 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
 import com.tokopedia.core.apprating.AppRatingDialog;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -61,6 +64,9 @@ import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 
@@ -687,10 +693,20 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void interruptRequestTokenVerification() {
-        navigateToActivityRequest(
-                OtpVerificationActivity.newInstance(getActivity()),
-                OtpVerificationActivity.REQUEST_CODE
+        VerificationPassModel passModel = new
+                VerificationPassModel(SessionHandler.getPhoneNumber(),
+                RequestOtpUseCase.OTP_TYPE_CHECKOUT_DIGITAL,
+                true
         );
+        GlobalCacheManager cacheManager = new GlobalCacheManager();
+        cacheManager.setKey(VerificationActivity.PASS_MODEL);
+        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
+                new TypeToken<VerificationPassModel>() {
+                }.getType()));
+        cacheManager.store();
+        startActivityForResult(VerificationActivity.getCallingIntent(getActivity(),
+                RequestOtpUseCase.MODE_SMS),
+                OtpVerificationActivity.REQUEST_CODE);
     }
 
     @Override
@@ -773,16 +789,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == OtpVerificationActivity.REQUEST_CODE) {
-            String message = data.getStringExtra(OtpVerificationActivity.EXTRA_MESSAGE);
-            switch (resultCode) {
-                case OtpVerificationActivity.RESULT_OTP_VERIFIED:
-                    presenter.processPatchOtpCart(passData.getCategoryId());
-                    if (message != null) showToastMessage(message);
-                    break;
-                default:
-                    if (message != null) closeViewWithMessageAlert(message);
-                    else closeView();
-                    break;
+            if (resultCode == Activity.RESULT_OK) {
+                presenter.processPatchOtpCart(passData.getCategoryId());
+            } else {
+                closeView();
             }
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {

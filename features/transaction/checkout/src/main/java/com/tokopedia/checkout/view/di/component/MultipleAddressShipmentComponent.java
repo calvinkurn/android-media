@@ -10,7 +10,8 @@ import dagger.Component;
  * Created by kris on 2/5/18. Tokopedia
  */
 @MultipleAddressShipmentScope
-@Component(modules = MultipleAddressShipmentModule.class)
+@Component(modules = MultipleAddressShipmentModule.class, dependencies = CartComponent.class)
 public interface MultipleAddressShipmentComponent {
+
     void inject(MultipleAddressShipmentFragment multipleAddressShipmentFragment);
 }

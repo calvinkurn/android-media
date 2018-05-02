@@ -2,8 +2,10 @@ package com.tokopedia.pushnotif.factory;
 
 import android.app.Notification;
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
+import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.R;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
@@ -24,8 +26,10 @@ public class GeneralNotificationFactory extends BaseNotificationFactory {
         builder.setContentText(applinkNotificationModel.getDesc());
         builder.setSmallIcon(getDrawableIcon());
         builder.setLargeIcon(getBitmapLargeIcon());
-        builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
+        if (ApplinkNotificationHelper.allowGroup())
+            builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
         builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), Constant.NotificationId.GENERAL, notificationId));
+        builder.setAutoCancel(true);
 
         if (isAllowBell()) {
             builder.setSound(getRingtoneUri());

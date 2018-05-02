@@ -43,6 +43,10 @@ public interface IDigitalModuleRouter {
 
     Intent instanceIntentDigitalWeb(String url);
 
+    Intent getPromoListIntent(Activity activity);
+
+    Intent getPromoDetailIntent(Context context, String slug);
+
     boolean isSupportedDelegateDeepLink(String appLinks);
 
     Intent getIntentDeepLinkHandlerActivity();

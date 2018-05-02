@@ -19,6 +19,8 @@ import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.search.data.cloud.model.response.Amenity;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +40,8 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
     private final TextView airlineName;
     private final TextView airlineCode;
     private TextView refundableInfo;
+    private View separatorInfoView;
+    private TextView facilityInfoTextView;
 
     public FlightDetailFacilityViewHolder(View itemView) {
         super(itemView);
@@ -47,6 +51,8 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         refundableInfo = (TextView) itemView.findViewById(R.id.airline_refundable_info);
         airlineName = (TextView) itemView.findViewById(R.id.airline_name);
         airlineCode = (TextView) itemView.findViewById(R.id.airline_code);
+        separatorInfoView = (View) itemView.findViewById(R.id.separator_info);
+        facilityInfoTextView = (TextView) itemView.findViewById(R.id.title_info);
 
         listInfo.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         adapterInfo = new ListInfoAdapter();
@@ -79,7 +85,14 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
 
     public void setDefaultAmenities(FlightDetailRouteViewModel flightDetailRouteViewModel) {
         if (flightDetailRouteViewModel.getAmenities() != null && flightDetailRouteViewModel.getAmenities().size() > 0) {
+            gridAmenity.setVisibility(View.VISIBLE);
+            separatorInfoView.setVisibility(View.VISIBLE);
+            facilityInfoTextView.setVisibility(View.VISIBLE);
             adapterAmenity.addData(flightDetailRouteViewModel.getAmenities());
+        } else {
+            separatorInfoView.setVisibility(View.GONE);
+            gridAmenity.setVisibility(View.GONE);
+            facilityInfoTextView.setVisibility(View.GONE);
         }
     }
 

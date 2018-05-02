@@ -15,7 +15,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by kris on 2/5/18. Tokopedia
  */
 
-@Module(includes = {DataModule.class})
+@Module
 public class MultipleAddressModule {
 
     private final IMultipleAddressView view;

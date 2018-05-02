@@ -10,7 +10,7 @@ import dagger.Component;
  * @author Aghny A. Putra on 31/01/18.
  */
 @CartRemoveProductScope
-@Component(modules = CartRemoveProductModule.class)
+@Component(modules = CartRemoveProductModule.class, dependencies = CartComponent.class)
 public interface CartRemoveProductComponent {
     void inject(CartRemoveProductFragment cartRemoveProductFragment);
 }

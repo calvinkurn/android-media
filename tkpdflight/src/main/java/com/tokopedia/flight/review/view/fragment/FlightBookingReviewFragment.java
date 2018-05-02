@@ -47,6 +47,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
+import com.tokopedia.flight.common.view.FullDividerItemDecoration;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
@@ -231,6 +232,9 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         FlightBookingReviewPassengerAdapterTypeFactory flightBookingReviewPassengerAdapterTypeFactory = new FlightBookingReviewPassengerAdapterTypeFactory();
         FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter2 = new FlightBookingReviewPassengerAdapter(flightBookingReviewPassengerAdapterTypeFactory);
         flightBookingReviewPassengerAdapter2.addElement(flightBookingReviewModel.getDetailPassengers());
+        if (flightBookingReviewModel.getDetailPassengers().size() > 1) {
+            recyclerViewDataPassenger.addItemDecoration(new FullDividerItemDecoration(recyclerViewDataPassenger.getContext()));
+        }
         recyclerViewDataPassenger.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDataPassenger.setAdapter(flightBookingReviewPassengerAdapter2);
         flightBookingReviewPriceAdapter = new FlightSimpleAdapter();

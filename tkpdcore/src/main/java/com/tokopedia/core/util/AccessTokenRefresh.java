@@ -48,7 +48,11 @@ public class AccessTokenRefresh {
             sessionHandler.setToken(model.getAccessToken(), model.getTokenType());
         }
 
-        return model.getAccessToken();
+        if (model != null) {
+            return model.getAccessToken();
+        } else {
+            return "";
+        }
     }
 
     private Retrofit getRetrofit() {

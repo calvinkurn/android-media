@@ -11,7 +11,7 @@ import dagger.Component;
  */
 
 @SingleAddressShipmentScope
-@Component(modules = SingleAddressShipmentModule.class)
+@Component(modules = SingleAddressShipmentModule.class, dependencies = CartComponent.class)
 public interface SingleAddressShipmentComponent {
 
     void inject(SingleAddressShipmentFragment singleAddressShipmentFragment);

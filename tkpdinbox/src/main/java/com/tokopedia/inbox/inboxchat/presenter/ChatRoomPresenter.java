@@ -380,7 +380,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
                 }
             });
-
         }
     }
 
@@ -474,6 +473,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void getReply(int mode) {
         RequestParams requestParam;
+        if (TextUtils.isEmpty(getView().getArguments().getString(PARAM_MESSAGE_ID))) {
+            return;
+        }
         if (mode == GET_CHAT_MODE) {
             requestParam = GetReplyListUseCase.generateParam(
                     getView().getArguments().getString(PARAM_MESSAGE_ID),
@@ -517,7 +519,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         boolean isValid = true;
         if (getView().getReplyMessage().trim().length() == 0) {
             isValid = false;
-            getView().showError(getView().getString(R.string.error_empty_report));
+            getView().showSnackbarError(getView().getString(R.string.error_empty_report));
         }
         return isValid;
     }
