@@ -38,12 +38,13 @@ public class CategoryViewHolder extends AbstractViewHolder<CategorySearch> {
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false)
         );
+        recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void bind(CategorySearch element) {
-
+        adapter.setData(element.getList());
     }
 
     private class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
@@ -73,7 +74,7 @@ public class CategoryViewHolder extends AbstractViewHolder<CategorySearch> {
             final BaseItemAutoCompleteSearch rowModel = data.get(position);
             holder.title.setText(rowModel.getRecom());
             ImageHandler.loadImageThumbs(context, holder.icon, rowModel.getImageUrl());
-            holder.container.setOnClickListener(new View.OnClickListener() {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 

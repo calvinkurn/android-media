@@ -65,7 +65,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
                     allFragment.addBulkSearchResult(prepareDigitalSearch(searchData, element.getSearchTerm()));
                     continue;
                 case "category":
-//                    allFragment.addBulkSearchResult(prepareCategorySearch(searchData, element.getSearchTerm()));
+                    allFragment.addBulkSearchResult(insertTitle(prepareCategorySearch(searchData, element.getSearchTerm()), searchData.getName()));
                     continue;
                 case "autocomplete":
                     list = prepareAutoCompleteSearch(searchData, element.getSearchTerm());
@@ -81,14 +81,14 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
                     continue;
                 case "shop":
                     list = prepareShopSearch(searchData, element.getSearchTerm());
-                    allFragment.addBulkSearchResult(addShopTitle(list, searchData.getName()));
+                    allFragment.addBulkSearchResult(insertTitle(list, searchData.getName()));
                     shopFragment.addBulkSearchResult(list);
                     continue;
             }
         }
     }
 
-    private List<Visitable> addShopTitle(List<Visitable> list, String name) {
+    private List<Visitable> insertTitle(List<Visitable> list, String name) {
         TitleSearch titleSearch = new TitleSearch();
         titleSearch.setTitle(name);
         list.add(0, titleSearch);
@@ -147,9 +147,6 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
 
     private List<Visitable> prepareCategorySearch(SearchData searchData, String searchTerm) {
         List<Visitable> list = new ArrayList<>();
-        TitleSearch title = new TitleSearch();
-        title.setTitle(searchData.getName());
-        list.add(title);
         CategorySearch categorySearch = new CategorySearch();
         List<BaseItemAutoCompleteSearch> childList = new ArrayList<>();
         for (SearchItem item : searchData.getItems()) {
