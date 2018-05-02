@@ -437,8 +437,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         removeFiltersWithEmptyOption(list);
         mergeSizeFilterOptionsWithSameValue(list);
         removeBrandFilterOptionsWithSameValue(list);
-        mergeSingleOptionFilterToOthers(list);
-        removeFiltersWithSingleOption(list);
+        mergeNonExpandableFiltersToOthers(list);
+        removeNonExpandableFilters(list);
         filterMainAdapter.setFilterList(list);
     }
 
@@ -452,11 +452,11 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         }
     }
 
-    private void removeFiltersWithSingleOption(List<Filter> filterList) {
+    private void removeNonExpandableFilters(List<Filter> filterList) {
         Iterator<Filter> iterator = filterList.iterator();
         while (iterator.hasNext()) {
             Filter filter = iterator.next();
-            if (filter.getOptions().size() == 1) {
+            if (!filter.isExpandableFilter()) {
                 iterator.remove();
             }
         }
@@ -529,11 +529,11 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         }
     }
 
-    private void mergeSingleOptionFilterToOthers(List<Filter> list) {
+    private void mergeNonExpandableFiltersToOthers(List<Filter> list) {
         List<Option> othersOptionList = new ArrayList<>();
 
         for (Filter filter : list) {
-            if (filter.getOptions().size() == 1) {
+            if (!filter.isExpandableFilter()) {
                 othersOptionList.addAll(filter.getOptions());
             }
         }
@@ -548,7 +548,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         makeAllOptionPopular(othersOptionList);
         filter.setOptions(othersOptionList);
         filter.setTitle(getContext().getString(R.string.other_filter_title));
-        filter.setTemplateName("");
+        filter.setTemplateName(Filter.TEMPLATE_NAME_OTHER);
 
         Search search = new Search();
         search.setPlaceholder("");
