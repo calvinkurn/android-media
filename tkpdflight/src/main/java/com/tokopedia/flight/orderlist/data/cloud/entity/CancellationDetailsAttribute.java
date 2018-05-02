@@ -10,16 +10,16 @@ import com.google.gson.annotations.SerializedName;
 public class CancellationDetailsAttribute {
     @SerializedName("journey_id")
     @Expose
-    private int journeyId;
+    private long journeyId;
     @SerializedName("passenger_id")
     @Expose
-    private int passengerId;
+    private String passengerId;
 
-    public int getJourneyId() {
+    public long getJourneyId() {
         return journeyId;
     }
 
-    public int getPassengerId() {
+    public String getPassengerId() {
         return passengerId;
     }
 }
