@@ -1,13 +1,7 @@
 package com.tokopedia.checkout.view.di.module;
 
-import com.tokopedia.checkout.data.repository.ICartRepository;
-import com.tokopedia.checkout.domain.mapper.ICartMapper;
-import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
-import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.checkout.domain.usecase.CartListInteractor;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
-import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.checkout.view.di.scope.SingleAddressShipmentScope;
 import com.tokopedia.checkout.view.mapper.ShipmentDataRequestConverter;
@@ -38,18 +32,6 @@ public class SingleAddressShipmentModule {
     @SingleAddressShipmentScope
     CompositeSubscription provideCompositeSubscription() {
         return new CompositeSubscription();
-    }
-
-    @Provides
-    @SingleAddressShipmentScope
-    ICartListInteractor provideICartListInteractor(CompositeSubscription compositeSubscription,
-                                                   ICartRepository cartRepository,
-                                                   ICartMapper cartMapper,
-                                                   IShipmentMapper shipmentMapper,
-                                                   IVoucherCouponMapper voucherCouponMapper) {
-        return new CartListInteractor(
-                compositeSubscription, cartRepository, cartMapper, shipmentMapper, voucherCouponMapper
-        );
     }
 
     @Provides
