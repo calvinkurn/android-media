@@ -50,6 +50,7 @@ import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by errysuprayogi on 3/22/18.
@@ -61,6 +62,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_sprint_card_item;
     private static final String TAG = SprintSaleCarouselViewHolder.class.getSimpleName();
+    public static final String ATTRIBUTION = "attribution";
     private RelativeLayout container;
     private RecyclerView recyclerView;
     private ItemAdapter itemAdapter;
@@ -102,10 +104,12 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
 
     @Override
     public void onGridItemClick(int pos, DynamicHomeChannel.Grid grid) {
-        HomePageTracking.eventEnhancedClickSprintSaleProduct(channels.getEnhanceClickSprintSaleCarouselHomePage(pos,
-                countDownView.getCurrentCountDown(), grid.getLabel()));
+        Map<String, Object> evenMap = channels.getEnhanceClickSprintSaleCarouselHomePage(pos,
+                countDownView.getCurrentCountDown(), grid.getLabel());
+        HomePageTracking.eventEnhancedClickSprintSaleProduct(evenMap);
+
         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
-                channels.getHomeAttribution(pos + 1, grid.getAttribution()));
+                String.valueOf(evenMap.get(ATTRIBUTION)));
     }
 
     @Override
@@ -141,7 +145,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     }
 
     private void onClickSeeAll() {
-        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()), "");
+        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()), channels.getHomeAttribution());
         HomePageTracking.eventClickSeeAllProductSprintBackground();
     }
 

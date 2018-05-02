@@ -249,12 +249,11 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     private void onGetListErrorWithEmptyData(Throwable throwable) {
         if (getView() != null) {
-            return;
-        }
-        String message = getMessageFromThrowable(getView().getContext(), throwable);
-        adapter.showErrorNetwork(message, this);
-        if (swipeToRefresh != null) {
-            swipeToRefresh.setEnabled(false);
+            String message = getMessageFromThrowable(getView().getContext(), throwable);
+            adapter.showErrorNetwork(message, this);
+            if (swipeToRefresh != null) {
+                swipeToRefresh.setEnabled(false);
+            }
         }
     }
 

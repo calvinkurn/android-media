@@ -3,6 +3,7 @@ package com.tokopedia.inbox.rescenter.detailv2.view.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
@@ -51,24 +52,24 @@ public class DetailResChatFragmentPresenter
         extends BaseDaggerPresenter<DetailResChatFragmentListener.View>
         implements DetailResChatFragmentListener.Presenter {
 
-    public static final int PARAM_MIN_REPLY_CHAR_COUNT = 7;
-    public static final int PARAM_MAX_REPLY_CHAR_COUNT = 5000;
-    public static final int PARAM_LIMIT_CONVERSATION = 20;
+    private static final int PARAM_MIN_REPLY_CHAR_COUNT = 7;
+    private static final int PARAM_MAX_REPLY_CHAR_COUNT = 5000;
+    private static final int PARAM_LIMIT_CONVERSATION = 20;
     private static final int MAXIMAL_VIDEO_CONTENT_ALLOW = 1;
-    DetailResChatFragmentListener.View mainView;
-    GetResChatUseCase getResChatUseCase;
-    GetResChatMoreUseCase getResChatMoreUseCase;
-    SendDiscussionUseCase sendDiscussionUseCase;
-    SendDiscussionV2UseCase sendDiscussionV2UseCase;
-    AcceptSolutionUseCase acceptSolutionUseCase;
-    AskHelpResolutionUseCase askHelpResolutionUseCase;
-    CancelResolutionUseCase cancelResolutionUseCase;
-    InputAddressUseCase inputAddressUseCase;
-    EditAddressUseCase editAddressUseCase;
-    FinishResolutionUseCase finishResolutionUseCase;
-    ImageUploadHandler uploadImageDialog;
-    String resolutionId;
-    Context context;
+    private DetailResChatFragmentListener.View mainView;
+    private GetResChatUseCase getResChatUseCase;
+    private GetResChatMoreUseCase getResChatMoreUseCase;
+    private SendDiscussionUseCase sendDiscussionUseCase;
+    private SendDiscussionV2UseCase sendDiscussionV2UseCase;
+    private AcceptSolutionUseCase acceptSolutionUseCase;
+    private AskHelpResolutionUseCase askHelpResolutionUseCase;
+    private CancelResolutionUseCase cancelResolutionUseCase;
+    private InputAddressUseCase inputAddressUseCase;
+    private EditAddressUseCase editAddressUseCase;
+    private FinishResolutionUseCase finishResolutionUseCase;
+    private ImageUploadHandler uploadImageDialog;
+    private String resolutionId;
+    private Context context;
     private String[] extensions = {
             "jpg", "jpeg", "png", "mp4", "m4v", "mov", "ogv"
     };
@@ -351,6 +352,10 @@ public class DetailResChatFragmentPresenter
         }
 
         if (item.isVideo()) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_version_minimum));
+                return false;
+            }
             File file = new File(item.getRealPath());
             long length = file.length() / 1024;
             if (length >= 20000) {

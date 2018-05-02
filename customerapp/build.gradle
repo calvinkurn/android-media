@@ -142,7 +142,6 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
-            testCoverageEnabled true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles  'proguard-rules.txt'
         }
@@ -326,5 +325,12 @@ dependencies {
     //[END] test and androidTest dependencies
 }
 
+
+project.ext.sentryCli = [
+        logLevel: "debug",
+        flavorAware: true
+]
+
 apply from: "../buildconfig/reactnative/react.gradle"
 apply from: "../buildconfig/reactnative/codepush.gradle"
+apply from: "../buildconfig/reactnative/sentry.gradle"

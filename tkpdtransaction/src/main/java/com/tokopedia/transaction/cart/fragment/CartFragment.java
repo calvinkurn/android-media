@@ -579,11 +579,14 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderVisibleMainCartContainer() {
-        nsvContainer.setVisibility(View.VISIBLE);
+    public void renderInvisibleLoading() {
         pbMainLoading.setVisibility(View.GONE);
         tvTotalPayment.setVisibility(View.GONE);
-        presenter.processGetTickerGTM();
+    }
+
+    @Override
+    public void renderVisibleMainCartContainer() {
+        nsvContainer.setVisibility(View.VISIBLE);
     }
 
     @Override

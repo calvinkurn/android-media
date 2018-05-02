@@ -13,6 +13,12 @@ public class DismissBroadcastReceiver extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
         int notificationType = intent.getIntExtra(Constant.EXTRA_NOTIFICATION_TYPE, 0);
-        HistoryNotification.clearHistoryNotification(context, notificationType);
+        int notificationId = intent.getIntExtra(Constant.EXTRA_NOTIFICATION_ID, 0);
+
+        if (notificationId == 0) {
+            HistoryNotification.clearAllHistoryNotification(notificationType);
+        } else {
+            HistoryNotification.clearHistoryNotification(notificationType, notificationId);
+        }
     }
 }
