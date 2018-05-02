@@ -502,9 +502,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     inflate(R.layout.layout_empty_shopping_chart, (ViewGroup) rootview);
             Button shop = emptyState.findViewById(R.id.shoping);
             final RelativeLayout autoApplyView = emptyState.findViewById(R.id.promo_result_empty_cart);
-            TextView labelPromoType = emptyState.findViewById(R.id.label_promo_type_empty_cart);
             TextView promoVoucherCode = emptyState.findViewById(R.id.voucher_code_empty_cart);
-            TextView voucherDescription = emptyState.findViewById(R.id.voucher_description_empty_cart);
             ImageView cancelPromoLayout = emptyState.findViewById(R.id.cancel_promo_layout_empty_cart);
 
             shop.setOnClickListener(getRetryEmptyCartClickListener());
@@ -531,13 +529,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             if (autoApply != null && autoApply.isSuccess()) {
                 autoApplyView.setVisibility(View.VISIBLE);
                 if (autoApply.getIsCoupon() == 1) {
-                    labelPromoType.setText(String.format("%s : ", getString(R.string.title_coupon_code)));
                     promoVoucherCode.setText(autoApply.getTitleDescription());
-                    voucherDescription.setText(autoApply.getMessageSuccess());
                 } else {
-                    labelPromoType.setText(String.format("%s : ", getString(R.string.title_promo_code)));
-                    promoVoucherCode.setText(autoApply.getCode());
-                    voucherDescription.setText(autoApply.getMessageSuccess());
+                    promoVoucherCode.setText(autoApply.getTitleDescription());
                 }
 
                 cancelPromoLayout.setOnClickListener(new View.OnClickListener() {
@@ -873,7 +867,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onResume() {
         super.onResume();
-        presenter.processGetCartData();
     }
 
     @Override
