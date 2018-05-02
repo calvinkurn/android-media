@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.fabric'
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
@@ -9,6 +10,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
@@ -16,6 +18,7 @@ buildscript {
             exclude group: 'com.android.tools.build', module: 'gradle'
         }
         classpath 'com.google.gms:google-services:3.0.0'
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 

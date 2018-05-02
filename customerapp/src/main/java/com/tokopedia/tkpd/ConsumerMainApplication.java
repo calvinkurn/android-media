@@ -53,6 +53,8 @@ import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
 
+import io.hansel.hanselsdk.Hansel;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -87,6 +89,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initCacheApi();
         initSendbird();
         createCustomSoundNotificationChannel();
+        Hansel.init(this);
     }
 
     private void createCustomSoundNotificationChannel() {

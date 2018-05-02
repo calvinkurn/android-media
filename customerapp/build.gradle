@@ -5,6 +5,7 @@ apply plugin: 'com.jakewharton.butterknife'
 if (!project.hasProperty("disable-performance-plugin")) {
     apply plugin: 'com.google.firebase.firebase-perf'
 }
+apply plugin: 'io.hansel.preprocessor'
 
 
 def getDpiId(String density) {
@@ -80,14 +81,10 @@ def archiveAPK(variant, output) {
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
     }
     dependencies {
-        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
-            exclude group: 'com.android.tools.build', module: 'gradle'
-        }
         classpath 'io.fabric.tools:gradle:1.+'
     }
 }
@@ -239,9 +236,6 @@ android {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
-
-    // Specifies two flavor dimensions.
-    flavorDimensions "tier"
 
     productFlavors {
         live {
