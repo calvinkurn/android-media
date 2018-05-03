@@ -63,4 +63,11 @@ public class ChangePhoneNumberEmailVerificationPresenter
                 new ValidateEmailCodeSubscriber(view)
         );
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        sendEmailUseCase.unsubscribe();
+        validateEmailCodeUseCase.unsubscribe();
+    }
 }

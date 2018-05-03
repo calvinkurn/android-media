@@ -39,7 +39,6 @@ ext {
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
     reactNativeVersion = '0.52.1'
-    alibabaCoreLibVersion = '3.2.8'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -211,14 +210,10 @@ ext {
             showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.12"
     ]
 
-    alibabaDependencies = [
-            coreLib         : "com.aliyun:aliyun-java-sdk-core:${alibabaCoreLibVersion}"
-    ]
-
     features = [
             loyalty         : ":tkpdloyalty",
             ride            : ":tkpdride",
-            feed            : ":tkpdfeed",
+            feed            : ":features:content:feed",
             digital         : ":tkpddigital",
             core            : ":tkpdcore",
             inbox           : ":tkpdinbox",
