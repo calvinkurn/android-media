@@ -8,6 +8,8 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.push.PushManager;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
@@ -58,9 +60,20 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
                 PushNotification.notify(mContext, bundle);
                 extraAction(bundle);
             }
+
+            if(needExtraAction()){
+                broadcastNotifTopChat(bundle);
+            }
         } else {
             mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(bundle);
         }
+    }
+
+    private boolean needExtraAction() {
+        if(mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
+            return true;
+        }
+        return false;
     }
 
     private boolean isInExcludedActivity(Bundle data) {
@@ -89,6 +102,13 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
     private void broadcastPointReceived(Bundle data) {
         Intent loyaltyGroupChat = new Intent(com.tokopedia.abstraction.constant
                 .TkpdState.LOYALTY_GROUP_CHAT);
+        loyaltyGroupChat.putExtras(data);
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(loyaltyGroupChat);
+    }
+
+
+    private void broadcastNotifTopChat(Bundle data) {
+        Intent loyaltyGroupChat = new Intent(TkpdState.TOPCHAT);
         loyaltyGroupChat.putExtras(data);
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(loyaltyGroupChat);
     }
