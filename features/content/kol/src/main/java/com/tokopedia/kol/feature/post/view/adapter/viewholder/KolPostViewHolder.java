@@ -126,7 +126,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
                     R.drawable.bg_button_green));
             followText.setTextColor(MethodChecker.getColor(followText.getContext(),
                     R.color.white));
-            followText.setText(R.string.action_follow);
+            followText.setText(R.string.action_follow_english);
             topSeparator.setVisibility(View.VISIBLE);
         }
 
