@@ -36,9 +36,11 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.abstraction)
+
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.feed)
-
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.digital)
     implementation project(rootProject.ext.features.loyalty)
