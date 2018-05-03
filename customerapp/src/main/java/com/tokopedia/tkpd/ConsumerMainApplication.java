@@ -182,7 +182,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GroupChatUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
         GamificationUrl.GQL_BASE_URL = ConsumerAppBaseUrl.GAMIFICATION_BASE_URL;
         ChatBotUrl.BASE_URL = ConsumerAppBaseUrl.CHATBOT_DOMAIN;
-        TkpdBaseURL.CONTACT_US_BASE = ConsumerAppBaseUrl.CONTACT_US_BASE;
     }
 
     private void generateConsumerAppNetworkKeys() {

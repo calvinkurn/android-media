@@ -8,12 +8,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:label="@string/contact_us_title_home"/>
-        <activity
-            android:name="com.tokopedia.tkpd.tkpdcontactus.home.view.ContactUsWebViewActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:label="@string/contact_us_title_home"/>
 
         <activity android:name="com.tokopedia.tkpd.tkpdcontactus.home.view.BuyerPurchaseListActivity"
             android:exported="true"

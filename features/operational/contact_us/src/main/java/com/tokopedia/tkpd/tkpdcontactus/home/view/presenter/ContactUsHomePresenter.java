@@ -102,6 +102,7 @@ public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCo
             public void onNext(TopBotStatus topBotStatus) {
                 if(topBotStatus.isIsActive()) {
                     getView().setChatBotVisible();
+                    getView().setChatBotButtonClick(topBotStatus.getMsgId());
                 }
 
             }

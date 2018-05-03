@@ -21,30 +21,6 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
         mAdapter = adapter;
     }
 
-    public void enableScaling(boolean enable) {
-//        if (mScalingEnabled && !enable) {
-//            // shrink main card
-//            CardView currentCard = mAdapter.getCardViewAt(mViewPager.getCurrentItem());
-//            if (currentCard != null) {
-//                currentCard.animate().scaleY(1);
-//                currentCard.animate().scaleX(1);
-//            }
-//        } else if (!mScalingEnabled && enable) {
-//            // shrink side card
-//            CardView currentCard = mAdapter.getCardViewAt(mViewPager.getCurrentItem() + 1);
-//            if (currentCard != null) {
-//                currentCard.animate().scaleY(0.9f);
-//                currentCard.animate().scaleX(0.9f);
-//            }
-//            currentCard = mAdapter.getCardViewAt(mViewPager.getCurrentItem());
-//            if (currentCard != null) {
-//                currentCard.animate().scaleY(1.0f);
-//                currentCard.animate().scaleX(1.0f);
-//            }
-//        }
-
-        mScalingEnabled = enable;
-    }
 
     @Override
     public void transformPage(View page, float position) {
@@ -78,13 +54,11 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
         }
 
         CardView currentCard = mAdapter.getCardViewAt(realCurrentPosition);
-        Log.d("Real Offset Value", "Real Offset : " + realOffset);
 
         // This might be null if a fragment is being used
         // and the views weren't created yet
         if (currentCard != null) {
             if (mScalingEnabled) {
-//                currentCard.setScaleX((float) (1 - 0.1 * (realOffset)));
                 currentCard.setScaleY((float) (1 - 0.1 * (realOffset)));
             }
             currentCard.setCardElevation((baseElevation + baseElevation
@@ -97,7 +71,6 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
         // was already destroyed or a fragment might not have been created yet
         if (nextCard != null) {
             if (mScalingEnabled) {
-//                nextCard.setScaleX((float) (1 - 0.1 * (1 - realOffset)));
                 nextCard.setScaleY((float) (1 - 0.1 * (1 - realOffset)));
             }
             nextCard.setCardElevation((baseElevation + baseElevation

@@ -15,7 +15,7 @@ buildscript {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile rootProject.ext.supportLibDependencies.constraintLayout
 
 
     compile project(rootProject.ext.features.core)
@@ -25,7 +25,7 @@ dependencies {
 
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    compile 'com.android.support:support-v4:26.0.2'
+    compile rootProject.ext.supportLibDependencies.supportV4
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     compile rootProject.ext.miscDependencies.dagger
@@ -47,4 +47,5 @@ dependencies {
     compile rootProject.ext.supportLibDependencies.cardViewV7
 
     compile 'at.blogc:expandabletextview:1.0.5'
+    compile project(path: rootProject.ext.libraries.applink)
 }

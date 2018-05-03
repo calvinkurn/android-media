@@ -44,9 +44,6 @@ public class ContactUsArticleDataStore {
                 return buyerPurchaseList;
             }
         });
-
-
-
     }
 
     public Observable<TopBotStatus> getTopBotStatus() {

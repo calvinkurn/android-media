@@ -13,17 +13,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_topedbot" />
+        app:srcCompat="@drawable/ic_topedbot"
+        android:layout_marginRight="@dimen/margin_default"/>
 
     <ImageView
         android:id="@+id/delete_image"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_marginEnd="@dimen/padding_vvvs"
-        android:layout_marginRight="@dimen/padding_vvvs"
         android:layout_marginTop="@dimen/padding_vvvs"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_black_cross" />
+        app:srcCompat="@drawable/ic_black_cross"
+        android:layout_marginRight="@dimen/margin_default"/>
 
 </android.support.constraint.ConstraintLayout>

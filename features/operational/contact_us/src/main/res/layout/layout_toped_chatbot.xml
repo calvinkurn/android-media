@@ -32,7 +32,7 @@
             android:textSize="@dimen/font_title_big"
             app:layout_constraintStart_toEndOf="@+id/imageView6"
             app:layout_constraintTop_toTopOf="@+id/imageView6"
-            tools:text="Hai Syefti!" />
+            android:text="Hai Syefti!" />
 
         <TextView
             android:id="@+id/textview21"
@@ -50,7 +50,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView6"
             app:layout_constraintTop_toBottomOf="@+id/textView18"
-            tools:text="Kamu ada kendala terkait refund dan promo? Kamu bisa menanyakan hal tersebut ke Toped" />
+            android:text="Kamu ada kendala terkait refund dan promo? Kamu bisa menanyakan hal tersebut ke Toped" />
 
         <TextView
             android:id="@+id/btn_chat_toped"
@@ -71,7 +71,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textview21"
             app:layout_constraintVertical_bias="0.0"
-            tools:text="Hubungi Kami" />
+            android:text="Chat dengan Bot" />
     </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>

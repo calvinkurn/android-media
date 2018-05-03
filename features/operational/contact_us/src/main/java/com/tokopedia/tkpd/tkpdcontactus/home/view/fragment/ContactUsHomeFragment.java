@@ -18,9 +18,9 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.inbox.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.tkpd.tkpdcontactus.common.customview.ShadowTransformer;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
@@ -28,7 +28,6 @@ import com.tokopedia.tkpd.tkpdcontactus.home.data.ContactUsArticleResponse;
 import com.tokopedia.tkpd.tkpdcontactus.home.di.ContactUsComponent;
 import com.tokopedia.tkpd.tkpdcontactus.home.di.DaggerContactUsComponent;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.BuyerPurchaseListActivity;
-import com.tokopedia.tkpd.tkpdcontactus.home.view.ContactUsWebViewActivity;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.adapter.CardPagerAdapter;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.customview.ArticleTextView;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.presenter.ContactUsHomeContract;
@@ -58,6 +57,9 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     CardPagerAdapter cardAdapter;
     @BindView(R2.id.toped_bot)
     View btnChat;
+    @BindView(R2.id.view_full_purchaselist)
+    TextView btnFullPurchaseList;
+    String topBotUrl;
 
     private ContactUsComponent campaignComponent;
 
@@ -152,6 +154,8 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     @Override
     public void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists) {
         orderList.setVisibility(View.VISIBLE);
+        if(buyerPurchaseLists.size()<=0)
+            btnFullPurchaseList.setVisibility(View.GONE);
         cardAdapter.addData(buyerPurchaseLists);
         orderListViewpager.setAdapter(cardAdapter);
     }
@@ -161,10 +165,15 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
         btnChat.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void setChatBotButtonClick(int msgId) {
+        topBotUrl = "tokopedia://topchat/"+msgId;
+    }
+
 
     @OnClick(R2.id.btn_view_more)
     public void onViewClicked() {
-        startActivity(ContactUsWebViewActivity.getInstance(getContext(), "https://www.tokopedia.com/bantuan/"));
+        RouteManager.route(getContext(),"tokopedia://webview?url=https://www.tokopedia.com/bantuan/");
     }
 
     @OnClick(R2.id.view_full_purchaselist)
@@ -175,11 +184,12 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
 
     @OnClick(R2.id.btn_contact_us)
     public void onBtnContactUsClicked() {
-        startActivity(ContactUsWebViewActivity.getInstance(getContext(), "https://www.tokopedia.com/contact-us?utm_source=android&flag_app=1#step1"));
+        RouteManager.route(getContext(),"tokopedia://webview?url=https://www.tokopedia.com/contact-us?utm_source=android&flag_app=1#step1");
     }
 
     @OnClick(R2.id.btn_chat_toped)
     public void onBtnChatClicked() {
+        RouteManager.route(getContext(),topBotUrl);
     }
 
 

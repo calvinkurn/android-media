@@ -255,6 +255,9 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         if ((requestCode == ImageUploadHandler.REQUEST_CODE)
                 && (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE)) {
 
+            if(rvSelectedImages != null && rvSelectedImages.getVisibility() == View.GONE){
+                rvSelectedImages.setVisibility(View.VISIBLE);
+            }
             int position = imageUploadAdapter.getItemCount();
             ImageUpload image = new ImageUpload();
             image.setPosition(position);

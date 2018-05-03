@@ -90,7 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginTop="@dimen/new_margin_sm"
-        android:text="SubjekSubjek"
+        android:text="Subjek"
         android:textColor="@color/black4_text"
         android:textSize="@dimen/font_micro"
         app:layout_constraintStart_toStartOf="parent"
@@ -123,7 +123,7 @@
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_query_title"
-        tools:text="Kendala" />
+        android:text="Kendala" />
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/edt_query"
@@ -198,6 +198,7 @@
         android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginTop="@dimen/margin_default"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView38"
         app:layout_constraintBottom_toTopOf="@+id/btn_send"/>
@@ -209,11 +210,11 @@
         android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginTop="@dimen/margin_default"
-        android:background="@drawable/rounded_rectangle_grey_dashed_border"
+        android:background="@drawable/rounded_rectangle_grey_border"
         android:scaleType="centerInside"
         app:layout_constraintStart_toEndOf="@+id/rv_selected_images"
         app:layout_constraintTop_toBottomOf="@+id/textView38"
-        app:srcCompat="@drawable/ic_topedbot" />
+        app:srcCompat="@drawable/ic_upload" />
 
     <TextView
         android:id="@+id/btn_send"
