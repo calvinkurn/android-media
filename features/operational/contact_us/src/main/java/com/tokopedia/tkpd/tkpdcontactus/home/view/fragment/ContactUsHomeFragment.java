@@ -193,5 +193,9 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
         RouteManager.route(getContext(),topBotUrl);
     }
 
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
 }

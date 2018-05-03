@@ -36,13 +36,13 @@ public class OrderQueryTicketPresenter extends BaseDaggerPresenter<OrderQueryTic
 
     public RequestParams createRequestParam(BuyerPurchaseList purchaseList ) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString("order", buyerPurchaseList.getDetail().getId()+"");
-        requestParams.putString("order_type", buyerPurchaseList.getDetail().getTypeId()+"");
-        requestParams.putString("product_type_id", buyerPurchaseList.getDetail().getProductTypeId()+"");
+        requestParams.putString("order", String.valueOf(buyerPurchaseList.getDetail().getId()));
+        requestParams.putString("order_type", String.valueOf(buyerPurchaseList.getDetail().getTypeId()));
+        requestParams.putString("product_type_id", String.valueOf(buyerPurchaseList.getDetail().getProductTypeId()));
 
-        requestParams.putString("selected_ord_status",purchaseList.getDetail().getStatusId()+"");
-        requestParams.putString("selected_pym_method",purchaseList.getPayment().getMethod()+"");
-        requestParams.putString("selected_pg_id",purchaseList.getPayment().getGatewayId()+"");
+        requestParams.putString("selected_ord_status",String.valueOf(purchaseList.getDetail().getStatusId()));
+        requestParams.putString("selected_pym_method",String.valueOf(purchaseList.getPayment().getMethod()));
+        requestParams.putString("selected_pg_id",String.valueOf(purchaseList.getPayment().getGatewayId()));
         return requestParams;
     }
 

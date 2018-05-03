@@ -105,4 +105,12 @@ public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCo
 
 
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        articleUseCase.unsubscribe();
+        purchaseListUseCase.unsubscribe();
+        topBotUseCase.unsubscribe();
+    }
 }
