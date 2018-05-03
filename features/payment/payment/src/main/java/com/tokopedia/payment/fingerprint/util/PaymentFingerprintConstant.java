@@ -11,8 +11,8 @@ public class PaymentFingerprintConstant {
     public static final String OTP_FINGERPRINT_ADD = "/otp/fingerprint/add";
     public static final String V2_FINGERPRINT_PUBLICKEY_SAVE = "/v2/fingerprint/publickey/save";
     public static final String V2_PAYMENT_CC_FINGERPRINT = "/v2/payment/cc/fingerprint";
-    public static final String ACCOUNTS_DOMAIN = "https://accounts-staging.tokopedia.com";
-    public static final String TOP_PAY_DOMAIN = "https://pay-staging.tokopedia.id";
+    public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com";
+    public static String TOP_PAY_DOMAIN = "https://pay.tokopedia.id";
     public static final String APP_LINK_FINGERPRINT = "tokopedia://fingerprint/save";
     public static final String TOP_PAY_PATH_CREDIT_CARD_VERITRANS = "/v2/3dsecure/cc/veritrans";
     public static final String TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA = "/v2/3dsecure/sprintasia";
