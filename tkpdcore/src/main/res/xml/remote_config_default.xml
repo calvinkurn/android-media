@@ -194,6 +194,14 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>mainapp_enable_fingerprint</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>sellerapp_enable_fingerprint</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>mainapp_explore_native_enable</key>
         <value>true</value>
     </entry>
