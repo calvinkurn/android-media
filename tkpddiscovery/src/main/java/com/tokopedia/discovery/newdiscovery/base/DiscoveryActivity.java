@@ -470,7 +470,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
-    private void onImagePickedSuccess(String imagePath) {
+    public void onImagePickedSuccess(String imagePath) {
         tkpdProgressDialog = new TkpdProgressDialog(this, 1);
         tkpdProgressDialog.showDialog();
         getPresenter().requestImageSearch(imagePath);

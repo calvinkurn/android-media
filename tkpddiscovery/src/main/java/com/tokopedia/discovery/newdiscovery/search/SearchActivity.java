@@ -1,7 +1,9 @@
 package com.tokopedia.discovery.newdiscovery.search;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
@@ -143,6 +145,11 @@ public class SearchActivity extends DiscoveryActivity
         if (getIntent() != null &&
                 getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             UnifyTracking.eventBeliLongClick();
+        }
+        if (getIntent() != null && getIntent().getClipData() != null) {
+            ClipData clipData = getIntent().getClipData();
+            Uri uri = clipData.getItemAt(0).getUri();
+            onImagePickedSuccess(uri.toString());
         }
     }
 
