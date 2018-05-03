@@ -36,11 +36,13 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.common.applink.ApplinkConstant;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
+import com.tokopedia.pushnotif.PushNotification;
 
 import java.util.List;
 
@@ -86,8 +88,10 @@ public class ChatRoomActivity extends BasePresenterActivity
             notifReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (intent.getExtras() != null) {
-
+                    String fromPushNotif = intent.getExtras().getString("applinks");
+                    String fromRoom = ApplinkConstant.TOPCHAT.concat(getIntent().getExtras().getString("message_id"));
+                    if (!fromRoom.equals(fromPushNotif)) {
+                        PushNotification.notify(context, intent.getExtras());
                     }
                 }
             };
