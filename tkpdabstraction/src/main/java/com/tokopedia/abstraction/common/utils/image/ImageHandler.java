@@ -642,12 +642,10 @@ public class ImageHandler {
                                                     RequestListener<String, GlideDrawable>
                                                             requestListener) {
         if (url != null) {
-            //TODO milhamj remove fit center
             Glide.with(imageview.getContext())
                     .load(url)
                     .dontAnimate()
                     .listener(requestListener)
-                    .fitCenter()
                     .placeholder(R.drawable.loading_page)
                     .into(imageview);
         }

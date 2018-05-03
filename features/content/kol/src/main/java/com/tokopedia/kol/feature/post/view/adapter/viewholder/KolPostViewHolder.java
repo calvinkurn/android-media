@@ -94,6 +94,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
                 topShadow.setVisibility(View.GONE);
             }
         } else if (type == Type.FEED) {
+            topShadow.setVisibility(View.GONE);
             if (TextUtils.isEmpty(element.getTitle())) {
                 title.setVisibility(View.GONE);
             } else {
@@ -106,7 +107,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getAvatar());
 
         if (element.isFollowed()) {
-            //TODO milhamj unify this time
             label.setText(TimeConverter.generateTime(label.getContext(), element.getTime()));
         } else {
             label.setText(element.getLabel());
