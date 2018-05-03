@@ -116,23 +116,6 @@ public class EventSearchActivity extends TActivity implements
 
     }
 
-//    @Override
-//    public void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels) {
-//        if (categoryItemsViewModels != null && categoryItemsViewModels.size() != 0) {
-//            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-//            EventCategoryAdapter eventCategoryAdapter = new EventCategoryAdapter(getActivity(), categoryItemsViewModels);
-//            rvSearchResults.setLayoutManager(linearLayoutManager);
-//            rvSearchResults.setAdapter(eventCategoryAdapter);
-//            tvTopevents.setVisibility(View.GONE);
-//            rvTopEventSuggestions.setVisibility(View.GONE);
-//        } else {
-//            rvSearchResults.setVisibility(View.GONE);
-//            rvTopEventSuggestions.setVisibility(View.GONE);
-//            tvTopevents.setText("No Events Found");
-//            tvTopevents.setVisibility(View.VISIBLE);
-//        }
-//    }
-
     @Override
     public void showProgressBar() {
 
