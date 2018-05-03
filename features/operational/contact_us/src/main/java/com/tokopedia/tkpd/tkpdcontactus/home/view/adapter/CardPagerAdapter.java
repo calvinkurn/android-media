@@ -53,7 +53,6 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        Log.d("CardPagerAdapter", "View Created");
         View view = LayoutInflater.from(container.getContext())
                 .inflate(R.layout.order_list_item, container, false);
         container.addView(view);
@@ -73,7 +72,6 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        Log.d("CardPagerAdapter", "View Destroyed");
         container.removeView((View) object);
         mViews.set(position, null);
     }

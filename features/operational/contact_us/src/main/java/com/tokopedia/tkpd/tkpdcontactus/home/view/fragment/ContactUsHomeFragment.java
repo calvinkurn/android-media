@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.inbox.inboxticket.activity.InboxTicketActivity;
+import com.tokopedia.tkpd.tkpdcontactus.common.api.ContactUsURL;
 import com.tokopedia.tkpd.tkpdcontactus.common.customview.ShadowTransformer;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.ContactUsArticleResponse;
@@ -166,14 +167,14 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     }
 
     @Override
-    public void setChatBotButtonClick(int msgId) {
-        topBotUrl = "tokopedia://topchat/"+msgId;
+    public void setChatBotMessageId(int msgId) {
+        topBotUrl = ContactUsURL.TOP_BOT_BASE_URL +msgId;
     }
 
 
     @OnClick(R2.id.btn_view_more)
     public void onViewClicked() {
-        RouteManager.route(getContext(),"tokopedia://webview?url=https://www.tokopedia.com/bantuan/");
+        RouteManager.route(getContext(), ContactUsURL.ARTICLE_POPULAR_URL);
     }
 
     @OnClick(R2.id.view_full_purchaselist)
@@ -184,7 +185,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
 
     @OnClick(R2.id.btn_contact_us)
     public void onBtnContactUsClicked() {
-        RouteManager.route(getContext(),"tokopedia://webview?url=https://www.tokopedia.com/contact-us?utm_source=android&flag_app=1#step1");
+        RouteManager.route(getContext(),ContactUsURL.NAVIGATE_NEXT_URL);
     }
 
     @OnClick(R2.id.btn_chat_toped)

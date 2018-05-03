@@ -22,7 +22,7 @@ public interface ContactUsHomeContract {
 
         public void setChatBotVisible();
 
-        void setChatBotButtonClick(int msgId);
+        void setChatBotMessageId(int msgId);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

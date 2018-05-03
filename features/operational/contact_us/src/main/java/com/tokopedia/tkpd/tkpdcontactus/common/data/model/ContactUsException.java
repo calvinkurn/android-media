@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.tkpdcontactus.common.data.model;
 import java.io.IOException;
 
 /**
- * Created by nabillasabbaha on 2/13/18.
+ * Created by sandeepgoyal.
  */
 
 public class ContactUsException extends IOException {

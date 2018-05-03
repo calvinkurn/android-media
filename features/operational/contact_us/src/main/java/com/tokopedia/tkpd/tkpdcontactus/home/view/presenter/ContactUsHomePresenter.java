@@ -25,14 +25,12 @@ import rx.Subscriber;
 public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeContract.View> implements ContactUsHomeContract.Presenter {
 
     ContactUsArticleUseCase articleUseCase;
-    Context context;
     ContactUsPurchaseListUseCase purchaseListUseCase;
     ContactUsTopBotUseCase topBotUseCase;
 
     @Inject
-    public ContactUsHomePresenter(ContactUsPurchaseListUseCase purchaseListUseCase,ContactUsArticleUseCase contactUsArticleUseCase, ContactUsTopBotUseCase topBotUseCase,@ApplicationContext Context context) {
+    public ContactUsHomePresenter(ContactUsPurchaseListUseCase purchaseListUseCase,ContactUsArticleUseCase contactUsArticleUseCase, ContactUsTopBotUseCase topBotUseCase) {
         this.articleUseCase = contactUsArticleUseCase;
-        this.context = context;
         this.purchaseListUseCase = purchaseListUseCase;
         this.topBotUseCase = topBotUseCase;
     }
@@ -54,10 +52,8 @@ public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCo
             @Override
             public void onNext(List<ContactUsArticleResponse> contactUsArticleResponse) {
                 for (ContactUsArticleResponse response : contactUsArticleResponse) {
-                    Log.e("contacus ", contactUsArticleResponse.size() + " size");
                     getView().addPopularArticle(response);
                 }
-                Log.e("contacus ", contactUsArticleResponse.size() + " size");
             }
         });
 
@@ -69,12 +65,11 @@ public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCo
 
             @Override
             public void onError(Throwable e) {
-                Log.e("contacus buyerPurch", "exception " + e);
+                Log.e("contactus", "exception " + e);
             }
 
             @Override
             public void onNext(List<BuyerPurchaseList> buyerPurchaseLists) {
-                Log.e("contacus buyerPurch", buyerPurchaseLists.size() + " size");
                 if(buyerPurchaseLists.size()>0) {
                     getView().setEmptyPurchaseListHide();
                 }
@@ -102,7 +97,7 @@ public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCo
             public void onNext(TopBotStatus topBotStatus) {
                 if(topBotStatus.isIsActive()) {
                     getView().setChatBotVisible();
-                    getView().setChatBotButtonClick(topBotStatus.getMsgId());
+                    getView().setChatBotMessageId(topBotStatus.getMsgId());
                 }
 
             }
