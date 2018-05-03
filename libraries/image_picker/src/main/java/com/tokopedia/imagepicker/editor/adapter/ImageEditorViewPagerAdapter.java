@@ -35,6 +35,14 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
         this.minResolution = minResolution;
     }
 
+    public void setEdittedImagePaths(ArrayList<ArrayList<String>> edittedImagePaths) {
+        this.edittedImagePaths = edittedImagePaths;
+    }
+
+    public void setCurrentEditStepIndexList(ArrayList<Integer> currentEditStepIndexList) {
+        this.currentEditStepIndexList = currentEditStepIndexList;
+    }
+
     @Override
     public Fragment getItem(int position) {
         String oriImagePath = localStep0ImagePaths.get(position);
@@ -42,7 +50,7 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
         if (TextUtils.isEmpty(localImagePath)) {
             localImagePath = oriImagePath;
         }
-        return ImageEditPreviewFragment.newInstance(oriImagePath, localImagePath, minResolution);
+        return ImageEditPreviewFragment.newInstance(localImagePath, minResolution);
     }
 
     @Override

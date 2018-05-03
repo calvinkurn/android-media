@@ -68,6 +68,10 @@ public class ImageEditThumbnailListWidget extends FrameLayout implements ImageEd
         imageEditThumbnailAdapter.setData(imagePathList, currentEditStepIndexList, imageIndex);
     }
 
+    public void notifyDataSetChanged(){
+        imageEditThumbnailAdapter.notifyDataSetChanged();
+    }
+
     public void setIndex(int imageIndex) {
         imageEditThumbnailAdapter.setSelectedIndex(imageIndex);
     }

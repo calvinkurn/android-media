@@ -24,6 +24,7 @@ import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
 import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP;
@@ -213,16 +214,24 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         setupEditMode(false, TYPE_CROP_ROTATE);
     }
 
-    private void onDoneButtonClicked(){
+    private void onDoneButtonClicked() {
         //TODO on done button clicked
     }
 
-    private void onSaveEditClicked(){
+    private void onSaveEditClicked() {
         if (isInEditMode) {
             showCropLoading();
             ImageEditPreviewFragment fragment = getCurrentFragment();
-            if (fragment != null) {
-                fragment.saveEdittedImage();
+            switch (currentEditActionType) {
+                case TYPE_CROP:
+                case TYPE_ROTATE:
+                case TYPE_CROP_ROTATE:
+                    if (fragment != null) {
+                        fragment.saveEdittedImage();
+                    }
+                    break;
+                case TYPE_WATERMARK:
+                    break;
             }
         }
     }
@@ -230,7 +239,56 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     @Override
     public void onSuccessSaveEditImage(Uri resultUri) {
         hideCropLoading();
-        //TODO
+        File file = new File(resultUri.getPath());
+        if (!file.exists()) {
+            return;
+        }
+        String path = file.getAbsolutePath();
+        // it is on the last node on the step
+        if (getMaxStepForCurrentImage() != getCurrentStepForCurrentImage() + 1) {
+            //discard the next file to size and set currentStepIndex to current+1
+            //discard unneeded files
+            for (int j = getMaxStepForCurrentImage() - 1; j > getCurrentStepForCurrentImage(); j++) {
+                String pathToDelete = edittedImagePaths.get(currentImageIndex).get(j);
+                deleteUnusedFile(pathToDelete);
+                edittedImagePaths.remove(j);
+            }
+        }
+        // append the path to array
+        edittedImagePaths.get(currentImageIndex).add(path);
+        currentEditStepIndexList.set(currentImageIndex, getCurrentStepForCurrentImage() + 1);
+
+        refreshViewPager();
+        imageEditThumbnailListWidget.notifyDataSetChanged();
+
+        setupEditMode(false, TYPE_CROP_ROTATE);
+    }
+
+    private void refreshViewPager(){
+        imageEditorViewPagerAdapter.setEdittedImagePaths(edittedImagePaths);
+        imageEditorViewPagerAdapter.setCurrentEditStepIndexList(currentEditStepIndexList);
+        viewPager.setAdapter(imageEditorViewPagerAdapter);
+        viewPager.post(new Runnable() {
+            @Override
+            public void run() {
+                viewPager.setCurrentItem(currentImageIndex, false);
+            }
+        });
+    }
+
+    private int getCurrentStepForCurrentImage(){
+        return currentEditStepIndexList.get(currentImageIndex);
+    }
+
+    private int getMaxStepForCurrentImage(){
+        return edittedImagePaths.get(currentImageIndex).size();
+    }
+
+    private void deleteUnusedFile(String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
     @Override
@@ -240,16 +298,16 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         onCancelEditClicked();
     }
 
-    private ImageEditPreviewFragment getCurrentFragment(){
+    private ImageEditPreviewFragment getCurrentFragment() {
         return (ImageEditPreviewFragment) imageEditorViewPagerAdapter.getRegisteredFragment(currentImageIndex);
     }
 
-    private void showCropLoading(){
+    private void showCropLoading() {
         vCropProgressBar.setVisibility(View.VISIBLE);
         blockingView.setVisibility(View.VISIBLE);
     }
 
-    private void hideCropLoading(){
+    private void hideCropLoading() {
         vCropProgressBar.setVisibility(View.GONE);
         blockingView.setVisibility(View.GONE);
     }

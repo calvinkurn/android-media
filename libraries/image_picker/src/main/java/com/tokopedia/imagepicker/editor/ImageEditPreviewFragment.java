@@ -34,11 +34,9 @@ import java.io.File;
 
 public class ImageEditPreviewFragment extends Fragment {
 
-    public static final String ARG_ORI_IMAGE_PATH = "arg_ori_img_path";
-    public static final String ARG_EDITTED_IMAGE_PATH = "arg_edit_img_path";
+    public static final String ARG_IMAGE_PATH = "arg_img_path";
     public static final String ARG_MIN_RESOLUTION = "arg_min_resolution";
 
-    private String oriImagePath;
     private String edittedImagePath;
     private int minResolution = 0;
 
@@ -49,18 +47,18 @@ public class ImageEditPreviewFragment extends Fragment {
 
     private OnImageEditPreviewFragmentListener onImageEditPreviewFragmentListener;
     private boolean loadCompleted;
-    private float currentScale;
 
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditMode();
+
         void onSuccessSaveEditImage(Uri resultUri);
+
         void onErrorSaveEditImage(Throwable throwable);
     }
 
-    public static ImageEditPreviewFragment newInstance(String oriImagePath, String edittedImagePath, int minResolution) {
+    public static ImageEditPreviewFragment newInstance(String imagePath, int minResolution) {
         Bundle args = new Bundle();
-        args.putString(ARG_ORI_IMAGE_PATH, oriImagePath);
-        args.putString(ARG_EDITTED_IMAGE_PATH, edittedImagePath);
+        args.putString(ARG_IMAGE_PATH, imagePath);
         args.putInt(ARG_MIN_RESOLUTION, minResolution);
         ImageEditPreviewFragment fragment = new ImageEditPreviewFragment();
         fragment.setArguments(args);
@@ -72,24 +70,15 @@ public class ImageEditPreviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_image_edit_preview, container, false);
 
-        initVar(savedInstanceState);
+        Bundle bundle = getArguments();
+        minResolution = bundle.getInt(ARG_MIN_RESOLUTION);
+        edittedImagePath = getArguments().getString(ARG_IMAGE_PATH);
+
         initUCrop(view);
         initProgressBar(view);
 
         blockingView = view.findViewById(R.id.blocking_view);
         return view;
-    }
-
-    private void initVar(@Nullable Bundle savedInstanceState) {
-        Bundle bundle = getArguments();
-        oriImagePath = bundle.getString(ARG_ORI_IMAGE_PATH);
-        minResolution = bundle.getInt(ARG_MIN_RESOLUTION);
-
-        if (savedInstanceState == null) {
-            edittedImagePath = getArguments().getString(ARG_EDITTED_IMAGE_PATH);
-        } else {
-            edittedImagePath = savedInstanceState.getString(ARG_EDITTED_IMAGE_PATH);
-        }
     }
 
     private void initUCrop(final View view) {
@@ -121,8 +110,9 @@ public class ImageEditPreviewFragment extends Fragment {
 
     }
 
-    public void saveEdittedImage(){
-        uCropView.getCropImageView().cropAndSaveImage(Bitmap.CompressFormat.JPEG, 100, new BitmapCropCallback() {
+    public void saveEdittedImage() {
+        uCropView.getCropImageView().cropAndSaveImage(
+                edittedImagePath.endsWith("png")? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, new BitmapCropCallback() {
             @Override
             public void onBitmapCropped(@NonNull Uri resultUri, int offsetX, int offsetY, int imageWidth, int imageHeight) {
                 onImageEditPreviewFragmentListener.onSuccessSaveEditImage(resultUri);
@@ -239,12 +229,6 @@ public class ImageEditPreviewFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(ARG_EDITTED_IMAGE_PATH, edittedImagePath);
     }
 
     @TargetApi(23)
