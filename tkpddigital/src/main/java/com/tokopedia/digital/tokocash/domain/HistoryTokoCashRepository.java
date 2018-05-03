@@ -73,8 +73,8 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
 
     @Override
     public Observable<List<HelpHistoryTokoCashEntity>> getHelpHistoryData() {
-        String helpHistoryList = DeviceUtil.loadJSONFromAsset("help_history_tokocash.json");
-        return Observable.just(Arrays.asList((HelpHistoryTokoCashEntity[]) gson.fromJson(helpHistoryList,
+//        String helpHistoryList = DeviceUtil.loadJSONFromAsset("help_history_tokocash.json");
+        return Observable.just(Arrays.asList((HelpHistoryTokoCashEntity[]) gson.fromJson("",
                 HelpHistoryTokoCashEntity[].class)));
     }
 
