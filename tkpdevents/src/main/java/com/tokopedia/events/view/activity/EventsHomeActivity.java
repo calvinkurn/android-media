@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -141,6 +142,10 @@ public class EventsHomeActivity extends TActivity
         mPresenter.getEventsList();
         setupToolbar();
         toolbar.setTitle("Events");
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        addToCalendar.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                getResources().getDrawable(R.drawable.ic_event_calendar_green), null);
+
     }
 
 

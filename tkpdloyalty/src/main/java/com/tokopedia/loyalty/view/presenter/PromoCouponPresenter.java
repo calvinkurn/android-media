@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.HttpErrorException;
@@ -304,6 +305,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 if ((failmsg != null && failmsg.length() > 0) || status.length() == 0) {
                     couponData.setErrorMessage(failmsg);
                     view.couponError();
+                    UnifyTracking.eventDigitalEventTracking("voucher failed - " + promocode, failmsg);
                 } else {
                     CouponViewModel couponViewModel = new CouponViewModel();
                     couponViewModel.setCode(promocode);
@@ -313,6 +315,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                     couponViewModel.setRawCashback(cashback);
                     couponViewModel.setRawDiscount(discount);
                     couponViewModel.setTitle("");
+                    UnifyTracking.eventDigitalEventTracking("voucher success - " + promocode, successMsg);
                     view.receiveDigitalResult(couponViewModel);
                 }
             }

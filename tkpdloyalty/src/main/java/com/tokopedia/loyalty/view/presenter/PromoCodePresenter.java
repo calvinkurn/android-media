@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.gson.JsonObject;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
@@ -105,12 +106,14 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                     couponViewModel.setRawCashback(0);
                     couponViewModel.setRawDiscount(0);
                     view.onPromoCodeError(failmsg);
+                    UnifyTracking.eventDigitalEventTracking("voucher failed - " + promocode, failmsg);
                 } else {
                     couponViewModel.setMessage(successMsg);
                     couponViewModel.setSuccess(true);
                     couponViewModel.setAmount("");
                     couponViewModel.setRawCashback(cashback);
                     couponViewModel.setRawDiscount(discount);
+                    UnifyTracking.eventDigitalEventTracking("voucher success - " + promocode, successMsg);
                     view.checkDigitalVoucherSucessful(couponViewModel);
                 }
             }

@@ -34,8 +34,8 @@ import com.tokopedia.events.domain.postusecase.PostInitCouponUseCase;
 import com.tokopedia.events.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
-import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
@@ -183,6 +183,7 @@ public class EventReviewTicketPresenter
     public void clickGoToPromo() {
         getView().showProgressBar();
         goToLoyaltyActivity();
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHECK_PROMO, promocode);
     }
 
     private void goToLoyaltyActivity() {
@@ -193,10 +194,12 @@ public class EventReviewTicketPresenter
         loyaltyIntent.putExtra(LoyaltyActivity.EXTRA_CATEGORYID, checkoutData.getDigitalCategoryID());
         getView().navigateToActivityRequest(loyaltyIntent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
     }
+
     @Override
     public String getSCREEN_NAME() {
         return EventsGAConst.EVENTS_CHECKOUT_PAGE;
     }
+
     private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
         config.setPrice(packageViewModel.getSalesPrice() * checkoutData.getSelectedQuantity());
