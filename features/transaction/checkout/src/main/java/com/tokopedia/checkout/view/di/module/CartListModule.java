@@ -1,7 +1,10 @@
 package com.tokopedia.checkout.view.di.module;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.checkout.data.repository.ICartRepository;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
@@ -70,12 +73,10 @@ public class CartListModule {
         return new CartItemDecoration(40, false, 0);
     }
 
-
     @Provides
     @CartListScope
     CartListAdapter provideCartListAdapter() {
         return new CartListAdapter(cartListActionListener);
     }
-
 
 }

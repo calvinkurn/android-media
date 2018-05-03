@@ -116,6 +116,13 @@ import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.digital.tokocash.topup.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.feedplus.FeedModuleRouter;
+import com.tokopedia.feedplus.domain.model.FollowKolDomain;
+import com.tokopedia.feedplus.domain.model.LikeKolDomain;
+import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
+import com.tokopedia.feedplus.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
+import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -146,6 +153,9 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.kol.KolRouter;
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
+import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
+import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -234,16 +244,6 @@ import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
-import com.tokopedia.feedplus.FeedModuleRouter;
-import com.tokopedia.feedplus.domain.model.FollowKolDomain;
-import com.tokopedia.feedplus.domain.model.LikeKolDomain;
-import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
-import com.tokopedia.feedplus.domain.usecase.LikeKolPostUseCase;
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
-import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
-import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
-import com.tokopedia.feedplus.view.di.FeedPlusComponent;
-import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -1568,9 +1568,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
-            Context context, String platform, String category
+            Context context, String platform, String category, String defaultSelectedTab
     ) {
-        return LoyaltyActivity.newInstanceCouponActive(context, platform, category);
+        return LoyaltyActivity.newInstanceCouponActive(context, platform, category, defaultSelectedTab);
     }
 
     @Override

@@ -124,7 +124,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         TopPayBroadcastReceiver.ActionListener, TopAdsItemClickListener {
     private static final String ANALYTICS_GATEWAY_PAYMENT_FAILED = "payment failed";
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 9;
-    private static final String MARKETPLACE_FLAG = "marketplace";
 
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
@@ -837,41 +836,29 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             @Override
             public void onClick(View view) {
 
-                Intent intent;
-                if (isCouponActive) {
-                    if(defaultPromoTab.equals(LoyaltyActivity.COUPON_STATE)) {
-                        intent = LoyaltyActivity
-                                .newInstanceCouponActiveAndSelected(
-                                        getActivity(),
-                                        MARKETPLACE_FLAG,
-                                        MARKETPLACE_FLAG
-                                );
+                if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
+                    if (isCouponActive) {
+                        startActivityForResult(
+                                ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                                        .tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
+                                                getActivity(),
+                                                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING,
+                                                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING,
+                                                defaultPromoTab
+                                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+                        );
                     } else {
-                        intent = LoyaltyActivity.newInstanceCouponActive(
-                                getActivity(), MARKETPLACE_FLAG, MARKETPLACE_FLAG
+                        startActivityForResult(
+                                ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                                        .tkpdCartCheckoutGetLoyaltyOldCheckoutCouponNotActiveIntent(
+                                                getActivity(),
+                                                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING,
+                                                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
+                                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
                         );
                     }
-                } else intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
-                        MARKETPLACE_FLAG, MARKETPLACE_FLAG);
-                startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
-//                if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
-//                    if (isCouponActive) {
-//                        startActivityForResult(
-//                                ((ICartCheckoutModuleRouter) getActivity().getApplication())
-//                                        .tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
-//                                                getActivity(), "marketplace", "marketplace"
-//                                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
-//                        );
-//                    } else {
-//                        startActivityForResult(
-//                                ((ICartCheckoutModuleRouter) getActivity().getApplication())
-//                                        .tkpdCartCheckoutGetLoyaltyOldCheckoutCouponNotActiveIntent(
-//                                                getActivity(), "marketplace", "marketplace"
-//                                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
-//                        );
-//                    }
-//
-//                }
+
+                }
             }
         });
     }

@@ -17,7 +17,7 @@ public interface ICartCheckoutModuleRouter {
     int LOYALTY_REQUEST_CODE = 77;
 
     Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
-            Context context, String platform, String category
+            Context context, String platform, String category, String defaultSelectedTab
     );
 
     Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponNotActiveIntent(
