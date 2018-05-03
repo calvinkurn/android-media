@@ -207,6 +207,14 @@ public class WholesaleAddAdapter extends BaseLinearRecyclerViewAdapter {
             etRangeWholesale.setPrefix(MethodChecker.fromHtml("&#8805; &emsp;").toString());
             etWholeSalePrice.setPrefix(MethodChecker.fromHtml("Rp ").toString());
 
+            etWholeSalePrice.addTextChangedListener(new CurrencyIdrTextWatcher(etWholeSalePrice){
+                @Override
+                public void onNumberChanged(double number) {
+                    currentModel.setQtyPrice(number);
+                    isPriceValid(currentModel, getAdapterPosition(), tilWholeSalePrice);
+                }
+            });
+
             imageWholesale.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -228,7 +236,7 @@ public class WholesaleAddAdapter extends BaseLinearRecyclerViewAdapter {
             }
         }
 
-        public void bindData(final WholesaleModel wholesaleModel) {
+        public void bindData(WholesaleModel wholesaleModel) {
             formatter();
             NumberFormat quantityNumberFormat = new DecimalFormat();
             quantityNumberFormat.setMinimumIntegerDigits(0);
@@ -236,17 +244,12 @@ public class WholesaleAddAdapter extends BaseLinearRecyclerViewAdapter {
             etRangeWholesale.setText(qtyMin);
             String qtyPrice = wholesaleModel.getQtyPrice() + "";
             etWholeSalePrice.setText(formatValue(qtyPrice));
-            etWholeSalePrice.addTextChangedListener(new CurrencyIdrTextWatcher(etWholeSalePrice){
-                @Override
-                public void onNumberChanged(double number) {
-                    wholesaleModel.setQtyPrice(number);
-                    isPriceValid(wholesaleModel, getAdapterPosition(), tilWholeSalePrice);
-                }
-            });
             if(!TextUtils.isEmpty(wholesaleModel.getStatus())){
                 tilWholeSalePrice.setErrorEnabled(true);
                 tilWholeSalePrice.setError(wholesaleModel.getStatus());
             }
+
+            currentModel = wholesaleModel;
         }
 
         private String formatValue(String s) {
@@ -277,13 +280,11 @@ public class WholesaleAddAdapter extends BaseLinearRecyclerViewAdapter {
                 setStatusElementAfterCurrent(position, tilWholeSalePrice,"perbaiki dulu atasnya");
                 return false;
             }
-            else{
-                tilWholeSalePrice.setError(null);
-                tilWholeSalePrice.setErrorEnabled(false);
-                setStatusElementAfterCurrent(position, tilWholeSalePrice,"");
-            }
         }
 
+        tilWholeSalePrice.setError(null);
+        tilWholeSalePrice.setErrorEnabled(false);
+        setStatusElementAfterCurrent(position, tilWholeSalePrice,"");
         return true;
     }
 
