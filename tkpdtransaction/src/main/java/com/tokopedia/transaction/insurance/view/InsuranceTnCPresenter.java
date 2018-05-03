@@ -56,7 +56,6 @@ public class InsuranceTnCPresenter extends BaseDaggerPresenter<InsuranceTnCContr
             @Override
             public void onNext(String webViewData) {
                 if (isViewAttached()) {
-//                    getView().hideLoading();
                     getView().showWebView(webViewData);
                 }
             }

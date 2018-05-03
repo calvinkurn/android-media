@@ -12,5 +12,4 @@ public interface GeolocationPresenter {
 
     void initFragment(@NonNull Context context, Uri uri, Bundle bundle);
 
-    void replaceFragment(@NonNull Context context, Bundle bundle);
 }

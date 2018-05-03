@@ -84,9 +84,8 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        presenter.onViewCreated();
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -112,7 +111,9 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
 
     @Override
     public void loadData(int page) {
+        getAdapter().clearAllElements();
         showLoading();
+        presenter.getSavedPassengerList();
     }
 
     @Override
@@ -134,7 +135,7 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
     public void renderPassengerList() {
         hideLoading();
         super.isLoadingInitialData = true;
-        renderList(flightBookingPassengerViewModelList);
+        renderList(flightBookingPassengerViewModelList, false);
 
         if (flightBookingPassengerViewModelList.size() > 0) {
             addNewPassengerElement();
@@ -180,6 +181,7 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
 
     @Override
     public void onGetListError(Throwable throwable) {
+        getAdapter().clearAllElements();
         super.showGetListError(throwable);
     }
 

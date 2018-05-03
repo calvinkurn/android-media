@@ -107,11 +107,13 @@ public class CartPresenter implements ICartPresenter {
                     e.printStackTrace();
                 }
                 processRenderViewCartData(cartData);
-                view.renderVisibleMainCartContainer();
+                view.renderInvisibleLoading();
                 if (!cartData.getCartItemList().isEmpty()) {
+                    view.renderVisibleMainCartContainer();
                     autoApplyCouponIfAvailable(1);
 
                 }
+                processGetTickerGTM();
             }
         });
     }
@@ -494,7 +496,8 @@ public class CartPresenter implements ICartPresenter {
 
     private void switchInsurancePrice(@NonNull CartItemEditable cartItemEditable, boolean useInsurance) {
         cartItemEditable.setUseInsurance(useInsurance);
-        cartItemEditable.getCartCourierPrices().setCartSubtotal(useInsurance);
+        if(cartItemEditable.getCartCourierPrices() != null)
+            cartItemEditable.getCartCourierPrices().setCartSubtotal(useInsurance);
         view.refreshCartList();
     }
 
@@ -652,7 +655,7 @@ public class CartPresenter implements ICartPresenter {
 
     @Override
     public void cancelPromo() {
-        cartDataInteractor.cancelVoucherCache(new Subscriber<Boolean>() {
+        cartDataInteractor.cancelVoucherCache(view.getActivity(), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -892,11 +895,19 @@ public class CartPresenter implements ICartPresenter {
         }
         view.renderButtonCheckVoucherListener();
         view.renderInstantPromo(data.getCartPromo());
-        view.renderPromoView(data.getIsCouponActive() == 1);
+        view.renderPromoView(
+                data.getIsCouponActive() == 1,
+                checkCouponDefaultNull(data.getDefaultPromoDialogTab())
+        );
         view.renderPartialOrder(data.isEnableCancelPartial());
         if (promoAutoApplied(data)) {
             view.renderAutoApplyPromoView(data.getAutoApply());
         }
+    }
+
+    private String checkCouponDefaultNull(String defaultPromoTab) {
+        if(TextUtils.isEmpty(defaultPromoTab)) return "";
+        else return defaultPromoTab;
     }
 
     private boolean promoAutoApplied(CartData data) {

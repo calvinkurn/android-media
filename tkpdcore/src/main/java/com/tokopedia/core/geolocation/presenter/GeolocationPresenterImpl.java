@@ -55,13 +55,6 @@ public class GeolocationPresenterImpl implements GeolocationPresenter {
         }
     }
 
-    @Override
-    public void replaceFragment(@NonNull Context context, Bundle bundle) {
-        viewListener
-                .replaceFragment(GoogleMapFragment.newInstanceNoLocation(),
-                        GoogleMapFragment.class.getSimpleName());
-    }
-
     private RetrofitInteractor.GenerateLatLongListener latLongListener(
             final Context context,
             final LocationPass locationPass

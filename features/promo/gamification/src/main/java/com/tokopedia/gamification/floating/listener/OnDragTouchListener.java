@@ -34,7 +34,6 @@ public class OnDragTouchListener implements View.OnTouchListener {
     private View mView;
     private View mParent;
     private boolean isDragging;
-    private boolean isInitialized = false;
 
     private int width;
     private float maxLeft;
@@ -79,13 +78,11 @@ public class OnDragTouchListener implements View.OnTouchListener {
         mView = view;
         mParent = parent;
         isDragging = false;
-        isInitialized = false;
     }
 
     public void updateBounds() {
         updateViewBounds();
         updateParentBounds();
-        isInitialized = true;
     }
 
     public void updateViewBounds() {
@@ -156,9 +153,9 @@ public class OnDragTouchListener implements View.OnTouchListener {
                 case MotionEvent.ACTION_DOWN:
                     isDragging = true;
                     hasMoved = false;
-                    if (!isInitialized) {
-                        updateBounds();
-                    }
+
+                    updateBounds();
+
                     startX = v.getX();
                     dX = startX - event.getRawX();
                     startY = v.getY();
@@ -166,6 +163,7 @@ public class OnDragTouchListener implements View.OnTouchListener {
                     if (mOnDragActionListener != null) {
                         mOnDragActionListener.onDragStart(mView);
                     }
+                    mView.getParent().requestDisallowInterceptTouchEvent(true);
                     return true;
             }
         }
@@ -176,6 +174,7 @@ public class OnDragTouchListener implements View.OnTouchListener {
         if (mOnDragActionListener != null) {
             mOnDragActionListener.onDragEnd(mView);
         }
+        mView.getParent().requestDisallowInterceptTouchEvent(false);
 
         hasMoved = false;
         dX = 0;

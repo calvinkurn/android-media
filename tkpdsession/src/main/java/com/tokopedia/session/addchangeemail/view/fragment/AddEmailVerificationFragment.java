@@ -220,7 +220,7 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
 
     @Override
     public void onErrorRequest(String error) {
-        if (error.contains(getString(R.string.limit_otp_reached))) {
+        if (error.contains(getActivity().getString(R.string.limit_otp_reached))) {
             limitOtp.setVisibility(View.VISIBLE);
             setLimitReachedCountdownText();
         } else {
@@ -394,5 +394,11 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
         button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable));
         button.setEnabled(true);
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
     }
 }

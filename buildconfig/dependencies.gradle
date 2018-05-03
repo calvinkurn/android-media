@@ -38,7 +38,7 @@ ext {
     rulesVersion = "0.5"
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
-    reactNativeVersion = '0.51.0'
+    reactNativeVersion = '0.52.1'
     alibabaCoreLibVersion = '3.2.8'
 
     networkDependencies = [
@@ -152,7 +152,8 @@ ext {
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.4.1",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
-            codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3"
+            codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3",
+            hansel                : "io.hansel.preprocessor:preprocessor:6.0.3"
     ]
 
     testDependencies = [
@@ -217,7 +218,7 @@ ext {
     features = [
             loyalty         : ":tkpdloyalty",
             ride            : ":tkpdride",
-            feed            : ":tkpdfeed",
+            feed            : ":features:content:feed",
             digital         : ":tkpddigital",
             core            : ":tkpdcore",
             inbox           : ":tkpdinbox",
@@ -244,8 +245,8 @@ ext {
             home            : ":tkpdhome",
             kol             : ":features:content:kol",
             groupchat       : ":features:user:groupchat",
-            gamification    : ":features:promo:gamification"
-
+            gamification    : ":features:promo:gamification",
+            profile         : ":features:user:profile"
     ]
 
     libraries = [
@@ -256,7 +257,8 @@ ext {
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
             reactNative     : ":libraries:react_native",
-            useCase         : ":libraries:use_case"
+            useCase         : ":libraries:use_case",
+            fingerprint     : ":libraries:fingerprint"
     ]
 
 }

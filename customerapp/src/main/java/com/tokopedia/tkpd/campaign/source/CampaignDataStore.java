@@ -43,7 +43,7 @@ public class CampaignDataStore {
             }
         });
     }
-    public Observable<CampaignResponseEntity> getCampaignForShake(HashMap<String, RequestBody> param) {
+    public Observable<CampaignResponseEntity> getCampaignForShake(HashMap<String, Object> param) {
         return this.mCampaignAPI.getCampaignForShake(param).map(new Func1<Response<DataResponse<CampaignResponseEntity>>, CampaignResponseEntity>() {
             @Override
             public CampaignResponseEntity call(Response<DataResponse<CampaignResponseEntity>> dataResponseResponse) {
