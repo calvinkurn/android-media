@@ -15,7 +15,7 @@ import dagger.Component;
  */
 
 @ContactUsModuleScope
-@Component(modules = {ContactUsModule.class,OrderQueryModule.class,SubmitQueryModule.class}, dependencies = BaseAppComponent.class)
+@Component(modules = {ContactUsModule.class,OrderQueryModule.class}, dependencies = BaseAppComponent.class)
 public interface OrderQueryComponent {
     void inject(OrderQueryTicketFragment orderQueryTicketFragment);
     void inject(QueryTicketDetailFragment queryTicketDetailFragment);

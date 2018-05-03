@@ -36,14 +36,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:paddingBottom="30dp"
+        android:paddingBottom="70dp"
         android:paddingEnd="20dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingStart="20dp"
         app:layout_constraintVertical_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView12" />
+        app:layout_constraintTop_toBottomOf="@+id/textView12"/>
 
 </android.support.constraint.ConstraintLayout>
 

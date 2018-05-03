@@ -21,12 +21,10 @@ import rx.Subscriber;
 public class PurchaseListPresenter extends BaseDaggerPresenter<PurchaseListContract.View> implements PurchaseListContract.Presenter {
 
 
-    private final Context context;
     private final ContactUsPurchaseListUseCase purchaseListUseCase;
 
     @Inject
-    public PurchaseListPresenter(ContactUsPurchaseListUseCase purchaseListUseCase, @ApplicationContext Context context) {
-        this.context = context;
+    public PurchaseListPresenter(ContactUsPurchaseListUseCase purchaseListUseCase) {
         this.purchaseListUseCase = purchaseListUseCase;
     }
     @Override

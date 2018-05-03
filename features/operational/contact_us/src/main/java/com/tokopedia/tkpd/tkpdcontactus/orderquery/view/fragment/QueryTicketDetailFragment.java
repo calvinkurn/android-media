@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.SubmitTicketInvoiceData;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.di.DaggerOrderQueryComponent;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.di.OrderQueryComponent;
@@ -76,7 +77,7 @@ public class QueryTicketDetailFragment extends BaseDaggerFragment implements Que
 
     @Override
     public void setDetail(String details) {
-        txtDetail.setText(Html.fromHtml(details));
+        txtDetail.setText(MethodChecker.fromHtml(details));
     }
 
     @Override

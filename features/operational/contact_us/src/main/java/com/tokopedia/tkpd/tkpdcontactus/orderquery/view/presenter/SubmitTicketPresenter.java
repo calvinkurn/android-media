@@ -8,6 +8,7 @@ import android.view.View;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.contactus.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
@@ -19,7 +20,6 @@ import com.tokopedia.inbox.contactus.model.solution.SolutionResult;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.QueryTicket;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.SubmitTicketInvoiceData;
-import com.tokopedia.tkpd.tkpdcontactus.orderquery.domain.SubmitTicketUsecase;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.File;
@@ -36,15 +36,13 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
     private static final int MESSAGE_WRONG_DIMENSION = 0;
     private static final int MESSAGE_WRONG_FILE_SIZE = 1;
     Context context;
-    SubmitTicketUsecase submitTicketUsecase;
     private String cameraFileLoc;
     private ContactUsRetrofitInteractorImpl networkInteractor;
 
 
     @Inject
-    public SubmitTicketPresenter(@ApplicationContext Context context, SubmitTicketUsecase submitTicketUsecase) {
-        this.context = context;
-        this.submitTicketUsecase = submitTicketUsecase;
+    public SubmitTicketPresenter(@ApplicationContext Context contexte) {
+        this.context = contexte;
     }
 
     @Override
@@ -109,9 +107,9 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
 
     private void showErrorMessage(int messageWrongParam) {
         if(messageWrongParam == MESSAGE_WRONG_FILE_SIZE){
-            getView().setSnackBarErrorMessage("Ups! Ukuran gambar yang di-upload lebih dari 10MB");
+            getView().setSnackBarErrorMessage(context.getString(R.string.error_msg_wrong_size));
         } else if(messageWrongParam == MESSAGE_WRONG_DIMENSION){
-            getView().setSnackBarErrorMessage("Ups! Ukuran gambar yang Anda pilih terlalu kecil. Minimal 300 x 300 piksel.");
+            getView().setSnackBarErrorMessage(context.getString(R.string.error_msg_wrong_height_width));
         }
     }
 
