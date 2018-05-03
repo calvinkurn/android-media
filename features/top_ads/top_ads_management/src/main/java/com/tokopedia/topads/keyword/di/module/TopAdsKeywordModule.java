@@ -7,6 +7,8 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 //import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
+import com.tokopedia.seller.shop.common.di.ShopQualifier;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
@@ -40,15 +42,14 @@ public class TopAdsKeywordModule {
     @TopAdsKeywordScope
     @Provides
     TopAdsKeywordRepository provideTopAdsKeywordRepository(
-            KeywordDashboardDataSouce keywordDashboardDataSouce/*,
-            ShopInfoRepository shopInfoRepository*/) {
-        return new TopAdsKeywordRepositoryImpl(
-                keywordDashboardDataSouce/*, shopInfoRepository*/);
+            KeywordDashboardDataSouce keywordDashboardDataSouce,
+            ShopInfoRepository shopInfoRepository) {
+        return new TopAdsKeywordRepositoryImpl(keywordDashboardDataSouce, shopInfoRepository);
     }
 
     @TopAdsKeywordScope
     @Provides
-    TomeProductApi provideTomeApi(/*@TomeQualifier*/ @TopAdsManagementQualifier Retrofit retrofit) {
+    TomeProductApi provideTomeApi(@ShopQualifier Retrofit retrofit) {
         return retrofit.create(TomeProductApi.class);
     }
 

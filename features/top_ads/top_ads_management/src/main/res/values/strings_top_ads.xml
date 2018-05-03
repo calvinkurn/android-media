@@ -253,5 +253,6 @@
 
     <string name="topads_keyword_add_cancel_dialog">Kata kunci yang sudah Anda masukkan akan hilang\nTinggalkan halaman ini?</string>
     <string name="static_suggestion_bid_recommendation">Sesuaikan biaya dengan anggaran iklan Anda.</string>
+    <string name="topads_dashboard_empty_usage_title">Ayo tingkatkan penjualan dengan TopAds</string>
 
 </resources>

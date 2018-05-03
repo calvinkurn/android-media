@@ -30,19 +30,20 @@ import retrofit2.Retrofit;
 public class TopAdsShopModule {
 
     @ShopQualifier
-    @TopAdsDashboardScope
+    @TopAdsScope
     @Provides
     public CacheApiInterceptor provideApiCacheInterceptor() {
         return new CacheApiInterceptor(new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
     }
 
-    @TopAdsDashboardScope
+    @ShopQualifier
+    @TopAdsScope
     @Provides
     public ErrorResponseInterceptor provideErrorResponseInterceptor() {
         return new ErrorResponseInterceptor(TkpdV4ResponseError.class);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsScope
     @Provides
     public ShopAuthInterceptor provideShopAuthInterceptor(@ApplicationContext Context context,
                                                           AbstractionRouter abstractionRouter,
@@ -55,7 +56,7 @@ public class TopAdsShopModule {
     @Provides
     public OkHttpClient provideOkHttpClient(ShopAuthInterceptor shopAuthInterceptor,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
-                                            ErrorResponseInterceptor errorResponseInterceptor,
+                                            @ShopQualifier ErrorResponseInterceptor errorResponseInterceptor,
                                             CacheApiInterceptor cacheApiInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(cacheApiInterceptor)
@@ -66,7 +67,7 @@ public class TopAdsShopModule {
     }
 
     @ShopQualifier
-    @TopAdsDashboardScope
+    @TopAdsScope
     @Provides
     public Retrofit provideRetrofit(@ShopQualifier OkHttpClient okHttpClient,
                                     Retrofit.Builder retrofitBuilder) {
@@ -74,7 +75,7 @@ public class TopAdsShopModule {
     }
 
     @ShopWsQualifier
-    @TopAdsDashboardScope
+    @TopAdsScope
     @Provides
     public Retrofit provideWSRetrofit(@ShopQualifier OkHttpClient okHttpClient,
                                       Retrofit.Builder retrofitBuilder) {

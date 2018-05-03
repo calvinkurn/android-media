@@ -12,7 +12,7 @@ import dagger.Component;
  */
 
 @TopAdsDashboardScope
-@Component(modules = {TopAdsDashboardModule.class, TopAdsShopModule.class}, dependencies = TopAdsComponent.class)
+@Component(modules = {TopAdsDashboardModule.class}, dependencies = TopAdsComponent.class)
 public interface TopAdsDashboardComponent {
 
     void inject(TopAdsDashboardFragment topAdsDashboardFragment);

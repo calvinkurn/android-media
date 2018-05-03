@@ -174,7 +174,6 @@
             android:name=".dashboard.view.activity.TopAdsSortByActivity"
             android:label="@string/title_top_ads_sort_by"
             android:screenOrientation="portrait" />
-        <activity android:name=".dashboard.view.activity.TopAdsOldDashboardActivity"/>
         <activity android:name=".dashboard.view.activity.TopAdsAddingPromoOptionActivity"
             android:label="@string/label_add_promo"
             android:theme="@style/Theme.White"

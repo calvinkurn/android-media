@@ -27,18 +27,18 @@ public class KeywordAddUseCase extends UseCase<AddKeywordDomainModel> {
     public static final String KEYWORD_LIST = "key_list";
     private static final String SOURCE = "source";
     private TopAdsKeywordRepository topAdsKeywordRepository;
-    //private ShopInfoRepository shopInfoRepository;
+    private ShopInfoRepository shopInfoRepository;
 
     @Inject
     public KeywordAddUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
-            TopAdsKeywordRepository topAdsKeywordRepository
-            //ShopInfoRepository shopInfoRepository
+            TopAdsKeywordRepository topAdsKeywordRepository,
+            ShopInfoRepository shopInfoRepository
     ) {
         super(threadExecutor, postExecutionThread);
         this.topAdsKeywordRepository = topAdsKeywordRepository;
-        //this.shopInfoRepository = shopInfoRepository;
+        this.shopInfoRepository = shopInfoRepository;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class KeywordAddUseCase extends UseCase<AddKeywordDomainModel> {
         final ArrayList<String> keywordList = (ArrayList<String>) requestParams.getObject(KEYWORD_LIST);
         final String source = requestParams.getString(SOURCE, "");
 
-        //String shopId = shopInfoRepository.getShopId();
+        String shopId = shopInfoRepository.getShopId();
         List<AddKeywordDomainModelDatum> addKeywordDomainModelDatumList = new ArrayList<>();
         int size = keywordList.size();
         for (int i = 0; i < size; i++) {
@@ -56,8 +56,7 @@ public class KeywordAddUseCase extends UseCase<AddKeywordDomainModel> {
                     keywordList.get(i),
                     keywordType,
                     groupId,
-                    "",
-                    //shopId,
+                    shopId,
                     source
             );
             addKeywordDomainModelDatumList.add(addKeywordDomainModelDatum);

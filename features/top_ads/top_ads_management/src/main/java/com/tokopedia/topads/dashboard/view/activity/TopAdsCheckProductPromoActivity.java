@@ -48,7 +48,7 @@ public class TopAdsCheckProductPromoActivity extends BaseSimpleActivity implemen
                                     uri.build().getQueryParameter(PARAM_SOURCE))
                             .putExtras(extras);
                 } else {
-                    return TopAdsOldDashboardActivity.getCallingIntent(context)
+                    return TopAdsDashboardActivity.getCallingIntent(context)
                             .putExtras(extras);
                 }
             } else {

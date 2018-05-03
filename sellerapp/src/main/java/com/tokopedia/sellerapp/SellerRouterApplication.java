@@ -155,7 +155,7 @@ import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsOldDashboardActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
@@ -823,7 +823,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToTopAdsDashboard(Activity activity) {
-        Intent intent = new Intent(activity, TopAdsOldDashboardActivity.class);
+        Intent intent = new Intent(activity, TopAdsDashboardActivity.class);
         activity.startActivity(intent);
     }
 

@@ -33,9 +33,9 @@ public class TopAdsKeywordNewChooseModule {
     @TopAdsKeywordScope
     @Provides
     TopAdsKeywordRepository provideTopAdsKeywordRepository
-            (KeywordDashboardDataSouce keywordDashboardDataSouce/*,
-             ShopInfoRepository shopInfoRepository*/) {
-        return new TopAdsKeywordRepositoryImpl(keywordDashboardDataSouce/*, shopInfoRepository*/);
+            (KeywordDashboardDataSouce keywordDashboardDataSouce,
+             ShopInfoRepository shopInfoRepository) {
+        return new TopAdsKeywordRepositoryImpl(keywordDashboardDataSouce, shopInfoRepository);
     }
 
     @TopAdsKeywordScope

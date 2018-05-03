@@ -8,7 +8,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsOldDashboardActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
@@ -28,13 +28,13 @@ public class TopAdsTopupSuccessNotification extends BaseNotification {
     @Override
     protected void configureNotificationData(Bundle data) {
         Intent intent = NotificationUtils.configureGeneralIntent(
-                new Intent(mContext, TopAdsOldDashboardActivity.class)
+                new Intent(mContext, TopAdsDashboardActivity.class)
         );
         intent.putExtra(UnifyTracking.EXTRA_LABEL, NOTIFICATION_LABEL);
 
         mNotificationPass.mIntent = intent;
 
-        mNotificationPass.classParentStack = TopAdsOldDashboardActivity.class;
+        mNotificationPass.classParentStack = TopAdsDashboardActivity.class;
         mNotificationPass.title = data.getString(ARG_NOTIFICATION_TITLE, mContext.getString(R.string.title_push_notif_general));
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
