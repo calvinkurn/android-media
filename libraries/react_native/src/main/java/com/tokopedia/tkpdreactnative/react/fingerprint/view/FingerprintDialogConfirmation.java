@@ -24,6 +24,7 @@ public class FingerprintDialogConfirmation extends DialogPreferenceHide implemen
     private FingerPrintUIHelper.Callback callback;
     @Inject
     FingerprintConfirmationPresenter fingerprintConfirmationPresenter;
+    private boolean showFingerprintAfterSavePref = true;
 
     public FingerprintDialogConfirmation(Activity context, Type type, String transactionId, FingerPrintUIHelper.Callback callback) {
         super(context, type);
@@ -45,7 +46,7 @@ public class FingerprintDialogConfirmation extends DialogPreferenceHide implemen
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        dismiss();
+                        showFingerprintAfterSavePref = false;
                         fingerprintConfirmationPresenter.savePreferenceHide(isCheckedBoxHideDialog());
                     }
                 });
@@ -57,6 +58,7 @@ public class FingerprintDialogConfirmation extends DialogPreferenceHide implemen
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        showFingerprintAfterSavePref = true;
                         fingerprintConfirmationPresenter.savePreferenceHide(isCheckedBoxHideDialog());
                     }
                 });
@@ -105,7 +107,7 @@ public class FingerprintDialogConfirmation extends DialogPreferenceHide implemen
 
     @Override
     public void onSuccessSavePreference() {
-        if (context instanceof AppCompatActivity) {
+        if (context instanceof AppCompatActivity && showFingerprintAfterSavePref) {
             FingerPrintUIHelper fingerPrintUIHelper = new FingerPrintUIHelper((AppCompatActivity) context, transactionId, callback);
             fingerPrintUIHelper.startListening();
         }

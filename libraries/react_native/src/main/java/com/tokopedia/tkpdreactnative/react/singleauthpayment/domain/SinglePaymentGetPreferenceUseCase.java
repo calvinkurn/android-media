@@ -24,6 +24,6 @@ public class SinglePaymentGetPreferenceUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return preferenceRepository.getPreferenceBoolean(FingerprintSavePreferenceUseCase.IS_SHOW_FINGERPRINT);
+        return preferenceRepository.getPreferenceBoolean(SinglePaymentSavePreferenceUseCase.IS_SHOW_SINGLE_PAYMENT);
     }
 }
