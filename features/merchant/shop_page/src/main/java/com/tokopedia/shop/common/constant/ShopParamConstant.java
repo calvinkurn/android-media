@@ -19,6 +19,6 @@ public class ShopParamConstant {
 
     public static final String KEY_SHOP_ID = "shop_id";
     public static final String KEY_ETALASE_ID = "etalase_id";
-    public static final String KEY_KEYWORD = "keyword";
+    public static final String KEY_KEYWORD = "search";
     public static final String KEY_SORT = "sort";
 }
