@@ -100,7 +100,7 @@ public class ProductManageModule {
     @Provides
     @ProductManageScope
     public TopAdsSourceTaggingLocal provideTopAdsSourceTracking(@ApplicationContext Context context){
-        return new TopAdsSourceTaggingLocal(context, TopAdsSourceTaggingConstant.KEY_SOURCE_PREFERENCE);
+        return new TopAdsSourceTaggingLocal(context);
     }
 
     @Provides
