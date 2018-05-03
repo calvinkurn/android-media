@@ -12,29 +12,84 @@ public class TokenEmptyStateEntity {
     @SerializedName("title")
     @Expose
     private String title;
+
     @SerializedName("buttonText")
     @Expose
     private String buttonText;
+
     @SerializedName("buttonApplink")
     @Expose
     private String buttonApplink;
+
     @SerializedName("buttonURL")
     @Expose
     private String buttonURL;
 
+    @SerializedName("backgroundImgUrl")
+    @Expose
+    private String backgroundImgUrl;
+
+    @SerializedName("imageUrl")
+    @Expose
+    private String imageUrl;
+
+    @SerializedName("version")
+    @Expose
+    private Integer version;
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setButtonText(String buttonText) {
+        this.buttonText = buttonText;
+    }
+
+    public void setButtonApplink(String buttonApplink) {
+        this.buttonApplink = buttonApplink;
+    }
+
+    public void setButtonURL(String buttonURL) {
+        this.buttonURL = buttonURL;
+    }
+
+    public void setBackgroundImgUrl(String backgroundImgUrl) {
+        this.backgroundImgUrl = backgroundImgUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     public String getButtonText() {
-        return buttonText;
+        return this.buttonText;
     }
 
     public String getButtonApplink() {
-        return buttonApplink;
+        return this.buttonApplink;
     }
 
     public String getButtonURL() {
-        return buttonURL;
+        return this.buttonURL;
+    }
+
+    public String getBackgroundImgUrl() {
+        return this.backgroundImgUrl;
+    }
+
+    public String getImageUrl() {
+        return this.imageUrl;
+    }
+
+    public Integer getVersion() {
+        return this.version;
     }
 }
