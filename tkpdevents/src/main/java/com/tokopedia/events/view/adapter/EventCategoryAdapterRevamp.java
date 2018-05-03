@@ -95,6 +95,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 else
                     eventTime.setText(Utils.convertEpochToString(data.getMinStartDate())
                             + " - " + Utils.convertEpochToString(data.getMaxEndDate()));
+                eventTime.setVisibility(View.VISIBLE);
             }
 
             if (data.getDisplayTags() != null && data.getDisplayTags().length() > 3) {
