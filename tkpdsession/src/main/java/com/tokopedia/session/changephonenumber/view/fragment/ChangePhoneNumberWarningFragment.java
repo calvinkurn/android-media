@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberEmailActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
@@ -48,6 +49,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     public static final String PARAM_PHONE_NUMBER = "phone_number";
     private static final int REQUEST_CHANGE_PHONE_NUMBER = 1;
     private static final int REQUEST_WITHDRAW_TOKOPEDIA_BALANCE = 99;
+    private static final int VERIFY_USER_CHANGE_PHONE_NUMBER = 2;
 
     @Inject
     WarningListAdapter adapter;
@@ -234,29 +236,39 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     }
 
     private void goToNextActivity() {
-        if (viewModel.getAction().equalsIgnoreCase(ACTION_EMAIL)) {
-            Intent intent = ChangePhoneNumberEmailActivity.newInstance(
-                    getContext(),
-                    phoneNumber,
-                    email,
-                    viewModel.getWarningList() != null ?
-                            new ArrayList<>(viewModel.getWarningList()) : null);
-            intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-            startActivity(intent);
-            getActivity().finish();
-        } else if (viewModel.getAction().equalsIgnoreCase(ACTION_OTP)) {
-            startActivityForResult(
-                    ChangePhoneNumberInputActivity.newInstance(
-                            getContext(),
-                            phoneNumber,
-                            email,
-                            viewModel.getWarningList() != null ?
-                                    new ArrayList<>(viewModel.getWarningList()) : null
-                    ),
-                    REQUEST_CHANGE_PHONE_NUMBER
-            );
+//        if (viewModel.getAction().equalsIgnoreCase(ACTION_EMAIL)) {
+//            Intent intent = ChangePhoneNumberEmailActivity.newInstance(
+//                    getContext(),
+//                    phoneNumber,
+//                    email,
+//                    viewModel.getWarningList() != null ?
+//                            new ArrayList<>(viewModel.getWarningList()) : null);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+//            startActivity(intent);
+//            getActivity().finish();
+//        } else if (viewModel.getAction().equalsIgnoreCase(ACTION_OTP)) {
+//            startActivityForResult(
+//                    ChangePhoneNumberInputActivity.newInstance(
+//                            getContext(),
+//                            phoneNumber,
+//                            email,
+//                            viewModel.getWarningList() != null ?
+//                                    new ArrayList<>(viewModel.getWarningList()) : null
+//                    ),
+//                    REQUEST_CHANGE_PHONE_NUMBER
+//            );
+//
+//        }
 
-        }
+        Intent intent = VerificationActivity.
+                getCallingIntent(getContext(),
+                        phoneNumber,
+                        email,
+                        200,
+                        true,
+                        true,
+                        "");
+        startActivityForResult(intent, VERIFY_USER_CHANGE_PHONE_NUMBER);
     }
 
     @Override
@@ -264,6 +276,19 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
+            case VERIFY_USER_CHANGE_PHONE_NUMBER:
+                if (resultCode == Activity.RESULT_OK) {
+                    startActivityForResult(
+                            ChangePhoneNumberInputActivity.newInstance(
+                                    getContext(),
+                                    phoneNumber,
+                                    email,
+                                    viewModel.getWarningList() != null ?
+                                            new ArrayList<>(viewModel.getWarningList()) : null
+                            ),
+                            REQUEST_CHANGE_PHONE_NUMBER);
+                }
+                break;
             case REQUEST_CHANGE_PHONE_NUMBER:
                 getActivity().setResult(resultCode);
 
