@@ -24,6 +24,7 @@ public class ImageEditThumbnailListWidget extends FrameLayout implements ImageEd
     private ImageEditThumbnailAdapter imageEditThumbnailAdapter;
 
     private OnImageEditThumbnailListWidgetListener OnImageEditThumbnailListWidgetListener;
+
     public interface OnImageEditThumbnailListWidgetListener {
         void onThumbnailItemClicked(String imagePath, int position);
     }
@@ -55,7 +56,6 @@ public class ImageEditThumbnailListWidget extends FrameLayout implements ImageEd
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setHasFixedSize(true);
-
         recyclerView.setAdapter(imageEditThumbnailAdapter);
     }
 
@@ -73,7 +73,7 @@ public class ImageEditThumbnailListWidget extends FrameLayout implements ImageEd
 
     @Override
     public void onThumbnailItemClicked(String imagePath, int position) {
-        if (OnImageEditThumbnailListWidgetListener!= null) {
+        if (OnImageEditThumbnailListWidgetListener != null) {
             OnImageEditThumbnailListWidgetListener.onThumbnailItemClicked(imagePath, position);
         }
     }
